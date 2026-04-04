@@ -32,12 +32,12 @@ SOFTWARE.
 #define ETL_BLOOM_FILTER_INCLUDED
 
 #include "platform.h"
-#include "parameter_type.h"
-#include "bitset.h"
-#include "type_traits.h"
 #include "binary.h"
+#include "bitset.h"
 #include "log.h"
+#include "parameter_type.h"
 #include "power.h"
+#include "type_traits.h"
 
 ///\defgroup bloom_filter bloom_filter
 /// A Bloom filter
@@ -51,34 +51,33 @@ namespace etl
     struct null_hash
     {
       template <typename T>
-      size_t operator ()(T)
+      size_t operator()(T)
       {
         return 0;
       }
     };
-  }
+  } // namespace private_bloom_filter
 
   //***************************************************************************
   /// An implementation of a bloom filter.
   /// Allows up to three hashes to be defined.
   /// Hashes must support the () operator and define 'argument_type'.
-  ///\tparam Desired_Width The desired number of hash results that can be stored. Rounded up to best fit the underlying bitset.
-  ///\tparam THash1        The first hash generator class.
-  ///\tparam THash2        The second hash generator class. If omitted, uses the null hash.
-  ///\tparam THash3        The third hash generator class.  If omitted, uses the null hash.
-  /// The hash classes must define <b>argument_type</b>.
+  ///\tparam Desired_Width The desired number of hash results that can be
+  /// stored. Rounded up to best fit the underlying
+  /// bitset. \tparam THash1        The first hash generator class. \tparam
+  /// THash2        The second hash generator class. If omitted, uses the null
+  /// hash. \tparam THash3        The third hash generator class.  If omitted,
+  /// uses the null hash. The hash classes must define <b>argument_type</b>.
   ///\ingroup bloom_filter
   //***************************************************************************
-  template <size_t   Desired_Width,
-            typename THash1,
-            typename THash2 = private_bloom_filter::null_hash,
+  template <size_t Desired_Width, typename THash1, typename THash2 = private_bloom_filter::null_hash,
             typename THash3 = private_bloom_filter::null_hash>
   class bloom_filter
   {
   private:
 
     typedef typename etl::parameter_type<typename THash1::argument_type>::type parameter_t;
-    typedef private_bloom_filter::null_hash null_hash;
+    typedef private_bloom_filter::null_hash                                    null_hash;
 
   public:
 
@@ -90,11 +89,11 @@ namespace etl
 
     //***************************************************************************
     /// Clears the bloom filter of all entries.
-	  //***************************************************************************
-	  void clear()
-	  {
-	    flags.reset();
-	  }
+    //***************************************************************************
+    void clear()
+    {
+      flags.reset();
+    }
 
     //***************************************************************************
     /// Adds a key to the filter.
@@ -184,7 +183,6 @@ namespace etl
     /// The Bloom filter flags.
     etl::bitset<WIDTH> flags;
   };
-}
+} // namespace etl
 
 #endif
-

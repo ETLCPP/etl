@@ -36,9 +36,10 @@ SOFTWARE.
 #include <stddef.h>
 
 ///\defgroup log log
-/// log<N, Base> : Calculates logs to any base, rounded down to the nearest integer.<br>
-/// log2<N>      : Calculates logs to base 2, rounded down to the nearest integer.<br>
-/// log10<N>     : Calculates logs to base 10, rounded down to the nearest integer.<br>
+/// log<N, Base> : Calculates logs to any base, rounded down to the nearest
+/// integer.<br> log2<N>      : Calculates logs to base 2, rounded down to the
+/// nearest integer.<br> log10<N>     : Calculates logs to base 10, rounded down
+/// to the nearest integer.<br>
 ///\ingroup maths
 
 namespace etl
@@ -125,6 +126,6 @@ namespace etl
   template <size_t Value>
   inline constexpr size_t log10_v = log10<Value>::value;
 #endif
-}
+} // namespace etl
 
 #endif

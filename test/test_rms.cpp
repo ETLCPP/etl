@@ -34,18 +34,12 @@ SOFTWARE.
 
 namespace
 {
-  std::array<int8_t, 18> input_c
-  {
-    // Sawtooth wave
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -8, -7, -6, -5, -4, -3, -2, -1
-  };
+  std::array<int8_t, 18> input_c{// Sawtooth wave
+                                 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, -8, -7, -6, -5, -4, -3, -2, -1};
 
   //*********************************
-  std::array<double, 18> input_f
-  {
-    // Sawtooth wave
-    0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0
-  };
+  std::array<double, 18> input_f{// Sawtooth wave
+                                 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0, -2.0, -1.0};
 
   SUITE(test_rms)
   {
@@ -53,7 +47,7 @@ namespace
     TEST(test_char_rms)
     {
       etl::rms<int8_t, int> rms(input_c.begin(), input_c.end());
-      double result = rms.get_rms();
+      double                result = rms.get_rms();
 
       CHECK_CLOSE(5.21, result, 0.05);
     }
@@ -62,9 +56,9 @@ namespace
     TEST(test_double_rms)
     {
       etl::rms<double> rms(input_f.begin(), input_f.end());
-      double result = rms.get_rms();
+      double           result = rms.get_rms();
 
       CHECK_CLOSE(5.21, result, 0.05);
     }
   }
-}
+} // namespace

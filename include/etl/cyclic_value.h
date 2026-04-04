@@ -36,11 +36,10 @@ SOFTWARE.
 /// \ingroup utilities
 
 #include "platform.h"
-#include "static_assert.h"
+#include "algorithm.h"
 #include "exception.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "algorithm.h"
 
 #include <stddef.h>
 
@@ -95,7 +94,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    cyclic_value& operator =(const cyclic_value<T, First, Last>& other)
+    cyclic_value& operator=(const cyclic_value<T, First, Last>& other)
     {
       value = other.value;
 
@@ -138,14 +137,14 @@ namespace etl
       {
         for (int i = 0; i < n; ++i)
         {
-          operator ++();
+          operator++();
         }
       }
       else
       {
         for (int i = 0; i < -n; ++i)
         {
-          operator --();
+          operator--();
         }
       }
     }
@@ -171,7 +170,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    cyclic_value& operator ++()
+    cyclic_value& operator++()
     {
       if (value >= Last) ETL_UNLIKELY
       {
@@ -188,7 +187,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    cyclic_value operator ++(int)
+    cyclic_value operator++(int)
     {
       cyclic_value temp(*this);
 
@@ -200,7 +199,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    cyclic_value& operator --()
+    cyclic_value& operator--()
     {
       if (value <= First) ETL_UNLIKELY
       {
@@ -217,7 +216,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    cyclic_value operator --(int)
+    cyclic_value operator--(int)
     {
       cyclic_value temp(*this);
 
@@ -229,7 +228,7 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    cyclic_value& operator =(T t)
+    cyclic_value& operator=(T t)
     {
       set(t);
       return *this;
@@ -239,7 +238,7 @@ namespace etl
     /// = operator.
     //*************************************************************************
     template <const T FIRST2, const T LAST2>
-    cyclic_value& operator =(const cyclic_value<T, FIRST2, LAST2>& other)
+    cyclic_value& operator=(const cyclic_value<T, FIRST2, LAST2>& other)
     {
       set(other.get());
       return *this;
@@ -290,7 +289,7 @@ namespace etl
     //*************************************************************************
     /// Operator ==.
     //*************************************************************************
-    friend bool operator == (const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
+    friend bool operator==(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
     {
       return lhs.value == rhs.value;
     }
@@ -298,7 +297,7 @@ namespace etl
     //*************************************************************************
     /// Operator !=.
     //*************************************************************************
-    friend bool operator != (const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
+    friend bool operator!=(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
     {
       return !(lhs == rhs);
     }
@@ -418,14 +417,14 @@ namespace etl
       {
         for (int i = 0; i < n; ++i)
         {
-          operator ++();
+          operator++();
         }
       }
       else
       {
         for (int i = 0; i < -n; ++i)
         {
-          operator --();
+          operator--();
         }
       }
     }
@@ -451,7 +450,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    cyclic_value& operator ++()
+    cyclic_value& operator++()
     {
       if (value >= last_value)
       {
@@ -468,7 +467,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    cyclic_value operator ++(int)
+    cyclic_value operator++(int)
     {
       cyclic_value temp(*this);
 
@@ -480,7 +479,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    cyclic_value& operator --()
+    cyclic_value& operator--()
     {
       if (value <= first_value)
       {
@@ -497,7 +496,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    cyclic_value operator --(int)
+    cyclic_value operator--(int)
     {
       cyclic_value temp(*this);
 
@@ -509,7 +508,7 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    cyclic_value& operator =(T t)
+    cyclic_value& operator=(T t)
     {
       set(t);
       return *this;
@@ -518,7 +517,7 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    cyclic_value& operator =(const cyclic_value& other)
+    cyclic_value& operator=(const cyclic_value& other)
     {
       value       = other.value;
       first_value = other.first_value;
@@ -573,17 +572,15 @@ namespace etl
     //*************************************************************************
     /// Operator ==.
     //*************************************************************************
-    friend bool operator == (const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
+    friend bool operator==(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
     {
-      return (lhs.value       == rhs.value) &&
-             (lhs.first_value == rhs.first_value) &&
-             (lhs.last_value  == rhs.last_value);
+      return (lhs.value == rhs.value) && (lhs.first_value == rhs.first_value) && (lhs.last_value == rhs.last_value);
     }
 
     //*************************************************************************
     /// Operator !=.
     //*************************************************************************
-    friend bool operator != (const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
+    friend bool operator!=(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
     {
       return !(lhs == rhs);
     }
@@ -594,6 +591,6 @@ namespace etl
     T first_value; ///< The first value in the range.
     T last_value;  ///< The last value in the range.
   };
-}
+} // namespace etl
 
 #endif

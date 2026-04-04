@@ -31,21 +31,19 @@ SOFTWARE.
 #include <string>
 
 #include "etl/string.h"
-#include "etl/wstring.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
+#include "etl/wstring.h"
 
 namespace
 {
   SUITE(test_make_string)
   {
-
     //*************************************************************************
     template <typename T1, typename T2>
     bool Equal(const T1& compare_text, const T2& text)
     {
-      return (compare_text.size() == text.size()) &&
-             std::equal(text.begin(), text.end(), compare_text.begin());
+      return (compare_text.size() == text.size()) && std::equal(text.begin(), text.end(), compare_text.begin());
     }
 
     //*************************************************************************
@@ -99,7 +97,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_make_string_with_capacity)
     {
       constexpr size_t CAPACITY = 20UL;
-      size_t length = strlen("Hello World");
+      size_t           length   = strlen("Hello World");
 
       auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World");
       auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World");
@@ -143,8 +141,8 @@ namespace
       constexpr size_t CAPACITY = 10UL;
 
 #if ETL_HAS_ERROR_ON_STRING_TRUNCATION
-      CHECK_THROW(auto ctext   = etl::make_string_with_capacity<CAPACITY>("Hello World"),  etl::string_truncation);
-      CHECK_THROW(auto wtext   = etl::make_string_with_capacity<CAPACITY>(L"Hello World"), etl::string_truncation);
+      CHECK_THROW(auto ctext = etl::make_string_with_capacity<CAPACITY>("Hello World"), etl::string_truncation);
+      CHECK_THROW(auto wtext = etl::make_string_with_capacity<CAPACITY>(L"Hello World"), etl::string_truncation);
       CHECK_THROW(auto u16text = etl::make_string_with_capacity<CAPACITY>(u"Hello World"), etl::string_truncation);
       CHECK_THROW(auto u32text = etl::make_string_with_capacity<CAPACITY>(U"Hello World"), etl::string_truncation);
 #else
@@ -157,27 +155,27 @@ namespace
 
       CHECK_EQUAL(CAPACITY, ctext.max_size());
       CHECK_EQUAL(length - 1, ctext.size());
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
+  #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(ctext.is_truncated());
-#endif
+  #endif
 
       CHECK_EQUAL(CAPACITY, wtext.max_size());
       CHECK_EQUAL(length - 1, wtext.size());
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
+  #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(wtext.is_truncated());
-#endif
+  #endif
 
       CHECK_EQUAL(CAPACITY, u16text.max_size());
       CHECK_EQUAL(length - 1, u16text.size());
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
+  #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(u16text.is_truncated());
-#endif
+  #endif
 
       CHECK_EQUAL(CAPACITY, u32text.max_size());
       CHECK_EQUAL(length - 1, u32text.size());
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
+  #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(u32text.is_truncated());
-#endif
+  #endif
 
       CHECK(Equal(std::string("Hello Worl"), ctext));
       CHECK(Equal(std::wstring(L"Hello Worl"), ctext));
@@ -186,4 +184,4 @@ namespace
 #endif
     }
   }
-}
+} // namespace

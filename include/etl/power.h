@@ -50,7 +50,7 @@ namespace etl
 #else
     typedef uint64_t type;
 #endif
-  }
+  } // namespace private_power
 
   //***************************************************************************
   ///\ingroup power
@@ -216,6 +216,6 @@ namespace etl
   template <size_t Value>
   inline constexpr size_t is_power_of_2_v = is_power_of_2<Value>::value;
 #endif
-}
+} // namespace etl
 
 #endif

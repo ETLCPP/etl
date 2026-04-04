@@ -63,9 +63,7 @@ namespace
   {
   public:
 
-    ETL_CONSTEXPR14 Object()
-    {
-    }
+    ETL_CONSTEXPR14 Object() {}
 
     void member(int id)
     {
@@ -96,19 +94,19 @@ namespace
     }
   };
 
-#if defined(ETL_COMPILER_GCC)
-  #if (ETL_COMPILER_FULL_VERSION <= 1100)
+  #if defined(ETL_COMPILER_GCC)
+    #if (ETL_COMPILER_FULL_VERSION <= 1100)
       #define ETL_GCC_11 1
     #else
       #define ETL_GCC_11 0
+    #endif
+  #else
+    #define ETL_GCC_11 0
   #endif
-#else
-  #define ETL_GCC_11 0
-#endif
 
-#define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE (ETL_GCC_11 && ETL_USING_CPP14)
+  #define ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE (ETL_GCC_11 && ETL_USING_CPP14)
 
-#if ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE
+  #if ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE
   //*************************************************************************
   ETL_CONSTEXPR14 Observable CreateObservable()
   {
@@ -119,10 +117,10 @@ namespace
 
     observable.remove_observer(global_callback);
 
-    return observable; 
+    return observable;
   }
-#endif
-}
+  #endif
+} // namespace
 
 namespace
 {
@@ -140,7 +138,7 @@ namespace
       CHECK_TRUE(global_called);
       CHECK_TRUE(member_called);
       CHECK_EQUAL(1, global_value);
-      CHECK_EQUAL(1, member_value); 
+      CHECK_EQUAL(1, member_value);
 
       //*********************************
       global_called = false;
@@ -151,10 +149,10 @@ namespace
       CHECK_TRUE(global_called);
       CHECK_TRUE(member_called);
       CHECK_EQUAL(2, global_value);
-      CHECK_EQUAL(2, member_value); 
+      CHECK_EQUAL(2, member_value);
     }
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_delegate_observable_using_template_deduction_guide_cpp17)
     {
@@ -167,7 +165,7 @@ namespace
       CHECK_TRUE(global_called);
       CHECK_TRUE(member_called);
       CHECK_EQUAL(1, global_value);
-      CHECK_EQUAL(1, member_value); 
+      CHECK_EQUAL(1, member_value);
 
       //*********************************
       global_called = false;
@@ -178,11 +176,11 @@ namespace
       CHECK_TRUE(global_called);
       CHECK_TRUE(member_called);
       CHECK_EQUAL(2, global_value);
-      CHECK_EQUAL(2, member_value); 
+      CHECK_EQUAL(2, member_value);
     }
-#endif
+  #endif
 
-#if ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE
+  #if ETL_ENABLE_DELEGATE_OBSERVABLE_CREATE_OBSERVABLE
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constexpr_delegate_observable_from_function)
     {
@@ -195,7 +193,7 @@ namespace
       CHECK_FALSE(global_called);
       CHECK_TRUE(member_called);
       CHECK_EQUAL(0, global_value);
-      CHECK_EQUAL(1, member_value); 
+      CHECK_EQUAL(1, member_value);
 
       //*********************************
       global_called = false;
@@ -206,9 +204,9 @@ namespace
       CHECK_FALSE(global_called);
       CHECK_TRUE(member_called);
       CHECK_EQUAL(0, global_value);
-      CHECK_EQUAL(2, member_value); 
+      CHECK_EQUAL(2, member_value);
     }
-#endif
+  #endif
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_delegate_observable_add_and_remove)
@@ -234,7 +232,7 @@ namespace
       CHECK_FALSE(member_called);
       CHECK_EQUAL(2, global_value);
       CHECK_EQUAL(0, member_value);
-      
+
       //*********************************
       global_called = false;
       member_called = false;
@@ -275,6 +273,6 @@ namespace
       CHECK_EQUAL(4, member_value);
     }
   }
-}
+} // namespace
 
 #endif

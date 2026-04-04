@@ -31,14 +31,14 @@ SOFTWARE.
 #include "etl/algorithm.h"
 #include "etl/histogram.h"
 
-#include <string>
-#include <array>
 #include <algorithm>
+#include <array>
 #include <map>
+#include <string>
 
 namespace
 {
-  constexpr size_t Size = 10UL;
+  constexpr size_t Size  = 10UL;
   constexpr int    Start = -4;
 
   using IntRuntimeOffsetHistogram = etl::histogram<int32_t, int8_t, Size>;
@@ -47,84 +47,40 @@ namespace
   using StringHistogram           = etl::sparse_histogram<std::string, int8_t, Size>;
 
   //***********************************
-  std::array<int8_t, 55> input1 =
-  {
-    5, 5, 5, 5, 5, 5,
-    4, 4, 4, 4, 4,
-    6, 6, 6, 6, 6, 6, 6,
-    3, 3, 3, 3,
-    7, 7, 7, 7, 7, 7, 7, 7,
-    2, 2, 2,
-    8, 8, 8, 8, 8, 8, 8, 8, 8,
-    1, 1,
-    9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
-    0
+  std::array<int8_t, 55> input1 = {5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 6, 6, 6, 6, 6, 6, 6, 3, 3, 3, 3, 7, 7, 7, 7, 7, 7,
+                                   7, 7, 2, 2, 2, 8, 8, 8, 8, 8, 8, 8, 8, 8, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 0};
+
+  //***********************************
+  std::array<int8_t, 55> input2 = {1, 1, 1,  1,  1,  1, 0, 0, 0, 0, 0, 2, 2, 2, 2,  2,  2, 2, -1, -1, -1, -1, 3, 3, 3, 3, 3, 3,
+                                   3, 3, -2, -2, -2, 4, 4, 4, 4, 4, 4, 4, 4, 4, -3, -3, 5, 5, 5,  5,  5,  5,  5, 5, 5, 5, -4};
+
+  //***********************************
+  std::array<std::string, 55> input3 = {"5", "5", "5", "5", "5", "5", "4", "4", "4", "4", "4", "6", "6", "6", "6", "6", "6", "6", "3",
+                                        "3", "3", "3", "7", "7", "7", "7", "7", "7", "7", "7", "2", "2", "2", "8", "8", "8", "8", "8",
+                                        "8", "8", "8", "8", "1", "1", "9", "9", "9", "9", "9", "9", "9", "9", "9", "9", "0"};
+
+  //***********************************
+  std::array<int8_t, Size> output1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+  //***********************************
+  std::array<ETL_OR_STD::pair<const std::string, int8_t>, Size> output2 = {
+    ETL_OR_STD::pair<const std::string, int8_t>("0", 1), ETL_OR_STD::pair<const std::string, int8_t>("1", 2),
+    ETL_OR_STD::pair<const std::string, int8_t>("2", 3), ETL_OR_STD::pair<const std::string, int8_t>("3", 4),
+    ETL_OR_STD::pair<const std::string, int8_t>("4", 5), ETL_OR_STD::pair<const std::string, int8_t>("5", 6),
+    ETL_OR_STD::pair<const std::string, int8_t>("6", 7), ETL_OR_STD::pair<const std::string, int8_t>("7", 8),
+    ETL_OR_STD::pair<const std::string, int8_t>("8", 9), ETL_OR_STD::pair<const std::string, int8_t>("9", 10),
   };
 
   //***********************************
-  std::array<int8_t, 55> input2 =
-  {
-    1, 1, 1, 1, 1, 1,
-    0, 0, 0, 0, 0,
-    2, 2, 2, 2, 2, 2, 2,
-    -1, -1, -1, -1,
-    3, 3, 3, 3, 3, 3, 3, 3,
-    -2, -2, -2,
-    4, 4, 4, 4, 4, 4, 4, 4, 4,
-    -3, -3,
-    5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-    -4
-  };
+  std::array<int8_t, Size> zero1 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
   //***********************************
-  std::array<std::string, 55> input3 =
-  {
-    "5", "5", "5", "5", "5", "5",
-    "4", "4", "4", "4", "4",
-    "6", "6", "6", "6", "6", "6", "6",
-    "3", "3", "3", "3",
-    "7", "7", "7", "7", "7", "7", "7", "7",
-    "2", "2", "2",
-    "8", "8", "8", "8", "8", "8", "8", "8", "8",
-    "1", "1",
-    "9", "9", "9", "9", "9", "9", "9", "9", "9", "9",
-    "0"
-  };
-
-  //***********************************
-  std::array<int8_t, Size> output1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-
-  //***********************************
-  std::array<ETL_OR_STD::pair<const std::string, int8_t>, Size> output2 =
-  {
-    ETL_OR_STD::pair<const std::string, int8_t>("0",  1),
-    ETL_OR_STD::pair<const std::string, int8_t>("1",  2),
-    ETL_OR_STD::pair<const std::string, int8_t>("2",  3),
-    ETL_OR_STD::pair<const std::string, int8_t>("3",  4),
-    ETL_OR_STD::pair<const std::string, int8_t>("4",  5),
-    ETL_OR_STD::pair<const std::string, int8_t>("5",  6),
-    ETL_OR_STD::pair<const std::string, int8_t>("6",  7),
-    ETL_OR_STD::pair<const std::string, int8_t>("7",  8),
-    ETL_OR_STD::pair<const std::string, int8_t>("8",  9),
-    ETL_OR_STD::pair<const std::string, int8_t>("9", 10),
-  };
-
-  //***********************************
-  std::array<int8_t, Size> zero1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-  //***********************************
-  std::array<ETL_OR_STD::pair<const std::string, int8_t>, Size> zero2 =
-  {
-    ETL_OR_STD::pair<const std::string, int8_t>("0", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("1", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("2", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("3", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("4", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("5", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("6", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("7", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("8", 0),
-    ETL_OR_STD::pair<const std::string, int8_t>("9", 0),
+  std::array<ETL_OR_STD::pair<const std::string, int8_t>, Size> zero2 = {
+    ETL_OR_STD::pair<const std::string, int8_t>("0", 0), ETL_OR_STD::pair<const std::string, int8_t>("1", 0),
+    ETL_OR_STD::pair<const std::string, int8_t>("2", 0), ETL_OR_STD::pair<const std::string, int8_t>("3", 0),
+    ETL_OR_STD::pair<const std::string, int8_t>("4", 0), ETL_OR_STD::pair<const std::string, int8_t>("5", 0),
+    ETL_OR_STD::pair<const std::string, int8_t>("6", 0), ETL_OR_STD::pair<const std::string, int8_t>("7", 0),
+    ETL_OR_STD::pair<const std::string, int8_t>("8", 0), ETL_OR_STD::pair<const std::string, int8_t>("9", 0),
   };
 
   SUITE(test_histogram)
@@ -134,7 +90,7 @@ namespace
     {
       IntOffset0Histogram histogram;
 
-      CHECK_EQUAL(0U,   histogram.count());
+      CHECK_EQUAL(0U, histogram.count());
       CHECK_EQUAL(Size, histogram.size());
 
       bool isEqual = std::equal(zero1.begin(), zero1.end(), histogram.begin());
@@ -307,7 +263,7 @@ namespace
       StringHistogram histogram(input3.begin(), input3.end());
 
       CHECK_EQUAL(Size, histogram.size());
-      CHECK_EQUAL(55U,  histogram.count());
+      CHECK_EQUAL(55U, histogram.count());
 
       bool isEqual;
 
@@ -337,7 +293,7 @@ namespace
       CHECK(histogram["5"] == output2[5]);
 
       StringHistogram::value_type unused = histogram[std::string("99")];
-      CHECK(unused.first  == std::string());
+      CHECK(unused.first == std::string());
       CHECK(unused.second == 0U);
     }
 
@@ -377,4 +333,4 @@ namespace
       CHECK(isEqual);
     }
   }
-}
+} // namespace

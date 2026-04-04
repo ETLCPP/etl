@@ -28,15 +28,15 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/log.h"
-#include "etl/power.h"
-#include "etl/fibonacci.h"
-#include "etl/factorial.h"
-#include "etl/sqrt.h"
-#include "etl/permutations.h"
 #include "etl/combinations.h"
+#include "etl/factorial.h"
+#include "etl/fibonacci.h"
 #include "etl/gcd.h"
 #include "etl/lcm.h"
+#include "etl/log.h"
+#include "etl/permutations.h"
+#include "etl/power.h"
+#include "etl/sqrt.h"
 
 namespace
 {
@@ -345,51 +345,51 @@ namespace
     //*************************************************************************
     TEST(test_fibonacci)
     {
-      CHECK_EQUAL(0U,          (size_t)etl::fibonacci<0>::value);
-      CHECK_EQUAL(1U,          (size_t)etl::fibonacci<1>::value);
-      CHECK_EQUAL(1U,          (size_t)etl::fibonacci<2>::value);
-      CHECK_EQUAL(2U,          (size_t)etl::fibonacci<3>::value);
-      CHECK_EQUAL(3U,          (size_t)etl::fibonacci<4>::value);
-      CHECK_EQUAL(5U,          (size_t)etl::fibonacci<5>::value);
-      CHECK_EQUAL(8U,          (size_t)etl::fibonacci<6>::value);
-      CHECK_EQUAL(13U,         (size_t)etl::fibonacci<7>::value);
-      CHECK_EQUAL(21U,         (size_t)etl::fibonacci<8>::value);
-      CHECK_EQUAL(34U,         (size_t)etl::fibonacci<9>::value);
-      CHECK_EQUAL(55U,         (size_t)etl::fibonacci<10>::value);
-      CHECK_EQUAL(89U,         (size_t)etl::fibonacci<11>::value);
-      CHECK_EQUAL(144U,        (size_t)etl::fibonacci<12>::value);
-      CHECK_EQUAL(233U,        (size_t)etl::fibonacci<13>::value);
-      CHECK_EQUAL(377U,        (size_t)etl::fibonacci<14>::value);
-      CHECK_EQUAL(610U,        (size_t)etl::fibonacci<15>::value);
-      CHECK_EQUAL(987U,        (size_t)etl::fibonacci<16>::value);
-      CHECK_EQUAL(1597U,       (size_t)etl::fibonacci<17>::value);
-      CHECK_EQUAL(2584U,       (size_t)etl::fibonacci<18>::value);
-      CHECK_EQUAL(4181U,       (size_t)etl::fibonacci<19>::value);
-      CHECK_EQUAL(6765U,       (size_t)etl::fibonacci<20>::value);
-      CHECK_EQUAL(10946U,      (size_t)etl::fibonacci<21>::value);
-      CHECK_EQUAL(17711U,      (size_t)etl::fibonacci<22>::value);
-      CHECK_EQUAL(28657U,      (size_t)etl::fibonacci<23>::value);
-      CHECK_EQUAL(46368U,      (size_t)etl::fibonacci<24>::value);
-      CHECK_EQUAL(75025U,      (size_t)etl::fibonacci<25>::value);
-      CHECK_EQUAL(121393U,     (size_t)etl::fibonacci<26>::value);
-      CHECK_EQUAL(196418U,     (size_t)etl::fibonacci<27>::value);
-      CHECK_EQUAL(317811U,     (size_t)etl::fibonacci<28>::value);
-      CHECK_EQUAL(514229U,     (size_t)etl::fibonacci<29>::value);
-      CHECK_EQUAL(832040U,     (size_t)etl::fibonacci<30>::value);
-      CHECK_EQUAL(1346269U,    (size_t)etl::fibonacci<31>::value);
-      CHECK_EQUAL(2178309U,    (size_t)etl::fibonacci<32>::value);
-      CHECK_EQUAL(3524578U,    (size_t)etl::fibonacci<33>::value);
-      CHECK_EQUAL(5702887U,    (size_t)etl::fibonacci<34>::value);
-      CHECK_EQUAL(9227465U,    (size_t)etl::fibonacci<35>::value);
-      CHECK_EQUAL(14930352U,   (size_t)etl::fibonacci<36>::value);
-      CHECK_EQUAL(24157817U,   (size_t)etl::fibonacci<37>::value);
-      CHECK_EQUAL(39088169U,   (size_t)etl::fibonacci<38>::value);
-      CHECK_EQUAL(63245986U,   (size_t)etl::fibonacci<39>::value);
-      CHECK_EQUAL(102334155U,  (size_t)etl::fibonacci<40>::value);
-      CHECK_EQUAL(165580141U,  (size_t)etl::fibonacci<41>::value);
-      CHECK_EQUAL(267914296U,  (size_t)etl::fibonacci<42>::value);
-      CHECK_EQUAL(433494437U,  (size_t)etl::fibonacci<43>::value);
-      CHECK_EQUAL(701408733U,  (size_t)etl::fibonacci<44>::value);
+      CHECK_EQUAL(0U, (size_t)etl::fibonacci<0>::value);
+      CHECK_EQUAL(1U, (size_t)etl::fibonacci<1>::value);
+      CHECK_EQUAL(1U, (size_t)etl::fibonacci<2>::value);
+      CHECK_EQUAL(2U, (size_t)etl::fibonacci<3>::value);
+      CHECK_EQUAL(3U, (size_t)etl::fibonacci<4>::value);
+      CHECK_EQUAL(5U, (size_t)etl::fibonacci<5>::value);
+      CHECK_EQUAL(8U, (size_t)etl::fibonacci<6>::value);
+      CHECK_EQUAL(13U, (size_t)etl::fibonacci<7>::value);
+      CHECK_EQUAL(21U, (size_t)etl::fibonacci<8>::value);
+      CHECK_EQUAL(34U, (size_t)etl::fibonacci<9>::value);
+      CHECK_EQUAL(55U, (size_t)etl::fibonacci<10>::value);
+      CHECK_EQUAL(89U, (size_t)etl::fibonacci<11>::value);
+      CHECK_EQUAL(144U, (size_t)etl::fibonacci<12>::value);
+      CHECK_EQUAL(233U, (size_t)etl::fibonacci<13>::value);
+      CHECK_EQUAL(377U, (size_t)etl::fibonacci<14>::value);
+      CHECK_EQUAL(610U, (size_t)etl::fibonacci<15>::value);
+      CHECK_EQUAL(987U, (size_t)etl::fibonacci<16>::value);
+      CHECK_EQUAL(1597U, (size_t)etl::fibonacci<17>::value);
+      CHECK_EQUAL(2584U, (size_t)etl::fibonacci<18>::value);
+      CHECK_EQUAL(4181U, (size_t)etl::fibonacci<19>::value);
+      CHECK_EQUAL(6765U, (size_t)etl::fibonacci<20>::value);
+      CHECK_EQUAL(10946U, (size_t)etl::fibonacci<21>::value);
+      CHECK_EQUAL(17711U, (size_t)etl::fibonacci<22>::value);
+      CHECK_EQUAL(28657U, (size_t)etl::fibonacci<23>::value);
+      CHECK_EQUAL(46368U, (size_t)etl::fibonacci<24>::value);
+      CHECK_EQUAL(75025U, (size_t)etl::fibonacci<25>::value);
+      CHECK_EQUAL(121393U, (size_t)etl::fibonacci<26>::value);
+      CHECK_EQUAL(196418U, (size_t)etl::fibonacci<27>::value);
+      CHECK_EQUAL(317811U, (size_t)etl::fibonacci<28>::value);
+      CHECK_EQUAL(514229U, (size_t)etl::fibonacci<29>::value);
+      CHECK_EQUAL(832040U, (size_t)etl::fibonacci<30>::value);
+      CHECK_EQUAL(1346269U, (size_t)etl::fibonacci<31>::value);
+      CHECK_EQUAL(2178309U, (size_t)etl::fibonacci<32>::value);
+      CHECK_EQUAL(3524578U, (size_t)etl::fibonacci<33>::value);
+      CHECK_EQUAL(5702887U, (size_t)etl::fibonacci<34>::value);
+      CHECK_EQUAL(9227465U, (size_t)etl::fibonacci<35>::value);
+      CHECK_EQUAL(14930352U, (size_t)etl::fibonacci<36>::value);
+      CHECK_EQUAL(24157817U, (size_t)etl::fibonacci<37>::value);
+      CHECK_EQUAL(39088169U, (size_t)etl::fibonacci<38>::value);
+      CHECK_EQUAL(63245986U, (size_t)etl::fibonacci<39>::value);
+      CHECK_EQUAL(102334155U, (size_t)etl::fibonacci<40>::value);
+      CHECK_EQUAL(165580141U, (size_t)etl::fibonacci<41>::value);
+      CHECK_EQUAL(267914296U, (size_t)etl::fibonacci<42>::value);
+      CHECK_EQUAL(433494437U, (size_t)etl::fibonacci<43>::value);
+      CHECK_EQUAL(701408733U, (size_t)etl::fibonacci<44>::value);
       CHECK_EQUAL(1134903170U, (size_t)etl::fibonacci<45>::value);
       CHECK_EQUAL(1836311903U, (size_t)etl::fibonacci<46>::value);
       CHECK_EQUAL(2971215073U, (size_t)etl::fibonacci<47>::value);
@@ -397,33 +397,33 @@ namespace
 
     TEST(test_factorial)
     {
-      CHECK_EQUAL(1U,         (size_t)etl::factorial<0>::value);
-      CHECK_EQUAL(1U,         (size_t)etl::factorial<1>::value);
-      CHECK_EQUAL(2U,         (size_t)etl::factorial<2>::value);
-      CHECK_EQUAL(6U,         (size_t)etl::factorial<3>::value);
-      CHECK_EQUAL(24U,        (size_t)etl::factorial<4>::value);
-      CHECK_EQUAL(120U,       (size_t)etl::factorial<5>::value);
-      CHECK_EQUAL(720U,       (size_t)etl::factorial<6>::value);
-      CHECK_EQUAL(5040U,      (size_t)etl::factorial<7>::value);
-      CHECK_EQUAL(40320U,     (size_t)etl::factorial<8>::value);
-      CHECK_EQUAL(362880U,    (size_t)etl::factorial<9>::value);
-      CHECK_EQUAL(3628800U,   (size_t)etl::factorial<10>::value);
-      CHECK_EQUAL(39916800U,  (size_t)etl::factorial<11>::value);
+      CHECK_EQUAL(1U, (size_t)etl::factorial<0>::value);
+      CHECK_EQUAL(1U, (size_t)etl::factorial<1>::value);
+      CHECK_EQUAL(2U, (size_t)etl::factorial<2>::value);
+      CHECK_EQUAL(6U, (size_t)etl::factorial<3>::value);
+      CHECK_EQUAL(24U, (size_t)etl::factorial<4>::value);
+      CHECK_EQUAL(120U, (size_t)etl::factorial<5>::value);
+      CHECK_EQUAL(720U, (size_t)etl::factorial<6>::value);
+      CHECK_EQUAL(5040U, (size_t)etl::factorial<7>::value);
+      CHECK_EQUAL(40320U, (size_t)etl::factorial<8>::value);
+      CHECK_EQUAL(362880U, (size_t)etl::factorial<9>::value);
+      CHECK_EQUAL(3628800U, (size_t)etl::factorial<10>::value);
+      CHECK_EQUAL(39916800U, (size_t)etl::factorial<11>::value);
       CHECK_EQUAL(479001600U, (size_t)etl::factorial<12>::value);
     }
 
     //*************************************************************************
     TEST(test_sqrt)
     {
-      CHECK_EQUAL(sqrt(1),  etl::sqrt<1>::value);
-      CHECK_EQUAL(sqrt(2),  etl::sqrt<2>::value);
-      CHECK_EQUAL(sqrt(3),  etl::sqrt<3>::value);
-      CHECK_EQUAL(sqrt(4),  etl::sqrt<4>::value);
-      CHECK_EQUAL(sqrt(5),  etl::sqrt<5>::value);
-      CHECK_EQUAL(sqrt(6),  etl::sqrt<6>::value);
-      CHECK_EQUAL(sqrt(7),  etl::sqrt<7>::value);
-      CHECK_EQUAL(sqrt(8),  etl::sqrt<8>::value);
-      CHECK_EQUAL(sqrt(9),  etl::sqrt<9>::value);
+      CHECK_EQUAL(sqrt(1), etl::sqrt<1>::value);
+      CHECK_EQUAL(sqrt(2), etl::sqrt<2>::value);
+      CHECK_EQUAL(sqrt(3), etl::sqrt<3>::value);
+      CHECK_EQUAL(sqrt(4), etl::sqrt<4>::value);
+      CHECK_EQUAL(sqrt(5), etl::sqrt<5>::value);
+      CHECK_EQUAL(sqrt(6), etl::sqrt<6>::value);
+      CHECK_EQUAL(sqrt(7), etl::sqrt<7>::value);
+      CHECK_EQUAL(sqrt(8), etl::sqrt<8>::value);
+      CHECK_EQUAL(sqrt(9), etl::sqrt<9>::value);
       CHECK_EQUAL(sqrt(10), etl::sqrt<10>::value);
     }
 
@@ -432,15 +432,14 @@ namespace
     {
       size_t actual;
 
-
-      CHECK_EQUAL((permutations( 6,  2)), (actual = etl::permutations< 6,  2>::value));
-      CHECK_EQUAL((permutations( 7,  3)), (actual = etl::permutations< 7,  3>::value));
-      CHECK_EQUAL((permutations( 8,  4)), (actual = etl::permutations< 8,  4>::value));
-      CHECK_EQUAL((permutations( 9,  5)), (actual = etl::permutations< 9,  5>::value));
-      CHECK_EQUAL((permutations(10,  6)), (actual = etl::permutations<10,  6>::value));
-      CHECK_EQUAL((permutations(11,  7)), (actual = etl::permutations<11,  7>::value));
-      CHECK_EQUAL((permutations(12,  8)), (actual = etl::permutations<12,  8>::value));
-      CHECK_EQUAL((permutations(13,  9)), (actual = etl::permutations<13,  9>::value));
+      CHECK_EQUAL((permutations(6, 2)), (actual = etl::permutations< 6, 2>::value));
+      CHECK_EQUAL((permutations(7, 3)), (actual = etl::permutations< 7, 3>::value));
+      CHECK_EQUAL((permutations(8, 4)), (actual = etl::permutations< 8, 4>::value));
+      CHECK_EQUAL((permutations(9, 5)), (actual = etl::permutations< 9, 5>::value));
+      CHECK_EQUAL((permutations(10, 6)), (actual = etl::permutations<10, 6>::value));
+      CHECK_EQUAL((permutations(11, 7)), (actual = etl::permutations<11, 7>::value));
+      CHECK_EQUAL((permutations(12, 8)), (actual = etl::permutations<12, 8>::value));
+      CHECK_EQUAL((permutations(13, 9)), (actual = etl::permutations<13, 9>::value));
       CHECK_EQUAL((permutations(14, 10)), (actual = etl::permutations<14, 10>::value));
     }
 
@@ -449,34 +448,34 @@ namespace
     {
       size_t actual;
 
-      CHECK_EQUAL((combinations( 6,  2)), (actual = etl::combinations< 6,  2>::value));
-      CHECK_EQUAL((combinations( 7,  3)), (actual = etl::combinations< 7,  3>::value));
-      CHECK_EQUAL((combinations( 8,  4)), (actual = etl::combinations< 8,  4>::value));
-      CHECK_EQUAL((combinations( 9,  5)), (actual = etl::combinations< 9,  5>::value));
-      CHECK_EQUAL((combinations(10,  6)), (actual = etl::combinations<10,  6>::value));
-      CHECK_EQUAL((combinations(11,  7)), (actual = etl::combinations<11,  7>::value));
-      CHECK_EQUAL((combinations(12,  8)), (actual = etl::combinations<12,  8>::value));
-      CHECK_EQUAL((combinations(13,  9)), (actual = etl::combinations<13,  9>::value));
+      CHECK_EQUAL((combinations(6, 2)), (actual = etl::combinations< 6, 2>::value));
+      CHECK_EQUAL((combinations(7, 3)), (actual = etl::combinations< 7, 3>::value));
+      CHECK_EQUAL((combinations(8, 4)), (actual = etl::combinations< 8, 4>::value));
+      CHECK_EQUAL((combinations(9, 5)), (actual = etl::combinations< 9, 5>::value));
+      CHECK_EQUAL((combinations(10, 6)), (actual = etl::combinations<10, 6>::value));
+      CHECK_EQUAL((combinations(11, 7)), (actual = etl::combinations<11, 7>::value));
+      CHECK_EQUAL((combinations(12, 8)), (actual = etl::combinations<12, 8>::value));
+      CHECK_EQUAL((combinations(13, 9)), (actual = etl::combinations<13, 9>::value));
       CHECK_EQUAL((combinations(14, 10)), (actual = etl::combinations<14, 10>::value));
     }
 
     //*************************************************************************
     TEST(test_gcd_for_positive_integers)
     {
-      CHECK_EQUAL(1, etl::gcd( 3, 5,  7));
-      CHECK_EQUAL(2, etl::gcd( 4, 6,  8));
-      CHECK_EQUAL(3, etl::gcd( 9, 6,  3));
-      CHECK_EQUAL(4, etl::gcd( 8, 4, 12));
+      CHECK_EQUAL(1, etl::gcd(3, 5, 7));
+      CHECK_EQUAL(2, etl::gcd(4, 6, 8));
+      CHECK_EQUAL(3, etl::gcd(9, 6, 3));
+      CHECK_EQUAL(4, etl::gcd(8, 4, 12));
       CHECK_EQUAL(5, etl::gcd(10, 5, 15));
     }
 
     //*************************************************************************
     TEST(test_gcd_for_negative_integers)
     {
-      CHECK_EQUAL(1, etl::gcd( -3, -5, -7));
-      CHECK_EQUAL(2, etl::gcd( -4, -6, -8));
-      CHECK_EQUAL(3, etl::gcd( -9, -6, -3));
-      CHECK_EQUAL(4, etl::gcd( -8, -4, -12));
+      CHECK_EQUAL(1, etl::gcd(-3, -5, -7));
+      CHECK_EQUAL(2, etl::gcd(-4, -6, -8));
+      CHECK_EQUAL(3, etl::gcd(-9, -6, -3));
+      CHECK_EQUAL(4, etl::gcd(-8, -4, -12));
       CHECK_EQUAL(5, etl::gcd(-10, -5, -15));
     }
 
@@ -499,23 +498,23 @@ namespace
 #endif
 
     //*************************************************************************
-    TEST(test_lcm_for_positive_integers) 
+    TEST(test_lcm_for_positive_integers)
     {
-      CHECK_EQUAL(12, etl::lcm(3, 4,  6));
+      CHECK_EQUAL(12, etl::lcm(3, 4, 6));
       CHECK_EQUAL(30, etl::lcm(3, 5, 10));
-      CHECK_EQUAL(20, etl::lcm(2, 5,  4));
-      CHECK_EQUAL(0,  etl::lcm(0, 5,  7));
-      CHECK_EQUAL(5,  etl::lcm(5, 5,  5));
+      CHECK_EQUAL(20, etl::lcm(2, 5, 4));
+      CHECK_EQUAL(0, etl::lcm(0, 5, 7));
+      CHECK_EQUAL(5, etl::lcm(5, 5, 5));
     }
 
     //*************************************************************************
     TEST(test_lcm_for_negative_integers)
     {
-      CHECK_EQUAL(12, etl::lcm(-3, -4,  -6));
+      CHECK_EQUAL(12, etl::lcm(-3, -4, -6));
       CHECK_EQUAL(30, etl::lcm(-3, -5, -10));
-      CHECK_EQUAL(20, etl::lcm(-2, -5,  -4));
-      CHECK_EQUAL(0,  etl::lcm(-0, -5,  -7));
-      CHECK_EQUAL(5,  etl::lcm(-5, -5,  -5));
+      CHECK_EQUAL(20, etl::lcm(-2, -5, -4));
+      CHECK_EQUAL(0, etl::lcm(-0, -5, -7));
+      CHECK_EQUAL(5, etl::lcm(-5, -5, -5));
     }
 
 #if ETL_USING_CPP14
@@ -531,13 +530,13 @@ namespace
       CHECK_EQUAL(12, lcm1);
       CHECK_EQUAL(30, lcm2);
       CHECK_EQUAL(20, lcm3);
-      CHECK_EQUAL(0,  lcm4);
-      CHECK_EQUAL(5,  lcm5);
+      CHECK_EQUAL(0, lcm4);
+      CHECK_EQUAL(5, lcm5);
     }
 #endif
 
     //*************************************************************************
-    TEST(test_absolute) 
+    TEST(test_absolute)
     {
       CHECK_EQUAL(int16_t(0), etl::absolute(int16_t(0)));
       CHECK_EQUAL(int16_t(32767), etl::absolute(int16_t(32767)));
@@ -545,46 +544,47 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_absolute_constexpr) 
+    TEST(test_absolute_constexpr)
     {
       constexpr int16_t absolute1 = etl::absolute(int16_t(0));
       constexpr int16_t absolute2 = etl::absolute(int16_t(32767));
       constexpr int16_t absolute3 = etl::absolute(int16_t(-32767));
 
-      CHECK_EQUAL(int16_t(0),     absolute1);
+      CHECK_EQUAL(int16_t(0), absolute1);
       CHECK_EQUAL(int16_t(32767), absolute2);
       CHECK_EQUAL(int16_t(32767), absolute3);
     }
 
     //*************************************************************************
-    TEST(test_absolute_unsigned) 
+    TEST(test_absolute_unsigned)
     {
-      CHECK_EQUAL(uint16_t(0),     etl::absolute_unsigned(int16_t(0)));
+      CHECK_EQUAL(uint16_t(0), etl::absolute_unsigned(int16_t(0)));
       CHECK_EQUAL(uint16_t(32767), etl::absolute_unsigned(int16_t(32767)));
       CHECK_EQUAL(uint16_t(32767), etl::absolute_unsigned(int16_t(-32767)));
       CHECK_EQUAL(uint16_t(32768), etl::absolute_unsigned(int16_t(-32768)));
 
-      CHECK_EQUAL(uint16_t(0),     etl::absolute_unsigned(uint16_t(0)));
+      CHECK_EQUAL(uint16_t(0), etl::absolute_unsigned(uint16_t(0)));
       CHECK_EQUAL(uint16_t(65535), etl::absolute_unsigned(uint16_t(65535)));
     }
 
     //*************************************************************************
-    TEST(test_absolute_unsigned_constexpr) 
+    TEST(test_absolute_unsigned_constexpr)
     {
       constexpr uint16_t absolute1 = etl::absolute(int16_t(0));
       constexpr uint16_t absolute2 = etl::absolute(int16_t(32767));
       constexpr uint16_t absolute3 = etl::absolute(int16_t(-32767));
-      //constexpr uint16_t absolute4 = etl::absolute(int16_t(-32768)); // Compile error
+      // constexpr uint16_t absolute4 = etl::absolute(int16_t(-32768)); //
+      // Compile error
 
-      CHECK_EQUAL(uint16_t(0),     absolute1);
+      CHECK_EQUAL(uint16_t(0), absolute1);
       CHECK_EQUAL(uint16_t(32767), absolute2);
       CHECK_EQUAL(uint16_t(32767), absolute3);
 
       constexpr uint16_t absolute5 = etl::absolute(uint16_t(0));
       constexpr uint16_t absolute6 = etl::absolute(uint16_t(65535));
 
-      CHECK_EQUAL(uint16_t(0),     absolute5);
+      CHECK_EQUAL(uint16_t(0), absolute5);
       CHECK_EQUAL(uint16_t(65535), absolute6);
     }
   }
-}
+} // namespace

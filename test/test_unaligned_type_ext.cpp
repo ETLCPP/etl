@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/unaligned_type.h"
 #include "etl/integral_limits.h"
+#include "etl/unaligned_type.h"
 
 #include "etl/private/diagnostic_useless_cast_push.h"
 
@@ -37,18 +37,18 @@ SOFTWARE.
 
 namespace
 {
-  using storage_c_t    = std::array<unsigned char, sizeof(char)>;
-  using storage_s_t    = std::array<unsigned char, sizeof(short)>;
-  using storage_i_t    = std::array<unsigned char, sizeof(int)>;
-  using storage_l_t    = std::array<unsigned char, sizeof(long)>;
-  using storage_ll_t   = std::array<unsigned char, sizeof(long long)>;
-  using storage_f_t    = std::array<unsigned char, sizeof(float)>;
-  using storage_d_t    = std::array<unsigned char, sizeof(double)>;
-  using storage_ld_t   = std::array<unsigned char, sizeof(long double)>;
-  using storage_i8_t   = std::array<unsigned char, sizeof(int8_t)>;
-  using storage_i16_t  = std::array<unsigned char, sizeof(int16_t)>;
-  using storage_i32_t  = std::array<unsigned char, sizeof(int32_t)>;
-  using storage_i64_t  = std::array<unsigned char, sizeof(int64_t)>;
+  using storage_c_t   = std::array<unsigned char, sizeof(char)>;
+  using storage_s_t   = std::array<unsigned char, sizeof(short)>;
+  using storage_i_t   = std::array<unsigned char, sizeof(int)>;
+  using storage_l_t   = std::array<unsigned char, sizeof(long)>;
+  using storage_ll_t  = std::array<unsigned char, sizeof(long long)>;
+  using storage_f_t   = std::array<unsigned char, sizeof(float)>;
+  using storage_d_t   = std::array<unsigned char, sizeof(double)>;
+  using storage_ld_t  = std::array<unsigned char, sizeof(long double)>;
+  using storage_i8_t  = std::array<unsigned char, sizeof(int8_t)>;
+  using storage_i16_t = std::array<unsigned char, sizeof(int16_t)>;
+  using storage_i32_t = std::array<unsigned char, sizeof(int32_t)>;
+  using storage_i64_t = std::array<unsigned char, sizeof(int64_t)>;
 
   SUITE(test_unaligned_type_ext)
   {
@@ -238,10 +238,14 @@ namespace
       le_v1 = 3.1415927f;
       etl::be_float_ext_t be_v1(3.1415927f, store_be1.data());
 
-      etl::le_float_ext_t le_v2(le_v1, store_le2.data()); // Copy construct le from le.
-      etl::be_float_ext_t be_v2(be_v1, store_be2.data()); // Copy construct be from be.
-      etl::le_float_ext_t le_v3(be_v1, store_le3.data()); // Copy construct le from be.
-      etl::be_float_ext_t be_v3(le_v1, store_be3.data()); // Copy construct be from le.
+      etl::le_float_ext_t le_v2(le_v1,
+                                store_le2.data()); // Copy construct le from le.
+      etl::be_float_ext_t be_v2(be_v1,
+                                store_be2.data()); // Copy construct be from be.
+      etl::le_float_ext_t le_v3(be_v1,
+                                store_le3.data()); // Copy construct le from be.
+      etl::be_float_ext_t be_v3(le_v1,
+                                store_be3.data()); // Copy construct be from le.
 
       CHECK_EQUAL(3.1415927f, le_v2);
       CHECK_EQUAL(3.1415927f, be_v2);
@@ -356,7 +360,7 @@ namespace
     //*************************************************************************
     TEST(test_construction_from_buffer)
     {
-      std::array<unsigned char, 4> buffer = { 0x12, 0x34, 0x56, 0x78 };
+      std::array<unsigned char, 4> buffer = {0x12, 0x34, 0x56, 0x78};
 
       const uint32_t le_value = 0x78563412;
       const uint32_t be_value = 0x12345678;
@@ -381,7 +385,7 @@ namespace
       // Fill each with data.
       const uint32_t value1 = 0x01234567;
       const uint32_t value2 = 0x12345678;
-      
+
       etl::le_uint32_ext_t le_v1(value1, store_le1.data());
       etl::le_uint32_ext_t le_v2(value2, store_le2.data());
 
@@ -390,11 +394,11 @@ namespace
 
       // Check each little endian storage.
       etl::le_uint32_ext_t le_v(nullptr);
-      
+
       le_v.set_storage(store_le1.data());
       CHECK_EQUAL(value1, le_v);
       CHECK_EQUAL(store_le1.data(), le_v.data());
-      
+
       le_v.set_storage(store_le2.data());
       CHECK_EQUAL(value2, le_v);
       CHECK_EQUAL(store_le2.data(), le_v.data());
@@ -414,91 +418,91 @@ namespace
     //*************************************************************************
     TEST(test_endianness)
     {
-      CHECK_EQUAL(etl::endian::big,    etl::be_int16_ext_t::Endian);
+      CHECK_EQUAL(etl::endian::big, etl::be_int16_ext_t::Endian);
       CHECK_EQUAL(etl::endian::little, etl::le_int16_ext_t::Endian);
     }
 
     //*************************************************************************
     TEST(test_le_sizes)
     {
-      CHECK_EQUAL(sizeof(char),               etl::le_char_ext_t::Size);
-      CHECK_EQUAL(sizeof(signed char),        etl::le_schar_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned char),      etl::le_uchar_ext_t::Size);
-      CHECK_EQUAL(sizeof(short),              etl::le_short_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned short),     etl::le_ushort_ext_t::Size);
-      CHECK_EQUAL(sizeof(int),                etl::le_int_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned int),       etl::le_uint_ext_t::Size);
-      CHECK_EQUAL(sizeof(long),               etl::le_long_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned long),      etl::le_ulong_ext_t::Size);
-      CHECK_EQUAL(sizeof(long long),          etl::le_long_long_ext_t::Size);
+      CHECK_EQUAL(sizeof(char), etl::le_char_ext_t::Size);
+      CHECK_EQUAL(sizeof(signed char), etl::le_schar_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned char), etl::le_uchar_ext_t::Size);
+      CHECK_EQUAL(sizeof(short), etl::le_short_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned short), etl::le_ushort_ext_t::Size);
+      CHECK_EQUAL(sizeof(int), etl::le_int_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned int), etl::le_uint_ext_t::Size);
+      CHECK_EQUAL(sizeof(long), etl::le_long_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned long), etl::le_ulong_ext_t::Size);
+      CHECK_EQUAL(sizeof(long long), etl::le_long_long_ext_t::Size);
       CHECK_EQUAL(sizeof(unsigned long long), etl::le_ulong_long_ext_t::Size);
-      CHECK_EQUAL(sizeof(float),              etl::le_float_ext_t::Size);
-      CHECK_EQUAL(sizeof(double),             etl::le_double_ext_t::Size);
-      CHECK_EQUAL(sizeof(long double),        etl::le_long_double_ext_t::Size);
+      CHECK_EQUAL(sizeof(float), etl::le_float_ext_t::Size);
+      CHECK_EQUAL(sizeof(double), etl::le_double_ext_t::Size);
+      CHECK_EQUAL(sizeof(long double), etl::le_long_double_ext_t::Size);
 
-      CHECK_EQUAL(sizeof(int8_t),   etl::le_int8_ext_t::Size);
-      CHECK_EQUAL(sizeof(uint8_t),  etl::le_uint8_ext_t::Size);
-      CHECK_EQUAL(sizeof(int16_t),  etl::le_int16_ext_t::Size);
+      CHECK_EQUAL(sizeof(int8_t), etl::le_int8_ext_t::Size);
+      CHECK_EQUAL(sizeof(uint8_t), etl::le_uint8_ext_t::Size);
+      CHECK_EQUAL(sizeof(int16_t), etl::le_int16_ext_t::Size);
       CHECK_EQUAL(sizeof(uint16_t), etl::le_uint16_ext_t::Size);
-      CHECK_EQUAL(sizeof(int32_t),  etl::le_int32_ext_t::Size);
+      CHECK_EQUAL(sizeof(int32_t), etl::le_int32_ext_t::Size);
       CHECK_EQUAL(sizeof(uint32_t), etl::le_uint32_ext_t::Size);
-      CHECK_EQUAL(sizeof(int64_t),  etl::le_int64_ext_t::Size);
+      CHECK_EQUAL(sizeof(int64_t), etl::le_int64_ext_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::le_uint64_ext_t::Size);
     }
 
     //*************************************************************************
     TEST(test_be_sizes)
     {
-      CHECK_EQUAL(sizeof(char),               etl::be_char_ext_t::Size);
-      CHECK_EQUAL(sizeof(signed char),        etl::be_schar_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned char),      etl::be_uchar_ext_t::Size);
-      CHECK_EQUAL(sizeof(short),              etl::be_short_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned short),     etl::be_ushort_ext_t::Size);
-      CHECK_EQUAL(sizeof(int),                etl::be_int_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned int),       etl::be_uint_ext_t::Size);
-      CHECK_EQUAL(sizeof(long),               etl::be_long_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned long),      etl::be_ulong_ext_t::Size);
-      CHECK_EQUAL(sizeof(long long),          etl::be_long_long_ext_t::Size);
+      CHECK_EQUAL(sizeof(char), etl::be_char_ext_t::Size);
+      CHECK_EQUAL(sizeof(signed char), etl::be_schar_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned char), etl::be_uchar_ext_t::Size);
+      CHECK_EQUAL(sizeof(short), etl::be_short_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned short), etl::be_ushort_ext_t::Size);
+      CHECK_EQUAL(sizeof(int), etl::be_int_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned int), etl::be_uint_ext_t::Size);
+      CHECK_EQUAL(sizeof(long), etl::be_long_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned long), etl::be_ulong_ext_t::Size);
+      CHECK_EQUAL(sizeof(long long), etl::be_long_long_ext_t::Size);
       CHECK_EQUAL(sizeof(unsigned long long), etl::be_ulong_long_ext_t::Size);
-      CHECK_EQUAL(sizeof(float),              etl::be_float_ext_t::Size);
-      CHECK_EQUAL(sizeof(double),             etl::be_double_ext_t::Size);
-      CHECK_EQUAL(sizeof(long double),        etl::be_long_double_ext_t::Size);
+      CHECK_EQUAL(sizeof(float), etl::be_float_ext_t::Size);
+      CHECK_EQUAL(sizeof(double), etl::be_double_ext_t::Size);
+      CHECK_EQUAL(sizeof(long double), etl::be_long_double_ext_t::Size);
 
-      CHECK_EQUAL(sizeof(int8_t),   etl::be_int8_ext_t::Size);
-      CHECK_EQUAL(sizeof(uint8_t),  etl::be_uint8_ext_t::Size);
-      CHECK_EQUAL(sizeof(int16_t),  etl::be_int16_ext_t::Size);
+      CHECK_EQUAL(sizeof(int8_t), etl::be_int8_ext_t::Size);
+      CHECK_EQUAL(sizeof(uint8_t), etl::be_uint8_ext_t::Size);
+      CHECK_EQUAL(sizeof(int16_t), etl::be_int16_ext_t::Size);
       CHECK_EQUAL(sizeof(uint16_t), etl::be_uint16_ext_t::Size);
-      CHECK_EQUAL(sizeof(int32_t),  etl::be_int32_ext_t::Size);
+      CHECK_EQUAL(sizeof(int32_t), etl::be_int32_ext_t::Size);
       CHECK_EQUAL(sizeof(uint32_t), etl::be_uint32_ext_t::Size);
-      CHECK_EQUAL(sizeof(int64_t),  etl::be_int64_ext_t::Size);
+      CHECK_EQUAL(sizeof(int64_t), etl::be_int64_ext_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::be_uint64_ext_t::Size);
     }
 
     //*************************************************************************
     TEST(test_net_sizes)
     {
-      CHECK_EQUAL(sizeof(char),               etl::net_char_ext_t::Size);
-      CHECK_EQUAL(sizeof(signed char),        etl::net_schar_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned char),      etl::net_uchar_ext_t::Size);
-      CHECK_EQUAL(sizeof(short),              etl::net_short_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned short),     etl::net_ushort_ext_t::Size);
-      CHECK_EQUAL(sizeof(int),                etl::net_int_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned int),       etl::net_uint_ext_t::Size);
-      CHECK_EQUAL(sizeof(long),               etl::net_long_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned long),      etl::net_ulong_ext_t::Size);
-      CHECK_EQUAL(sizeof(long long),          etl::net_long_long_ext_t::Size);
+      CHECK_EQUAL(sizeof(char), etl::net_char_ext_t::Size);
+      CHECK_EQUAL(sizeof(signed char), etl::net_schar_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned char), etl::net_uchar_ext_t::Size);
+      CHECK_EQUAL(sizeof(short), etl::net_short_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned short), etl::net_ushort_ext_t::Size);
+      CHECK_EQUAL(sizeof(int), etl::net_int_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned int), etl::net_uint_ext_t::Size);
+      CHECK_EQUAL(sizeof(long), etl::net_long_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned long), etl::net_ulong_ext_t::Size);
+      CHECK_EQUAL(sizeof(long long), etl::net_long_long_ext_t::Size);
       CHECK_EQUAL(sizeof(unsigned long long), etl::net_ulong_long_ext_t::Size);
-      CHECK_EQUAL(sizeof(float),              etl::net_float_ext_t::Size);
-      CHECK_EQUAL(sizeof(double),             etl::net_double_ext_t::Size);
-      CHECK_EQUAL(sizeof(long double),        etl::net_long_double_ext_t::Size);
+      CHECK_EQUAL(sizeof(float), etl::net_float_ext_t::Size);
+      CHECK_EQUAL(sizeof(double), etl::net_double_ext_t::Size);
+      CHECK_EQUAL(sizeof(long double), etl::net_long_double_ext_t::Size);
 
-      CHECK_EQUAL(sizeof(int8_t),   etl::net_int8_ext_t::Size);
-      CHECK_EQUAL(sizeof(uint8_t),  etl::net_uint8_ext_t::Size);
-      CHECK_EQUAL(sizeof(int16_t),  etl::net_int16_ext_t::Size);
+      CHECK_EQUAL(sizeof(int8_t), etl::net_int8_ext_t::Size);
+      CHECK_EQUAL(sizeof(uint8_t), etl::net_uint8_ext_t::Size);
+      CHECK_EQUAL(sizeof(int16_t), etl::net_int16_ext_t::Size);
       CHECK_EQUAL(sizeof(uint16_t), etl::net_uint16_ext_t::Size);
-      CHECK_EQUAL(sizeof(int32_t),  etl::net_int32_ext_t::Size);
+      CHECK_EQUAL(sizeof(int32_t), etl::net_int32_ext_t::Size);
       CHECK_EQUAL(sizeof(uint32_t), etl::net_uint32_ext_t::Size);
-      CHECK_EQUAL(sizeof(int64_t),  etl::net_int64_ext_t::Size);
+      CHECK_EQUAL(sizeof(int64_t), etl::net_int64_ext_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::net_uint64_ext_t::Size);
     }
 
@@ -506,28 +510,28 @@ namespace
     //*************************************************************************
     TEST(test_host_sizes)
     {
-      CHECK_EQUAL(sizeof(char),               etl::host_char_ext_t::Size);
-      CHECK_EQUAL(sizeof(signed char),        etl::host_schar_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned char),      etl::host_uchar_ext_t::Size);
-      CHECK_EQUAL(sizeof(short),              etl::host_short_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned short),     etl::host_ushort_ext_t::Size);
-      CHECK_EQUAL(sizeof(int),                etl::host_int_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned int),       etl::host_uint_ext_t::Size);
-      CHECK_EQUAL(sizeof(long),               etl::host_long_ext_t::Size);
-      CHECK_EQUAL(sizeof(unsigned long),      etl::host_ulong_ext_t::Size);
-      CHECK_EQUAL(sizeof(long long),          etl::host_long_long_ext_t::Size);
+      CHECK_EQUAL(sizeof(char), etl::host_char_ext_t::Size);
+      CHECK_EQUAL(sizeof(signed char), etl::host_schar_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned char), etl::host_uchar_ext_t::Size);
+      CHECK_EQUAL(sizeof(short), etl::host_short_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned short), etl::host_ushort_ext_t::Size);
+      CHECK_EQUAL(sizeof(int), etl::host_int_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned int), etl::host_uint_ext_t::Size);
+      CHECK_EQUAL(sizeof(long), etl::host_long_ext_t::Size);
+      CHECK_EQUAL(sizeof(unsigned long), etl::host_ulong_ext_t::Size);
+      CHECK_EQUAL(sizeof(long long), etl::host_long_long_ext_t::Size);
       CHECK_EQUAL(sizeof(unsigned long long), etl::host_ulong_long_ext_t::Size);
-      CHECK_EQUAL(sizeof(float),              etl::host_float_ext_t::Size);
-      CHECK_EQUAL(sizeof(double),             etl::host_double_ext_t::Size);
-      CHECK_EQUAL(sizeof(long double),        etl::host_long_double_ext_t::Size);
+      CHECK_EQUAL(sizeof(float), etl::host_float_ext_t::Size);
+      CHECK_EQUAL(sizeof(double), etl::host_double_ext_t::Size);
+      CHECK_EQUAL(sizeof(long double), etl::host_long_double_ext_t::Size);
 
-      CHECK_EQUAL(sizeof(int8_t),   etl::host_int8_ext_t::Size);
-      CHECK_EQUAL(sizeof(uint8_t),  etl::host_uint8_t::Size);
-      CHECK_EQUAL(sizeof(int16_t),  etl::host_int16_ext_t::Size);
+      CHECK_EQUAL(sizeof(int8_t), etl::host_int8_ext_t::Size);
+      CHECK_EQUAL(sizeof(uint8_t), etl::host_uint8_t::Size);
+      CHECK_EQUAL(sizeof(int16_t), etl::host_int16_ext_t::Size);
       CHECK_EQUAL(sizeof(uint16_t), etl::host_uint16_ext_t::Size);
-      CHECK_EQUAL(sizeof(int32_t),  etl::host_int32_ext_t::Size);
+      CHECK_EQUAL(sizeof(int32_t), etl::host_int32_ext_t::Size);
       CHECK_EQUAL(sizeof(uint32_t), etl::host_uint32_ext_t::Size);
-      CHECK_EQUAL(sizeof(int64_t),  etl::host_int64_ext_t::Size);
+      CHECK_EQUAL(sizeof(int64_t), etl::host_int64_ext_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::host_uint64_ext_t::Size);
     }
 #endif
@@ -542,15 +546,15 @@ namespace
       storage_c_t store_c4;
 
       CHECK(etl::le_char_ext_t(0x01, store_c1.data()) == etl::le_char_ext_t(0x01, store_c2.data()));
-      CHECK(char(0x01)                                   == etl::le_char_ext_t(0x01, store_c3.data()));
+      CHECK(char(0x01) == etl::le_char_ext_t(0x01, store_c3.data()));
       CHECK(etl::le_char_ext_t(0x01, store_c4.data()) == char(0x01));
 
       CHECK(etl::le_schar_ext_t(0x01, store_c1.data()) == etl::le_schar_ext_t(0x01, store_c2.data()));
-      CHECK((signed char)(0x01)                           == etl::le_schar_ext_t(0x01, store_c3.data()));
+      CHECK((signed char)(0x01) == etl::le_schar_ext_t(0x01, store_c3.data()));
       CHECK(etl::le_schar_ext_t(0x01, store_c4.data()) == (signed char)(0x01));
 
       CHECK(etl::le_uchar_ext_t(0x01U, store_c1.data()) == etl::le_uchar_ext_t(0x01U, store_c2.data()));
-      CHECK(0x01U                                          == etl::le_uchar_ext_t(0x01U, store_c3.data()));
+      CHECK(0x01U == etl::le_uchar_ext_t(0x01U, store_c3.data()));
       CHECK(etl::le_uchar_ext_t(0x01U, store_c4.data()) == 0x01U);
 
       // short
@@ -560,11 +564,11 @@ namespace
       storage_s_t store_s4;
 
       CHECK(etl::le_short_ext_t(0x0123, store_s1.data()) == etl::le_short_ext_t(0x0123, store_s2.data()));
-      CHECK(short(0x0123)                                   == etl::le_short_ext_t(0x0123, store_s3.data()));
+      CHECK(short(0x0123) == etl::le_short_ext_t(0x0123, store_s3.data()));
       CHECK(etl::le_short_ext_t(0x0123, store_s4.data()) == short(0x0123));
 
       CHECK(etl::le_ushort_ext_t(0x0123, store_s1.data()) == etl::le_ushort_ext_t(0x0123, store_s2.data()));
-      CHECK((unsigned short)(0x0123)                         == etl::le_ushort_ext_t(0x0123, store_s3.data()));
+      CHECK((unsigned short)(0x0123) == etl::le_ushort_ext_t(0x0123, store_s3.data()));
       CHECK(etl::le_ushort_ext_t(0x0123, store_s4.data()) == (unsigned short)(0x0123));
 
       // int
@@ -574,11 +578,11 @@ namespace
       storage_i_t store_i4;
 
       CHECK(etl::le_int_ext_t(0x01234567, store_i1.data()) == etl::le_int_ext_t(0x01234567, store_i2.data()));
-      CHECK(int(0x01234567)                                   == etl::le_int_ext_t(0x01234567, store_i3.data()));
+      CHECK(int(0x01234567) == etl::le_int_ext_t(0x01234567, store_i3.data()));
       CHECK(etl::le_int_ext_t(0x01234567, store_i4.data()) == int(0x01234567));
 
       CHECK(etl::le_uint_ext_t(0x01234567U, store_i1.data()) == etl::le_uint_ext_t(0x01234567U, store_i2.data()));
-      CHECK((unsigned int)(0x01234567U)                         == etl::le_uint_ext_t(0x01234567U, store_i3.data()));
+      CHECK((unsigned int)(0x01234567U) == etl::le_uint_ext_t(0x01234567U, store_i3.data()));
       CHECK(etl::le_uint_ext_t(0x01234567U, store_i4.data()) == (unsigned int)(0x01234567U));
 
       if (sizeof(long) == 4U)
@@ -590,11 +594,11 @@ namespace
         storage_l_t store_l4;
 
         CHECK(etl::le_long_ext_t(0x01234567L, store_l1.data()) == etl::le_long_ext_t(0x01234567L, store_l2.data()));
-        CHECK(long(0x01234567L)                                   == etl::le_long_ext_t(0x01234567L, store_l3.data()));
+        CHECK(long(0x01234567L) == etl::le_long_ext_t(0x01234567L, store_l3.data()));
         CHECK(etl::le_long_ext_t(0x01234567L, store_l4.data()) == long(0x01234567L));
 
         CHECK(etl::le_ulong_ext_t(0x01234567UL, store_l1.data()) == etl::le_ulong_ext_t(0x01234567UL, store_l2.data()));
-        CHECK((unsigned long)(0x01234567UL)                         == etl::le_ulong_ext_t(0x01234567UL, store_l3.data()));
+        CHECK((unsigned long)(0x01234567UL) == etl::le_ulong_ext_t(0x01234567UL, store_l3.data()));
         CHECK(etl::le_ulong_ext_t(0x01234567UL, store_l4.data()) == (unsigned long)(0x01234567UL));
       }
 
@@ -607,11 +611,11 @@ namespace
         storage_ll_t store_ll4;
 
         CHECK(etl::le_long_long_ext_t(0x0123456789ABCDEF, store_ll1.data()) == etl::le_long_long_ext_t(0x0123456789ABCDEF, store_ll2.data()));
-        CHECK((long long)(0x0123456789ABCDEF)                                  == etl::le_long_long_ext_t(0x0123456789ABCDEF, store_ll3.data()));
+        CHECK((long long)(0x0123456789ABCDEF) == etl::le_long_long_ext_t(0x0123456789ABCDEF, store_ll3.data()));
         CHECK(etl::le_long_long_ext_t(0x0123456789ABCDEF, store_ll4.data()) == (long long)(0x0123456789ABCDEF));
 
         CHECK(etl::le_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll1.data()) == etl::le_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll2.data()));
-        CHECK((unsigned long long)(0x0123456789ABCDEFU)                          == etl::le_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll3.data()));
+        CHECK((unsigned long long)(0x0123456789ABCDEFU) == etl::le_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll3.data()));
         CHECK(etl::le_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll4.data()) == (unsigned long long)(0x0123456789ABCDEFU));
       }
 
@@ -641,7 +645,8 @@ namespace
       storage_ld_t store_ld3;
       storage_ld_t store_ld4;
 
-      CHECK_CLOSE(etl::le_long_double_ext_t(3.1415927L, store_ld1.data()).value(), etl::le_long_double_ext_t(3.1415927L, store_ld2.data()).value(), 0.001);
+      CHECK_CLOSE(etl::le_long_double_ext_t(3.1415927L, store_ld1.data()).value(), etl::le_long_double_ext_t(3.1415927L, store_ld2.data()).value(),
+                  0.001);
       CHECK_CLOSE(3.1415927L, etl::le_long_double_ext_t(3.1415927L, store_ld3.data()).value(), 0.001);
       CHECK_CLOSE(etl::le_long_double_ext_t(3.1415927L, store_ld4.data()).value(), 3.1415927L, 0.001);
     }
@@ -656,15 +661,15 @@ namespace
       storage_c_t store_c4;
 
       CHECK(etl::le_char_ext_t(0x01, store_c1.data()) != etl::le_char_ext_t(0x02, store_c2.data()));
-      CHECK(char(0x01)                                   != etl::le_char_ext_t(0x02, store_c3.data()));
+      CHECK(char(0x01) != etl::le_char_ext_t(0x02, store_c3.data()));
       CHECK(etl::le_char_ext_t(0x01, store_c4.data()) != char(0x02));
 
       CHECK(etl::le_schar_ext_t(0x01, store_c1.data()) != etl::le_schar_ext_t(0x02, store_c2.data()));
-      CHECK((signed char)(0x01)                           != etl::le_schar_ext_t(0x02, store_c3.data()));
+      CHECK((signed char)(0x01) != etl::le_schar_ext_t(0x02, store_c3.data()));
       CHECK(etl::le_schar_ext_t(0x01, store_c4.data()) != (signed char)(0x02));
 
       CHECK(etl::le_uchar_ext_t(0x01U, store_c1.data()) != etl::le_uchar_ext_t(0x02U, store_c2.data()));
-      CHECK(0x01U                                          != etl::le_uchar_ext_t(0x02U, store_c3.data()));
+      CHECK(0x01U != etl::le_uchar_ext_t(0x02U, store_c3.data()));
       CHECK(etl::le_uchar_ext_t(0x01U, store_c4.data()) != 0x02U);
 
       // short
@@ -674,11 +679,11 @@ namespace
       storage_s_t store_s4;
 
       CHECK(etl::le_short_ext_t(0x0123, store_s1.data()) != etl::le_short_ext_t(0x0223, store_s2.data()));
-      CHECK(short(0x0123)                                   != etl::le_short_ext_t(0x0223, store_s3.data()));
+      CHECK(short(0x0123) != etl::le_short_ext_t(0x0223, store_s3.data()));
       CHECK(etl::le_short_ext_t(0x0123, store_s4.data()) != short(0x0223));
 
       CHECK(etl::le_ushort_ext_t(0x0123, store_s1.data()) != etl::le_ushort_ext_t(0x0223, store_s2.data()));
-      CHECK((unsigned short)(0x0123)                         != etl::le_ushort_ext_t(0x0223, store_s3.data()));
+      CHECK((unsigned short)(0x0123) != etl::le_ushort_ext_t(0x0223, store_s3.data()));
       CHECK(etl::le_ushort_ext_t(0x0123, store_s4.data()) != (unsigned short)(0x0223));
 
       // int
@@ -688,11 +693,11 @@ namespace
       storage_i_t store_i4;
 
       CHECK(etl::le_int_ext_t(0x01234567, store_i1.data()) != etl::le_int_ext_t(0x02234567, store_i2.data()));
-      CHECK(int(0x01234567)                                   != etl::le_int_ext_t(0x02234567, store_i3.data()));
+      CHECK(int(0x01234567) != etl::le_int_ext_t(0x02234567, store_i3.data()));
       CHECK(etl::le_int_ext_t(0x01234567, store_i4.data()) != int(0x02234567));
 
       CHECK(etl::le_uint_ext_t(0x01234567U, store_i1.data()) != etl::le_uint_ext_t(0x02234567U, store_i2.data()));
-      CHECK((unsigned int)(0x01234567U)                         != etl::le_uint_ext_t(0x02234567U, store_i3.data()));
+      CHECK((unsigned int)(0x01234567U) != etl::le_uint_ext_t(0x02234567U, store_i3.data()));
       CHECK(etl::le_uint_ext_t(0x01234567U, store_i4.data()) != (unsigned int)(0x02234567U));
 
       if (sizeof(long) != 4U)
@@ -704,11 +709,11 @@ namespace
         storage_l_t store_l4;
 
         CHECK(etl::le_long_ext_t(0x01234567L, store_l1.data()) != etl::le_long_ext_t(0x02234567L, store_l2.data()));
-        CHECK(long(0x01234567L)                                   != etl::le_long_ext_t(0x02234567L, store_l3.data()));
+        CHECK(long(0x01234567L) != etl::le_long_ext_t(0x02234567L, store_l3.data()));
         CHECK(etl::le_long_ext_t(0x01234567L, store_l4.data()) != long(0x02234567L));
 
         CHECK(etl::le_ulong_ext_t(0x01234567UL, store_l1.data()) != etl::le_ulong_ext_t(0x02234567UL, store_l2.data()));
-        CHECK((unsigned long)(0x01234567UL)                         != etl::le_ulong_ext_t(0x02234567UL, store_l3.data()));
+        CHECK((unsigned long)(0x01234567UL) != etl::le_ulong_ext_t(0x02234567UL, store_l3.data()));
         CHECK(etl::le_ulong_ext_t(0x01234567UL, store_l4.data()) != (unsigned long)(0x02234567UL));
       }
 
@@ -721,11 +726,11 @@ namespace
         storage_ll_t store_ll4;
 
         CHECK(etl::le_long_long_ext_t(0x0123456789ABCDEF, store_ll1.data()) != etl::le_long_long_ext_t(0x0223456789ABCDEF, store_ll2.data()));
-        CHECK((long long)(0x0123456789ABCDEF)                                  != etl::le_long_long_ext_t(0x0223456789ABCDEF, store_ll3.data()));
+        CHECK((long long)(0x0123456789ABCDEF) != etl::le_long_long_ext_t(0x0223456789ABCDEF, store_ll3.data()));
         CHECK(etl::le_long_long_ext_t(0x0123456789ABCDEF, store_ll4.data()) != (long long)(0x0223456789ABCDEF));
 
         CHECK(etl::le_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll1.data()) != etl::le_ulong_long_ext_t(0x0223456789ABCDEFU, store_ll2.data()));
-        CHECK((unsigned long long)(0x0123456789ABCDEFU)                          != etl::le_ulong_long_ext_t(0x0223456789ABCDEFU, store_ll3.data()));
+        CHECK((unsigned long long)(0x0123456789ABCDEFU) != etl::le_ulong_long_ext_t(0x0223456789ABCDEFU, store_ll3.data()));
         CHECK(etl::le_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll4.data()) != (unsigned long long)(0x0223456789ABCDEFU));
       }
 
@@ -753,7 +758,7 @@ namespace
       storage_ld_t store_ld1;
       storage_ld_t store_ld2;
       storage_ld_t store_ld3;
-      storage_ld_t store_ld4; 
+      storage_ld_t store_ld4;
 
       CHECK_FLOAT_DIFFERENT(etl::le_long_double_ext_t(3.1415927L, store_ld1.data()), etl::le_long_double_ext_t(2.1415927L, store_ld2.data()));
       CHECK_FLOAT_DIFFERENT(3.1415927L, etl::le_long_double_ext_t(2.1415927L, store_ld3.data()));
@@ -770,15 +775,15 @@ namespace
       storage_c_t store_c_be4;
 
       CHECK(etl::be_char_ext_t(0x01, store_c_be1.data()) == etl::be_char_ext_t(0x01, store_c_be2.data()));
-      CHECK(char(0x01)                                   == etl::be_char_ext_t(0x01, store_c_be3.data()));
+      CHECK(char(0x01) == etl::be_char_ext_t(0x01, store_c_be3.data()));
       CHECK(etl::be_char_ext_t(0x01, store_c_be4.data()) == char(0x01));
 
       CHECK(etl::be_schar_ext_t(0x01, store_c_be1.data()) == etl::be_schar_ext_t(0x01, store_c_be2.data()));
-      CHECK((signed char)(0x01)                           == etl::be_schar_ext_t(0x01, store_c_be3.data()));
+      CHECK((signed char)(0x01) == etl::be_schar_ext_t(0x01, store_c_be3.data()));
       CHECK(etl::be_schar_ext_t(0x01, store_c_be4.data()) == (signed char)(0x01));
 
       CHECK(etl::be_uchar_ext_t(0x01U, store_c_be1.data()) == etl::be_uchar_ext_t(0x01U, store_c_be2.data()));
-      CHECK(0x01U                                          == etl::be_uchar_ext_t(0x01U, store_c_be3.data()));
+      CHECK(0x01U == etl::be_uchar_ext_t(0x01U, store_c_be3.data()));
       CHECK(etl::be_uchar_ext_t(0x01U, store_c_be4.data()) == 0x01U);
 
       // short
@@ -788,11 +793,11 @@ namespace
       storage_s_t store_s_be4;
 
       CHECK(etl::be_short_ext_t(0x0123, store_s_be1.data()) == etl::be_short_ext_t(0x0123, store_s_be2.data()));
-      CHECK(short(0x0123)                                   == etl::be_short_ext_t(0x0123, store_s_be3.data()));
+      CHECK(short(0x0123) == etl::be_short_ext_t(0x0123, store_s_be3.data()));
       CHECK(etl::be_short_ext_t(0x0123, store_s_be4.data()) == short(0x0123));
 
       CHECK(etl::be_ushort_ext_t(0x0123, store_s_be1.data()) == etl::be_ushort_ext_t(0x0123, store_s_be2.data()));
-      CHECK((unsigned short)(0x0123)                         == etl::be_ushort_ext_t(0x0123, store_s_be3.data()));
+      CHECK((unsigned short)(0x0123) == etl::be_ushort_ext_t(0x0123, store_s_be3.data()));
       CHECK(etl::be_ushort_ext_t(0x0123, store_s_be4.data()) == (unsigned short)(0x0123));
 
       // int
@@ -802,11 +807,11 @@ namespace
       storage_i_t store_i_be4;
 
       CHECK(etl::be_int_ext_t(0x01234567, store_i_be1.data()) == etl::be_int_ext_t(0x01234567, store_i_be2.data()));
-      CHECK(int(0x01234567)                                   == etl::be_int_ext_t(0x01234567, store_i_be3.data()));
+      CHECK(int(0x01234567) == etl::be_int_ext_t(0x01234567, store_i_be3.data()));
       CHECK(etl::be_int_ext_t(0x01234567, store_i_be4.data()) == int(0x01234567));
 
       CHECK(etl::be_uint_ext_t(0x01234567U, store_i_be1.data()) == etl::be_uint_ext_t(0x01234567U, store_i_be2.data()));
-      CHECK((unsigned int)(0x01234567U)                         == etl::be_uint_ext_t(0x01234567U, store_i_be3.data()));
+      CHECK((unsigned int)(0x01234567U) == etl::be_uint_ext_t(0x01234567U, store_i_be3.data()));
       CHECK(etl::be_uint_ext_t(0x01234567U, store_i_be4.data()) == (unsigned int)(0x01234567U));
 
       if (sizeof(long) == 4U)
@@ -818,11 +823,11 @@ namespace
         storage_l_t store_l_be4;
 
         CHECK(etl::be_long_ext_t(0x01234567L, store_l_be1.data()) == etl::be_long_ext_t(0x01234567L, store_l_be2.data()));
-        CHECK(long(0x01234567L)                                   == etl::be_long_ext_t(0x01234567L, store_l_be3.data()));
+        CHECK(long(0x01234567L) == etl::be_long_ext_t(0x01234567L, store_l_be3.data()));
         CHECK(etl::be_long_ext_t(0x01234567L, store_l_be4.data()) == long(0x01234567L));
 
         CHECK(etl::be_ulong_ext_t(0x01234567UL, store_l_be1.data()) == etl::be_ulong_ext_t(0x01234567UL, store_l_be2.data()));
-        CHECK((unsigned long)(0x01234567UL)                         == etl::be_ulong_ext_t(0x01234567UL, store_l_be3.data()));
+        CHECK((unsigned long)(0x01234567UL) == etl::be_ulong_ext_t(0x01234567UL, store_l_be3.data()));
         CHECK(etl::be_ulong_ext_t(0x01234567UL, store_l_be4.data()) == (unsigned long)(0x01234567UL));
       }
 
@@ -835,11 +840,12 @@ namespace
         storage_ll_t store_ll_be4;
 
         CHECK(etl::be_long_long_ext_t(0x0123456789ABCDEF, store_ll_be1.data()) == etl::be_long_long_ext_t(0x0123456789ABCDEF, store_ll_be2.data()));
-        CHECK((long long)(0x0123456789ABCDEF)                                  == etl::be_long_long_ext_t(0x0123456789ABCDEF, store_ll_be3.data()));
+        CHECK((long long)(0x0123456789ABCDEF) == etl::be_long_long_ext_t(0x0123456789ABCDEF, store_ll_be3.data()));
         CHECK(etl::be_long_long_ext_t(0x0123456789ABCDEF, store_ll_be4.data()) == (long long)(0x0123456789ABCDEF));
 
-        CHECK(etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be1.data()) == etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be2.data()));
-        CHECK((unsigned long long)(0x0123456789ABCDEFU)                          == etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be3.data()));
+        CHECK(etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be1.data())
+              == etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be2.data()));
+        CHECK((unsigned long long)(0x0123456789ABCDEFU) == etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be3.data()));
         CHECK(etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be4.data()) == (unsigned long long)(0x0123456789ABCDEFU));
       }
 
@@ -869,7 +875,8 @@ namespace
       storage_ld_t store_ld_be3;
       storage_ld_t store_ld_be4;
 
-      CHECK_CLOSE(etl::be_long_double_ext_t(3.1415927L, store_ld_be1.data()).value(), etl::be_long_double_ext_t(3.1415927L, store_ld_be2.data()).value(), 0.001);
+      CHECK_CLOSE(etl::be_long_double_ext_t(3.1415927L, store_ld_be1.data()).value(),
+                  etl::be_long_double_ext_t(3.1415927L, store_ld_be2.data()).value(), 0.001);
       CHECK_CLOSE(3.1415927L, etl::be_long_double_ext_t(3.1415927L, store_ld_be3.data()).value(), 0.001);
       CHECK_CLOSE(etl::be_long_double_ext_t(3.1415927L, store_ld_be4.data()).value(), 3.1415927L, 0.001);
     }
@@ -884,15 +891,15 @@ namespace
       storage_c_t store_c_be4;
 
       CHECK(etl::be_char_ext_t(0x01, store_c_be1.data()) != etl::be_char_ext_t(0x02, store_c_be2.data()));
-      CHECK(char(0x01)                                   != etl::be_char_ext_t(0x02, store_c_be3.data()));
+      CHECK(char(0x01) != etl::be_char_ext_t(0x02, store_c_be3.data()));
       CHECK(etl::be_char_ext_t(0x01, store_c_be4.data()) != char(0x02));
 
       CHECK(etl::be_schar_ext_t(0x01, store_c_be1.data()) != etl::be_schar_ext_t(0x02, store_c_be2.data()));
-      CHECK((signed char)(0x01)                           != etl::be_schar_ext_t(0x02, store_c_be3.data()));
+      CHECK((signed char)(0x01) != etl::be_schar_ext_t(0x02, store_c_be3.data()));
       CHECK(etl::be_schar_ext_t(0x01, store_c_be4.data()) != (signed char)(0x02));
 
       CHECK(etl::be_uchar_ext_t(0x01U, store_c_be1.data()) != etl::be_uchar_ext_t(0x02U, store_c_be2.data()));
-      CHECK(0x01U                                          != etl::be_uchar_ext_t(0x02U, store_c_be3.data()));
+      CHECK(0x01U != etl::be_uchar_ext_t(0x02U, store_c_be3.data()));
       CHECK(etl::be_uchar_ext_t(0x01U, store_c_be4.data()) != 0x02U);
 
       // short
@@ -902,11 +909,11 @@ namespace
       storage_s_t store_s_be4;
 
       CHECK(etl::be_short_ext_t(0x0123, store_s_be1.data()) != etl::be_short_ext_t(0x0223, store_s_be2.data()));
-      CHECK(short(0x0123)                                   != etl::be_short_ext_t(0x0223, store_s_be3.data()));
+      CHECK(short(0x0123) != etl::be_short_ext_t(0x0223, store_s_be3.data()));
       CHECK(etl::be_short_ext_t(0x0123, store_s_be4.data()) != short(0x0223));
 
       CHECK(etl::be_ushort_ext_t(0x0123, store_s_be1.data()) != etl::be_ushort_ext_t(0x0223, store_s_be2.data()));
-      CHECK((unsigned short)(0x0123)                         != etl::be_ushort_ext_t(0x0223, store_s_be3.data()));
+      CHECK((unsigned short)(0x0123) != etl::be_ushort_ext_t(0x0223, store_s_be3.data()));
       CHECK(etl::be_ushort_ext_t(0x0123, store_s_be4.data()) != (unsigned short)(0x0223));
 
       // int
@@ -916,11 +923,11 @@ namespace
       storage_i_t store_i_be4;
 
       CHECK(etl::be_int_ext_t(0x01234567, store_i_be1.data()) != etl::be_int_ext_t(0x02234567, store_i_be2.data()));
-      CHECK(int(0x01234567)                                   != etl::be_int_ext_t(0x02234567, store_i_be3.data()));
+      CHECK(int(0x01234567) != etl::be_int_ext_t(0x02234567, store_i_be3.data()));
       CHECK(etl::be_int_ext_t(0x01234567, store_i_be4.data()) != int(0x02234567));
 
       CHECK(etl::be_uint_ext_t(0x01234567U, store_i_be1.data()) != etl::be_uint_ext_t(0x02234567U, store_i_be2.data()));
-      CHECK((unsigned int)(0x01234567U)                         != etl::be_uint_ext_t(0x02234567U, store_i_be3.data()));
+      CHECK((unsigned int)(0x01234567U) != etl::be_uint_ext_t(0x02234567U, store_i_be3.data()));
       CHECK(etl::be_uint_ext_t(0x01234567U, store_i_be4.data()) != (unsigned int)(0x02234567U));
 
       if (sizeof(long) != 4U)
@@ -932,11 +939,11 @@ namespace
         storage_l_t store_l_be4;
 
         CHECK(etl::be_long_ext_t(0x01234567L, store_l_be1.data()) != etl::be_long_ext_t(0x02234567L, store_l_be2.data()));
-        CHECK(long(0x01234567L)                                   != etl::be_long_ext_t(0x02234567L, store_l_be3.data()));
+        CHECK(long(0x01234567L) != etl::be_long_ext_t(0x02234567L, store_l_be3.data()));
         CHECK(etl::be_long_ext_t(0x01234567L, store_l_be4.data()) != long(0x02234567L));
 
         CHECK(etl::be_ulong_ext_t(0x01234567UL, store_l_be1.data()) != etl::be_ulong_ext_t(0x02234567UL, store_l_be2.data()));
-        CHECK((unsigned long)(0x01234567UL)                         != etl::be_ulong_ext_t(0x02234567UL, store_l_be3.data()));
+        CHECK((unsigned long)(0x01234567UL) != etl::be_ulong_ext_t(0x02234567UL, store_l_be3.data()));
         CHECK(etl::be_ulong_ext_t(0x01234567UL, store_l_be4.data()) != (unsigned long)(0x02234567UL));
       }
 
@@ -949,11 +956,12 @@ namespace
         storage_ll_t store_ll_be4;
 
         CHECK(etl::be_long_long_ext_t(0x0123456789ABCDEF, store_ll_be1.data()) != etl::be_long_long_ext_t(0x0223456789ABCDEF, store_ll_be2.data()));
-        CHECK((long long)(0x0123456789ABCDEF)                                  != etl::be_long_long_ext_t(0x0223456789ABCDEF, store_ll_be3.data()));
+        CHECK((long long)(0x0123456789ABCDEF) != etl::be_long_long_ext_t(0x0223456789ABCDEF, store_ll_be3.data()));
         CHECK(etl::be_long_long_ext_t(0x0123456789ABCDEF, store_ll_be4.data()) != (long long)(0x0223456789ABCDEF));
 
-        CHECK(etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be1.data()) != etl::be_ulong_long_ext_t(0x0223456789ABCDEFU, store_ll_be2.data()));
-        CHECK((unsigned long long)(0x0123456789ABCDEFU)                          != etl::be_ulong_long_ext_t(0x0223456789ABCDEFU, store_ll_be3.data()));
+        CHECK(etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be1.data())
+              != etl::be_ulong_long_ext_t(0x0223456789ABCDEFU, store_ll_be2.data()));
+        CHECK((unsigned long long)(0x0123456789ABCDEFU) != etl::be_ulong_long_ext_t(0x0223456789ABCDEFU, store_ll_be3.data()));
         CHECK(etl::be_ulong_long_ext_t(0x0123456789ABCDEFU, store_ll_be4.data()) != (unsigned long long)(0x0223456789ABCDEFU));
       }
 
@@ -981,7 +989,7 @@ namespace
       storage_ld_t store_ld_be1;
       storage_ld_t store_ld_be2;
       storage_ld_t store_ld_be3;
-      storage_ld_t store_ld_be4; 
+      storage_ld_t store_ld_be4;
 
       CHECK_FLOAT_DIFFERENT(etl::be_long_double_ext_t(3.1415927L, store_ld_be1.data()), etl::be_long_double_ext_t(2.1415927L, store_ld_be2.data()));
       CHECK_FLOAT_DIFFERENT(3.1415927L, etl::be_long_double_ext_t(2.1415927L, store_ld_be3.data()));
@@ -1302,7 +1310,7 @@ namespace
       storage_s_t store_s;
 
       etl::be_uint16_ext_t test(0x1234, store_s.data());
-      
+
       CHECK_EQUAL(0x12, *test.data());
       CHECK_EQUAL(0x34, *(test.data() + 1U));
     }
@@ -1319,7 +1327,7 @@ namespace
       etl::be_uint16_ext_t       test(0x1234, store_i1.data());
       const etl::be_uint16_ext_t const_test(0x1234, store_i2.data());
 
-      iterator itr;
+      iterator       itr;
       const_iterator citr;
 
       //*******************************
@@ -1331,7 +1339,7 @@ namespace
       CHECK(itr == test.end());
 
       //*******************************
-      itr = test.begin();
+      itr  = test.begin();
       *itr = 0x34;
       CHECK_EQUAL(int(0x34), int(*itr));
       ++itr;
@@ -1381,7 +1389,7 @@ namespace
       CHECK(itr == test.rend());
 
       //*******************************
-      itr = test.rbegin();
+      itr  = test.rbegin();
       *itr = 0x12;
       CHECK_EQUAL(0x12, *itr);
       ++itr;
@@ -1447,15 +1455,15 @@ namespace
     //*************************************************************************
     TEST(test_le_negative_numbers)
     {
-      storage_c_t store_c1;
-      storage_c_t store_c2;
-      storage_c_t store_c3;
-      storage_s_t store_s1;
-      storage_s_t store_s2;
-      storage_i_t store_i1;
-      storage_i_t store_i2;
-      storage_l_t store_l1;
-      storage_l_t store_l2;
+      storage_c_t  store_c1;
+      storage_c_t  store_c2;
+      storage_c_t  store_c3;
+      storage_s_t  store_s1;
+      storage_s_t  store_s2;
+      storage_i_t  store_i1;
+      storage_i_t  store_i2;
+      storage_l_t  store_l1;
+      storage_l_t  store_l2;
       storage_ll_t store_ll1;
       storage_ll_t store_ll2;
 
@@ -1469,20 +1477,20 @@ namespace
       CHECK((unsigned short)(0xFEFD) == etl::le_ushort_ext_t((unsigned short)(0xFEFD), store_s2.data()));
 
       // int
-      CHECK(int(0xFEFDFCFB) == etl::le_int_ext_t(0xFEFDFCFB, store_i1.data()));
+      CHECK(static_cast<int>(0xFEFDFCFB) == etl::le_int_ext_t(static_cast<int>(0xFEFDFCFB), store_i1.data()));
       CHECK((unsigned int)(0xFEFDFCFBU) == etl::le_uint_ext_t(0xFEFDFCFBU, store_i2.data()));
 
       if (sizeof(long) == 4U)
       {
         // long
-        CHECK(long(0xFEFDFCFB) == etl::le_long_ext_t(0xFEFDFCFB, store_l1.data()));
+        CHECK(static_cast<long>(0xFEFDFCFB) == etl::le_long_ext_t(static_cast<long>(0xFEFDFCFB), store_l1.data()));
         CHECK((unsigned long)(0xFEFDFCFBU) == etl::le_ulong_ext_t(0xFEFDFCFBU, store_l2.data()));
       }
 
       if (sizeof(long long) == 8U)
       {
         // long long
-        CHECK((long long)(0xFEFDFCFBFAF9F8F7) == etl::le_long_long_ext_t(0xFEFDFCFBFAF9F8F7, store_ll1.data()));
+        CHECK(static_cast<long long>(0xFEFDFCFBFAF9F8F7) == etl::le_long_long_ext_t(static_cast<long long>(0xFEFDFCFBFAF9F8F7), store_ll1.data()));
         CHECK((unsigned long long)(0xFEFDFCFBFAF9F8F7U) == etl::le_ulong_long_ext_t(0xFEFDFCFBFAF9F8F7U, store_ll2.data()));
       }
     }
@@ -1521,6 +1529,6 @@ namespace
       CHECK_EQUAL(0x34, bev1);
     }
   }
-}
+} // namespace
 
 #include "etl/private/diagnostic_pop.h"

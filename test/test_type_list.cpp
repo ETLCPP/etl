@@ -36,10 +36,18 @@ namespace
 {
 #if ETL_USING_CPP11
 
-
-  struct A { static constexpr int id = 0; };
-  struct B { static constexpr int id = 1; };
-  struct C { static constexpr int id = 2; };
+  struct A
+  {
+    static constexpr int id = 0;
+  };
+  struct B
+  {
+    static constexpr int id = 1;
+  };
+  struct C
+  {
+    static constexpr int id = 2;
+  };
 
   template <typename T>
   struct is_type_a : etl::bool_constant<std::is_same<T, A>::value>
@@ -56,7 +64,8 @@ namespace
   {
   };
 
-  // Convenience comparator for types that expose a constexpr integral ID (ascending)
+  // Convenience comparator for types that expose a constexpr integral ID
+  // (ascending)
   template <typename T1, typename T2>
   struct by_ascending_id : etl::bool_constant<(T1::id < T2::id)>
   {
@@ -75,18 +84,18 @@ namespace
       CHECK_TRUE((etl::is_type_list<t1>::value));
       CHECK_FALSE((etl::is_type_list<t2>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_TRUE((etl::is_type_list_v<t0>));
       CHECK_TRUE((etl::is_type_list_v<t1>));
       CHECK_FALSE((etl::is_type_list_v<t2>));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_type_list_select)
     {
       typedef etl::type_list<char, int, uint32_t> t1;
-      typedef etl::type_list<char, uint32_t> t2;
+      typedef etl::type_list<char, uint32_t>      t2;
 
       CHECK_TRUE((std::is_same<etl::type_list_select<t1, 0, 2>::type, t2>::value));
       CHECK_TRUE((std::is_same<etl::type_list_select_t<t1, 0, 2>, t2>::value));
@@ -96,8 +105,8 @@ namespace
     TEST(test_type_list_size)
     {
       typedef etl::type_list<char, int, uint32_t> t1;
-      typedef etl::type_list<char, uint32_t> t2;
-      typedef etl::type_list<> t3;
+      typedef etl::type_list<char, uint32_t>      t2;
+      typedef etl::type_list<>                    t3;
 
       CHECK_EQUAL(etl::type_list_size<t1>::value, 3);
       CHECK_EQUAL(etl::type_list_size<t2>::value, 2);
@@ -109,18 +118,18 @@ namespace
     {
       typedef etl::type_list<char, int, uint32_t> t1;
       typedef etl::type_list<uint8_t, uint16_t>   t2;
-      typedef etl::type_list<> t3;
+      typedef etl::type_list<>                    t3;
 
       typedef etl::type_list<char, int, uint32_t, uint8_t, uint16_t> t_cat1;
       typedef etl::type_list<char, int, uint32_t, uint8_t, bool>     t_cat2;
 
-      CHECK_TRUE((std::is_same<etl::type_list_cat<t1, t2>::type,     t_cat1>::value));
+      CHECK_TRUE((std::is_same<etl::type_list_cat<t1, t2>::type, t_cat1>::value));
       CHECK_TRUE((std::is_same<etl::type_list_cat<t1, t2, t3>::type, t_cat1>::value));
-      CHECK_FALSE((std::is_same<etl::type_list_cat<t1, t2>::type,    t_cat2>::value));
+      CHECK_FALSE((std::is_same<etl::type_list_cat<t1, t2>::type, t_cat2>::value));
 
-      CHECK_TRUE((std::is_same<etl::type_list_cat_t<t1, t2>,     t_cat1>::value));
+      CHECK_TRUE((std::is_same<etl::type_list_cat_t<t1, t2>, t_cat1>::value));
       CHECK_TRUE((std::is_same<etl::type_list_cat_t<t1, t2, t3>, t_cat1>::value));
-      CHECK_FALSE((std::is_same<etl::type_list_cat_t<t1, t2>,    t_cat2>::value));
+      CHECK_FALSE((std::is_same<etl::type_list_cat_t<t1, t2>, t_cat2>::value));
     }
 
     //*************************************************************************
@@ -128,99 +137,99 @@ namespace
     {
       typedef etl::type_list<char, int, uint32_t> t1;
       typedef etl::type_list<uint8_t, uint16_t>   t2;
-      typedef etl::type_list<uint16_t> t3;
-      typedef etl::type_list<> t4;
+      typedef etl::type_list<uint16_t>            t3;
+      typedef etl::type_list<>                    t4;
 
-      CHECK_TRUE((etl::type_list_contains<t1,  char>::value));
+      CHECK_TRUE((etl::type_list_contains<t1, char>::value));
       CHECK_FALSE((etl::type_list_contains<t1, uint8_t>::value));
       CHECK_FALSE((etl::type_list_contains<t2, int>::value));
-      CHECK_TRUE((etl::type_list_contains<t2,  uint16_t>::value));
-      CHECK_TRUE((etl::type_list_contains<t3,  uint16_t>::value));
+      CHECK_TRUE((etl::type_list_contains<t2, uint16_t>::value));
+      CHECK_TRUE((etl::type_list_contains<t3, uint16_t>::value));
       CHECK_FALSE((etl::type_list_contains<t3, uint32_t>::value));
       CHECK_FALSE((etl::type_list_contains<t4, uint32_t>::value));
 
-#if ETL_USING_CPP17
-      CHECK_TRUE((etl::type_list_contains_v<t1,  char>));
+  #if ETL_USING_CPP17
+      CHECK_TRUE((etl::type_list_contains_v<t1, char>));
       CHECK_FALSE((etl::type_list_contains_v<t1, uint8_t>));
       CHECK_FALSE((etl::type_list_contains_v<t2, int>));
-      CHECK_TRUE((etl::type_list_contains_v<t2,  uint16_t>));
-      CHECK_TRUE((etl::type_list_contains_v<t3,  uint16_t>));
+      CHECK_TRUE((etl::type_list_contains_v<t2, uint16_t>));
+      CHECK_TRUE((etl::type_list_contains_v<t3, uint16_t>));
       CHECK_FALSE((etl::type_list_contains_v<t3, uint32_t>));
       CHECK_FALSE((etl::type_list_contains_v<t4, uint32_t>));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_type_list_has_duplicates_of)
     {
-      typedef etl::type_list<char, int, uint32_t> t1;
-      typedef etl::type_list<uint8_t, uint16_t, uint8_t>   t2;
-      typedef etl::type_list<uint16_t> t3;
-      typedef etl::type_list<> t4;
+      typedef etl::type_list<char, int, uint32_t>        t1;
+      typedef etl::type_list<uint8_t, uint16_t, uint8_t> t2;
+      typedef etl::type_list<uint16_t>                   t3;
+      typedef etl::type_list<>                           t4;
 
-      CHECK_FALSE((etl::type_list_has_duplicates_of<t1,  char>::value));
+      CHECK_FALSE((etl::type_list_has_duplicates_of<t1, char>::value));
       CHECK_FALSE((etl::type_list_has_duplicates_of<t1, uint8_t>::value));
       CHECK_FALSE((etl::type_list_has_duplicates_of<t2, int>::value));
-      CHECK_TRUE((etl::type_list_has_duplicates_of<t2,  uint8_t>::value));
-      CHECK_FALSE((etl::type_list_has_duplicates_of<t3,  uint16_t>::value));
+      CHECK_TRUE((etl::type_list_has_duplicates_of<t2, uint8_t>::value));
+      CHECK_FALSE((etl::type_list_has_duplicates_of<t3, uint16_t>::value));
       CHECK_FALSE((etl::type_list_has_duplicates_of<t3, uint32_t>::value));
       CHECK_FALSE((etl::type_list_has_duplicates_of<t4, uint32_t>::value));
 
-#if ETL_USING_CPP17
-      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t1,  char>));
+  #if ETL_USING_CPP17
+      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t1, char>));
       CHECK_FALSE((etl::type_list_has_duplicates_of_v<t1, uint8_t>));
       CHECK_FALSE((etl::type_list_has_duplicates_of_v<t2, int>));
-      CHECK_TRUE((etl::type_list_has_duplicates_of_v<t2,  uint8_t>));
-      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t3,  uint16_t>));
+      CHECK_TRUE((etl::type_list_has_duplicates_of_v<t2, uint8_t>));
+      CHECK_FALSE((etl::type_list_has_duplicates_of_v<t3, uint16_t>));
       CHECK_FALSE((etl::type_list_has_duplicates_of_v<t3, uint32_t>));
       CHECK_FALSE((etl::type_list_has_duplicates_of_v<t4, uint32_t>));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_type_list_count_of)
     {
-      typedef etl::type_list<char, int, uint32_t> t1;
-      typedef etl::type_list<uint8_t, uint16_t, uint8_t>   t2;
-      typedef etl::type_list<uint16_t> t3;
-      typedef etl::type_list<> t4;
+      typedef etl::type_list<char, int, uint32_t>        t1;
+      typedef etl::type_list<uint8_t, uint16_t, uint8_t> t2;
+      typedef etl::type_list<uint16_t>                   t3;
+      typedef etl::type_list<>                           t4;
 
-      CHECK_EQUAL(1, (etl::type_list_count_of<t1,  char>::value));
+      CHECK_EQUAL(1, (etl::type_list_count_of<t1, char>::value));
       CHECK_EQUAL(0, (etl::type_list_count_of<t1, uint8_t>::value));
       CHECK_EQUAL(0, (etl::type_list_count_of<t2, int>::value));
-      CHECK_EQUAL(2, (etl::type_list_count_of<t2,  uint8_t>::value));
-      CHECK_EQUAL(1, (etl::type_list_count_of<t3,  uint16_t>::value));
+      CHECK_EQUAL(2, (etl::type_list_count_of<t2, uint8_t>::value));
+      CHECK_EQUAL(1, (etl::type_list_count_of<t3, uint16_t>::value));
       CHECK_EQUAL(0, (etl::type_list_count_of<t3, uint32_t>::value));
       CHECK_EQUAL(0, (etl::type_list_count_of<t4, uint32_t>::value));
 
-#if ETL_USING_CPP17
-      CHECK_EQUAL(1, (etl::type_list_count_of_v<t1,  char>));
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(1, (etl::type_list_count_of_v<t1, char>));
       CHECK_EQUAL(0, (etl::type_list_count_of_v<t1, uint8_t>));
       CHECK_EQUAL(0, (etl::type_list_count_of_v<t2, int>));
-      CHECK_EQUAL(2, (etl::type_list_count_of_v<t2,  uint8_t>));
-      CHECK_EQUAL(1, (etl::type_list_count_of_v<t3,  uint16_t>));
+      CHECK_EQUAL(2, (etl::type_list_count_of_v<t2, uint8_t>));
+      CHECK_EQUAL(1, (etl::type_list_count_of_v<t3, uint16_t>));
       CHECK_EQUAL(0, (etl::type_list_count_of_v<t3, uint32_t>));
       CHECK_EQUAL(0, (etl::type_list_count_of_v<t4, uint32_t>));
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_type_list_index_of_type)
     {
       typedef etl::type_list<char, int, uint32_t> t1;
-      typedef etl::type_list<> t2;
+      typedef etl::type_list<>                    t2;
 
       CHECK_EQUAL((etl::type_list_index_of_type<t1, char>::value), 0);
       CHECK_EQUAL((etl::type_list_index_of_type<t1, int>::value), 1);
       CHECK_EQUAL((etl::type_list_index_of_type<t1, uint32_t>::value), 2);
       CHECK_EQUAL((etl::type_list_index_of_type<t2, uint32_t>::value), etl::type_list_npos);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_EQUAL((etl::type_list_index_of_v<t1, char>), 0);
       CHECK_EQUAL((etl::type_list_index_of_v<t1, int>), 1);
       CHECK_EQUAL((etl::type_list_index_of_v<t1, uint32_t>), 2);
       CHECK_EQUAL((etl::type_list_index_of_v<t2, uint32_t>), etl::type_list_npos);
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -244,12 +253,12 @@ namespace
     {
       typedef etl::type_list<char, int, uint32_t> t1;
 
-      CHECK_TRUE((std::is_same<char,     etl::type_list_type_at_index<t1, 0>::type>::value));
-      CHECK_TRUE((std::is_same<int,      etl::type_list_type_at_index<t1, 1>::type>::value));
+      CHECK_TRUE((std::is_same<char, etl::type_list_type_at_index<t1, 0>::type>::value));
+      CHECK_TRUE((std::is_same<int, etl::type_list_type_at_index<t1, 1>::type>::value));
       CHECK_TRUE((std::is_same<uint32_t, etl::type_list_type_at_index<t1, 2>::type>::value));
 
-      CHECK_TRUE((std::is_same<char,     etl::type_list_type_at_index_t<t1, 0>>::value));
-      CHECK_TRUE((std::is_same<int,      etl::type_list_type_at_index_t<t1, 1>>::value));
+      CHECK_TRUE((std::is_same<char, etl::type_list_type_at_index_t<t1, 0>>::value));
+      CHECK_TRUE((std::is_same<int, etl::type_list_type_at_index_t<t1, 1>>::value));
       CHECK_TRUE((std::is_same<uint32_t, etl::type_list_type_at_index_t<t1, 2>>::value));
     }
 
@@ -257,70 +266,70 @@ namespace
     TEST(test_type_list_max_sizeof_type)
     {
       typedef etl::type_list<char, int16_t, uint32_t> t1;
-      typedef etl::type_list<uint8_t, uint16_t> t2;
-      typedef etl::type_list<uint32_t> t3;
-      typedef etl::type_list<> t4;
+      typedef etl::type_list<uint8_t, uint16_t>       t2;
+      typedef etl::type_list<uint32_t>                t3;
+      typedef etl::type_list<>                        t4;
 
       CHECK_EQUAL(etl::type_list_max_size<t1>::value, 4);
       CHECK_EQUAL(etl::type_list_max_size<t2>::value, 2);
       CHECK_EQUAL(etl::type_list_max_size<t3>::value, 4);
       CHECK_EQUAL(etl::type_list_max_size<t4>::value, 0);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_EQUAL((etl::type_list_max_size_v<t1>), 4);
       CHECK_EQUAL((etl::type_list_max_size_v<t2>), 2);
       CHECK_EQUAL((etl::type_list_max_size_v<t3>), 4);
       CHECK_EQUAL((etl::type_list_max_size_v<t4>), 0);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_type_list_max_alignment)
     {
       typedef etl::type_list<char, int16_t, uint32_t> t1;
-      typedef etl::type_list<uint8_t, uint16_t> t2;
-      typedef etl::type_list<uint16_t> t3;
-      typedef etl::type_list<> t4;
+      typedef etl::type_list<uint8_t, uint16_t>       t2;
+      typedef etl::type_list<uint16_t>                t3;
+      typedef etl::type_list<>                        t4;
 
       CHECK_EQUAL(etl::type_list_max_alignment<t1>::value, std::alignment_of<uint32_t>::value);
       CHECK_EQUAL(etl::type_list_max_alignment<t2>::value, std::alignment_of<uint16_t>::value);
       CHECK_EQUAL(etl::type_list_max_alignment<t3>::value, std::alignment_of<uint16_t>::value);
       CHECK_EQUAL(etl::type_list_max_alignment<t4>::value, 1);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_EQUAL((etl::type_list_max_alignment_v<t1>), std::alignment_of<uint32_t>::value);
       CHECK_EQUAL((etl::type_list_max_alignment_v<t2>), std::alignment_of<uint16_t>::value);
       CHECK_EQUAL((etl::type_list_max_alignment_v<t3>), std::alignment_of<uint16_t>::value);
       CHECK_EQUAL((etl::type_list_max_alignment_v<t4>), 1);
-#endif
+  #endif
     }
 
     //*************************************************************************
     TEST(test_type_lists_are_convertible)
     {
-      typedef etl::type_list<char,  int,  uint32_t> t1;
-      typedef etl::type_list<short, long, uint64_t> t2;
-      typedef etl::type_list<char,  std::string, uint32_t> t3;
-      typedef etl::type_list<> t4;
+      typedef etl::type_list<char, int, uint32_t>         t1;
+      typedef etl::type_list<short, long, uint64_t>       t2;
+      typedef etl::type_list<char, std::string, uint32_t> t3;
+      typedef etl::type_list<>                            t4;
 
       // Uncomment to generate static_assert error.
-      //typedef etl::type_list<char,  int> t5;
+      // typedef etl::type_list<char,  int> t5;
 
       CHECK_TRUE((etl::type_lists_are_convertible<t1, t2>::value));
       CHECK_FALSE((etl::type_lists_are_convertible<t1, t3>::value));
       CHECK_TRUE((etl::type_lists_are_convertible<t4, t4>::value));
 
       // Uncomment to generate static_assert error.
-      //CHECK_FALSE((etl::type_lists_are_convertible<t1, t5>::value));
+      // CHECK_FALSE((etl::type_lists_are_convertible<t1, t5>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_TRUE((etl::type_lists_are_convertible_v<t1, t2>));
       CHECK_FALSE((etl::type_lists_are_convertible_v<t1, t3>));
       CHECK_TRUE((etl::type_lists_are_convertible_v<t4, t4>));
 
-      // Uncomment to generate static_assert error.
-      //CHECK_FALSE((etl::type_lists_are_convertible_v<t1, t5>));
-#endif
+        // Uncomment to generate static_assert error.
+        // CHECK_FALSE((etl::type_lists_are_convertible_v<t1, t5>));
+  #endif
     }
 
     //*************************************************************************
@@ -457,7 +466,7 @@ namespace
     //*************************************************************************
     TEST(test_type_list_push_back_to_empty_list)
     {
-      using list = etl::type_list<>;
+      using list     = etl::type_list<>;
       using result   = etl::type_list_push_back_t<list, A>;
       using expected = etl::type_list<A>;
 
@@ -490,10 +499,10 @@ namespace
     //*************************************************************************
     TEST(test_type_list_insert_to_non_empty_list)
     {
-      using list     = etl::type_list<A, B>;
-      using result1  = etl::type_list_insert_t<list, C, 0>;
-      using result2  = etl::type_list_insert_t<list, C, 1>;
-      using result3  = etl::type_list_insert_t<list, C, 2>;
+      using list      = etl::type_list<A, B>;
+      using result1   = etl::type_list_insert_t<list, C, 0>;
+      using result2   = etl::type_list_insert_t<list, C, 1>;
+      using result3   = etl::type_list_insert_t<list, C, 2>;
       using expected1 = etl::type_list<C, A, B>;
       using expected2 = etl::type_list<A, C, B>;
       using expected3 = etl::type_list<A, B, C>;
@@ -512,15 +521,15 @@ namespace
     {
       // Uncomment to generate static_assert error.
 
-      //using list     = etl::type_list<>;
-      //using result1  = etl::type_list_remove_t<list, 0>;
+      // using list     = etl::type_list<>;
+      // using result1  = etl::type_list_remove_t<list, 0>;
     }
 
     //*************************************************************************
     TEST(test_type_list_remove_from_single_list)
     {
-      using list     = etl::type_list<A>;
-      using result1  = etl::type_list_remove_t<list, 0>;
+      using list      = etl::type_list<A>;
+      using result1   = etl::type_list_remove_t<list, 0>;
       using expected1 = etl::type_list<>;
 
       CHECK((etl::is_same<result1, expected1>::value));
@@ -531,10 +540,10 @@ namespace
     //*************************************************************************
     TEST(test_type_list_remove_from_multiple_list)
     {
-      using list     = etl::type_list<A, B, C>;
-      using result1  = etl::type_list_remove_t<list, 0>;
-      using result2  = etl::type_list_remove_t<list, 1>;
-      using result3  = etl::type_list_remove_t<list, 2>;
+      using list      = etl::type_list<A, B, C>;
+      using result1   = etl::type_list_remove_t<list, 0>;
+      using result2   = etl::type_list_remove_t<list, 1>;
+      using result3   = etl::type_list_remove_t<list, 2>;
       using expected1 = etl::type_list<B, C>;
       using expected2 = etl::type_list<A, C>;
       using expected3 = etl::type_list<A, B>;
@@ -580,8 +589,8 @@ namespace
     //*************************************************************************
     TEST(test_type_list_remove_if_from_multiple_list)
     {
-      using list     = etl::type_list<A, B, C>;
-      using result1  = etl::type_list_remove_if_t<list, is_type_b>;
+      using list      = etl::type_list<A, B, C>;
+      using result1   = etl::type_list_remove_if_t<list, is_type_b>;
       using expected1 = etl::type_list<A, C>;
 
       CHECK((etl::is_same<result1, expected1>::value));
@@ -594,17 +603,17 @@ namespace
     {
       // Uncomment to generate static_assert error.
 
-      //using list     = etl::type_list<>;
-      //using result1  = etl::type_list_pop_front_t<list>;
+      // using list     = etl::type_list<>;
+      // using result1  = etl::type_list_pop_front_t<list>;
     }
 
     //*************************************************************************
     TEST(test_type_list_pop_front_from_non_empty_list)
     {
-      using list     = etl::type_list<A, B, C>;
-      using result1  = etl::type_list_pop_front_t<list>;
-      using result2  = etl::type_list_pop_front_t<result1>;
-      using result3  = etl::type_list_pop_front_t<result2>;
+      using list      = etl::type_list<A, B, C>;
+      using result1   = etl::type_list_pop_front_t<list>;
+      using result2   = etl::type_list_pop_front_t<result1>;
+      using result3   = etl::type_list_pop_front_t<result2>;
       using expected1 = etl::type_list<B, C>;
       using expected2 = etl::type_list<C>;
       using expected3 = etl::type_list<>;
@@ -623,17 +632,17 @@ namespace
     {
       // Uncomment to generate static_assert error.
 
-      //using list     = etl::type_list<>;
-      //using result1  = etl::type_list_pop_back_t<list>;
+      // using list     = etl::type_list<>;
+      // using result1  = etl::type_list_pop_back_t<list>;
     }
 
     //*************************************************************************
     TEST(test_type_list_pop_back_from_non_empty_list)
     {
-      using list     = etl::type_list<A, B, C>;
-      using result1  = etl::type_list_pop_back_t<list>;
-      using result2  = etl::type_list_pop_back_t<result1>;
-      using result3  = etl::type_list_pop_back_t<result2>;
+      using list      = etl::type_list<A, B, C>;
+      using result1   = etl::type_list_pop_back_t<list>;
+      using result2   = etl::type_list_pop_back_t<result1>;
+      using result3   = etl::type_list_pop_back_t<result2>;
       using expected1 = etl::type_list<A, B>;
       using expected2 = etl::type_list<A>;
       using expected3 = etl::type_list<>;
@@ -679,11 +688,11 @@ namespace
       CHECK_TRUE((etl::type_list_all_of<list1, is_type_b>::value));
       CHECK_TRUE((etl::type_list_all_of<list1, is_type_c>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_TRUE((etl::type_list_all_of_v<list1, is_type_a>));
       CHECK_TRUE((etl::type_list_all_of_v<list1, is_type_b>));
       CHECK_TRUE((etl::type_list_all_of_v<list1, is_type_c>));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -700,7 +709,7 @@ namespace
       CHECK_TRUE((etl::type_list_all_of<list2, is_type_b>::value));
       CHECK_FALSE((etl::type_list_all_of<list2, is_type_c>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_a>));
       CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_b>));
       CHECK_FALSE((etl::type_list_all_of_v<list1, is_type_c>));
@@ -708,7 +717,7 @@ namespace
       CHECK_FALSE((etl::type_list_all_of_v<list2, is_type_a>));
       CHECK_TRUE((etl::type_list_all_of_v<list2, is_type_b>));
       CHECK_FALSE((etl::type_list_all_of_v<list2, is_type_c>));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -720,11 +729,11 @@ namespace
       CHECK_FALSE((etl::type_list_any_of<list1, is_type_b>::value));
       CHECK_FALSE((etl::type_list_any_of<list1, is_type_c>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_FALSE((etl::type_list_any_of_v<list1, is_type_a>));
       CHECK_FALSE((etl::type_list_any_of_v<list1, is_type_b>));
       CHECK_FALSE((etl::type_list_any_of_v<list1, is_type_c>));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -741,7 +750,7 @@ namespace
       CHECK_TRUE((etl::type_list_any_of<list2, is_type_b>::value));
       CHECK_FALSE((etl::type_list_any_of<list2, is_type_c>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_TRUE((etl::type_list_any_of_v<list1, is_type_a>));
       CHECK_TRUE((etl::type_list_any_of_v<list1, is_type_b>));
       CHECK_TRUE((etl::type_list_any_of_v<list1, is_type_c>));
@@ -749,7 +758,7 @@ namespace
       CHECK_FALSE((etl::type_list_any_of_v<list2, is_type_a>));
       CHECK_TRUE((etl::type_list_any_of_v<list2, is_type_b>));
       CHECK_FALSE((etl::type_list_any_of_v<list2, is_type_c>));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -761,11 +770,11 @@ namespace
       CHECK_TRUE((etl::type_list_none_of<list1, is_type_b>::value));
       CHECK_TRUE((etl::type_list_none_of<list1, is_type_c>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_TRUE((etl::type_list_none_of_v<list1, is_type_a>));
       CHECK_TRUE((etl::type_list_none_of_v<list1, is_type_b>));
       CHECK_TRUE((etl::type_list_none_of_v<list1, is_type_c>));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -782,7 +791,7 @@ namespace
       CHECK_FALSE((etl::type_list_none_of<list2, is_type_b>::value));
       CHECK_TRUE((etl::type_list_none_of<list2, is_type_c>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_FALSE((etl::type_list_none_of_v<list1, is_type_a>));
       CHECK_FALSE((etl::type_list_none_of_v<list1, is_type_b>));
       CHECK_FALSE((etl::type_list_none_of_v<list1, is_type_c>));
@@ -790,7 +799,7 @@ namespace
       CHECK_TRUE((etl::type_list_none_of_v<list2, is_type_a>));
       CHECK_FALSE((etl::type_list_none_of_v<list2, is_type_b>));
       CHECK_TRUE((etl::type_list_none_of_v<list2, is_type_c>));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -800,9 +809,9 @@ namespace
 
       CHECK_TRUE((etl::type_list_is_unique<list1>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_TRUE((etl::type_list_is_unique_v<list1>));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -814,10 +823,10 @@ namespace
       CHECK_TRUE((etl::type_list_is_unique<list1>::value));
       CHECK_FALSE((etl::type_list_is_unique<list2>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_TRUE((etl::type_list_is_unique_v<list1>));
       CHECK_FALSE((etl::type_list_is_unique_v<list2>));
-#endif
+  #endif
     }
 
     //*************************************************************************
@@ -829,11 +838,11 @@ namespace
       CHECK_TRUE((etl::type_list_is_empty<list1>::value));
       CHECK_FALSE((etl::type_list_is_empty<list2>::value));
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK_TRUE((etl::type_list_is_empty_v<list1>));
       CHECK_FALSE((etl::type_list_is_empty_v<list2>));
-#endif
+  #endif
     }
   }
 #endif
-}
+} // namespace

@@ -41,12 +41,12 @@ SOFTWARE.
 
 #if ETL_USING_CPP11
 
-#include "type_traits.h"
-#include "integral_limits.h"
-#include "hash.h"
+  #include "hash.h"
+  #include "integral_limits.h"
+  #include "type_traits.h"
 
-#include <stdint.h>
-#include <time.h>
+  #include <stdint.h>
+  #include <time.h>
 
 namespace etl
 {
@@ -57,17 +57,17 @@ namespace etl
     {
     };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     template <typename TRep>
     constexpr bool treat_as_floating_point_v = treat_as_floating_point<TRep>::value;
-#endif
-  }
+  #endif
+  } // namespace chrono
 
   // Use the same type as defined in time.h.
   using time_t = ::time_t;
-}
+} // namespace etl
 
-// clang-format off
+  // clang-format off
 // Keeping the order is important here
 #include "private/chrono/last_spec.h"
 #include "private/chrono/duration.h"
@@ -89,11 +89,11 @@ namespace etl
 
 namespace etl
 {
-  namespace chrono 
+  namespace chrono
   {
     using namespace literals::chrono_literals;
   }
-}
+} // namespace etl
 
 #endif
 

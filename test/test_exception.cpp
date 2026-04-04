@@ -31,8 +31,8 @@ SOFTWARE.
 
 #include "etl/exception.h"
 
-namespace 
-{		
+namespace
+{
   SUITE(test_exception)
   {
     //*************************************************************************
@@ -59,7 +59,7 @@ namespace
         CHECK_EQUAL(std::string("An exception"), std::string(c.what()));
         CHECK_EQUAL(std::string("Some file"), std::string(c.file_name()));
         CHECK_EQUAL(123, c.line_number());
-      }     
+      }
     }
 
 #if ETL_USING_STD_EXCEPTION
@@ -78,4 +78,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

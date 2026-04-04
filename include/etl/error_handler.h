@@ -71,7 +71,7 @@ namespace etl
     template <typename TObject>
     struct member_function : public etl::function<TObject, const etl::exception&>
     {
-      member_function(TObject& object_, void(TObject::*p_function_)(const etl::exception&))
+      member_function(TObject& object_, void (TObject::*p_function_)(const etl::exception&))
         : etl::function<TObject, const etl::exception&>(object_, p_function_)
       {
       }
@@ -89,7 +89,7 @@ namespace etl
     //*************************************************************************
     /// Create from function (Compile time).
     //*************************************************************************
-    template <void(*Method)(const etl::exception&)>
+    template <void (*Method)(const etl::exception&)>
     static void set_callback()
     {
       create(ETL_NULLPTR, function_stub<Method>);
@@ -98,7 +98,7 @@ namespace etl
     //*************************************************************************
     /// Create from instance method (Run time).
     //*************************************************************************
-    template <typename T, void(T::* Method)(const etl::exception&)>
+    template <typename T, void (T::*Method)(const etl::exception&)>
     static void set_callback(T& instance)
     {
       create((void*)(&instance), method_stub<T, Method>);
@@ -107,7 +107,7 @@ namespace etl
     //*************************************************************************
     /// Create from const instance method (Run time).
     //*************************************************************************
-    template <typename T, void(T::* Method)(const etl::exception&) const>
+    template <typename T, void (T::*Method)(const etl::exception&) const>
     static void set_callback(const T& instance)
     {
       create((void*)(&instance), const_method_stub<T, Method>);
@@ -116,7 +116,7 @@ namespace etl
     //*************************************************************************
     /// Create from instance method (Compile time).
     //*************************************************************************
-    template <typename T, T& Instance, void(T::* Method)(const etl::exception&)>
+    template <typename T, T& Instance, void (T::*Method)(const etl::exception&)>
     static void set_callback()
     {
       create(method_instance_stub<T, Instance, Method>);
@@ -125,7 +125,7 @@ namespace etl
     //*************************************************************************
     /// Create from const instance method (Compile time).
     //*************************************************************************
-    template <typename T, T const& Instance, void(T::* Method)(const etl::exception&) const>
+    template <typename T, T const& Instance, void (T::*Method)(const etl::exception&) const>
     static void set_callback()
     {
       create(const_method_instance_stub<T, Instance, Method>);
@@ -147,7 +147,7 @@ namespace etl
 
   private:
 
-    typedef void(*stub_type)(void* object, const etl::exception&);
+    typedef void (*stub_type)(void* object, const etl::exception&);
 
     //*************************************************************************
     /// The internal invocation object.
@@ -162,7 +162,7 @@ namespace etl
       }
 
       //***********************************************************************
-      void* object;
+      void*     object;
       stub_type stub;
     };
 
@@ -201,7 +201,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a member function. Run time instance.
     //*************************************************************************
-    template <typename T, void(T::* Method)(const etl::exception&)>
+    template <typename T, void (T::*Method)(const etl::exception&)>
     static void method_stub(void* object, const etl::exception& e)
     {
       T* p = static_cast<T*>(object);
@@ -211,7 +211,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a const member function. Run time instance.
     //*************************************************************************
-    template <typename T, void(T::* Method)(const etl::exception&) const>
+    template <typename T, void (T::*Method)(const etl::exception&) const>
     static void const_method_stub(void* object, const etl::exception& e)
     {
       T* const p = static_cast<T*>(object);
@@ -221,7 +221,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a member function. Compile time instance.
     //*************************************************************************
-    template <typename T, T& Instance, void(T::* Method)(const etl::exception&)>
+    template <typename T, T& Instance, void (T::*Method)(const etl::exception&)>
     static void method_instance_stub(void*, const etl::exception& e)
     {
       return (Instance.*Method)(e);
@@ -230,7 +230,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a const member function. Compile time instance.
     //*************************************************************************
-    template <typename T, const T& Instance, void(T::* Method)(const etl::exception&) const>
+    template <typename T, const T& Instance, void (T::*Method)(const etl::exception&) const>
     static void const_method_instance_stub(void*, const etl::exception& e)
     {
       (Instance.*Method)(e);
@@ -239,7 +239,7 @@ namespace etl
     //*************************************************************************
     /// Stub call for a free function.
     //*************************************************************************
-    template <void(*Method)(const etl::exception&)>
+    template <void (*Method)(const etl::exception&)>
     static void function_stub(void*, const etl::exception& e)
     {
       (Method)(e);
@@ -254,13 +254,13 @@ namespace etl
       p->operator()(e);
     }
   };
-}
+} // namespace etl
 #elif defined(ETL_USE_ASSERT_FUNCTION)
 namespace etl
 {
   namespace private_error_handler
   {
-    typedef void(*assert_function_ptr_t)(const etl::exception&);
+    typedef void (*assert_function_ptr_t)(const etl::exception&);
 
     // Stores the assert function pointer and default assert function.
     template <size_t Index>
@@ -276,7 +276,7 @@ namespace etl
 
     template <size_t Index>
     assert_function_ptr_t assert_handler<Index>::assert_function_ptr = assert_handler<Index>::default_assert;
-  }
+  } // namespace private_error_handler
 
   //***************************************************************************
   /// Sets the assert function.
@@ -286,135 +286,303 @@ namespace etl
   {
     etl::private_error_handler::assert_handler<0>::assert_function_ptr = afptr;
   }
-}
+} // namespace etl
 #endif
 
 //***************************************************************************
 /// Asserts a condition.
-/// Versions of the macro that return a constant value of 'true' will allow the compiler to optimise away
-/// any 'if' statements that it is contained within.
+/// Versions of the macro that return a constant value of 'true' will allow the
+/// compiler to optimise away any 'if' statements that it is contained within.
 /// If ETL_NO_CHECKS is defined then no runtime checks are executed at all.
-/// If asserts or exceptions are enabled then the error is thrown if the assert fails. The return value is always 'true'.
-/// If ETL_LOG_ERRORS is defined then the error is logged if the assert fails. The return value is the value of the boolean test.
-/// If ETL_USE_ASSERT_FUNCTION is defined then the error is sent to the assert function.
-/// Otherwise 'assert' is called. The return value is always 'true'.
+/// If asserts or exceptions are enabled then the error is thrown if the assert
+/// fails. The return value is always 'true'. If ETL_LOG_ERRORS is defined then
+/// the error is logged if the assert fails. The return value is the value of
+/// the boolean test. If ETL_USE_ASSERT_FUNCTION is defined then the error is
+/// sent to the assert function. Otherwise 'assert' is called. The return value
+/// is always 'true'.
 ///\ingroup error_handler
 //***************************************************************************
 #if defined(ETL_NO_CHECKS)
-  #define ETL_ASSERT(b, e) static_cast<void>(sizeof(b))                       // Does nothing.
-  #define ETL_ASSERT_OR_RETURN(b, e) static_cast<void>(sizeof(b))             // Does nothing.
-  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) static_cast<void>(sizeof(b))    // Does nothing.
-  
-  #define ETL_ASSERT_FAIL(e) ETL_DO_NOTHING                                   // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN(e) ETL_DO_NOTHING                        // Does nothing.
-  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) ETL_DO_NOTHING               // Does nothing.
-#elif defined(ETL_USE_ASSERT_FUNCTION)
-  #define ETL_ASSERT(b, e) do {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));}} while(false)                                 // If the condition fails, calls the assert function
-  #define ETL_ASSERT_OR_RETURN(b, e) do {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;}} while(false)               // If the condition fails, calls the assert function and return
-  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) do {if (!(b)) ETL_UNLIKELY {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return (v);}} while(false)  // If the condition fails, calls the assert function and return a value
+  #define ETL_ASSERT(b, e)                    static_cast<void>(sizeof(b)) // Does nothing.
+  #define ETL_ASSERT_OR_RETURN(b, e)          static_cast<void>(sizeof(b)) // Does nothing.
+  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) static_cast<void>(sizeof(b)) // Does nothing.
 
-  #define ETL_ASSERT_FAIL(e) do {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e));} while(false)                                          // Calls the assert function
-  #define ETL_ASSERT_FAIL_AND_RETURN(e) do {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return;} while(false)                       // Calls the assert function and return
-  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) do {etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); return (v);} while(false)          // Calls the assert function and return a value
+  #define ETL_ASSERT_FAIL(e)                     ETL_DO_NOTHING // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN(e)          ETL_DO_NOTHING // Does nothing.
+  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) ETL_DO_NOTHING // Does nothing.
+#elif defined(ETL_USE_ASSERT_FUNCTION)
+  #define ETL_ASSERT(b, e)                                                       \
+    do {                                                                         \
+      if (!(b)) ETL_UNLIKELY                                                     \
+      {                                                                          \
+        etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); \
+      }                                                                          \
+    } while (false) // If the condition fails, calls the assert function
+  #define ETL_ASSERT_OR_RETURN(b, e)                                             \
+    do {                                                                         \
+      if (!(b)) ETL_UNLIKELY                                                     \
+      {                                                                          \
+        etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); \
+        return;                                                                  \
+      }                                                                          \
+    } while (false) // If the condition fails, calls the assert function and return
+  #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v)                                    \
+    do {                                                                         \
+      if (!(b)) ETL_UNLIKELY                                                     \
+      {                                                                          \
+        etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); \
+        return (v);                                                              \
+      }                                                                          \
+    } while (false) // If the condition fails, calls the assert function and
+                    // return a value
+
+  #define ETL_ASSERT_FAIL(e)                                                   \
+    do {                                                                       \
+      etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); \
+    } while (false) // Calls the assert function
+  #define ETL_ASSERT_FAIL_AND_RETURN(e)                                        \
+    do {                                                                       \
+      etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); \
+      return;                                                                  \
+    } while (false) // Calls the assert function and return
+  #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v)                               \
+    do {                                                                       \
+      etl::private_error_handler::assert_handler<0>::assert_function_ptr((e)); \
+      return (v);                                                              \
+    } while (false) // Calls the assert function and return a value
 #elif ETL_USING_EXCEPTIONS
   #if defined(ETL_LOG_ERRORS)
-    #define ETL_ASSERT(b, e) do {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); throw((e));}} while(false)                                // If the condition fails, calls the error handler then throws an exception.
-    #define ETL_ASSERT_OR_RETURN(b, e) do {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); throw((e)); return;}} while(false)              // If the condition fails, calls the error handler then throws an exception.
-    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) do {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); throw((e)); return(v);}} while(false)  // If the condition fails, calls the error handler then throws an exception.
-    
-    #define ETL_ASSERT_FAIL(e) do {etl::error_handler::error((e)); throw((e));} while(false)                                          // Calls the error handler then throws an exception.
-    #define ETL_ASSERT_FAIL_AND_RETURN(e) do {etl::error_handler::error((e)); throw((e)); return;} while(false)                       // Calls the error handler then throws an exception.
-    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) do {etl::error_handler::error((e)); throw((e)); return(v);} while(false)           // Calls the error handler then throws an exception.
+    #define ETL_ASSERT(b, e)              \
+      do {                                \
+        if (!(b)) ETL_UNLIKELY            \
+        {                                 \
+          etl::error_handler::error((e)); \
+          throw((e));                     \
+        }                                 \
+      } while (false) // If the condition fails, calls the error handler then
+                      // throws an exception.
+    #define ETL_ASSERT_OR_RETURN(b, e)    \
+      do {                                \
+        if (!(b)) ETL_UNLIKELY            \
+        {                                 \
+          etl::error_handler::error((e)); \
+          throw((e));                     \
+          return;                         \
+        }                                 \
+      } while (false) // If the condition fails, calls the error handler then
+                      // throws an exception.
+    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) \
+      do {                                      \
+        if (!(b)) ETL_UNLIKELY                  \
+        {                                       \
+          etl::error_handler::error((e));       \
+          throw((e));                           \
+          return (v);                           \
+        }                                       \
+      } while (false) // If the condition fails, calls the error handler then
+                      // throws an exception.
+
+    #define ETL_ASSERT_FAIL(e)          \
+      do {                              \
+        etl::error_handler::error((e)); \
+        throw((e));                     \
+      } while (false) // Calls the error handler then throws an exception.
+    #define ETL_ASSERT_FAIL_AND_RETURN(e) \
+      do {                                \
+        etl::error_handler::error((e));   \
+        throw((e));                       \
+        return;                           \
+      } while (false) // Calls the error handler then throws an exception.
+    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) \
+      do {                                         \
+        etl::error_handler::error((e));            \
+        throw((e));                                \
+        return (v);                                \
+      } while (false) // Calls the error handler then throws an exception.
   #else
-    #define ETL_ASSERT(b, e) do {if (!(b)) ETL_UNLIKELY {throw((e));}} while(false)                    // If the condition fails, throws an exception.
-    #define ETL_ASSERT_OR_RETURN(b, e) do {if (!(b)) ETL_UNLIKELY {throw((e));}} while(false)          // If the condition fails, throws an exception.
-    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) do {if (!(b)) ETL_UNLIKELY {throw((e));}} while(false) // If the condition fails, throws an exception.
-    
-    #define ETL_ASSERT_FAIL(e) do {throw((e));} while(false)                              // Throws an exception.
-    #define ETL_ASSERT_FAIL_AND_RETURN(e) do {throw((e));} while(false)                   // Throws an exception.
-    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) do {throw((e));} while(false)          // Throws an exception.
+    #define ETL_ASSERT(b, e)   \
+      do {                     \
+        if (!(b)) ETL_UNLIKELY \
+        {                      \
+          throw((e));          \
+        }                      \
+      } while (false) // If the condition fails, throws an exception.
+    #define ETL_ASSERT_OR_RETURN(b, e) \
+      do {                             \
+        if (!(b)) ETL_UNLIKELY         \
+        {                              \
+          throw((e));                  \
+        }                              \
+      } while (false) // If the condition fails, throws an exception.
+    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) \
+      do {                                      \
+        if (!(b)) ETL_UNLIKELY                  \
+        {                                       \
+          throw((e));                           \
+        }                                       \
+      } while (false) // If the condition fails, throws an exception.
+
+    #define ETL_ASSERT_FAIL(e) \
+      do {                     \
+        throw((e));            \
+      } while (false) // Throws an exception.
+    #define ETL_ASSERT_FAIL_AND_RETURN(e) \
+      do {                                \
+        throw((e));                       \
+      } while (false) // Throws an exception.
+    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) \
+      do {                                         \
+        throw((e));                                \
+      } while (false) // Throws an exception.
   #endif
 #else
   #if defined(ETL_LOG_ERRORS)
-    #define ETL_ASSERT(b, e) do {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e));}} while(false)                                 // If the condition fails, calls the error handler
-    #define ETL_ASSERT_OR_RETURN(b, e) do {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); return;}} while(false)               // If the condition fails, calls the error handler and return
-    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) do {if (!(b)) ETL_UNLIKELY {etl::error_handler::error((e)); return (v);}} while(false)  // If the condition fails, calls the error handler and return a value
-    
-    #define ETL_ASSERT_FAIL(e) do {etl::error_handler::error((e));} while(false)                                          // Calls the error handler
-    #define ETL_ASSERT_FAIL_AND_RETURN(e) do {etl::error_handler::error((e)); return;} while(false)                       // Calls the error handler and return
-    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) do {etl::error_handler::error((e)); return (v);} while(false)          // Calls the error handler and return a value
+    #define ETL_ASSERT(b, e)              \
+      do {                                \
+        if (!(b)) ETL_UNLIKELY            \
+        {                                 \
+          etl::error_handler::error((e)); \
+        }                                 \
+      } while (false) // If the condition fails, calls the error handler
+    #define ETL_ASSERT_OR_RETURN(b, e)    \
+      do {                                \
+        if (!(b)) ETL_UNLIKELY            \
+        {                                 \
+          etl::error_handler::error((e)); \
+          return;                         \
+        }                                 \
+      } while (false) // If the condition fails, calls the error handler and return
+    #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) \
+      do {                                      \
+        if (!(b)) ETL_UNLIKELY                  \
+        {                                       \
+          etl::error_handler::error((e));       \
+          return (v);                           \
+        }                                       \
+      } while (false) // If the condition fails, calls the error handler and
+                      // return a value
+
+    #define ETL_ASSERT_FAIL(e)          \
+      do {                              \
+        etl::error_handler::error((e)); \
+      } while (false) // Calls the error handler
+    #define ETL_ASSERT_FAIL_AND_RETURN(e) \
+      do {                                \
+        etl::error_handler::error((e));   \
+        return;                           \
+      } while (false) // Calls the error handler and return
+    #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) \
+      do {                                         \
+        etl::error_handler::error((e));            \
+        return (v);                                \
+      } while (false) // Calls the error handler and return a value
   #else
     #if ETL_IS_DEBUG_BUILD
-      #define ETL_ASSERT(b, e) assert((b))                                                                                             // If the condition fails, asserts.
-      #define ETL_ASSERT_OR_RETURN(b, e) do {if (!(b)) ETL_UNLIKELY {assert(false); return;}} while(false)                             // If the condition fails, asserts and return.
-      #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) do {if (!(b)) ETL_UNLIKELY {assert(false); return(v);}} while(false)                 // If the condition fails, asserts and return a value.
-    
-      #define ETL_ASSERT_FAIL(e) assert(false)                                                    // Asserts.
-      #define ETL_ASSERT_FAIL_AND_RETURN(e) do {assert(false);  return;} while(false)             // Asserts.
-      #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) do {assert(false);  return(v);} while(false) // Asserts.
+      #define ETL_ASSERT(b, e) assert((b)) // If the condition fails, asserts.
+      #define ETL_ASSERT_OR_RETURN(b, e) \
+        do {                             \
+          if (!(b)) ETL_UNLIKELY         \
+          {                              \
+            assert(false);               \
+            return;                      \
+          }                              \
+        } while (false) // If the condition fails, asserts and return.
+      #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) \
+        do {                                      \
+          if (!(b)) ETL_UNLIKELY                  \
+          {                                       \
+            assert(false);                        \
+            return (v);                           \
+          }                                       \
+        } while (false) // If the condition fails, asserts and return a value.
+
+      #define ETL_ASSERT_FAIL(e) assert(false) // Asserts.
+      #define ETL_ASSERT_FAIL_AND_RETURN(e) \
+        do {                                \
+          assert(false);                    \
+          return;                           \
+        } while (false) // Asserts.
+      #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) \
+        do {                                         \
+          assert(false);                             \
+          return (v);                                \
+        } while (false) // Asserts.
     #else
-      #define ETL_ASSERT(b, e) static_cast<void>(sizeof(b))                                            // Does nothing.
-      #define ETL_ASSERT_OR_RETURN(b, e) do {if (!(b)) ETL_UNLIKELY return;} while(false)              // Returns.
-      #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) do {if (!(b)) ETL_UNLIKELY return(v);} while(false)  // Returns a value.
-      
-      #define ETL_ASSERT_FAIL(e) ETL_DO_NOTHING                                                   // Does nothing.
-      #define ETL_ASSERT_FAIL_AND_RETURN(e) do {return;} while(false)                             // Returns.
-      #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) do {return(v);} while(false)                 // Returns a value.
+      #define ETL_ASSERT(b, e) static_cast<void>(sizeof(b)) // Does nothing.
+      #define ETL_ASSERT_OR_RETURN(b, e) \
+        do {                             \
+          if (!(b)) ETL_UNLIKELY         \
+            return;                      \
+        } while (false) // Returns.
+      #define ETL_ASSERT_OR_RETURN_VALUE(b, e, v) \
+        do {                                      \
+          if (!(b)) ETL_UNLIKELY                  \
+            return (v);                           \
+        } while (false) // Returns a value.
+
+      #define ETL_ASSERT_FAIL(e) ETL_DO_NOTHING // Does nothing.
+      #define ETL_ASSERT_FAIL_AND_RETURN(e) \
+        do {                                \
+          return;                           \
+        } while (false) // Returns.
+      #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) \
+        do {                                         \
+          return (v);                                \
+        } while (false) // Returns a value.
     #endif
   #endif
 #endif
 
 //*************************************
 #if defined(ETL_CHECK_PUSH_POP)
-    #define ETL_ASSERT_CHECK_PUSH_POP(b, e)           ETL_ASSERT(b, e)
-    #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e) ETL_ASSERT_OR_RETURN(b, e)
+  #define ETL_ASSERT_CHECK_PUSH_POP(b, e)           ETL_ASSERT(b, e)
+  #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e) ETL_ASSERT_OR_RETURN(b, e)
 #else
-    #define ETL_ASSERT_CHECK_PUSH_POP(b, e)
-    #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e)
+  #define ETL_ASSERT_CHECK_PUSH_POP(b, e)
+  #define ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(b, e)
 #endif
 
 //*************************************
 #ifdef ETL_CHECK_INDEX_OPERATOR
-  #define ETL_CHECKING_INDEX_OPERATOR 1
-  #define ETL_NOT_CHECKING_INDEX_OPERATOR 0
-  #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e) ETL_ASSERT(b,e)
+  #define ETL_CHECKING_INDEX_OPERATOR           1
+  #define ETL_NOT_CHECKING_INDEX_OPERATOR       0
+  #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e) ETL_ASSERT(b, e)
 #else
-  #define ETL_CHECKING_INDEX_OPERATOR 0
+  #define ETL_CHECKING_INDEX_OPERATOR     0
   #define ETL_NOT_CHECKING_INDEX_OPERATOR 1
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e)
 #endif
 
 //*************************************
 #ifdef ETL_CHECK_EXTRA
-    #define ETL_CHECKING_EXTRA 1
-    #define ETL_NOT_CHECKING_EXTRA 0
-    #define ETL_ASSERT_CHECK_EXTRA(b, e) ETL_ASSERT(b,e)
+  #define ETL_CHECKING_EXTRA           1
+  #define ETL_NOT_CHECKING_EXTRA       0
+  #define ETL_ASSERT_CHECK_EXTRA(b, e) ETL_ASSERT(b, e)
 #else
-    #define ETL_CHECKING_EXTRA 0
-    #define ETL_NOT_CHECKING_EXTRA 1
-    #define ETL_ASSERT_CHECK_EXTRA(b, e)
+  #define ETL_CHECKING_EXTRA     0
+  #define ETL_NOT_CHECKING_EXTRA 1
+  #define ETL_ASSERT_CHECK_EXTRA(b, e)
 #endif
 
 //*************************************
 #if defined(ETL_VERBOSE_ERRORS)
   // include everything, file name, line number, verbose text
-  #define ETL_ERROR(e) (e(__FILE__, __LINE__))
-  #define ETL_ERROR_WITH_VALUE(e, v) (e(__FILE__, __LINE__, (v)))
+  #define ETL_ERROR(e)                             (e(__FILE__, __LINE__))
+  #define ETL_ERROR_WITH_VALUE(e, v)               (e(__FILE__, __LINE__, (v)))
   #define ETL_ERROR_TEXT(verbose_text, terse_text) (verbose_text)
-  #define ETL_ERROR_GENERIC(text) (etl::exception((text), __FILE__, __LINE__))
+  #define ETL_ERROR_GENERIC(text)                  (etl::exception((text), __FILE__, __LINE__))
 #elif defined(ETL_MINIMAL_ERRORS)
   // include nothing, no file name, no line number, no text
-  #define ETL_ERROR(e) (e("", -1))
-  #define ETL_ERROR_WITH_VALUE(e, v) (e("", -1, (v)))
+  #define ETL_ERROR(e)                             (e("", -1))
+  #define ETL_ERROR_WITH_VALUE(e, v)               (e("", -1, (v)))
   #define ETL_ERROR_TEXT(verbose_text, terse_text) ("")
-  #define ETL_ERROR_GENERIC(text) (etl::exception("", "", -1))
+  #define ETL_ERROR_GENERIC(text)                  (etl::exception("", "", -1))
 #else
   // include only terse text, no file name, no line number
-  #define ETL_ERROR(e) (e("", -1))
-  #define ETL_ERROR_WITH_VALUE(e, v) (e("", -1, (v)))
+  #define ETL_ERROR(e)                             (e("", -1))
+  #define ETL_ERROR_WITH_VALUE(e, v)               (e("", -1, (v)))
   #define ETL_ERROR_TEXT(verbose_text, terse_text) (terse_text)
-  #define ETL_ERROR_GENERIC(text) (etl::exception((text),"", -1))
+  #define ETL_ERROR_GENERIC(text)                  (etl::exception((text), "", -1))
 #endif
 
 #endif
-

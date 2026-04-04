@@ -63,7 +63,7 @@ namespace etl
     {
     }
 
-    ETL_CONSTEXPR20 reference_wrapper<T>& operator = (const reference_wrapper& rhs) ETL_NOEXCEPT
+    ETL_CONSTEXPR20 reference_wrapper<T>& operator=(const reference_wrapper& rhs) ETL_NOEXCEPT
     {
       t = rhs.t;
       return *this;
@@ -83,8 +83,7 @@ namespace etl
     // implementation without etl::invoke, which would add a circular dependency
     template <typename... TArgs>
     ETL_CONSTEXPR20 auto operator()(TArgs&&... args) const
-      noexcept(noexcept(etl::declval<T&>()(etl::declval<TArgs>()...)))
-      -> decltype(etl::declval<T&>()(etl::declval<TArgs>()...))
+      noexcept(noexcept(etl::declval<T&>()(etl::declval<TArgs>()...))) -> decltype(etl::declval<T&>()(etl::declval<TArgs>()...))
     {
       return get()(etl::forward<TArgs>(args)...);
     }
@@ -147,9 +146,11 @@ namespace etl
   /// unwrap_ref_decay.
   //***************************************************************************
   template <typename T>
-  struct unwrap_ref_decay : etl::unwrap_reference<typename etl::decay<T>::type> {};
+  struct unwrap_ref_decay : etl::unwrap_reference<typename etl::decay<T>::type>
+  {
+  };
 
-#if ETL_USING_CPP11 
+#if ETL_USING_CPP11
   template <typename T>
   using unwrap_ref_decay_t = typename unwrap_ref_decay<T>::type;
 #endif
@@ -158,11 +159,15 @@ namespace etl
   // is_reference_wrapper
   // Detect etl::reference_wrapper<T>
   //***************************************************************************
-  template <typename T> 
-  struct is_reference_wrapper : etl::false_type {};
-  
-  template <typename T> 
-  struct is_reference_wrapper<etl::reference_wrapper<T> > : etl::true_type {};
+  template <typename T>
+  struct is_reference_wrapper : etl::false_type
+  {
+  };
+
+  template <typename T>
+  struct is_reference_wrapper<etl::reference_wrapper<T> > : etl::true_type
+  {
+  };
 
 #if ETL_USING_CPP17
   template <typename T>
@@ -196,7 +201,7 @@ namespace etl
   {
     typedef T value_type;
 
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
     {
       return (lhs < rhs);
     }
@@ -248,7 +253,7 @@ namespace etl
   {
     typedef T value_type;
 
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
     {
       return (rhs < lhs);
     }
@@ -300,7 +305,7 @@ namespace etl
   {
     typedef T value_type;
 
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
     {
       return lhs == rhs;
     }
@@ -311,7 +316,7 @@ namespace etl
   struct equal_to<void> : public etl::binary_function<void, void, bool>
   {
     typedef void value_type;
-    typedef int is_transparent;
+    typedef int  is_transparent;
 
     template <typename T1, typename T2>
     constexpr auto operator()(T1&& lhs, T2&& rhs) const -> decltype(static_cast<T1&&>(lhs) == static_cast<T2&&>(rhs))
@@ -327,7 +332,7 @@ namespace etl
   {
     typedef T value_type;
 
-    ETL_CONSTEXPR bool operator()(const T &lhs, const T &rhs) const
+    ETL_CONSTEXPR bool operator()(const T& lhs, const T& rhs) const
     {
       return !(lhs == rhs);
     }
@@ -353,13 +358,14 @@ namespace etl
   {
   protected:
 
-    TFunction operation;
+    TFunction                               operation;
     typename TFunction::first_argument_type value;
 
   public:
 
     binder1st(const TFunction& f, const typename TFunction::first_argument_type& v)
-      : operation(f), value(v)
+      : operation(f)
+      , value(v)
     {
     }
 
@@ -385,11 +391,15 @@ namespace etl
   class binder2nd : public etl::unary_function<typename TFunction::first_argument_type, typename TFunction::result_type>
   {
   protected:
-    TFunction operation;
+
+    TFunction                                operation;
     typename TFunction::second_argument_type value;
+
   public:
+
     binder2nd(const TFunction& f, const typename TFunction::second_argument_type& v)
-      : operation(f), value(v)
+      : operation(f)
+      , value(v)
     {
     }
 
@@ -595,12 +605,12 @@ namespace etl
   namespace private_functional
   {
     //***************************************************************************
-    template<typename TReturnType, typename TClassType, typename... TArgs>
+    template <typename TReturnType, typename TClassType, typename... TArgs>
     class mem_fn_impl
     {
     public:
 
-      typedef TReturnType(TClassType::* MemberFunctionType)(TArgs...);
+      typedef TReturnType (TClassType::*MemberFunctionType)(TArgs...);
 
       ETL_CONSTEXPR mem_fn_impl(MemberFunctionType member_function_)
         : member_function(member_function_)
@@ -618,12 +628,12 @@ namespace etl
     };
 
     //***************************************************************************
-    template<typename TReturnType, typename TClassType, typename... TArgs>
+    template <typename TReturnType, typename TClassType, typename... TArgs>
     class const_mem_fn_impl
     {
     public:
 
-      typedef TReturnType(TClassType::* MemberFunctionType)(TArgs...) const;
+      typedef TReturnType (TClassType::*MemberFunctionType)(TArgs...) const;
 
       ETL_CONSTEXPR const_mem_fn_impl(MemberFunctionType member_function_)
         : member_function(member_function_)
@@ -639,20 +649,19 @@ namespace etl
 
       MemberFunctionType member_function;
     };
-  }
+  } // namespace private_functional
 
   //***************************************************************************
-  template<typename TReturnType, typename TClassType, typename... TArgs>
-  ETL_CONSTEXPR
-  private_functional::mem_fn_impl<TReturnType, TClassType, TArgs...> mem_fn(TReturnType(TClassType::* member_function)(TArgs...))
+  template <typename TReturnType, typename TClassType, typename... TArgs>
+  ETL_CONSTEXPR private_functional::mem_fn_impl<TReturnType, TClassType, TArgs...> mem_fn(TReturnType (TClassType::*member_function)(TArgs...))
   {
     return private_functional::mem_fn_impl<TReturnType, TClassType, TArgs...>(member_function);
   }
 
   //***************************************************************************
-  template<typename TReturnType, typename TClassType, typename... TArgs>
-  ETL_CONSTEXPR
-  private_functional::const_mem_fn_impl<TReturnType, TClassType, TArgs...> mem_fn(TReturnType(TClassType::* member_function)(TArgs...) const)
+  template <typename TReturnType, typename TClassType, typename... TArgs>
+  ETL_CONSTEXPR private_functional::const_mem_fn_impl<TReturnType, TClassType, TArgs...> mem_fn(TReturnType (TClassType::*member_function)(TArgs...)
+                                                                                              const)
   {
     return private_functional::const_mem_fn_impl<TReturnType, TClassType, TArgs...>(member_function);
   }
@@ -661,7 +670,7 @@ namespace etl
 #if ETL_USING_CPP14
   struct identity
   {
-    template<class T>
+    template <class T>
     constexpr T&& operator()(T&& t) const noexcept
     {
       return etl::forward<T>(t);
@@ -670,28 +679,28 @@ namespace etl
 #endif
 
 #if ETL_USING_CPP17
-namespace ranges
-{
-  struct equal_to
+  namespace ranges
   {
-    template <typename T, typename U>
-    constexpr auto operator()(T&& t, U&& u) const -> decltype(static_cast<T&&>(t) == static_cast<U&&>(u))
+    struct equal_to
     {
-      return static_cast<T&&>(t) == static_cast<U&&>(u);
-    }
-  };
+      template <typename T, typename U>
+      constexpr auto operator()(T&& t, U&& u) const -> decltype(static_cast<T&&>(t) == static_cast<U&&>(u))
+      {
+        return static_cast<T&&>(t) == static_cast<U&&>(u);
+      }
+    };
 
-  struct less
-  {
-    template <typename T, typename U>
-    constexpr auto operator()(T&& t, U&& u) const -> decltype(static_cast<T&&>(t) < static_cast<U&&>(u))
+    struct less
     {
-      return static_cast<T&&>(t) < static_cast<U&&>(u);
-    }
-  };
-}
+      template <typename T, typename U>
+      constexpr auto operator()(T&& t, U&& u) const -> decltype(static_cast<T&&>(t) < static_cast<U&&>(u))
+      {
+        return static_cast<T&&>(t) < static_cast<U&&>(u);
+      }
+    };
+  } // namespace ranges
 #endif
 
-}
+} // namespace etl
 
 #endif

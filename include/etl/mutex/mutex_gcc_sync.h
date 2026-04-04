@@ -73,6 +73,6 @@ namespace etl
 
     char flag;
   };
-}
+} // namespace etl
 
 #endif

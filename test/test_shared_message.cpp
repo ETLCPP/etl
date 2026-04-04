@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/shared_message.h"
-#include "etl/message.h"
-#include "etl/message_router.h"
-#include "etl/message_bus.h"
-#include "etl/queue.h"
 #include "etl/fixed_sized_memory_block_allocator.h"
+#include "etl/message.h"
+#include "etl/message_bus.h"
+#include "etl/message_router.h"
+#include "etl/queue.h"
 #include "etl/reference_counted_message_pool.h"
+#include "etl/shared_message.h"
 
 namespace
 {
@@ -77,10 +77,7 @@ namespace
       ++message_1_instantiations;
     }
 
-    ~Message1()
-    {
-
-    }
+    ~Message1() {}
 
     int i;
   };
@@ -88,10 +85,7 @@ namespace
   //*************************************************************************
   struct Message2 : public etl::message<MessageId2>
   {
-    ~Message2()
-    {
-
-    }
+    ~Message2() {}
   };
 
   //*************************************************************************
@@ -115,15 +109,12 @@ namespace
       ++count_message2;
     }
 
-    void on_receive_unknown(const etl::imessage&)
-    {
-
-    }
+    void on_receive_unknown(const etl::imessage&) {}
 
     void clear()
     {
-      count_message1 = 0;
-      count_message2 = 0;
+      count_message1        = 0;
+      count_message2        = 0;
       count_unknown_message = 0;
     }
 
@@ -155,8 +146,8 @@ namespace
 
     void clear()
     {
-      count_message1 = 0;
-      count_message2 = 0;
+      count_message1        = 0;
+      count_message2        = 0;
       count_unknown_message = 0;
     }
 
@@ -178,23 +169,22 @@ namespace
 
     using pool_message_parameters = etl::atomic_counted_message_pool::pool_message_parameters<Message1, Message2>;
 
-    etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
-                                            pool_message_parameters::max_alignment,
-                                            4U> common_memory_allocator;
+    etl::fixed_sized_memory_block_allocator< pool_message_parameters::max_size, pool_message_parameters::max_alignment, 4U> common_memory_allocator;
 
     class atomic_counted_message_factory : public etl::atomic_counted_message_pool
     {
-      public:
-        atomic_counted_message_factory(etl::imemory_block_allocator& memory_block_allocator_)
-          : etl::atomic_counted_message_pool(memory_block_allocator_)
-        {
-        }
+    public:
 
-        template <typename TMessage, typename... Args>
-        etl::shared_message create_message(Args&&... args)
-        {
-          return etl::shared_message::create<TMessage>(*this, etl::forward<Args>(args)...);
-        }
+      atomic_counted_message_factory(etl::imemory_block_allocator& memory_block_allocator_)
+        : etl::atomic_counted_message_pool(memory_block_allocator_)
+      {
+      }
+
+      template <typename TMessage, typename... Args>
+      etl::shared_message create_message(Args&&... args)
+      {
+        return etl::shared_message::create<TMessage>(*this, etl::forward<Args>(args)...);
+      }
     };
 
     atomic_counted_message_factory common_message_pool(common_memory_allocator);
@@ -202,28 +192,27 @@ namespace
     //*************************************************************************
     class Message2Allocator : public etl::ireference_counted_message_pool
     {
-      public:
+    public:
 
-        static etl::reference_counted_message<Message2, void>& Get()
-        {
-          static Message2Allocator allocator;
-          static Message2 message2;
-          static etl::reference_counted_message<Message2, void> rcm2(message2, allocator);
+      static etl::reference_counted_message<Message2, void>& Get()
+      {
+        static Message2Allocator                              allocator;
+        static Message2                                       message2;
+        static etl::reference_counted_message<Message2, void> rcm2(message2, allocator);
 
-          return rcm2;
-        }
+        return rcm2;
+      }
 
-        void release(const etl::ireference_counted_message&) override
-        {
-          // Do nothing.
-        }
+      void release(const etl::ireference_counted_message&) override
+      {
+        // Do nothing.
+      }
     };
 
     //*************************************************************************
     TEST(test_move_constructor_with_default_constructed_message)
     {
-      etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
-                                              pool_message_parameters::max_alignment, 4U> memory_allocator;
+      etl::fixed_sized_memory_block_allocator< pool_message_parameters::max_size, pool_message_parameters::max_alignment, 4U> memory_allocator;
 
       etl::atomic_counted_message_pool message_pool(memory_allocator);
 
@@ -240,7 +229,7 @@ namespace
       message_1_instantiations = 0;
 
 #include "etl/private/diagnostic_pessimizing_move_push.h"
-      etl::shared_message sm (std::move(common_message_pool.create_message<Message1>()));
+      etl::shared_message sm(std::move(common_message_pool.create_message<Message1>()));
 #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
@@ -263,7 +252,7 @@ namespace
       message_1_instantiations = 0;
 
 #include "etl/private/diagnostic_pessimizing_move_push.h"
-      etl::shared_message sm (std::move(common_message_pool.create_message<Message1>(1)));
+      etl::shared_message sm(std::move(common_message_pool.create_message<Message1>(1)));
 #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
@@ -273,24 +262,26 @@ namespace
     //*************************************************************************
     TEST(test_default_message_constructor)
     {
-      etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
-                                              pool_message_parameters::max_alignment, 
-                                              4U> memory_allocator;
+      etl::fixed_sized_memory_block_allocator< pool_message_parameters::max_size, pool_message_parameters::max_alignment, 4U> memory_allocator;
 
       etl::atomic_counted_message_pool message_pool(memory_allocator);
 
       etl::reference_counted_message<Message2, etl::atomic_int>* prcm = message_pool.allocate<Message2>();
 
-      Message2&        m2 = prcm->get_message(); // Check that we can get a non-const reference to the message.
-      const Message2& cm2 = prcm->get_message(); // Check that we can get a const reference to the message.
+      Message2& m2 = prcm->get_message();        // Check that we can get a non-const
+                                                 // reference to the message.
+      const Message2& cm2 = prcm->get_message(); // Check that we can get a const reference to the
+                                                 // message.
 
       (void)m2;
       (void)cm2;
 
       etl::shared_message sm1(*prcm);
 
-      etl::imessage&        im = sm1.get_message(); // Check that we can get a non-const reference to the message.
-      const etl::imessage& cim = sm1.get_message(); // Check that we can get a const reference to the message.
+      etl::imessage& im = sm1.get_message();        // Check that we can get a non-const reference to the
+                                                    // message.
+      const etl::imessage& cim = sm1.get_message(); // Check that we can get a const reference to
+                                                    // the message.
 
       (void)im;
       (void)cim;
@@ -298,13 +289,11 @@ namespace
       CHECK_EQUAL(1, sm1.get_reference_count());
       CHECK(sm1.is_valid());
     }
-    
+
     //*************************************************************************
     TEST(test_move_assignment)
     {
-      etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
-                                              pool_message_parameters::max_alignment, 
-                                              4U> memory_allocator;
+      etl::fixed_sized_memory_block_allocator< pool_message_parameters::max_size, pool_message_parameters::max_alignment, 4U> memory_allocator;
 
       etl::atomic_counted_message_pool message_pool(memory_allocator);
 
@@ -325,22 +314,24 @@ namespace
       router1.clear();
       router2.clear();
 
-      etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
-                                              pool_message_parameters::max_alignment, 
-                                              4U> memory_allocator;
+      etl::fixed_sized_memory_block_allocator< pool_message_parameters::max_size, pool_message_parameters::max_alignment, 4U> memory_allocator;
 
       etl::atomic_counted_message_pool message_pool(memory_allocator);
 
-      etl::shared_message sm1(message_pool, Message1(1)); // sm1 holds a Message1 that is owned by message_pool.
-      etl::shared_message sm2(message_pool, Message2());  // sm2 holds a Message2 that is owned by message_pool.
-      etl::shared_message sm3(Message2Allocator::Get());  // sm3 holds a Message2 that is owned by a statically allocated message pool.
-      etl::shared_message sm4(sm1);                       // sm4 is a copy of sm1.
+      etl::shared_message sm1(message_pool,
+                              Message1(1)); // sm1 holds a Message1 that is owned by message_pool.
+      etl::shared_message sm2(message_pool,
+                              Message2());               // sm2 holds a Message2 that is owned by message_pool.
+      etl::shared_message sm3(Message2Allocator::Get()); // sm3 holds a Message2 that is owned by a
+                                                         // statically allocated message pool.
+      etl::shared_message sm4(sm1);                      // sm4 is a copy of sm1.
 
       bus.receive(sm1);
       bus.receive(sm2);
       bus.receive(sm1);
       bus.receive(sm3);
-      etl::send_message(bus, sm4); // sm4 is a copy of sm1. Use non-member function.
+      etl::send_message(bus,
+                        sm4);      // sm4 is a copy of sm1. Use non-member function.
       bus.receive(RouterId2, sm1); // Only send sm1 to Router2
 
       CHECK(sm1.is_valid());
@@ -363,9 +354,7 @@ namespace
     //*************************************************************************
     TEST(test_reference_counted_pool_exceptions)
     {
-      etl::fixed_sized_memory_block_allocator<pool_message_parameters::max_size,
-                                              pool_message_parameters::max_alignment,
-                                              4U> memory_allocator;
+      etl::fixed_sized_memory_block_allocator< pool_message_parameters::max_size, pool_message_parameters::max_alignment, 4U> memory_allocator;
 
       etl::atomic_counted_message_pool message_pool(memory_allocator);
 
@@ -374,14 +363,14 @@ namespace
       CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(2));
       CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(3));
       CHECK_NO_THROW(prcm = message_pool.allocate<Message1>(4));
-      
+
       (void)prcm;
       CHECK_THROW(prcm = message_pool.allocate<Message1>(5), etl::reference_counted_message_pool_allocation_failure);
-      
-      Message1 message1(6);
+
+      Message1                                                  message1(6);
       etl::reference_counted_message<Message1, etl::atomic_int> temp(message1, message_pool);
 
       CHECK_THROW(message_pool.release(temp), etl::reference_counted_message_pool_release_failure);
     }
   }
-}
+} // namespace

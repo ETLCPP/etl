@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2025 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -60,8 +60,8 @@ namespace
     {
       Chrono::year_month_weekday_last ymwdl{Chrono::year(2000), Chrono::January, Chrono::weekday_last(Chrono::Thursday)};
 
-      CHECK_EQUAL(2000,                          (int)ymwdl.year());
-      CHECK_EQUAL((unsigned)Chrono::January,     (unsigned)ymwdl.month());
+      CHECK_EQUAL(2000, (int)ymwdl.year());
+      CHECK_EQUAL((unsigned)Chrono::January, (unsigned)ymwdl.month());
       CHECK_EQUAL(Chrono::Thursday.c_encoding(), ymwdl.weekday().c_encoding());
 
       using namespace etl::literals::chrono_literals;
@@ -71,7 +71,7 @@ namespace
     TEST(test_to_sys_days)
     {
       Chrono::year_month_weekday_last ymwdl{Chrono::year(2000), Chrono::February, Chrono::weekday_last(Chrono::Thursday)};
-      Chrono::sys_days sd = Chrono::sys_days(ymwdl);
+      Chrono::sys_days                sd = Chrono::sys_days(ymwdl);
 
       CHECK_EQUAL(11012, sd.time_since_epoch().count());
     }
@@ -79,10 +79,10 @@ namespace
     //*************************************************************************
     TEST(test_year_month_weekday_last_equality_operator)
     {
-      Chrono::year_month_weekday_last ym1{Chrono::year(2000), Chrono::January,  Chrono::weekday_last(Chrono::Thursday)};
-      Chrono::year_month_weekday_last ym2{Chrono::year(2001), Chrono::January,  Chrono::weekday_last(Chrono::Thursday)};
+      Chrono::year_month_weekday_last ym1{Chrono::year(2000), Chrono::January, Chrono::weekday_last(Chrono::Thursday)};
+      Chrono::year_month_weekday_last ym2{Chrono::year(2001), Chrono::January, Chrono::weekday_last(Chrono::Thursday)};
       Chrono::year_month_weekday_last ym3{Chrono::year(2000), Chrono::February, Chrono::weekday_last(Chrono::Thursday)};
-      Chrono::year_month_weekday_last ym4{Chrono::year(2000), Chrono::January,  Chrono::weekday_last(Chrono::Friday)};
+      Chrono::year_month_weekday_last ym4{Chrono::year(2000), Chrono::January, Chrono::weekday_last(Chrono::Friday)};
 
       CHECK_TRUE(ym1 == ym1);  // Same year/month/day
       CHECK_FALSE(ym1 == ym2); // Different year
@@ -93,10 +93,10 @@ namespace
     //*************************************************************************
     TEST(test_year_month_weekday_last_not_equality_operator)
     {
-      Chrono::year_month_weekday_last ym1{Chrono::year(2000), Chrono::January,  Chrono::weekday_last(Chrono::Thursday)};
-      Chrono::year_month_weekday_last ym2{Chrono::year(2001), Chrono::January,  Chrono::weekday_last(Chrono::Thursday)};
+      Chrono::year_month_weekday_last ym1{Chrono::year(2000), Chrono::January, Chrono::weekday_last(Chrono::Thursday)};
+      Chrono::year_month_weekday_last ym2{Chrono::year(2001), Chrono::January, Chrono::weekday_last(Chrono::Thursday)};
       Chrono::year_month_weekday_last ym3{Chrono::year(2000), Chrono::February, Chrono::weekday_last(Chrono::Thursday)};
-      Chrono::year_month_weekday_last ym4{Chrono::year(2000), Chrono::January,  Chrono::weekday_last(Chrono::Friday)};
+      Chrono::year_month_weekday_last ym4{Chrono::year(2000), Chrono::January, Chrono::weekday_last(Chrono::Friday)};
 
       CHECK_FALSE(ym1 != ym1); // Same year/month/day
       CHECK_TRUE(ym1 != ym2);  // Different year
@@ -104,4 +104,4 @@ namespace
       CHECK_TRUE(ym1 != ym4);  // Different day
     }
   }
-}
+} // namespace

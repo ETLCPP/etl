@@ -32,15 +32,15 @@ SOFTWARE.
 #define ETL_FNV_1_INCLUDED
 
 #include "platform.h"
+#include "frame_check_sequence.h"
+#include "ihash.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "ihash.h"
-#include "frame_check_sequence.h"
 
 #include <stdint.h>
 
 #if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
+  #pragma diag_suppress 1300
 #endif
 
 ///\defgroup fnv_1 FNV-1 & FNV-1a 32 & 64 bit hash calculations
@@ -66,7 +66,7 @@ namespace etl
     {
       hash *= PRIME;
       hash ^= value;
-      return  hash;
+      return hash;
     }
 
     uint64_t final(uint64_t hash) const
@@ -99,7 +99,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     fnv_1_64(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -112,11 +112,11 @@ namespace etl
   /// Calculates FNV1A.
   //***************************************************************************
   struct fnv_1a_policy_64
-    {
+  {
     typedef uint64_t value_type;
 
     uint64_t initial() const
-      {
+    {
       return OFFSET_BASIS;
     }
 
@@ -157,7 +157,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     fnv_1a_64(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -171,11 +171,11 @@ namespace etl
   /// Calculates FNV1.
   //***************************************************************************
   struct fnv_1_policy_32
-    {
+  {
     typedef uint32_t value_type;
 
     uint32_t initial() const
-      {
+    {
       return OFFSET_BASIS;
     }
 
@@ -216,7 +216,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     fnv_1_32(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -229,11 +229,11 @@ namespace etl
   /// Calculates FNV1A.
   //***************************************************************************
   struct fnv_1a_policy_32
-    {
+  {
     typedef uint32_t value_type;
 
     uint32_t initial() const
-      {
+    {
       return OFFSET_BASIS;
     }
 
@@ -274,13 +274,13 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     fnv_1a_32(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
     }
   };
-}
+} // namespace etl
 
 #endif

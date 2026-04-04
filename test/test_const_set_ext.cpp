@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <map>
-#include <array>
 #include <algorithm>
-#include <utility>
+#include <array>
 #include <iterator>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "etl/const_set.h"
@@ -66,49 +66,49 @@ namespace
   };
 
   // Less-than operator for Key < Key
-  constexpr bool operator <(const Key& lhs, const Key& rhs) noexcept
+  constexpr bool operator<(const Key& lhs, const Key& rhs) noexcept
   {
     return (lhs.k < rhs.k);
   }
 
   // Less-than operator for Key < char
-  constexpr bool operator <(const Key& lhs, char rhs) noexcept
+  constexpr bool operator<(const Key& lhs, char rhs) noexcept
   {
     return (lhs.k < rhs);
   }
 
   // Less-than operator for char < Key
-  constexpr bool operator <(char lhs, const Key& rhs) noexcept
+  constexpr bool operator<(char lhs, const Key& rhs) noexcept
   {
     return (lhs < rhs.k);
   }
 
   // Equality operator for Key == Key
-  constexpr bool operator ==(const Key& lhs, const Key& rhs) noexcept
+  constexpr bool operator==(const Key& lhs, const Key& rhs) noexcept
   {
     return (lhs.k == rhs.k);
   }
 
 #if ETL_NOT_USING_CPP20
   // Equality operator for Key != Key
-  constexpr bool operator !=(const Key& lhs, const Key& rhs) noexcept
+  constexpr bool operator!=(const Key& lhs, const Key& rhs) noexcept
   {
     return !(lhs.k == rhs.k);
   }
 #endif
 
-  #define TEST_GREATER_THAN
-  #ifdef TEST_GREATER_THAN
-    using Data                       = etl::const_set_ext<Key, etl::greater<Key>>;
-    using IData                      = etl::iconst_set<Key,    etl::greater<Key>>;
-    using DataTransparentComparator  = etl::const_set_ext<Key, etl::greater<>>;
-    using IDataTransparentComparator = etl::iconst_set<Key,    etl::greater<>>;
-  #else
-    using Data                       = etl::const_set_ext<Key,  etl::less<Key>>;
-    using IData                      = etl::iconst_set<Key, etl::less<Key>>;
-    using DataTransparentComparator  = etl::const_set_ext<Key,  etl::less<>>;
-    using IDataTransparentComparator = etl::iconst_set<Key, etl::less<>>;
-  #endif
+#define TEST_GREATER_THAN
+#ifdef TEST_GREATER_THAN
+  using Data                       = etl::const_set_ext<Key, etl::greater<Key>>;
+  using IData                      = etl::iconst_set<Key, etl::greater<Key>>;
+  using DataTransparentComparator  = etl::const_set_ext<Key, etl::greater<>>;
+  using IDataTransparentComparator = etl::iconst_set<Key, etl::greater<>>;
+#else
+  using Data                       = etl::const_set_ext<Key, etl::less<Key>>;
+  using IData                      = etl::iconst_set<Key, etl::less<Key>>;
+  using DataTransparentComparator  = etl::const_set_ext<Key, etl::less<>>;
+  using IDataTransparentComparator = etl::iconst_set<Key, etl::less<>>;
+#endif
 
   using value_type     = Data::value_type;
   using key_type       = Data::key_type;
@@ -122,14 +122,14 @@ namespace
     {
       static const Data data;
 
-      static const bool   is_valid      = data.is_valid();
-      static const size_t size          = data.size();
-      static const bool   empty         = data.empty();
-      static const bool   full          = data.full();
-      static const size_t capacity      = data.capacity();
-      static const size_t max_size      = data.max_size();
-      static const const_iterator begin = data.begin();
-      static const const_iterator end   = data.end();
+      static const bool           is_valid = data.is_valid();
+      static const size_t         size     = data.size();
+      static const bool           empty    = data.empty();
+      static const bool           full     = data.full();
+      static const size_t         capacity = data.capacity();
+      static const size_t         max_size = data.max_size();
+      static const const_iterator begin    = data.begin();
+      static const const_iterator end      = data.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == 0UL);
@@ -143,18 +143,18 @@ namespace
     //*************************************************************************
     TEST(test_constructor_min_size_from_span)
     {
-      static const value_type values[]{ Key('A') };
+      static const value_type                     values[]{Key('A')};
       static const etl::span<const value_type, 1> span(values);
-      static const Data data{ span };
+      static const Data                           data{span};
 
-      static const bool   is_valid      = data.is_valid();
-      static const size_t size          = data.size();
-      static const bool   empty         = data.empty();
-      static const bool   full          = data.full();
-      static const size_t capacity      = data.capacity();
-      static const size_t max_size      = data.max_size();
-      static const const_iterator begin = data.begin();
-      static const const_iterator end   = data.end();
+      static const bool           is_valid = data.is_valid();
+      static const size_t         size     = data.size();
+      static const bool           empty    = data.empty();
+      static const bool           full     = data.full();
+      static const size_t         capacity = data.capacity();
+      static const size_t         max_size = data.max_size();
+      static const const_iterator begin    = data.begin();
+      static const const_iterator end      = data.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == 1U);
@@ -169,24 +169,22 @@ namespace
     TEST(test_constructor_max_size_from_span)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
       static const span_type span(values);
-      static const Data data{ span };
+      static const Data      data{span};
 
-      static const bool   is_valid      = data.is_valid();
-      static const size_t size          = data.size();
-      static const bool   empty         = data.empty();
-      static const bool   full          = data.full();
-      static const size_t capacity      = data.capacity();
-      static const size_t max_size      = data.max_size();
-      static const const_iterator begin = data.begin();
-      static const const_iterator end   = data.end();
+      static const bool           is_valid = data.is_valid();
+      static const size_t         size     = data.size();
+      static const bool           empty    = data.empty();
+      static const bool           full     = data.full();
+      static const size_t         capacity = data.capacity();
+      static const size_t         max_size = data.max_size();
+      static const const_iterator begin    = data.begin();
+      static const const_iterator end      = data.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == Max_Size);
@@ -201,23 +199,21 @@ namespace
     TEST(test_constructor_max_size_from_array)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
-      static const bool   is_valid      = data.is_valid();
-      static const size_t size          = data.size();
-      static const bool   empty         = data.empty();
-      static const bool   full          = data.full();
-      static const size_t capacity      = data.capacity();
-      static const size_t max_size      = data.max_size();
-      static const const_iterator begin = data.begin();
-      static const const_iterator end   = data.end();
+      static const bool           is_valid = data.is_valid();
+      static const size_t         size     = data.size();
+      static const bool           empty    = data.empty();
+      static const bool           full     = data.full();
+      static const size_t         capacity = data.capacity();
+      static const size_t         max_size = data.max_size();
+      static const const_iterator begin    = data.begin();
+      static const const_iterator end      = data.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == Max_Size);
@@ -232,25 +228,23 @@ namespace
     TEST(test_constructor_max_size_status_from_iconst_set)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       static const IData& idata = data;
 
-      static const bool   is_valid      = idata.is_valid();
-      static const size_t size          = idata.size();
-      static const bool   empty         = idata.empty();
-      static const bool   full          = idata.full();
-      static const size_t capacity      = idata.capacity();
-      static const size_t max_size      = idata.max_size();
-      static const const_iterator begin = idata.begin();
-      static const const_iterator end   = idata.end();
+      static const bool           is_valid = idata.is_valid();
+      static const size_t         size     = idata.size();
+      static const bool           empty    = idata.empty();
+      static const bool           full     = idata.full();
+      static const size_t         capacity = idata.capacity();
+      static const size_t         max_size = idata.max_size();
+      static const const_iterator begin    = idata.begin();
+      static const const_iterator end      = idata.end();
 
       CHECK_TRUE(is_valid);
       CHECK_TRUE(size == Max_Size);
@@ -265,14 +259,12 @@ namespace
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor_from_span)
     {
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const span_type span(values);
+      static const span_type          span(values);
       static const etl::const_set_ext data{span};
 
-      etl::const_set<Key, 10U> check{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                      Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      etl::const_set<Key, 10U> check{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       CHECK_TRUE(data.is_valid());
       CHECK_TRUE(data.size() == Max_Size);
@@ -286,13 +278,11 @@ namespace
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor_from_array)
     {
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
-      
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
+
       static const etl::const_set_ext data{values};
-      
-      etl::const_set<Key, 10U> check{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                      Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+
+      etl::const_set<Key, 10U> check{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       CHECK_TRUE(data.is_valid());
       CHECK_TRUE(data.size() == Max_Size);
@@ -308,32 +298,29 @@ namespace
     TEST(test_begin)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       CHECK_TRUE(data.is_valid());
       static const auto value = *data.begin();
 
 #ifdef TEST_GREATER_THAN
-      CHECK_TRUE(( Key('J')) == value);
+      CHECK_TRUE((Key('J')) == value);
 #else
-      CHECK_TRUE(( Key('A')) == value);
+      CHECK_TRUE((Key('A')) == value);
 #endif
     }
 
     //*************************************************************************
     TEST(test_end)
     {
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 
-      static const Data data{ values };
+      static const Data data{values};
 
       static const const_iterator end_itr = data.end();
 
@@ -344,14 +331,12 @@ namespace
     TEST(test_equal_range)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       static const ETL_OR_STD::pair<const_iterator, const_iterator> resultA = data.equal_range(Key('A'));
       static const ETL_OR_STD::pair<const_iterator, const_iterator> resultB = data.equal_range(Key('B'));
@@ -415,14 +400,12 @@ namespace
     TEST(test_equal_range_using_transparent_comparator)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const DataTransparentComparator data{ values };
+      static const DataTransparentComparator data{values};
 
       static const ETL_OR_STD::pair<const_iterator, const_iterator> resultA = data.equal_range('A');
       static const ETL_OR_STD::pair<const_iterator, const_iterator> resultB = data.equal_range('B');
@@ -486,14 +469,12 @@ namespace
     TEST(test_lower_bound)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('K'), Key('J'), Key('I'), Key('H'), Key('G'),
-                                        Key('F'), Key('E'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('K'), Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('E'), Key('F'), 
-                                        Key('G'), Key('H'), Key('I'), Key('J'), Key('K') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J'), Key('K')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       static const const_iterator resultA = data.lower_bound(Key('A'));
       static const const_iterator resultB = data.lower_bound(Key('B'));
@@ -538,14 +519,12 @@ namespace
     TEST(test_lower_bound_using_transparent_comparator)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('K'), Key('J'), Key('I'), Key('H'), Key('G'),
-                                        Key('F'), Key('E'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('K'), Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('E'), Key('F'), 
-                                        Key('G'), Key('H'), Key('I'), Key('J'), Key('K') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J'), Key('K')};
 #endif
 
-      static const DataTransparentComparator data{ values };
+      static const DataTransparentComparator data{values};
 
       static const const_iterator resultA = data.lower_bound('A');
       static const const_iterator resultB = data.lower_bound('B');
@@ -590,14 +569,12 @@ namespace
     TEST(test_upper_bound)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('K'), Key('J'), Key('I'), Key('H'), Key('G'),
-                                        Key('F'), Key('E'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('K'), Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('E'), Key('F'), 
-                                        Key('G'), Key('H'), Key('I'), Key('J'), Key('K') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J'), Key('K')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       static const const_iterator resultA = data.upper_bound(Key('A'));
       static const const_iterator resultB = data.upper_bound(Key('B'));
@@ -642,14 +619,12 @@ namespace
     TEST(test_upper_bound_using_transparent_comparator)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('K'), Key('J'), Key('I'), Key('H'), Key('G'),
-                                        Key('F'), Key('E'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('K'), Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('E'), Key('F'), 
-                                        Key('G'), Key('H'), Key('I'), Key('J'), Key('K') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J'), Key('K')};
 #endif
 
-      static const DataTransparentComparator data{ values };
+      static const DataTransparentComparator data{values};
 
       static const const_iterator resultA = data.upper_bound('A');
       static const const_iterator resultB = data.upper_bound('B');
@@ -694,14 +669,12 @@ namespace
     TEST(test_count)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       static const size_t countA = data.count(Key('A'));
       static const size_t countB = data.count(Key('B'));
@@ -732,14 +705,12 @@ namespace
     TEST(test_count_using_transparent_comparator)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const DataTransparentComparator data{ values };
+      static const DataTransparentComparator data{values};
 
       static const size_t countA = data.count('A');
       static const size_t countB = data.count('B');
@@ -770,14 +741,12 @@ namespace
     TEST(test_const_iterator)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       const_iterator itr = data.begin();
 
@@ -805,21 +774,19 @@ namespace
       CHECK_TRUE((Key('I')) == *itr++);
       CHECK_TRUE((Key('J')) == *itr++);
       CHECK_TRUE(itr == data.end());
-#endif      
+#endif
     }
 
     //*************************************************************************
     TEST(test_find)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       static const const_iterator resultA = data.find(Key('A'));
       static const const_iterator resultB = data.find(Key('B'));
@@ -861,14 +828,12 @@ namespace
     TEST(test_find_using_transparent_comparator)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const DataTransparentComparator data{ values };
+      static const DataTransparentComparator data{values};
 
       static const const_iterator resultA = data.find('A');
       static const const_iterator resultB = data.find('B');
@@ -893,7 +858,7 @@ namespace
       CHECK_EQUAL(1, (std::distance(data.begin(), resultI)));
       CHECK_EQUAL(0, (std::distance(data.begin(), resultJ)));
 #else
-      CHECK_EQUAL(0, (std::distance(data.begin(), resultA))); 
+      CHECK_EQUAL(0, (std::distance(data.begin(), resultA)));
       CHECK_EQUAL(1, (std::distance(data.begin(), resultB)));
       CHECK_EQUAL(2, (std::distance(data.begin(), resultC)));
       CHECK_EQUAL(3, (std::distance(data.begin(), resultD)));
@@ -928,7 +893,7 @@ namespace
     //*************************************************************************
     TEST(test_key_compare_using_transparent_comparator)
     {
-      static const DataTransparentComparator data;
+      static const DataTransparentComparator              data;
       static const DataTransparentComparator::key_compare compare = data.key_comp();
 
       static const DataTransparentComparator::key_type a(Key('A'));
@@ -941,12 +906,12 @@ namespace
       CHECK(compare(a, b));
       CHECK(!compare(b, a));
 #endif
-   }
+    }
 
     //*************************************************************************
     TEST(test_value_compare)
     {
-      static const Data data;
+      static const Data                data;
       static const Data::value_compare compare = data.value_comp();
 
       static const Data::value_type a(Key('A'));
@@ -965,14 +930,12 @@ namespace
     TEST(test_contains)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const Data data{ values };
+      static const Data data{values};
 
       static const bool containsA = data.contains(Key('A'));
       static const bool containsB = data.contains(Key('B'));
@@ -1003,14 +966,12 @@ namespace
     TEST(test_contains_with_transparent_comparator)
     {
 #ifdef TEST_GREATER_THAN
-      static const value_type values[]{ Key('J'), Key('I'), Key('H'), Key('G'), Key('F'),
-                                        Key('E'), Key('D'), Key('C'), Key('B'), Key('A') };
+      static const value_type values[]{Key('J'), Key('I'), Key('H'), Key('G'), Key('F'), Key('E'), Key('D'), Key('C'), Key('B'), Key('A')};
 #else
-      static const value_type values[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                        Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 #endif
 
-      static const DataTransparentComparator data{ values };
+      static const DataTransparentComparator data{values};
 
       static const bool containsA = data.contains('A');
       static const bool containsB = data.contains('B');
@@ -1040,12 +1001,12 @@ namespace
     //*************************************************************************
     TEST(test_key_comp)
     {
-      static const Data data;
+      static const Data              data;
       static const Data::key_compare compare = data.key_comp();
 
-      static const bool compareAA = compare(Key{ 'A' }, Key{ 'A' });
-      static const bool compareBA = compare(Key{ 'B' }, Key{ 'A' });
-      static const bool compareAB = compare(Key{ 'A' }, Key{ 'B' });
+      static const bool compareAA = compare(Key{'A'}, Key{'A'});
+      static const bool compareBA = compare(Key{'B'}, Key{'A'});
+      static const bool compareAB = compare(Key{'A'}, Key{'B'});
 
 #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA);
@@ -1061,7 +1022,7 @@ namespace
     //*************************************************************************
     TEST(test_key_comp_transparent_comparator)
     {
-      static const DataTransparentComparator data;
+      static const DataTransparentComparator              data;
       static const DataTransparentComparator::key_compare compare = data.key_comp();
 
       static const bool compareAA = compare('A', 'A');
@@ -1082,20 +1043,20 @@ namespace
     //*************************************************************************
     TEST(test_value_comp)
     {
-      static const Data data;
+      static const Data                data;
       static const Data::value_compare compare = data.value_comp();
 
-      static const bool compareAA1 = compare( Key{ 'A' },  Key{ 'A' });
-      static const bool compareAA2 = compare( Key{ 'A' }, Key{ 'A' });
-      static const bool compareAA3 = compare(Key{ 'A' },  Key{ 'A' });
+      static const bool compareAA1 = compare(Key{'A'}, Key{'A'});
+      static const bool compareAA2 = compare(Key{'A'}, Key{'A'});
+      static const bool compareAA3 = compare(Key{'A'}, Key{'A'});
 
-      static const bool compareBA1 = compare( Key{ 'B' },  Key{ 'A' });
-      static const bool compareBA2 = compare( Key{ 'B' }, Key{ 'A' });
-      static const bool compareBA3 = compare(Key{ 'B' },  Key{ 'A' });
-          
-      static const bool compareAB1 = compare( Key{ 'A' },  Key{ 'B' });
-      static const bool compareAB2 = compare( Key{ 'A' }, Key{ 'B' });
-      static const bool compareAB3 = compare(Key{ 'A' },  Key{ 'B' });
+      static const bool compareBA1 = compare(Key{'B'}, Key{'A'});
+      static const bool compareBA2 = compare(Key{'B'}, Key{'A'});
+      static const bool compareBA3 = compare(Key{'B'}, Key{'A'});
+
+      static const bool compareAB1 = compare(Key{'A'}, Key{'B'});
+      static const bool compareAB2 = compare(Key{'A'}, Key{'B'});
+      static const bool compareAB3 = compare(Key{'A'}, Key{'B'});
 
 #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
@@ -1127,20 +1088,20 @@ namespace
     //*************************************************************************
     TEST(test_value_comp_transparent_comparator)
     {
-      static const DataTransparentComparator data;
+      static const DataTransparentComparator                data;
       static const DataTransparentComparator::value_compare compare = data.value_comp();
 
-      static const bool compareAA1 = compare( 'A',  'A');
-      static const bool compareAA2 = compare( 'A', 'A');
-      static const bool compareAA3 = compare('A',  'A');
+      static const bool compareAA1 = compare('A', 'A');
+      static const bool compareAA2 = compare('A', 'A');
+      static const bool compareAA3 = compare('A', 'A');
 
-      static const bool compareBA1 = compare( 'B',  'A');
-      static const bool compareBA2 = compare( 'B', 'A');
-      static const bool compareBA3 = compare('B',  'A');
+      static const bool compareBA1 = compare('B', 'A');
+      static const bool compareBA2 = compare('B', 'A');
+      static const bool compareBA3 = compare('B', 'A');
 
-      static const bool compareAB1 = compare( 'A',  'B');
-      static const bool compareAB2 = compare( 'A', 'B');
-      static const bool compareAB3 = compare('A',  'B');
+      static const bool compareAB1 = compare('A', 'B');
+      static const bool compareAB2 = compare('A', 'B');
+      static const bool compareAB3 = compare('A', 'B');
 
 #ifdef TEST_GREATER_THAN
       CHECK_FALSE(compareAA1);
@@ -1172,17 +1133,13 @@ namespace
     //*************************************************************************
     TEST(test_equal)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('G'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('G'), Key('I'), Key('J')};
 
-      static const value_type values4[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('G'), Key('I'), Key('J'), Key('K') };
+      static const value_type values4[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('G'), Key('I'), Key('J'), Key('K')};
 
       static const Data data1{values1};
       static const Data data2{values2};
@@ -1201,17 +1158,13 @@ namespace
     //*************************************************************************
     TEST(test_equal_with_transparent_comparator)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('G'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('G'), Key('I'), Key('J')};
 
-      static const value_type values4[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('G'), Key('I'), Key('J'), Key('K') };
+      static const value_type values4[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('G'), Key('I'), Key('J'), Key('K')};
 
       static const DataTransparentComparator data1{values1};
       static const DataTransparentComparator data2{values2};
@@ -1230,17 +1183,13 @@ namespace
     //*************************************************************************
     TEST(test_not_equal)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('G'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('G'), Key('I'), Key('J')};
 
-      static const value_type values4[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('G'), Key('I'), Key('J'), Key('K') };
+      static const value_type values4[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('G'), Key('I'), Key('J'), Key('K')};
 
       static const Data data1{values1};
       static const Data data2{values2};
@@ -1259,17 +1208,13 @@ namespace
     //*************************************************************************
     TEST(test_not_equal_with_transparent_comparator)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('G'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('G'), Key('I'), Key('J')};
 
-      static const value_type values4[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('G'), Key('I'), Key('J'), Key('K') };
+      static const value_type values4[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('G'), Key('I'), Key('J'), Key('K')};
 
       static const DataTransparentComparator data1{values1};
       static const DataTransparentComparator data2{values2};
@@ -1288,14 +1233,11 @@ namespace
     //*************************************************************************
     TEST(test_less_than)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('B'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('B'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('D'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('D'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       static const Data data1{values1};
       static const Data data2{values2};
@@ -1322,14 +1264,11 @@ namespace
     //*************************************************************************
     TEST(test_less_than_with_transparent_comparator)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('B'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('B'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('D'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('D'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       static const DataTransparentComparator data1{values1};
       static const DataTransparentComparator data2{values2};
@@ -1356,14 +1295,11 @@ namespace
     //*************************************************************************
     TEST(test_less_than_equal)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('B'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('B'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('D'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('D'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       static const Data data1{values1};
       static const Data data2{values2};
@@ -1393,14 +1329,11 @@ namespace
     //*************************************************************************
     TEST(test_less_than_equal_with_transparent_comparator)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('B'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('B'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('D'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('D'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       static const DataTransparentComparator data1{values1};
       static const DataTransparentComparator data2{values2};
@@ -1430,14 +1363,11 @@ namespace
     //*************************************************************************
     TEST(test_greater_than)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('B'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('B'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('D'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('D'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       static const Data data1{values1};
       static const Data data2{values2};
@@ -1464,14 +1394,11 @@ namespace
     //*************************************************************************
     TEST(test_greater_than_with_transparent_comparator)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('B'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('B'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('D'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('D'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       static const DataTransparentComparator data1{values1};
       static const DataTransparentComparator data2{values2};
@@ -1498,14 +1425,11 @@ namespace
     //*************************************************************************
     TEST(test_greater_than_equal)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('B'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('B'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('D'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('D'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       static const Data data1{values1};
       static const Data data2{values2};
@@ -1535,14 +1459,11 @@ namespace
     //*************************************************************************
     TEST(test_greater_than_equal_with_transparent_comparator)
     {
-      static const value_type values1[]{ Key('A'), Key('B'), Key('B'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values1[]{Key('A'), Key('B'), Key('B'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values2[]{ Key('A'), Key('B'), Key('C'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values2[]{Key('A'), Key('B'), Key('C'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
-      static const value_type values3[]{ Key('A'), Key('B'), Key('D'), Key('D'), Key('E'),
-                                         Key('F'), Key('G'), Key('H'), Key('I'), Key('J') };
+      static const value_type values3[]{Key('A'), Key('B'), Key('D'), Key('D'), Key('E'), Key('F'), Key('G'), Key('H'), Key('I'), Key('J')};
 
       static const DataTransparentComparator data1{values1};
       static const DataTransparentComparator data2{values2};
@@ -1569,4 +1490,4 @@ namespace
 #endif
     }
   }
-}
+} // namespace

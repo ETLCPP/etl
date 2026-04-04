@@ -35,9 +35,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "to_string.h"
-#include "to_u8string.h"
 #include "to_u16string.h"
 #include "to_u32string.h"
+#include "to_u8string.h"
 #include "to_wstring.h"
 
 namespace etl
@@ -125,16 +125,17 @@ namespace etl
     //*********************************
     /// TFormat
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, const TFormat& fmt)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, const TFormat& fmt)
     {
       ss.format = fmt;
       return ss;
     }
 
     //*********************************
-    /// etl::base_spec from etl::setbase, etl::bin, etl::oct, etl::dec & etl::hex stream manipulators
+    /// etl::base_spec from etl::setbase, etl::bin, etl::oct, etl::dec &
+    /// etl::hex stream manipulators
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::base_spec fmt)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::base_spec fmt)
     {
       ss.format.base(fmt.base);
       return ss;
@@ -143,7 +144,7 @@ namespace etl
     //*********************************
     /// etl::width_spec from etl::setw stream manipulator
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::width_spec fmt)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::width_spec fmt)
     {
       ss.format.width(fmt.width);
       return ss;
@@ -153,7 +154,7 @@ namespace etl
     /// etl::fill_spec from etl::setfill stream manipulator
     //*********************************
     template <typename TChar>
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::fill_spec<TChar> fmt)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::fill_spec<TChar> fmt)
     {
       ss.format.fill(fmt.fill);
       return ss;
@@ -162,34 +163,37 @@ namespace etl
     //*********************************
     /// etl::precision_spec from etl::setprecision stream manipulator
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::precision_spec fmt)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::precision_spec fmt)
     {
       ss.format.precision(fmt.precision);
       return ss;
     }
 
     //*********************************
-    /// etl::boolalpha_spec from etl::boolalpha & etl::noboolalpha stream manipulators
+    /// etl::boolalpha_spec from etl::boolalpha & etl::noboolalpha stream
+    /// manipulators
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::boolalpha_spec fmt)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::boolalpha_spec fmt)
     {
       ss.format.boolalpha(fmt.boolalpha);
       return ss;
     }
 
     //*********************************
-    /// etl::uppercase_spec from etl::uppercase & etl::nouppercase stream manipulators
+    /// etl::uppercase_spec from etl::uppercase & etl::nouppercase stream
+    /// manipulators
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::uppercase_spec fmt)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::uppercase_spec fmt)
     {
       ss.format.upper_case(fmt.upper_case);
       return ss;
     }
 
     //*********************************
-    /// etl::showbase_spec from etl::showbase & etl::noshowbase stream manipulators
+    /// etl::showbase_spec from etl::showbase & etl::noshowbase stream
+    /// manipulators
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::showbase_spec fmt)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::showbase_spec fmt)
     {
       ss.format.show_base(fmt.show_base);
       return ss;
@@ -198,7 +202,7 @@ namespace etl
     //*********************************
     /// etl::left_spec from etl::left stream manipulator
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::left_spec /*fmt*/)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::left_spec /*fmt*/)
     {
       ss.format.left();
       return ss;
@@ -207,7 +211,7 @@ namespace etl
     //*********************************
     /// etl::right_spec from etl::left stream manipulator
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, etl::private_basic_format_spec::right_spec /*fmt*/)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, etl::private_basic_format_spec::right_spec /*fmt*/)
     {
       ss.format.right();
       return ss;
@@ -216,7 +220,7 @@ namespace etl
     //*********************************
     /// From a string view
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, TStringView view)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, TStringView view)
     {
       etl::to_string(view, ss.text, ss.format, true);
       return ss;
@@ -225,7 +229,7 @@ namespace etl
     //*********************************
     /// From a character pointer to a string
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, pointer p)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, pointer p)
     {
       TStringView view(p);
       ss << view;
@@ -235,7 +239,7 @@ namespace etl
     //*********************************
     /// From a const character pointer to a string
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, const_pointer p)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, const_pointer p)
     {
       TStringView view(p);
       ss << view;
@@ -245,7 +249,7 @@ namespace etl
     //*********************************
     /// From a string interface
     //*********************************
-    friend basic_string_stream& operator <<(basic_string_stream& ss, const TIString& t)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, const TIString& t)
     {
       etl::to_string(t, ss.text, ss.format, true);
       return ss;
@@ -255,7 +259,7 @@ namespace etl
     /// From a string
     //*********************************
     template <template <size_t> class TString, size_t SIZE>
-    friend basic_string_stream& operator <<(basic_string_stream& ss, const TString<SIZE>& t)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, const TString<SIZE>& t)
     {
       const TIString& itext = t;
       etl::to_string(itext, ss.str(), ss.get_format(), true);
@@ -266,7 +270,7 @@ namespace etl
     /// From anything else
     //*********************************
     template <typename T>
-    friend basic_string_stream& operator <<(basic_string_stream& ss, const T& value)
+    friend basic_string_stream& operator<<(basic_string_stream& ss, const T& value)
     {
       etl::to_string(value, ss.text, ss.format, true);
       return ss;
@@ -278,8 +282,8 @@ namespace etl
     TFormat   format;
 
     basic_string_stream(const basic_string_stream&) ETL_DELETE;
-    basic_string_stream& operator =(const basic_string_stream&) ETL_DELETE;
+    basic_string_stream& operator=(const basic_string_stream&) ETL_DELETE;
   };
-}
+} // namespace etl
 
 #endif

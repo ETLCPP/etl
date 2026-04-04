@@ -30,9 +30,9 @@ SOFTWARE.
 
 #include "etl/io_port.h"
 
-#include <stdint.h>
-#include <array>
 #include <algorithm>
+#include <array>
+#include <stdint.h>
 
 uint8_t rw  = 0x12U;
 uint8_t ro  = 0x34U;
@@ -44,8 +44,8 @@ namespace
   template <uintptr_t Address>
   struct serial_port
   {
-    etl::io_port_ro<uint8_t,  Address>     rxdata;
-    etl::io_port_wo<uint8_t,  Address + 1> txdata;
+    etl::io_port_ro<uint8_t, Address>      rxdata;
+    etl::io_port_wo<uint8_t, Address + 1>  txdata;
     etl::io_port_rw<uint16_t, Address + 2> control;
     etl::io_port_ro<uint16_t, Address + 4> status;
     etl::io_port_wos<uint8_t, Address + 6> control2;
@@ -53,11 +53,7 @@ namespace
 
   struct dynamic_serial_port
   {
-    dynamic_serial_port(uint8_t*  rxdata_reg,
-                        uint8_t*  txdata_reg,
-                        uint16_t* control_reg,
-                        uint16_t* status_reg,
-                        uint8_t*  control2_reg)
+    dynamic_serial_port(uint8_t* rxdata_reg, uint8_t* txdata_reg, uint16_t* control_reg, uint16_t* status_reg, uint8_t* control2_reg)
       : rxdata(rxdata_reg)
       , txdata(txdata_reg)
       , control(control_reg)
@@ -72,7 +68,7 @@ namespace
     etl::io_port_ro<uint16_t> status;
     etl::io_port_wos<uint8_t> control2;
   };
-}
+} // namespace
 
 namespace
 {
@@ -93,13 +89,13 @@ namespace
       CHECK_TRUE((std::is_same<uint8_t, iop_wos_t::value_type>::value));
 
       // Check IOP::iterator io_port_type
-      CHECK_TRUE((std::is_same<iop_rw_t,  iop_rw_t::iterator::io_port_type>::value));
-      CHECK_TRUE((std::is_same<iop_wo_t,  iop_wo_t::iterator::io_port_type>::value));
+      CHECK_TRUE((std::is_same<iop_rw_t, iop_rw_t::iterator::io_port_type>::value));
+      CHECK_TRUE((std::is_same<iop_wo_t, iop_wo_t::iterator::io_port_type>::value));
       CHECK_TRUE((std::is_same<iop_wos_t, iop_wos_t::iterator::io_port_type>::value));
 
       // Check IOP::const_iterator io_port_type
-      CHECK_TRUE((std::is_same<iop_rw_t,  iop_rw_t::const_iterator::io_port_type>::value));
-      CHECK_TRUE((std::is_same<iop_ro_t,  iop_ro_t::const_iterator::io_port_type>::value));
+      CHECK_TRUE((std::is_same<iop_rw_t, iop_rw_t::const_iterator::io_port_type>::value));
+      CHECK_TRUE((std::is_same<iop_ro_t, iop_ro_t::const_iterator::io_port_type>::value));
       CHECK_TRUE((std::is_same<iop_wos_t, iop_wos_t::const_iterator::io_port_type>::value));
 
       // Check IOP::iterator value_type
@@ -111,20 +107,21 @@ namespace
       CHECK_TRUE((std::is_same<const uint8_t, iop_rw_t::const_iterator::value_type>::value));
       CHECK_TRUE((std::is_same<const uint8_t, iop_ro_t::const_iterator::value_type>::value));
       CHECK_TRUE((std::is_same<const uint8_t, iop_wos_t::const_iterator::value_type>::value));
-    }   
+    }
 
     //*************************************************************************
     TEST(test_static_io_port)
     {
-      // Without a compile time address, the static address IO ports cannot be tested.
+      // Without a compile time address, the static address IO ports cannot be
+      // tested.
       serial_port<0x1234U> port;
     }
 
     //*************************************************************************
     TEST(test_dynamic_io_port_rw_constructors_and_assignment)
     {
-      uint8_t  data1 = 0x12U;
-      uint8_t  data2 = 0x34U;
+      uint8_t data1 = 0x12U;
+      uint8_t data2 = 0x34U;
 
       etl::io_port_rw<uint8_t> data_rw1a(&data1);
       etl::io_port_rw<uint8_t> data_rw1b(data_rw1a);
@@ -141,8 +138,8 @@ namespace
     //*************************************************************************
     TEST(test_dynamic_io_port_ro_constructors_and_assignment)
     {
-      uint8_t  data1 = 0x12U;
-      uint8_t  data2 = 0x34U;
+      uint8_t data1 = 0x12U;
+      uint8_t data2 = 0x34U;
 
       etl::io_port_ro<uint8_t> data_ro1a(&data1);
       etl::io_port_ro<uint8_t> data_ro1b(data_ro1a);
@@ -159,8 +156,8 @@ namespace
     //*************************************************************************
     TEST(test_dynamic_io_port_wo_constructors_and_assignment)
     {
-      uint8_t  data1 = 0x12U;
-      uint8_t  data2 = 0x34U;
+      uint8_t data1 = 0x12U;
+      uint8_t data2 = 0x34U;
 
       etl::io_port_wo<uint8_t> data_wo1a(&data1);
       etl::io_port_wo<uint8_t> data_wo1b(data_wo1a);
@@ -177,8 +174,8 @@ namespace
     //*************************************************************************
     TEST(test_dynamic_io_port_wos_constructors_and_assignment)
     {
-      uint8_t  data1 = 0x12U;
-      uint8_t  data2 = 0x34U;
+      uint8_t data1 = 0x12U;
+      uint8_t data2 = 0x34U;
 
       etl::io_port_wos<uint8_t> data_wos1a(&data1);
       etl::io_port_wos<uint8_t> data_wos1b(data_wos1a);
@@ -207,11 +204,7 @@ namespace
       uint16_t status_register   = StatuslData;
       uint8_t  control2_register = 0;
 
-      dynamic_serial_port port(&rxdata_register,
-                               &txdata_register,
-                               &control_register,
-                               &status_register,
-                               &control2_register);
+      dynamic_serial_port port(&rxdata_register, &txdata_register, &control_register, &status_register, &control2_register);
 
       // Check read from the Rx data register
       CHECK_EQUAL(RxData, port.rxdata);
@@ -233,7 +226,7 @@ namespace
       port.control2 = Control2Data;
       CHECK_EQUAL(Control2Data, control2_register);
 
-      // Set and get an address      
+      // Set and get an address
       port.control2.set_address((void*)0x1000U);
       volatile uint8_t* address = port.control2.get_address();
       CHECK_EQUAL(reinterpret_cast<volatile uint8_t*>(0x1000U), address);
@@ -334,7 +327,7 @@ namespace
       iop_rw >>= 1;
       CHECK_EQUAL(uint8_t(compare >> 1), iop_rw.read());
 
-      compare = value;
+      compare           = value;
       uint8_t not_value = ~iop_rw;
       CHECK_EQUAL(uint8_t(~compare), not_value);
     }
@@ -369,7 +362,7 @@ namespace
       iop_wos >>= 1;
       CHECK_EQUAL(uint8_t(compare >> 1), iop_wos.read());
 
-      compare = value;
+      compare           = value;
       uint8_t not_value = ~iop_wos;
       CHECK_EQUAL(uint8_t(~compare), not_value);
     }
@@ -524,4 +517,4 @@ namespace
       CHECK_EQUAL(iop2.read(), *itr3);
     }
   }
-}
+} // namespace

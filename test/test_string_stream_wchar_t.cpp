@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <iomanip>
 #include <ostream>
 #include <sstream>
-#include <iomanip>
 
-#include "etl/wstring_stream.h"
-#include "etl/wstring.h"
 #include "etl/format_spec.h"
+#include "etl/wstring.h"
+#include "etl/wstring_stream.h"
 
 #undef STR
 #define STR(x) L##x
@@ -54,17 +54,17 @@ namespace
   };
 
   //***********************************
-  Stream& operator <<(Stream& ss, const Custom& value)
+  Stream& operator<<(Stream& ss, const Custom& value)
   {
     ss << STR("X = ") << value.x << STR(" : Y = ") << value.y;
     return ss;
   }
-}
+} // namespace
 
 namespace etl
 {
   //***********************************
-  std::ostream& operator << (std::ostream& os, const IString& str)
+  std::ostream& operator<<(std::ostream& os, const IString& str)
   {
     for (auto c : str)
     {
@@ -73,7 +73,7 @@ namespace etl
 
     return os;
   }
-}
+} // namespace etl
 
 namespace
 {
@@ -87,7 +87,7 @@ namespace
 
       Stream ss(str);
 
-      int value = 123;
+      int    value = 123;
       String hello(STR("Hello"));
       ss << hello << STR(" World ") << value;
 
@@ -103,7 +103,7 @@ namespace
 
       Stream ss(str);
 
-      int value = 123;
+      int    value = 123;
       String hello(STR("Hello"));
       ss << hello << const_cast<wchar_t*>(STR(" World ")) << value;
 
@@ -120,7 +120,7 @@ namespace
 
       Stream ss(str);
 
-      int value = 123;
+      int    value = 123;
       String hello(STR("Hello"));
       ss << format << hello << STR("World") << value;
 
@@ -139,7 +139,7 @@ namespace
 
       Stream ss(str);
 
-      int value = 123;
+      int    value = 123;
       String hello(STR("Hello"));
       ss << format1 << hello << format2 << STR("World") << format3 << value;
 
@@ -197,10 +197,9 @@ namespace
       String str;
       Stream ss(str);
 
-      int value = 123;
+      int    value = 123;
       String hello(STR("Hello"));
-      ss << etl::dec << etl::setw(10) << etl::setfill(STR('#')) << hello
-         << etl::setw(8) << etl::setfill(STR('*')) << etl::left << STR("World")
+      ss << etl::dec << etl::setw(10) << etl::setfill(STR('#')) << hello << etl::setw(8) << etl::setfill(STR('*')) << etl::left << STR("World")
          << etl::hex << etl::setw(4) << etl::setfill(STR(' ')) << etl::right << value;
 
       String result = ss.str();
@@ -215,9 +214,9 @@ namespace
 
       Stream ss(str);
 
-      String value_str(STR("Value: "));
+      String   value_str(STR("Value: "));
       IString& ivalue_str = value_str;
-      Custom value = { 1, 2 };
+      Custom   value      = {1, 2};
 
       ss << ivalue_str << value;
 
@@ -288,5 +287,4 @@ namespace
       CHECK_EQUAL(String(STR("Hello")), istr);
     }
   }
-}
-
+} // namespace

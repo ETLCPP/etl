@@ -32,117 +32,120 @@ SOFTWARE.
 #include "etl/vector.h"
 
 #include <array>
-#include <list>
-#include <vector>
 #include <ios>
+#include <list>
 #include <sstream>
+#include <vector>
 
 #if ETL_USING_CPP17
 
-// C++03 does not support move semantics as used in the ranges library
-#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+  // C++03 does not support move semantics as used in the ranges library
+  #if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 
 namespace
 {
   class MoveInt
   {
-    public:
-      MoveInt(int v): _v{v}
-      {
-      }
+  public:
 
-      MoveInt(const MoveInt& other): _v{other._v}
-      {
-      }
+    MoveInt(int v)
+      : _v{v}
+    {
+    }
 
-      MoveInt& operator=(const MoveInt& other)
-      {
-        _v = other._v;
-        return *this;
-      }
+    MoveInt(const MoveInt& other)
+      : _v{other._v}
+    {
+    }
 
-      MoveInt(MoveInt&& other): _v{other._v}
-      {
-        other._v = 0;
-      }
+    MoveInt& operator=(const MoveInt& other)
+    {
+      _v = other._v;
+      return *this;
+    }
 
-      MoveInt& operator=(MoveInt&& other)
-      {
-        _v = other._v;
-        other._v = 0;
-        return *this;
-      }
+    MoveInt(MoveInt&& other)
+      : _v{other._v}
+    {
+      other._v = 0;
+    }
 
-      int get() const
-      {
-        return _v;
-      }
+    MoveInt& operator=(MoveInt&& other)
+    {
+      _v       = other._v;
+      other._v = 0;
+      return *this;
+    }
 
-      bool operator==(const MoveInt& other) const
-      {
-        return _v == other._v;
-      }
+    int get() const
+    {
+      return _v;
+    }
 
-      bool operator!=(const MoveInt& other) const
-      {
-        return !(*this == other);
-      }
+    bool operator==(const MoveInt& other) const
+    {
+      return _v == other._v;
+    }
 
-    private:
-      int _v;
+    bool operator!=(const MoveInt& other) const
+    {
+      return !(*this == other);
+    }
+
+  private:
+
+    int _v;
   };
 
-}
+} // namespace
 
 namespace std
 {
-template<typename Container, etl::enable_if_t<
-                etl::is_base_of_v<std::vector<int>, Container> ||
-                etl::is_base_of_v<etl::ivector<int>, Container> ||
-                etl::is_base_of_v<etl::ranges::view_interface<Container>, Container>
-                , int> = 0>
-std::basic_ostream<char>& operator<<(std::basic_ostream<char>& s, const Container& v)
-{
-  auto it = v.cbegin();
-  auto e  = v.cend();
-  bool first = true;
-  for (; it != e; ++it)
+  template < typename Container, etl::enable_if_t< etl::is_base_of_v<std::vector<int>, Container> || etl::is_base_of_v<etl::ivector<int>, Container>
+                                                     || etl::is_base_of_v<etl::ranges::view_interface<Container>, Container>,
+                                                   int> = 0>
+  std::basic_ostream<char>& operator<<(std::basic_ostream<char>& s, const Container& v)
   {
-    if (!first)
+    auto it    = v.cbegin();
+    auto e     = v.cend();
+    bool first = true;
+    for (; it != e; ++it)
     {
-      s << " ";
+      if (!first)
+      {
+        s << " ";
+      }
+      s << *it;
+      first = false;
     }
-    s << *it;
-    first = false;
+    return s;
   }
-  return s;
-}
 
-std::ostringstream& operator<<(std::ostringstream& s, const etl::ivector<MoveInt>& v)
-{
-  auto it = v.cbegin();
-  auto e  = v.cend();
-  bool first = true;
-  for (; it != e; ++it)
+  std::ostringstream& operator<<(std::ostringstream& s, const etl::ivector<MoveInt>& v)
   {
-    if (!first)
+    auto it    = v.cbegin();
+    auto e     = v.cend();
+    bool first = true;
+    for (; it != e; ++it)
     {
-      s << " ";
+      if (!first)
+      {
+        s << " ";
+      }
+      s << it->get();
+      first = false;
     }
-    s << it->get();
-    first = false;
+    return s;
   }
-  return s;
-}
 
-template<class T>
-std::ostringstream& operator<<(std::ostringstream& s, const etl::ranges::range_iterator<T>& v)
-{
-  auto value{v.get()};
-  s << value;
-  return s;
-}
-}
+  template <class T>
+  std::ostringstream& operator<<(std::ostringstream& s, const etl::ranges::range_iterator<T>& v)
+  {
+    auto value{v.get()};
+    s << value;
+    return s;
+  }
+} // namespace std
 
 namespace
 {
@@ -153,7 +156,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_begin)
     {
-      etl::vector<int, 10> v_in{ 3, 2, 1 };
+      etl::vector<int, 10> v_in{3, 2, 1};
 
       auto it = etl::ranges::begin(v_in);
 
@@ -162,7 +165,7 @@ namespace
 
     TEST(test_ranges_end)
     {
-      etl::vector<int, 10> v_in{ 3, 2, 1 };
+      etl::vector<int, 10> v_in{3, 2, 1};
 
       auto it = etl::ranges::end(v_in);
 
@@ -171,7 +174,7 @@ namespace
 
     TEST(test_ranges_cbegin)
     {
-      etl::vector<int, 10> v_in{ 3, 2, 1 };
+      etl::vector<int, 10> v_in{3, 2, 1};
 
       auto it = etl::ranges::cbegin(v_in);
 
@@ -180,7 +183,7 @@ namespace
 
     TEST(test_ranges_cend)
     {
-      etl::vector<int, 10> v_in{ 3, 2, 1 };
+      etl::vector<int, 10> v_in{3, 2, 1};
 
       auto it = etl::ranges::cend(v_in);
 
@@ -189,7 +192,7 @@ namespace
 
     TEST(test_ranges_rbegin)
     {
-      etl::vector<int, 10> v_in{ 3, 2, 1 };
+      etl::vector<int, 10> v_in{3, 2, 1};
 
       auto it = etl::ranges::rbegin(v_in);
 
@@ -198,7 +201,7 @@ namespace
 
     TEST(test_ranges_rend)
     {
-      etl::vector<int, 10> v_in{ 3, 2, 1 };
+      etl::vector<int, 10> v_in{3, 2, 1};
 
       auto it = etl::ranges::rend(v_in);
 
@@ -207,7 +210,7 @@ namespace
 
     TEST(test_ranges_crbegin)
     {
-      etl::vector<int, 10> v_in{ 3, 2, 1 };
+      etl::vector<int, 10> v_in{3, 2, 1};
 
       auto it = etl::ranges::crbegin(v_in);
 
@@ -216,7 +219,7 @@ namespace
 
     TEST(test_ranges_crend)
     {
-      etl::vector<int, 10> v_in{ 3, 2, 1 };
+      etl::vector<int, 10> v_in{3, 2, 1};
 
       auto it = etl::ranges::crend(v_in);
 
@@ -225,7 +228,7 @@ namespace
 
     TEST(test_ranges_size)
     {
-      etl::vector<int, 10> v_in{ 11, 3, 2, 1 };
+      etl::vector<int, 10> v_in{11, 3, 2, 1};
 
       CHECK_EQUAL(etl::ranges::size(v_in), 4);
 
@@ -235,11 +238,11 @@ namespace
 
     TEST(test_ranges_ssize)
     {
-      etl::vector<int, 10> v_in{ 11, 3, 2, 1 };
+      etl::vector<int, 10> v_in{11, 3, 2, 1};
 
       CHECK_EQUAL(etl::ranges::ssize(v_in), 4);
 
-      using signed_type = decltype(etl::ranges::ssize(v_in));
+      using signed_type   = decltype(etl::ranges::ssize(v_in));
       using unsigned_type = decltype(etl::ranges::size(v_in));
       static_assert(etl::is_signed<signed_type>::value, "Result of ssize must be signed");
       static_assert(sizeof(signed_type) >= sizeof(unsigned_type), "Signed size type needs to be as wide as unsigned size type");
@@ -247,8 +250,8 @@ namespace
 
     TEST(test_ranges_empty)
     {
-      etl::vector<int, 10> v_in0{ 11, 3, 2, 1 };
-      etl::vector<int, 10> v_in1{ };
+      etl::vector<int, 10> v_in0{11, 3, 2, 1};
+      etl::vector<int, 10> v_in1{};
 
       CHECK_EQUAL(etl::ranges::empty(v_in0), false);
       CHECK_EQUAL(etl::ranges::empty(v_in1), true);
@@ -256,14 +259,14 @@ namespace
 
     TEST(test_ranges_data)
     {
-      etl::vector<int, 10> v_in{ 11, 3, 2, 1 };
+      etl::vector<int, 10> v_in{11, 3, 2, 1};
 
       CHECK_EQUAL(*etl::ranges::data(v_in), 11);
     }
 
     TEST(test_ranges_cdata)
     {
-      etl::vector<int, 10> v_in{ 11, 3, 2, 1 };
+      etl::vector<int, 10> v_in{11, 3, 2, 1};
 
       CHECK_EQUAL(*etl::ranges::cdata(v_in), 11);
     }
@@ -282,7 +285,8 @@ namespace
     {
       using range_type = etl::vector<int, 10>;
 
-      static_assert(etl::is_same<etl::ranges::const_iterator_t<range_type>, const int*>::value, "Bad iterator type from etl::ranges::const_iterator_t");
+      static_assert(etl::is_same<etl::ranges::const_iterator_t<range_type>, const int*>::value,
+                    "Bad iterator type from etl::ranges::const_iterator_t");
     }
 
     TEST(test_ranges_sentinel_t)
@@ -296,7 +300,8 @@ namespace
     {
       using range_type = etl::vector<int, 10>;
 
-      static_assert(etl::is_same<etl::ranges::const_sentinel_t<range_type>, const int*>::value, "Bad sentinel type from etl::ranges::const_sentinel_t");
+      static_assert(etl::is_same<etl::ranges::const_sentinel_t<range_type>, const int*>::value,
+                    "Bad sentinel type from etl::ranges::const_sentinel_t");
     }
 
     TEST(test_ranges_range_size_t)
@@ -316,9 +321,12 @@ namespace
       using range_type1 = etl::vector<int, 10>;
       using range_type2 = etl::ranges::empty_view<int>;
 
-      static_assert(etl::is_same<etl::ranges::range_difference_t<range_type0>, ptrdiff_t>::value, "Bad size type from etl::ranges::range_difference_t");
-      static_assert(etl::is_same<etl::ranges::range_difference_t<range_type1>, ptrdiff_t>::value, "Bad size type from etl::ranges::range_difference_t");
-      static_assert(etl::is_same<etl::ranges::range_difference_t<range_type2>, ptrdiff_t>::value, "Bad size type from etl::ranges::range_difference_t");
+      static_assert(etl::is_same<etl::ranges::range_difference_t<range_type0>, ptrdiff_t>::value,
+                    "Bad size type from etl::ranges::range_difference_t");
+      static_assert(etl::is_same<etl::ranges::range_difference_t<range_type1>, ptrdiff_t>::value,
+                    "Bad size type from etl::ranges::range_difference_t");
+      static_assert(etl::is_same<etl::ranges::range_difference_t<range_type2>, ptrdiff_t>::value,
+                    "Bad size type from etl::ranges::range_difference_t");
     }
 
     TEST(test_ranges_range_value_t)
@@ -332,11 +340,10 @@ namespace
       static_assert(etl::is_same<etl::ranges::range_value_t<range_type2>, int>::value, "Bad size type from etl::ranges::range_value_t");
     }
 
-
     TEST(test_ranges_subrange)
     {
-      etl::vector<int, 10> v {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-      auto sr = etl::ranges::subrange{v.begin(), v.end()};
+      etl::vector<int, 10> v{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      auto                 sr = etl::ranges::subrange{v.begin(), v.end()};
 
       CHECK_EQUAL(sr.begin(), v.begin());
       CHECK_EQUAL(sr.end(), v.end());
@@ -429,7 +436,7 @@ namespace
       auto iv = etl::ranges::iota_view(1, 7);
 
       int compare = 1;
-      for (auto i: iv)
+      for (auto i : iv)
       {
         CHECK_EQUAL(i, compare);
         ++compare;
@@ -496,7 +503,7 @@ namespace
       // bounded
       auto iv = etl::ranges::repeat_view(1, 7);
 
-      for (auto i: iv)
+      for (auto i : iv)
       {
         CHECK_EQUAL(i, 1);
       }
@@ -601,11 +608,14 @@ namespace
     //*************************************************************************
     TEST(test_ranges_iterate_c_array)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      int v_in[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int                  v_in[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       for (int i : etl::views::filter(v_in, even))
       {
@@ -617,11 +627,14 @@ namespace
 
     TEST(test_ranges_iterate_plain)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       for (int i : etl::views::filter(v_in, even))
       {
@@ -633,11 +646,14 @@ namespace
 
     TEST(test_ranges_iterate_pipe)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       for (int i : v_in | etl::views::filter(even))
       {
@@ -649,9 +665,9 @@ namespace
 
     TEST(test_ranges_drop_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{2, 3, 4, 5, 6, 7, 8, 9};
 
       auto rv = etl::views::drop(v_in, 2);
 
@@ -678,9 +694,9 @@ namespace
 
     TEST(test_ranges_iterate_pipe_drop)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{2, 3, 4, 5, 6, 7, 8, 9};
 
       auto rv = v_in | etl::views::drop(2);
       for (int i : rv)
@@ -711,7 +727,7 @@ namespace
 
     TEST(test_ranges_iterate_pipe_drop_out_of_bounds)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
       etl::vector<int, 10> v_out_expected{};
 
@@ -727,11 +743,14 @@ namespace
 
     TEST(test_ranges_iterate_pipe_twice)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{2, 4, 6, 8};
 
       for (int i : v_in | etl::views::filter(even) | etl::views::drop(1))
       {
@@ -743,11 +762,14 @@ namespace
 
     TEST(test_ranges_iterate_pipe_drop_while)
     {
-      auto below_three = [](int i) -> bool { return i < 3; };
+      auto below_three = [](int i) -> bool
+      {
+        return i < 3;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{3, 4, 5, 6, 7, 8, 9};
 
       auto rv = v_in | etl::views::drop_while(below_three);
       for (int i : rv)
@@ -770,8 +792,8 @@ namespace
 
     TEST(test_ranges_take_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3};
 
       auto rv = etl::views::take(v_in, 4);
 
@@ -798,9 +820,9 @@ namespace
 
     TEST(test_ranges_iterate_pipe_take)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3};
 
       auto rv = v_in | etl::views::take(4);
       for (int i : rv)
@@ -831,11 +853,14 @@ namespace
 
     TEST(test_ranges_iterate_pipe_take_while)
     {
-      auto below_three = [](int i) -> bool { return i < 3; };
+      auto below_three = [](int i) -> bool
+      {
+        return i < 3;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2};
 
       auto rv = v_in | etl::views::take_while(below_three);
       for (int i : rv)
@@ -858,9 +883,9 @@ namespace
 
     TEST(test_ranges_reverse_view_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 4, 3, 2, 1, 0 };
+      etl::vector<int, 10> v_out_expected{4, 3, 2, 1, 0};
 
       auto rv = etl::ranges::reverse_view(v_in);
       for (int i : rv)
@@ -891,9 +916,9 @@ namespace
 
     TEST(test_ranges_iterate_pipe_reverse)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 4, 3, 2, 1, 0 };
+      etl::vector<int, 10> v_out_expected{4, 3, 2, 1, 0};
 
       auto rv = v_in | etl::views::reverse;
       for (int i : rv)
@@ -911,9 +936,9 @@ namespace
 
     TEST(test_ranges_iterate_pipe_reverse_reverse)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4};
 
       auto rv = v_in | etl::views::reverse | etl::views::reverse;
       for (int i : rv)
@@ -931,9 +956,9 @@ namespace
 
     TEST(test_ranges_iterate_pipe_all)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       for (int i : v_in | etl::views::all)
       {
@@ -945,9 +970,9 @@ namespace
 
     TEST(test_ranges_iterate_pipe_ref)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto r = v_in | etl::views::ref();
       for (int i : r)
@@ -970,9 +995,9 @@ namespace
 
     TEST(test_ranges_iterate_pipe_owning)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto r = v_in | etl::views::owning();
       for (int i : r)
@@ -993,16 +1018,19 @@ namespace
       CHECK_EQUAL(r.size(), 10);
       CHECK_NOT_EQUAL(r.data(), v_in.data());
 
-      //ov2 = r; // expected: compile error!
+      // ov2 = r; // expected: compile error!
       ov2 = etl::move(r);
     }
 
     TEST(test_ranges_iterate_pipe_to)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      etl::vector<int, 10> v_out_expected{ 2, 4, 6, 8 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::vector<int, 10> v_out_expected{2, 4, 6, 8};
 
       auto v_out = v_in | etl::views::filter(even) | etl::views::drop(1) | etl::ranges::to<etl::vector<int, 10>>();
 
@@ -1011,11 +1039,11 @@ namespace
 
     TEST(test_ranges_iterate_pipe_as_rvalue)
     {
-      etl::vector<MoveInt, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<MoveInt, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<MoveInt, 10> v_out;
 
-      etl::vector<MoveInt, 10> v_out_expected_0{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-      etl::vector<MoveInt, 10> v_out_expected_1{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<MoveInt, 10> v_out_expected_0{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+      etl::vector<MoveInt, 10> v_out_expected_1{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       for (auto&& i : v_in | etl::views::as_rvalue)
       {
@@ -1028,11 +1056,11 @@ namespace
 
     TEST(test_ranges_iterate_pipe_as_rvalue_functional)
     {
-      etl::vector<MoveInt, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<MoveInt, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<MoveInt, 10> v_out;
 
-      etl::vector<MoveInt, 10> v_out_expected_0{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-      etl::vector<MoveInt, 10> v_out_expected_1{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<MoveInt, 10> v_out_expected_0{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+      etl::vector<MoveInt, 10> v_out_expected_1{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       v_out = etl::views::as_rvalue(v_in) | etl::ranges::to<etl::vector<MoveInt, 10>>();
 
@@ -1042,16 +1070,15 @@ namespace
 
     TEST(test_ranges_as_const_view_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto cv = etl::ranges::as_const_view(v_in);
 
       // Iterator type should be const_iterator
       using cv_reference = decltype(*cv.begin());
-      static_assert(etl::is_const_v<etl::remove_reference_t<cv_reference>>,
-                    "as_const_view iterator should dereference to const");
+      static_assert(etl::is_const_v<etl::remove_reference_t<cv_reference>>, "as_const_view iterator should dereference to const");
 
       for (auto i : cv)
       {
@@ -1067,7 +1094,7 @@ namespace
 
     TEST(test_ranges_as_const_view_reflects_base_changes)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
 
       auto cv = etl::ranges::as_const_view(v_in);
 
@@ -1083,15 +1110,14 @@ namespace
 
     TEST(test_ranges_as_const_view_pipe)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto cv = v_in | etl::views::as_const();
 
       using cv_reference = decltype(*cv.begin());
-      static_assert(etl::is_const_v<etl::remove_reference_t<cv_reference>>,
-                    "piped as_const view iterator should dereference to const");
+      static_assert(etl::is_const_v<etl::remove_reference_t<cv_reference>>, "piped as_const view iterator should dereference to const");
 
       for (auto i : cv)
       {
@@ -1104,15 +1130,14 @@ namespace
 
     TEST(test_ranges_views_as_const_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto cv = etl::views::as_const(v_in);
 
       using cv_reference = decltype(*cv.begin());
-      static_assert(etl::is_const_v<etl::remove_reference_t<cv_reference>>,
-                    "views::as_const iterator should dereference to const");
+      static_assert(etl::is_const_v<etl::remove_reference_t<cv_reference>>, "views::as_const iterator should dereference to const");
 
       for (auto i : cv)
       {
@@ -1124,9 +1149,9 @@ namespace
 
     TEST(test_ranges_as_const_view_pipe_chained_with_take)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2};
 
       auto cv = v_in | etl::views::as_const() | etl::views::take(3);
 
@@ -1140,9 +1165,9 @@ namespace
 
     TEST(test_ranges_as_const_view_pipe_chained_with_drop)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{7, 8, 9};
 
       auto cv = v_in | etl::views::as_const() | etl::views::drop(7);
 
@@ -1156,9 +1181,9 @@ namespace
 
     TEST(test_ranges_as_const_view_pipe_chained_with_reverse)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 4, 3, 2, 1, 0 };
+      etl::vector<int, 10> v_out_expected{4, 3, 2, 1, 0};
 
       auto cv = v_in | etl::views::as_const() | etl::views::reverse;
 
@@ -1172,15 +1197,14 @@ namespace
 
     TEST(test_ranges_as_const_view_with_std_vector)
     {
-      std::vector<int> v_in{ 0, 1, 2, 3, 4 };
+      std::vector<int> v_in{0, 1, 2, 3, 4};
       std::vector<int> v_out;
-      std::vector<int> v_out_expected{ 0, 1, 2, 3, 4 };
+      std::vector<int> v_out_expected{0, 1, 2, 3, 4};
 
       auto cv = etl::ranges::as_const_view(v_in);
 
       using cv_reference = decltype(*cv.begin());
-      static_assert(etl::is_const_v<etl::remove_reference_t<cv_reference>>,
-                    "as_const_view over std::vector should dereference to const");
+      static_assert(etl::is_const_v<etl::remove_reference_t<cv_reference>>, "as_const_view over std::vector should dereference to const");
 
       for (auto i : cv)
       {
@@ -1199,9 +1223,9 @@ namespace
     //*************************************************************************
     TEST(test_ranges_cache_latest_view_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto cv = etl::ranges::cache_latest_view(v_in);
 
@@ -1217,10 +1241,14 @@ namespace
 
     TEST(test_ranges_cache_latest_view_caches_value)
     {
-      int dereference_count = 0;
-      auto counting_transform = [&dereference_count](int i) -> int { ++dereference_count; return i * 2; };
+      int  dereference_count  = 0;
+      auto counting_transform = [&dereference_count](int i) -> int
+      {
+        ++dereference_count;
+        return i * 2;
+      };
 
-      etl::vector<int, 10> v_in{ 1, 2, 3 };
+      etl::vector<int, 10> v_in{1, 2, 3};
 
       auto tv = v_in | etl::views::transform(counting_transform) | etl::views::cache_latest();
 
@@ -1228,11 +1256,12 @@ namespace
 
       // First dereference should evaluate
       dereference_count = 0;
-      int val1 = *it;
+      int val1          = *it;
       CHECK_EQUAL(1, dereference_count);
       CHECK_EQUAL(2, val1);
 
-      // Second dereference of same position should use cache (no extra transform call)
+      // Second dereference of same position should use cache (no extra
+      // transform call)
       int val2 = *it;
       CHECK_EQUAL(1, dereference_count);
       CHECK_EQUAL(2, val2);
@@ -1246,9 +1275,9 @@ namespace
 
     TEST(test_ranges_cache_latest_view_pipe)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto cv = v_in | etl::views::cache_latest();
 
@@ -1262,9 +1291,9 @@ namespace
 
     TEST(test_ranges_views_cache_latest_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto cv = etl::views::cache_latest(v_in);
 
@@ -1278,9 +1307,9 @@ namespace
 
     TEST(test_ranges_cache_latest_view_pipe_chained_with_take)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2};
 
       auto cv = v_in | etl::views::cache_latest() | etl::views::take(3);
 
@@ -1294,11 +1323,14 @@ namespace
 
     TEST(test_ranges_cache_latest_view_pipe_chained_with_transform)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 4, 9, 16 };
+      etl::vector<int, 10> v_out_expected{0, 1, 4, 9, 16};
 
       auto cv = v_in | etl::views::transform(square) | etl::views::cache_latest();
 
@@ -1323,9 +1355,9 @@ namespace
 
     TEST(test_ranges_cache_latest_view_with_std_vector)
     {
-      std::vector<int> v_in{ 0, 1, 2, 3, 4 };
+      std::vector<int> v_in{0, 1, 2, 3, 4};
       std::vector<int> v_out;
-      std::vector<int> v_out_expected{ 0, 1, 2, 3, 4 };
+      std::vector<int> v_out_expected{0, 1, 2, 3, 4};
 
       auto cv = etl::ranges::cache_latest_view(v_in);
 
@@ -1343,11 +1375,14 @@ namespace
 
     TEST(test_ranges_iterate_transform)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 4, 9, 16, 25, 36, 49, 64, 81 };
+      etl::vector<int, 10> v_out_expected{0, 1, 4, 9, 16, 25, 36, 49, 64, 81};
 
       for (int i : v_in | etl::views::transform(square))
       {
@@ -1362,11 +1397,14 @@ namespace
     //*************************************************************************
     TEST(test_ranges_transform_view_functional)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 4, 9, 16, 25, 36, 49, 64, 81 };
+      etl::vector<int, 10> v_out_expected{0, 1, 4, 9, 16, 25, 36, 49, 64, 81};
 
       auto tv = etl::views::transform(v_in, square);
 
@@ -1380,11 +1418,14 @@ namespace
 
     TEST(test_ranges_transform_view_direct_construction)
     {
-      auto negate = [](int i) -> int { return -i; };
+      auto negate = [](int i) -> int
+      {
+        return -i;
+      };
 
-      etl::vector<int, 5> v_in{ 1, 2, 3, 4, 5 };
+      etl::vector<int, 5> v_in{1, 2, 3, 4, 5};
       etl::vector<int, 5> v_out;
-      etl::vector<int, 5> v_out_expected{ -1, -2, -3, -4, -5 };
+      etl::vector<int, 5> v_out_expected{-1, -2, -3, -4, -5};
 
       auto tv = etl::ranges::transform_view(etl::views::all(v_in), negate);
 
@@ -1398,11 +1439,14 @@ namespace
 
     TEST(test_ranges_transform_view_pipe)
     {
-      auto triple = [](int i) -> int { return i * 3; };
+      auto triple = [](int i) -> int
+      {
+        return i * 3;
+      };
 
-      etl::vector<int, 5> v_in{ 1, 2, 3, 4, 5 };
+      etl::vector<int, 5> v_in{1, 2, 3, 4, 5};
       etl::vector<int, 5> v_out;
-      etl::vector<int, 5> v_out_expected{ 3, 6, 9, 12, 15 };
+      etl::vector<int, 5> v_out_expected{3, 6, 9, 12, 15};
 
       auto tv = v_in | etl::views::transform(triple);
 
@@ -1416,9 +1460,12 @@ namespace
 
     TEST(test_ranges_transform_view_size)
     {
-      auto identity = [](int i) -> int { return i; };
+      auto identity = [](int i) -> int
+      {
+        return i;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto tv = v_in | etl::views::transform(identity);
 
@@ -1427,7 +1474,10 @@ namespace
 
     TEST(test_ranges_transform_view_empty)
     {
-      auto identity = [](int i) -> int { return i; };
+      auto identity = [](int i) -> int
+      {
+        return i;
+      };
 
       etl::vector<int, 10> v_in;
 
@@ -1439,9 +1489,12 @@ namespace
 
     TEST(test_ranges_transform_view_non_empty)
     {
-      auto identity = [](int i) -> int { return i; };
+      auto identity = [](int i) -> int
+      {
+        return i;
+      };
 
-      etl::vector<int, 10> v_in{ 42 };
+      etl::vector<int, 10> v_in{42};
 
       auto tv = v_in | etl::views::transform(identity);
 
@@ -1451,9 +1504,12 @@ namespace
 
     TEST(test_ranges_transform_view_front)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 5> v_in{ 3, 4, 5 };
+      etl::vector<int, 5> v_in{3, 4, 5};
 
       auto tv = v_in | etl::views::transform(square);
 
@@ -1462,9 +1518,12 @@ namespace
 
     TEST(test_ranges_transform_view_index_operator)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 5> v_in{ 1, 2, 3, 4, 5 };
+      etl::vector<int, 5> v_in{1, 2, 3, 4, 5};
 
       auto tv = v_in | etl::views::transform(square);
 
@@ -1477,24 +1536,33 @@ namespace
 
     TEST(test_ranges_transform_view_type_change)
     {
-      auto to_double = [](int i) -> double { return i * 1.5; };
+      auto to_double = [](int i) -> double
+      {
+        return i * 1.5;
+      };
 
-      etl::vector<int, 5> v_in{ 2, 4, 6 };
+      etl::vector<int, 5> v_in{2, 4, 6};
 
       auto tv = v_in | etl::views::transform(to_double);
 
       auto it = tv.begin();
-      CHECK_CLOSE(3.0, *it, 0.001); ++it;
-      CHECK_CLOSE(6.0, *it, 0.001); ++it;
-      CHECK_CLOSE(9.0, *it, 0.001); ++it;
+      CHECK_CLOSE(3.0, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(6.0, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(9.0, *it, 0.001);
+      ++it;
       CHECK(it == tv.end());
     }
 
     TEST(test_ranges_transform_view_iterator_increment)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 5> v_in{ 1, 2, 3 };
+      etl::vector<int, 5> v_in{1, 2, 3};
 
       auto tv = v_in | etl::views::transform(square);
 
@@ -1513,9 +1581,12 @@ namespace
 
     TEST(test_ranges_transform_view_iterator_equality)
     {
-      auto identity = [](int i) -> int { return i; };
+      auto identity = [](int i) -> int
+      {
+        return i;
+      };
 
-      etl::vector<int, 5> v_in{ 1, 2, 3 };
+      etl::vector<int, 5> v_in{1, 2, 3};
 
       auto tv = v_in | etl::views::transform(identity);
 
@@ -1528,11 +1599,14 @@ namespace
 
     TEST(test_ranges_transform_view_chained_with_take)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 4 };
+      etl::vector<int, 10> v_out_expected{0, 1, 4};
 
       auto tv = v_in | etl::views::transform(square) | etl::views::take(3);
 
@@ -1546,9 +1620,9 @@ namespace
 
     TEST(test_ranges_transform_view_chained_with_temporary)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 4 };
+      etl::vector<int, 10> v_out_expected{0, 1, 4};
 
       auto tv = v_in | etl::views::transform([](int i) -> int { return i * i; }) | etl::views::take(3);
 
@@ -1562,11 +1636,14 @@ namespace
 
     TEST(test_ranges_transform_view_chained_with_drop)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 9, 16 };
+      etl::vector<int, 10> v_out_expected{9, 16};
 
       auto tv = v_in | etl::views::transform(square) | etl::views::drop(3);
 
@@ -1580,12 +1657,18 @@ namespace
 
     TEST(test_ranges_transform_view_chained_transforms)
     {
-      auto add_one  = [](int i) -> int { return i + 1; };
-      auto multiply = [](int i) -> int { return i * 10; };
+      auto add_one = [](int i) -> int
+      {
+        return i + 1;
+      };
+      auto multiply = [](int i) -> int
+      {
+        return i * 10;
+      };
 
-      etl::vector<int, 5> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 5> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 5> v_out;
-      etl::vector<int, 5> v_out_expected{ 10, 20, 30, 40, 50 };
+      etl::vector<int, 5> v_out_expected{10, 20, 30, 40, 50};
 
       auto tv = v_in | etl::views::transform(add_one) | etl::views::transform(multiply);
 
@@ -1599,11 +1682,14 @@ namespace
 
     TEST(test_ranges_transform_view_with_std_vector)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      std::vector<int> v_in{ 1, 2, 3, 4, 5 };
+      std::vector<int> v_in{1, 2, 3, 4, 5};
       std::vector<int> v_out;
-      std::vector<int> v_out_expected{ 1, 4, 9, 16, 25 };
+      std::vector<int> v_out_expected{1, 4, 9, 16, 25};
 
       auto tv = v_in | etl::views::transform(square);
 
@@ -1621,11 +1707,14 @@ namespace
 
     TEST(test_ranges_transform_view_with_std_array)
     {
-      auto square = [](int i) -> int { return i * i; };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      std::array<int, 5> v_in{ 1, 2, 3, 4, 5 };
-      std::vector<int> v_out;
-      std::vector<int> v_out_expected{ 1, 4, 9, 16, 25 };
+      std::array<int, 5> v_in{1, 2, 3, 4, 5};
+      std::vector<int>   v_out;
+      std::vector<int>   v_out_expected{1, 4, 9, 16, 25};
 
       auto tv = v_in | etl::views::transform(square);
 
@@ -1643,11 +1732,14 @@ namespace
 
     TEST(test_ranges_transform_view_single_element)
     {
-      auto negate = [](int i) -> int { return -i; };
+      auto negate = [](int i) -> int
+      {
+        return -i;
+      };
 
-      etl::vector<int, 5> v_in{ 42 };
+      etl::vector<int, 5> v_in{42};
       etl::vector<int, 5> v_out;
-      etl::vector<int, 5> v_out_expected{ -42 };
+      etl::vector<int, 5> v_out_expected{-42};
 
       auto tv = v_in | etl::views::transform(negate);
 
@@ -1664,11 +1756,14 @@ namespace
     //*************************************************************************
     TEST(test_ranges_filter_view_functional)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       auto fv = etl::views::filter(v_in, even);
 
@@ -1682,11 +1777,14 @@ namespace
 
     TEST(test_ranges_filter_view_direct_construction)
     {
-      auto odd = [](int i) -> bool { return 1 == i % 2; };
+      auto odd = [](int i) -> bool
+      {
+        return 1 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 1, 3, 5, 7, 9 };
+      etl::vector<int, 10> v_out_expected{1, 3, 5, 7, 9};
 
       auto fv = etl::ranges::filter_view(etl::views::all(v_in), odd);
 
@@ -1700,11 +1798,14 @@ namespace
 
     TEST(test_ranges_filter_view_pipe)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1718,9 +1819,12 @@ namespace
 
     TEST(test_ranges_filter_view_size)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1729,7 +1833,10 @@ namespace
 
     TEST(test_ranges_filter_view_empty)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
       etl::vector<int, 10> v_in;
 
@@ -1741,9 +1848,12 @@ namespace
 
     TEST(test_ranges_filter_view_non_empty)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 42 };
+      etl::vector<int, 10> v_in{42};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1753,9 +1863,12 @@ namespace
 
     TEST(test_ranges_filter_view_all_filtered_out)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 1, 3, 5, 7, 9 };
+      etl::vector<int, 10> v_in{1, 3, 5, 7, 9};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1765,11 +1878,14 @@ namespace
 
     TEST(test_ranges_filter_view_all_pass)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_in{0, 2, 4, 6, 8};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1784,9 +1900,12 @@ namespace
 
     TEST(test_ranges_filter_view_front)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 1, 2, 3, 4, 5 };
+      etl::vector<int, 10> v_in{1, 2, 3, 4, 5};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1795,9 +1914,12 @@ namespace
 
     TEST(test_ranges_filter_view_index_operator)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1810,9 +1932,12 @@ namespace
 
     TEST(test_ranges_filter_view_iterator_increment)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1831,9 +1956,12 @@ namespace
 
     TEST(test_ranges_filter_view_iterator_equality)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1846,11 +1974,14 @@ namespace
 
     TEST(test_ranges_filter_view_chained_with_take)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2 };
+      etl::vector<int, 10> v_out_expected{0, 2};
 
       auto fv = v_in | etl::views::filter(even) | etl::views::take(2);
 
@@ -1864,9 +1995,9 @@ namespace
 
     TEST(test_ranges_filter_view_chained_with_temporary)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2 };
+      etl::vector<int, 10> v_out_expected{0, 2};
 
       auto fv = v_in | etl::views::filter([](int i) -> bool { return 0 == i % 2; }) | etl::views::take(2);
 
@@ -1880,11 +2011,14 @@ namespace
 
     TEST(test_ranges_filter_view_chained_with_drop)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{4, 6, 8};
 
       auto fv = v_in | etl::views::filter(even) | etl::views::drop(2);
 
@@ -1898,12 +2032,18 @@ namespace
 
     TEST(test_ranges_filter_view_chained_with_transform)
     {
-      auto even   = [](int i) -> bool { return 0 == i % 2; };
-      auto square = [](int i) -> int  { return i * i; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
+      auto square = [](int i) -> int
+      {
+        return i * i;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 4, 16, 36, 64 };
+      etl::vector<int, 10> v_out_expected{0, 4, 16, 36, 64};
 
       auto fv = v_in | etl::views::filter(even) | etl::views::transform(square);
 
@@ -1917,11 +2057,14 @@ namespace
 
     TEST(test_ranges_filter_view_with_std_vector)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      std::vector<int> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      std::vector<int> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       std::vector<int> v_out;
-      std::vector<int> v_out_expected{ 0, 2, 4, 6, 8 };
+      std::vector<int> v_out_expected{0, 2, 4, 6, 8};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1939,11 +2082,14 @@ namespace
 
     TEST(test_ranges_filter_view_with_std_array)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      std::array<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-      std::vector<int> v_out;
-      std::vector<int> v_out_expected{ 0, 2, 4, 6, 8 };
+      std::array<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      std::vector<int>    v_out;
+      std::vector<int>    v_out_expected{0, 2, 4, 6, 8};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1961,11 +2107,14 @@ namespace
 
     TEST(test_ranges_filter_view_single_element)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 5> v_in{ 42 };
+      etl::vector<int, 5> v_in{42};
       etl::vector<int, 5> v_out;
-      etl::vector<int, 5> v_out_expected{ 42 };
+      etl::vector<int, 5> v_out_expected{42};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -1979,11 +2128,14 @@ namespace
 
     TEST(test_ranges_filter_view_c_array)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      int v_in[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int                  v_in[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       auto fv = etl::views::filter(v_in, even);
 
@@ -1997,11 +2149,14 @@ namespace
 
     TEST(test_ranges_filter_view_c_array_pipe)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      int v_in[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      int                  v_in[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       auto fv = v_in | etl::views::filter(even);
 
@@ -2050,7 +2205,7 @@ namespace
 
       using result_type = etl::vector<int, 30>;
       result_type v_expected{1, 1, 2, 3, 1, 7, 8, 9, 1};
-      auto expected_view = etl::views::all(v_expected);
+      auto        expected_view = etl::views::all(v_expected);
 
       CHECK_EQUAL(9, result.size());
       CHECK_EQUAL(expected_view, result);
@@ -2065,7 +2220,7 @@ namespace
 
       using result_type = etl::vector<int, 30>;
       result_type v_expected{1, 2, 3, 7, 8, 9};
-      auto expected_view = etl::views::all(v_expected);
+      auto        expected_view = etl::views::all(v_expected);
 
       CHECK_EQUAL(6, rv.size());
       CHECK_EQUAL(expected_view, rv);
@@ -2077,10 +2232,10 @@ namespace
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
 
       using result_type = etl::vector<int, 30>;
-      auto result = v | etl::views::join | etl::ranges::to<result_type>();
+      auto result       = v | etl::views::join | etl::ranges::to<result_type>();
 
       result_type result_v;
-      for (auto i: result)
+      for (auto i : result)
       {
         result_v.emplace_back(i);
       }
@@ -2094,7 +2249,7 @@ namespace
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
 
       using result_type = etl::vector<int, 30>;
-      auto result = v | etl::views::join | etl::ranges::to<result_type>();
+      auto result       = v | etl::views::join | etl::ranges::to<result_type>();
 
       result_type v_expected{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
       CHECK_EQUAL(result, v_expected);
@@ -2104,7 +2259,7 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
-      range_type pattern{111, 222};
+      range_type                 pattern{111, 222};
 
       auto result = etl::views::join_with(v, pattern);
 
@@ -2119,7 +2274,7 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
-      range_type pattern{111, 222};
+      range_type                 pattern{111, 222};
 
       auto result = v | etl::views::join_with(pattern);
 
@@ -2134,13 +2289,13 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 6> v{{1}, {1, 2, 3}, {1}, {7, 8, 9}, {1}};
-      range_type pattern{111, 222};
+      range_type                 pattern{111, 222};
 
       auto result = v | etl::views::join_with(pattern);
 
       using result_type = etl::vector<int, 30>;
       result_type v_expected{1, 111, 222, 1, 2, 3, 111, 222, 1, 111, 222, 7, 8, 9, 111, 222, 1};
-      auto expected_view = etl::views::all(v_expected);
+      auto        expected_view = etl::views::all(v_expected);
 
       CHECK_EQUAL(17, result.size());
       CHECK_EQUAL(expected_view, result);
@@ -2150,13 +2305,13 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 7> v{{}, {1, 2, 3}, {}, {7, 8, 9}, {}};
-      range_type pattern{111, 222};
+      range_type                 pattern{111, 222};
 
       auto rv = v | etl::views::join_with(pattern);
 
       using result_type = etl::vector<int, 30>;
       result_type v_expected{111, 222, 1, 2, 3, 111, 222, 111, 222, 7, 8, 9, 111, 222};
-      auto expected_view = etl::views::all(v_expected);
+      auto        expected_view = etl::views::all(v_expected);
 
       CHECK_EQUAL(14, rv.size());
       CHECK_EQUAL(expected_view, rv);
@@ -2166,13 +2321,13 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
-      range_type pattern{111, 222};
+      range_type                 pattern{111, 222};
 
       using result_type = etl::vector<int, 30>;
-      auto result = v | etl::views::join_with(pattern) | etl::ranges::to<result_type>();
+      auto result       = v | etl::views::join_with(pattern) | etl::ranges::to<result_type>();
 
       result_type result_v;
-      for (auto i: result)
+      for (auto i : result)
       {
         result_v.emplace_back(i);
       }
@@ -2184,10 +2339,10 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
-      range_type pattern{111, 222};
+      range_type                 pattern{111, 222};
 
       using result_type = etl::vector<int, 30>;
-      auto result = v | etl::views::join_with(pattern) | etl::ranges::to<result_type>();
+      auto result       = v | etl::views::join_with(pattern) | etl::ranges::to<result_type>();
 
       result_type v_expected{1, 2, 3, 111, 222, 4, 5, 6, 111, 222, 7, 8, 9, 111, 222, 10, 11, 12};
       CHECK_EQUAL(result, v_expected);
@@ -2197,7 +2352,7 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
-      int pattern{111};
+      int                        pattern{111};
 
       auto result = etl::views::join_with(v, pattern);
 
@@ -2226,7 +2381,7 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
-      int pattern{111};
+      int                        pattern{111};
 
       auto result = v | etl::views::join_with(pattern);
 
@@ -2241,13 +2396,13 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
-      int pattern{111};
+      int                        pattern{111};
 
       using result_type = etl::vector<int, 30>;
-      auto result = v | etl::views::join_with(pattern) | etl::ranges::to<result_type>();
+      auto result       = v | etl::views::join_with(pattern) | etl::ranges::to<result_type>();
 
       result_type result_v;
-      for (auto i: result)
+      for (auto i : result)
       {
         result_v.emplace_back(i);
       }
@@ -2259,10 +2414,10 @@ namespace
     {
       using range_type = etl::vector<int, 3>;
       etl::vector<range_type, 4> v{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}};
-      int pattern{111};
+      int                        pattern{111};
 
       using result_type = etl::vector<int, 30>;
-      auto result = v | etl::views::join_with(pattern) | etl::ranges::to<result_type>();
+      auto result       = v | etl::views::join_with(pattern) | etl::ranges::to<result_type>();
 
       result_type v_expected{1, 2, 3, 111, 4, 5, 6, 111, 7, 8, 9, 111, 10, 11, 12};
       CHECK_EQUAL(result, v_expected);
@@ -2273,11 +2428,12 @@ namespace
     //*************************************************************************
     TEST(test_ranges_split_view_int_vector)
     {
-      etl::vector<int, 10> v_in{1, 2, 0, 3, 4, 0, 5};
-      auto sv = etl::ranges::split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{1,2},{3,4},{5}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      etl::vector<int, 10>          v_in{1, 2, 0, 3, 4, 0, 5};
+      auto                          sv = etl::ranges::split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2288,11 +2444,12 @@ namespace
     TEST(test_ranges_split_view_functional_single_delim)
     {
       // Split {1, 2, 0, 3, 4, 0, 5, 6} by 0 => {1,2}, {3,4}, {5,6}
-      std::vector<int> v_in{1, 2, 0, 3, 4, 0, 5, 6};
-      auto sv = etl::ranges::split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{1,2},{3,4},{5,6}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      std::vector<int>              v_in{1, 2, 0, 3, 4, 0, 5, 6};
+      auto                          sv = etl::ranges::split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5, 6}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2302,13 +2459,15 @@ namespace
 
     TEST(test_ranges_split_view_multi_pattern)
     {
-      // Split {1, 2, 0, 0, 3, 4, 0, 0, 5} by pattern {0, 0} => {1,2}, {3,4}, {5}
-      std::vector<int> v_in{1, 2, 0, 0, 3, 4, 0, 0, 5};
-      std::vector<int> delim{0, 0};
-      auto sv = etl::ranges::split_view(v_in, delim);
-      std::vector<std::vector<int>> expected{{1,2},{3,4},{5}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      // Split {1, 2, 0, 0, 3, 4, 0, 0, 5} by pattern {0, 0} => {1,2}, {3,4},
+      // {5}
+      std::vector<int>              v_in{1, 2, 0, 0, 3, 4, 0, 0, 5};
+      std::vector<int>              delim{0, 0};
+      auto                          sv = etl::ranges::split_view(v_in, delim);
+      std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2319,11 +2478,12 @@ namespace
     TEST(test_ranges_split_view_pipe)
     {
       // Pipe syntax: {1, 0, 2, 0, 3} | split(0) => {1}, {2}, {3}
-      std::vector<int> v_in{1, 0, 2, 0, 3};
-      auto sv = v_in | etl::views::split(0);
-      std::vector<std::vector<int>> expected{{1},{2},{3}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      std::vector<int>              v_in{1, 0, 2, 0, 3};
+      auto                          sv = v_in | etl::views::split(0);
+      std::vector<std::vector<int>> expected{{1}, {2}, {3}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2335,9 +2495,10 @@ namespace
     {
       // Split empty range => one empty subrange
       std::vector<int> v_in{};
-      auto sv = etl::ranges::split_view(v_in, 0);
-      size_t count = 0;
-      for (auto sub : sv) {
+      auto             sv    = etl::ranges::split_view(v_in, 0);
+      size_t           count = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(actual.size(), 0U);
         ++count;
@@ -2349,9 +2510,10 @@ namespace
     {
       // No delimiter found => one subrange with all elements
       std::vector<int> v_in{1, 2, 3};
-      auto sv = etl::ranges::split_view(v_in, 0);
-      size_t count = 0;
-      for (auto sub : sv) {
+      auto             sv    = etl::ranges::split_view(v_in, 0);
+      size_t           count = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         std::vector<int> expected_sub{1, 2, 3};
         CHECK_EQUAL(expected_sub, actual);
@@ -2363,11 +2525,12 @@ namespace
     TEST(test_ranges_split_view_delim_at_edges)
     {
       // Delimiter at start and end: {0, 1, 2, 0} => {}, {1,2}, {}
-      std::vector<int> v_in{0, 1, 2, 0};
-      auto sv = etl::ranges::split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{},{1,2},{}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      std::vector<int>              v_in{0, 1, 2, 0};
+      auto                          sv = etl::ranges::split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{}, {1, 2}, {}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2378,11 +2541,12 @@ namespace
     TEST(test_ranges_split_view_consecutive_delim)
     {
       // Consecutive delimiters: {1, 0, 0, 2} => {1}, {}, {2}
-      std::vector<int> v_in{1, 0, 0, 2};
-      auto sv = etl::ranges::split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{1},{},{2}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      std::vector<int>              v_in{1, 0, 0, 2};
+      auto                          sv = etl::ranges::split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{1}, {}, {2}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2392,13 +2556,15 @@ namespace
 
     TEST(test_ranges_split_view_pipe_multi_pattern)
     {
-      // Pipe with multi-element pattern: {1, 2, 9, 9, 3, 4, 9, 9, 5} | split({9,9}) => {1,2}, {3,4}, {5}
-      std::vector<int> v_in{1, 2, 9, 9, 3, 4, 9, 9, 5};
-      std::vector<int> delim{9, 9};
-      auto sv = v_in | etl::views::split(delim);
-      std::vector<std::vector<int>> expected{{1,2},{3,4},{5}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      // Pipe with multi-element pattern: {1, 2, 9, 9, 3, 4, 9, 9, 5} |
+      // split({9,9}) => {1,2}, {3,4}, {5}
+      std::vector<int>              v_in{1, 2, 9, 9, 3, 4, 9, 9, 5};
+      std::vector<int>              delim{9, 9};
+      auto                          sv = v_in | etl::views::split(delim);
+      std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2409,11 +2575,12 @@ namespace
     TEST(test_ranges_split_view_etl_vector)
     {
       // Works with etl::vector too
-      etl::vector<int, 10> v_in{1, 0, 2, 0, 3};
-      auto sv = etl::ranges::split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{1},{2},{3}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      etl::vector<int, 10>          v_in{1, 0, 2, 0, 3};
+      auto                          sv = etl::ranges::split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{1}, {2}, {3}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2426,11 +2593,12 @@ namespace
     //*************************************************************************
     TEST(test_ranges_lazy_split_view_int_vector)
     {
-      etl::vector<int, 10> v_in{1, 2, 0, 3, 4, 0, 5};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{1,2},{3,4},{5}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      etl::vector<int, 10>          v_in{1, 2, 0, 3, 4, 0, 5};
+      auto                          sv = etl::ranges::lazy_split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2441,11 +2609,12 @@ namespace
     TEST(test_ranges_lazy_split_view_functional_single_delim)
     {
       // Split {1, 2, 0, 3, 4, 0, 5, 6} by 0 => {1,2}, {3,4}, {5,6}
-      std::vector<int> v_in{1, 2, 0, 3, 4, 0, 5, 6};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{1,2},{3,4},{5,6}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      std::vector<int>              v_in{1, 2, 0, 3, 4, 0, 5, 6};
+      auto                          sv = etl::ranges::lazy_split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5, 6}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2455,13 +2624,15 @@ namespace
 
     TEST(test_ranges_lazy_split_view_multi_pattern)
     {
-      // Split {1, 2, 0, 0, 3, 4, 0, 0, 5} by pattern {0, 0} => {1,2}, {3,4}, {5}
-      std::vector<int> v_in{1, 2, 0, 0, 3, 4, 0, 0, 5};
-      std::vector<int> delim{0, 0};
-      auto sv = etl::ranges::lazy_split_view(v_in, delim);
-      std::vector<std::vector<int>> expected{{1,2},{3,4},{5}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      // Split {1, 2, 0, 0, 3, 4, 0, 0, 5} by pattern {0, 0} => {1,2}, {3,4},
+      // {5}
+      std::vector<int>              v_in{1, 2, 0, 0, 3, 4, 0, 0, 5};
+      std::vector<int>              delim{0, 0};
+      auto                          sv = etl::ranges::lazy_split_view(v_in, delim);
+      std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2472,11 +2643,12 @@ namespace
     TEST(test_ranges_lazy_split_view_pipe)
     {
       // Pipe syntax: {1, 0, 2, 0, 3} | lazy_split(0) => {1}, {2}, {3}
-      std::vector<int> v_in{1, 0, 2, 0, 3};
-      auto sv = v_in | etl::views::lazy_split(0);
-      std::vector<std::vector<int>> expected{{1},{2},{3}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      std::vector<int>              v_in{1, 0, 2, 0, 3};
+      auto                          sv = v_in | etl::views::lazy_split(0);
+      std::vector<std::vector<int>> expected{{1}, {2}, {3}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2488,9 +2660,10 @@ namespace
     {
       // Split empty range => one empty subrange
       std::vector<int> v_in{};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      size_t count = 0;
-      for (auto sub : sv) {
+      auto             sv    = etl::ranges::lazy_split_view(v_in, 0);
+      size_t           count = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(actual.size(), 0U);
         ++count;
@@ -2502,9 +2675,10 @@ namespace
     {
       // No delimiter found => one subrange with all elements
       std::vector<int> v_in{1, 2, 3};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      size_t count = 0;
-      for (auto sub : sv) {
+      auto             sv    = etl::ranges::lazy_split_view(v_in, 0);
+      size_t           count = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         std::vector<int> expected_sub{1, 2, 3};
         CHECK_EQUAL(expected_sub, actual);
@@ -2516,11 +2690,12 @@ namespace
     TEST(test_ranges_lazy_split_view_delim_at_edges)
     {
       // Delimiter at start and end: {0, 1, 2, 0} => {}, {1,2}, {}
-      std::vector<int> v_in{0, 1, 2, 0};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{},{1,2},{}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      std::vector<int>              v_in{0, 1, 2, 0};
+      auto                          sv = etl::ranges::lazy_split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{}, {1, 2}, {}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2531,11 +2706,12 @@ namespace
     TEST(test_ranges_lazy_split_view_consecutive_delim)
     {
       // Consecutive delimiters: {1, 0, 0, 2} => {1}, {}, {2}
-      std::vector<int> v_in{1, 0, 0, 2};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{1},{},{2}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      std::vector<int>              v_in{1, 0, 0, 2};
+      auto                          sv = etl::ranges::lazy_split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{1}, {}, {2}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2545,13 +2721,15 @@ namespace
 
     TEST(test_ranges_lazy_split_view_pipe_multi_pattern)
     {
-      // Pipe with multi-element pattern: {1, 2, 9, 9, 3, 4, 9, 9, 5} | lazy_split({9,9}) => {1,2}, {3,4}, {5}
-      std::vector<int> v_in{1, 2, 9, 9, 3, 4, 9, 9, 5};
-      std::vector<int> delim{9, 9};
-      auto sv = v_in | etl::views::lazy_split(delim);
-      std::vector<std::vector<int>> expected{{1,2},{3,4},{5}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      // Pipe with multi-element pattern: {1, 2, 9, 9, 3, 4, 9, 9, 5} |
+      // lazy_split({9,9}) => {1,2}, {3,4}, {5}
+      std::vector<int>              v_in{1, 2, 9, 9, 3, 4, 9, 9, 5};
+      std::vector<int>              delim{9, 9};
+      auto                          sv = v_in | etl::views::lazy_split(delim);
+      std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2562,11 +2740,12 @@ namespace
     TEST(test_ranges_lazy_split_view_etl_vector)
     {
       // Works with etl::vector too
-      etl::vector<int, 10> v_in{1, 0, 2, 0, 3};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      std::vector<std::vector<int>> expected{{1},{2},{3}};
-      size_t idx = 0;
-      for (auto sub : sv) {
+      etl::vector<int, 10>          v_in{1, 0, 2, 0, 3};
+      auto                          sv = etl::ranges::lazy_split_view(v_in, 0);
+      std::vector<std::vector<int>> expected{{1}, {2}, {3}};
+      size_t                        idx = 0;
+      for (auto sub : sv)
+      {
         std::vector<int> actual(sub.begin(), sub.end());
         CHECK_EQUAL(expected[idx], actual);
         ++idx;
@@ -2578,11 +2757,11 @@ namespace
     {
       // Verify that the inner range can be iterated element-by-element (lazily)
       std::vector<int> v_in{10, 20, 0, 30, 40, 50};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      auto outer_it = sv.begin();
+      auto             sv       = etl::ranges::lazy_split_view(v_in, 0);
+      auto             outer_it = sv.begin();
 
       // First segment: {10, 20}
-      auto inner1 = *outer_it;
+      auto inner1   = *outer_it;
       auto inner_it = inner1.begin();
       CHECK_EQUAL(*inner_it, 10);
       ++inner_it;
@@ -2592,7 +2771,7 @@ namespace
 
       // Second segment: {30, 40, 50}
       ++outer_it;
-      auto inner2 = *outer_it;
+      auto inner2    = *outer_it;
       auto inner_it2 = inner2.begin();
       CHECK_EQUAL(*inner_it2, 30);
       ++inner_it2;
@@ -2610,8 +2789,8 @@ namespace
     {
       // Inner range empty() method
       std::vector<int> v_in{0, 1, 0};
-      auto sv = etl::ranges::lazy_split_view(v_in, 0);
-      auto it = sv.begin();
+      auto             sv = etl::ranges::lazy_split_view(v_in, 0);
+      auto             it = sv.begin();
 
       // First segment is empty
       auto seg0 = *it;
@@ -2654,8 +2833,8 @@ namespace
     {
       std::vector<int> vec{1, 2, 3, 4};
 
-      using result_type = std::vector<int>;
-      auto cv = etl::views::concat(vec);
+      using result_type  = std::vector<int>;
+      auto        cv     = etl::views::concat(vec);
       result_type result = etl::views::concat(vec) | etl::ranges::to<result_type>();
 
       result_type expected_result{1, 2, 3, 4};
@@ -2669,10 +2848,10 @@ namespace
     TEST(test_ranges_concat_view_2)
     {
       std::vector<int> vec{1, 2, 3, 4};
-      std::list<int> list{6, 7, 8, 9, 10};
+      std::list<int>   list{6, 7, 8, 9, 10};
 
-      auto cv = etl::views::concat(vec, list);
-      using result_type = std::vector<int>;
+      auto cv            = etl::views::concat(vec, list);
+      using result_type  = std::vector<int>;
       result_type result = etl::views::concat(vec, list) | etl::ranges::to<result_type>();
 
       result_type expected_result{1, 2, 3, 4, 6, 7, 8, 9, 10};
@@ -2690,7 +2869,7 @@ namespace
 
       auto cv = etl::views::concat(vec0, vec1);
 
-      using result_type = std::vector<int>;
+      using result_type  = std::vector<int>;
       result_type result = etl::views::concat(vec0, vec1) | etl::ranges::to<result_type>();
 
       std::vector<int> expected_result{1, 2, 3, 4, 6, 7, 8, 9, 10};
@@ -2703,13 +2882,13 @@ namespace
 
     TEST(test_ranges_concat_view_3)
     {
-      std::vector<int> vec{1, 2, 3, 4};
-      std::list<int> list{6, 7, 8, 9, 10};
+      std::vector<int>   vec{1, 2, 3, 4};
+      std::list<int>     list{6, 7, 8, 9, 10};
       std::array<int, 3> arr{20, 21, 22};
 
       auto cv = etl::views::concat(vec, list, arr);
 
-      using result_type = std::vector<int>;
+      using result_type  = std::vector<int>;
       result_type result = etl::views::concat(vec, list, arr) | etl::ranges::to<result_type>();
 
       std::vector<int> expected_result{1, 2, 3, 4, 6, 7, 8, 9, 10, 20, 21, 22};
@@ -2756,7 +2935,7 @@ namespace
 
       auto cv = etl::views::concat(vec0, vec1, vec2);
 
-      using result_type = std::vector<int>;
+      using result_type  = std::vector<int>;
       result_type result = etl::views::concat(vec0, vec1, vec2) | etl::ranges::to<result_type>();
 
       std::vector<int> expected_result{1, 2, 3, 4, 6, 7, 8, 9, 10, 20, 21, 22};
@@ -2801,7 +2980,7 @@ namespace
 
       auto cv = etl::views::concat(vec0, vec0, vec0);
 
-      using result_type = std::vector<int>;
+      using result_type  = std::vector<int>;
       result_type result = etl::views::concat(vec0, vec0, vec0) | etl::ranges::to<result_type>();
 
       std::vector<int> expected_result{1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5};
@@ -2846,9 +3025,9 @@ namespace
 
     TEST(test_ranges_common_view_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4};
 
       auto cv = etl::ranges::common_view(v_in);
       for (int i : cv)
@@ -2870,9 +3049,9 @@ namespace
 
     TEST(test_ranges_common_view_from_view)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{3, 4, 5, 6, 7, 8, 9};
 
       auto cv = etl::ranges::common_view(etl::views::drop(v_in, 3));
       for (int i : cv)
@@ -2890,9 +3069,9 @@ namespace
 
     TEST(test_ranges_common_view_pipe)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4};
 
       auto cv = v_in | etl::views::common;
       for (int i : cv)
@@ -2910,9 +3089,9 @@ namespace
 
     TEST(test_ranges_common_view_pipe_chain)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 4, 3, 2, 1, 0 };
+      etl::vector<int, 10> v_out_expected{4, 3, 2, 1, 0};
 
       auto cv = v_in | etl::views::take(5) | etl::views::reverse | etl::views::common;
       for (int i : cv)
@@ -2939,12 +3118,13 @@ namespace
 
     TEST(test_ranges_common_view_same_begin_end_type)
     {
-      // For a common range (begin/end same type), common_view should work as pass-through
-      etl::vector<int, 10> v_in{ 10, 20, 30 };
+      // For a common range (begin/end same type), common_view should work as
+      // pass-through
+      etl::vector<int, 10> v_in{10, 20, 30};
 
-      auto cv = etl::views::common(v_in);
+      auto cv       = etl::views::common(v_in);
       auto it_begin = cv.begin();
-      auto it_end = cv.end();
+      auto it_end   = cv.end();
 
       // Verify same type via compilation and correct values
       CHECK(it_begin != it_end);
@@ -2956,22 +3136,25 @@ namespace
 
     TEST(test_ranges_common_view_iterate)
     {
-      etl::vector<int, 10> v_in{ 1, 2, 3, 4, 5 };
+      etl::vector<int, 10> v_in{1, 2, 3, 4, 5};
 
-      using result_type = etl::vector<int, 10>;
+      using result_type  = etl::vector<int, 10>;
       result_type result = v_in | etl::views::common | etl::ranges::to<result_type>();
 
-      result_type v_expected{ 1, 2, 3, 4, 5 };
+      result_type v_expected{1, 2, 3, 4, 5};
       CHECK_EQUAL(result, v_expected);
     }
 
     TEST(test_ranges_common_view_with_filter)
     {
-      auto even = [](int i) -> bool { return 0 == i % 2; };
+      auto even = [](int i) -> bool
+      {
+        return 0 == i % 2;
+      };
 
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
       auto cv = v_in | etl::views::filter(even) | etl::views::common();
       for (int i : cv)
@@ -2984,11 +3167,14 @@ namespace
 
     TEST(test_ranges_common_view_with_transform)
     {
-      auto times_two = [](int i) -> int { return i * 2; };
+      auto times_two = [](int i) -> int
+      {
+        return i * 2;
+      };
 
-      etl::vector<int, 10> v_in{ 1, 2, 3, 4, 5 };
+      etl::vector<int, 10> v_in{1, 2, 3, 4, 5};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 2, 4, 6, 8, 10 };
+      etl::vector<int, 10> v_out_expected{2, 4, 6, 8, 10};
 
       auto cv = v_in | etl::views::transform(times_two) | etl::views::common;
       for (int i : cv)
@@ -3001,9 +3187,9 @@ namespace
 
     TEST(test_ranges_common_view_std_vector)
     {
-      std::vector<int> v_in{ 10, 20, 30, 40, 50 };
+      std::vector<int> v_in{10, 20, 30, 40, 50};
       std::vector<int> v_out;
-      std::vector<int> v_out_expected{ 10, 20, 30, 40, 50 };
+      std::vector<int> v_out_expected{10, 20, 30, 40, 50};
 
       auto cv = etl::ranges::common_view(etl::ranges::ref_view(v_in));
       for (int i : cv)
@@ -3019,9 +3205,9 @@ namespace
 
     TEST(test_ranges_common_view_c_array)
     {
-      int v_in[] = { 1, 2, 3, 4, 5 };
+      int                  v_in[] = {1, 2, 3, 4, 5};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 1, 2, 3, 4, 5 };
+      etl::vector<int, 10> v_out_expected{1, 2, 3, 4, 5};
 
       auto cv = etl::ranges::common_view(etl::ranges::ref_view(v_in));
       for (int i : cv)
@@ -3036,7 +3222,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_elements_of_from_lvalue)
     {
-      std::vector<int> v{ 1, 2, 3, 4, 5 };
+      std::vector<int> v{1, 2, 3, 4, 5};
 
       auto eo = etl::ranges::elements_of{v};
 
@@ -3060,7 +3246,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_elements_of_deduction_guide)
     {
-      std::vector<int> v{ 1, 2, 3 };
+      std::vector<int> v{1, 2, 3};
 
       // CTAD should deduce elements_of<std::vector<int>&>
       auto eo = etl::ranges::elements_of{v};
@@ -3074,7 +3260,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_elements_of_c_array)
     {
-      int arr[] = { 10, 20, 30, 40, 50 };
+      int arr[] = {10, 20, 30, 40, 50};
 
       auto eo = etl::ranges::elements_of{arr};
 
@@ -3090,9 +3276,12 @@ namespace
       auto ev = etl::ranges::elements_view<etl::ranges::views::all_t<decltype(v)&>, 0>(etl::ranges::views::all(v));
 
       auto it = ev.begin();
-      CHECK_EQUAL(1, *it); ++it;
-      CHECK_EQUAL(2, *it); ++it;
-      CHECK_EQUAL(3, *it); ++it;
+      CHECK_EQUAL(1, *it);
+      ++it;
+      CHECK_EQUAL(2, *it);
+      ++it;
+      CHECK_EQUAL(3, *it);
+      ++it;
       CHECK(it == ev.end());
     }
 
@@ -3104,28 +3293,30 @@ namespace
       auto ev = etl::ranges::elements_view<etl::ranges::views::all_t<decltype(v)&>, 1>(etl::ranges::views::all(v));
 
       auto it = ev.begin();
-      CHECK_CLOSE(1.1, *it, 0.001); ++it;
-      CHECK_CLOSE(2.2, *it, 0.001); ++it;
-      CHECK_CLOSE(3.3, *it, 0.001); ++it;
+      CHECK_CLOSE(1.1, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(2.2, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(3.3, *it, 0.001);
+      ++it;
       CHECK(it == ev.end());
     }
 
     //*************************************************************************
     TEST(test_ranges_elements_view_tuple)
     {
-      std::vector<etl::tuple<int, double, char>> v = {
-        etl::make_tuple(10, 1.5, 'a'),
-        etl::make_tuple(20, 2.5, 'b'),
-        etl::make_tuple(30, 3.5, 'c')
-      };
+      std::vector<etl::tuple<int, double, char>> v = {etl::make_tuple(10, 1.5, 'a'), etl::make_tuple(20, 2.5, 'b'), etl::make_tuple(30, 3.5, 'c')};
 
       // Extract element 2 (char)
       auto ev = etl::ranges::elements_view<etl::ranges::views::all_t<decltype(v)&>, 2>(etl::ranges::views::all(v));
 
       auto it = ev.begin();
-      CHECK_EQUAL('a', *it); ++it;
-      CHECK_EQUAL('b', *it); ++it;
-      CHECK_EQUAL('c', *it); ++it;
+      CHECK_EQUAL('a', *it);
+      ++it;
+      CHECK_EQUAL('b', *it);
+      ++it;
+      CHECK_EQUAL('c', *it);
+      ++it;
       CHECK(it == ev.end());
     }
 
@@ -3158,9 +3349,12 @@ namespace
       auto ev = etl::views::elements<0>(v);
 
       auto it = ev.begin();
-      CHECK_EQUAL(1, *it); ++it;
-      CHECK_EQUAL(2, *it); ++it;
-      CHECK_EQUAL(3, *it); ++it;
+      CHECK_EQUAL(1, *it);
+      ++it;
+      CHECK_EQUAL(2, *it);
+      ++it;
+      CHECK_EQUAL(3, *it);
+      ++it;
       CHECK(it == ev.end());
     }
 
@@ -3172,9 +3366,12 @@ namespace
       auto ev = v | etl::views::elements<1>;
 
       auto it = ev.begin();
-      CHECK_CLOSE(1.1, *it, 0.001); ++it;
-      CHECK_CLOSE(2.2, *it, 0.001); ++it;
-      CHECK_CLOSE(3.3, *it, 0.001); ++it;
+      CHECK_CLOSE(1.1, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(2.2, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(3.3, *it, 0.001);
+      ++it;
       CHECK(it == ev.end());
     }
 
@@ -3186,9 +3383,12 @@ namespace
       auto ev = v | etl::views::keys;
 
       auto it = ev.begin();
-      CHECK_EQUAL(10, *it); ++it;
-      CHECK_EQUAL(20, *it); ++it;
-      CHECK_EQUAL(30, *it); ++it;
+      CHECK_EQUAL(10, *it);
+      ++it;
+      CHECK_EQUAL(20, *it);
+      ++it;
+      CHECK_EQUAL(30, *it);
+      ++it;
       CHECK(it == ev.end());
     }
 
@@ -3200,9 +3400,12 @@ namespace
       auto ev = v | etl::views::values;
 
       auto it = ev.begin();
-      CHECK_CLOSE(1.1, *it, 0.001); ++it;
-      CHECK_CLOSE(2.2, *it, 0.001); ++it;
-      CHECK_CLOSE(3.3, *it, 0.001); ++it;
+      CHECK_CLOSE(1.1, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(2.2, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(3.3, *it, 0.001);
+      ++it;
       CHECK(it == ev.end());
     }
 
@@ -3214,9 +3417,12 @@ namespace
       auto ev = etl::views::keys(v);
 
       auto it = ev.begin();
-      CHECK_EQUAL(10, *it); ++it;
-      CHECK_EQUAL(20, *it); ++it;
-      CHECK_EQUAL(30, *it); ++it;
+      CHECK_EQUAL(10, *it);
+      ++it;
+      CHECK_EQUAL(20, *it);
+      ++it;
+      CHECK_EQUAL(30, *it);
+      ++it;
       CHECK(it == ev.end());
     }
 
@@ -3228,61 +3434,69 @@ namespace
       auto ev = etl::views::values(v);
 
       auto it = ev.begin();
-      CHECK_CLOSE(1.1, *it, 0.001); ++it;
-      CHECK_CLOSE(2.2, *it, 0.001); ++it;
-      CHECK_CLOSE(3.3, *it, 0.001); ++it;
+      CHECK_CLOSE(1.1, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(2.2, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(3.3, *it, 0.001);
+      ++it;
       CHECK(it == ev.end());
     }
 
     //*************************************************************************
     TEST(test_ranges_elements_view_with_etl_tuple)
     {
-      std::vector<etl::tuple<int, double, char>> v = {
-        etl::make_tuple(1, 10.0, 'x'),
-        etl::make_tuple(2, 20.0, 'y'),
-        etl::make_tuple(3, 30.0, 'z')
-      };
+      std::vector<etl::tuple<int, double, char>> v = {etl::make_tuple(1, 10.0, 'x'), etl::make_tuple(2, 20.0, 'y'), etl::make_tuple(3, 30.0, 'z')};
 
       // Extract element 0 via pipe
       auto ev0 = v | etl::views::elements<0>;
       auto it0 = ev0.begin();
-      CHECK_EQUAL(1, *it0); ++it0;
-      CHECK_EQUAL(2, *it0); ++it0;
-      CHECK_EQUAL(3, *it0); ++it0;
+      CHECK_EQUAL(1, *it0);
+      ++it0;
+      CHECK_EQUAL(2, *it0);
+      ++it0;
+      CHECK_EQUAL(3, *it0);
+      ++it0;
       CHECK(it0 == ev0.end());
 
       // Extract element 1 via pipe
       auto ev1 = v | etl::views::elements<1>;
       auto it1 = ev1.begin();
-      CHECK_CLOSE(10.0, *it1, 0.001); ++it1;
-      CHECK_CLOSE(20.0, *it1, 0.001); ++it1;
-      CHECK_CLOSE(30.0, *it1, 0.001); ++it1;
+      CHECK_CLOSE(10.0, *it1, 0.001);
+      ++it1;
+      CHECK_CLOSE(20.0, *it1, 0.001);
+      ++it1;
+      CHECK_CLOSE(30.0, *it1, 0.001);
+      ++it1;
       CHECK(it1 == ev1.end());
 
       // Extract element 2 via pipe
       auto ev2 = v | etl::views::elements<2>;
       auto it2 = ev2.begin();
-      CHECK_EQUAL('x', *it2); ++it2;
-      CHECK_EQUAL('y', *it2); ++it2;
-      CHECK_EQUAL('z', *it2); ++it2;
+      CHECK_EQUAL('x', *it2);
+      ++it2;
+      CHECK_EQUAL('y', *it2);
+      ++it2;
+      CHECK_EQUAL('z', *it2);
+      ++it2;
       CHECK(it2 == ev2.end());
     }
 
     //*************************************************************************
     TEST(test_ranges_enumerate_view_basic)
     {
-      std::vector<int> v = {10, 20, 30};
-      auto ev = etl::ranges::enumerate_view(etl::ranges::views::all(v));
+      std::vector<int> v  = {10, 20, 30};
+      auto             ev = etl::ranges::enumerate_view(etl::ranges::views::all(v));
 
       auto it = ev.begin();
       CHECK_EQUAL(0U, etl::get<0>(*it));
-      CHECK_EQUAL(10,  etl::get<1>(*it));
+      CHECK_EQUAL(10, etl::get<1>(*it));
       ++it;
       CHECK_EQUAL(1U, etl::get<0>(*it));
-      CHECK_EQUAL(20,  etl::get<1>(*it));
+      CHECK_EQUAL(20, etl::get<1>(*it));
       ++it;
       CHECK_EQUAL(2U, etl::get<0>(*it));
-      CHECK_EQUAL(30,  etl::get<1>(*it));
+      CHECK_EQUAL(30, etl::get<1>(*it));
       ++it;
       CHECK(it == ev.end());
     }
@@ -3290,17 +3504,17 @@ namespace
     //*************************************************************************
     TEST(test_ranges_enumerate_view_pipe)
     {
-      std::vector<std::string> v = {"a", "b", "c"};
-      auto ev = v | etl::views::enumerate;
+      std::vector<std::string> v  = {"a", "b", "c"};
+      auto                     ev = v | etl::views::enumerate;
 
       auto it = ev.begin();
-      CHECK_EQUAL(0U,          etl::get<0>(*it));
+      CHECK_EQUAL(0U, etl::get<0>(*it));
       CHECK_EQUAL(std::string("a"), etl::get<1>(*it));
       ++it;
-      CHECK_EQUAL(1U,          etl::get<0>(*it));
+      CHECK_EQUAL(1U, etl::get<0>(*it));
       CHECK_EQUAL(std::string("b"), etl::get<1>(*it));
       ++it;
-      CHECK_EQUAL(2U,          etl::get<0>(*it));
+      CHECK_EQUAL(2U, etl::get<0>(*it));
       CHECK_EQUAL(std::string("c"), etl::get<1>(*it));
       ++it;
       CHECK(it == ev.end());
@@ -3310,7 +3524,7 @@ namespace
     TEST(test_ranges_enumerate_view_empty)
     {
       std::vector<int> v;
-      auto ev = v | etl::views::enumerate;
+      auto             ev = v | etl::views::enumerate;
 
       CHECK(ev.begin() == ev.end());
       CHECK_EQUAL(0U, ev.size());
@@ -3319,8 +3533,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_enumerate_view_size)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5};
-      auto ev = v | etl::views::enumerate;
+      std::vector<int> v  = {1, 2, 3, 4, 5};
+      auto             ev = v | etl::views::enumerate;
 
       CHECK_EQUAL(5U, ev.size());
     }
@@ -3328,11 +3542,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_enumerate_view_range_for)
     {
-      std::vector<int> v = {100, 200, 300};
-      auto ev = v | etl::views::enumerate;
+      std::vector<int> v  = {100, 200, 300};
+      auto             ev = v | etl::views::enumerate;
 
-      size_t expected_index = 0;
-      int expected_values[] = {100, 200, 300};
+      size_t expected_index    = 0;
+      int    expected_values[] = {100, 200, 300};
 
       for (auto&& [idx, val] : ev)
       {
@@ -3347,18 +3561,18 @@ namespace
     //*************************************************************************
     TEST(test_ranges_enumerate_view_chained_with_take)
     {
-      std::vector<int> v = {10, 20, 30, 40, 50};
-      auto ev = v | etl::views::enumerate | etl::views::take(3);
+      std::vector<int> v  = {10, 20, 30, 40, 50};
+      auto             ev = v | etl::views::enumerate | etl::views::take(3);
 
       auto it = ev.begin();
       CHECK_EQUAL(0U, etl::get<0>(*it));
-      CHECK_EQUAL(10,  etl::get<1>(*it));
+      CHECK_EQUAL(10, etl::get<1>(*it));
       ++it;
       CHECK_EQUAL(1U, etl::get<0>(*it));
-      CHECK_EQUAL(20,  etl::get<1>(*it));
+      CHECK_EQUAL(20, etl::get<1>(*it));
       ++it;
       CHECK_EQUAL(2U, etl::get<0>(*it));
-      CHECK_EQUAL(30,  etl::get<1>(*it));
+      CHECK_EQUAL(30, etl::get<1>(*it));
       ++it;
       CHECK(it == ev.end());
     }
@@ -3366,12 +3580,12 @@ namespace
     //*************************************************************************
     TEST(test_ranges_enumerate_view_single_element)
     {
-      std::vector<int> v = {42};
-      auto ev = v | etl::views::enumerate;
+      std::vector<int> v  = {42};
+      auto             ev = v | etl::views::enumerate;
 
       auto it = ev.begin();
       CHECK_EQUAL(0U, etl::get<0>(*it));
-      CHECK_EQUAL(42,  etl::get<1>(*it));
+      CHECK_EQUAL(42, etl::get<1>(*it));
       ++it;
       CHECK(it == ev.end());
     }
@@ -3379,7 +3593,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_zip_view_basic)
     {
-      std::vector<int> v1 = {1, 2, 3};
+      std::vector<int>         v1 = {1, 2, 3};
       std::vector<std::string> v2 = {"a", "b", "c"};
 
       auto zv = etl::views::zip(v1, v2);
@@ -3400,7 +3614,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_zip_view_different_lengths)
     {
-      std::vector<int> v1 = {1, 2, 3, 4, 5};
+      std::vector<int>    v1 = {1, 2, 3, 4, 5};
       std::vector<double> v2 = {10.0, 20.0, 30.0};
 
       auto zv = etl::views::zip(v1, v2);
@@ -3423,7 +3637,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_zip_view_three_ranges)
     {
-      std::vector<int> v1 = {1, 2, 3};
+      std::vector<int>    v1 = {1, 2, 3};
       std::vector<double> v2 = {1.5, 2.5, 3.5};
       std::array<char, 3> v3 = {'x', 'y', 'z'};
 
@@ -3450,7 +3664,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_zip_view_empty)
     {
-      std::vector<int> v1;
+      std::vector<int>    v1;
       std::vector<double> v2 = {1.0, 2.0};
 
       auto zv = etl::views::zip(v1, v2);
@@ -3486,9 +3700,9 @@ namespace
 
       auto zv = etl::views::zip(v1, v2);
 
-      int expected_first[] = {1, 2, 3};
-      int expected_second[] = {10, 20, 30};
-      size_t index = 0;
+      int    expected_first[]  = {1, 2, 3};
+      int    expected_second[] = {10, 20, 30};
+      size_t index             = 0;
 
       for (auto&& [a, b] : zv)
       {
@@ -3504,7 +3718,7 @@ namespace
     TEST(test_ranges_zip_view_with_list)
     {
       std::vector<int> v1 = {1, 2, 3, 4};
-      std::list<int> l1 = {100, 200, 300};
+      std::list<int>   l1 = {100, 200, 300};
 
       auto zv = etl::views::zip(v1, l1);
 
@@ -3562,7 +3776,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_zip_transform_view_different_lengths)
     {
-      std::vector<int> v1 = {1, 2, 3, 4, 5};
+      std::vector<int>    v1 = {1, 2, 3, 4, 5};
       std::vector<double> v2 = {10.5, 20.5, 30.5};
 
       auto ztv = etl::views::zip_transform([](int a, double b) { return a + b; }, v1, v2);
@@ -3639,8 +3853,8 @@ namespace
 
       auto ztv = etl::views::zip_transform([](int a, int b) { return a * b; }, v1, v2);
 
-      int expected[] = {10, 40, 90};
-      size_t index = 0;
+      int    expected[] = {10, 40, 90};
+      size_t index      = 0;
 
       for (auto val : ztv)
       {
@@ -3655,7 +3869,7 @@ namespace
     TEST(test_ranges_zip_transform_view_with_list)
     {
       std::vector<int> v1 = {1, 2, 3, 4};
-      std::list<int> l1 = {100, 200, 300};
+      std::list<int>   l1 = {100, 200, 300};
 
       auto ztv = etl::views::zip_transform([](int a, int b) { return a + b; }, v1, l1);
 
@@ -3976,13 +4190,13 @@ namespace
       CHECK_EQUAL(4U, atv.size());
 
       auto it = atv.begin();
-      CHECK_EQUAL(3, *it);  // 1+2
+      CHECK_EQUAL(3, *it); // 1+2
       ++it;
-      CHECK_EQUAL(5, *it);  // 2+3
+      CHECK_EQUAL(5, *it); // 2+3
       ++it;
-      CHECK_EQUAL(7, *it);  // 3+4
+      CHECK_EQUAL(7, *it); // 3+4
       ++it;
-      CHECK_EQUAL(9, *it);  // 4+5
+      CHECK_EQUAL(9, *it); // 4+5
       ++it;
       CHECK(it == atv.end());
     }
@@ -3997,11 +4211,11 @@ namespace
       CHECK_EQUAL(3U, atv.size());
 
       auto it = atv.begin();
-      CHECK_EQUAL(6, *it);   // 1*2*3
+      CHECK_EQUAL(6, *it); // 1*2*3
       ++it;
-      CHECK_EQUAL(24, *it);  // 2*3*4
+      CHECK_EQUAL(24, *it); // 2*3*4
       ++it;
-      CHECK_EQUAL(60, *it);  // 3*4*5
+      CHECK_EQUAL(60, *it); // 3*4*5
       ++it;
       CHECK(it == atv.end());
     }
@@ -4036,7 +4250,7 @@ namespace
       CHECK_EQUAL(1U, atv.size());
 
       auto it = atv.begin();
-      CHECK_EQUAL(6, *it);  // 1+2+3
+      CHECK_EQUAL(6, *it); // 1+2+3
       ++it;
       CHECK(it == atv.end());
     }
@@ -4066,7 +4280,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_adjacent_transform_view_range_for)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5};
+      std::vector<int> v        = {1, 2, 3, 4, 5};
       std::vector<int> expected = {3, 5, 7, 9};
 
       auto atv = etl::views::adjacent_transform<2>(v, [](int a, int b) { return a + b; });
@@ -4094,11 +4308,11 @@ namespace
       CHECK_EQUAL(3U, atv.size());
 
       auto it = atv.begin();
-      CHECK_EQUAL(10, *it);  // 20-10
+      CHECK_EQUAL(10, *it); // 20-10
       ++it;
-      CHECK_EQUAL(10, *it);  // 30-20
+      CHECK_EQUAL(10, *it); // 30-20
       ++it;
-      CHECK_EQUAL(10, *it);  // 40-30
+      CHECK_EQUAL(10, *it); // 40-30
       ++it;
       CHECK(it == atv.end());
     }
@@ -4108,19 +4322,22 @@ namespace
     {
       std::vector<int> v = {1, 2, 3, 4, 5};
 
-      auto sum = [](int a, int b) { return a + b; };
+      auto sum = [](int a, int b)
+      {
+        return a + b;
+      };
       auto atv = v | etl::views::adjacent_transform<2>(sum);
 
       CHECK_EQUAL(4U, atv.size());
 
       auto it = atv.begin();
-      CHECK_EQUAL(3, *it);   // 1+2
+      CHECK_EQUAL(3, *it); // 1+2
       ++it;
-      CHECK_EQUAL(5, *it);   // 2+3
+      CHECK_EQUAL(5, *it); // 2+3
       ++it;
-      CHECK_EQUAL(7, *it);   // 3+4
+      CHECK_EQUAL(7, *it); // 3+4
       ++it;
-      CHECK_EQUAL(9, *it);   // 4+5
+      CHECK_EQUAL(9, *it); // 4+5
       ++it;
       CHECK(it == atv.end());
     }
@@ -4130,13 +4347,16 @@ namespace
     {
       std::vector<int> v = {1, 2, 3, 4, 5};
 
-      auto sum = [](int a, int b) { return a + b; };
+      auto sum = [](int a, int b)
+      {
+        return a + b;
+      };
       auto atv = v | etl::views::adjacent_transform<2>(sum) | etl::views::take(2);
 
       auto it = atv.begin();
-      CHECK_EQUAL(3, *it);   // 1+2
+      CHECK_EQUAL(3, *it); // 1+2
       ++it;
-      CHECK_EQUAL(5, *it);   // 2+3
+      CHECK_EQUAL(5, *it); // 2+3
       ++it;
       CHECK(it == atv.end());
     }
@@ -4147,17 +4367,20 @@ namespace
       std::vector<int> v = {1, 2, 3, 4};
 
       // Returns double instead of int
-      auto avg = [](int a, int b) { return (a + b) / 2.0; };
+      auto avg = [](int a, int b)
+      {
+        return (a + b) / 2.0;
+      };
       auto atv = etl::views::adjacent_transform<2>(v, avg);
 
       CHECK_EQUAL(3U, atv.size());
 
       auto it = atv.begin();
-      CHECK_CLOSE(1.5, *it, 0.001);  // (1+2)/2.0
+      CHECK_CLOSE(1.5, *it, 0.001); // (1+2)/2.0
       ++it;
-      CHECK_CLOSE(2.5, *it, 0.001);  // (2+3)/2.0
+      CHECK_CLOSE(2.5, *it, 0.001); // (2+3)/2.0
       ++it;
-      CHECK_CLOSE(3.5, *it, 0.001);  // (3+4)/2.0
+      CHECK_CLOSE(3.5, *it, 0.001); // (3+4)/2.0
       ++it;
       CHECK(it == atv.end());
     }
@@ -4167,7 +4390,10 @@ namespace
     {
       std::vector<int> v = {5, 10, 15, 20};
 
-      auto diff = [](int a, int b) { return b - a; };
+      auto diff = [](int a, int b)
+      {
+        return b - a;
+      };
       auto atv = v | etl::views::pairwise_transform(diff);
 
       CHECK_EQUAL(3U, atv.size());
@@ -4185,11 +4411,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_view_basic)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      auto cv = etl::ranges::chunk_view(v, 3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+      auto             cv = etl::ranges::chunk_view(v, 3);
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4203,11 +4429,11 @@ namespace
     TEST(test_ranges_chunk_view_remainder)
     {
       // Range size not evenly divisible by chunk size
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7};
-      auto cv = etl::ranges::chunk_view(v, 3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7};
+      auto             cv = etl::ranges::chunk_view(v, 3);
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {4, 5, 6}, {7}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4220,11 +4446,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_view_single_element_chunks)
     {
-      std::vector<int> v = {10, 20, 30};
-      auto cv = etl::ranges::chunk_view(v, 1);
+      std::vector<int> v  = {10, 20, 30};
+      auto             cv = etl::ranges::chunk_view(v, 1);
 
       std::vector<std::vector<int>> expected{{10}, {20}, {30}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4237,8 +4463,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_view_chunk_larger_than_range)
     {
-      std::vector<int> v = {1, 2, 3};
-      auto cv = etl::ranges::chunk_view(v, 10);
+      std::vector<int> v  = {1, 2, 3};
+      auto             cv = etl::ranges::chunk_view(v, 10);
 
       size_t count = 0;
       for (auto chunk : cv)
@@ -4255,7 +4481,7 @@ namespace
     TEST(test_ranges_chunk_view_empty_range)
     {
       std::vector<int> v;
-      auto cv = etl::ranges::chunk_view(v, 3);
+      auto             cv = etl::ranges::chunk_view(v, 3);
 
       size_t count = 0;
       for (auto chunk : cv)
@@ -4269,11 +4495,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_view_pipe)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5, 6};
-      auto cv = v | etl::views::chunk(2);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6};
+      auto             cv = v | etl::views::chunk(2);
 
       std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5, 6}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4286,11 +4512,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_view_pipe_with_remainder)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5};
-      auto cv = v | etl::views::chunk(2);
+      std::vector<int> v  = {1, 2, 3, 4, 5};
+      auto             cv = v | etl::views::chunk(2);
 
       std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4303,11 +4529,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_view_functional_call)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5, 6};
-      auto cv = etl::views::chunk(v, 3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6};
+      auto             cv = etl::views::chunk(v, 3);
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {4, 5, 6}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4320,11 +4546,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_view_etl_vector)
     {
-      etl::vector<int, 10> v = {1, 2, 3, 4, 5, 6, 7, 8};
-      auto cv = etl::ranges::chunk_view(v, 3);
+      etl::vector<int, 10> v  = {1, 2, 3, 4, 5, 6, 7, 8};
+      auto                 cv = etl::ranges::chunk_view(v, 3);
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {4, 5, 6}, {7, 8}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4337,11 +4563,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_view_array)
     {
-      std::array<int, 6> a = {10, 20, 30, 40, 50, 60};
-      auto cv = etl::ranges::chunk_view(a, 2);
+      std::array<int, 6> a  = {10, 20, 30, 40, 50, 60};
+      auto               cv = etl::ranges::chunk_view(a, 2);
 
       std::vector<std::vector<int>> expected{{10, 20}, {30, 40}, {50, 60}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4355,11 +4581,11 @@ namespace
     TEST(test_ranges_chunk_view_pipe_chain_take_chunk)
     {
       // Take first 6, then chunk by 2
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      auto cv = v | etl::views::take(6) | etl::views::chunk(2);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+      auto             cv = v | etl::views::take(6) | etl::views::chunk(2);
 
       std::vector<std::vector<int>> expected{{1, 2}, {3, 4}, {5, 6}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4373,11 +4599,11 @@ namespace
     TEST(test_ranges_chunk_view_pipe_chain_drop_chunk)
     {
       // Drop first 2, then chunk by 3
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8};
-      auto cv = v | etl::views::drop(2) | etl::views::chunk(3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7, 8};
+      auto             cv = v | etl::views::drop(2) | etl::views::chunk(3);
 
       std::vector<std::vector<int>> expected{{3, 4, 5}, {6, 7, 8}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4394,11 +4620,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_slide_view_basic)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5};
-      auto sv = etl::ranges::slide_view(v, 3);
+      std::vector<int> v  = {1, 2, 3, 4, 5};
+      auto             sv = etl::ranges::slide_view(v, 3);
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto window : sv)
       {
         std::vector<int> actual(window.begin(), window.end());
@@ -4411,11 +4637,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_slide_view_window_size_1)
     {
-      std::vector<int> v = {10, 20, 30};
-      auto sv = etl::ranges::slide_view(v, 1);
+      std::vector<int> v  = {10, 20, 30};
+      auto             sv = etl::ranges::slide_view(v, 1);
 
       std::vector<std::vector<int>> expected{{10}, {20}, {30}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto window : sv)
       {
         std::vector<int> actual(window.begin(), window.end());
@@ -4428,8 +4654,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_slide_view_window_equals_range)
     {
-      std::vector<int> v = {1, 2, 3};
-      auto sv = etl::ranges::slide_view(v, 3);
+      std::vector<int> v  = {1, 2, 3};
+      auto             sv = etl::ranges::slide_view(v, 3);
 
       size_t count = 0;
       for (auto window : sv)
@@ -4445,8 +4671,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_slide_view_window_larger_than_range)
     {
-      std::vector<int> v = {1, 2, 3};
-      auto sv = etl::ranges::slide_view(v, 5);
+      std::vector<int> v  = {1, 2, 3};
+      auto             sv = etl::ranges::slide_view(v, 5);
 
       size_t count = 0;
       for (auto window : sv)
@@ -4461,7 +4687,7 @@ namespace
     TEST(test_ranges_slide_view_empty_range)
     {
       std::vector<int> v;
-      auto sv = etl::ranges::slide_view(v, 3);
+      auto             sv = etl::ranges::slide_view(v, 3);
 
       size_t count = 0;
       for (auto window : sv)
@@ -4486,11 +4712,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_slide_view_pipe)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5};
-      auto sv = v | etl::views::slide(3);
+      std::vector<int> v  = {1, 2, 3, 4, 5};
+      auto             sv = v | etl::views::slide(3);
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto window : sv)
       {
         std::vector<int> actual(window.begin(), window.end());
@@ -4503,11 +4729,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_slide_view_functional_call)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5};
-      auto sv = etl::views::slide(v, 2);
+      std::vector<int> v  = {1, 2, 3, 4, 5};
+      auto             sv = etl::views::slide(v, 2);
 
       std::vector<std::vector<int>> expected{{1, 2}, {2, 3}, {3, 4}, {4, 5}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto window : sv)
       {
         std::vector<int> actual(window.begin(), window.end());
@@ -4520,11 +4746,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_slide_view_etl_vector)
     {
-      etl::vector<int, 10> v = {1, 2, 3, 4, 5, 6};
-      auto sv = etl::ranges::slide_view(v, 4);
+      etl::vector<int, 10> v  = {1, 2, 3, 4, 5, 6};
+      auto                 sv = etl::ranges::slide_view(v, 4);
 
       std::vector<std::vector<int>> expected{{1, 2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5, 6}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto window : sv)
       {
         std::vector<int> actual(window.begin(), window.end());
@@ -4537,11 +4763,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_slide_view_array)
     {
-      std::array<int, 5> a = {10, 20, 30, 40, 50};
-      auto sv = etl::ranges::slide_view(a, 2);
+      std::array<int, 5> a  = {10, 20, 30, 40, 50};
+      auto               sv = etl::ranges::slide_view(a, 2);
 
       std::vector<std::vector<int>> expected{{10, 20}, {20, 30}, {30, 40}, {40, 50}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto window : sv)
       {
         std::vector<int> actual(window.begin(), window.end());
@@ -4555,11 +4781,11 @@ namespace
     TEST(test_ranges_slide_view_pipe_chain_take_slide)
     {
       // Take first 5, then slide with window 3
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      auto sv = v | etl::views::take(5) | etl::views::slide(3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+      auto             sv = v | etl::views::take(5) | etl::views::slide(3);
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {2, 3, 4}, {3, 4, 5}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto window : sv)
       {
         std::vector<int> actual(window.begin(), window.end());
@@ -4573,11 +4799,11 @@ namespace
     TEST(test_ranges_slide_view_pipe_chain_drop_slide)
     {
       // Drop first 2, then slide with window 3
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7};
-      auto sv = v | etl::views::drop(2) | etl::views::slide(3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7};
+      auto             sv = v | etl::views::drop(2) | etl::views::slide(3);
 
       std::vector<std::vector<int>> expected{{3, 4, 5}, {4, 5, 6}, {5, 6, 7}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto window : sv)
       {
         std::vector<int> actual(window.begin(), window.end());
@@ -4595,11 +4821,11 @@ namespace
     TEST(test_ranges_chunk_by_view_basic)
     {
       // Group consecutive equal elements
-      std::vector<int> v = {1, 1, 2, 2, 2, 3, 3, 1};
-      auto cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
+      std::vector<int> v  = {1, 1, 2, 2, 2, 3, 3, 1};
+      auto             cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
 
       std::vector<std::vector<int>> expected{{1, 1}, {2, 2, 2}, {3, 3}, {1}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4613,11 +4839,11 @@ namespace
     TEST(test_ranges_chunk_by_view_less_than)
     {
       // Split where values stop being strictly increasing
-      std::vector<int> v = {1, 2, 3, 1, 2, 1};
-      auto cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a < b; });
+      std::vector<int> v  = {1, 2, 3, 1, 2, 1};
+      auto             cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a < b; });
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {1, 2}, {1}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4630,8 +4856,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_by_view_single_element)
     {
-      std::vector<int> v = {42};
-      auto cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
+      std::vector<int> v  = {42};
+      auto             cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
 
       size_t count = 0;
       for (auto chunk : cv)
@@ -4648,7 +4874,7 @@ namespace
     TEST(test_ranges_chunk_by_view_empty_range)
     {
       std::vector<int> v;
-      auto cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
+      auto             cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
 
       size_t count = 0;
       for (auto chunk : cv)
@@ -4663,8 +4889,8 @@ namespace
     TEST(test_ranges_chunk_by_view_all_same)
     {
       // All elements satisfy predicate => single chunk
-      std::vector<int> v = {5, 5, 5, 5};
-      auto cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
+      std::vector<int> v  = {5, 5, 5, 5};
+      auto             cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
 
       size_t count = 0;
       for (auto chunk : cv)
@@ -4681,11 +4907,11 @@ namespace
     TEST(test_ranges_chunk_by_view_all_different)
     {
       // No adjacent pair satisfies predicate => each element is its own chunk
-      std::vector<int> v = {1, 2, 1, 2, 1};
-      auto cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
+      std::vector<int> v  = {1, 2, 1, 2, 1};
+      auto             cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
 
       std::vector<std::vector<int>> expected{{1}, {2}, {1}, {2}, {1}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4698,11 +4924,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_by_view_pipe)
     {
-      std::vector<int> v = {1, 1, 2, 2, 3};
-      auto cv = v | etl::views::chunk_by([](int a, int b) { return a == b; });
+      std::vector<int> v  = {1, 1, 2, 2, 3};
+      auto             cv = v | etl::views::chunk_by([](int a, int b) { return a == b; });
 
       std::vector<std::vector<int>> expected{{1, 1}, {2, 2}, {3}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4715,11 +4941,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_by_view_functional_call)
     {
-      std::vector<int> v = {1, 2, 3, 1, 2};
-      auto cv = etl::views::chunk_by(v, [](int a, int b) { return a < b; });
+      std::vector<int> v  = {1, 2, 3, 1, 2};
+      auto             cv = etl::views::chunk_by(v, [](int a, int b) { return a < b; });
 
       std::vector<std::vector<int>> expected{{1, 2, 3}, {1, 2}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4732,11 +4958,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_by_view_etl_vector)
     {
-      etl::vector<int, 10> v = {1, 1, 2, 3, 3};
-      auto cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
+      etl::vector<int, 10> v  = {1, 1, 2, 3, 3};
+      auto                 cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
 
       std::vector<std::vector<int>> expected{{1, 1}, {2}, {3, 3}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4749,11 +4975,11 @@ namespace
     //*************************************************************************
     TEST(test_ranges_chunk_by_view_array)
     {
-      std::array<int, 6> a = {1, 1, 2, 2, 3, 3};
-      auto cv = etl::ranges::chunk_by_view(a, [](int x, int y) { return x == y; });
+      std::array<int, 6> a  = {1, 1, 2, 2, 3, 3};
+      auto               cv = etl::ranges::chunk_by_view(a, [](int x, int y) { return x == y; });
 
       std::vector<std::vector<int>> expected{{1, 1}, {2, 2}, {3, 3}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4767,11 +4993,11 @@ namespace
     TEST(test_ranges_chunk_by_view_pipe_chain_take_chunk_by)
     {
       // Take first 5, then chunk_by equal
-      std::vector<int> v = {1, 1, 2, 2, 3, 3, 4};
-      auto cv = v | etl::views::take(5) | etl::views::chunk_by([](int a, int b) { return a == b; });
+      std::vector<int> v  = {1, 1, 2, 2, 3, 3, 4};
+      auto             cv = v | etl::views::take(5) | etl::views::chunk_by([](int a, int b) { return a == b; });
 
       std::vector<std::vector<int>> expected{{1, 1}, {2, 2}, {3}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4785,11 +5011,11 @@ namespace
     TEST(test_ranges_chunk_by_view_pipe_chain_drop_chunk_by)
     {
       // Drop first 2, then chunk_by strictly increasing
-      std::vector<int> v = {1, 1, 2, 3, 1, 2};
-      auto cv = v | etl::views::drop(2) | etl::views::chunk_by([](int a, int b) { return a < b; });
+      std::vector<int> v  = {1, 1, 2, 3, 1, 2};
+      auto             cv = v | etl::views::drop(2) | etl::views::chunk_by([](int a, int b) { return a < b; });
 
       std::vector<std::vector<int>> expected{{2, 3}, {1, 2}};
-      size_t idx = 0;
+      size_t                        idx = 0;
       for (auto chunk : cv)
       {
         std::vector<int> actual(chunk.begin(), chunk.end());
@@ -4806,8 +5032,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_basic)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      auto sv = etl::ranges::stride_view(v, 3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+      auto             sv = etl::ranges::stride_view(v, 3);
 
       std::vector<int> expected{1, 4, 7};
       std::vector<int> actual;
@@ -4821,8 +5047,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_stride_of_one)
     {
-      std::vector<int> v = {10, 20, 30};
-      auto sv = etl::ranges::stride_view(v, 1);
+      std::vector<int> v  = {10, 20, 30};
+      auto             sv = etl::ranges::stride_view(v, 1);
 
       std::vector<int> expected{10, 20, 30};
       std::vector<int> actual;
@@ -4836,8 +5062,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_stride_of_two)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5, 6};
-      auto sv = etl::ranges::stride_view(v, 2);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6};
+      auto             sv = etl::ranges::stride_view(v, 2);
 
       std::vector<int> expected{1, 3, 5};
       std::vector<int> actual;
@@ -4851,8 +5077,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_stride_larger_than_range)
     {
-      std::vector<int> v = {1, 2, 3};
-      auto sv = etl::ranges::stride_view(v, 10);
+      std::vector<int> v  = {1, 2, 3};
+      auto             sv = etl::ranges::stride_view(v, 10);
 
       std::vector<int> expected{1};
       std::vector<int> actual;
@@ -4866,8 +5092,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_stride_equals_range_size)
     {
-      std::vector<int> v = {1, 2, 3};
-      auto sv = etl::ranges::stride_view(v, 3);
+      std::vector<int> v  = {1, 2, 3};
+      auto             sv = etl::ranges::stride_view(v, 3);
 
       std::vector<int> expected{1};
       std::vector<int> actual;
@@ -4882,7 +5108,7 @@ namespace
     TEST(test_ranges_stride_view_empty_range)
     {
       std::vector<int> v;
-      auto sv = etl::ranges::stride_view(v, 3);
+      auto             sv = etl::ranges::stride_view(v, 3);
 
       size_t count = 0;
       for (auto val : sv)
@@ -4896,8 +5122,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_single_element)
     {
-      std::vector<int> v = {42};
-      auto sv = etl::ranges::stride_view(v, 5);
+      std::vector<int> v  = {42};
+      auto             sv = etl::ranges::stride_view(v, 5);
 
       std::vector<int> expected{42};
       std::vector<int> actual;
@@ -4911,8 +5137,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_pipe)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      auto sv = v | etl::views::stride(3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+      auto             sv = v | etl::views::stride(3);
 
       std::vector<int> expected{1, 4, 7};
       std::vector<int> actual;
@@ -4926,8 +5152,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_pipe_stride_of_two)
     {
-      std::vector<int> v = {10, 20, 30, 40, 50};
-      auto sv = v | etl::views::stride(2);
+      std::vector<int> v  = {10, 20, 30, 40, 50};
+      auto             sv = v | etl::views::stride(2);
 
       std::vector<int> expected{10, 30, 50};
       std::vector<int> actual;
@@ -4941,8 +5167,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_functional_call)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5, 6};
-      auto sv = etl::views::stride(v, 2);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6};
+      auto             sv = etl::views::stride(v, 2);
 
       std::vector<int> expected{1, 3, 5};
       std::vector<int> actual;
@@ -4956,8 +5182,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_etl_vector)
     {
-      etl::vector<int, 10> v = {1, 2, 3, 4, 5, 6, 7, 8};
-      auto sv = etl::ranges::stride_view(v, 3);
+      etl::vector<int, 10> v  = {1, 2, 3, 4, 5, 6, 7, 8};
+      auto                 sv = etl::ranges::stride_view(v, 3);
 
       std::vector<int> expected{1, 4, 7};
       std::vector<int> actual;
@@ -4971,8 +5197,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_array)
     {
-      std::array<int, 6> a = {10, 20, 30, 40, 50, 60};
-      auto sv = etl::ranges::stride_view(a, 2);
+      std::array<int, 6> a  = {10, 20, 30, 40, 50, 60};
+      auto               sv = etl::ranges::stride_view(a, 2);
 
       std::vector<int> expected{10, 30, 50};
       std::vector<int> actual;
@@ -4986,8 +5212,8 @@ namespace
     //*************************************************************************
     TEST(test_ranges_stride_view_not_evenly_divisible)
     {
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7};
-      auto sv = etl::ranges::stride_view(v, 3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7};
+      auto             sv = etl::ranges::stride_view(v, 3);
 
       std::vector<int> expected{1, 4, 7};
       std::vector<int> actual;
@@ -5002,8 +5228,8 @@ namespace
     TEST(test_ranges_stride_view_pipe_chain_take_stride)
     {
       // Take first 6, then stride by 2
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      auto sv = v | etl::views::take(6) | etl::views::stride(2);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+      auto             sv = v | etl::views::take(6) | etl::views::stride(2);
 
       std::vector<int> expected{1, 3, 5};
       std::vector<int> actual;
@@ -5018,8 +5244,8 @@ namespace
     TEST(test_ranges_stride_view_pipe_chain_drop_stride)
     {
       // Drop first 2, then stride by 3
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-      auto sv = v | etl::views::drop(2) | etl::views::stride(3);
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+      auto             sv = v | etl::views::drop(2) | etl::views::stride(3);
 
       std::vector<int> expected{3, 6, 9};
       std::vector<int> actual;
@@ -5034,8 +5260,11 @@ namespace
     TEST(test_ranges_stride_view_pipe_chain_stride_transform)
     {
       // Stride by 2, then transform (multiply by 10)
-      std::vector<int> v = {1, 2, 3, 4, 5};
-      auto mul10 = [](int x) { return x * 10; };
+      std::vector<int> v     = {1, 2, 3, 4, 5};
+      auto             mul10 = [](int x)
+      {
+        return x * 10;
+      };
       auto sv = v | etl::views::stride(2) | etl::views::transform(mul10);
 
       std::vector<int> expected{10, 30, 50};
@@ -5051,8 +5280,11 @@ namespace
     TEST(test_ranges_stride_view_pipe_chain_filter_stride)
     {
       // Filter even, then stride by 2
-      std::vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8};
-      auto is_even = [](int x) { return x % 2 == 0; };
+      std::vector<int> v       = {1, 2, 3, 4, 5, 6, 7, 8};
+      auto             is_even = [](int x)
+      {
+        return x % 2 == 0;
+      };
       auto sv = v | etl::views::filter(is_even) | etl::views::stride(2);
 
       std::vector<int> expected{2, 6};
@@ -5067,7 +5299,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_cartesian_product_view_basic)
     {
-      std::vector<int> v1 = {1, 2};
+      std::vector<int>         v1 = {1, 2};
       std::vector<std::string> v2 = {"a", "b", "c"};
 
       auto cp = etl::views::cartesian_product(v1, v2);
@@ -5108,20 +5340,15 @@ namespace
     //*************************************************************************
     TEST(test_ranges_cartesian_product_view_three_ranges)
     {
-      std::vector<int> v1 = {1, 2};
-      std::vector<char> v2 = {'a', 'b'};
+      std::vector<int>    v1 = {1, 2};
+      std::vector<char>   v2 = {'a', 'b'};
       std::vector<double> v3 = {0.5};
 
       auto cp = etl::views::cartesian_product(v1, v2, v3);
 
       CHECK_EQUAL(4U, cp.size());
 
-      std::vector<etl::tuple<int, char, double>> expected = {
-        {1, 'a', 0.5},
-        {1, 'b', 0.5},
-        {2, 'a', 0.5},
-        {2, 'b', 0.5}
-      };
+      std::vector<etl::tuple<int, char, double>> expected = {{1, 'a', 0.5}, {1, 'b', 0.5}, {2, 'a', 0.5}, {2, 'b', 0.5}};
 
       size_t idx = 0;
       for (auto val : cp)
@@ -5180,20 +5407,20 @@ namespace
       }
 
       CHECK_EQUAL(4U, result.size());
-      CHECK_EQUAL(1,  etl::get<0>(result[0]));
+      CHECK_EQUAL(1, etl::get<0>(result[0]));
       CHECK_EQUAL(10, etl::get<1>(result[0]));
-      CHECK_EQUAL(1,  etl::get<0>(result[1]));
+      CHECK_EQUAL(1, etl::get<0>(result[1]));
       CHECK_EQUAL(20, etl::get<1>(result[1]));
-      CHECK_EQUAL(2,  etl::get<0>(result[2]));
+      CHECK_EQUAL(2, etl::get<0>(result[2]));
       CHECK_EQUAL(10, etl::get<1>(result[2]));
-      CHECK_EQUAL(2,  etl::get<0>(result[3]));
+      CHECK_EQUAL(2, etl::get<0>(result[3]));
       CHECK_EQUAL(20, etl::get<1>(result[3]));
     }
 
     //*************************************************************************
     TEST(test_ranges_cartesian_product_view_with_array)
     {
-      std::array<int, 2> a1 = {1, 2};
+      std::array<int, 2>  a1 = {1, 2};
       std::array<char, 3> a2 = {'x', 'y', 'z'};
 
       auto cp = etl::views::cartesian_product(a1, a2);
@@ -5237,20 +5464,20 @@ namespace
       }
 
       CHECK_EQUAL(4U, result.size());
-      CHECK_EQUAL(1,  etl::get<0>(result[0]));
+      CHECK_EQUAL(1, etl::get<0>(result[0]));
       CHECK_EQUAL(10, etl::get<1>(result[0]));
-      CHECK_EQUAL(1,  etl::get<0>(result[1]));
+      CHECK_EQUAL(1, etl::get<0>(result[1]));
       CHECK_EQUAL(20, etl::get<1>(result[1]));
-      CHECK_EQUAL(1,  etl::get<0>(result[2]));
+      CHECK_EQUAL(1, etl::get<0>(result[2]));
       CHECK_EQUAL(30, etl::get<1>(result[2]));
-      CHECK_EQUAL(2,  etl::get<0>(result[3]));
+      CHECK_EQUAL(2, etl::get<0>(result[3]));
       CHECK_EQUAL(10, etl::get<1>(result[3]));
     }
 
     //*************************************************************************
     TEST(test_ranges_cartesian_product_view_single_elements)
     {
-      std::vector<int> v1 = {42};
+      std::vector<int>  v1 = {42};
       std::vector<char> v2 = {'z'};
 
       auto cp = etl::views::cartesian_product(v1, v2);
@@ -5281,17 +5508,16 @@ namespace
     //*************************************************************************
     TEST(test_ranges_to_input_view_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto iv = etl::ranges::to_input_view(v_in);
 
       // Iterator category should be input_iterator_tag
       using iv_iterator = decltype(iv.begin());
       using iv_category = typename etl::iterator_traits<iv_iterator>::iterator_category;
-      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>,
-                    "to_input_view iterator should have input_iterator_tag");
+      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>, "to_input_view iterator should have input_iterator_tag");
 
       for (auto i : iv)
       {
@@ -5318,7 +5544,7 @@ namespace
     //*************************************************************************
     TEST(test_ranges_to_input_view_reflects_base_changes)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
 
       auto iv = etl::ranges::to_input_view(v_in);
 
@@ -5332,16 +5558,15 @@ namespace
     //*************************************************************************
     TEST(test_ranges_to_input_view_pipe)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto iv = v_in | etl::views::to_input();
 
       using iv_iterator = decltype(iv.begin());
       using iv_category = typename etl::iterator_traits<iv_iterator>::iterator_category;
-      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>,
-                    "piped to_input view iterator should have input_iterator_tag");
+      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>, "piped to_input view iterator should have input_iterator_tag");
 
       for (auto i : iv)
       {
@@ -5355,16 +5580,15 @@ namespace
     //*************************************************************************
     TEST(test_ranges_views_to_input_functional)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       auto iv = etl::views::to_input(v_in);
 
       using iv_iterator = decltype(iv.begin());
       using iv_category = typename etl::iterator_traits<iv_iterator>::iterator_category;
-      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>,
-                    "views::to_input iterator should have input_iterator_tag");
+      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>, "views::to_input iterator should have input_iterator_tag");
 
       for (auto i : iv)
       {
@@ -5377,9 +5601,9 @@ namespace
     //*************************************************************************
     TEST(test_ranges_to_input_view_pipe_chained_with_take)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 1, 2 };
+      etl::vector<int, 10> v_out_expected{0, 1, 2};
 
       auto iv = v_in | etl::views::to_input() | etl::views::take(3);
 
@@ -5394,9 +5618,9 @@ namespace
     //*************************************************************************
     TEST(test_ranges_to_input_view_pipe_chained_with_drop)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 7, 8, 9 };
+      etl::vector<int, 10> v_out_expected{7, 8, 9};
 
       auto iv = v_in | etl::views::to_input() | etl::views::drop(7);
 
@@ -5411,11 +5635,14 @@ namespace
     //*************************************************************************
     TEST(test_ranges_to_input_view_pipe_chained_with_transform)
     {
-      etl::vector<int, 10> v_in{ 0, 1, 2, 3, 4 };
+      etl::vector<int, 10> v_in{0, 1, 2, 3, 4};
       etl::vector<int, 10> v_out;
-      etl::vector<int, 10> v_out_expected{ 0, 2, 4, 6, 8 };
+      etl::vector<int, 10> v_out_expected{0, 2, 4, 6, 8};
 
-      auto doubler = [](int i) { return i * 2; };
+      auto doubler = [](int i)
+      {
+        return i * 2;
+      };
       auto iv = v_in | etl::views::to_input() | etl::views::transform(doubler);
 
       for (auto i : iv)
@@ -5429,16 +5656,15 @@ namespace
     //*************************************************************************
     TEST(test_ranges_to_input_view_with_std_vector)
     {
-      std::vector<int> v_in{ 0, 1, 2, 3, 4 };
+      std::vector<int> v_in{0, 1, 2, 3, 4};
       std::vector<int> v_out;
-      std::vector<int> v_out_expected{ 0, 1, 2, 3, 4 };
+      std::vector<int> v_out_expected{0, 1, 2, 3, 4};
 
       auto iv = etl::ranges::to_input_view(v_in);
 
       using iv_iterator = decltype(iv.begin());
       using iv_category = typename etl::iterator_traits<iv_iterator>::iterator_category;
-      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>,
-                    "to_input_view over std::vector should have input_iterator_tag");
+      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>, "to_input_view over std::vector should have input_iterator_tag");
 
       for (auto i : iv)
       {
@@ -5456,18 +5682,16 @@ namespace
     TEST(test_ranges_to_input_view_downgrades_from_random_access)
     {
       // std::vector has random_access_iterator; verify to_input downgrades it
-      std::vector<int> v_in{ 10, 20, 30 };
+      std::vector<int> v_in{10, 20, 30};
 
-      using original_category = typename etl::iterator_traits<std::vector<int>::iterator>::iterator_category;
-      static_assert(etl::is_same_v<original_category, ETL_OR_STD::random_access_iterator_tag>,
-                    "std::vector iterator should be random_access");
+      using original_category = typename etl::iterator_traits< std::vector<int>::iterator>::iterator_category;
+      static_assert(etl::is_same_v<original_category, ETL_OR_STD::random_access_iterator_tag>, "std::vector iterator should be random_access");
 
       auto iv = etl::ranges::to_input_view(v_in);
 
       using iv_iterator = decltype(iv.begin());
       using iv_category = typename etl::iterator_traits<iv_iterator>::iterator_category;
-      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>,
-                    "to_input_view should downgrade to input_iterator_tag");
+      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>, "to_input_view should downgrade to input_iterator_tag");
 
       etl::vector<int, 10> v_out;
       for (auto i : iv)
@@ -5485,18 +5709,16 @@ namespace
     TEST(test_ranges_to_input_view_downgrades_from_bidirectional)
     {
       // std::list has bidirectional_iterator; verify to_input downgrades it
-      std::list<int> l_in{ 10, 20, 30 };
+      std::list<int> l_in{10, 20, 30};
 
-      using original_category = typename etl::iterator_traits<std::list<int>::iterator>::iterator_category;
-      static_assert(etl::is_same_v<original_category, ETL_OR_STD::bidirectional_iterator_tag>,
-                    "std::list iterator should be bidirectional");
+      using original_category = typename etl::iterator_traits< std::list<int>::iterator>::iterator_category;
+      static_assert(etl::is_same_v<original_category, ETL_OR_STD::bidirectional_iterator_tag>, "std::list iterator should be bidirectional");
 
       auto iv = etl::ranges::to_input_view(l_in);
 
       using iv_iterator = decltype(iv.begin());
       using iv_category = typename etl::iterator_traits<iv_iterator>::iterator_category;
-      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>,
-                    "to_input_view should downgrade to input_iterator_tag");
+      static_assert(etl::is_same_v<iv_category, ETL_OR_STD::input_iterator_tag>, "to_input_view should downgrade to input_iterator_tag");
 
       etl::vector<int, 10> v_out;
       for (auto i : iv)
@@ -5510,7 +5732,7 @@ namespace
       CHECK_EQUAL(30, v_out[2]);
     }
   }
-}
+} // namespace
 
-#endif
+  #endif
 #endif

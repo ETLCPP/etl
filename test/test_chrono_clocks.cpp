@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2025 John Wellbelove
 
@@ -44,7 +44,7 @@ namespace
   int nanoseconds  = 0;
   int milliseconds = 0;
   int seconds      = 0;
-}
+} // namespace
 
 extern "C"
 {
@@ -74,7 +74,7 @@ namespace
       using Clock     = etl::chrono::system_clock;
       using TimePoint = etl::chrono::time_point<Clock>;
       using Duration  = ETL_CHRONO_SYSTEM_CLOCK_DURATION;
-     
+
       CHECK_TRUE((std::is_same<TimePoint, Clock::time_point>::value));
       CHECK_TRUE((std::is_same<Duration, Clock::duration>::value));
       CHECK_TRUE((std::is_same<Duration::rep, Clock::duration::rep>::value));
@@ -84,11 +84,11 @@ namespace
       Clock::time_point now;
 
       milliseconds = 1000;
-      now = Clock::now();
+      now          = Clock::now();
       CHECK_EQUAL(1000, now.time_since_epoch().count());
 
       milliseconds = 2000;
-      now = Clock::now();
+      now          = Clock::now();
       CHECK_EQUAL(2000, now.time_since_epoch().count());
 
       // Convert to seconds.
@@ -116,11 +116,11 @@ namespace
       Clock::time_point now;
 
       nanoseconds = 1;
-      now = Clock::now();
+      now         = Clock::now();
       CHECK_EQUAL(1, now.time_since_epoch().count());
 
       nanoseconds = 2;
-      now = Clock::now();
+      now         = Clock::now();
       CHECK_EQUAL(2, now.time_since_epoch().count());
     }
 
@@ -140,17 +140,17 @@ namespace
       Clock::time_point now;
 
       seconds = 1;
-      now = Clock::now();
+      now     = Clock::now();
       CHECK_EQUAL(1, now.time_since_epoch().count());
 
       seconds = 2;
-      now = Clock::now();
+      now     = Clock::now();
       CHECK_EQUAL(2, now.time_since_epoch().count());
     }
 
     //*************************************************************************
     TEST(test_clock_cast)
-    {      
+    {
       using FromClock     = etl::chrono::system_clock;
       using FromTimePoint = etl::chrono::time_point<FromClock>;
       using FromDuration  = FromClock::duration;
@@ -172,4 +172,4 @@ namespace
       CHECK_EQUAL(sys_clock_count, scaled_steady_lock_count);
     }
   }
-}
+} // namespace

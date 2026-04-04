@@ -29,4 +29,3 @@ SOFTWARE.
 #if (__cplusplus >= 201103L)
   #include <etl/initializer_list.h>
 #endif
-

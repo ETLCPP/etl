@@ -1,4 +1,4 @@
- ///\file
+///\file
 
 /******************************************************************************
 The MIT License(MIT)
@@ -32,19 +32,48 @@ SOFTWARE.
 #define ETL_QUEUE_LOCKABLE_INCLUDED
 
 #include "platform.h"
-#include "memory.h"
-#include "parameter_type.h"
-#include "memory_model.h"
-#include "integral_limits.h"
 #include "function.h"
-#include "utility.h"
+#include "integral_limits.h"
+#include "memory.h"
+#include "memory_model.h"
+#include "mutex.h"
+#include "parameter_type.h"
 #include "placement_new.h"
+#include "utility.h"
 
 #include <stddef.h>
 #include <stdint.h>
 
 namespace etl
 {
+  //***************************************************************************
+  /// The base class for queue exceptions.
+  ///\ingroup queue
+  //***************************************************************************
+  class queue_lockable_exception : public exception
+  {
+  public:
+
+    queue_lockable_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
+      : exception(reason_, file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
+  /// The exception thrown when the queue is empty.
+  /// \ingroup queue
+  //***************************************************************************
+  class queue_lockable_empty : public queue_lockable_exception
+  {
+  public:
+
+    queue_lockable_empty(string_type file_name_, numeric_type line_number_)
+      : queue_lockable_exception(ETL_ERROR_TEXT("queue_lockable:empty", ETL_QUEUE_SPSC_LOCKABLE_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
   template <size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_lockable_base
   {
@@ -56,12 +85,10 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    virtual ~queue_lockable_base()
-    {
-    }
+    virtual ~queue_lockable_base() {}
 
     //*************************************************************************
-    /// How much free space available in the queue. 
+    /// How much free space available in the queue.
     /// Unlocked
     //*************************************************************************
     size_type available_unlocked() const
@@ -84,7 +111,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Is the queue empty? 
+    /// Is the queue empty?
     /// Unlocked.
     //*************************************************************************
     bool empty_unlocked() const
@@ -107,7 +134,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Is the queue full? 
+    /// Is the queue full?
     /// Unlocked.
     //*************************************************************************
     bool full_unlocked() const
@@ -130,7 +157,7 @@ namespace etl
     }
 
     //*************************************************************************
-    /// How many items in the queue? 
+    /// How many items in the queue?
     /// Unlocked.
     //*************************************************************************
     size_type size_unlocked() const
@@ -171,10 +198,10 @@ namespace etl
   protected:
 
     queue_lockable_base(size_type max_size_)
-      : write_index(0),
-        read_index(0),
-        current_size(0),
-        Max_Size(max_size_)
+      : write_index(0)
+      , read_index(0)
+      , current_size(0)
+      , Max_Size(max_size_)
     {
     }
 
@@ -196,13 +223,13 @@ namespace etl
     //*************************************************************************
     /// The pure virtual lock and unlock functions.
     //*************************************************************************
-    virtual void lock() const = 0;
+    virtual void lock() const   = 0;
     virtual void unlock() const = 0;
 
-    size_type write_index;    ///< Where to input new data.
-    size_type read_index;     ///< Where to get the oldest data.
-    size_type current_size;   ///< The current size of the queue.
-    const size_type Max_Size; ///< The maximum number of items in the queue.
+    size_type       write_index;  ///< Where to input new data.
+    size_type       read_index;   ///< Where to get the oldest data.
+    size_type       current_size; ///< The current size of the queue.
+    const size_type Max_Size;     ///< The maximum number of items in the queue.
 
   private:
 
@@ -241,7 +268,8 @@ namespace etl
 
   //***************************************************************************
   ///\brief This is the base for all queues that contain a particular type.
-  ///\details Normally a reference to this type will be taken from a derived queue_lockable.
+  ///\details Normally a reference to this type will be taken from a derived
+  /// queue_lockable.
   /// This queue supports concurrent access by one producer and one consumer.
   /// \tparam T The type of value that the queue_lockable holds.
   //***************************************************************************
@@ -254,13 +282,13 @@ namespace etl
 
   public:
 
-    typedef T                          value_type;       ///< The type stored in the queue.
-    typedef T&                         reference;        ///< A reference to the type used in the queue.
-    typedef const T&                   const_reference;  ///< A const reference to the type used in the queue.
+    typedef T        value_type;      ///< The type stored in the queue.
+    typedef T&       reference;       ///< A reference to the type used in the queue.
+    typedef const T& const_reference; ///< A const reference to the type used in the queue.
 #if ETL_USING_CPP11
-    typedef T&&                        rvalue_reference; ///< An rvalue reference to the type used in the queue.
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the queue.
 #endif
-    typedef typename base_t::size_type size_type;        ///< The type used for determining the size of the queue.
+    typedef typename base_t::size_type size_type; ///< The type used for determining the size of the queue.
 
     //*************************************************************************
     /// Push a value to the queue without locking.
@@ -312,7 +340,7 @@ namespace etl
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace_unlocked(Args&&... args)
     {
       return emplace_implementation(etl::forward<Args>(args)...);
@@ -321,7 +349,7 @@ namespace etl
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace(Args&&... args)
     {
       this->lock();
@@ -452,7 +480,6 @@ namespace etl
       return pop_implementation();
     }
 
-
     //*************************************************************************
     /// Pop a value from the queue and discard.
     //*************************************************************************
@@ -491,45 +518,81 @@ namespace etl
 
     //*************************************************************************
     /// Peek a value at the front of the queue without locking.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     reference front_unlocked()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
       return front_implementation();
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue without locking.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     const_reference front_unlocked() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty_unlocked(), ETL_ERROR(queue_lockable_empty));
       return front_implementation();
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     reference front()
     {
+#if ETL_CHECKING_EXTRA
       this->lock();
-
+      if (!this->empty_unlocked())
+      {
+        reference inner_result = front_implementation();
+        this->unlock();
+        return inner_result;
+      }
+      else
+      {
+        this->unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      this->lock();
       reference result = front_implementation();
-
       this->unlock();
-
       return result;
     }
 
     //*************************************************************************
     /// Peek a value at the front of the queue.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::queue_lockable_empty if the queue is empty.
     //*************************************************************************
     const_reference front() const
     {
+#if ETL_CHECKING_EXTRA
       this->lock();
-
+      if (!this->empty_unlocked())
+      {
+        const_reference inner_result = front_implementation();
+        this->unlock();
+        return inner_result;
+      }
+      else
+      {
+        this->unlock();
+        ETL_ASSERT_FAIL(ETL_ERROR(queue_lockable_empty));
+        // fall through to return something to satisfy the compiler, even
+        // though this should never be reached due to undefined behaviour.
+      }
+#endif
+      this->lock();
       const_reference result = front_implementation();
-
       this->unlock();
-
       return result;
     }
 
@@ -551,7 +614,7 @@ namespace etl
     {
       this->lock();
 
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         this->write_index  = 0;
         this->read_index   = 0;
@@ -627,7 +690,7 @@ namespace etl
     //*************************************************************************
     /// Constructs a value in the queue 'in place'.
     //*************************************************************************
-    template <typename ... Args>
+    template <typename... Args>
     bool emplace_implementation(Args&&... args)
     {
       if (this->current_size != this->Max_Size)
@@ -794,11 +857,11 @@ namespace etl
 
     // Disable copy construction and assignment.
     iqueue_lockable(const iqueue_lockable&) ETL_DELETE;
-    iqueue_lockable& operator =(const iqueue_lockable&) ETL_DELETE;
+    iqueue_lockable& operator=(const iqueue_lockable&) ETL_DELETE;
 
 #if ETL_USING_CPP11
-    iqueue_lockable(iqueue_lockable&&) = delete;
-    iqueue_lockable& operator =(iqueue_lockable&&) = delete;
+    iqueue_lockable(iqueue_lockable&&)            = delete;
+    iqueue_lockable& operator=(iqueue_lockable&&) = delete;
 #endif
 
     T* p_buffer; ///< The internal buffer.
@@ -809,7 +872,8 @@ namespace etl
   /// This queue supports concurrent access.
   /// \tparam T             The type this queue should support.
   /// \tparam VSize         The maximum capacity of the queue.
-  /// \tparam VMemory_Model The memory model for the queue. Determines the type of the internal counter variables.
+  /// \tparam VMemory_Model The memory model for the queue. Determines the type
+  /// of the internal counter variables.
   //***************************************************************************
   template <typename T, size_t VSize, size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
   class queue_lockable : public etl::iqueue_lockable<T, VMemory_Model>
@@ -850,11 +914,11 @@ namespace etl
   private:
 
     queue_lockable(const queue_lockable&) ETL_DELETE;
-    queue_lockable& operator = (const queue_lockable&) ETL_DELETE;
+    queue_lockable& operator=(const queue_lockable&) ETL_DELETE;
 
 #if ETL_USING_CPP11
-    queue_lockable(queue_lockable&&) = delete;
-    queue_lockable& operator =(queue_lockable&&) = delete;
+    queue_lockable(queue_lockable&&)            = delete;
+    queue_lockable& operator=(queue_lockable&&) = delete;
 #endif
 
     /// The uninitialised buffer of T used in the queue_lockable.
@@ -863,9 +927,9 @@ namespace etl
 
   template <typename T, size_t VSize, size_t VMemory_Model>
   ETL_CONSTANT typename queue_lockable<T, VSize, VMemory_Model>::size_type queue_lockable<T, VSize, VMemory_Model>::Max_Size;
-  
+
   template <typename T, size_t VSize, size_t VMemory_Model>
   ETL_CONSTANT typename queue_lockable<T, VSize, VMemory_Model>::size_type queue_lockable<T, VSize, VMemory_Model>::Memory_Model;
-}
+} // namespace etl
 
 #endif

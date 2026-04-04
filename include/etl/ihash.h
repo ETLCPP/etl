@@ -32,9 +32,9 @@ SOFTWARE.
 #define ETL_IHASH_INCLUDED
 
 #include "platform.h"
-#include "utility.h"
-#include "exception.h"
 #include "error_handler.h"
+#include "exception.h"
+#include "utility.h"
 
 #include <stdint.h>
 
@@ -53,7 +53,8 @@ namespace etl
 
     hash_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
-    {}
+    {
+    }
   };
 
   //***************************************************************************
@@ -66,11 +67,12 @@ namespace etl
 
     hash_finalised(string_type file_name_, numeric_type line_number_)
       : hash_exception(ETL_ERROR_TEXT("ihash:finalised", ETL_IHASH_FILE_ID"A"), file_name_, line_number_)
-    {}
+    {
+    }
   };
 
   /// For the Americans
   typedef hash_finalised hash_finalized;
-}
+} // namespace etl
 
 #endif

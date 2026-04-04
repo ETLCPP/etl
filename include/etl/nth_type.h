@@ -50,7 +50,7 @@ namespace etl
     {
       using type = T1;
     };
-  }
+  } // namespace private_nth_type
 
   //***********************************
   template <size_t Index, typename... TTypes>
@@ -73,6 +73,6 @@ namespace etl
   //***********************************
   template <size_t Index, typename... TTypes>
   using nth_type_t = typename nth_type<Index, TTypes...>::type;
-}
+} // namespace etl
 #endif
 #endif

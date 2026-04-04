@@ -28,15 +28,15 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <vector>
 #include <string.h>
+#include <vector>
 
 #include "etl/bloom_filter.h"
 
-#include "etl/fnv_1.h"
 #include "etl/crc16.h"
 #include "etl/crc16_ccitt.h"
 #include "etl/crc32.h"
+#include "etl/fnv_1.h"
 
 #include "etl/char_traits.h"
 
@@ -44,7 +44,7 @@ struct hash1_t
 {
   typedef const char* argument_type;
 
-  size_t operator ()(argument_type text) const
+  size_t operator()(argument_type text) const
   {
     return etl::fnv_1a_32(text, text + etl::char_traits<char>::length(text));
   }
@@ -54,7 +54,7 @@ struct hash2_t
 {
   typedef const char* argument_type;
 
-  size_t operator ()(argument_type text) const
+  size_t operator()(argument_type text) const
   {
     return etl::crc32(text, text + etl::char_traits<char>::length(text));
   }
@@ -64,14 +64,15 @@ struct hash3_t
 {
   typedef const char* argument_type;
 
-  size_t operator ()(argument_type text) const
+  size_t operator()(argument_type text) const
   {
-    return etl::crc16(text, text + etl::char_traits<char>::length(text)) | (etl::crc16_ccitt(text, text + etl::char_traits<char>::length(text)) << 16);
+    return static_cast<size_t>(etl::crc16(text, text + etl::char_traits<char>::length(text)))
+           | (static_cast<size_t>(etl::crc16_ccitt(text, text + etl::char_traits<char>::length(text))) << 16);
   }
 };
 
-std::vector<const char*> exist_text     = { "The", "rain", "in", "Spain", "falls", "mainly", "on", "the", "plain" };
-std::vector<const char*> not_exist_text = { "My", "hovercraft", "is", "full", "of", "eels" };
+std::vector<const char*> exist_text     = {"The", "rain", "in", "Spain", "falls", "mainly", "on", "the", "plain"};
+std::vector<const char*> not_exist_text = {"My", "hovercraft", "is", "full", "of", "eels"};
 
 namespace
 {
@@ -196,7 +197,7 @@ namespace
     TEST(test_width)
     {
       typedef etl::bloom_filter<256, hash1_t> Bloom;
-      Bloom bloom;
+      Bloom                                   bloom;
 
       CHECK_EQUAL(256U, bloom.width());
       CHECK_EQUAL(256U, Bloom::WIDTH);
@@ -261,5 +262,4 @@ namespace
       CHECK(!any_exist);
     }
   }
-}
-
+} // namespace

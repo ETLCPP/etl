@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2025 John Wellbelove
 
@@ -45,12 +45,12 @@ namespace
     {
       using namespace etl::chrono;
 
-      CHECK_TRUE(etl::chrono::year(2025)         == 2025_year);
-      CHECK_TRUE(etl::chrono::day(15)            == 15_day);
-      CHECK_TRUE(etl::chrono::hours(23)          == 23_hours);
-      CHECK_TRUE(etl::chrono::minutes(19)        == 19_minutes);
-      CHECK_TRUE(etl::chrono::seconds(10)        == 10_seconds);
-      CHECK_TRUE(etl::chrono::milliseconds(100)  == 100_milliseconds);
+      CHECK_TRUE(etl::chrono::year(2025) == 2025_year);
+      CHECK_TRUE(etl::chrono::day(15) == 15_day);
+      CHECK_TRUE(etl::chrono::hours(23) == 23_hours);
+      CHECK_TRUE(etl::chrono::minutes(19) == 19_minutes);
+      CHECK_TRUE(etl::chrono::seconds(10) == 10_seconds);
+      CHECK_TRUE(etl::chrono::milliseconds(100) == 100_milliseconds);
       CHECK_TRUE(etl::chrono::microseconds(1000) == 1000_microseconds);
       CHECK_TRUE(etl::chrono::nanoseconds(10000) == 10000_nanoseconds);
     }
@@ -60,12 +60,12 @@ namespace
     {
       using namespace etl::literals;
 
-      CHECK_TRUE(etl::chrono::year(2025)         == 2025_year);
-      CHECK_TRUE(etl::chrono::day(15)            == 15_day);
-      CHECK_TRUE(etl::chrono::hours(23)          == 23_hours);
-      CHECK_TRUE(etl::chrono::minutes(19)        == 19_minutes);
-      CHECK_TRUE(etl::chrono::seconds(10)        == 10_seconds);
-      CHECK_TRUE(etl::chrono::milliseconds(100)  == 100_milliseconds);
+      CHECK_TRUE(etl::chrono::year(2025) == 2025_year);
+      CHECK_TRUE(etl::chrono::day(15) == 15_day);
+      CHECK_TRUE(etl::chrono::hours(23) == 23_hours);
+      CHECK_TRUE(etl::chrono::minutes(19) == 19_minutes);
+      CHECK_TRUE(etl::chrono::seconds(10) == 10_seconds);
+      CHECK_TRUE(etl::chrono::milliseconds(100) == 100_milliseconds);
       CHECK_TRUE(etl::chrono::microseconds(1000) == 1000_microseconds);
       CHECK_TRUE(etl::chrono::nanoseconds(10000) == 10000_nanoseconds);
     }
@@ -75,14 +75,14 @@ namespace
     {
       using namespace etl::chrono_literals;
 
-      CHECK_TRUE(etl::chrono::year(2025)         == 2025_year);
-      CHECK_TRUE(etl::chrono::day(15)            == 15_day);
-      CHECK_TRUE(etl::chrono::hours(23)          == 23_hours);
-      CHECK_TRUE(etl::chrono::minutes(19)        == 19_minutes);
-      CHECK_TRUE(etl::chrono::seconds(10)        == 10_seconds);
-      CHECK_TRUE(etl::chrono::milliseconds(100)  == 100_milliseconds);
+      CHECK_TRUE(etl::chrono::year(2025) == 2025_year);
+      CHECK_TRUE(etl::chrono::day(15) == 15_day);
+      CHECK_TRUE(etl::chrono::hours(23) == 23_hours);
+      CHECK_TRUE(etl::chrono::minutes(19) == 19_minutes);
+      CHECK_TRUE(etl::chrono::seconds(10) == 10_seconds);
+      CHECK_TRUE(etl::chrono::milliseconds(100) == 100_milliseconds);
       CHECK_TRUE(etl::chrono::microseconds(1000) == 1000_microseconds);
       CHECK_TRUE(etl::chrono::nanoseconds(10000) == 10000_nanoseconds);
     }
   }
-}
+} // namespace

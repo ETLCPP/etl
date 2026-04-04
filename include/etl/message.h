@@ -33,8 +33,8 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "message_types.h"
-#include "type_traits.h"
 #include "static_assert.h"
+#include "type_traits.h"
 
 #include <stdint.h>
 
@@ -62,7 +62,9 @@ namespace etl
     }
   };
 
-  class message_tag {};
+  class message_tag
+  {
+  };
 
 #if ETL_HAS_VIRTUAL_MESSAGES
   //***************************************************************************
@@ -74,12 +76,11 @@ namespace etl
   public:
 
     //***********************************
-    virtual ~imessage() ETL_NOEXCEPT
-    {
-    }
+    virtual ~imessage() ETL_NOEXCEPT {}
 
     //***********************************
-    ETL_NODISCARD virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT = 0;
+    ETL_NODISCARD
+    virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT = 0;
   };
 
   //***************************************************************************
@@ -87,7 +88,9 @@ namespace etl
   /// Virtual.
   //***************************************************************************
   template <etl::message_id_t ID_, typename TBase = etl::imessage>
-  class message : public TBase, public etl::message_tag
+  class message
+    : public TBase
+    , public etl::message_tag
   {
   public:
 
@@ -96,7 +99,8 @@ namespace etl
     typedef TBase base_type;
 
     //***********************************
-    ETL_NODISCARD virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual etl::message_id_t get_message_id() const ETL_NOEXCEPT ETL_OVERRIDE
     {
       return ID;
     }
@@ -116,7 +120,8 @@ namespace etl
   public:
 
     //***********************************
-    ETL_NODISCARD etl::message_id_t get_message_id() const ETL_NOEXCEPT
+    ETL_NODISCARD
+    etl::message_id_t get_message_id() const ETL_NOEXCEPT
     {
       return id;
     }
@@ -136,7 +141,7 @@ namespace etl
     }
 
     //***********************************
-    imessage& operator =(const imessage& rhs)  ETL_NOEXCEPT
+    imessage& operator=(const imessage& rhs) ETL_NOEXCEPT
     {
       id = rhs.id;
       return *this;
@@ -155,7 +160,9 @@ namespace etl
   /// Non-virtual.
   //***************************************************************************
   template <etl::message_id_t ID_, typename TBase = etl::imessage>
-  class message : public TBase, public etl::message_tag
+  class message
+    : public TBase
+    , public etl::message_tag
   {
   public:
 
@@ -176,7 +183,7 @@ namespace etl
     }
 
     //***********************************
-    message& operator =(const message&) ETL_NOEXCEPT
+    message& operator=(const message&) ETL_NOEXCEPT
     {
       return *this;
     }
@@ -196,7 +203,7 @@ namespace etl
   /// Is T an etl::imessage?
   //***************************************************************************
   template <typename T>
-  struct is_imessage : public etl::bool_constant<etl::is_same<etl::imessage, typename etl::remove_cvref<T>::type>::value>
+  struct is_imessage : public etl::bool_constant< etl::is_same<etl::imessage, typename etl::remove_cvref<T>::type>::value>
   {
   };
 
@@ -204,7 +211,7 @@ namespace etl
   /// Is T ultimately derived from etl::imessage?
   //***************************************************************************
   template <typename T>
-  struct is_message : public etl::bool_constant<etl::is_base_of<etl::imessage, typename etl::remove_cvref<T>::type>::value>
+  struct is_message : public etl::bool_constant< etl::is_base_of< etl::imessage, typename etl::remove_cvref<T>::type>::value>
   {
   };
 
@@ -212,7 +219,7 @@ namespace etl
   /// Is T an etl::message<> or derived from etl::message<>
   //***************************************************************************
   template <typename T>
-  struct is_message_type : public etl::bool_constant<etl::is_base_of<etl::message_tag, typename etl::remove_cvref<T>::type>::value>
+  struct is_message_type : public etl::bool_constant< etl::is_base_of< etl::message_tag, typename etl::remove_cvref<T>::type>::value>
   {
   };
 
@@ -275,7 +282,10 @@ namespace etl
     ETL_STATIC_ASSERT(etl::is_message<T>::value, "T is not an ETL message");
 
     typedef char yes;
-    struct no { char value[2]; };
+    struct no
+    {
+      char value[2];
+    };
 
     template <typename U>
     static yes test(char (*)[sizeof(&U::ID)]);
@@ -325,13 +335,12 @@ namespace etl
     // Only selected if both TMsg1 and TMsg2 have an ID.
     //***********************************************
     template <typename TMsg1, typename TMsg2>
-    struct compare_message_id_less_impl<TMsg1, TMsg2, true>
-      : etl::bool_constant < TMsg1::ID < TMsg2::ID>
+      struct compare_message_id_less_impl<TMsg1, TMsg2, true> : etl::bool_constant < TMsg1::ID< TMsg2::ID>
     {
       ETL_STATIC_ASSERT(etl::is_message_type<TMsg1>::value, "TMsg1 is not derived from etl::message<>");
       ETL_STATIC_ASSERT(etl::is_message_type<TMsg2>::value, "TMsg2 is not derived from etl::message<>");
     };
-  }
+  } // namespace private_message
 
   //**********************************************
   /// Compare the message ID of two messages.
@@ -340,7 +349,8 @@ namespace etl
   /// value is true if TMsg1::ID < TMsg2::ID.
   //**********************************************
   template <typename TMsg1, typename TMsg2>
-  struct compare_message_id_less : public private_message::compare_message_id_less_impl<TMsg1, TMsg2, has_message_id<TMsg1>::value && has_message_id<TMsg2>::value>
+  struct compare_message_id_less
+    : public private_message::compare_message_id_less_impl< TMsg1, TMsg2, has_message_id<TMsg1>::value && has_message_id<TMsg2>::value>
   {
   };
 #else
@@ -351,8 +361,7 @@ namespace etl
   /// value is true if TMsg1::ID < TMsg2::ID.
   //**********************************************
   template <typename TMsg1, typename TMsg2>
-  struct compare_message_id_less
-    : etl::bool_constant<TMsg1::ID < TMsg2::ID>
+    struct compare_message_id_less : etl::bool_constant < TMsg1::ID< TMsg2::ID>
   {
     ETL_STATIC_ASSERT(etl::is_message_type<TMsg1>::value, "TMsg1 is not derived from etl::message<>");
     ETL_STATIC_ASSERT(etl::is_message_type<TMsg2>::value, "TMsg2 is not derived from etl::message<>");
@@ -363,6 +372,6 @@ namespace etl
   template <typename TMsg1, typename TMsg2>
   inline constexpr bool compare_message_id_less_v = compare_message_id_less<TMsg1, TMsg2>::value;
 #endif
-}
+} // namespace etl
 
 #endif

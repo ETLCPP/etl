@@ -33,9 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
+#include "char_traits.h"
 #include "enum_type.h"
 #include "memory.h"
-#include "char_traits.h"
 #include "optional.h"
 
 #include <ctype.h>
@@ -159,7 +159,7 @@ namespace etl
       pbegin = view.data() + first;
     }
 
-    return TStringView(pbegin, etl::distance(pbegin, view.data() + view.size()));
+    return TStringView(pbegin, static_cast<size_t>(etl::distance(pbegin, view.data() + view.size())));
   }
 
   //***************************************************************************
@@ -249,7 +249,7 @@ namespace etl
       pend += last;
     }
 
-    return TStringView(view.data(), etl::distance(view.data(), pend));
+    return TStringView(view.data(), static_cast<size_t>(etl::distance(view.data(), pend)));
   }
 
   //***************************************************************************
@@ -298,7 +298,7 @@ namespace etl
     if (last != TStringView::npos)
     {
       pend += last;
-      return TStringView(view.data(), etl::distance(view.data(), pend));
+      return TStringView(view.data(), static_cast<size_t>(etl::distance(view.data(), pend)));
     }
     else
     {
@@ -350,7 +350,7 @@ namespace etl
       pend += last;
     }
 
-    return TStringView(pbegin, etl::distance(pbegin, pend));
+    return TStringView(pbegin, static_cast<size_t>(etl::distance(pbegin, pend)));
   }
 
   //***************************************************************************
@@ -397,7 +397,7 @@ namespace etl
       pend += last;
     }
 
-    return TStringView(pbegin, etl::distance(pbegin, pend));
+    return TStringView(pbegin, static_cast<size_t>(etl::distance(pbegin, pend)));
   }
 
   //***************************************************************************
@@ -408,7 +408,7 @@ namespace etl
   {
     n = (n > s.size()) ? s.size() : n;
 
-    s.erase(s.begin() + n, s.end());
+    s.erase(s.begin() + static_cast<typename TIString::difference_type>(n), s.end());
   }
 
   //***************************************************************************
@@ -430,7 +430,7 @@ namespace etl
   {
     n = (n > s.size()) ? s.size() : n;
 
-    s.erase(s.begin(), s.end() - n);
+    s.erase(s.begin(), s.end() - static_cast<typename TIString::difference_type>(n));
   }
 
   //***************************************************************************
@@ -458,9 +458,7 @@ namespace etl
   /// replace_characters
   //***************************************************************************
   template <typename TIString, typename TPair>
-  void replace_characters(TIString& s,
-                          const TPair* pairsbegin,
-                          const TPair* pairsend)
+  void replace_characters(TIString& s, const TPair* pairsbegin, const TPair* pairsend)
   {
     while (pairsbegin != pairsend)
     {
@@ -473,9 +471,7 @@ namespace etl
   /// replace_strings
   //***************************************************************************
   template <typename TIString, typename TPair>
-  void replace_strings(TIString& s,
-                        const TPair* pairsbegin,
-                        const TPair* pairsend)
+  void replace_strings(TIString& s, const TPair* pairsbegin, const TPair* pairsend)
   {
     while (pairsbegin != pairsend)
     {
@@ -484,8 +480,7 @@ namespace etl
 
       typename TIString::size_type position = 0U;
 
-      do
-      {
+      do {
         position = s.find(p_old, position);
         if (position != TIString::npos)
         {
@@ -612,8 +607,7 @@ namespace etl
     TIterator itr(last);
     TIterator end(first);
 
-    do
-    {
+    do {
       --itr;
 
       TPointer pd = delimiters;
@@ -664,8 +658,7 @@ namespace etl
     TIterator itr(last);
     TIterator end(first);
 
-    do
-    {
+    do {
       --itr;
 
       TPointer pd = delimiters;
@@ -713,29 +706,31 @@ namespace etl
   //***************************************************************************
   /// get_token
   //***************************************************************************
+#include "private/diagnostic_uninitialized_push.h"
   template <typename TInput, typename TStringView>
-  etl::optional<TStringView> get_token(const TInput& input, typename TInput::const_pointer delimiters, const etl::optional<TStringView>& last_view, bool ignore_empty_tokens)
+  etl::optional<TStringView> get_token(const TInput& input, typename TInput::const_pointer delimiters, const etl::optional<TStringView>& last_view,
+                                       bool ignore_empty_tokens)
   {
     typedef typename TInput::const_pointer const_pointer;
 
-    bool token_found = false;
-    typename TStringView::size_type position  = 0U;
-    TStringView view = last_view.value_or(TStringView());
-    const_pointer begin_ptr = input.data();
+    bool                            token_found = false;
+    typename TStringView::size_type position    = 0U;
+    TStringView                     view        = last_view.value_or(TStringView());
+    const_pointer                   begin_ptr   = input.data();
 
     if (begin_ptr == ETL_NULLPTR)
     {
       return etl::optional<TStringView>();
     }
 
-    const_pointer end_ptr   = begin_ptr + input.size();
+    const_pointer end_ptr = begin_ptr + input.size();
 
     while (!token_found)
     {
       // Does the last view have valid data?
       if (view.data() != ETL_NULLPTR)
       {
-        position = etl::distance(begin_ptr, view.data() + view.size() + 1U);
+        position = static_cast<typename TStringView::size_type>(etl::distance(begin_ptr, view.data() + view.size() + 1U));
 
         // Have we reached the end of the string?
         if (position > input.size())
@@ -748,43 +743,47 @@ namespace etl
       const_pointer first_ptr = begin_ptr + position;
       const_pointer last_ptr  = find_first_of(first_ptr, end_ptr, delimiters);
 
-      view = TStringView(first_ptr, etl::distance(first_ptr, last_ptr));
+      view = TStringView(first_ptr, static_cast<size_t>(etl::distance(first_ptr, last_ptr)));
 
       token_found = ((view.size() != 0U) || !ignore_empty_tokens);
     }
 
     return etl::optional<TStringView>(view);
   }
+#include "private/diagnostic_pop.h"
 
   //***************************************************************************
   /// get_token_list
-  ///\brief Splits a string of tokens to a set of views, according to a set of delimiters.
+  ///\brief Splits a string of tokens to a set of views, according to a set of
+  /// delimiters.
   /// The tokenisation stops if:
   ///   1. The end of the input text is reached.
   ///   2. The max_size() of the output container is reached.
-  ///   3. The number of tokens found reaches max_n_tokens. 
+  ///   3. The number of tokens found reaches max_n_tokens.
   /// The input container must define <code>const_pointer</code>.
   /// The output container must define <code>value_type</code>.
-  /// The output container must define the member function <code>max_size</code> that returns the maximum size of the container.
-  /// The output container must define the member function <code>push_back</code> that pushes the view on to the back of the container.
+  /// The output container must define the member function <code>max_size</code>
+  /// that returns the maximum size of the container. The output container must
+  /// define the member function <code>push_back</code> that pushes the view on
+  /// to the back of the container.
   ///\param input               The input string.
-  ///\param output              A reference to an output container of string views.
-  ///\param delimiters          A pointer to a string of valid delimiters.
-  ///\param ignore_empty_tokens If <b>true</b> then empty tokens are ignored.
-  ///\param max_n_tokens        The maximum number of tokens to collect. Default tokenise everything.
-  ///\return Returns <b>true</b> if all tokens were added to the list, otherwise <b>false</b>.
+  ///\param output              A reference to an output container of string
+  /// views. \param delimiters          A pointer to a string of valid
+  /// delimiters. \param ignore_empty_tokens If <b>true</b> then empty tokens
+  /// are ignored. \param max_n_tokens        The maximum number of tokens to
+  /// collect. Default tokenise everything. \return Returns <b>true</b> if all
+  /// tokens were added to the list, otherwise <b>false</b>.
   //***************************************************************************
   template <typename TInput, typename TOutput>
-  bool get_token_list(const TInput& input, TOutput& output, typename TInput::const_pointer delimiters, bool ignore_empty_tokens, size_t max_n_tokens = etl::integral_limits<size_t>::max)
+  bool get_token_list(const TInput& input, TOutput& output, typename TInput::const_pointer delimiters, bool ignore_empty_tokens,
+                      size_t max_n_tokens = etl::integral_limits<size_t>::max)
   {
     typedef typename TOutput::value_type string_view_t;
 
     etl::optional<string_view_t> token;
 
     size_t count = 0;
-    while ((token = etl::get_token(input, delimiters, token, ignore_empty_tokens)) &&
-           (count != output.max_size()) &&
-           (count != max_n_tokens))
+    while ((token = etl::get_token(input, delimiters, token, ignore_empty_tokens)) && (count != output.max_size()) && (count != max_n_tokens))
     {
       output.push_back(token.value());
       ++count;
@@ -834,21 +833,21 @@ namespace etl
     switch (int(pad_direction))
     {
       case string_pad_direction::LEFT:
-      {
-        pad_left(s, required_size, pad_char);
-        break;
-      }
+        {
+          pad_left(s, required_size, pad_char);
+          break;
+        }
 
       case string_pad_direction::RIGHT:
-      {
-        pad_right(s, required_size, pad_char);
-        break;
-      }
+        {
+          pad_right(s, required_size, pad_char);
+          break;
+        }
 
       default:
-      {
-        break;
-      }
+        {
+          break;
+        }
     }
   }
 
@@ -886,10 +885,10 @@ namespace etl
 
   //***************************************************************************
   /// str_n_copy
-  /// Copies from src to dst until either n characters have been copied, or a 
+  /// Copies from src to dst until either n characters have been copied, or a
   /// terminating null is found.
-  /// Null terminates the destination if less than n characters have been copied.
-  /// Returns a str_n_copy_result.
+  /// Null terminates the destination if less than n characters have been
+  /// copied. Returns a str_n_copy_result.
   //***************************************************************************
   struct str_n_copy_result
   {
@@ -903,7 +902,7 @@ namespace etl
   {
     if ((src == ETL_NULLPTR) || (dst == ETL_NULLPTR))
     {
-      str_n_copy_result result = { 0, false, false };
+      str_n_copy_result result = {0, false, false};
       return result;
     }
 
@@ -919,18 +918,19 @@ namespace etl
     if (count != n)
     {
       // Yes we did.
-      *dst = 0;
-      str_n_copy_result result = { count, false, true };
+      *dst                     = 0;
+      str_n_copy_result result = {count, false, true};
       return result;
     }
     else
     {
-      // No. Truncation depends on the next src character being a terminating zero or not.
-      str_n_copy_result result = { count, *src != 0, false };
+      // No. Truncation depends on the next src character being a terminating
+      // zero or not.
+      str_n_copy_result result = {count, *src != 0, false};
       return result;
     }
   }
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

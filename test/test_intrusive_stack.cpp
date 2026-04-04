@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/intrusive_stack.h"
 #include "etl/intrusive_links.h"
+#include "etl/intrusive_stack.h"
 
 #include <vector>
 
@@ -38,32 +38,30 @@ namespace
   typedef etl::forward_link<0>       link0;
   typedef etl::bidirectional_link<1> link1;
 
-  struct Data : public link0, public link1
+  struct Data
+    : public link0
+    , public link1
   {
     Data(int i_)
       : i(i_)
     {
-
     }
 
     int i;
   };
 
-  bool operator ==(const Data& lhs, const Data& rhs)
+  bool operator==(const Data& lhs, const Data& rhs)
   {
     return lhs.i == rhs.i;
   }
 
-  std::ostream& operator << (std::ostream& os, const Data& data)
+  std::ostream& operator<<(std::ostream& os, const Data& data)
   {
     os << data.i;
     return os;
   }
 
-  std::vector<Data> data =
-  {
-    Data(1), Data(2), Data(3), Data(4), Data(5), Data(6), Data(7), Data(8)
-  };
+  std::vector<Data> data = {Data(1), Data(2), Data(3), Data(4), Data(5), Data(6), Data(7), Data(8)};
 
   SUITE(test_intrusive_stack)
   {
@@ -264,7 +262,7 @@ namespace
       Data data2(2);
       Data data3(3);
 
-      etl::intrusive_stack<Data, link0> stackD;
+      etl::intrusive_stack<Data, link0>        stackD;
       const etl::intrusive_stack<Data, link0>& stackDR = stackD;
 
       stackD.push(data1);
@@ -276,6 +274,25 @@ namespace
       CHECK_EQUAL(stackD.top(), stackDR.top());
       stackD.pop();
       CHECK_EQUAL(stackD.top(), stackDR.top());
+    }
+
+    //*************************************************************************
+    TEST(test_top_empty_exception)
+    {
+      etl::intrusive_stack<Data, link0> stackD;
+
+      CHECK_EQUAL(0U, stackD.size());
+      CHECK_THROW(stackD.top(), etl::intrusive_stack_empty);
+    }
+
+    //*************************************************************************
+    TEST(test_top_const_empty_exception)
+    {
+      etl::intrusive_stack<Data, link0>        stackD;
+      const etl::intrusive_stack<Data, link0>& stackDR = stackD;
+
+      CHECK_EQUAL(0U, stackDR.size());
+      CHECK_THROW(stackDR.top(), etl::intrusive_stack_empty);
     }
 
     //*************************************************************************
@@ -329,4 +346,4 @@ namespace
       CHECK_EQUAL(stack.top(), data5);
     }
   }
-}
+} // namespace

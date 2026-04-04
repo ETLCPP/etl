@@ -50,48 +50,50 @@ namespace etl
       //*********************************************************************
 
       // Helper: get the I-th type from a parameter pack.
-      template<size_t I, typename... Ts>
+      template <size_t I, typename... Ts>
       struct type_at_index;
 
-      template<size_t I, typename Head, typename... Tail>
-      struct type_at_index<I, Head, Tail...> : type_at_index<I - 1, Tail...> {};
+      template <size_t I, typename Head, typename... Tail>
+      struct type_at_index<I, Head, Tail...> : type_at_index<I - 1, Tail...>
+      {
+      };
 
-      template<typename Head, typename... Tail>
+      template <typename Head, typename... Tail>
       struct type_at_index<0, Head, Tail...>
       {
         using type = Head;
       };
 
-      template<size_t I, typename... Ts>
+      template <size_t I, typename... Ts>
       using type_at_index_t = typename type_at_index<I, Ts...>::type;
 
       // Helper: maximum of sizeof... values
-      template<typename... Ts>
+      template <typename... Ts>
       struct max_size;
 
-      template<typename T>
+      template <typename T>
       struct max_size<T>
       {
         static constexpr size_t value = sizeof(T);
       };
 
-      template<typename T, typename... Ts>
+      template <typename T, typename... Ts>
       struct max_size<T, Ts...>
       {
         static constexpr size_t value = (sizeof(T) > max_size<Ts...>::value) ? sizeof(T) : max_size<Ts...>::value;
       };
 
       // Helper: maximum of alignof... values
-      template<typename... Ts>
+      template <typename... Ts>
       struct max_align;
 
-      template<typename T>
+      template <typename T>
       struct max_align<T>
       {
         static constexpr size_t value = alignof(T);
       };
 
-      template<typename T, typename... Ts>
+      template <typename T, typename... Ts>
       struct max_align<T, Ts...>
       {
         static constexpr size_t value = (alignof(T) > max_align<Ts...>::value) ? alignof(T) : max_align<Ts...>::value;
@@ -101,56 +103,69 @@ namespace etl
       inline constexpr size_t mini_variant_npos = ~size_t(0);
 
       // Detection trait: is a single type equality-comparable?
-      template<typename T, typename = void>
-      struct is_equality_comparable : etl::false_type {};
+      template <typename T, typename = void>
+      struct is_equality_comparable : etl::false_type
+      {
+      };
 
-      template<typename T>
-      struct is_equality_comparable<T, etl::void_t<decltype(etl::declval<const T&>() == etl::declval<const T&>())>>
-        : etl::true_type {};
+      template <typename T>
+      struct is_equality_comparable< T, etl::void_t<decltype(etl::declval<const T&>() == etl::declval<const T&>())>> : etl::true_type
+      {
+      };
 
       // Conjunction: all types in the pack are equality-comparable
-      template<typename... Ts>
-      struct all_equality_comparable : etl::bool_constant<(is_equality_comparable<Ts>::value && ...)> {};
+      template <typename... Ts>
+      struct all_equality_comparable : etl::bool_constant<(is_equality_comparable<Ts>::value && ...)>
+      {
+      };
 
       // Detection trait: is a single type nothrow-move-constructible?
-      template<typename T>
+      template <typename T>
       struct is_nothrow_move_constructible
       {
       private:
-        template<typename U>
+
+        template <typename U>
         static auto test(int) -> etl::bool_constant<noexcept(U(etl::declval<U&&>()))>;
 
-        template<typename>
+        template <typename>
         static etl::false_type test(...);
 
       public:
+
         static constexpr bool value = decltype(test<T>(0))::value;
       };
 
       // Conjunction: all types in the pack are nothrow-move-constructible
-      template<typename... Ts>
-      struct all_nothrow_move_constructible : etl::bool_constant<(is_nothrow_move_constructible<Ts>::value && ...)> {};
+      template <typename... Ts>
+      struct all_nothrow_move_constructible : etl::bool_constant<(is_nothrow_move_constructible<Ts>::value && ...)>
+      {
+      };
 
       // Detection trait: is a single type nothrow-destructible?
-      template<typename T>
+      template <typename T>
       struct is_nothrow_destructible
       {
       private:
-        template<typename U>
+
+        template <typename U>
         static auto test(int) -> etl::bool_constant<noexcept(etl::declval<U&>().~U())>;
 
-        template<typename>
+        template <typename>
         static etl::false_type test(...);
 
       public:
+
         static constexpr bool value = decltype(test<T>(0))::value;
       };
 
       // Conjunction: all types in the pack are nothrow-destructible
-      template<typename... Ts>
-      struct all_nothrow_destructible : etl::bool_constant<(is_nothrow_destructible<Ts>::value && ...)> {};
+      template <typename... Ts>
+      struct all_nothrow_destructible : etl::bool_constant<(is_nothrow_destructible<Ts>::value && ...)>
+      {
+      };
 
-      template<typename... Ts>
+      template <typename... Ts>
       class mini_variant
       {
         static_assert(sizeof...(Ts) > 0, "mini_variant requires at least one type");
@@ -162,19 +177,19 @@ namespace etl
         size_t _index;
 
         // ---- Destruction dispatch table ----
-        using destroy_fn = void(*)(void*);
+        using destroy_fn = void (*)(void*);
 
-        template<size_t I>
+        template <size_t I>
         static void destroy_impl(void* ptr)
         {
           using T = type_at_index_t<I, Ts...>;
           static_cast<T*>(ptr)->~T();
         }
 
-        template<size_t... Is>
+        template <size_t... Is>
         static const destroy_fn* make_destroy_table(etl::index_sequence<Is...>)
         {
-          static const destroy_fn table[] = { &destroy_impl<Is>... };
+          static const destroy_fn table[] = {&destroy_impl<Is>...};
           return table;
         }
 
@@ -185,19 +200,19 @@ namespace etl
         }
 
         // ---- Copy dispatch table ----
-        using copy_fn = void(*)(void* /*dst*/, const void* /*src*/);
+        using copy_fn = void (*)(void* /*dst*/, const void* /*src*/);
 
-        template<size_t I>
+        template <size_t I>
         static void copy_impl(void* dst, const void* src)
         {
           using T = type_at_index_t<I, Ts...>;
           ::new (dst) T(*static_cast<const T*>(src));
         }
 
-        template<size_t... Is>
+        template <size_t... Is>
         static const copy_fn* make_copy_table(etl::index_sequence<Is...>)
         {
-          static const copy_fn table[] = { &copy_impl<Is>... };
+          static const copy_fn table[] = {&copy_impl<Is>...};
           return table;
         }
 
@@ -208,19 +223,19 @@ namespace etl
         }
 
         // ---- Move dispatch table ----
-        using move_fn = void(*)(void* /*dst*/, void* /*src*/);
+        using move_fn = void (*)(void* /*dst*/, void* /*src*/);
 
-        template<size_t I>
+        template <size_t I>
         static void move_impl(void* dst, void* src)
         {
           using T = type_at_index_t<I, Ts...>;
           ::new (dst) T(etl::move(*static_cast<T*>(src)));
         }
 
-        template<size_t... Is>
+        template <size_t... Is>
         static const move_fn* make_move_table(etl::index_sequence<Is...>)
         {
-          static const move_fn table[] = { &move_impl<Is>... };
+          static const move_fn table[] = {&move_impl<Is>...};
           return table;
         }
 
@@ -231,19 +246,19 @@ namespace etl
         }
 
         // ---- Equality dispatch table ----
-        using equal_fn = bool(*)(const void* /*lhs*/, const void* /*rhs*/);
+        using equal_fn = bool (*)(const void* /*lhs*/, const void* /*rhs*/);
 
-        template<size_t I>
+        template <size_t I>
         static bool equal_impl(const void* lhs, const void* rhs)
         {
           using T = type_at_index_t<I, Ts...>;
           return *static_cast<const T*>(lhs) == *static_cast<const T*>(rhs);
         }
 
-        template<size_t... Is>
+        template <size_t... Is>
         static const equal_fn* make_equal_table(etl::index_sequence<Is...>)
         {
-          static const equal_fn table[] = { &equal_impl<Is>... };
+          static const equal_fn table[] = {&equal_impl<Is>...};
           return table;
         }
 
@@ -263,11 +278,14 @@ namespace etl
         }
 
       public:
-        mini_variant() : _index{mini_variant_npos}
+
+        mini_variant()
+          : _index{mini_variant_npos}
         {
         }
 
-        mini_variant(const mini_variant& other) : _index{mini_variant_npos}
+        mini_variant(const mini_variant& other)
+          : _index{mini_variant_npos}
         {
           if (other._index != mini_variant_npos)
           {
@@ -321,7 +339,7 @@ namespace etl
           destroy_current();
         }
 
-        template<size_t I, typename... Args>
+        template <size_t I, typename... Args>
         void emplace(Args&&... args)
         {
           static_assert(I < sizeof...(Ts), "Index out of range");
@@ -336,7 +354,7 @@ namespace etl
           return _index;
         }
 
-        template<size_t I>
+        template <size_t I>
         type_at_index_t<I, Ts...>& get_ref()
         {
           static_assert(I < sizeof...(Ts), "Index out of range");
@@ -345,7 +363,7 @@ namespace etl
           return *reinterpret_cast<T*>(&_storage);
         }
 
-        template<size_t I>
+        template <size_t I>
         const type_at_index_t<I, Ts...>& get_ref() const
         {
           static_assert(I < sizeof...(Ts), "Index out of range");
@@ -354,7 +372,7 @@ namespace etl
           return *reinterpret_cast<const T*>(&_storage);
         }
 
-        template<bool B = all_equality_comparable<Ts...>::value, etl::enable_if_t<B, int> = 0>
+        template <bool B = all_equality_comparable<Ts...>::value, etl::enable_if_t<B, int> = 0>
         friend bool operator==(const mini_variant& lhs, const mini_variant& rhs)
         {
           if (lhs._index != rhs._index)
@@ -368,7 +386,7 @@ namespace etl
           return equal_table()[lhs._index](&lhs._storage, &rhs._storage);
         }
 
-        template<bool B = all_equality_comparable<Ts...>::value, etl::enable_if_t<B, int> = 0>
+        template <bool B = all_equality_comparable<Ts...>::value, etl::enable_if_t<B, int> = 0>
         friend bool operator!=(const mini_variant& lhs, const mini_variant& rhs)
         {
           return !(lhs == rhs);
@@ -376,32 +394,28 @@ namespace etl
       };
     } // namespace private_ranges
 
-  } // namespace ranges (temporarily close to define get<> in etl namespace)
+  } // namespace ranges
 
-  template<size_t I, typename... Ts>
-  typename ranges::private_ranges::type_at_index_t<I, Ts...>&
-  get(ranges::private_ranges::mini_variant<Ts...>& v)
+  template <size_t I, typename... Ts>
+  typename ranges::private_ranges::type_at_index_t<I, Ts...>& get(ranges::private_ranges::mini_variant<Ts...>& v)
   {
     return v.template get_ref<I>();
   }
 
-  template<size_t I, typename... Ts>
-  const typename ranges::private_ranges::type_at_index_t<I, Ts...>&
-  get(const ranges::private_ranges::mini_variant<Ts...>& v)
+  template <size_t I, typename... Ts>
+  const typename ranges::private_ranges::type_at_index_t<I, Ts...>& get(const ranges::private_ranges::mini_variant<Ts...>& v)
   {
     return v.template get_ref<I>();
   }
 
-  template<size_t I, typename... Ts>
-  typename ranges::private_ranges::type_at_index_t<I, Ts...>&&
-  get(ranges::private_ranges::mini_variant<Ts...>&& v)
+  template <size_t I, typename... Ts>
+  typename ranges::private_ranges::type_at_index_t<I, Ts...>&& get(ranges::private_ranges::mini_variant<Ts...>&& v)
   {
     return etl::move(v.template get_ref<I>());
   }
 
-  template<size_t I, typename... Ts>
-  const typename ranges::private_ranges::type_at_index_t<I, Ts...>&&
-  get(const ranges::private_ranges::mini_variant<Ts...>&& v)
+  template <size_t I, typename... Ts>
+  const typename ranges::private_ranges::type_at_index_t<I, Ts...>&& get(const ranges::private_ranges::mini_variant<Ts...>&& v)
   {
     return etl::move(v.template get_ref<I>());
   }

@@ -41,6 +41,6 @@ namespace etl
   struct monostate
   {
   };
-}
+} // namespace etl
 
 #endif

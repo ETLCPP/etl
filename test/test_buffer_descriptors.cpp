@@ -28,17 +28,17 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <algorithm>
+#include <array>
+#include <atomic>
+#include <numeric>
+#include <queue>
 #include <thread>
 #include <vector>
-#include <numeric>
-#include <array>
-#include <algorithm>
-#include <queue>
-#include <atomic>
 
 #include "etl/atomic.h"
-#include "etl/queue_spsc_atomic.h"
 #include "etl/buffer_descriptors.h"
+#include "etl/queue_spsc_atomic.h"
 
 #if defined(ETL_TARGET_OS_WINDOWS)
   #include <Windows.h>
@@ -136,7 +136,7 @@ namespace
     //*************************************************************************
     TEST(test_clear)
     {
-      BD bd(&buffers[0][0]);
+      BD             bd(&buffers[0][0]);
       BD::descriptor desc[4];
 
       for (size_t i = 0UL; i < N_BUFFERS; ++i)
@@ -157,11 +157,8 @@ namespace
     //*************************************************************************
     TEST(test_buffers_with_allocate_fill)
     {
-      std::array<char, BUFFER_SIZE> test =
-      {
-        char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU),
-        char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU)
-      };
+      std::array<char, BUFFER_SIZE> test = {char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU),
+                                            char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU), char(0xFFU)};
 
       BD bd(&buffers[0][0]);
 
@@ -178,9 +175,9 @@ namespace
     //*************************************************************************
     TEST(test_notifications)
     {
-      std::array<char, BUFFER_SIZE> test = { 0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0 };
+      std::array<char, BUFFER_SIZE> test = {0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0};
 
-      std::fill(&buffers[0][0], &buffers[N_BUFFERS - 1][0] + BUFFER_SIZE , 0U);
+      std::fill(&buffers[0][0], &buffers[N_BUFFERS - 1][0] + BUFFER_SIZE, 0U);
 
       receiver.clear();
       BD::callback_type callback = BD::callback_type::create<Receiver, &Receiver::receive>(receiver);
@@ -291,23 +288,24 @@ namespace
     //*************************************************************************
 #if REALTIME_TEST
 
-#if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
-#define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
-#define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1)
-#define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2)
-#else
-#define RAISE_THREAD_PRIORITY
-#define FIX_PROCESSOR_AFFINITY1
-#define FIX_PROCESSOR_AFFINITY2
-#endif
+  #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently
+                                     // supported
+    #define RAISE_THREAD_PRIORITY   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
+    #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1)
+    #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2)
+  #else
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY1
+    #define FIX_PROCESSOR_AFFINITY2
+  #endif
 
     std::atomic_bool start = false;
 
     //*********************************
     struct Notification
     {
-      BD::descriptor    desc;
-      BD::size_type count;
+      BD::descriptor desc;
+      BD::size_type  count;
     };
 
     constexpr int N_ITERATIONS = 1000000;
@@ -340,8 +338,7 @@ namespace
         BD::descriptor desc;
 
         // Wait until we can allocate a descriptor.
-        do
-        {
+        do {
           desc = bd.allocate();
         } while (desc.is_valid() == false);
 
@@ -404,4 +401,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

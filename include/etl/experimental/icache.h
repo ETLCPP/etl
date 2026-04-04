@@ -29,16 +29,16 @@ SOFTWARE.
 ******************************************************************************/
 
 //*****************************************************************************
-#error  This header is in development. Do not use.
+#error This header is in development. Do not use.
 //*****************************************************************************
 
 #ifndef __ETL_ICACHE__
-#define __ETL_ICACHE__
+  #define __ETL_ICACHE__
 
-#include "platform.h"
-#include "delegate.h"
+  #include "platform.h"
+  #include "delegate.h"
 
-#include <utility>
+  #include <utility>
 
 namespace etl
 {
@@ -55,9 +55,9 @@ namespace etl
     /// By default, 'write_through' is set to true.
     ///************************************************************************
     icache()
-      : write_through(true),
-        read_store(nullptr),
-        write_store(nullptr)
+      : write_through(true)
+      , read_store(nullptr)
+      , write_store(nullptr)
     {
     }
 
@@ -97,19 +97,27 @@ namespace etl
       write_through = write_through_;
     }
 
-    virtual const T& read(const TKey& key) const = 0;             ///< Reads from the cache. May read from the store using read_store.
-    virtual void write(const TKey& key, const TValue& value) = 0; ///< Writes to the cache. May write to the store using write_store.
-    virtual void flush() = 0;                                     ///< The overridden function should write all changed values to the store.
+    virtual const T& read(const TKey& key) const = 0; ///< Reads from the cache. May read from
+                                                      ///< the store using read_store.
+    virtual void write(const TKey&   key,
+                       const TValue& value) = 0; ///< Writes to the cache. May write to the
+                                                 ///< store using write_store.
+    virtual void flush() = 0;                    ///< The overridden function should write all
+                                                 ///< changed values to the store.
 
   protected:
 
     typedef ETL_OR_STD::pair<TKey, TValue> key_value_t;
 
-    bool write_through; ///< If true, the cache should write changed items back to the store immediately. If false then a flush() or destruct will be required.
+    bool write_through; ///< If true, the cache should write changed items back
+                        ///< to the store immediately. If false then a flush()
+                        ///< or destruct will be required.
 
-    etl::delegate<key_value_t&(void)>*       read_store;  ///< A function that will read a value from the store into the cache.
-    etl::delegate<void(const key_value_t&)>* write_store; ///< A function that will write a value from the cache into the store.
+    etl::delegate<key_value_t&(void)>* read_store;        ///< A function that will read a value from the
+                                                          ///< store into the cache.
+    etl::delegate<void(const key_value_t&)>* write_store; ///< A function that will write a value
+                                                          ///< from the cache into the store.
   }
-}
+} // namespace etl
 
 #endif

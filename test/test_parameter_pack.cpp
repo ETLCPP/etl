@@ -45,47 +45,48 @@ namespace
       CHECK_EQUAL(2U, Pack::index_of_type_v<int>);
 
       // Static assert
-      //CHECK_EQUAL(0U, Pack::index_of_type_v<long>);
+      // CHECK_EQUAL(0U, Pack::index_of_type_v<long>);
 
       CHECK_EQUAL(0U, (etl::parameter_pack_v<char, char, short, int>));
       CHECK_EQUAL(1U, (etl::parameter_pack_v<short, char, short, int>));
       CHECK_EQUAL(2U, (etl::parameter_pack_v<int, char, short, int>));
 
       // Static assert
-      //CHECK_EQUAL(0U, (etl::parameter_pack_v<long, char, short, int>));
+      // CHECK_EQUAL(0U, (etl::parameter_pack_v<long, char, short, int>));
 #else
       CHECK_EQUAL(0U, Pack::index_of_type<char>::value);
       CHECK_EQUAL(1U, Pack::index_of_type<short>::value);
       CHECK_EQUAL(2U, Pack::index_of_type<int>::value);
 
       // Static assert
-      //CHECK_EQUAL(0U, Pack::index_of_type_v<long>);
+      // CHECK_EQUAL(0U, Pack::index_of_type_v<long>);
 
       CHECK_EQUAL(0U, (etl::parameter_pack<char, short, int>::index_of_type<char>::value));
       CHECK_EQUAL(1U, (etl::parameter_pack<char, short, int>::index_of_type<short>::value));
       CHECK_EQUAL(2U, (etl::parameter_pack<char, short, int>::index_of_type<int>::value));
 
       // Static assert
-      //CHECK_EQUAL(0U, (etl::parameter_pack_v<long, char, short, int>));
+      // CHECK_EQUAL(0U, (etl::parameter_pack_v<long, char, short, int>));
 #endif
     }
 
     //*************************************************************************
     TEST(test_type_from_index)
     {
-      CHECK((std::is_same<char,  typename Pack::type_from_index_t<0U>>::value));
+      CHECK((std::is_same<char, typename Pack::type_from_index_t<0U>>::value));
       CHECK((std::is_same<short, typename Pack::type_from_index_t<1U>>::value));
-      CHECK((std::is_same<int,   typename Pack::type_from_index_t<2U>>::value));
+      CHECK((std::is_same<int, typename Pack::type_from_index_t<2U>>::value));
 
       // Static assert
-      //CHECK((std::is_same_v<long, typename Pack::type_from_index_t<3U>>));
+      // CHECK((std::is_same_v<long, typename Pack::type_from_index_t<3U>>));
 
-      CHECK((std::is_same<char,  etl::parameter_pack_t<0U, char, short, int>>::value));
+      CHECK((std::is_same<char, etl::parameter_pack_t<0U, char, short, int>>::value));
       CHECK((std::is_same<short, etl::parameter_pack_t<1U, char, short, int>>::value));
-      CHECK((std::is_same<int,   etl::parameter_pack_t<2U, char, short, int>>::value));
+      CHECK((std::is_same<int, etl::parameter_pack_t<2U, char, short, int>>::value));
 
       // Static assert
-      //CHECK((std::is_same_v<long, etl::parameter_pack_t<3U, char, short, int>>));
+      // CHECK((std::is_same_v<long, etl::parameter_pack_t<3U, char, short,
+      // int>>));
     }
   }
-}
+} // namespace

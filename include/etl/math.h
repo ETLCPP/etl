@@ -51,28 +51,22 @@ namespace etl
   //***************************************************************************
 #if ETL_USING_CPP11 && !defined(ETL_NO_CPP_NAN_SUPPORT)
   template <typename T>
-  ETL_CONSTEXPR
-    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
-    is_nan(T value)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type is_nan(T value)
   {
     return fpclassify(value) == FP_NAN;
   }
 #else
-#include "private/diagnostic_float_equal_push.h"
+  #include "private/diagnostic_float_equal_push.h"
   template <typename T>
-  ETL_CONSTEXPR
-    typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
-    is_nan(T value)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type is_nan(T value)
   {
     return (value != value);
   }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 #endif
 
   template <typename T>
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-    is_nan(T)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type is_nan(T)
   {
     return false;
   }
@@ -82,29 +76,22 @@ namespace etl
   //***************************************************************************
 #if ETL_USING_CPP11 && !defined(ETL_NO_CPP_NAN_SUPPORT)
   template <typename T>
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
-    is_infinity(T value)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type is_infinity(T value)
   {
     return fpclassify(value) == FP_INFINITE;
   }
 #else
-#include "private/diagnostic_float_equal_push.h"
+  #include "private/diagnostic_float_equal_push.h"
   template <typename T>
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
-    is_infinity(T value)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type is_infinity(T value)
   {
-    return ((value == etl::numeric_limits<T>::infinity()) ||
-            (value == -etl::numeric_limits<T>::infinity()));
+    return ((value == etl::numeric_limits<T>::infinity()) || (value == -etl::numeric_limits<T>::infinity()));
   }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 #endif
 
   template <typename T>
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-    is_infinity(T)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type is_infinity(T)
   {
     return false;
   }
@@ -114,28 +101,22 @@ namespace etl
   //***************************************************************************
 #if ETL_USING_CPP11 && !defined(ETL_NO_CPP_NAN_SUPPORT)
   template <typename T>
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
-    is_zero(T value)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type is_zero(T value)
   {
     return fpclassify(value) == FP_ZERO;
   }
 #else
-#include "private/diagnostic_float_equal_push.h"
+  #include "private/diagnostic_float_equal_push.h"
   template <typename T>
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type
-    is_zero(T value)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_floating_point<T>::value, bool>::type is_zero(T value)
   {
     return value == 0;
   }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 #endif
 
   template <typename T>
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_integral<T>::value, bool>::type
-    is_zero(T value)
+  ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, bool>::type is_zero(T value)
   {
     return (value == 0);
   }
@@ -145,12 +126,11 @@ namespace etl
   //***************************************************************************
 #include "private/diagnostic_float_equal_push.h"
   template <typename T>
-  ETL_CONSTEXPR
-  bool is_exactly_equal(T value1, T value2)
+  ETL_CONSTEXPR bool is_exactly_equal(T value1, T value2)
   {
     return value1 == value2;
   }
 #include "private/diagnostic_pop.h"
-}
+} // namespace etl
 
 #endif

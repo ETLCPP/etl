@@ -62,6 +62,6 @@ namespace etl
     ETL_ENUM_TYPE(hexadecimal, "hexadecimal")
     ETL_END_ENUM_TYPE
   };
-}
+} // namespace etl
 
 #endif

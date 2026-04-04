@@ -49,31 +49,31 @@ namespace
       CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
       CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -82,39 +82,39 @@ namespace
       typedef etl::numeric_limits<char> ETL_NL;
       typedef std::numeric_limits<char> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -123,39 +123,39 @@ namespace
       typedef etl::numeric_limits<unsigned char> ETL_NL;
       typedef std::numeric_limits<unsigned char> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -164,39 +164,39 @@ namespace
       typedef etl::numeric_limits<signed char> ETL_NL;
       typedef std::numeric_limits<signed char> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -205,39 +205,39 @@ namespace
       typedef etl::numeric_limits<char16_t> ETL_NL;
       typedef std::numeric_limits<char16_t> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -246,39 +246,39 @@ namespace
       typedef etl::numeric_limits<char32_t> ETL_NL;
       typedef std::numeric_limits<char32_t> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -287,39 +287,39 @@ namespace
       typedef etl::numeric_limits<wchar_t> ETL_NL;
       typedef std::numeric_limits<wchar_t> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -328,39 +328,39 @@ namespace
       typedef etl::numeric_limits<short> ETL_NL;
       typedef std::numeric_limits<short> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -369,39 +369,39 @@ namespace
       typedef etl::numeric_limits<unsigned short> ETL_NL;
       typedef std::numeric_limits<unsigned short> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -410,39 +410,39 @@ namespace
       typedef etl::numeric_limits<int> ETL_NL;
       typedef std::numeric_limits<int> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -451,39 +451,39 @@ namespace
       typedef etl::numeric_limits<unsigned int> ETL_NL;
       typedef std::numeric_limits<unsigned int> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -492,80 +492,80 @@ namespace
       typedef etl::numeric_limits<long> ETL_NL;
       typedef std::numeric_limits<long> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
     TEST(test_unsigned_long)
     {
       typedef etl::numeric_limits<unsigned long> ETL_NL;
-      typedef std::numeric_limits<unsigned long>    STD_NL;
+      typedef std::numeric_limits<unsigned long> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -574,39 +574,39 @@ namespace
       typedef etl::numeric_limits<long long> ETL_NL;
       typedef std::numeric_limits<long long> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -615,39 +615,39 @@ namespace
       typedef etl::numeric_limits<unsigned long long> ETL_NL;
       typedef std::numeric_limits<unsigned long long> STD_NL;
 
-      CHECK_EQUAL(STD_NL::denorm_min(),      ETL_NL::denorm_min());
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::denorm_min(), ETL_NL::denorm_min());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
 #if ETL_NOT_USING_CPP23
-      CHECK_EQUAL(int(STD_NL::has_denorm),   int(ETL_NL::has_denorm));
-      CHECK_EQUAL(STD_NL::has_denorm_loss,   ETL_NL::has_denorm_loss);
+      CHECK_EQUAL(int(STD_NL::has_denorm), int(ETL_NL::has_denorm));
+      CHECK_EQUAL(STD_NL::has_denorm_loss, ETL_NL::has_denorm_loss);
 #endif
-      CHECK_EQUAL(STD_NL::has_infinity,      ETL_NL::has_infinity);
-      CHECK_EQUAL(STD_NL::has_quiet_NaN,     ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
       CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
-      CHECK_EQUAL(STD_NL::infinity(),        ETL_NL::infinity());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_iec559,         ETL_NL::is_iec559);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::quiet_NaN(),       ETL_NL::quiet_NaN());
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
-      CHECK_EQUAL(int(STD_NL::round_style),  int(ETL_NL::round_style));
-      CHECK_EQUAL(STD_NL::signaling_NaN(),   ETL_NL::signaling_NaN());
-      CHECK_EQUAL(STD_NL::tinyness_before,   ETL_NL::tinyness_before);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::quiet_NaN(), ETL_NL::quiet_NaN());
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(int(STD_NL::round_style), int(ETL_NL::round_style));
+      CHECK_EQUAL(STD_NL::signaling_NaN(), ETL_NL::signaling_NaN());
+      CHECK_EQUAL(STD_NL::tinyness_before, ETL_NL::tinyness_before);
     }
 
     //*************************************************************************
@@ -656,25 +656,25 @@ namespace
       typedef etl::numeric_limits<float> ETL_NL;
       typedef std::numeric_limits<float> STD_NL;
 
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
     }
 
     //*************************************************************************
@@ -683,25 +683,25 @@ namespace
       typedef etl::numeric_limits<double> ETL_NL;
       typedef std::numeric_limits<double> STD_NL;
 
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
     }
 
     //*************************************************************************
@@ -710,25 +710,25 @@ namespace
       typedef etl::numeric_limits<long double> ETL_NL;
       typedef std::numeric_limits<long double> STD_NL;
 
-      CHECK_EQUAL(STD_NL::digits,            ETL_NL::digits);
-      CHECK_EQUAL(STD_NL::digits10,          ETL_NL::digits10);
-      CHECK_EQUAL(STD_NL::epsilon(),         ETL_NL::epsilon());
-      CHECK_EQUAL(STD_NL::is_bounded,        ETL_NL::is_bounded);
-      CHECK_EQUAL(STD_NL::is_exact,          ETL_NL::is_exact);
-      CHECK_EQUAL(STD_NL::is_integer,        ETL_NL::is_integer);
-      CHECK_EQUAL(STD_NL::is_modulo,         ETL_NL::is_modulo);
-      CHECK_EQUAL(STD_NL::is_signed,         ETL_NL::is_signed);
-      CHECK_EQUAL(STD_NL::is_specialized,    ETL_NL::is_specialized);
-      CHECK_EQUAL(STD_NL::lowest(),          ETL_NL::lowest());
-      CHECK_EQUAL(STD_NL::max(),             ETL_NL::max());
-      CHECK_EQUAL(STD_NL::max_digits10,      ETL_NL::max_digits10);
-      CHECK_EQUAL(STD_NL::max_exponent,      ETL_NL::max_exponent);
-      CHECK_EQUAL(STD_NL::max_exponent10,    ETL_NL::max_exponent10);
-      CHECK_EQUAL(STD_NL::min(),             ETL_NL::min());
-      CHECK_EQUAL(STD_NL::min_exponent,      ETL_NL::min_exponent);
-      CHECK_EQUAL(STD_NL::min_exponent10,    ETL_NL::min_exponent10);
-      CHECK_EQUAL(STD_NL::radix,             ETL_NL::radix);
-      CHECK_EQUAL(STD_NL::round_error(),     ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
+      CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
+      CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
+      CHECK_EQUAL(STD_NL::is_bounded, ETL_NL::is_bounded);
+      CHECK_EQUAL(STD_NL::is_exact, ETL_NL::is_exact);
+      CHECK_EQUAL(STD_NL::is_integer, ETL_NL::is_integer);
+      CHECK_EQUAL(STD_NL::is_modulo, ETL_NL::is_modulo);
+      CHECK_EQUAL(STD_NL::is_signed, ETL_NL::is_signed);
+      CHECK_EQUAL(STD_NL::is_specialized, ETL_NL::is_specialized);
+      CHECK_EQUAL(STD_NL::lowest(), ETL_NL::lowest());
+      CHECK_EQUAL(STD_NL::max(), ETL_NL::max());
+      CHECK_EQUAL(STD_NL::max_digits10, ETL_NL::max_digits10);
+      CHECK_EQUAL(STD_NL::max_exponent, ETL_NL::max_exponent);
+      CHECK_EQUAL(STD_NL::max_exponent10, ETL_NL::max_exponent10);
+      CHECK_EQUAL(STD_NL::min(), ETL_NL::min());
+      CHECK_EQUAL(STD_NL::min_exponent, ETL_NL::min_exponent);
+      CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
+      CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
+      CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
     }
   }
-}
+} // namespace

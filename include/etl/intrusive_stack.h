@@ -32,9 +32,9 @@ SOFTWARE.
 #define ETL_INTRUSIVE_STACK_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "error_handler.h"
 #include "intrusive_links.h"
+#include "type_traits.h"
 
 #include <stddef.h>
 
@@ -84,8 +84,9 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup stack
-  /// Base for intrusive stack. Stores elements derived any type that supports an 'etl_next' pointer member.
-  /// \tparam TLink  The link type that the value is derived from.
+  /// Base for intrusive stack. Stores elements derived any type that supports
+  /// an 'etl_next' pointer member. \tparam TLink  The link type that the value
+  /// is derived from.
   //***************************************************************************
   template <typename TLink>
   class intrusive_stack_base
@@ -93,7 +94,7 @@ namespace etl
   public:
 
     // Node typedef.
-    typedef TLink  link_type;
+    typedef TLink link_type;
 
     //*************************************************************************
     /// Adds a value to the stack.
@@ -104,8 +105,8 @@ namespace etl
       ETL_ASSERT_OR_RETURN(!value.is_linked(), ETL_ERROR(intrusive_stack_value_is_already_linked));
 
       value.etl_next = p_top;
-      p_top = &value;
-      
+      p_top          = &value;
+
       ++current_size;
     }
 
@@ -126,7 +127,8 @@ namespace etl
     //*************************************************************************
     /// Removes the oldest item from the queue and pushes it to the destination.
     /// Undefined behaviour if the queue is already empty.
-    /// NOTE: The destination must be an intrusive container that supports a push(TLink) member function.
+    /// NOTE: The destination must be an intrusive container that supports a
+    /// push(TLink) member function.
     //*************************************************************************
     template <typename TContainer>
     void pop_into(TContainer& destination)
@@ -142,15 +144,15 @@ namespace etl
     void reverse()
     {
       link_type* previous = &terminator;
-      link_type* current = p_top;
+      link_type* current  = p_top;
       link_type* next;
 
       while (current != &terminator)
       {
-        next = current->etl_next;
+        next              = current->etl_next;
         current->etl_next = previous;
-        previous = current;
-        current = next;
+        previous          = current;
+        current           = next;
       }
 
       p_top = previous;
@@ -193,15 +195,13 @@ namespace etl
     intrusive_stack_base()
       : p_top(&terminator)
       , current_size(0)
-    {      
+    {
     }
 
     //*************************************************************************
     /// Destructor
     //*************************************************************************
-    ~intrusive_stack_base()
-    {
-    }
+    ~intrusive_stack_base() {}
 
     link_type* p_top;      ///< The current top of the stack.
     link_type  terminator; ///< Terminator link of the queue.
@@ -211,10 +211,11 @@ namespace etl
 
   //***************************************************************************
   ///\ingroup stack
-  /// An intrusive stack. Stores elements derived from any type that supports an 'etl_next' pointer member.
-  /// \warning This stack cannot be used for concurrent access from multiple threads.
-  /// \tparam TValue The type of value that the stack holds.
-  /// \tparam TLink  The link type that the value is derived from.
+  /// An intrusive stack. Stores elements derived from any type that supports an
+  /// 'etl_next' pointer member. \warning This stack cannot be used for
+  /// concurrent access from multiple threads. \tparam TValue The type of value
+  /// that the stack holds. \tparam TLink  The link type that the value is
+  /// derived from.
   //***************************************************************************
   template <typename TValue, typename TLink>
   class intrusive_stack : public etl::intrusive_stack_base<TLink>
@@ -236,26 +237,31 @@ namespace etl
     /// Constructor
     //*************************************************************************
     intrusive_stack()
-    : intrusive_stack_base<TLink>()
+      : intrusive_stack_base<TLink>()
     {
     }
 
     //*************************************************************************
     /// Gets a reference to the value at the top of the stack.
-    /// Undefined behaviour if the stack is empty.
-    /// \return A reference to the value at the top of the stack.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::intrusive_stack_empty if the stack is empty. \return A reference to
+    /// the value at the top of the stack.
     //*************************************************************************
     reference top()
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_stack_empty));
       return *static_cast<TValue*>(this->p_top);
     }
 
     //*************************************************************************
-    /// Gets a const reference to the value at the top of the stack.<br>
-    /// \return A const reference to the value at the top of the stack.
+    /// Gets a const reference to the value at the top of the stack.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::intrusive_stack_empty if the stack is empty. \return A const
+    /// reference to the value at the top of the stack.
     //*************************************************************************
     const_reference top() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!this->empty(), ETL_ERROR(intrusive_stack_empty));
       return *static_cast<const TValue*>(this->p_top);
     }
 
@@ -263,8 +269,8 @@ namespace etl
 
     // Disable copy construction and assignment.
     intrusive_stack(const intrusive_stack&);
-    intrusive_stack& operator = (const intrusive_stack& rhs);
+    intrusive_stack& operator=(const intrusive_stack& rhs);
   };
-}
+} // namespace etl
 
 #endif

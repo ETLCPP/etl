@@ -65,29 +65,32 @@ namespace etl
     static constexpr bool   is_volatile        = false;
     static constexpr bool   is_noexcept        = false;
     static constexpr size_t arity              = sizeof...(TArgs);
-    
-    ETL_DEPRECATED_REASON("Use etl::function_traits::arity instead")
-    static constexpr size_t argument_count     = arity;
+
+    ETL_DEPRECATED_REASON("Use etl::function_traits::arity instead") static constexpr size_t argument_count = arity;
   };
 
   //***************************************************************************
   // Free function pointer
   //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  struct function_traits<TReturn(*)(TArgs...), void> : function_traits<TReturn(TArgs...)> {};
+  struct function_traits<TReturn (*)(TArgs...), void> : function_traits<TReturn(TArgs...)>
+  {
+  };
 
   //***************************************************************************
   // Free function reference
   //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  struct function_traits<TReturn(&)(TArgs...), void> : function_traits<TReturn(TArgs...)> {};
+  struct function_traits<TReturn (&)(TArgs...), void> : function_traits<TReturn(TArgs...)>
+  {
+  };
 
-#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
   //***************************************************************************
   // Free noexcept function pointer
   //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  struct function_traits<TReturn(*)(TArgs...) noexcept, void> : function_traits<TReturn(TArgs...)>
+  struct function_traits<TReturn (*)(TArgs...) noexcept, void> : function_traits<TReturn(TArgs...)>
   {
     static constexpr bool is_noexcept = true;
   };
@@ -96,11 +99,11 @@ namespace etl
   // Free noexcept function reference.
   //***************************************************************************
   template <typename TReturn, typename... TArgs>
-  struct function_traits<TReturn(&)(TArgs...) noexcept, void> : function_traits<TReturn(TArgs...)>
+  struct function_traits<TReturn (&)(TArgs...) noexcept, void> : function_traits<TReturn(TArgs...)>
   {
     static constexpr bool is_noexcept = true;
   };
-#endif
+  #endif
 
   //***************************************************************************
   // Member function pointers
@@ -108,7 +111,7 @@ namespace etl
   template <typename TReturn, typename TObject, typename... TArgs>
   struct function_traits<TReturn (TObject::*)(TArgs...), void> : function_traits<TReturn(TArgs...)>
   {
-    using object_type = TObject;
+    using object_type                        = TObject;
     static constexpr bool is_function        = false;
     static constexpr bool is_member_function = true;
   };
@@ -117,7 +120,7 @@ namespace etl
   // Const member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn (TObject::*)(TArgs...) const, void> : function_traits<TReturn(TObject::*)(TArgs...)>
+  struct function_traits<TReturn (TObject::*)(TArgs...) const, void> : function_traits<TReturn (TObject::*)(TArgs...)>
   {
     static constexpr bool is_const = true;
   };
@@ -126,7 +129,7 @@ namespace etl
   // Volatile member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn (TObject::*)(TArgs...) volatile, void> : function_traits<TReturn(TObject::*)(TArgs...)>
+  struct function_traits<TReturn (TObject::*)(TArgs...) volatile, void> : function_traits<TReturn (TObject::*)(TArgs...)>
   {
     static constexpr bool is_volatile = true;
   };
@@ -135,18 +138,18 @@ namespace etl
   // Const volatile member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn (TObject::*)(TArgs...) const volatile, void> : function_traits<TReturn(TObject::*)(TArgs...)>
+  struct function_traits<TReturn (TObject::*)(TArgs...) const volatile, void> : function_traits<TReturn (TObject::*)(TArgs...)>
   {
     static constexpr bool is_const    = true;
     static constexpr bool is_volatile = true;
   };
 
-#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
   //***************************************************************************
   // Noexcept member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn (TObject::*)(TArgs...) noexcept, void> : function_traits<TReturn(TObject::*)(TArgs...)>
+  struct function_traits<TReturn (TObject::*)(TArgs...) noexcept, void> : function_traits<TReturn (TObject::*)(TArgs...)>
   {
     static constexpr bool is_noexcept = true;
   };
@@ -155,7 +158,7 @@ namespace etl
   // Const noexcept member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn (TObject::*)(TArgs...) const noexcept, void> : function_traits<TReturn(TObject::*)(TArgs...) const>
+  struct function_traits<TReturn (TObject::*)(TArgs...) const noexcept, void> : function_traits<TReturn (TObject::*)(TArgs...) const>
   {
     static constexpr bool is_noexcept = true;
   };
@@ -164,7 +167,7 @@ namespace etl
   // Volatile noexcept member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn (TObject::*)(TArgs...) volatile noexcept, void> : function_traits<TReturn(TObject::*)(TArgs...) volatile>
+  struct function_traits<TReturn (TObject::*)(TArgs...) volatile noexcept, void> : function_traits<TReturn (TObject::*)(TArgs...) volatile>
   {
     static constexpr bool is_noexcept = true;
   };
@@ -173,24 +176,25 @@ namespace etl
   // Const volatile noexcept member function pointers
   //***************************************************************************
   template <typename TReturn, typename TObject, typename... TArgs>
-  struct function_traits<TReturn (TObject::*)(TArgs...) const volatile noexcept, void> : function_traits<TReturn(TObject::*)(TArgs...) const volatile>
+  struct function_traits<TReturn (TObject::*)(TArgs...) const volatile noexcept, void>
+    : function_traits<TReturn (TObject::*)(TArgs...) const volatile>
   {
     static constexpr bool is_noexcept = true;
   };
-#endif
+  #endif
 
   //***************************************************************************
   // Forward cv/ref on the whole type to the unqualified type.
   //***************************************************************************
   template <typename T>
-  struct function_traits<T, etl::enable_if_t<!etl::is_same<T, etl::remove_cvref_t<T>>::value &&
-                                             !etl::is_class<etl::decay_t<T>>::value>>
+  struct function_traits< T, etl::enable_if_t<!etl::is_same<T, etl::remove_cvref_t<T>>::value && !etl::is_class<etl::decay_t<T>>::value>>
     : function_traits<etl::remove_cvref_t<T>>
   {
   };
 
   //***************************************************************************
-  // Functors / lambdas: enable only for class types that have a unique operator()
+  // Functors / lambdas: enable only for class types that have a unique
+  // operator()
   //***************************************************************************
   namespace private_function_traits
   {
@@ -199,15 +203,14 @@ namespace etl
     //*********************************
     template <typename U>
     using call_operator_ptr_t = decltype(&U::operator());
-  }
+  } // namespace private_function_traits
 
   //***************************************************************************
   /// Functors / lambdas specialisation
   //***************************************************************************
   template <typename T>
-  struct function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value&&
-                            etl::has_unique_call_operator<T>::value>>
-    : function_traits<private_function_traits::call_operator_ptr_t<etl::decay_t<T>> >
+  struct function_traits< T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value && etl::has_unique_call_operator<T>::value>>
+    : function_traits< private_function_traits::call_operator_ptr_t<etl::decay_t<T>> >
   {
     static constexpr bool is_functor = true;
   };
@@ -221,19 +224,19 @@ namespace etl
 
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_member_function;
-  
+
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_functor;
-  
+
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_const;
-  
+
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_volatile;
-  
+
   template <typename TReturn, typename... TArgs>
   constexpr bool function_traits<TReturn(TArgs...), void>::is_noexcept;
-  
+
   template <typename TReturn, typename... TArgs>
   constexpr size_t function_traits<TReturn(TArgs...), void>::arity;
 
@@ -247,19 +250,19 @@ namespace etl
   // cv/ref-qualified member-function pointer flags
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const, void>::is_const;
-  
+
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) volatile, void>::is_volatile;
-  
+
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile, void>::is_const;
-  
+
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile, void>::is_volatile;
 
-#if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
+  #if ETL_HAS_NOEXCEPT_FUNCTION_TYPE
   template <typename TReturn, typename... TArgs>
-  constexpr bool function_traits<TReturn(*)(TArgs...) noexcept, void>::is_noexcept;
+  constexpr bool function_traits<TReturn (*)(TArgs...) noexcept, void>::is_noexcept;
 
   template <typename TReturn, typename TObject, typename... TArgs>
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) noexcept, void>::is_noexcept;
@@ -268,19 +271,19 @@ namespace etl
   constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const noexcept, void>::is_noexcept;
 
   template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) volatile noexcept, void>::is_noexcept;
+  constexpr bool function_traits< TReturn (TObject::*)(TArgs...) volatile noexcept, void>::is_noexcept;
 
   template <typename TReturn, typename TObject, typename... TArgs>
-  constexpr bool function_traits<TReturn (TObject::*)(TArgs...) const volatile noexcept, void>::is_noexcept;
-#endif
+  constexpr bool function_traits< TReturn (TObject::*)(TArgs...) const volatile noexcept, void>::is_noexcept;
+  #endif
 
   //***************************************************************************
-  // Functor / lambda specialisation: provide out-of-class definition for is_functor
+  // Functor / lambda specialisation: provide out-of-class definition for
+  // is_functor
   //***************************************************************************
   template <typename T>
-  constexpr bool function_traits<T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value &&
-                                                     etl::has_unique_call_operator<T>::value>>::is_functor;
-}
+  constexpr bool function_traits< T, etl::enable_if_t<etl::is_class<etl::decay_t<T>>::value && etl::has_unique_call_operator<T>::value>>::is_functor;
+} // namespace etl
 
 #endif
 #endif

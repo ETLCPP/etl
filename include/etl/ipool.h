@@ -35,10 +35,10 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "iterator.h"
-#include "static_assert.h"
-#include "utility.h"
 #include "memory.h"
 #include "placement_new.h"
+#include "static_assert.h"
+#include "utility.h"
 
 #define ETL_POOL_CPP03_CODE 0
 
@@ -54,7 +54,8 @@ namespace etl
 
     pool_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
-    {}
+    {
+    }
   };
 
   //***************************************************************************
@@ -67,11 +68,13 @@ namespace etl
 
     explicit pool_no_allocation(string_type file_name_, numeric_type line_number_)
       : pool_exception(ETL_ERROR_TEXT("pool:allocation", ETL_POOL_FILE_ID"A"), file_name_, line_number_)
-    {}
+    {
+    }
   };
 
   //***************************************************************************
-  /// The exception thrown when an object is released which does not belong to the pool.
+  /// The exception thrown when an object is released which does not belong to
+  /// the pool.
   ///\ingroup pool
   //***************************************************************************
   class pool_object_not_in_pool : public pool_exception
@@ -80,11 +83,13 @@ namespace etl
 
     pool_object_not_in_pool(string_type file_name_, numeric_type line_number_)
       : pool_exception(ETL_ERROR_TEXT("pool:not in pool", ETL_POOL_FILE_ID"B"), file_name_, line_number_)
-    {}
+    {
+    }
   };
 
   //***************************************************************************
-  /// The exception thrown when an the type requested is larger than the element size.
+  /// The exception thrown when an the type requested is larger than the element
+  /// size.
   ///\ingroup pool
   //***************************************************************************
   class pool_element_size : public pool_exception
@@ -93,7 +98,8 @@ namespace etl
 
     pool_element_size(string_type file_name_, numeric_type line_number_)
       : pool_exception(ETL_ERROR_TEXT("pool:element size", ETL_POOL_FILE_ID"C"), file_name_, line_number_)
-    {}
+    {
+    }
   };
 
   //***************************************************************************
@@ -119,9 +125,10 @@ namespace etl
     //***************************************************************************
     /// Optimization: a candidate for being in free list, but no guarantee
     /// if false, cannot be part of free list, and therefore is allocated
-    /// if true, possibly in free list, but still needs to be checked via free list
+    /// if true, possibly in free list, but still needs to be checked via free
+    /// list
     //***************************************************************************
-    bool is_pointing_into_pool_or_end_or_nullptr(const char *address) const
+    bool is_pointing_into_pool_or_end_or_nullptr(const char* address) const
     {
       return address == ETL_NULLPTR || (p_buffer <= address && address <= buffer_end());
     }
@@ -146,7 +153,7 @@ namespace etl
   public:
 
     //***************************************************************************
-    template<bool is_const>
+    template <bool is_const>
     class ipool_iterator
     {
     public:
@@ -171,7 +178,7 @@ namespace etl
       }
 
       //***************************************************************************
-      ipool_iterator& operator ++()
+      ipool_iterator& operator++()
       {
         p_current = p_current + p_pool->Item_Size;
         find_allocated();
@@ -179,7 +186,7 @@ namespace etl
       }
 
       //***************************************************************************
-      ipool_iterator operator ++(int)
+      ipool_iterator operator++(int)
       {
         ipool_iterator temp(*this);
         p_current = p_current + p_pool->Item_Size;
@@ -188,15 +195,15 @@ namespace etl
       }
 
       //***************************************************************************
-      ipool_iterator& operator =(const ipool_iterator& other)
+      ipool_iterator& operator=(const ipool_iterator& other)
       {
         p_current = other.p_current;
-        p_pool = other.p_pool;
+        p_pool    = other.p_pool;
         return *this;
       }
 
       //***************************************************************************
-      void_type operator *() const
+      void_type operator*() const
       {
         return p_current;
       }
@@ -209,13 +216,13 @@ namespace etl
       }
 
       //***************************************************************************
-      friend bool operator == (const ipool_iterator& lhs, const ipool_iterator& rhs)
+      friend bool operator==(const ipool_iterator& lhs, const ipool_iterator& rhs)
       {
         return lhs.p_current == rhs.p_current;
       }
 
-      //***************************************************************************  
-      friend bool operator != (const ipool_iterator& lhs, const ipool_iterator& rhs)
+      //***************************************************************************
+      friend bool operator!=(const ipool_iterator& lhs, const ipool_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -257,7 +264,7 @@ namespace etl
       pool_type* p_pool;
     };
 
-    template<bool is_const>
+    template <bool is_const>
     friend class ipool_iterator;
 
     typedef ipool_iterator<false> iterator;
@@ -266,9 +273,19 @@ namespace etl
     class const_iterator : public ipool_iterator<true>
     {
     public:
-      const_iterator(const ipool_iterator& other) : ipool_iterator(other) {}
-      const_iterator(const ipool_iterator<false>& other) : ipool_iterator(other.p_current, other.p_pool) {}
-      const_iterator(value_type p, pool_type* pool_) : ipool_iterator<true>(p, pool_) {}
+
+      const_iterator(const ipool_iterator& other)
+        : ipool_iterator(other)
+      {
+      }
+      const_iterator(const ipool_iterator<false>& other)
+        : ipool_iterator(other.p_current, other.p_pool)
+      {
+      }
+      const_iterator(value_type p, pool_type* pool_)
+        : ipool_iterator<true>(p, pool_)
+      {
+      }
     };
 
     //***************************************************************************
@@ -343,9 +360,10 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Allocate storage for an object from the pool and create with 1 parameter.
-    /// If asserts or exceptions are enabled and there are no more free items an
-    /// etl::pool_no_allocation if thrown, otherwise a null pointer is returned.
+    /// Allocate storage for an object from the pool and create with 1
+    /// parameter. If asserts or exceptions are enabled and there are no more
+    /// free items an etl::pool_no_allocation if thrown, otherwise a null
+    /// pointer is returned.
     //*************************************************************************
     template <typename T, typename T1>
     T* create(const T1& value1)
@@ -435,9 +453,9 @@ namespace etl
 
     //*************************************************************************
     /// Release an object in the pool.
-    /// If asserts or exceptions are enabled and the object does not belong to this
-    /// pool then an etl::pool_object_not_in_pool is thrown.
-    /// \param p_object A pointer to the object to be released.
+    /// If asserts or exceptions are enabled and the object does not belong to
+    /// this pool then an etl::pool_object_not_in_pool is thrown. \param
+    /// p_object A pointer to the object to be released.
     //*************************************************************************
     void release(const void* const p_object)
     {
@@ -450,9 +468,9 @@ namespace etl
     //*************************************************************************
     void release_all()
     {
-      items_allocated = 0;
+      items_allocated   = 0;
       items_initialised = 0;
-      p_next = p_buffer;
+      p_next            = p_buffer;
     }
 
     //*************************************************************************
@@ -530,17 +548,17 @@ namespace etl
     /// Constructor
     //*************************************************************************
     ipool(char* p_buffer_, uint32_t item_size_, uint32_t max_size_)
-      : p_buffer(p_buffer_),
-      p_next(p_buffer_),
-      items_allocated(0),
-      items_initialised(0),
-      Item_Size(item_size_),
-      Max_Size(max_size_)
+      : p_buffer(p_buffer_)
+      , p_next(p_buffer_)
+      , items_allocated(0)
+      , items_initialised(0)
+      , Item_Size(item_size_)
+      , Max_Size(max_size_)
     {
     }
 
   private:
-    
+
     static ETL_CONSTANT uintptr_t invalid_item_ptr = 1;
 
     //*************************************************************************
@@ -556,8 +574,8 @@ namespace etl
         // Initialise another one if necessary.
         if (items_initialised < Max_Size)
         {
-          char* p = p_buffer + (items_initialised * Item_Size);
-          char* np = p + Item_Size;
+          char* p                      = p_buffer + (items_initialised * Item_Size);
+          char* np                     = p + Item_Size;
           *reinterpret_cast<char**>(p) = np;
           ++items_initialised;
         }
@@ -598,7 +616,7 @@ namespace etl
       // Does it belong to us?
       ETL_ASSERT(is_item_in_pool(p_value), ETL_ERROR(pool_object_not_in_pool));
 
-      if (items_allocated > 0) 
+      if (items_allocated > 0)
       {
         // Point it to the current free item.
         *(uintptr_t*)p_value = reinterpret_cast<uintptr_t>(p_next);
@@ -607,7 +625,7 @@ namespace etl
 
         --items_allocated;
       }
-      else 
+      else
       {
         ETL_ASSERT_FAIL(ETL_ERROR(pool_no_allocation));
       }
@@ -619,10 +637,11 @@ namespace etl
     bool is_item_in_pool(const char* p) const
     {
       // Within the range of the buffer?
-      intptr_t distance = p - p_buffer;
-      bool is_within_range = (distance >= 0) && (distance <= intptr_t((Item_Size * Max_Size) - Item_Size));
+      intptr_t distance        = p - p_buffer;
+      bool     is_within_range = (distance >= 0) && (distance <= intptr_t((Item_Size * Max_Size) - Item_Size));
 
-      // Modulus and division can be slow on some architectures, so only do this in debug.
+      // Modulus and division can be slow on some architectures, so only do this
+      // in debug.
 #if ETL_IS_DEBUG_BUILD
       // Is the address on a valid object boundary?
       bool is_valid_address = ((distance % Item_Size) == 0);
@@ -635,33 +654,32 @@ namespace etl
 
     // Disable copy construction and assignment.
     ipool(const ipool&);
-    ipool& operator =(const ipool&);
+    ipool& operator=(const ipool&);
 
     char* p_buffer;
     char* p_next;
 
-    uint32_t  items_allocated;   ///< The number of items allocated.
-    uint32_t  items_initialised; ///< The number of items initialised.
+    uint32_t items_allocated;   ///< The number of items allocated.
+    uint32_t items_initialised; ///< The number of items initialised.
 
-    const uint32_t Item_Size;    ///< The size of allocated items.
-    const uint32_t Max_Size;     ///< The maximum number of objects that can be allocated.
+    const uint32_t Item_Size; ///< The size of allocated items.
+    const uint32_t Max_Size;  ///< The maximum number of objects that can be allocated.
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_POOL) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
-    virtual ~ipool()
-    {
-    }
+
+    virtual ~ipool() {}
 #else
+
   protected:
-    ~ipool()
-    {
-    }
+
+    ~ipool() {}
 #endif
   };
-}
+} // namespace etl
 
 #endif
-

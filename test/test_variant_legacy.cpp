@@ -30,10 +30,10 @@ SOFTWARE.
 
 #include "etl/private/variant_legacy.h"
 
-#include <array>
-#include <vector>
 #include <algorithm>
+#include <array>
 #include <string>
+#include <vector>
 
 #include "etl/private/diagnostic_useless_cast_push.h"
 
@@ -42,9 +42,7 @@ namespace
   // Test classes for polymorphic tests.
   struct base
   {
-    virtual ~base()
-    {
-    }
+    virtual ~base() {}
 
     base()
       : value(0)
@@ -52,7 +50,7 @@ namespace
     }
 
     virtual void set() = 0;
-    int value;
+    int          value;
   };
 
   struct not_base
@@ -64,7 +62,7 @@ namespace
 
     virtual ~not_base() {}
     virtual void set() = 0;
-    int value;
+    int          value;
   };
 
   struct derived_1 : public base
@@ -85,18 +83,18 @@ namespace
 
   // Test variant types.
   typedef etl::legacy::variant<char, int, std::string> test_variant_3a;
-  typedef etl::legacy::variant<int, short, double> test_variant_3b;
+  typedef etl::legacy::variant<int, short, double>     test_variant_3b;
 
-  typedef etl::legacy::variant<int8_t> test_variant_1;
-  typedef etl::legacy::variant<int8_t, uint8_t> test_variant_2;
-  typedef etl::legacy::variant<int8_t, uint8_t, int16_t> test_variant_3;
-  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t> test_variant_4;
-  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t> test_variant_5;
-  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t> test_variant_6;
-  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t> test_variant_7;
+  typedef etl::legacy::variant<int8_t>                                                                   test_variant_1;
+  typedef etl::legacy::variant<int8_t, uint8_t>                                                          test_variant_2;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t>                                                 test_variant_3;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t>                                       test_variant_4;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t>                              test_variant_5;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t>                    test_variant_6;
+  typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t>           test_variant_7;
   typedef etl::legacy::variant<int8_t, uint8_t, int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t> test_variant_8;
 
-  typedef etl::legacy::variant<derived_1, derived_2> test_variant_polymorphic;
+  typedef etl::legacy::variant<derived_1, derived_2>                                                               test_variant_polymorphic;
   typedef etl::legacy::variant<char, unsigned char, short, unsigned short, int, unsigned int, long, unsigned long> test_variant_max_types;
 
   // This line should compile with no errors.
@@ -115,8 +113,8 @@ namespace
   struct D2
   {
     D2(const std::string& a_, const std::string& b_)
-      : a(a_),
-      b(b_)
+      : a(a_)
+      , b(b_)
     {
     }
 
@@ -127,9 +125,9 @@ namespace
   struct D3
   {
     D3(const std::string& a_, const std::string& b_, const std::string& c_)
-      : a(a_),
-      b(b_),
-      c(c_)
+      : a(a_)
+      , b(b_)
+      , c(c_)
     {
     }
 
@@ -141,10 +139,10 @@ namespace
   struct D4
   {
     D4(const std::string& a_, const std::string& b_, const std::string& c_, const std::string& d_)
-      : a(a_),
-      b(b_),
-      c(c_),
-      d(d_)
+      : a(a_)
+      , b(b_)
+      , c(c_)
+      , d(d_)
     {
     }
 
@@ -154,48 +152,48 @@ namespace
     std::string d;
   };
 
-  bool operator == (const D1& lhs, const D1& rhs)
+  bool operator==(const D1& lhs, const D1& rhs)
   {
     return (lhs.a == rhs.a);
   }
 
-  bool operator == (const D2& lhs, const D2& rhs)
+  bool operator==(const D2& lhs, const D2& rhs)
   {
     return (lhs.a == rhs.a) && (lhs.b == rhs.b);
   }
 
-  bool operator == (const D3& lhs, const D3& rhs)
+  bool operator==(const D3& lhs, const D3& rhs)
   {
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
   }
 
-  bool operator == (const D4& lhs, const D4& rhs)
+  bool operator==(const D4& lhs, const D4& rhs)
   {
     return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c) && (lhs.d == rhs.d);
   }
 
-  std::ostream& operator <<(std::ostream& os, const D1& d1)
+  std::ostream& operator<<(std::ostream& os, const D1& d1)
   {
     os << d1.a;
 
     return os;
   }
 
-  std::ostream& operator <<(std::ostream& os, const D2& d2)
+  std::ostream& operator<<(std::ostream& os, const D2& d2)
   {
     os << d2.a << " " << d2.b;
 
     return os;
   }
 
-  std::ostream& operator <<(std::ostream& os, const D3& d3)
+  std::ostream& operator<<(std::ostream& os, const D3& d3)
   {
     os << d3.a << " " << d3.b << " " << d3.c;
 
     return os;
   }
 
-  std::ostream& operator <<(std::ostream& os, const D4& d4)
+  std::ostream& operator<<(std::ostream& os, const D4& d4)
   {
     os << d4.a << " " << d4.b << " " << d4.c << " " << d4.d;
 
@@ -234,7 +232,7 @@ namespace
     TEST(test_constructor_value)
     {
       // Char.
-      char c = 'a';
+      char            c = 'a';
       test_variant_3a variant_char(c);
 
       CHECK(variant_char.is_type<char>());
@@ -242,7 +240,7 @@ namespace
       CHECK_EQUAL(c, variant_char.get<char>());
 
       // Int.
-      int i = 1;
+      int             i = 1;
       test_variant_3a variant_int(i);
 
       CHECK(variant_int.is_type<int>());
@@ -250,7 +248,7 @@ namespace
       CHECK_EQUAL(i, variant_int.get<int>());
 
       // String.
-      std::string text("Some Text");
+      std::string     text("Some Text");
       test_variant_3a variant_text(text);
 
       CHECK(variant_text.is_type<std::string>());
@@ -262,7 +260,7 @@ namespace
     TEST(test_constructor_in_place_value)
     {
       // Char.
-      char c = 'a';
+      char            c = 'a';
       test_variant_3a variant_char(etl::in_place_index_t<0>(), c);
 
       CHECK(variant_char.is_type<char>());
@@ -270,7 +268,7 @@ namespace
       CHECK_EQUAL(c, variant_char.get<char>());
 
       // Int.
-      int i = 1;
+      int             i = 1;
       test_variant_3a variant_int(etl::in_place_index_t<1>(), i);
 
       CHECK(variant_int.is_type<int>());
@@ -278,7 +276,7 @@ namespace
       CHECK_EQUAL(i, variant_int.get<int>());
 
       // String.
-      std::string text("Some Text");
+      std::string     text("Some Text");
       test_variant_3a variant_text(etl::in_place_index_t<2>(), text);
 
       CHECK(variant_text.is_type<std::string>());
@@ -289,7 +287,7 @@ namespace
     //*************************************************************************
     TEST(test_copy_constructor)
     {
-      std::string text("Some Text");
+      std::string     text("Some Text");
       test_variant_3a variant_1(text);
 
       test_variant_3a variant_2(variant_1);
@@ -302,7 +300,7 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_value)
     {
-      std::string text("Some Text");
+      std::string     text("Some Text");
       test_variant_3a variant;
 
       variant = text;
@@ -314,7 +312,7 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_variant)
     {
-      std::string text("Some Text");
+      std::string     text("Some Text");
       test_variant_3a variant_1;
       test_variant_3a variant_2;
 
@@ -328,8 +326,8 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_variant2)
     {
-      std::string text("Some Text");
-      int integer(99);
+      std::string     text("Some Text");
+      int             integer(99);
       test_variant_3a variant_1;
       test_variant_3a variant_2;
 
@@ -344,7 +342,7 @@ namespace
     //*************************************************************************
     TEST(test_assignment_incorrect_type_exception)
     {
-      std::string text("Some Text");
+      std::string     text("Some Text");
       test_variant_3a variant;
       variant = text;
 
@@ -356,7 +354,7 @@ namespace
     //*************************************************************************
     TEST(test_is_same_type)
     {
-      std::string text("Some Text");
+      std::string     text("Some Text");
       test_variant_3a variant_1;
       test_variant_3a variant_2;
 
@@ -473,9 +471,9 @@ namespace
       test_variant_3a variant;
 
       variant = 1;
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       variant = variant;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, variant.get<int>());
     }
@@ -508,7 +506,7 @@ namespace
     TEST(TestGetConstReference)
     {
       test_variant_3a variant;
-      variant = 1;
+      variant       = 1;
       const int& ir = variant.get<int>();
       CHECK_EQUAL(1, ir);
 
@@ -523,7 +521,10 @@ namespace
       {
       public:
 
-        reader() : c(' '), s(""), i(0)
+        reader()
+          : c(' ')
+          , s("")
+          , i(0)
         {
         }
 
@@ -542,13 +543,13 @@ namespace
           s = s_;
         }
 
-        char c;
+        char        c;
         std::string s;
-        int i;
+        int         i;
       };
 
       test_variant_3a variant;
-      reader reader;
+      reader          reader;
 
       variant = 'a';
       variant.call(reader);
@@ -586,156 +587,156 @@ namespace
 
       // Variant 1
       variant1 = int8_t(1);
-      i8 = variant1;
+      i8       = variant1;
       CHECK_EQUAL(i8, variant1.get<int8_t>());
 
       // Variant 2
       variant2 = int8_t(1);
-      i8 = variant2;
+      i8       = variant2;
       CHECK_EQUAL(i8, variant2.get<int8_t>());
 
       variant2 = uint8_t(2);
-      ui8 = variant2;
+      ui8      = variant2;
       CHECK_EQUAL(ui8, variant2.get<uint8_t>());
 
       // Variant 3
       variant3 = int8_t(1);
-      i8 = variant3;
+      i8       = variant3;
       CHECK_EQUAL(i8, variant3.get<int8_t>());
 
       variant3 = uint8_t(2);
-      ui8 = variant3;
+      ui8      = variant3;
       CHECK_EQUAL(ui8, variant3.get<uint8_t>());
 
       variant3 = int16_t(3);
-      i16 = variant3;
+      i16      = variant3;
       CHECK_EQUAL(i16, variant3.get<int16_t>());
 
       // Variant 4
       variant4 = int8_t(1);
-      i8 = variant4;
+      i8       = variant4;
       CHECK_EQUAL(i8, variant4.get<int8_t>());
 
       variant4 = uint8_t(2);
-      ui8 = variant4;
+      ui8      = variant4;
       CHECK_EQUAL(ui8, variant4.get<uint8_t>());
 
       variant4 = int16_t(3);
-      i16 = variant4;
+      i16      = variant4;
       CHECK_EQUAL(i16, variant4.get<int16_t>());
 
       variant4 = uint16_t(4);
-      ui16 = variant4;
+      ui16     = variant4;
       CHECK_EQUAL(ui16, variant4.get<uint16_t>());
 
       // Variant 5
       variant5 = int8_t(1);
-      i8 = variant5;
+      i8       = variant5;
       CHECK_EQUAL(i8, variant5.get<int8_t>());
 
       variant5 = uint8_t(2);
-      ui8 = variant5;
+      ui8      = variant5;
       CHECK_EQUAL(ui8, variant5.get<uint8_t>());
 
       variant5 = int16_t(3);
-      i16 = variant5;
+      i16      = variant5;
       CHECK_EQUAL(i16, variant5.get<int16_t>());
 
       variant5 = uint16_t(4);
-      ui16 = variant5;
+      ui16     = variant5;
       CHECK_EQUAL(ui16, variant5.get<uint16_t>());
 
       variant5 = int32_t(5);
-      i32 = variant5;
+      i32      = variant5;
       CHECK_EQUAL(i32, variant5.get<int32_t>());
 
       // Variant 6
       variant6 = int8_t(1);
-      i8 = variant6;
+      i8       = variant6;
       CHECK_EQUAL(i8, variant6.get<int8_t>());
 
       variant6 = uint8_t(2);
-      ui8 = variant6;
+      ui8      = variant6;
       CHECK_EQUAL(ui8, variant6.get<uint8_t>());
 
       variant6 = int16_t(3);
-      i16 = variant6;
+      i16      = variant6;
       CHECK_EQUAL(i16, variant6.get<int16_t>());
 
       variant6 = uint16_t(4);
-      ui16 = variant6;
+      ui16     = variant6;
       CHECK_EQUAL(ui16, variant6.get<uint16_t>());
 
       variant6 = int32_t(5);
-      i32 = variant6;
+      i32      = variant6;
       CHECK_EQUAL(i32, variant6.get<int32_t>());
 
       variant6 = uint32_t(6);
-      ui32 = variant6;
+      ui32     = variant6;
       CHECK_EQUAL(ui32, variant6.get<uint32_t>());
 
       // Variant 7
       variant7 = int8_t(1);
-      i8 = variant7;
+      i8       = variant7;
       CHECK_EQUAL(i8, variant7.get<int8_t>());
 
       variant7 = uint8_t(2);
-      ui8 = variant7;
+      ui8      = variant7;
       CHECK_EQUAL(ui8, variant7.get<uint8_t>());
 
       variant7 = int16_t(3);
-      i16 = variant7;
+      i16      = variant7;
       CHECK_EQUAL(i16, variant7.get<int16_t>());
 
       variant7 = uint16_t(4);
-      ui16 = variant7;
+      ui16     = variant7;
       CHECK_EQUAL(ui16, variant7.get<uint16_t>());
 
       variant7 = int32_t(5);
-      i32 = variant7;
+      i32      = variant7;
       CHECK_EQUAL(i32, variant7.get<int32_t>());
 
       variant7 = uint32_t(6);
-      ui32 = variant7;
+      ui32     = variant7;
       CHECK_EQUAL(ui32, variant7.get<uint32_t>());
 
       variant7 = int64_t(7);
-      i64 = variant7;
+      i64      = variant7;
       CHECK_EQUAL(i64, variant7.get<int64_t>());
 
       // Variant 8
       variant8 = int8_t(1);
-      i8 = variant8;
+      i8       = variant8;
       CHECK_EQUAL(i8, variant8.get<int8_t>());
 
       variant8 = uint8_t(2);
-      ui8 = variant8;
+      ui8      = variant8;
       CHECK_EQUAL(ui8, variant8.get<uint8_t>());
 
       variant8 = int16_t(3);
-      i16 = variant8;
+      i16      = variant8;
       CHECK_EQUAL(i16, variant8.get<int16_t>());
 
       variant8 = uint16_t(4);
-      ui16 = variant8;
+      ui16     = variant8;
       CHECK_EQUAL(ui16, variant8.get<uint16_t>());
 
 #include "etl/private/diagnostic_useless_cast_push.h"
       variant8 = int32_t(5);
-      i32 = variant8;
+      i32      = variant8;
       CHECK_EQUAL(i32, variant8.get<int32_t>());
 #include "etl/private/diagnostic_pop.h"
 
       variant8 = uint32_t(6);
-      ui32 = variant8;
+      ui32     = variant8;
       CHECK_EQUAL(ui32, variant8.get<uint32_t>());
 
       variant8 = int64_t(7);
-      i64 = variant8;
+      i64      = variant8;
       CHECK_EQUAL(i64, variant8.get<int64_t>());
 
       variant8 = uint64_t(8);
-      ui64 = variant8;
+      ui64     = variant8;
       CHECK_EQUAL(ui64, variant8.get<uint64_t>());
     }
 
@@ -743,20 +744,20 @@ namespace
     TEST(test_conversion_operators_const_reference)
     {
       test_variant_3a variant;
-      variant = 1;
+      variant      = 1;
       const int& i = variant;
       CHECK_EQUAL(i, variant.get<int>());
       variant = 2;
       CHECK_EQUAL(i, variant.get<int>());
 
-      variant = std::string("Some Text");
+      variant                 = std::string("Some Text");
       const std::string& text = variant;
       CHECK_EQUAL(text, variant.get<std::string>());
 
       variant = std::string("Text2");
       CHECK_EQUAL(text, variant.get<std::string>());
 
-      variant = 'a';
+      variant       = 'a';
       const char& c = variant;
       CHECK_EQUAL(c, variant.get<char>());
 
@@ -864,72 +865,72 @@ namespace
       CHECK_EQUAL(D4("1", "2", "3", "4"), variant.get<D4>());
     }
 
-    struct variant_test_visit_dispatcher 
+    struct variant_test_visit_dispatcher
     {
       // const overloads
-      int8_t operator()(int8_t&) const 
+      int8_t operator()(int8_t&) const
       {
         return 1;
       }
-      
-      int8_t operator()(int8_t const&) const 
+
+      int8_t operator()(int8_t const&) const
       {
         return 10;
       }
-      
-      int8_t operator()(uint8_t&) const 
+
+      int8_t operator()(uint8_t&) const
       {
         return 2;
       }
-      
-      int8_t operator()(uint8_t const&) const 
+
+      int8_t operator()(uint8_t const&) const
       {
         return 20;
       }
-      
-      int8_t operator()(int16_t&) const 
+
+      int8_t operator()(int16_t&) const
       {
         return 3;
       }
-      
-      int8_t operator()(int16_t const&) const 
+
+      int8_t operator()(int16_t const&) const
       {
         return 30;
       }
 
       // non-const overloads
-      int8_t operator()(int8_t&) 
+      int8_t operator()(int8_t&)
       {
         return 5;
       }
 
-      int8_t operator()(int8_t const&) 
+      int8_t operator()(int8_t const&)
       {
         return 50;
       }
 
-      int8_t operator()(uint8_t&) 
+      int8_t operator()(uint8_t&)
       {
         return 6;
       }
 
-      int8_t operator()(uint8_t const&) 
+      int8_t operator()(uint8_t const&)
       {
         return 60;
       }
 
-      int8_t operator()(int16_t&) 
+      int8_t operator()(int16_t&)
       {
         return 7;
       }
 
-      int8_t operator()(int16_t const&) 
+      int8_t operator()(int16_t const&)
       {
         return 70;
       }
 
-      template<typename T>
-      int8_t operator()(T const&) const 
+      template <typename T>
+      int8_t operator()(T const&) const
       {
         return -1;
       }
@@ -944,7 +945,7 @@ namespace
       int16_t type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
       CHECK_EQUAL(1, type);
       test_variant_3 const& variant_const = variant;
-      type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
+      type                                = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
       CHECK_EQUAL(10, type);
 
       variant_test_visit_dispatcher visitor;
@@ -952,7 +953,7 @@ namespace
       CHECK_EQUAL(50, type);
 
       variant = int16_t{};
-      type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
+      type    = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant);
       CHECK_EQUAL(3, type);
 
       type = etl::legacy::visit<int16_t>(variant_test_visit_dispatcher{}, variant_const);
@@ -962,6 +963,6 @@ namespace
       CHECK_EQUAL(70, type);
     }
   }
-}
+} // namespace
 
 #include "etl/private/diagnostic_pop.h"

@@ -28,25 +28,33 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <type_traits>
 #include <iterator>
-#include <string>
-#include <vector>
 #include <stdint.h>
+#include <string>
+#include <type_traits>
+#include <vector>
 
-#include "etl/hash.h"
 #include "etl/endianness.h"
+#include "etl/hash.h"
 
 // for testing user-defined hash specializations
-namespace { class CustomType{}; }
+namespace
+{
+  class CustomType
+  {
+  };
+} // namespace
 namespace etl
 {
   template <>
   struct hash<CustomType>
   {
-      size_t operator()(CustomType) {return 0;}
+    size_t operator()(CustomType)
+    {
+      return 0;
+    }
   };
-}
+} // namespace etl
 
 namespace
 {
@@ -207,24 +215,27 @@ namespace
 
     TEST(test_hash_floating_point_negative_zero)
     {
-      if (sizeof(float) == sizeof(size_t)) {
+      if (sizeof(float) == sizeof(size_t))
+      {
         etl::hash<float> hasher{};
-        size_t hash1 = hasher(0.0);
-        size_t hash2 = hasher(-0.0);
+        size_t           hash1 = hasher(0.0);
+        size_t           hash2 = hasher(-0.0);
         CHECK_EQUAL(hash1, hash2);
       }
 
-      if (sizeof(double) == sizeof(size_t)) {
+      if (sizeof(double) == sizeof(size_t))
+      {
         etl::hash<double> hasher{};
-        size_t hash1 = hasher(0.0);
-        size_t hash2 = hasher(-0.0);
+        size_t            hash1 = hasher(0.0);
+        size_t            hash2 = hasher(-0.0);
         CHECK_EQUAL(hash1, hash2);
       }
 
-      if (sizeof(long double) == sizeof(size_t)) {
+      if (sizeof(long double) == sizeof(size_t))
+      {
         etl::hash<long double> hasher{};
-        size_t hash1 = hasher(0.0);
-        size_t hash2 = hasher(-0.0);
+        size_t                 hash1 = hasher(0.0);
+        size_t                 hash2 = hasher(-0.0);
         CHECK_EQUAL(hash1, hash2);
       }
     }
@@ -232,7 +243,7 @@ namespace
     //*************************************************************************
     TEST(test_hash_pointer)
     {
-      int i{};
+      int    i{};
       size_t hash = etl::hash<int*>()(&i);
 
       CHECK_EQUAL(size_t(&i), hash);
@@ -241,7 +252,7 @@ namespace
     //*************************************************************************
     TEST(test_hash_const_pointer)
     {
-      int i{};
+      int    i{};
       size_t hash = etl::hash<const int*>()(&i);
 
       CHECK_EQUAL(size_t(&i), hash);
@@ -250,10 +261,10 @@ namespace
     //*************************************************************************
     TEST(test_hash_const_pointer_const)
     {
-      int i{};
-      const int * const pi = &i;
+      int              i{};
+      const int* const pi = &i;
 
-      size_t hash = etl::hash<const int *>()(pi);
+      size_t hash = etl::hash<const int*>()(pi);
 
       CHECK_EQUAL(size_t(&i), hash);
     }
@@ -261,12 +272,12 @@ namespace
     //*************************************************************************
     TEST(test_hash_enums)
     {
-      enum class MyEnumClass : char 
+      enum class MyEnumClass : char
       {
         OneE = 0x1E
       };
-      
-      enum MyEnum : char 
+
+      enum MyEnum : char
       {
         MyEnum_TwoF = 0x2F
       };
@@ -279,44 +290,46 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_hash_big_enums) 
+    TEST(test_hash_big_enums)
     {
       constexpr unsigned long long big_number = 0x5AA555AA3CC333CCULL;
-      enum class MyBigEnumClass : unsigned long long 
+      enum class MyBigEnumClass : unsigned long long
       {
         Big = big_number
       };
-      
-      size_t hash = etl::hash<MyBigEnumClass>()(MyBigEnumClass::Big);
+
+      size_t hash         = etl::hash<MyBigEnumClass>()(MyBigEnumClass::Big);
       size_t expectedHash = etl::hash<unsigned long long>()(big_number);
       CHECK_EQUAL(expectedHash, hash);
     }
 
     //*************************************************************************
-    TEST(test_hash_poisoned) 
+    TEST(test_hash_poisoned)
     {
-        // Unspecialized hash<> should be disabled (unusable) - see https://en.cppreference.com/w/cpp/utility/hash
-        class A {};
-        typedef etl::hash<A> general_hasher;
+      // Unspecialized hash<> should be disabled (unusable) - see
+      // https://en.cppreference.com/w/cpp/utility/hash
+      class A
+      {
+      };
+      typedef etl::hash<A> general_hasher;
 
-        CHECK_FALSE(std::is_default_constructible<general_hasher>::value);
-        CHECK_FALSE(std::is_copy_constructible<general_hasher>::value);
-        CHECK_FALSE(std::is_move_constructible<general_hasher>::value);
-        CHECK_FALSE(std::is_copy_assignable<general_hasher>::value);
-        CHECK_FALSE(std::is_move_assignable<general_hasher>::value);
+      CHECK_FALSE(std::is_default_constructible<general_hasher>::value);
+      CHECK_FALSE(std::is_copy_constructible<general_hasher>::value);
+      CHECK_FALSE(std::is_move_constructible<general_hasher>::value);
+      CHECK_FALSE(std::is_copy_assignable<general_hasher>::value);
+      CHECK_FALSE(std::is_move_assignable<general_hasher>::value);
     }
 
     //*************************************************************************
-    TEST(test_hash_custom) 
+    TEST(test_hash_custom)
     {
-        typedef etl::hash<CustomType> custom_hasher;
+      typedef etl::hash<CustomType> custom_hasher;
 
-        CHECK_TRUE(std::is_default_constructible<custom_hasher>::value);
-        CHECK_TRUE(std::is_copy_constructible<custom_hasher>::value);
-        CHECK_TRUE(std::is_move_constructible<custom_hasher>::value);
-        CHECK_TRUE(std::is_copy_assignable<custom_hasher>::value);
-        CHECK_TRUE(std::is_move_assignable<custom_hasher>::value);
+      CHECK_TRUE(std::is_default_constructible<custom_hasher>::value);
+      CHECK_TRUE(std::is_copy_constructible<custom_hasher>::value);
+      CHECK_TRUE(std::is_move_constructible<custom_hasher>::value);
+      CHECK_TRUE(std::is_copy_assignable<custom_hasher>::value);
+      CHECK_TRUE(std::is_move_assignable<custom_hasher>::value);
     }
   }
-}
-
+} // namespace
