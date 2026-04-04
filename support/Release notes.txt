@@ -1,106 +1,106 @@
 ﻿===============================================================================
 20.47.0
 
-#1219	Topic/expected monadic operations
-#1221	Add test for swap
-#1222	Basic string checks
-#1223	Fix is_truncated in basic_string
-#1225	Fix value_or not taking const in optional
-#1226	Add missing include to optional
-#1229	variant_legacy.h: Rename template parameters
-#1230	add bounds checks to queue
-#1231	Bugfix: Issue 1212 span constructor
-#1232	Exception std based option
-#1235	Bugfixes for compile errors in optimized tests
-#1237	fix: 1236 - remove extra ;
-#1238	Various cleanup
-#1239	Indirect vector checks
-#1244	Fix no check macros
-#1245	Fix discrepancy with STL in max_element and minmax_element
-#1246	ETL-1242 - Implement .begin() and .end() for etl::optional
-#1247	Add etl::inplace_function
-#1248	Feature/#1233 add etl inplace function
-#1251	Add etl::inplace_function
-#1252	feat(mutex): Add ThreadX mutex support
-#1253	use correct parameter in ETS_ASSERT_FAIL (and friends) when ETL_NO_CHECKS is defined
-#1254	Make code base with tests compile under gcc-14
-#1255	Fix syntax errors in base64 test
-#1256	ivector swap
-#1257	Fix year_month arithmetic and correct chrono API behavior
-#1259	Suppress warnings from std in optimized builds
-#1261	Fix incorrect namespace for iter_swap calls
-#1262	Document how to implement platform specifics
-#1264	Add template deduction guide for span from vector
-#1265	Fix etl::tuple template signature error in pair assignment operator
-#1266	Fix etl::as_bytes for etl::span<const T>
-#1267	Update C++26 deprecated constructs to ensure future standard compliance
-#1268	Remove some UB in test_vector_non_trivial.cpp
-#1269	Deduce underlying storage size when constructing string_ext from char[].
-#1271	Fix return value of get_token_list
-#1274	Feature/#1234 add etl type list api to more classes
-#1275	Add etl::type_list API to more classes.
-#1277	Fix for issue 1276   Data corruption in the etl::bip_buffer_spsc_atomic
-#1281	Remove advance() on static spans
-#1285	#1258 Manchester coding
-#1286	Add missing includes
-#1287	Move comparison operators of etl::expected to namespace etl
-#1288	Add basic_format_arg constructor for ibasic_string
-#1290	Add support for size_t and unsigned long to etl::format
-#1291	Make typed_storage constructor constexpr
-#1292	Add ref-qualifiers to basic_format_spec
-#1295	delegate: allow constructing from non-capturing lambdas
-#1299	Fix link rotations for etl::tree_node
-#1303	Add constexpr to array comparison operators
-#1304	Fix etl::variant get() for ambiguous types
-#1307	Add more features to etl::type_list
-#1308	Fix comparison and swap operators not in etl namespace
-#1309	Reduce string flash usage
-#1311	Enforce worse-case O(log n) dispatch for messages when using message router for c++11 and up
-#1312	Enforce worse-case O(log n) dispatch for messages when using message router for c++11 and up
-#1314	clang-format: Create action, adapt generators and apply globally
-#1315	Add get endianness to byte stream reader
-#1316	Add C++ ranges library for C++17
-#1317	etl multiset iterator invalidation during erase leads to incorrect sorted order in depth first traversal
-#1320	Changed std::is_same to etl::is_same in struct type_list_is_unique
-#1321	Add missing tests
-#1323	Add treefmt support
-#1325	Manchester documentation
-#1327	Fix etl::rotate
-#1329	Add ETL_FORMAT_NO_FLOATING_POINT control macro for etl::format
-#1330	Align comparison operators
-#1331	Fix greater_equal and less_equal
-#1333	Fix undefined behaviour of absolute() for etl::numeric_limits<T>::min
-#1334	Add bounds and empty checks to container classes
-#1335	Add pre C++20 Support for ETL_CONSTINIT using Compiler Extensions
-#1336	Add a inplace_function constructor from a nullptr
-#1337	Enforce o(log n) dispatch for messages when using fsm for c++11 and up	issue
-#1338	span is constructible from temporary
-#1339	Changes from review of algorithm.h
-#1340	Changes from review of algorithm.h on development branch
-#1342	Fix run-syntax-checks.sh to be executable
-#1343	Print test names at test time
-#1344	Add PURL to Zephyr module.yml for SBoM generation
-#1347	Fix comment in queue::pop
-#1348	Add permutation functions
-#1349	Mark uninitialized use from std library
-#1350	Adjustments in tuple.h from review
-#1351	Manchester big endian support
-#1353	Manchester big endian support
-#1354	Add Dockerfile for local development
-#1356	Fix tests on big endian
-#1357	Add code coverage report
-#1358	Bug fixes in variant_variadic.h
-#1359	Restrict etl::atomic for general types
-#1360	Update Dockerfile and Devcontainer.
-#1361	Fix ETL_HAS_CONSTEXPR_ENDIANESS in unaligned_type.h
-#1362	Fix etl::optional for deleted copy constructors
-#1363	Fix span size type
-#1364	Limit clock duration to milliseconds type on narrow int type
-#1365	Fix compilation issue when including etl/chrono next to etl/to_string.
-#1367	Fix compilation with -Wsign-conversion
-#1368	Factor out generated code
-#1369	Factor out generated code
-#1373	Rename 'leaf' to 'child' in intrusive_links.h
+#1219 Topic/expected monadic operations
+#1221 Add test for swap
+#1222 Basic string checks
+#1223 Fix is_truncated in basic_string
+#1225 Fix value_or not taking const in optional
+#1226 Add missing include to optional
+#1229 variant_legacy.h: Rename template parameters
+#1230 add bounds checks to queue
+#1231 Bugfix: Issue 1212 span constructor
+#1232 Exception std based option
+#1235 Bugfixes for compile errors in optimized tests
+#1237 fix: 1236 - remove extra ;
+#1238 Various cleanup
+#1239 Indirect vector checks
+#1244 Fix no check macros
+#1245 Fix discrepancy with STL in max_element and minmax_element
+#1246 ETL-1242 - Implement .begin() and .end() for etl::optional
+#1247 Add etl::inplace_function
+#1248 Feature/#1233 add etl inplace function
+#1251 Add etl::inplace_function
+#1252 feat(mutex): Add ThreadX mutex support
+#1253 use correct parameter in ETS_ASSERT_FAIL (and friends) when ETL_NO_CHECKS is defined
+#1254 Make code base with tests compile under gcc-14
+#1255 Fix syntax errors in base64 test
+#1256 ivector swap
+#1257 Fix year_month arithmetic and correct chrono API behavior
+#1259 Suppress warnings from std in optimized builds
+#1261 Fix incorrect namespace for iter_swap calls
+#1262 Document how to implement platform specifics
+#1264 Add template deduction guide for span from vector
+#1265 Fix etl::tuple template signature error in pair assignment operator
+#1266 Fix etl::as_bytes for etl::span<const T>
+#1267 Update C++26 deprecated constructs to ensure future standard compliance
+#1268 Remove some UB in test_vector_non_trivial.cpp
+#1269 Deduce underlying storage size when constructing string_ext from char[].
+#1271 Fix return value of get_token_list
+#1274 Feature/#1234 add etl type list api to more classes
+#1275 Add etl::type_list API to more classes.
+#1277 Fix for issue 1276   Data corruption in the etl::bip_buffer_spsc_atomic
+#1281 Remove advance() on static spans
+#1285 #1258 Manchester coding
+#1286 Add missing includes
+#1287 Move comparison operators of etl::expected to namespace etl
+#1288 Add basic_format_arg constructor for ibasic_string
+#1290 Add support for size_t and unsigned long to etl::format
+#1291 Make typed_storage constructor constexpr
+#1292 Add ref-qualifiers to basic_format_spec
+#1295 delegate: allow constructing from non-capturing lambdas
+#1299 Fix link rotations for etl::tree_node
+#1303 Add constexpr to array comparison operators
+#1304 Fix etl::variant get() for ambiguous types
+#1307 Add more features to etl::type_list
+#1308 Fix comparison and swap operators not in etl namespace
+#1309 Reduce string flash usage
+#1311 Enforce worse-case O(log n) dispatch for messages when using message router for c++11 and up
+#1312 Enforce worse-case O(log n) dispatch for messages when using message router for c++11 and up
+#1314 clang-format: Create action, adapt generators and apply globally
+#1315 Add get endianness to byte stream reader
+#1316 Add C++ ranges library for C++17
+#1317 etl multiset iterator invalidation during erase leads to incorrect sorted order in depth first traversal
+#1320 Changed std::is_same to etl::is_same in struct type_list_is_unique
+#1321 Add missing tests
+#1323 Add treefmt support
+#1325 Manchester documentation
+#1327 Fix etl::rotate
+#1329 Add ETL_FORMAT_NO_FLOATING_POINT control macro for etl::format
+#1330 Align comparison operators
+#1331 Fix greater_equal and less_equal
+#1333 Fix undefined behaviour of absolute() for etl::numeric_limits<T>::min
+#1334 Add bounds and empty checks to container classes
+#1335 Add pre C++20 Support for ETL_CONSTINIT using Compiler Extensions
+#1336 Add a inplace_function constructor from a nullptr
+#1337 Enforce o(log n) dispatch for messages when using fsm for c++11 and up issue
+#1338 span is constructible from temporary
+#1339 Changes from review of algorithm.h
+#1340 Changes from review of algorithm.h on development branch
+#1342 Fix run-syntax-checks.sh to be executable
+#1343 Print test names at test time
+#1344 Add PURL to Zephyr module.yml for SBoM generation
+#1347 Fix comment in queue::pop
+#1348 Add permutation functions
+#1349 Mark uninitialized use from std library
+#1350 Adjustments in tuple.h from review
+#1351 Manchester big endian support
+#1353 Manchester big endian support
+#1354 Add Dockerfile for local development
+#1356 Fix tests on big endian
+#1357 Add code coverage report
+#1358 Bug fixes in variant_variadic.h
+#1359 Restrict etl::atomic for general types
+#1360 Update Dockerfile and Devcontainer.
+#1361 Fix ETL_HAS_CONSTEXPR_ENDIANESS in unaligned_type.h
+#1362 Fix etl::optional for deleted copy constructors
+#1363 Fix span size type
+#1364 Limit clock duration to milliseconds type on narrow int type
+#1365 Fix compilation issue when including etl/chrono next to etl/to_string.
+#1367 Fix compilation with -Wsign-conversion
+#1368 Factor out generated code
+#1369 Factor out generated code
+#1373 Rename 'leaf' to 'child' in intrusive_links.h
 
 ===============================================================================
 20.46.2
