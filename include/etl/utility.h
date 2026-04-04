@@ -73,20 +73,22 @@ namespace etl
   }
 
   //******************************************************************************
-  /// See std::forward_like https://en.cppreference.com/w/cpp/utility/forward_like
-  /// Returns a reference to x which has similar properties to T&&.
+  /// See std::forward_like
+  /// https://en.cppreference.com/w/cpp/utility/forward_like Returns a reference
+  /// to x which has similar properties to T&&.
   ///\return
-  /// If etl::remove_reference_t<T> is const then returns a const reference if U is an lvalue, otherwise a const rvalue reference.
-  /// If etl::remove_reference_t<T> is not const then returns a reference if U is an lvalue, otherwise an rvalue reference.
+  /// If etl::remove_reference_t<T> is const then returns a const reference if U
+  /// is an lvalue, otherwise a const rvalue reference. If
+  /// etl::remove_reference_t<T> is not const then returns a reference if U is
+  /// an lvalue, otherwise an rvalue reference.
   //******************************************************************************
   //***********************************
   /// T is const & lvalue.
   //***********************************
   template <typename T, typename U>
   ETL_NODISCARD
-  ETL_CONSTEXPR
-  etl::enable_if_t<etl::is_const<etl::remove_reference_t<T>>::value && etl::is_lvalue_reference<T>::value, const etl::remove_reference_t<U>&>
-    forward_like(U&& u) ETL_NOEXCEPT
+  ETL_CONSTEXPR etl::enable_if_t<etl::is_const<etl::remove_reference_t<T>>::value && etl::is_lvalue_reference<T>::value,
+                             const etl::remove_reference_t<U>&> forward_like(U&& u) ETL_NOEXCEPT
   {
     return static_cast<const etl::remove_reference_t<U>&>(u);
   }
@@ -96,9 +98,8 @@ namespace etl
   //***********************************
   template <typename T, typename U>
   ETL_NODISCARD
-  ETL_CONSTEXPR
-  etl::enable_if_t<etl::is_const<etl::remove_reference_t<T>>::value && !etl::is_lvalue_reference<T>::value, const etl::remove_reference_t<U>&&>
-    forward_like(U&& u) ETL_NOEXCEPT
+  ETL_CONSTEXPR etl::enable_if_t<etl::is_const<etl::remove_reference_t<T>>::value && !etl::is_lvalue_reference<T>::value,
+                             const etl::remove_reference_t<U>&&> forward_like(U&& u) ETL_NOEXCEPT
   {
     return static_cast<const etl::remove_reference_t<U>&&>(u);
   }
@@ -108,8 +109,7 @@ namespace etl
   //***********************************
   template <typename T, typename U>
   ETL_NODISCARD
-  ETL_CONSTEXPR
-  etl::enable_if_t<!etl::is_const<etl::remove_reference_t<T>>::value && etl::is_lvalue_reference<T>::value, etl::remove_reference_t<U>&>
+  ETL_CONSTEXPR etl::enable_if_t<!etl::is_const<etl::remove_reference_t<T>>::value && etl::is_lvalue_reference<T>::value, etl::remove_reference_t<U>&>
     forward_like(U&& u) ETL_NOEXCEPT
   {
     return static_cast<etl::remove_reference_t<U>&>(u);
@@ -120,8 +120,7 @@ namespace etl
   //***********************************
   template <typename T, typename U>
   ETL_NODISCARD
-  ETL_CONSTEXPR
-  etl::enable_if_t<!etl::is_const<etl::remove_reference_t<T>>::value && !etl::is_lvalue_reference<T>::value, etl::remove_reference_t<U>&&>
+  ETL_CONSTEXPR etl::enable_if_t<!etl::is_const<etl::remove_reference_t<T>>::value && !etl::is_lvalue_reference<T>::value, etl::remove_reference_t<U>&&>
     forward_like(U&& u) ETL_NOEXCEPT
   {
     return static_cast<etl::remove_reference_t<U>&&>(u);
@@ -143,8 +142,9 @@ namespace etl
     return static_cast<typename underlying_type<T>::type>(value);
   }
 
-  // We can't have std::swap and etl::swap templates coexisting in the unit tests
-  // as the compiler will be unable to decide which one to use, due to ADL.
+  // We can't have std::swap and etl::swap templates coexisting in the unit
+  // tests as the compiler will be unable to decide which one to use, due to
+  // ADL.
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
   //***************************************************************************
   // swap
@@ -156,8 +156,8 @@ namespace etl
     b = ETL_MOVE(temp);
   }
 
-  template< class T, size_t Size >
-  ETL_CONSTEXPR14 void swap(T(&a)[Size], T(&b)[Size]) ETL_NOEXCEPT
+  template < class T, size_t Size >
+  ETL_CONSTEXPR14 void swap(T (&a)[Size], T (&b)[Size]) ETL_NOEXCEPT
   {
     for (size_t i = 0UL; i < Size; ++i)
     {
@@ -174,16 +174,17 @@ namespace etl
   template <typename T1, typename T2>
   struct pair
   {
-    typedef T1 first_type;   ///< @c first_type is the first bound type
-    typedef T2 second_type;  ///< @c second_type is the second bound type
+    typedef T1 first_type;  ///< @c first_type is the first bound type
+    typedef T2 second_type; ///< @c second_type is the second bound type
 
-    T1 first;   ///< @c first is a copy of the first object
-    T2 second;  ///< @c second is a copy of the second object
+    T1 first;  ///< @c first is a copy of the first object
+    T2 second; ///< @c second is a copy of the second object
 
     //***************************************************************************
     ///\brief Default constructor
     ///
-    /// The default constructor creates @c first and @c second using their respective default constructors.
+    /// The default constructor creates @c first and @c second using their
+    /// respective default constructors.
     //***************************************************************************
     ETL_CONSTEXPR pair()
       : first(T1())
@@ -259,7 +260,7 @@ namespace etl
     {
     }
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
     /// Constructing to etl::pair
     template <typename U1, typename U2>
     pair(std::pair<U1, U2>&& other)
@@ -267,7 +268,7 @@ namespace etl
       , second(etl::forward<U2>(other.second))
     {
     }
-#endif
+  #endif
 #endif
 
     void swap(pair<T1, T2>& other)
@@ -278,36 +279,36 @@ namespace etl
       swap(second, other.second);
     }
 
-    pair<T1, T2>& operator =(const pair<T1, T2>& other)
+    pair<T1, T2>& operator=(const pair<T1, T2>& other)
     {
-      first = other.first;
+      first  = other.first;
       second = other.second;
 
       return *this;
     }
 
     template <typename U1, typename U2>
-    pair<U1, U2>& operator =(const pair<U1, U2>& other)
+    pair<U1, U2>& operator=(const pair<U1, U2>& other)
     {
-      first = other.first;
+      first  = other.first;
       second = other.second;
 
       return *this;
     }
 
 #if ETL_USING_CPP11
-    pair<T1, T2>& operator =(pair<T1, T2>&& other)
+    pair<T1, T2>& operator=(pair<T1, T2>&& other)
     {
-      first = etl::forward<T1>(other.first);
+      first  = etl::forward<T1>(other.first);
       second = etl::forward<T2>(other.second);
 
       return *this;
     }
 
     template <typename U1, typename U2>
-    pair<U1, U2>& operator =(pair<U1, U2>&& other)
+    pair<U1, U2>& operator=(pair<U1, U2>&& other)
     {
-      first = etl::forward<U1>(other.first);
+      first  = etl::forward<U1>(other.first);
       second = etl::forward<U2>(other.second);
 
       return *this;
@@ -373,7 +374,7 @@ namespace etl
 
   ///  Two pairs of the same type are equal if their members are equal.
   template <typename T1, typename T2>
-  inline bool operator ==(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
 #include "private/diagnostic_float_equal_push.h"
     return (a.first == b.first) && !(a.second < b.second) && !(a.second > b.second);
@@ -382,35 +383,34 @@ namespace etl
 
   /// Uses @c operator== to find the result.
   template <typename T1, typename T2>
-  inline bool operator !=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline bool operator!=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(a == b);
   }
 
   template <typename T1, typename T2>
-  inline bool operator <(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline bool operator<(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
-    return (a.first < b.first) ||
-      (!(b.first < a.first) && (a.second < b.second));
+    return (a.first < b.first) || (!(b.first < a.first) && (a.second < b.second));
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator >(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline bool operator>(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (b < a);
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator <=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline bool operator<=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(b < a);
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator >=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline bool operator>=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(a < b);
   }
@@ -418,7 +418,9 @@ namespace etl
   //***************************************************************************
   ///\brief Functor to select @ref pair::first
   ///
-  ///\ref select1st is a functor object that takes a single argument, a @ref pair, and returns the @ref pair::first element.
+  ///\ref select1st is a functor object that takes a single argument, a @ref
+  /// pair, and returns the @ref pair::first
+  /// element.
   ///
   ///\b Example
   ///\snippet test_utility.cpp test_select1st_example
@@ -430,7 +432,7 @@ namespace etl
   template <typename TPair>
   struct select1st
   {
-    typedef typename TPair::first_type type;  ///< type of member @ref pair::first.
+    typedef typename TPair::first_type type; ///< type of member @ref pair::first.
 
     //***************************************************************************
     ///\brief Function call that return @c p.first.
@@ -453,7 +455,9 @@ namespace etl
   //***************************************************************************
   ///\brief Functor to select @ref pair::second
   ///
-  ///\ref select2nd is a functor object that takes a single argument, a @ref pair, and returns the @ref pair::second element.
+  ///\ref select2nd is a functor object that takes a single argument, a @ref
+  /// pair, and returns the @ref pair::second
+  /// element.
   ///
   ///\b Example
   ///\snippet test_utility.cpp test_select2nd_example
@@ -465,7 +469,7 @@ namespace etl
   template <typename TPair>
   struct select2nd
   {
-    typedef typename TPair::second_type type;  ///< type of member @ref pair::second.
+    typedef typename TPair::second_type type; ///< type of member @ref pair::second.
 
     //***************************************************************************
     ///\brief Function call. The return value is `p.second`.
@@ -493,7 +497,7 @@ namespace etl
   T exchange(T& object, const T& new_value)
   {
     T old_value = object;
-    object = new_value;
+    object      = new_value;
     return old_value;
   }
 
@@ -501,7 +505,7 @@ namespace etl
   T exchange(T& object, const U& new_value)
   {
     T old_value = object;
-    object = new_value;
+    object      = new_value;
     return old_value;
   }
 #else
@@ -551,7 +555,7 @@ namespace etl
     template <size_t Count, size_t... Indices>
     struct make_index_sequence<Count, etl::integer_sequence<size_t, Indices...>>
     {
-      using type = typename make_index_sequence<Count - 1, etl::integer_sequence<size_t, Count - 1, Indices...>>::type;
+      using type = typename make_index_sequence< Count - 1, etl::integer_sequence<size_t, Count - 1, Indices...>>::type;
     };
 
     template <size_t... Indices>
@@ -568,19 +572,19 @@ namespace etl
     {
       using type = etl::integer_sequence<size_t, (Offset + Indices)...>;
     };
-  }
+  } // namespace private_integer_sequence
 
   //***********************************
   /// Make an integer sequence.
   //***********************************
   template <size_t Count>
-  using make_index_sequence = typename private_integer_sequence::make_index_sequence<Count, etl::integer_sequence<size_t>>::type;
+  using make_index_sequence = typename private_integer_sequence::make_index_sequence< Count, etl::integer_sequence<size_t>>::type;
 
   //***********************************
   /// Make an integer sequence with an offset.
   //***********************************
   template <size_t Offset, size_t Count>
-  using make_index_sequence_with_offset = typename private_integer_sequence::offset_index_sequence<Offset, etl::make_index_sequence<Count>>::type;
+  using make_index_sequence_with_offset = typename private_integer_sequence::offset_index_sequence< Offset, etl::make_index_sequence<Count>>::type;
 
   //***********************************
   // Helper to support both parameter packs and etl::type_list<T...>
@@ -594,7 +598,7 @@ namespace etl
     template <typename... TTypes>
     struct impl
     {
-      using type = typename private_integer_sequence::make_index_sequence<sizeof...(TTypes), etl::integer_sequence<size_t>>::type;
+      using type = typename private_integer_sequence::make_index_sequence< sizeof...(TTypes), etl::integer_sequence<size_t>>::type;
     };
 
     // etl::type_list form
@@ -602,11 +606,12 @@ namespace etl
     struct impl<etl::type_list<TTypes...>> : impl<TTypes...>
     {
     };
-  }
+  } // namespace private_make_index_sequence_for
 
   //***********************************
-  /// Make an index sequence for a parameter pack of types or an etl::type_list<T...>.
-  /// Accepts either a parameter pack of types or a single etl::type_list<T...>
+  /// Make an index sequence for a parameter pack of types or an
+  /// etl::type_list<T...>. Accepts either a parameter pack of types or a single
+  /// etl::type_list<T...>
   //***********************************
   template <typename... TTypes>
   using make_index_sequence_for = typename private_make_index_sequence_for::impl<TTypes...>::type;
@@ -669,7 +674,8 @@ namespace etl
   template <size_t Index, size_t... Indices>
   struct index_sequence_pop_front<etl::index_sequence<Index, Indices...>>
   {
-    // Removes the front index by declaring the type to be the tail of the sequence.
+    // Removes the front index by declaring the type to be the tail of the
+    // sequence.
     using type = etl::index_sequence<Indices...>;
   };
 
@@ -685,7 +691,8 @@ namespace etl
   template <size_t... Indices, size_t Index>
   struct index_sequence_push_back<etl::index_sequence<Indices...>, Index>
   {
-    // Adds the new index to the back of the sequence by concatenating the new index with the sequence.
+    // Adds the new index to the back of the sequence by concatenating the new
+    // index with the sequence.
     using type = etl::index_sequence<Indices..., Index>;
   };
 
@@ -714,14 +721,15 @@ namespace etl
     using type = etl::index_sequence<>;
   };
 
-  // Multi element sequence. Pop back is the front element concatenated with the pop back of the tail.
+  // Multi element sequence. Pop back is the front element concatenated with the
+  // pop back of the tail.
   template <size_t Index, size_t... Indices>
   struct index_sequence_pop_back<etl::index_sequence<Index, Indices...>>
   {
-    // Removes the last index by concatenating the front index with the pop back of the tail.
-    // The last index is never added to the result, so is effectively removed.
-    using type = etl::index_sequence_cat_t<etl::index_sequence<Index>,
-                                           typename index_sequence_pop_back<etl::index_sequence<Indices...>>::type>;
+    // Removes the last index by concatenating the front index with the pop back
+    // of the tail. The last index is never added to the result, so is
+    // effectively removed.
+    using type = etl::index_sequence_cat_t< etl::index_sequence<Index>, typename index_sequence_pop_back<etl::index_sequence<Indices...>>::type>;
   };
 
   template <typename TIndexSequence>
@@ -737,19 +745,23 @@ namespace etl
   struct index_sequence_at<etl::index_sequence<>, Nth>
   {
     template <size_t>
-    struct dependent_false : etl::false_type {};
+    struct dependent_false : etl::false_type
+    {
+    };
 
     static_assert(dependent_false<Nth>::value, "Nth out of range for index_sequence_at");
   };
 
-  // When Nth is 0, the index at the Nth position is the front index of the sequence.
+  // When Nth is 0, the index at the Nth position is the front index of the
+  // sequence.
   template <size_t Index, size_t... Indices>
   struct index_sequence_at<etl::index_sequence<Index, Indices...>, 0>
   {
     static constexpr size_t value = Index;
   };
 
-  // When Nth is greater than 0, recurse with the tail of the sequence and Nth - 1.
+  // When Nth is greater than 0, recurse with the tail of the sequence and Nth
+  // - 1.
   template <size_t Index, size_t... Indices, size_t Nth>
   struct index_sequence_at<etl::index_sequence<Index, Indices...>, Nth>
   {
@@ -758,10 +770,10 @@ namespace etl
     static constexpr size_t value = index_sequence_at<etl::index_sequence<Indices...>, Nth - 1U>::value;
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TIndexSequence, size_t Nth>
   inline constexpr size_t index_sequence_at_v = index_sequence_at<TIndexSequence, Nth>::value;
-#endif
+  #endif
 
   //************************************
   /// Checks if an index_sequence contains a value.
@@ -775,35 +787,42 @@ namespace etl
   {
   };
 
-  // When the front index of the sequence is the value, the sequence contains the value.
-  // When the front index of the sequence is not the value, recurse with the tail of the sequence.
+  // When the front index of the sequence is the value, the sequence contains
+  // the value. When the front index of the sequence is not the value, recurse
+  // with the tail of the sequence.
   template <size_t Index, size_t... Indices, size_t Value>
   struct index_sequence_contains<etl::index_sequence<Index, Indices...>, Value>
-    : etl::integral_constant<bool, (Index == Value) || index_sequence_contains<etl::index_sequence<Indices...>, Value>::value>
+    : etl::integral_constant< bool, (Index == Value) || index_sequence_contains<etl::index_sequence<Indices...>, Value>::value>
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TIndexSequence, size_t Value>
   inline constexpr bool index_sequence_contains_v = index_sequence_contains<TIndexSequence, Value>::value;
-#endif
+  #endif
 
   //***************************************************************************
-  /// Defines a new index_sequence by removing duplicate indexes from a given index_sequence, preserving the first occurrence.
+  /// Defines a new index_sequence by removing duplicate indexes from a given
+  /// index_sequence, preserving the first occurrence.
   //***************************************************************************
   namespace private_index_sequence
   {
     template <typename TIndexSequence, typename TUniqueIndices>
     struct type_index_sequence_impl;
 
-    // When the front index of the sequence is not in the unique sequence, add it to the back of the unique sequence and recurse with the tail of the sequence.
+    // When the front index of the sequence is not in the unique sequence, add
+    // it to the back of the unique sequence and recurse with the tail of the
+    // sequence.
     template <size_t Index, size_t... Indices, size_t... UniqueIndices>
     struct type_index_sequence_impl<etl::index_sequence<Index, Indices...>, etl::index_sequence<UniqueIndices...>>
     {
-      // If the index is already in the unique sequence, do not add it again. Otherwise, add it to the back of the unique sequence.
-      using type = typename etl::conditional_t<etl::index_sequence_contains<etl::index_sequence<UniqueIndices...>, Index>::value,
-                                              type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence<UniqueIndices...>>,
-                                              type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence_push_back_t<etl::index_sequence<UniqueIndices...>, Index>>>::type;
+      // If the index is already in the unique sequence, do not add it again.
+      // Otherwise, add it to the back of the unique sequence.
+      using type =
+        typename etl::conditional_t< etl::index_sequence_contains<etl::index_sequence<UniqueIndices...>, Index>::value,
+                                     type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence<UniqueIndices...>>,
+                                     type_index_sequence_impl< etl::index_sequence<Indices...>,
+                                                               etl::index_sequence_push_back_t<etl::index_sequence<UniqueIndices...>, Index>>>::type;
     };
 
     // When the sequence is empty, the unique sequence is the result.
@@ -812,7 +831,7 @@ namespace etl
     {
       using type = etl::index_sequence<UniqueIndices...>;
     };
-  }
+  } // namespace private_index_sequence
 
   template <typename T>
   struct index_sequence_unique;
@@ -820,13 +839,13 @@ namespace etl
   template <size_t... Indices>
   struct index_sequence_unique<etl::index_sequence<Indices...>>
   {
-    using type = typename private_index_sequence::type_index_sequence_impl<etl::index_sequence<Indices...>, etl::index_sequence<>>::type;
+    using type = typename private_index_sequence::type_index_sequence_impl< etl::index_sequence<Indices...>, etl::index_sequence<>>::type;
   };
 
-#if ETL_USING_CPP11
+  #if ETL_USING_CPP11
   template <typename TIndexSequence>
   using index_sequence_unique_t = typename etl::index_sequence_unique<TIndexSequence>::type;
-#endif
+  #endif
 
   //***************************************************************************
   /// Checks that all of the indices in an index_sequence are unique.
@@ -836,15 +855,14 @@ namespace etl
 
   template <size_t... Indices>
   struct index_sequence_is_unique<etl::index_sequence<Indices...>>
-    : etl::bool_constant<etl::is_same<etl::index_sequence<Indices...>,
-                                      etl::index_sequence_unique_t<etl::index_sequence<Indices...>>>::value>
+    : etl::bool_constant< etl::is_same< etl::index_sequence<Indices...>, etl::index_sequence_unique_t<etl::index_sequence<Indices...>>>::value>
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename TIndexSequence>
   inline constexpr bool index_sequence_is_unique_v = index_sequence_is_unique<TIndexSequence>::type::value;
-#endif
+  #endif
 
   //***************************************************************************
   /// Checks if the index_sequence is empty.
@@ -853,21 +871,19 @@ namespace etl
   struct index_sequence_is_empty;
 
   template <>
-  struct index_sequence_is_empty<etl::index_sequence<>>
-    : etl::true_type
+  struct index_sequence_is_empty<etl::index_sequence<>> : etl::true_type
   {
   };
 
   template <size_t... Indices>
-  struct index_sequence_is_empty<etl::index_sequence<Indices...>>
-    : etl::false_type
+  struct index_sequence_is_empty<etl::index_sequence<Indices...>> : etl::false_type
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename... TTypes>
   inline constexpr bool index_sequence_is_empty_v = index_sequence_is_empty<TTypes...>::value;
-#endif
+  #endif
 #endif
 
   //***************************************************************************
@@ -888,12 +904,12 @@ namespace etl
     {
     }
 
-    friend bool operator ==(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    friend bool operator==(const coordinate_2d& lhs, const coordinate_2d& rhs)
     {
       return (lhs.x == rhs.x) && (lhs.y == rhs.y);
     }
 
-    friend bool operator !=(const coordinate_2d& lhs, const coordinate_2d& rhs)
+    friend bool operator!=(const coordinate_2d& lhs, const coordinate_2d& rhs)
     {
       return !(lhs == rhs);
     }
@@ -917,7 +933,8 @@ namespace etl
 #endif
 
   //*************************
-  template <typename T> struct in_place_type_t
+  template <typename T>
+  struct in_place_type_t
   {
     explicit ETL_CONSTEXPR in_place_type_t() {}
   };
@@ -928,7 +945,8 @@ namespace etl
 #endif
 
   //*************************
-  template <size_t Index> struct in_place_index_t
+  template <size_t Index>
+  struct in_place_index_t
   {
     explicit ETL_CONSTEXPR in_place_index_t() {}
   };
@@ -953,7 +971,7 @@ namespace etl
     //*********************************
     /// Constructor.
     //*********************************
-    constexpr functor(TReturn(*ptr_)(TParams...))
+    constexpr functor(TReturn (*ptr_)(TParams...))
       : ptr(ptr_)
     {
     }
@@ -969,7 +987,7 @@ namespace etl
   private:
 
     /// The pointer to the function.
-    TReturn(*ptr)(TParams...);
+    TReturn (*ptr)(TParams...);
   };
 
   //*****************************************************************************
@@ -986,7 +1004,7 @@ namespace etl
   {
   public:
 
-    template <typename T, T& Instance, TReturn(T::* Method)(TParams...)>
+    template <typename T, T& Instance, TReturn (T::*Method)(TParams...)>
     static constexpr TReturn function(TParams... params)
     {
       return (Instance.*Method)(etl::forward<TParams>(params)...);
@@ -1069,7 +1087,7 @@ namespace etl
   {
   public:
 
-    template<typename... TArgs>
+    template <typename... TArgs>
     constexpr auto operator()(TArgs&&... args) const -> decltype(Function(etl::forward<TArgs>(args)...))
     {
       return Function(etl::forward<TArgs>(args)...);
@@ -1093,7 +1111,7 @@ namespace etl
     //*********************************
     /// Constructor.
     //*********************************
-    constexpr function_ptr_as_functor(TReturn(*ptr_)(TArgs...))
+    constexpr function_ptr_as_functor(TReturn (*ptr_)(TArgs...))
       : ptr(ptr_)
     {
     }
@@ -1109,7 +1127,7 @@ namespace etl
   private:
 
     /// The pointer to the function.
-    TReturn(*ptr)(TArgs...);
+    TReturn (*ptr)(TArgs...);
   };
 #endif
 
@@ -1132,6 +1150,6 @@ namespace etl
     static constexpr T value = Value;
   };
 #endif
-}
+} // namespace etl
 
 #endif

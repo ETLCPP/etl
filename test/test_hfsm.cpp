@@ -28,12 +28,12 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/hfsm.h"
-#include "etl/enum_type.h"
+#include "etl/circular_buffer.h"
 #include "etl/container.h"
+#include "etl/enum_type.h"
+#include "etl/hfsm.h"
 #include "etl/packet.h"
 #include "etl/queue.h"
-#include "etl/circular_buffer.h"
 
 #include <iostream>
 
@@ -120,7 +120,10 @@ namespace
   {
   public:
 
-    SetSpeed(int speed_) : speed(speed_) {}
+    SetSpeed(int speed_)
+      : speed(speed_)
+    {
+    }
 
     const int speed;
   };
@@ -203,16 +206,16 @@ namespace
     //***********************************
     void ClearStatistics()
     {
-      startCount = 0;
-      stopCount = 0;
-      setSpeedCount = 0;
+      startCount          = 0;
+      stopCount           = 0;
+      setSpeedCount       = 0;
       windUpCompleteCount = 0;
-      windUpStartCount = 0;
-      unknownCount = 0;
-      stoppedCount = 0;
+      windUpStartCount    = 0;
+      unknownCount        = 0;
+      stoppedCount        = 0;
       selfTransitionCount = 0;
-      isLampOn = false;
-      speed = 0;
+      isLampOn            = false;
+      speed               = 0;
 
       stateEnterHistory.clear();
       stateExitHistory.clear();
@@ -249,18 +252,19 @@ namespace
 
     etl::queue<Packet_t, 2> messageQueue;
 
-    int startCount;
-    int stopCount;
-    int windUpCompleteCount;
-    int windUpStartCount;
-    int setSpeedCount;
-    int unknownCount;
-    int stoppedCount;
-    int selfTransitionCount;
+    int  startCount;
+    int  stopCount;
+    int  windUpCompleteCount;
+    int  windUpStartCount;
+    int  setSpeedCount;
+    int  unknownCount;
+    int  stoppedCount;
+    int  selfTransitionCount;
     bool isLampOn;
-    int speed;
+    int  speed;
 
-    // A circular buffer is used so that data overflows won't assert in tests which don't use this data
+    // A circular buffer is used so that data overflows won't assert in tests
+    // which don't use this data
     etl::circular_buffer<StateId::enum_type, 10UL> stateEnterHistory{};
     etl::circular_buffer<StateId::enum_type, 10UL> stateExitHistory{};
   };
@@ -358,7 +362,7 @@ namespace
       ++get_fsm_context().selfTransitionCount;
       return Self_Transition;
     }
-     
+
     //***********************************
     void on_exit_state()
     {
@@ -419,6 +423,7 @@ namespace
   class AtSpeed : public etl::fsm_state<MotorControl, AtSpeed, StateId::At_Speed, Stop>
   {
   public:
+
     //***********************************
     etl::fsm_state_id_t on_event(const Stop&)
     {
@@ -476,15 +481,9 @@ namespace
   WindingDown windingDown;
   AtSpeed     atSpeed;
 
-  etl::ifsm_state* stateList[StateId::Number_Of_States] =
-  {
-    &idle, &running, &windingUp, &windingDown, &atSpeed
-  };
+  etl::ifsm_state* stateList[StateId::Number_Of_States] = {&idle, &running, &windingUp, &windingDown, &atSpeed};
 
-  etl::ifsm_state* childStates[] =
-  {
-    &windingUp, &atSpeed, &windingDown
-  };
+  etl::ifsm_state* childStates[] = {&windingUp, &atSpeed, &windingDown};
 
   MotorControl motorControl;
 
@@ -669,7 +668,7 @@ namespace
     {
       etl::null_message_router nmr;
 
-      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList)); 
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -722,7 +721,7 @@ namespace
     {
       etl::null_message_router nmr;
 
-      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList)); 
+      motorControl.Initialise(stateList, ETL_OR_STD17::size(stateList));
       motorControl.reset();
       motorControl.ClearStatistics();
 
@@ -897,10 +896,7 @@ namespace
       MotorControl mc;
 
       // Null state.
-      etl::ifsm_state* stateList[StateId::Number_Of_States] =
-      {
-        &idle, &running, &windingUp, &windingDown, nullptr
-      };
+      etl::ifsm_state* stateList[StateId::Number_Of_States] = {&idle, &running, &windingUp, &windingDown, nullptr};
 
       CHECK_THROW(mc.set_states(stateList, StateId::Number_Of_States), etl::fsm_null_state_exception);
     }
@@ -911,10 +907,7 @@ namespace
       MotorControl mc;
 
       // Incorrect order.
-      etl::ifsm_state* stateList[StateId::Number_Of_States] =
-      {
-        &idle, &running, &windingDown, &windingUp, &atSpeed
-      };
+      etl::ifsm_state* stateList[StateId::Number_Of_States] = {&idle, &running, &windingDown, &windingUp, &atSpeed};
 
       CHECK_THROW(mc.set_states(stateList, StateId::Number_Of_States), etl::fsm_state_list_order_exception);
     }
@@ -1084,8 +1077,6 @@ namespace
       // Now in Idle state.
       CHECK_EQUAL(StateId::Idle, int(motorControl.get_state_id()));
       CHECK_EQUAL(StateId::Idle, int(motorControl.get_state().get_state_id()));
-
-
     }
   }
-}
+} // namespace

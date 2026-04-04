@@ -32,21 +32,25 @@ SOFTWARE.
 #include <string>
 
 #if ETL_USING_CPP20
-#include "etl/concepts.h"
+  #include "etl/concepts.h"
 
 namespace
 {
   class A
-  {};
+  {
+  };
 
   class B
-  {};
+  {
+  };
 
-  class C: public A
-  {};
+  class C : public A
+  {
+  };
 
-  class D: private A
-  {};
+  class D : private A
+  {
+  };
 
   SUITE(test_concepts)
   {
@@ -137,5 +141,5 @@ namespace
       static_assert(etl::assignable_from<std::atomic<int>&, int> == false);
     }
   }
-}
+} // namespace
 #endif

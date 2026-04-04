@@ -33,8 +33,8 @@ SOFTWARE.
 
 #include "platform.h"
 
-#include "utility.h"
 #include "type_traits.h"
+#include "utility.h"
 
 #if ETL_NOT_USING_CPP20 && !defined(ETL_IN_UNIT_TEST)
   #error NOT SUPPORTED FOR BELOW C++20
@@ -42,27 +42,27 @@ SOFTWARE.
 
 #if ETL_USING_CPP20
 
-#if ETL_USING_STL
-  #include <concepts>
-#endif
+  #if ETL_USING_STL
+    #include <concepts>
+  #endif
 
 namespace etl
 {
 
-#if ETL_USING_STL
+  #if ETL_USING_STL
 
-  using std::same_as;
-  using std::derived_from;
-  using std::convertible_to;
+  using std::assignable_from;
   using std::common_reference_with;
   using std::common_with;
+  using std::convertible_to;
+  using std::derived_from;
+  using std::floating_point;
   using std::integral;
+  using std::same_as;
   using std::signed_integral;
   using std::unsigned_integral;
-  using std::floating_point;
-  using std::assignable_from;
 
-#else // not ETL_USING_STL
+  #else // not ETL_USING_STL
 
   namespace private_concepts
   {
@@ -76,41 +76,23 @@ namespace etl
 
   //***************************************************************************
   template <typename Derived, typename Base>
-  concept derived_from =
-    etl::is_base_of_v<Base, Derived> &&
-    etl::is_convertible_v<const volatile Derived*, const volatile Base*>;
+  concept derived_from = etl::is_base_of_v<Base, Derived> && etl::is_convertible_v<const volatile Derived*, const volatile Base*>;
 
   //***************************************************************************
   template <typename From, typename To>
-  concept convertible_to =
-    etl::is_convertible_v<From, To> &&
-    requires {
-      static_cast<To>(etl::declval<From>());
-    };
+  concept convertible_to = etl::is_convertible_v<From, To> && requires { static_cast<To>(etl::declval<From>()); };
 
   //***************************************************************************
-  template< class T, typename U >
-  concept common_reference_with =
-    etl::same_as<etl::common_reference_t<T, U>, etl::common_reference_t<U, T>> &&
-    etl::convertible_to<T, etl::common_reference_t<T, U>> &&
-    etl::convertible_to<U, etl::common_reference_t<T, U>>;
+  template < class T, typename U >
+  concept common_reference_with = etl::same_as<etl::common_reference_t<T, U>, etl::common_reference_t<U, T> >
+                                  && etl::convertible_to<T, etl::common_reference_t<T, U> > && etl::convertible_to<U, etl::common_reference_t<T, U> >;
 
   //***************************************************************************
   template <typename T, typename U>
-  concept common_with =
-    etl::same_as<etl::common_type_t<T, U>, etl::common_type_t<U, T>> &&
-    requires {
-        static_cast<etl::common_type_t<T, U>>(etl::declval<T>());
-        static_cast<etl::common_type_t<T, U>>(etl::declval<U>());
-    } &&
-    etl::common_reference_with<
-        etl::add_lvalue_reference_t<const T>,
-        etl::add_lvalue_reference_t<const U>> &&
-    etl::common_reference_with<
-        etl::add_lvalue_reference_t<etl::common_type_t<T, U>>,
-        etl::common_reference_t<
-            etl::add_lvalue_reference_t<const T>,
-            etl::add_lvalue_reference_t<const U>>>;
+  concept common_with = etl::same_as<etl::common_type_t<T, U>, etl::common_type_t<U, T> > && requires {
+    static_cast<etl::common_type_t<T, U> >(etl::declval<T>());
+    static_cast<etl::common_type_t<T, U> >(etl::declval<U>());
+  } && etl::common_reference_with< etl::add_lvalue_reference_t<const T>, etl::add_lvalue_reference_t<const U> > && etl::common_reference_with< etl::add_lvalue_reference_t<etl::common_type_t<T, U> >, etl::common_reference_t< etl::add_lvalue_reference_t<const T>, etl::add_lvalue_reference_t<const U> > >;
 
   //***************************************************************************
   template <typename T>
@@ -131,15 +113,12 @@ namespace etl
   //***************************************************************************
   template <typename LHS, typename RHS>
   concept assignable_from =
-    etl::is_lvalue_reference_v<LHS> &&
-    etl::common_reference_with<
-        const etl::remove_reference_t<LHS>&,
-        const etl::remove_reference_t<RHS>&> &&
-    requires(LHS lhs, RHS&& rhs) {
-        { lhs = etl::forward<RHS>(rhs) } -> etl::same_as<LHS>;
-    };
+    etl::is_lvalue_reference_v<LHS> && etl::common_reference_with< const etl::remove_reference_t<LHS>&, const etl::remove_reference_t<RHS>&>
+    && requires(LHS lhs, RHS&& rhs) {
+         { lhs = etl::forward<RHS>(rhs) } -> etl::same_as<LHS>;
+       };
 
-#endif
-}
+  #endif
+} // namespace etl
 #endif
 #endif

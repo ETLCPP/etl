@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -93,9 +93,9 @@ namespace
     //*************************************************************************
     TEST(test_month_day_spaceship_operator)
     {
-      Chrono::month_day md1{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md1{Chrono::January, Chrono::day{15}};
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
-      Chrono::month_day md3{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md3{Chrono::January, Chrono::day{15}};
 
       CHECK_TRUE((md1 <=> md3) == std::strong_ordering::equal);   // Same month and day
       CHECK_TRUE((md1 <=> md2) == std::strong_ordering::less);    // Different month and day
@@ -107,9 +107,9 @@ namespace
     //*************************************************************************
     TEST(test_month_day_compare)
     {
-      Chrono::month_day md1{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md1{Chrono::January, Chrono::day{15}};
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
-      Chrono::month_day md3{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md3{Chrono::January, Chrono::day{15}};
 
       CHECK_TRUE(md1.compare(md3) == 0);  // Same month and day
       CHECK_TRUE(md1.compare(md2) == -1); // Different month and day
@@ -120,9 +120,9 @@ namespace
     //*************************************************************************
     TEST(test_month_day_equality_operator)
     {
-      Chrono::month_day md1{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md1{Chrono::January, Chrono::day{15}};
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
-      Chrono::month_day md3{Chrono::January,  Chrono::day{20}};
+      Chrono::month_day md3{Chrono::January, Chrono::day{20}};
 
       CHECK_TRUE(md1 == md1);  // January == January
       CHECK_FALSE(md1 == md2); // January != February
@@ -132,21 +132,21 @@ namespace
     //*************************************************************************
     TEST(test_month_day_not_equality_operator)
     {
-      Chrono::month_day md1{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md1{Chrono::January, Chrono::day{15}};
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
-      Chrono::month_day md3{Chrono::January,  Chrono::day{20}};
+      Chrono::month_day md3{Chrono::January, Chrono::day{20}};
 
-      CHECK_FALSE(md1 != md1);  // January == January
-      CHECK_TRUE(md1 != md2); // January != February
-      CHECK_TRUE(md1 != md3); // 20th != 15th in the same month
+      CHECK_FALSE(md1 != md1); // January == January
+      CHECK_TRUE(md1 != md2);  // January != February
+      CHECK_TRUE(md1 != md3);  // 20th != 15th in the same month
     }
 
     //*************************************************************************
     TEST(test_month_day_less_than_operator)
     {
-      Chrono::month_day md1{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md1{Chrono::January, Chrono::day{15}};
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
-      Chrono::month_day md3{Chrono::January,  Chrono::day{20}};
+      Chrono::month_day md3{Chrono::January, Chrono::day{20}};
 
       CHECK_TRUE(md1 < md2);  // January < February
       CHECK_TRUE(md1 < md3);  // 15th < 20th in the same month
@@ -157,9 +157,9 @@ namespace
     //*************************************************************************
     TEST(test_month_day_less_than_equal_operator)
     {
-      Chrono::month_day md1{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md1{Chrono::January, Chrono::day{15}};
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
-      Chrono::month_day md3{Chrono::January,  Chrono::day{20}};
+      Chrono::month_day md3{Chrono::January, Chrono::day{20}};
 
       CHECK_TRUE(md1 <= md1);  // January <= January
       CHECK_TRUE(md1 <= md2);  // January <= February
@@ -171,9 +171,9 @@ namespace
     //*************************************************************************
     TEST(test_month_day_greater_than_operator)
     {
-      Chrono::month_day md1{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md1{Chrono::January, Chrono::day{15}};
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
-      Chrono::month_day md3{Chrono::January,  Chrono::day{20}};
+      Chrono::month_day md3{Chrono::January, Chrono::day{20}};
 
       CHECK_TRUE(md2 > md1);  // February > January
       CHECK_TRUE(md3 > md1);  // 20th > 15th in the same month
@@ -184,9 +184,9 @@ namespace
     //*************************************************************************
     TEST(test_month_day_greater_than_equal_operator)
     {
-      Chrono::month_day md1{Chrono::January,  Chrono::day{15}};
+      Chrono::month_day md1{Chrono::January, Chrono::day{15}};
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
-      Chrono::month_day md3{Chrono::January,  Chrono::day{20}};
+      Chrono::month_day md3{Chrono::January, Chrono::day{20}};
 
       CHECK_TRUE(md1 >= md1);  // January >= January
       CHECK_TRUE(md2 >= md1);  // February >= January
@@ -211,4 +211,4 @@ namespace
       CHECK_EQUAL(Chrono::day{31}, md_max.day());
     }
   }
-}
+} // namespace

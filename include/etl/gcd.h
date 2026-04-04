@@ -32,9 +32,9 @@ SOFTWARE.
 #define ETL_GCD_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "absolute.h"
 #include "static_assert.h"
+#include "type_traits.h"
 
 namespace etl
 {
@@ -59,10 +59,7 @@ namespace etl
   // For unsigned types.
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    gcd(T a, T b) ETL_NOEXCEPT
+  ETL_NODISCARD ETL_CONSTEXPR14 typename etl::enable_if<etl::is_unsigned<T>::value, T>::type gcd(T a, T b) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral type required");
 
@@ -71,13 +68,13 @@ namespace etl
       return (a + b);
     }
 
-    while (b != 0) 
+    while (b != 0)
     {
       T t = b;
-      b = a % b;
-      a = t;
+      b   = a % b;
+      a   = t;
     }
-    
+
     return a;
   }
 
@@ -86,10 +83,7 @@ namespace etl
   // For signed types.
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_signed<T>::value, T>::type
-    gcd(T a, T b) ETL_NOEXCEPT
+  ETL_NODISCARD ETL_CONSTEXPR14 typename etl::enable_if<etl::is_signed<T>::value, T>::type gcd(T a, T b) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Integral type required");
 
@@ -108,10 +102,8 @@ namespace etl
   // Non-recursive, using an initializer_list.
   // Top level variadic function.
   //***************************************************************************
-  template<typename T, typename... TRest>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14
-  T gcd(T first, TRest... rest) ETL_NOEXCEPT
+  template <typename T, typename... TRest>
+  ETL_NODISCARD ETL_CONSTEXPR14 T gcd(T first, TRest... rest) ETL_NOEXCEPT
   {
     T result = first;
 
@@ -135,10 +127,8 @@ namespace etl
   // Recursive.
   // Top level variadic function.
   //***************************************************************************
-  template<typename T, typename... TRest>
-  ETL_NODISCARD
-  ETL_CONSTEXPR14
-  T gcd(T a, T b, TRest... rest) ETL_NOEXCEPT
+  template <typename T, typename... TRest>
+  ETL_NODISCARD ETL_CONSTEXPR14 T gcd(T a, T b, TRest... rest) ETL_NOEXCEPT
   {
     T gcd_ab = gcd(a, b);
 
@@ -155,7 +145,6 @@ namespace etl
   }
   #endif
 #endif
-}
+} // namespace etl
 
 #endif
-

@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -58,7 +58,7 @@ namespace
     //*************************************************************************
     TEST(test_constructor_with_month_and_day)
     {
-      Chrono::month_weekday mwd{ Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2) };
+      Chrono::month_weekday mwd{Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2)};
 
       CHECK_TRUE(mwd.ok()); // Valid month_weekday
       CHECK_EQUAL(Chrono::January, mwd.month());
@@ -85,7 +85,7 @@ namespace
     //*************************************************************************
     TEST(test_month_weekday_equality_operator)
     {
-      Chrono::month_weekday mwd1{Chrono::January,  Chrono::weekday_indexed(Chrono::Friday, 2)};
+      Chrono::month_weekday mwd1{Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2)};
       Chrono::month_weekday mwd2{Chrono::February, Chrono::weekday_indexed(Chrono::Friday, 2)};
 
       CHECK_TRUE(mwd1 == mwd1);  // January == January
@@ -96,7 +96,7 @@ namespace
     //*************************************************************************
     TEST(test_month_weekday_not_equality_operator)
     {
-      Chrono::month_weekday mwd1{Chrono::January,  Chrono::weekday_indexed(Chrono::Friday, 2)};
+      Chrono::month_weekday mwd1{Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2)};
       Chrono::month_weekday mwd2{Chrono::February, Chrono::weekday_indexed(Chrono::Friday, 2)};
 
       CHECK_FALSE(mwd1 != mwd1); // January == January
@@ -110,9 +110,10 @@ namespace
     {
       std::vector<size_t> hashes;
 
-      for (int i = 0; i < 256; ++i)
+      for (unsigned int i = 0U; i < 256U; ++i)
       {
-        hashes.push_back(etl::hash<Chrono::month_weekday>()(Chrono::month_weekday(Chrono::month((i % 12) + 1), Chrono::weekday_indexed(Chrono::weekday(i % 7), i % 5))));
+        hashes.push_back(etl::hash<Chrono::month_weekday>()(
+          Chrono::month_weekday(Chrono::month((i % 12U) + 1U), Chrono::weekday_indexed(Chrono::weekday(i % 7U), i % 5U))));
       }
 
       std::sort(hashes.begin(), hashes.end());
@@ -121,4 +122,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

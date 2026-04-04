@@ -55,10 +55,10 @@ namespace
     enum enum_type
     {
       Zero = 0,
-      One = 1,
-      Two = 2
+      One  = 1,
+      Two  = 2
     };
- 
+
     ETL_DECLARE_ENUM_TYPE(Enum, int)
     ETL_ENUM_TYPE(Zero, "0")
     ETL_ENUM_TYPE(One,  "1")
@@ -100,7 +100,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_is_always_lock_free)
     {
-      struct S 
+      struct S
       {
         int a;
         int b;
@@ -205,7 +205,7 @@ namespace
       etl::atomic<int> test(1);
 
       compare = 2;
-      test = 2;
+      test    = 2;
       CHECK_EQUAL(compare.load(), test.load());
     }
 
@@ -216,7 +216,7 @@ namespace
       etl::atomic<Enum> test(Enum::One);
 
       compare = Enum::Two;
-      test = Enum::Two;
+      test    = Enum::Two;
       CHECK_EQUAL(compare.load(), test.load());
     }
 
@@ -230,7 +230,7 @@ namespace
       etl::atomic<int*> test(&i);
 
       compare = &j;
-      test = &j;
+      test    = &j;
       CHECK_EQUAL(compare.load(), test.load());
     }
 
@@ -241,7 +241,7 @@ namespace
       etl::atomic<bool> test(false);
 
       compare = true;
-      test = true;
+      test    = true;
       CHECK_EQUAL(compare.load(), test.load());
     }
 
@@ -288,7 +288,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_pointer_pre_increment)
     {
-      int data[] = { 1, 2, 3, 4 };
+      int data[] = {1, 2, 3, 4};
 
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
@@ -300,7 +300,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_pointer_post_increment)
     {
-      int data[] = { 1, 2, 3, 4 };
+      int data[] = {1, 2, 3, 4};
 
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
@@ -312,7 +312,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_pointer_pre_decrement)
     {
-      int data[] = { 1, 2, 3, 4 };
+      int data[] = {1, 2, 3, 4};
 
       std::atomic<int*> compare(&data[3]);
       etl::atomic<int*> test(&data[3]);
@@ -324,7 +324,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_pointer_post_decrement)
     {
-      int data[] = { 1, 2, 3, 4 };
+      int data[] = {1, 2, 3, 4};
 
       std::atomic<int*> compare(&data[3]);
       etl::atomic<int*> test(&data[3]);
@@ -345,7 +345,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_pointer_fetch_add)
     {
-      int data[] = { 1, 2, 3, 4 };
+      int data[] = {1, 2, 3, 4};
 
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
@@ -368,7 +368,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_pointer_plus_equals)
     {
-      int data[] = { 1, 2, 3, 4 };
+      int data[] = {1, 2, 3, 4};
 
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
@@ -394,7 +394,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_pointer_minus_equals)
     {
-      int data[] = { 1, 2, 3, 4 };
+      int data[] = {1, 2, 3, 4};
 
       std::atomic<int*> compare(&data[3]);
       etl::atomic<int*> test(&data[3]);
@@ -453,7 +453,7 @@ namespace
     //*************************************************************************
     TEST(test_atomic_operator_pointer_fetch_sub)
     {
-      int data[] = { 1, 2, 3, 4 };
+      int data[] = {1, 2, 3, 4};
 
       std::atomic<int*> compare(&data[0]);
       etl::atomic<int*> test(&data[0]);
@@ -540,14 +540,14 @@ namespace
 
       int compare_expected = 2;
       int test_expected    = 2;
-      int desired  = 3;
+      int desired          = 3;
 
       bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
       bool test_result    = test.compare_exchange_weak(test_expected, desired);
 
-      CHECK_EQUAL(compare_result,   test_result);
+      CHECK_EQUAL(compare_result, test_result);
       CHECK_EQUAL(compare_expected, test_expected);
-      CHECK_EQUAL(compare.load(),   test.load());
+      CHECK_EQUAL(compare.load(), test.load());
     }
 
     //*************************************************************************
@@ -563,14 +563,14 @@ namespace
 
       int compare_expected = actual;
       int test_expected    = actual;
-      int desired  = 3;
+      int desired          = 3;
 
       bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
       bool test_result    = test.compare_exchange_weak(test_expected, desired);
 
-      CHECK_EQUAL(compare_result,   test_result);
+      CHECK_EQUAL(compare_result, test_result);
       CHECK_EQUAL(compare_expected, test_expected);
-      CHECK_EQUAL(compare.load(),   test.load());
+      CHECK_EQUAL(compare.load(), test.load());
     }
 
     //*************************************************************************
@@ -582,14 +582,14 @@ namespace
       Enum actual = Enum::One;
 
       compare = actual;
-      test = actual;
+      test    = actual;
 
       Enum compare_expected = actual;
-      Enum test_expected = actual;
-      Enum desired = Enum::Two;
+      Enum test_expected    = actual;
+      Enum desired          = Enum::Two;
 
       bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
-      bool test_result = test.compare_exchange_weak(test_expected, desired);
+      bool test_result    = test.compare_exchange_weak(test_expected, desired);
 
       CHECK_EQUAL(compare_result, test_result);
       CHECK_EQUAL(compare_expected, test_expected);
@@ -605,14 +605,14 @@ namespace
       bool actual = false;
 
       compare = actual;
-      test = actual;
+      test    = actual;
 
       bool compare_expected = actual;
-      bool test_expected = actual;
-      bool desired = true;
+      bool test_expected    = actual;
+      bool desired          = true;
 
       bool compare_result = compare.compare_exchange_weak(compare_expected, desired);
-      bool test_result = test.compare_exchange_weak(test_expected, desired);
+      bool test_result    = test.compare_exchange_weak(test_expected, desired);
 
       CHECK_EQUAL(compare_result, test_result);
       CHECK_EQUAL(compare_expected, test_expected);
@@ -628,14 +628,14 @@ namespace
       int actual = 1;
 
       compare = actual;
-      test = actual;
+      test    = actual;
 
       int compare_expected = 2;
-      int test_expected = 2;
-      int desired = 3;
+      int test_expected    = 2;
+      int desired          = 3;
 
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
-      bool test_result = test.compare_exchange_strong(test_expected, desired);
+      bool test_result    = test.compare_exchange_strong(test_expected, desired);
 
       CHECK_EQUAL(compare_result, test_result);
       CHECK_EQUAL(compare_expected, test_expected);
@@ -651,14 +651,14 @@ namespace
       int actual = 1;
 
       compare = actual;
-      test = actual;
+      test    = actual;
 
       int compare_expected = actual;
-      int test_expected = actual;
-      int desired = 3;
+      int test_expected    = actual;
+      int desired          = 3;
 
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
-      bool test_result = test.compare_exchange_strong(test_expected, desired);
+      bool test_result    = test.compare_exchange_strong(test_expected, desired);
 
       CHECK_EQUAL(compare_result, test_result);
       CHECK_EQUAL(compare_expected, test_expected);
@@ -674,18 +674,18 @@ namespace
       Enum actual = Enum::One;
 
       compare = actual;
-      test = actual;
+      test    = actual;
 
       Enum compare_expected = actual;
-      Enum test_expected = actual;
-      Enum desired = Enum::Two;
+      Enum test_expected    = actual;
+      Enum desired          = Enum::Two;
 
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
       bool test_result    = test.compare_exchange_strong(test_expected, desired);
 
-      CHECK_EQUAL(compare_result,   test_result);
+      CHECK_EQUAL(compare_result, test_result);
       CHECK_EQUAL(compare_expected, test_expected);
-      CHECK_EQUAL(compare.load(),   test.load());
+      CHECK_EQUAL(compare.load(), test.load());
     }
 
     //*************************************************************************
@@ -697,14 +697,14 @@ namespace
       bool actual = false;
 
       compare = actual;
-      test = actual;
+      test    = actual;
 
       bool compare_expected = actual;
-      bool test_expected = actual;
-      bool desired = true;
+      bool test_expected    = actual;
+      bool desired          = true;
 
       bool compare_result = compare.compare_exchange_strong(compare_expected, desired);
-      bool test_result = test.compare_exchange_strong(test_expected, desired);
+      bool test_result    = test.compare_exchange_strong(test_expected, desired);
 
       CHECK_EQUAL(compare_result, test_result);
       CHECK_EQUAL(compare_expected, test_expected);
@@ -712,20 +712,145 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_non_scalar_trivially_copyable_struct)
+    {
+      struct Data
+      {
+        int x;
+        int y;
+
+        bool operator==(const Data& other) const
+        {
+          return (x == other.x) && (y == other.y);
+        }
+      };
+
+      // Default construction
+      etl::atomic<Data> test;
+
+      Data d1 = {1, 2};
+      Data d2 = {3, 4};
+      Data d3 = {5, 6};
+
+      // Store and load
+      test.store(d1);
+      Data loaded = test.load();
+      CHECK_EQUAL(d1.x, loaded.x);
+      CHECK_EQUAL(d1.y, loaded.y);
+
+      // Assignment operator
+      test   = d2;
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Conversion operator
+      test.store(d1);
+      Data converted = static_cast<Data>(test);
+      CHECK_EQUAL(d1.x, converted.x);
+      CHECK_EQUAL(d1.y, converted.y);
+
+      // Exchange
+      test.store(d1);
+      Data old_val = test.exchange(d2);
+      CHECK_EQUAL(d1.x, old_val.x);
+      CHECK_EQUAL(d1.y, old_val.y);
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Compare exchange weak - pass (expected matches)
+      test.store(d1);
+      Data expected = d1;
+      bool result   = test.compare_exchange_weak(expected, d3);
+      CHECK_TRUE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d3.x, loaded.x);
+      CHECK_EQUAL(d3.y, loaded.y);
+
+      // Compare exchange weak - fail (expected does not match)
+      test.store(d1);
+      expected = d2;
+      result   = test.compare_exchange_weak(expected, d3);
+      CHECK_FALSE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d1.x, loaded.x);
+      CHECK_EQUAL(d1.y, loaded.y);
+
+      // Compare exchange weak with two memory order args - pass
+      test.store(d1);
+      expected = d1;
+      result   = test.compare_exchange_weak(expected, d2, etl::memory_order_seq_cst, etl::memory_order_seq_cst);
+      CHECK_TRUE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Compare exchange strong - pass (expected matches)
+      test.store(d1);
+      expected = d1;
+      result   = test.compare_exchange_strong(expected, d3);
+      CHECK_TRUE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d3.x, loaded.x);
+      CHECK_EQUAL(d3.y, loaded.y);
+
+      // Compare exchange strong - fail (expected does not match)
+      test.store(d1);
+      expected = d2;
+      result   = test.compare_exchange_strong(expected, d3);
+      CHECK_FALSE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d1.x, loaded.x);
+      CHECK_EQUAL(d1.y, loaded.y);
+
+      // Compare exchange strong with two memory order args - pass
+      test.store(d1);
+      expected = d1;
+      result   = test.compare_exchange_strong(expected, d2, etl::memory_order_seq_cst, etl::memory_order_seq_cst);
+      CHECK_TRUE(result);
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Explicit memory order on store/load
+      test.store(d3, etl::memory_order_release);
+      loaded = test.load(etl::memory_order_acquire);
+      CHECK_EQUAL(d3.x, loaded.x);
+      CHECK_EQUAL(d3.y, loaded.y);
+
+      // Exchange with explicit memory order
+      test.store(d1);
+      old_val = test.exchange(d2, etl::memory_order_acq_rel);
+      CHECK_EQUAL(d1.x, old_val.x);
+      CHECK_EQUAL(d1.y, old_val.y);
+      loaded = test.load();
+      CHECK_EQUAL(d2.x, loaded.x);
+      CHECK_EQUAL(d2.y, loaded.y);
+
+      // Value construction
+      etl::atomic<Data> test2(d1);
+      loaded = test2.load();
+      CHECK_EQUAL(d1.x, loaded.x);
+      CHECK_EQUAL(d1.y, loaded.y);
+    }
+
+    //*************************************************************************
 #if REALTIME_TEST
 
-#if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently supported
-  #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
-  #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1)
-  #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2)
-#else
-  #define RAISE_THREAD_PRIORITY
-  #define FIX_PROCESSOR_AFFINITY1
-  #define FIX_PROCESSOR_AFFINITY2
-#endif
+  #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently
+                                     // supported
+    #define RAISE_THREAD_PRIORITY   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
+    #define FIX_PROCESSOR_AFFINITY1 SetThreadAffinityMask(GetCurrentThread(), 1)
+    #define FIX_PROCESSOR_AFFINITY2 SetThreadAffinityMask(GetCurrentThread(), 2)
+  #else
+    #define RAISE_THREAD_PRIORITY
+    #define FIX_PROCESSOR_AFFINITY1
+    #define FIX_PROCESSOR_AFFINITY2
+  #endif
 
     etl::atomic_int32_t atomic_value = 0U;
-    etl::atomic<int>    start = false;
+    etl::atomic<int>    start        = false;
 
     void thread1()
     {
@@ -767,4 +892,4 @@ namespace
     }
 #endif
   }
-}
+} // namespace

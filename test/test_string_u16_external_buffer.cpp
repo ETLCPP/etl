@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <string>
-#include <array>
 #include <algorithm>
+#include <array>
 #include <atomic>
+#include <string>
 
-#include "etl/u16string.h"
 #include "etl/fnv_1.h"
+#include "etl/u16string.h"
 
 #undef STR
 #define STR(x) u##x
@@ -43,23 +43,23 @@ namespace
 {
   bool compares_agree(int result1, int result2)
   {
-    return ((result1 < 0)  && (result2 < 0)) ||
-           ((result1 == 0) && (result2 == 0)) ||
-           ((result1 > 0)  && (result2 > 0));
+    return ((result1 < 0) && (result2 < 0)) || ((result1 == 0) && (result2 == 0)) || ((result1 > 0) && (result2 > 0));
   }
 
   ////***********************************
-  //std::ostream& operator << (std::ostream& os, const etl::iu16string::value_type& c)
+  // std::ostream& operator << (std::ostream& os, const
+  // etl::iu16string::value_type& c)
   //{
-  //  os << uint16_t(c);
+  //   os << uint16_t(c);
 
   //  return os;
   //}
 
   ////***********************************
-  //std::ostream& operator << (std::ostream& os, const etl::iu16string::value_type* c)
+  // std::ostream& operator << (std::ostream& os, const
+  // etl::iu16string::value_type* c)
   //{
-  //  os << (void*)c;
+  //   os << (void*)c;
 
   //  return os;
   //}
@@ -79,7 +79,7 @@ namespace
     using TextBufferL = std::array<IText::value_type, SIZE_L + 1>;
     using TextBufferS = std::array<IText::value_type, SIZE_S + 1>;
 
-    using View     = etl::u16string_view;
+    using View = etl::u16string_view;
 
     TextSTD initial_text;
     TextSTD less_text;
@@ -124,7 +124,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_default_constructor)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       CHECK_EQUAL(text.size(), size_t(0));
       CHECK(text.empty());
@@ -138,7 +138,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_from_array)
     {
       value_t buffer[SIZE + 1];
-      Text text(buffer);
+      Text    text(buffer);
 
       CHECK_EQUAL(0U, text.size());
       CHECK(text.empty());
@@ -152,7 +152,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_default_constructor_use_buffer_and_size)
     {
       size_t length = etl::strlen(p_text);
-      Text text(p_text, length + 1);
+      Text   text(p_text, length + 1);
 
       CHECK_EQUAL(0U, text.size());
       CHECK(text.empty());
@@ -204,7 +204,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_array_buffer_text_same_buffer)
     {
-      // Test using the same buffer for source and storage, with size deduced from array
+      // Test using the same buffer for source and storage, with size deduced
+      // from array
       Text text(array_text, array_text);
 
       CHECK_EQUAL(etl::strlen(array_text), text.size());
@@ -218,9 +219,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_istring_with_array_buffer)
     {
-      value_t buffer[SIZE + 1];
+      value_t    buffer[SIZE + 1];
       TextBuffer source_buffer{0};
-      Text source(initial_text.c_str(), source_buffer.data(), source_buffer.size());
+      Text       source(initial_text.c_str(), source_buffer.data(), source_buffer.size());
 
       Text text(source, buffer);
 
@@ -247,12 +248,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_value_with_array_buffer)
     {
-      const size_t  INITIAL_SIZE = 5UL;
+      const size_t  INITIAL_SIZE  = 5UL;
       const value_t INITIAL_VALUE = STR('A');
       value_t       buffer[SIZE + 1];
 
       TextSTD compare_text(INITIAL_SIZE, INITIAL_VALUE);
-      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer);
+      Text    text(INITIAL_SIZE, INITIAL_VALUE, buffer);
 
       CHECK_EQUAL(INITIAL_SIZE, text.size());
       CHECK(!text.empty());
@@ -267,7 +268,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_string_view_with_array_buffer)
     {
       value_t buffer[SIZE + 1];
-      View view(initial_text.c_str());
+      View    view(initial_text.c_str());
 
       Text text(view, buffer);
 
@@ -300,7 +301,7 @@ namespace
     {
       value_t buffer[SIZE + 1];
 
-      Text text({ STR('H'), STR('e'), STR('l'), STR('l'), STR('o') }, buffer);
+      Text text({STR('H'), STR('e'), STR('l'), STR('l'), STR('o')}, buffer);
 
       CHECK_EQUAL(5U, text.size());
       CHECK(!text.empty());
@@ -313,11 +314,11 @@ namespace
     TEST(test_iterator_comparison_empty)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
-      CHECK(text.begin()   == text.end());
-      CHECK(text.cbegin()  == text.cend());
-      CHECK(text.rbegin()  == text.rend());
+      CHECK(text.begin() == text.end());
+      CHECK(text.cbegin() == text.cend());
+      CHECK(text.rbegin() == text.rend());
       CHECK(text.crbegin() == text.crend());
       CHECK_FALSE(text.is_truncated());
     }
@@ -325,12 +326,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_size_value)
     {
-      const size_t  INITIAL_SIZE = 5UL;
+      const size_t  INITIAL_SIZE  = 5UL;
       const value_t INITIAL_VALUE = STR('A');
       TextBuffer    buffer{0};
 
       TextSTD compare_text(INITIAL_SIZE, INITIAL_VALUE);
-      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
+      Text    text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
 
       CHECK(text.size() == INITIAL_SIZE);
       CHECK(!text.empty());
@@ -345,7 +346,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_size_excess)
     {
       TextBuffer buffer{0};
-      Text text(buffer.size() + 1, STR('A'), buffer.data(), buffer.size());
+      Text       text(buffer.size() + 1, STR('A'), buffer.data(), buffer.size());
 
       CHECK_EQUAL(buffer.size() - 1, text.size());
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -359,7 +360,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_char_pointer)
     {
       TextBuffer buffer{0};
-      TextSTD compare_text(initial_text.c_str());
+      TextSTD    compare_text(initial_text.c_str());
 
       Text text(initial_text.c_str(), buffer.data(), buffer.size());
 
@@ -376,7 +377,7 @@ namespace
       TextSTD compare_text(shorter_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(shorter_text.c_str(), buffer.data(), buffer.size());
+      Text       text(shorter_text.c_str(), buffer.data(), buffer.size());
 
       CHECK(!text.empty());
 
@@ -391,7 +392,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(longer_text.c_str(), buffer.data(), buffer.size());
+      Text       text(longer_text.c_str(), buffer.data(), buffer.size());
 
       CHECK(!text.empty());
 
@@ -410,7 +411,7 @@ namespace
       TextSTD compare_text(SIZE, STR('A'));
 
       TextBuffer buffer{0};
-      Text text(SIZE, STR('A'), buffer.data(), buffer.size());
+      Text       text(SIZE, STR('A'), buffer.data(), buffer.size());
 
       CHECK(!text.empty());
 
@@ -425,7 +426,7 @@ namespace
       TextSTD compare_text(SIZE, STR('A'));
 
       TextBuffer buffer{0};
-      Text text(SIZE + 1, STR('A'), buffer.data(), buffer.size());
+      Text       text(SIZE + 1, STR('A'), buffer.data(), buffer.size());
 
       CHECK(!text.empty());
 
@@ -444,7 +445,7 @@ namespace
       TextSTD compare_text(initial_text.c_str(), initial_text.size() / 2);
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), initial_text.size() / 2, buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), initial_text.size() / 2, buffer.data(), buffer.size());
 
       CHECK(!text.empty());
 
@@ -459,7 +460,7 @@ namespace
       TextSTD compare_text(initial_text.c_str(), initial_text.size());
 
       TextBuffer buffer{0};
-      Text text(longer_text.c_str(), longer_text.size(), buffer.data(), buffer.size());
+      Text       text(longer_text.c_str(), longer_text.size(), buffer.data(), buffer.size());
 
       CHECK(!text.empty());
 
@@ -478,7 +479,7 @@ namespace
       TextSTD compare_text(initial_text.begin(), initial_text.end());
 
       TextBuffer buffer{0};
-      Text text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
+      Text       text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
 
       CHECK(text.size() == SIZE);
       CHECK(!text.empty());
@@ -489,7 +490,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_range_excess)
     {
       TextBuffer buffer{0};
-      Text text(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
+      Text       text(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
 
       bool is_equal = Equal(initial_text, text);
       CHECK(is_equal);
@@ -506,7 +507,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_from_literal)
     {
       TextBuffer buffer{0};
-      Text text(STR("Hello World"), buffer.data(), buffer.size());
+      Text       text(STR("Hello World"), buffer.data(), buffer.size());
 
       bool is_equal = Equal(initial_text, text);
       CHECK(is_equal);
@@ -517,9 +518,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_constructor_from_etl_string_view)
     {
-      View view(initial_text.data(), initial_text.size());
+      View       view(initial_text.data(), initial_text.size());
       TextBuffer buffer{0};
-      Text text(view, buffer.data(), buffer.size());
+      Text       text(view, buffer.data(), buffer.size());
 
       bool is_equal = Equal(initial_text, text);
       CHECK(is_equal);
@@ -531,7 +532,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_from_range_16bit)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
+      Text       text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
 
       bool is_equal = Equal(initial_text, text);
       CHECK(is_equal);
@@ -545,7 +546,7 @@ namespace
     {
       const View u16View{STR("16-bit")};
       TextBuffer buffer{0};
-      Text text(u16View.begin(), u16View.end(), buffer.data(), buffer.size());
+      Text       text(u16View.begin(), u16View.end(), buffer.data(), buffer.size());
 
       bool is_equal = Equal(u16View, text);
       CHECK(is_equal);
@@ -558,8 +559,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_from_range_8bit)
     {
       std::string text8Bit{"8-bit"};
-      TextBuffer buffer{0};
-      Text text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
+      TextBuffer  buffer{0};
+      Text        text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
 
       bool is_equal = Equal(text8Bit, text);
       CHECK(is_equal);
@@ -572,8 +573,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_constructor_from_range_8bit_const)
     {
       std::string const text8Bit{"8-bit"};
-      TextBuffer buffer{0};
-      Text text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
+      TextBuffer        buffer{0};
+      Text              text(text8Bit.begin(), text8Bit.end(), buffer.data(), buffer.size());
 
       bool is_equal = Equal(text8Bit, text);
       CHECK(is_equal);
@@ -586,10 +587,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_constructor)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text text2(text, buffer2.data(), buffer2.size());
+      Text       text2(text, buffer2.data(), buffer2.size());
       CHECK(text2 == text);
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!text2.is_truncated());
@@ -600,11 +601,11 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_constructor_i)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
-      IText& itext = text;
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
+      IText&     itext = text;
 
       TextBuffer buffer2{0};
-      Text text2(itext, buffer2.data(), buffer2.size());
+      Text       text2(itext, buffer2.data(), buffer2.size());
       CHECK(text2 == text);
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(!text2.is_truncated());
@@ -615,13 +616,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_constructor_excess)
     {
       TextBuffer buffer{0};
-      Text  text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       TextBufferL bufferl{0};
-      Text textl(longer_text.c_str(), bufferl.data(), bufferl.size());
+      Text        textl(longer_text.c_str(), bufferl.data(), bufferl.size());
 
       TextBuffer buffer2{0};
-      Text  text2(textl, buffer2.data(), buffer2.size());
+      Text       text2(textl, buffer2.data(), buffer2.size());
       CHECK(text2 == text);
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK_TRUE(text2.is_truncated());
@@ -634,10 +635,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_constructor_from_truncated)
     {
       TextBuffer buffer{0};
-      Text  text(longer_text.c_str(), buffer.data(), buffer.size());
+      Text       text(longer_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text  text2(text, buffer2.data(), buffer2.size());
+      Text       text2(text, buffer2.data(), buffer2.size());
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK_TRUE(text2.is_truncated());
@@ -653,10 +654,10 @@ namespace
       TextSTD compare_text2(compare_text, 2, 4);
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text text2(text, buffer2.data(), buffer2.size(), 2, 4);
+      Text       text2(text, buffer2.data(), buffer2.size(), 2, 4);
 
       bool is_equal = Equal(compare_text2, text2);
       CHECK(is_equal);
@@ -672,10 +673,10 @@ namespace
       TextSTD compare_text2(compare_text, 2, 11);
 
       TextBufferL bufferl{0};
-      Text textl(longer_text.c_str(), bufferl.data(), bufferl.size());
+      Text        textl(longer_text.c_str(), bufferl.data(), bufferl.size());
 
       TextBuffer buffer{0};
-      Text text2(textl, buffer.data(), buffer.size(), 2, 12);
+      Text       text2(textl, buffer.data(), buffer.size(), 2, 12);
 
       bool is_equal = Equal(compare_text2, text2);
       CHECK(is_equal);
@@ -690,11 +691,11 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_initializer_list)
     {
-      TextSTD compare_text = { STR('H'), STR('e'), STR('l') , STR('l') , STR('o') };
+      TextSTD compare_text = {STR('H'), STR('e'), STR('l'), STR('l'), STR('o')};
 
-      std::initializer_list<Text::value_type> il = { STR('H'), STR('e'), STR('l') , STR('l') , STR('o') };
-      TextBuffer buffer{0};
-      Text text(il, buffer.data(), buffer.size());
+      std::initializer_list<Text::value_type> il = {STR('H'), STR('e'), STR('l'), STR('l'), STR('o')};
+      TextBuffer                              buffer{0};
+      Text                                    text(il, buffer.data(), buffer.size());
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
@@ -704,22 +705,20 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_construct_initializer_list_excess)
     {
-      TextSTD compare_text = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
-        STR('W'), STR('o'), STR('r'), STR('l'), STR('d') };
+      TextSTD compare_text = {STR('H'), STR('e'), STR('l'), STR('l'), STR('o'), STR(' '), STR('W'), STR('o'), STR('r'), STR('l'), STR('d')};
 
-      std::initializer_list<Text::value_type> il = { STR('H'), STR('e'), STR('l'), STR('l'), STR('o'),  STR(' '),
-        STR('W'), STR('o'), STR('r'), STR('l'), STR('d'),  STR(' '),
-        STR('T'), STR('h'), STR('e'), STR('r'), STR('e') };
-      TextBuffer buffer{0};
-      Text text(il, buffer.data(), buffer.size());
+      std::initializer_list<Text::value_type> il = {STR('H'), STR('e'), STR('l'), STR('l'), STR('o'), STR(' '), STR('W'), STR('o'), STR('r'),
+                                                    STR('l'), STR('d'), STR(' '), STR('T'), STR('h'), STR('e'), STR('r'), STR('e')};
+      TextBuffer                              buffer{0};
+      Text                                    text(il, buffer.data(), buffer.size());
 
       bool is_equal = Equal(compare_text, text);
       CHECK(is_equal);
-#if ETL_HAS_STRING_TRUNCATION_CHECKS
+  #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK_TRUE(text.is_truncated());
-#else
+  #else
       CHECK_FALSE(text.is_truncated());
-#endif
+  #endif
     }
 #endif
 
@@ -727,10 +726,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
+      Text       text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text other_text(buffer2.data(), buffer2.size());
+      Text       other_text(buffer2.data(), buffer2.size());
 
       other_text = text;
 
@@ -744,10 +743,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_excess)
     {
       TextBuffer buffer{0};
-      Text text(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
+      Text       text(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text other_text(buffer2.data(), buffer2.size());
+      Text       other_text(buffer2.data(), buffer2.size());
 
       other_text = text;
 
@@ -766,10 +765,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_iterface)
     {
       TextBuffer buffer{0};
-      Text text1(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
+      Text       text1(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text text2(buffer2.data(), buffer2.size());
+      Text       text2(buffer2.data(), buffer2.size());
 
       IText& itext1 = text1;
       IText& itext2 = text2;
@@ -789,10 +788,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_iterface_excess)
     {
       TextBuffer buffer{0};
-      Text text1(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
+      Text       text1(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text text2(buffer2.data(), buffer2.size());
+      Text       text2(buffer2.data(), buffer2.size());
 
       IText& itext1 = text1;
       IText& itext2 = text2;
@@ -815,14 +814,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_self_assignment)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
+      Text       text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text other_text(text, buffer2.data(), buffer2.size());
+      Text       other_text(text, buffer2.data(), buffer2.size());
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_text = other_text;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool is_equal = Equal(text, other_text);
 
@@ -835,14 +834,14 @@ namespace
     TEST_FIXTURE(SetupFixture, test_self_assignment_excess)
     {
       TextBuffer buffer{0};
-      Text text(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
+      Text       text(longer_text.begin(), longer_text.end(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text other_text(text, buffer2.data(), buffer2.size());
+      Text       other_text(text, buffer2.data(), buffer2.size());
 
-#include "etl/private/diagnostic_self_assign_overloaded_push.h" 
+#include "etl/private/diagnostic_self_assign_overloaded_push.h"
       other_text = other_text;
-#include "etl/private/diagnostic_pop.h" 
+#include "etl/private/diagnostic_pop.h"
 
       bool is_equal = Equal(text, other_text);
 
@@ -860,7 +859,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_from_literal)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text = STR("Hello World");
 
@@ -873,7 +872,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_from_literal_excess)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text = STR("Hello World There");
 
@@ -890,8 +889,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_from_literal_via_interface)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
-      IText& itext = text;
+      Text       text(buffer.data(), buffer.size());
+      IText&     itext = text;
 
       itext = STR("Hello World");
 
@@ -908,8 +907,8 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_from_literal_via_interface_excess)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
-      IText& itext = text;
+      Text       text(buffer.data(), buffer.size());
+      IText&     itext = text;
 
       itext = STR("Hello World There");
 
@@ -926,7 +925,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assignment_from_view)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text = View(STR("Hello World"));
 
@@ -939,26 +938,25 @@ namespace
     TEST_FIXTURE(SetupFixture, test_begin)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
       const Text constText(initial_text.c_str(), buffer2.data(), buffer2.size());
 
-      CHECK_EQUAL(&text[0],      text.begin());
+      CHECK_EQUAL(&text[0], text.begin());
       CHECK_EQUAL(&constText[0], constText.begin());
     }
-
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_end)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
       const Text constText(initial_text.c_str(), buffer2.data(), buffer2.size());
 
-      CHECK_EQUAL(text.begin() + text.size(),      text.end());
+      CHECK_EQUAL(text.begin() + text.size(), text.end());
       CHECK_EQUAL(constText.begin() + constText.size(), constText.end());
     }
 
@@ -966,10 +964,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_up)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t NEW_SIZE     = 8;
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), INITIAL_SIZE, buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), INITIAL_SIZE, buffer.data(), buffer.size());
       text.resize(NEW_SIZE);
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
@@ -979,12 +977,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_up_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 8;
+      const size_t  INITIAL_SIZE  = 5;
+      const size_t  NEW_SIZE      = 8;
       const value_t INITIAL_VALUE = STR('A');
 
       TextBuffer buffer{0};
-      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
+      Text       text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
       text.resize(NEW_SIZE, INITIAL_VALUE);
 
       std::array<value_t, NEW_SIZE> compare_text;
@@ -995,15 +993,14 @@ namespace
       CHECK_FALSE(text.is_truncated());
     }
 
-
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_excess)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t NEW_SIZE     = SIZE + 1;
 
       TextBuffer buffer{0};
-      Text text(INITIAL_SIZE, STR('A'), buffer.data(), buffer.size());
+      Text       text(INITIAL_SIZE, STR('A'), buffer.data(), buffer.size());
       text.resize(NEW_SIZE, STR('A'));
       CHECK_EQUAL(SIZE, text.size());
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -1017,10 +1014,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_down)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t NEW_SIZE     = 2;
 
       TextBuffer buffer{0};
-      Text text(INITIAL_SIZE, STR('A'), buffer.data(), buffer.size());
+      Text       text(INITIAL_SIZE, STR('A'), buffer.data(), buffer.size());
       text.resize(NEW_SIZE);
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
@@ -1030,12 +1027,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_resize_down_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = 2;
+      const size_t  INITIAL_SIZE  = 5;
+      const size_t  NEW_SIZE      = 2;
       const value_t INITIAL_VALUE = STR('A');
 
       TextBuffer buffer{0};
-      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
+      Text       text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
       text.resize(NEW_SIZE, INITIAL_VALUE);
 
       CHECK_EQUAL(text.size(), NEW_SIZE);
@@ -1051,17 +1048,17 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up)
     {
-      const size_t  INITIAL_SIZE = 5UL;
-      const size_t  NEW_SIZE = 8;
+      const size_t  INITIAL_SIZE  = 5UL;
+      const size_t  NEW_SIZE      = 8;
       const value_t INITIAL_VALUE = STR('A');
-      const value_t FILL_VALUE = STR('B');
+      const value_t FILL_VALUE    = STR('B');
 
       TextBuffer buffer{0};
-      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
+      Text       text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
 
       Text::pointer pbegin = &text.front();
-      Text::pointer pend = &text.back() + 1;
-      Text::pointer pmax = pbegin + text.max_size();
+      Text::pointer pend   = &text.back() + 1;
+      Text::pointer pmax   = pbegin + text.max_size();
 
       // Fill free space with a pattern.
       std::fill(pend, pmax, FILL_VALUE);
@@ -1082,10 +1079,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_up_excess)
     {
       const size_t INITIAL_SIZE = 5;
-      const size_t NEW_SIZE = SIZE + 1;
+      const size_t NEW_SIZE     = SIZE + 1;
 
       TextBuffer buffer{0};
-      Text text(INITIAL_SIZE, STR('A'), buffer.data(), buffer.size());
+      Text       text(INITIAL_SIZE, STR('A'), buffer.data(), buffer.size());
 
       text.uninitialized_resize(NEW_SIZE);
 
@@ -1095,17 +1092,17 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_uninitialized_resize_down)
     {
-      const size_t  INITIAL_SIZE = 5UL;
-      const size_t  NEW_SIZE = 2;
+      const size_t  INITIAL_SIZE  = 5UL;
+      const size_t  NEW_SIZE      = 2;
       const value_t INITIAL_VALUE = STR('A');
-      const value_t FILL_VALUE = STR('B');
+      const value_t FILL_VALUE    = STR('B');
 
       TextBuffer buffer{0};
-      Text text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
+      Text       text(INITIAL_SIZE, INITIAL_VALUE, buffer.data(), buffer.size());
 
       Text::pointer pbegin = &text.front();
-      Text::pointer pend = &text.back() + 1;
-      Text::pointer pmax = pbegin + text.max_size();
+      Text::pointer pend   = &text.back() + 1;
+      Text::pointer pmax   = pbegin + text.max_size();
 
       // Fill free space with a pattern.
       std::fill(pend, pmax, FILL_VALUE);
@@ -1128,17 +1125,19 @@ namespace
       const size_t NEW_SIZE     = 8UL;
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), INITIAL_SIZE, buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), INITIAL_SIZE, buffer.data(), buffer.size());
 
-      // Overwrite from index 1 to one less than the new size and set to that size.
-      text.resize_and_overwrite(NEW_SIZE, [](Text::pointer p, size_t n) noexcept
+      // Overwrite from index 1 to one less than the new size and set to that
+      // size.
+      text.resize_and_overwrite(NEW_SIZE,
+                                [](Text::pointer p, size_t n) noexcept
                                 {
                                   size_t i = 1;
                                   while (i < (n - 1))
                                   {
                                     p[i] = '1' + Text::value_type(i);
                                     ++i;
-                                  }   
+                                  }
 
                                   return i;
                                 });
@@ -1154,17 +1153,19 @@ namespace
       const size_t NEW_SIZE     = 3UL;
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), INITIAL_SIZE, buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), INITIAL_SIZE, buffer.data(), buffer.size());
 
-      // Overwrite from index 1 to one less than the new size and set to that size.
-      text.resize_and_overwrite(NEW_SIZE, [](Text::pointer p, size_t n) 
+      // Overwrite from index 1 to one less than the new size and set to that
+      // size.
+      text.resize_and_overwrite(NEW_SIZE,
+                                [](Text::pointer p, size_t n)
                                 {
                                   size_t i = 1;
                                   while (i < (n - 1))
                                   {
                                     p[i] = '1' + Text::value_type(i);
                                     ++i;
-                                  }   
+                                  }
 
                                   return i;
                                 });
@@ -1177,7 +1178,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_resize_and_overwrite_up_excess)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), initial_text.size(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), initial_text.size(), buffer.data(), buffer.size());
 
       CHECK_THROW(text.resize_and_overwrite(text.capacity() + 1, [](Text::pointer /*p*/, size_t n) { return n; }), etl::string_out_of_bounds);
     }
@@ -1186,7 +1187,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_empty_full)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.resize(text.max_size(), STR('A'));
 
       CHECK(!text.empty());
@@ -1197,7 +1198,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_empty_half)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.resize(text.max_size() / 2, STR('A'));
 
       CHECK(!text.empty());
@@ -1208,7 +1209,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_empty_empty)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       CHECK(text.empty());
       CHECK_FALSE(text.is_truncated());
@@ -1218,7 +1219,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_full_full)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.resize(text.max_size(), STR('A'));
 
       CHECK(text.full());
@@ -1229,7 +1230,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_full_half)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.resize(text.max_size() / 2, STR('A'));
 
       CHECK(!text.full());
@@ -1240,7 +1241,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_full_empty)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       CHECK(!text.full());
       CHECK_FALSE(text.is_truncated());
@@ -1252,7 +1253,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       for (size_t i = 0UL; i < text.size(); ++i)
       {
@@ -1288,7 +1289,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       for (size_t i = 0UL; i < text.size(); ++i)
       {
@@ -1324,13 +1325,13 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       CHECK(text.front() == compare_text.front());
       CHECK_FALSE(text.is_truncated());
 
       TextBuffer buffer2{0};
-      Text emptyText(buffer2.data(), buffer2.size());
+      Text       emptyText(buffer2.data(), buffer2.size());
       CHECK_THROW(emptyText.front(), etl::string_out_of_bounds);
     }
 
@@ -1356,13 +1357,13 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       CHECK(text.back() == compare_text.back());
       CHECK_FALSE(text.is_truncated());
 
       TextBuffer buffer2{0};
-      Text emptyText(buffer2.data(), buffer2.size());
+      Text       emptyText(buffer2.data(), buffer2.size());
       CHECK_THROW(emptyText.back(), etl::string_out_of_bounds);
     }
 
@@ -1388,11 +1389,9 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
+      Text       text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
 
-      bool is_equal = std::equal(text.data(),
-                                 text.data() + text.size(),
-                                 compare_text.begin());
+      bool is_equal = std::equal(text.data(), text.data() + text.size(), compare_text.begin());
 
       CHECK(is_equal);
       CHECK_FALSE(text.is_truncated());
@@ -1406,9 +1405,7 @@ namespace
       TextBuffer buffer{0};
       const Text text(compare_text.begin(), compare_text.end(), buffer.data(), buffer.size());
 
-      bool is_equal = std::equal(text.data(),
-                                 text.data() + text.size(),
-                                 compare_text.begin());
+      bool is_equal = std::equal(text.data(), text.data() + text.size(), compare_text.begin());
 
       CHECK(is_equal);
       CHECK_FALSE(text.is_truncated());
@@ -1420,12 +1417,12 @@ namespace
       TextSTD compare_input(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text input(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       input(initial_text.c_str(), buffer.data(), buffer.size());
 
       TextSTD compare_text;
 
       TextBuffer buffer2{0};
-      Text text(buffer2.data(), buffer2.size());
+      Text       text(buffer2.data(), buffer2.size());
 
       compare_text.assign(compare_input);
       text.assign(input);
@@ -1439,7 +1436,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_self_assign_string)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       text.assign(text);
 
@@ -1451,14 +1448,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_view)
     {
-      TextSTD compare_input(initial_text.c_str());
+      TextSTD    compare_input(initial_text.c_str());
       TextBuffer buffer{0};
-      Text input(initial_text.c_str(), buffer.data(), buffer.size());
-      View view(input);
+      Text       input(initial_text.c_str(), buffer.data(), buffer.size());
+      View       view(input);
 
-      TextSTD compare_text;
+      TextSTD    compare_text;
       TextBuffer buffer2{0};
-      Text text(buffer2.data(), buffer2.size());
+      Text       text(buffer2.data(), buffer2.size());
 
       compare_text.assign(compare_input);
       text.assign(view);
@@ -1474,12 +1471,12 @@ namespace
       TextSTD compare_input(initial_text.c_str());
 
       TextBufferL bufferl{0};
-      Text input(longer_text.c_str(), bufferl.data(), bufferl.size());
+      Text        input(longer_text.c_str(), bufferl.data(), bufferl.size());
 
       TextSTD compare_text;
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       compare_text.assign(compare_input);
       text.assign(input);
@@ -1499,7 +1496,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(initial_text.c_str());
 
       bool is_equal = Equal(compare_text, text);
@@ -1513,7 +1510,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(longer_text.c_str());
 
       bool is_equal = Equal(compare_text, text);
@@ -1531,7 +1528,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(initial_text.c_str(), initial_text.size());
 
       bool is_equal = Equal(compare_text, text);
@@ -1545,7 +1542,7 @@ namespace
       TextSTD compare_text(longer_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(longer_text.c_str(), longer_text.size());
 
       compare_text.resize(text.max_size());
@@ -1565,7 +1562,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text.assign(compare_text.begin(), compare_text.end());
 
@@ -1578,7 +1575,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_assign_range_excess)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text.assign(longer_text.begin(), longer_text.end());
 
@@ -1599,7 +1596,7 @@ namespace
       std::string text8Bit{"8-bit"};
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text.assign(text8Bit.begin(), text8Bit.end());
 
@@ -1615,7 +1612,7 @@ namespace
       std::string const text8Bit{"8-bit"};
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text.assign(text8Bit.begin(), text8Bit.end());
 
@@ -1628,14 +1625,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value)
     {
-      const size_t INITIAL_SIZE = 5;
+      const size_t  INITIAL_SIZE  = 5;
       const value_t INITIAL_VALUE = STR('A');
 
       std::array<value_t, INITIAL_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(INITIAL_SIZE, INITIAL_VALUE);
 
       CHECK(text.size() == INITIAL_SIZE);
@@ -1648,14 +1645,14 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_size_value_excess)
     {
-      const size_t INITIAL_SIZE = SIZE;
-      const size_t EXCESS_SIZE = SIZE + 1;
-      const value_t INITIAL_VALUE = STR('A');
+      const size_t                      INITIAL_SIZE  = SIZE;
+      const size_t                      EXCESS_SIZE   = SIZE + 1;
+      const value_t                     INITIAL_VALUE = STR('A');
       std::array<value_t, INITIAL_SIZE> compare_text;
       compare_text.fill(INITIAL_VALUE);
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(EXCESS_SIZE, INITIAL_VALUE);
 
       bool is_equal = Equal(compare_text, text);
@@ -1673,7 +1670,7 @@ namespace
       TextSTD compare_text;
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       for (size_t i = 0UL; i < SIZE; ++i)
       {
@@ -1699,7 +1696,7 @@ namespace
       TextSTD compare_text;
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       for (size_t i = 0UL; i < SIZE; ++i)
       {
@@ -1732,7 +1729,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.pop_back();
       compare_text.pop_back();
@@ -1750,21 +1747,21 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value)
     {
-      const size_t INITIAL_SIZE = 5;
-      const value_t INITIAL_VALUE  = STR('A');
+      const size_t  INITIAL_SIZE  = 5;
+      const value_t INITIAL_VALUE = STR('A');
 
       for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
       {
         TextSTD compare_text;
 
         TextBuffer buffer{0};
-        Text text(buffer.data(), buffer.size());
+        Text       text(buffer.data(), buffer.size());
 
         text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
         compare_text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
 
         text.insert(text.begin() + offset, INITIAL_VALUE);
-        compare_text.insert(compare_text.begin() + offset, INITIAL_VALUE);
+        compare_text.insert(compare_text.begin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
 
         CHECK_EQUAL(compare_text.size(), text.size());
 
@@ -1777,15 +1774,15 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
     {
-      const size_t INITIAL_SIZE = 5;
-      const value_t INITIAL_VALUE  = STR('A');
+      const size_t  INITIAL_SIZE  = 5;
+      const value_t INITIAL_VALUE = STR('A');
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
 
       TextBuffer buffer2{0};
-      Text text2(buffer2.data(), buffer2.size());
+      Text       text2(buffer2.data(), buffer2.size());
 
       CHECK_THROW(text.insert(text2.cbegin(), INITIAL_VALUE), etl::string_out_of_bounds);
     }
@@ -1793,15 +1790,15 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_excess)
     {
-      TextSTD compare_text(initial_text.begin(), initial_text.end());
+      TextSTD    compare_text(initial_text.begin(), initial_text.end());
       TextBuffer buffer{0};
-      Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
+      Text       text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
 
       const value_t INITIAL_VALUE = STR('A');
 
       size_t offset = 2UL;
       text.insert(text.cbegin() + offset, INITIAL_VALUE);
-      compare_text.insert(compare_text.cbegin() + offset, INITIAL_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INITIAL_VALUE);
       compare_text.erase(compare_text.cend() - 1);
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -1815,7 +1812,7 @@ namespace
 
       offset = 0;
       text.insert(text.cbegin() + offset, STR('A'));
-      compare_text.insert(compare_text.cbegin() + offset, STR('A'));
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), STR('A'));
       compare_text.erase(compare_text.cend() - 1);
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -1829,7 +1826,7 @@ namespace
 
       offset = text.size();
       text.insert(text.cbegin() + offset, STR('A'));
-      compare_text.insert(compare_text.cbegin() + offset, STR('A'));
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), STR('A'));
       compare_text.erase(compare_text.cend() - 1);
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -1845,12 +1842,12 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value)
     {
-      TextSTD compare_text;
+      TextSTD    compare_text;
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
-      const size_t INITIAL_SIZE = 5UL;
-      const size_t INSERT_SIZE = 3UL;
+      const size_t  INITIAL_SIZE  = 5UL;
+      const size_t  INSERT_SIZE   = 3UL;
       const value_t INITIAL_VALUE = STR('A');
 
       for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
@@ -1858,7 +1855,7 @@ namespace
         text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
         compare_text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
         text.insert(text.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
-        compare_text.insert(compare_text.begin() + offset, INSERT_SIZE, INITIAL_VALUE);
+        compare_text.insert(compare_text.begin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INITIAL_VALUE);
 
         CHECK_FALSE(text.is_truncated());
 
@@ -1870,16 +1867,16 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_outofbounds)
     {
-      const size_t INITIAL_SIZE = 5UL;
-      const size_t INSERT_SIZE = 3UL;
-      const value_t INITIAL_VALUE  = STR('A');
+      const size_t  INITIAL_SIZE  = 5UL;
+      const size_t  INSERT_SIZE   = 3UL;
+      const value_t INITIAL_VALUE = STR('A');
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
 
       TextBuffer buffer2{0};
-      Text text2(buffer2.data(), buffer2.size());
+      Text       text2(buffer2.data(), buffer2.size());
 
       CHECK_THROW(text.insert(text2.cbegin(), INSERT_SIZE, INITIAL_VALUE), etl::string_out_of_bounds);
     }
@@ -1887,17 +1884,17 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value_excess)
     {
-      TextSTD compare_text;
+      TextSTD    compare_text;
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
-      const size_t INSERT_SIZE = 4UL;
+      const size_t  INSERT_SIZE  = 4UL;
       const value_t INSERT_VALUE = STR('A');
 
       size_t offset = 0UL;
       compare_text.assign(initial_text.cbegin(), initial_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
-      compare_text.insert(compare_text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INSERT_VALUE);
       compare_text.erase(compare_text.cend() - INSERT_SIZE, compare_text.cend());
       text.insert(text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
 
@@ -1913,7 +1910,7 @@ namespace
       offset = 2;
       compare_text.assign(initial_text.cbegin(), initial_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
-      compare_text.insert(compare_text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INSERT_VALUE);
       compare_text.erase(compare_text.cend() - INSERT_SIZE, compare_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
       text.insert(text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
@@ -1930,7 +1927,7 @@ namespace
       offset = 4;
       compare_text.assign(initial_text.cbegin(), initial_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
-      compare_text.insert(compare_text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INSERT_VALUE);
       compare_text.erase(compare_text.cend() - INSERT_SIZE, compare_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
       text.insert(text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
@@ -1947,7 +1944,7 @@ namespace
       offset = text.size();
       compare_text.assign(initial_text.cbegin(), initial_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
-      compare_text.insert(compare_text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), INSERT_SIZE, INSERT_VALUE);
       compare_text.erase(compare_text.cend() - INSERT_SIZE, compare_text.cend());
       text.assign(initial_text.cbegin(), initial_text.cend());
       text.insert(text.cbegin() + offset, INSERT_SIZE, INSERT_VALUE);
@@ -1969,14 +1966,14 @@ namespace
 
       for (size_t offset = 0UL; offset <= INITIAL_SIZE; ++offset)
       {
-        TextSTD compare_text;
+        TextSTD    compare_text;
         TextBuffer buffer{0};
-        Text text(buffer.data(), buffer.size());
+        Text       text(buffer.data(), buffer.size());
 
         text.assign(initial_text.cbegin(), initial_text.cbegin() + INITIAL_SIZE);
         compare_text.assign(initial_text.cbegin(), initial_text.cbegin() + INITIAL_SIZE);
         text.insert(text.cbegin() + offset, insert_text.cbegin(), insert_text.cend());
-        compare_text.insert(compare_text.cbegin() + offset, insert_text.cbegin(), insert_text.cend());
+        compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), insert_text.cbegin(), insert_text.cend());
 
         CHECK_FALSE(text.is_truncated());
 
@@ -1991,11 +1988,11 @@ namespace
       const size_t INITIAL_SIZE = 5UL;
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
 
       TextBuffer buffer2{0};
-      Text text2(buffer2.data(), buffer2.size());
+      Text       text2(buffer2.data(), buffer2.size());
 
       CHECK_THROW(text.insert(text2.cbegin(), insert_text.cbegin(), insert_text.cend()), etl::string_out_of_bounds);
     }
@@ -2006,7 +2003,7 @@ namespace
       const size_t INITIAL_SIZE = 5UL;
 
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.assign(initial_text.begin(), initial_text.begin() + INITIAL_SIZE);
 
       CHECK_THROW(text.insert(text.cbegin(), insert_text.cend(), insert_text.cbegin()), etl::string_iterator);
@@ -2015,18 +2012,18 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range_excess)
     {
-      const size_t INITIAL_SIZE = 5UL;
+      const size_t  INITIAL_SIZE  = 5UL;
       const value_t INITIAL_VALUE = STR('A');
 
-      TextSTD compare_text;
+      TextSTD    compare_text;
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       size_t offset = 0UL;
 
       compare_text.assign(INITIAL_SIZE, INITIAL_VALUE);
       text.assign(INITIAL_SIZE, INITIAL_VALUE);
-      compare_text.insert(compare_text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), initial_text.cbegin(), initial_text.cend());
       compare_text.resize(initial_text.size());
       text.insert(text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
 
@@ -2043,7 +2040,7 @@ namespace
 
       compare_text.assign(INITIAL_SIZE, INITIAL_VALUE);
       text.assign(INITIAL_SIZE, INITIAL_VALUE);
-      compare_text.insert(compare_text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), initial_text.cbegin(), initial_text.cend());
       compare_text.resize(initial_text.size());
       text.insert(text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
 
@@ -2056,12 +2053,11 @@ namespace
       is_equal = Equal(compare_text, text);
       CHECK(is_equal);
 
-
       offset = 4;
 
       compare_text.assign(INITIAL_SIZE, INITIAL_VALUE);
       text.assign(INITIAL_SIZE, INITIAL_VALUE);
-      compare_text.insert(compare_text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
+      compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), initial_text.cbegin(), initial_text.cend());
       compare_text.resize(initial_text.size());
       text.insert(text.cbegin() + offset, initial_text.cbegin(), initial_text.cend());
 
@@ -2083,13 +2079,13 @@ namespace
 
       for (size_t offset = 10UL; offset < length; ++offset)
       {
-        TextSTD compare_text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        TextSTD     compare_text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         TextBufferL bufferl{0};
-        Text text(bufferl.data(), bufferl.size());
+        Text        text(bufferl.data(), bufferl.size());
         text = STR("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
         text.insert(text.cbegin() + offset, text.cbegin() + 5, text.cbegin() + 10);
-        compare_text.insert(compare_text.cbegin() + offset, compare_text.cbegin() + 5, compare_text.cbegin() + 10);
+        compare_text.insert(compare_text.cbegin() + static_cast<ptrdiff_t>(offset), compare_text.cbegin() + 5, compare_text.cbegin() + 10);
 
         bool is_equal = Equal(compare_text, text);
         CHECK(is_equal);
@@ -2102,13 +2098,13 @@ namespace
     {
       for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
-        TextSTD compare_text(short_text.cbegin(), short_text.cend());
+        TextSTD    compare_text(short_text.cbegin(), short_text.cend());
         TextBuffer buffer{0};
         buffer.fill(0);
         Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
 
         TextBuffer buffer2{0};
-        Text insert(insert_text.begin(), insert_text.end(), buffer2.data(), buffer2.size());
+        Text       insert(insert_text.begin(), insert_text.end(), buffer2.data(), buffer2.size());
 
         text.insert(offset, insert);
         compare_text.insert(offset, insert_text);
@@ -2125,7 +2121,7 @@ namespace
     {
       for (size_t offset = 0UL; offset <= short_text.size(); ++offset)
       {
-        TextSTD compare_text(short_text.cbegin(), short_text.cend());
+        TextSTD    compare_text(short_text.cbegin(), short_text.cend());
         TextBuffer buffer{0};
         buffer.fill(0);
         Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
@@ -2149,10 +2145,10 @@ namespace
         TextSTD compare_text(initial_text.cbegin(), initial_text.cend());
 
         TextBuffer buffer{0};
-        Text text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
+        Text       text(initial_text.begin(), initial_text.end(), buffer.data(), buffer.size());
 
         TextBuffer buffer2{0};
-        Text insert(insert_text.begin(), insert_text.end(), buffer2.data(), buffer2.size());
+        Text       insert(insert_text.begin(), insert_text.end(), buffer2.data(), buffer2.size());
 
         text.insert(offset, insert);
         compare_text.insert(offset, insert_text);
@@ -2176,10 +2172,10 @@ namespace
         TextSTD compare_text(short_text.cbegin(), short_text.cend());
 
         TextBuffer buffer{0};
-        Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
+        Text       text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
 
         TextBuffer buffer2{0};
-        Text insert(longer_text.begin(), longer_text.end(), buffer2.data(), buffer2.size());
+        Text       insert(longer_text.begin(), longer_text.end(), buffer2.data(), buffer2.size());
 
         insert.erase(insert.cbegin(), insert.cend());
         insert.append(insert_text.cbegin(), insert_text.cend());
@@ -2204,10 +2200,10 @@ namespace
       TextSTD compare_text(short_text.cbegin(), short_text.cend());
 
       TextBuffer buffer{0};
-      Text text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
+      Text       text(short_text.begin(), short_text.end(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text insert(insert_text.begin(), insert_text.end(), buffer2.data(), buffer2.size());
+      Text       insert(insert_text.begin(), insert_text.end(), buffer2.data(), buffer2.size());
 
       text.insert(0, insert, 0, insert.size());
       compare_text.insert(0, insert_text, 0, insert_text.size());
@@ -2248,10 +2244,10 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text append(insert_text.c_str(), buffer2.data(), buffer2.size());
+      Text       append(insert_text.c_str(), buffer2.data(), buffer2.size());
 
       // Non-overflow.
       compare_text.append(insert_text);
@@ -2282,10 +2278,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_append_view)
     {
-      TextSTD compare_text(short_text.c_str());
+      TextSTD    compare_text(short_text.c_str());
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
-      View view(insert_text.data(), insert_text.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
+      View       view(insert_text.data(), insert_text.size());
 
       // Non-overflow.
       compare_text.append(insert_text);
@@ -2318,10 +2314,10 @@ namespace
     {
 #include "etl/private/diagnostic_array_bounds_push.h"
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       TextBufferS buffers{0};
-      Text append(short_text.c_str(), buffers.data(), buffers.size());
+      Text        append(short_text.c_str(), buffers.data(), buffers.size());
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(append.is_truncated());
 #else
@@ -2343,7 +2339,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       // Non-overflow.
       compare_text.append(compare_text);
@@ -2376,10 +2372,10 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text append(insert_text.c_str(), buffer2.data(), buffer2.size());
+      Text       append(insert_text.c_str(), buffer2.data(), buffer2.size());
 
       // Whole string.
       compare_text.append(insert_text, 0, TextSTD::npos);
@@ -2424,10 +2420,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_append_truncated_string_subpos_sublen)
     {
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       TextBufferS buffer2{0};
-      Text append(short_text.c_str(), buffer2.data(), buffer2.size());
+      Text        append(short_text.c_str(), buffer2.data(), buffer2.size());
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
       CHECK(append.is_truncated());
 #else
@@ -2449,7 +2445,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       // Whole string.
       compare_text.append(insert_text.c_str());
@@ -2483,7 +2479,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       // Non-overflow.
       compare_text.append(5, STR('A'));
@@ -2517,10 +2513,10 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text append(insert_text.c_str(), buffer2.data(), buffer2.size());
+      Text       append(insert_text.c_str(), buffer2.data(), buffer2.size());
 
       compare_text.append(insert_text.begin(), insert_text.end());
       text.append(append.begin(), append.end());
@@ -2554,7 +2550,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(2, TextSTD::npos, TextSTD(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -2657,9 +2653,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_position_length_view)
     {
       // Non-overflow short text, npos.
-      TextSTD compare_text(short_text.c_str());
+      TextSTD    compare_text(short_text.c_str());
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(2, TextSTD::npos, TextSTD(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -2764,7 +2760,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, TextSTD(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -2823,9 +2819,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_first_last_view)
     {
       // Non-overflow short text.
-      TextSTD compare_text(short_text.c_str());
+      TextSTD    compare_text(short_text.c_str());
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, TextSTD(STR("Replace")));
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -2887,7 +2883,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(2, 4, TextSTD(STR("Replace")), 1, 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3002,9 +2998,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_replace_position_length_view_subposition_sublength)
     {
       // Non-overflow short text.
-      TextSTD compare_text(short_text.c_str());
+      TextSTD    compare_text(short_text.c_str());
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(2, 4, TextSTD(STR("Replace")), 1, 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3122,7 +3118,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(2, 4, TextSTD(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3240,7 +3236,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, TextSTD(STR("Replace")).c_str());
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3302,7 +3298,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(2, 4, TextSTD(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3420,7 +3416,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, TextSTD(STR("Replace")).c_str(), 5);
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3447,7 +3443,6 @@ namespace
 #else
       CHECK_FALSE(text.is_truncated());
 #endif
-#include "etl/private/diagnostic_pop.h"
 #include "etl/private/diagnostic_pop.h"
 
       // Non-overflow.
@@ -3480,7 +3475,6 @@ namespace
       CHECK_FALSE(text.is_truncated());
 #endif
 #include "etl/private/diagnostic_pop.h"
-#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -3490,7 +3484,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(2, 4, 7, STR('A'));
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3608,7 +3602,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.replace(compare_text.begin() + 2, compare_text.begin() + 4, 7, STR('A'));
       compare_text.resize(std::min(compare_text.size(), SIZE));
@@ -3670,7 +3664,7 @@ namespace
       TextSTD compare_text(short_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
 
       TextSTD replace(STR("Replace"));
       TextSTD replace_long(STR("Replace with some text"));
@@ -3734,7 +3728,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.erase(compare_text.begin() + 2);
       text.erase(text.begin() + 2);
@@ -3748,7 +3742,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_single_outofbounds)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       CHECK_THROW(text.erase(text.end()), etl::string_out_of_bounds);
       CHECK_THROW(text.erase(text.cend()), etl::string_out_of_bounds);
@@ -3758,7 +3752,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_single_position_outofbounds)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       CHECK_THROW(text.erase(text.size() + 1), etl::string_out_of_bounds);
     }
@@ -3769,7 +3763,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       compare_text.erase(compare_text.begin() + 2, compare_text.begin() + 4);
 
@@ -3784,9 +3778,9 @@ namespace
     TEST_FIXTURE(SetupFixture, test_erase_range_outofbounds)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
       TextBuffer buffer2{0};
-      Text text2(initial_text.c_str(), buffer2.data(), buffer2.size());
+      Text       text2(initial_text.c_str(), buffer2.data(), buffer2.size());
 
       CHECK_THROW(text.erase(text2.begin(), text2.end()), etl::string_out_of_bounds);
     }
@@ -3795,7 +3789,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_clear)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
       text.clear();
 
       CHECK_EQUAL(text.size(), size_t(0));
@@ -3808,7 +3802,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       bool is_equal = std::equal(text.begin(), text.end(), compare_text.begin());
       CHECK(is_equal);
@@ -3821,7 +3815,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       bool is_equal = std::equal(text.cbegin(), text.cend(), compare_text.cbegin());
       CHECK(is_equal);
@@ -3834,7 +3828,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       bool is_equal = std::equal(text.rbegin(), text.rend(), compare_text.rbegin());
       CHECK(is_equal);
@@ -3847,7 +3841,7 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       bool is_equal = std::equal(text.crbegin(), text.crend(), compare_text.crbegin());
       CHECK(is_equal);
@@ -3908,7 +3902,7 @@ namespace
       const Text initial(initial_text.c_str(), buffer2.data(), buffer2.size());
 
       // String-String
-      CHECK((less    < initial) == (less_text < initial_text));
+      CHECK((less < initial) == (less_text < initial_text));
       CHECK((initial < less) == (initial_text < less_text));
 
       TextBuffer buffer3;
@@ -3925,17 +3919,17 @@ namespace
       CHECK((initial < initial) == (initial_text < initial_text));
 
       // String-Pointer Pointer-String
-      CHECK((less          < pinitial_text) == (less_text     < pinitial_text));
-      CHECK((pinitial_text < less)          == (pinitial_text < less_text));
+      CHECK((less < pinitial_text) == (less_text < pinitial_text));
+      CHECK((pinitial_text < less) == (pinitial_text < less_text));
 
-      CHECK((greater       < pinitial_text) == (greater_text  < pinitial_text));
-      CHECK((pinitial_text < greater)       == (pinitial_text < greater_text));
+      CHECK((greater < pinitial_text) == (greater_text < pinitial_text));
+      CHECK((pinitial_text < greater) == (pinitial_text < greater_text));
 
-      CHECK((shorter       < pinitial_text) == (shorter_text  < pinitial_text));
-      CHECK((pinitial_text < shorter)       == (pinitial_text < shorter_text));
+      CHECK((shorter < pinitial_text) == (shorter_text < pinitial_text));
+      CHECK((pinitial_text < shorter) == (pinitial_text < shorter_text));
 
-      CHECK((initial       < pinitial_text) == (initial_text  < pinitial_text));
-      CHECK((pinitial_text < initial)       == (pinitial_text < initial_text));
+      CHECK((initial < pinitial_text) == (initial_text < pinitial_text));
+      CHECK((pinitial_text < initial) == (pinitial_text < initial_text));
     }
 
     //*************************************************************************
@@ -3948,8 +3942,8 @@ namespace
       const Text initial(initial_text.c_str(), buffer2.data(), buffer2.size());
 
       // String-String
-      CHECK((less    <= initial) == (less_text    <= initial_text));
-      CHECK((initial <= less)    == (initial_text <= less_text));
+      CHECK((less <= initial) == (less_text <= initial_text));
+      CHECK((initial <= less) == (initial_text <= less_text));
 
       TextBuffer buffer3;
       const Text greater(greater_text.c_str(), buffer3.data(), buffer3.size());
@@ -3965,17 +3959,17 @@ namespace
       CHECK((initial <= initial) == (initial_text <= initial_text));
 
       // String-Pointer Pointer-String
-      CHECK((less          <= pinitial_text) == (less_text     <= pinitial_text));
-      CHECK((pinitial_text <= less)          == (pinitial_text <= less_text));
+      CHECK((less <= pinitial_text) == (less_text <= pinitial_text));
+      CHECK((pinitial_text <= less) == (pinitial_text <= less_text));
 
-      CHECK((greater       <= pinitial_text) == (greater_text  <= pinitial_text));
-      CHECK((pinitial_text <= greater)       == (pinitial_text <= greater_text));
+      CHECK((greater <= pinitial_text) == (greater_text <= pinitial_text));
+      CHECK((pinitial_text <= greater) == (pinitial_text <= greater_text));
 
-      CHECK((shorter       <= pinitial_text) == (shorter_text  <= pinitial_text));
-      CHECK((pinitial_text <= shorter)       == (pinitial_text <= shorter_text));
+      CHECK((shorter <= pinitial_text) == (shorter_text <= pinitial_text));
+      CHECK((pinitial_text <= shorter) == (pinitial_text <= shorter_text));
 
-      CHECK((initial       <= pinitial_text) == (initial_text  <= pinitial_text));
-      CHECK((pinitial_text <= initial)       == (pinitial_text <= initial_text));
+      CHECK((initial <= pinitial_text) == (initial_text <= pinitial_text));
+      CHECK((pinitial_text <= initial) == (pinitial_text <= initial_text));
     }
 
     //*************************************************************************
@@ -4005,17 +3999,17 @@ namespace
       CHECK((initial > initial) == (initial_text > initial_text));
 
       // String-Pointer Pointer-String
-      CHECK((less          > pinitial_text) == (less_text     > pinitial_text));
-      CHECK((pinitial_text > less)          == (pinitial_text > less_text));
+      CHECK((less > pinitial_text) == (less_text > pinitial_text));
+      CHECK((pinitial_text > less) == (pinitial_text > less_text));
 
-      CHECK((greater       > pinitial_text) == (greater_text  > pinitial_text));
-      CHECK((pinitial_text > greater)       == (pinitial_text > greater_text));
+      CHECK((greater > pinitial_text) == (greater_text > pinitial_text));
+      CHECK((pinitial_text > greater) == (pinitial_text > greater_text));
 
-      CHECK((shorter       > pinitial_text) == (shorter_text  > pinitial_text));
-      CHECK((pinitial_text > shorter)       == (pinitial_text > shorter_text));
+      CHECK((shorter > pinitial_text) == (shorter_text > pinitial_text));
+      CHECK((pinitial_text > shorter) == (pinitial_text > shorter_text));
 
-      CHECK((initial       > pinitial_text) == (initial_text  > pinitial_text));
-      CHECK((pinitial_text > initial)       == (pinitial_text > initial_text));
+      CHECK((initial > pinitial_text) == (initial_text > pinitial_text));
+      CHECK((pinitial_text > initial) == (pinitial_text > initial_text));
     }
 
     //*************************************************************************
@@ -4028,8 +4022,8 @@ namespace
       const Text initial(initial_text.begin(), initial_text.end(), buffer2.data(), buffer2.size());
 
       // String-String
-      CHECK((less    >= initial) == (less_text    >= initial_text));
-      CHECK((initial >= less)    == (initial_text >= less_text));
+      CHECK((less >= initial) == (less_text >= initial_text));
+      CHECK((initial >= less) == (initial_text >= less_text));
 
       TextBuffer buffer3;
       const Text greater(greater_text.begin(), greater_text.end(), buffer3.data(), buffer3.size());
@@ -4045,17 +4039,17 @@ namespace
       CHECK((initial >= initial) == (initial_text >= initial_text));
 
       // String-Pointer Pointer-String
-      CHECK((less          >= pinitial_text) == (less_text     >= pinitial_text));
-      CHECK((pinitial_text >= less)          == (pinitial_text >= less_text));
+      CHECK((less >= pinitial_text) == (less_text >= pinitial_text));
+      CHECK((pinitial_text >= less) == (pinitial_text >= less_text));
 
-      CHECK((greater       >= pinitial_text) == (greater_text  >= pinitial_text));
-      CHECK((pinitial_text >= greater)       == (pinitial_text >= greater_text));
+      CHECK((greater >= pinitial_text) == (greater_text >= pinitial_text));
+      CHECK((pinitial_text >= greater) == (pinitial_text >= greater_text));
 
-      CHECK((shorter       >= pinitial_text) == (shorter_text  >= pinitial_text));
-      CHECK((pinitial_text >= shorter)       == (pinitial_text >= shorter_text));
+      CHECK((shorter >= pinitial_text) == (shorter_text >= pinitial_text));
+      CHECK((pinitial_text >= shorter) == (pinitial_text >= shorter_text));
 
-      CHECK((initial       >= pinitial_text) == (initial_text  >= pinitial_text));
-      CHECK((pinitial_text >= initial)       == (pinitial_text >= initial_text));
+      CHECK((initial >= pinitial_text) == (initial_text >= pinitial_text));
+      CHECK((pinitial_text >= initial) == (pinitial_text >= initial_text));
     }
 
     //*************************************************************************
@@ -4064,23 +4058,21 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       value_t buffer1[SIZE];
       value_t buffer2[SIZE];
 
-      size_t length1 = compare_text.copy(buffer1, 5, 2);
+      size_t length1   = compare_text.copy(buffer1, 5, 2);
       buffer1[length1] = STR('\0');
 
-      size_t length2 = text.copy(buffer2, 5, 2);
+      size_t length2   = text.copy(buffer2, 5, 2);
       buffer2[length2] = STR('\0');
 
       CHECK_EQUAL(length1, length2);
       CHECK_FALSE(text.is_truncated());
 
-      bool is_equal = std::equal(buffer1,
-                                 buffer1 + length1,
-                                 buffer2);
+      bool is_equal = std::equal(buffer1, buffer1 + length1, buffer2);
       CHECK(is_equal);
     }
 
@@ -4088,7 +4080,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_copy_start_pos_too_large)
     {
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       value_t buffer1[SIZE];
 
@@ -4104,23 +4096,21 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       value_t buffer1[SIZE];
       value_t buffer2[SIZE];
 
-      size_t length1 = compare_text.copy(buffer1, TextSTD::npos, 2);
+      size_t length1   = compare_text.copy(buffer1, TextSTD::npos, 2);
       buffer1[length1] = STR('\0');
 
-      size_t length2 = text.copy(buffer2, Text::npos, 2);
+      size_t length2   = text.copy(buffer2, Text::npos, 2);
       buffer2[length2] = STR('\0');
 
       CHECK_EQUAL(length1, length2);
       CHECK_FALSE(text.is_truncated());
 
-      bool is_equal = std::equal(buffer1,
-                                 buffer1 + length1,
-                                 buffer2);
+      bool is_equal = std::equal(buffer1, buffer1 + length1, buffer2);
       CHECK(is_equal);
     }
 
@@ -4130,23 +4120,21 @@ namespace
       TextSTD compare_text(initial_text.c_str());
 
       TextBuffer buffer{0};
-      Text text(initial_text.c_str(), buffer.data(), buffer.size());
+      Text       text(initial_text.c_str(), buffer.data(), buffer.size());
 
       value_t buffer1[SIZE];
       value_t buffer2[SIZE];
 
-      size_t length1 = compare_text.copy(buffer1, SIZE, 2);
+      size_t length1   = compare_text.copy(buffer1, SIZE, 2);
       buffer1[length1] = STR('\0');
 
-      size_t length2 = text.copy(buffer2, SIZE, 2);
+      size_t length2   = text.copy(buffer2, SIZE, 2);
       buffer2[length2] = STR('\0');
 
       CHECK_EQUAL(length1, length2);
       CHECK_FALSE(text.is_truncated());
 
-      bool is_equal = std::equal(buffer1,
-                                 buffer1 + length1,
-                                 buffer2);
+      bool is_equal = std::equal(buffer1, buffer1 + length1, buffer2);
       CHECK(is_equal);
     }
 
@@ -4158,12 +4146,12 @@ namespace
       TextSTD compare_needle(STR("needle"));
 
       TextBuffer buffer{0};
-      Text needle(STR("needle"), buffer.data(), buffer.size());
+      Text       needle(STR("needle"), buffer.data(), buffer.size());
 
       TextSTD compare_haystack(the_haystack);
 
       TextBufferL buffer2{0};
-      Text haystack(the_haystack, buffer2.data(), buffer2.size());
+      Text        haystack(the_haystack, buffer2.data(), buffer2.size());
 
       size_t position1 = 0;
       size_t position2 = 0;
@@ -4190,11 +4178,11 @@ namespace
       const value_t the_haystack[] = STR("A haystack with a needle and another needle");
 
       TextSTD compare_needle(STR("needle"));
-      View needle_view(STR("needle"));
+      View    needle_view(STR("needle"));
 
-      TextSTD compare_haystack(the_haystack);
+      TextSTD     compare_haystack(the_haystack);
       TextBufferL buffer2{0};
-      Text haystack(the_haystack, buffer2.data(), buffer2.size());
+      Text        haystack(the_haystack, buffer2.data(), buffer2.size());
 
       size_t position1 = 0UL;
       size_t position2 = 0UL;
@@ -4225,7 +4213,7 @@ namespace
       TextSTD compare_haystack(the_haystack);
 
       TextBufferL buffer{0};
-      Text haystack(the_haystack, buffer.data(), buffer.size());
+      Text        haystack(the_haystack, buffer.data(), buffer.size());
 
       size_t position1 = 0;
       size_t position2 = 0;
@@ -4241,8 +4229,8 @@ namespace
       position2 = haystack.find(needle, position2 + 1);
       CHECK_EQUAL(IText::npos, position2);
 
-      const value_t *pin = STR("pin");
-      position2 = haystack.find(pin);
+      const value_t* pin = STR("pin");
+      position2          = haystack.find(pin);
       CHECK_EQUAL(IText::npos, position2);
     }
 
@@ -4256,7 +4244,7 @@ namespace
       TextSTD compare_haystack(the_haystack);
 
       TextBufferL buffer{0};
-      Text haystack(the_haystack, buffer.data(), buffer.size());
+      Text        haystack(the_haystack, buffer.data(), buffer.size());
 
       size_t position1 = 0;
       size_t position2 = 0;
@@ -4272,8 +4260,8 @@ namespace
       position2 = haystack.find(needle, position2 + 1, 3);
       CHECK_EQUAL(IText::npos, position2);
 
-      const value_t *pin = STR("pin");
-      position2 = haystack.find(pin, 0, 3);
+      const value_t* pin = STR("pin");
+      position2          = haystack.find(pin, 0, 3);
       CHECK_EQUAL(IText::npos, position2);
     }
 
@@ -4281,13 +4269,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_contains_string)
     {
       TextBufferL buffer1{0};
-      TextBuffer buffer2{0};
-      TextBuffer buffer3{0};
-      TextBuffer buffer4{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
-      Text needle(STR("needle"), buffer2.data(), buffer2.size());
-      Text pin(STR("pin"), buffer3.data(), buffer3.size());
-      Text excess(STR("A really gigantic pin or needle that's really really big"), buffer4.data(), buffer4.size());
+      TextBuffer  buffer2{0};
+      TextBuffer  buffer3{0};
+      TextBuffer  buffer4{0};
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        needle(STR("needle"), buffer2.data(), buffer2.size());
+      Text        pin(STR("pin"), buffer3.data(), buffer3.size());
+      Text        excess(STR("A really gigantic pin or needle that's really really big"), buffer4.data(), buffer4.size());
 
       CHECK_TRUE(haystack.contains(needle));
       CHECK_FALSE(haystack.contains(pin));
@@ -4298,7 +4286,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_contains_view)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.contains(View(STR("needle"))));
       CHECK_FALSE(haystack.contains(View(STR("pin"))));
@@ -4308,7 +4296,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_contains_pointer)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.contains(STR("needle")));
       CHECK_FALSE(haystack.contains(STR("pin")));
@@ -4318,7 +4306,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_contains_char)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.contains(STR('l')));
       CHECK_FALSE(haystack.contains(STR('p')));
@@ -4328,13 +4316,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_starts_with_string)
     {
       TextBufferL buffer1{0};
-      TextBuffer buffer2{0};
-      TextBuffer buffer3{0};
-      TextBuffer buffer4{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
-      Text start(STR("A haystack"), buffer2.data(), buffer2.size());
-      Text not_start(STR("a needle"), buffer3.data(), buffer3.size());
-      Text excess(STR("Really gigantic text that's really really big"), buffer4.data(), buffer4.size());
+      TextBuffer  buffer2{0};
+      TextBuffer  buffer3{0};
+      TextBuffer  buffer4{0};
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        start(STR("A haystack"), buffer2.data(), buffer2.size());
+      Text        not_start(STR("a needle"), buffer3.data(), buffer3.size());
+      Text        excess(STR("Really gigantic text that's really really big"), buffer4.data(), buffer4.size());
 
       CHECK_TRUE(haystack.starts_with(start));
       CHECK_FALSE(haystack.starts_with(not_start));
@@ -4345,7 +4333,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_starts_with_view)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.starts_with(View(STR("A haystack"))));
       CHECK_FALSE(haystack.starts_with(View(STR("a needle"))));
@@ -4356,7 +4344,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_starts_with_pointer)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.starts_with(STR("A haystack")));
       CHECK_FALSE(haystack.starts_with(STR("a needle")));
@@ -4367,7 +4355,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_starts_with_char)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.starts_with(haystack[0]));
       CHECK_FALSE(haystack.starts_with(haystack[1]));
@@ -4377,13 +4365,13 @@ namespace
     TEST_FIXTURE(SetupFixture, test_ends_with_string)
     {
       TextBufferL buffer1{0};
-      TextBuffer buffer2{0};
-      TextBuffer buffer3{0};
-      TextBuffer buffer4{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
-      Text end(STR("else"), buffer2.data(), buffer2.size());
-      Text not_end(STR("needle"), buffer3.data(), buffer3.size());
-      Text excess(STR("Really gigantic text that's really really big"), buffer4.data(), buffer4.size());
+      TextBuffer  buffer2{0};
+      TextBuffer  buffer3{0};
+      TextBuffer  buffer4{0};
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        end(STR("else"), buffer2.data(), buffer2.size());
+      Text        not_end(STR("needle"), buffer3.data(), buffer3.size());
+      Text        excess(STR("Really gigantic text that's really really big"), buffer4.data(), buffer4.size());
 
       CHECK_TRUE(haystack.ends_with(end));
       CHECK_FALSE(haystack.ends_with(not_end));
@@ -4394,7 +4382,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_ends_with_view)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.ends_with(View(STR("else"))));
       CHECK_FALSE(haystack.ends_with(View(STR("needle"))));
@@ -4405,7 +4393,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_ends_with_pointer)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.ends_with(STR("else")));
       CHECK_FALSE(haystack.ends_with(STR("needle")));
@@ -4416,7 +4404,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_ends_with_char)
     {
       TextBufferL buffer1{0};
-      Text haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
+      Text        haystack(STR("A haystack with a needle and nothing else"), buffer1.data(), buffer1.size());
 
       CHECK_TRUE(haystack.ends_with(haystack[haystack.size() - 1]));
       CHECK_FALSE(haystack.ends_with(haystack[haystack.size() - 2]));
@@ -4430,12 +4418,12 @@ namespace
       TextSTD compare_needle(STR("needle"));
 
       TextBufferL buffer{0};
-      Text needle(STR("needle"), buffer.data(), buffer.size());
+      Text        needle(STR("needle"), buffer.data(), buffer.size());
 
       TextSTD compare_haystack(the_haystack);
 
       TextBufferL buffer2{0};
-      Text haystack(the_haystack, buffer2.data(), buffer2.size());
+      Text        haystack(the_haystack, buffer2.data(), buffer2.size());
 
       size_t position1 = TextSTD::npos;
       size_t position2 = TextL::npos;
@@ -4449,7 +4437,7 @@ namespace
       CHECK_EQUAL(position1, position2);
 
       TextBufferL buffer3;
-      Text pin(STR("pin"), buffer3.data(), buffer3.size());
+      Text        pin(STR("pin"), buffer3.data(), buffer3.size());
       position2 = haystack.rfind(pin);
       CHECK_EQUAL(IText::npos, position2);
     }
@@ -4460,10 +4448,10 @@ namespace
       const value_t the_haystack[] = STR("A haystack with a needle and another needle");
 
       TextSTD compare_needle(STR("needle"));
-      View needle_view(STR("needle"));
+      View    needle_view(STR("needle"));
 
       TextSTD compare_haystack(the_haystack);
-      TextL haystack(the_haystack);
+      TextL   haystack(the_haystack);
 
       size_t position1 = TextSTD::npos;
       size_t position2 = TextL::npos;
@@ -4489,7 +4477,7 @@ namespace
       TextSTD compare_haystack(the_haystack);
 
       TextBufferL buffer{0};
-      Text haystack(the_haystack, buffer.data(), buffer.size());
+      Text        haystack(the_haystack, buffer.data(), buffer.size());
 
       const value_t needle[] = STR("needle");
 
@@ -4505,7 +4493,7 @@ namespace
       CHECK_EQUAL(position1, position2);
 
       TextBufferL buffer2{0};
-      Text pin(STR("pin"), buffer2.data(), buffer2.size());
+      Text        pin(STR("pin"), buffer2.data(), buffer2.size());
       position2 = haystack.rfind(pin);
       CHECK_EQUAL(IText::npos, position2);
     }
@@ -4518,7 +4506,7 @@ namespace
       TextSTD compare_haystack(the_haystack);
 
       TextBufferL buffer{0};
-      Text haystack(the_haystack, buffer.data(), buffer.size());
+      Text        haystack(the_haystack, buffer.data(), buffer.size());
 
       const value_t needle[] = STR("needle");
 
@@ -4546,7 +4534,7 @@ namespace
       TextSTD compare_haystack(the_haystack);
 
       TextBufferL buffer{0};
-      Text haystack(the_haystack, buffer.data(), buffer.size());
+      Text        haystack(the_haystack, buffer.data(), buffer.size());
 
       size_t position1 = TextSTD::npos;
       size_t position2 = TextL::npos;
@@ -4569,70 +4557,70 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(TextSTD(STR("ABCDEF")));
-      result = text.compare(TextL(STR("ABCDEF")));
+      result         = text.compare(TextL(STR("ABCDEF")));
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(TextSTD(STR("ABCDEE")));
-      result = text.compare(TextL(STR("ABCDEE")));
+      result         = text.compare(TextL(STR("ABCDEE")));
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(TextSTD(STR("ABCDEG")));
-      result = text.compare(TextL(STR("ABCDEG")));
+      result         = text.compare(TextL(STR("ABCDEG")));
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(TextSTD(STR("ABCDE")));
-      result = text.compare(TextL(STR("ABCDE")));
+      result         = text.compare(TextL(STR("ABCDE")));
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(TextSTD(STR("ABCDEFG")));
-      result = text.compare(TextL(STR("ABCDEFG")));
+      result         = text.compare(TextL(STR("ABCDEFG")));
       CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_view)
     {
-      TextSTD compare_text(STR("ABCDEF"));
+      TextSTD    compare_text(STR("ABCDEF"));
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(TextSTD(STR("ABCDEF")));
-      result = text.compare(View(STR("ABCDEF")));
+      result         = text.compare(View(STR("ABCDEF")));
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(TextSTD(STR("ABCDEE")));
-      result = text.compare(View(STR("ABCDEE")));
+      result         = text.compare(View(STR("ABCDEE")));
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(TextSTD(STR("ABCDEG")));
-      result = text.compare(View(STR("ABCDEG")));
+      result         = text.compare(View(STR("ABCDEG")));
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(TextSTD(STR("ABCDE")));
-      result = text.compare(View(STR("ABCDE")));
+      result         = text.compare(View(STR("ABCDE")));
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(TextSTD(STR("ABCDEFG")));
-      result = text.compare(View(STR("ABCDEFG")));
+      result         = text.compare(View(STR("ABCDEFG")));
       CHECK(compares_agree(compare_result, result));
     }
 
@@ -4642,70 +4630,70 @@ namespace
       TextSTD compare_text(STR("xxxABCDEFyyy"));
 
       TextBuffer buffer{0};
-      Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
+      Text       text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEF")));
-      result = text.compare(3, 6, TextL(STR("ABCDEF")));
+      result         = text.compare(3, 6, TextL(STR("ABCDEF")));
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEE")));
-      result = text.compare(3, 6, TextL(STR("ABCDEE")));
+      result         = text.compare(3, 6, TextL(STR("ABCDEE")));
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEG")));
-      result = text.compare(3, 6, TextL(STR("ABCDEG")));
+      result         = text.compare(3, 6, TextL(STR("ABCDEG")));
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDE")));
-      result = text.compare(3, 6, TextL(STR("ABCDE")));
+      result         = text.compare(3, 6, TextL(STR("ABCDE")));
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEFG")));
-      result = text.compare(3, 6, TextL(STR("ABCDEFG")));
+      result         = text.compare(3, 6, TextL(STR("ABCDEFG")));
       CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_position_length_view)
     {
-      TextSTD compare_text(STR("xxxABCDEFyyy"));
+      TextSTD    compare_text(STR("xxxABCDEFyyy"));
       TextBuffer buffer{0};
-      Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
+      Text       text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEF")));
-      result = text.compare(3, 6, View(STR("ABCDEF")));
+      result         = text.compare(3, 6, View(STR("ABCDEF")));
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEE")));
-      result = text.compare(3, 6, View(STR("ABCDEE")));
+      result         = text.compare(3, 6, View(STR("ABCDEE")));
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEG")));
-      result = text.compare(3, 6, View(STR("ABCDEG")));
+      result         = text.compare(3, 6, View(STR("ABCDEG")));
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDE")));
-      result = text.compare(3, 6, View(STR("ABCDE")));
+      result         = text.compare(3, 6, View(STR("ABCDE")));
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEFG")));
-      result = text.compare(3, 6, View(STR("ABCDEFG")));
+      result         = text.compare(3, 6, View(STR("ABCDEFG")));
       CHECK(compares_agree(compare_result, result));
     }
 
@@ -4715,70 +4703,70 @@ namespace
       TextSTD compare_text(STR("xxxABCDEFyyy"));
 
       TextBuffer buffer{0};
-      Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
+      Text       text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEFbb")), 2, 6);
-      result = text.compare(3, 6, TextL(STR("aaABCDEFbb")), 2, 6);
+      result         = text.compare(3, 6, TextL(STR("aaABCDEFbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEEbb")), 2, 6);
-      result = text.compare(3, 6, TextL(STR("aaABCDEEbb")), 2, 6);
+      result         = text.compare(3, 6, TextL(STR("aaABCDEEbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEGbb")), 2, 6);
-      result = text.compare(3, 6, TextL(STR("aaABCDEGbb")), 2, 6);
+      result         = text.compare(3, 6, TextL(STR("aaABCDEGbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEbb")), 2, 5);
-      result = text.compare(3, 6, TextL(STR("aaABCDEbb")), 2, 5);
+      result         = text.compare(3, 6, TextL(STR("aaABCDEbb")), 2, 5);
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEFGbb")), 2, 7);
-      result = text.compare(3, 6, TextL(STR("aaABCDEFGbb")), 2, 7);
+      result         = text.compare(3, 6, TextL(STR("aaABCDEFGbb")), 2, 7);
       CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_compare_position_length_view_subposition_sublength)
     {
-      TextSTD compare_text(STR("xxxABCDEFyyy"));
+      TextSTD    compare_text(STR("xxxABCDEFyyy"));
       TextBuffer buffer{0};
-      Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
+      Text       text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEFbb")), 2, 6);
-      result = text.compare(3, 6, View(STR("aaABCDEFbb")), 2, 6);
+      result         = text.compare(3, 6, View(STR("aaABCDEFbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEEbb")), 2, 6);
-      result = text.compare(3, 6, View(STR("aaABCDEEbb")), 2, 6);
+      result         = text.compare(3, 6, View(STR("aaABCDEEbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEGbb")), 2, 6);
-      result = text.compare(3, 6, View(STR("aaABCDEGbb")), 2, 6);
+      result         = text.compare(3, 6, View(STR("aaABCDEGbb")), 2, 6);
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEbb")), 2, 5);
-      result = text.compare(3, 6, View(STR("aaABCDEbb")), 2, 5);
+      result         = text.compare(3, 6, View(STR("aaABCDEbb")), 2, 5);
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, TextSTD(STR("aaABCDEFGbb")), 2, 7);
-      result = text.compare(3, 6, View(STR("aaABCDEFGbb")), 2, 7);
+      result         = text.compare(3, 6, View(STR("aaABCDEFGbb")), 2, 7);
       CHECK(compares_agree(compare_result, result));
     }
 
@@ -4788,34 +4776,34 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(STR("ABCDEF"));
-      result = text.compare(STR("ABCDEF"));
+      result         = text.compare(STR("ABCDEF"));
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(STR("ABCDEE"));
-      result = text.compare(STR("ABCDEE"));
+      result         = text.compare(STR("ABCDEE"));
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(STR("ABCDEG"));
-      result = text.compare(STR("ABCDEG"));
+      result         = text.compare(STR("ABCDEG"));
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(STR("ABCDE"));
-      result = text.compare(STR("ABCDE"));
+      result         = text.compare(STR("ABCDE"));
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(STR("ABCDEFG"));
-      result = text.compare(STR("ABCDEFG"));
+      result         = text.compare(STR("ABCDEFG"));
       CHECK(compares_agree(compare_result, result));
     }
 
@@ -4825,34 +4813,34 @@ namespace
       TextSTD compare_text(STR("xxxABCDEFyyy"));
 
       TextBuffer buffer{0};
-      Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
+      Text       text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(3, 6, STR("ABCDEF"));
-      result = text.compare(3, 6, STR("ABCDEF"));
+      result         = text.compare(3, 6, STR("ABCDEF"));
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, STR("ABCDEE"));
-      result = text.compare(3, 6, STR("ABCDEE"));
+      result         = text.compare(3, 6, STR("ABCDEE"));
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, STR("ABCDEG"));
-      result = text.compare(3, 6, STR("ABCDEG"));
+      result         = text.compare(3, 6, STR("ABCDEG"));
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, STR("ABCDE"));
-      result = text.compare(3, 6, STR("ABCDE"));
+      result         = text.compare(3, 6, STR("ABCDE"));
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, STR("ABCDEFG"));
-      result = text.compare(3, 6, STR("ABCDEFG"));
+      result         = text.compare(3, 6, STR("ABCDEFG"));
       CHECK(compares_agree(compare_result, result));
     }
 
@@ -4862,34 +4850,34 @@ namespace
       TextSTD compare_text(STR("xxxABCDEFyyy"));
 
       TextBuffer buffer{0};
-      Text text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
+      Text       text(STR("xxxABCDEFyyy"), buffer.data(), buffer.size());
 
       int compare_result;
       int result;
 
       // Equal.
       compare_result = compare_text.compare(3, 6, STR("ABCDEFbb"), 6);
-      result = text.compare(3, 6, STR("ABCDEFbb"), 6);
+      result         = text.compare(3, 6, STR("ABCDEFbb"), 6);
       CHECK(compares_agree(compare_result, result));
 
       // Less.
       compare_result = compare_text.compare(3, 6, STR("ABCDEEbb"), 6);
-      result = text.compare(3, 6, STR("ABCDEEbb"), 6);
+      result         = text.compare(3, 6, STR("ABCDEEbb"), 6);
       CHECK(compares_agree(compare_result, result));
 
       // Greater.
       compare_result = compare_text.compare(3, 6, STR("ABCDEGbb"), 6);
-      result = text.compare(3, 6, STR("ABCDEGbb"), 6);
+      result         = text.compare(3, 6, STR("ABCDEGbb"), 6);
       CHECK(compares_agree(compare_result, result));
 
       // Shorter.
       compare_result = compare_text.compare(3, 6, STR("ABCDEbb"), 5);
-      result = text.compare(3, 6, STR("ABCDEbb"), 5);
+      result         = text.compare(3, 6, STR("ABCDEbb"), 5);
       CHECK(compares_agree(compare_result, result));
 
       // Longer.
       compare_result = compare_text.compare(3, 6, STR("ABCDEFGbb"), 7);
-      result = text.compare(3, 6, STR("ABCDEFGbb"), 7);
+      result         = text.compare(3, 6, STR("ABCDEFGbb"), 7);
       CHECK(compares_agree(compare_result, result));
     }
 
@@ -4899,7 +4887,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_of(TextSTD(STR("ZCXF")));
       size_t position2 = text.find_first_of(TextL(STR("ZCXF")));
@@ -4927,9 +4915,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_of_view_position)
     {
-      TextSTD compare_text(STR("ABCDEF"));
+      TextSTD    compare_text(STR("ABCDEF"));
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_of(TextSTD(STR("ZCXF")));
       size_t position2 = text.find_first_of(View(STR("ZCXF")));
@@ -4960,7 +4948,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_of(STR("ZCXF"));
       size_t position2 = text.find_first_of(STR("ZCXF"));
@@ -4991,7 +4979,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_of(STR("ZCXF"), 0, 4);
       size_t position2 = text.find_first_of(STR("ZCXF"), 0, 4);
@@ -5027,7 +5015,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_of(STR('C'));
       size_t position2 = text.find_first_of(STR('C'));
@@ -5068,7 +5056,7 @@ namespace
       TextSTD compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_of(TextSTD(STR("ZCXE")));
       size_t position2 = text.find_last_of(TextL(STR("ZCXE")));
@@ -5101,9 +5089,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_of_view_position)
     {
-      TextSTD compare_text(STR("ABCDEFABCDE"));
+      TextSTD    compare_text(STR("ABCDEFABCDE"));
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_of(TextSTD(STR("ZCXE")));
       size_t position2 = text.find_last_of(View(STR("ZCXE")));
@@ -5139,7 +5127,7 @@ namespace
       TextSTD compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_of(STR("ZCXE"));
       size_t position2 = text.find_last_of(STR("ZCXE"));
@@ -5180,7 +5168,7 @@ namespace
       TextSTD compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_of(STR("AZCXE"), 0, 4);
       size_t position2 = text.find_last_of(STR("AZCXE"), 0, 4);
@@ -5221,7 +5209,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_of(STR('C'));
       size_t position2 = text.find_last_of(STR('C'));
@@ -5262,7 +5250,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_not_of(TextSTD(STR("ZAXB")));
       size_t position2 = text.find_first_not_of(TextL(STR("ZAXB")));
@@ -5295,9 +5283,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_first_not_of_view_position)
     {
-      TextSTD compare_text(STR("ABCDEF"));
+      TextSTD    compare_text(STR("ABCDEF"));
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_not_of(TextSTD(STR("ZAXB")));
       size_t position2 = text.find_first_not_of(View(STR("ZAXB")));
@@ -5333,7 +5321,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_not_of(STR("ZAXB"));
       size_t position2 = text.find_first_not_of(STR("ZAXB"));
@@ -5369,7 +5357,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_not_of(STR("ZAXB"), 0, 4);
       size_t position2 = text.find_first_not_of(STR("ZAXB"), 0, 4);
@@ -5410,7 +5398,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_first_not_of(STR('A'));
       size_t position2 = text.find_first_not_of(STR('A'));
@@ -5451,7 +5439,7 @@ namespace
       TextSTD compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_not_of(TextSTD(STR("ZEXD")));
       size_t position2 = text.find_last_not_of(TextL(STR("ZEXD")));
@@ -5484,9 +5472,9 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_find_last_not_of_view_position)
     {
-      TextSTD compare_text(STR("ABCDEFABCDE"));
+      TextSTD    compare_text(STR("ABCDEFABCDE"));
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_not_of(TextSTD(STR("ZEXD")));
       size_t position2 = text.find_last_not_of(View(STR("ZEXD")));
@@ -5522,7 +5510,7 @@ namespace
       TextSTD compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_not_of(STR("ZEXD"));
       size_t position2 = text.find_last_not_of(STR("ZEXD"));
@@ -5558,7 +5546,7 @@ namespace
       TextSTD compare_text(STR("ABCDEFABCDE"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEFABCDE"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_not_of(STR("ZEXD"), 0, 4);
       size_t position2 = text.find_last_not_of(STR("ZEXD"), 0, 4);
@@ -5592,7 +5580,7 @@ namespace
       TextSTD compare_text(STR("ABCDEF"));
 
       TextBuffer buffer{0};
-      Text text(STR("ABCDEF"), buffer.data(), buffer.size());
+      Text       text(STR("ABCDEF"), buffer.data(), buffer.size());
 
       size_t position1 = compare_text.find_last_not_of(STR('F'));
       size_t position2 = text.find_last_not_of(STR('F'));
@@ -5632,14 +5620,15 @@ namespace
     {
       // Test with actual string type.
       TextBuffer buffer{0};
-      Text text(STR("ABCDEFHIJKL"), buffer.data(), buffer.size());
-      size_t hash = etl::hash<Text>()(text);
-      size_t compare_hash = etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()), reinterpret_cast<const uint8_t*>(text.data_end()));
+      Text       text(STR("ABCDEFHIJKL"), buffer.data(), buffer.size());
+      size_t     hash = etl::hash<Text>()(text);
+      size_t     compare_hash =
+        etl::private_hash::generic_hash<size_t>(reinterpret_cast<const uint8_t*>(text.data()), reinterpret_cast<const uint8_t*>(text.data_end()));
       CHECK_EQUAL(compare_hash, hash);
 
       // Test with interface string type.
       IText& itext = text;
-      hash = etl::hash<IText>()(itext);
+      hash         = etl::hash<IText>()(itext);
       CHECK_EQUAL(compare_hash, hash);
     }
 
@@ -5647,7 +5636,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_memcpy_repair)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text.assign(STR("ABCDEF"));
 
@@ -5665,7 +5654,7 @@ namespace
       bool is_equal = Equal(text, rtext);
       CHECK(is_equal);
 
-      text = STR("GHIJKL");
+      text     = STR("GHIJKL");
       is_equal = Equal(text, rtext);
       CHECK(is_equal);
     }
@@ -5674,7 +5663,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_memcpy_repair_virtual)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
 
       text.assign(STR("ABCDEF"));
 
@@ -5692,7 +5681,7 @@ namespace
       bool is_equal = Equal(text, itext);
       CHECK(is_equal);
 
-      text = STR("GHIJKL");
+      text     = STR("GHIJKL");
       is_equal = Equal(text, itext);
       CHECK(is_equal);
     }
@@ -5702,7 +5691,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_truncate_over_many_operations)
     {
       TextBuffer buffer{0};
-      Text text(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text(short_text.c_str(), buffer.data(), buffer.size());
       CHECK_FALSE(text.is_truncated());
 
       text.insert(3, initial_text.c_str());
@@ -5728,10 +5717,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_add_from_truncated)
     {
       TextBuffer buffer{0};
-      Text  text1(short_text.c_str(), buffer.data(), buffer.size());
+      Text       text1(short_text.c_str(), buffer.data(), buffer.size());
 
       TextBufferS buffers{0};
-      Text text2(short_text.c_str(), buffers.data(), buffers.size());
+      Text        text2(short_text.c_str(), buffers.data(), buffers.size());
 
       CHECK(!text1.is_truncated());
       CHECK_TRUE(text2.is_truncated());
@@ -5746,10 +5735,10 @@ namespace
     TEST_FIXTURE(SetupFixture, test_add_to_truncated)
     {
       TextBuffer buffer{0};
-      Text text1(longer_text.c_str(), buffer.data(), buffer.size());
+      Text       text1(longer_text.c_str(), buffer.data(), buffer.size());
 
       TextBuffer buffer2{0};
-      Text text2(short_text.c_str(), buffer2.data(), buffer2.size());
+      Text       text2(short_text.c_str(), buffer2.data(), buffer2.size());
 
       CHECK(text1.is_truncated());
       CHECK(!text2.is_truncated());
@@ -5767,7 +5756,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_clear_truncated)
     {
       TextBuffer buffer{0};
-      Text text(longer_text.c_str(), buffer.data(), buffer.size());
+      Text       text(longer_text.c_str(), buffer.data(), buffer.size());
       CHECK_TRUE(text.is_truncated());
 
       text.clear_truncated();
@@ -5806,7 +5795,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_secure_after_assign)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.set_secure();
       text.assign(STR("ABCDEF"));
 
@@ -5821,7 +5810,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_secure_after_resize_down)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.set_secure();
       text.assign(STR("ABCDEF"));
 
@@ -5836,7 +5825,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_secure_after_erase)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.set_secure();
       text.assign(STR("ABCDEF"));
 
@@ -5853,7 +5842,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_secure_after_replace)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.set_secure();
       text.assign(STR("ABCDEF"));
 
@@ -5870,7 +5859,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_secure_after_clear)
     {
       TextBuffer buffer{0};
-      Text text(buffer.data(), buffer.size());
+      Text       text(buffer.data(), buffer.size());
       text.set_secure();
       text.assign(STR("ABCDEF"));
 
@@ -5887,18 +5876,18 @@ namespace
     TEST_FIXTURE(SetupFixture, test_secure_flag_after_copy)
     {
       TextBuffer buffer1{0};
-      Text text1(STR("Hello World"), buffer1.data(), buffer1.size());
+      Text       text1(STR("Hello World"), buffer1.data(), buffer1.size());
       text1.set_secure();
 
       TextBuffer buffer2{0};
-      Text text2(text1, buffer2.data(), buffer2.size());
+      Text       text2(text1, buffer2.data(), buffer2.size());
 
       TextBuffer buffer3;
-      Text text3(buffer3.data(), buffer3.size());
+      Text       text3(buffer3.data(), buffer3.size());
       text3 = text1;
 
       TextBuffer buffer4;
-      Text text4(text1, buffer4.data(), buffer4.size(), 6U, 2U);
+      Text       text4(text1, buffer4.data(), buffer4.size(), 6U, 2U);
 
       CHECK(text2.is_secure());
       CHECK(text3.is_secure());
@@ -5911,8 +5900,8 @@ namespace
     {
       TextBuffer buffer1{0};
       TextBuffer buffer2{0};
-      Text text(buffer1.data(), buffer1.size());
-      Text empty(buffer2.data(), buffer2.size());
+      Text       text(buffer1.data(), buffer1.size());
+      Text       empty(buffer2.data(), buffer2.size());
 
       text.initialize_free_space();
 
@@ -5930,9 +5919,9 @@ namespace
     {
       TextBuffer buffer1{0};
       TextBuffer buffer2{0};
-      Text initial(STR("ABC"), buffer1.data(), buffer1.size());
-      Text empty(buffer2.data(), buffer2.size());
-      Text text(initial, buffer2.data(), buffer2.size());
+      Text       initial(STR("ABC"), buffer1.data(), buffer1.size());
+      Text       empty(buffer2.data(), buffer2.size());
+      Text       text(initial, buffer2.data(), buffer2.size());
 
       text.initialize_free_space();
 
@@ -5949,7 +5938,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_update_after_c_string_max_size)
     {
       TextBuffer buffer1{0};
-      Text text(buffer1.data(), buffer1.size());
+      Text       text(buffer1.data(), buffer1.size());
 
       text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size(), STR('A'));
@@ -5963,7 +5952,7 @@ namespace
     TEST_FIXTURE(SetupFixture, test_update_after_c_string_shorter_size)
     {
       TextBuffer buffer1{0};
-      Text text(buffer1.data(), buffer1.size());
+      Text       text(buffer1.data(), buffer1.size());
 
       text.initialize_free_space();
       std::fill(text.data(), text.data() + text.max_size() - 1, STR('A'));
@@ -5977,10 +5966,11 @@ namespace
     TEST_FIXTURE(SetupFixture, test_update_after_c_string_greater_size)
     {
       TextBuffer buffer1{0};
-      Text text(buffer1.data(), buffer1.size());
+      Text       text(buffer1.data(), buffer1.size());
 
       text.initialize_free_space();
-      std::fill(text.data(), text.data() + text.max_size() + 1, STR('A')); // Overwrites to terminating null.
+      std::fill(text.data(), text.data() + text.max_size() + 1,
+                STR('A')); // Overwrites to terminating null.
       text.trim_to_terminator();
 
 #if ETL_HAS_STRING_TRUNCATION_CHECKS
@@ -5991,4 +5981,4 @@ namespace
       CHECK_EQUAL(text.max_size(), text.size());
     }
   }
-}
+} // namespace

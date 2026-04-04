@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_COMPARE_INCLUDED
 
 #include "platform.h"
-#include "parameter_type.h"
 #include "functional.h"
+#include "parameter_type.h"
 
 //*****************************************************************************
 ///\defgroup compare compare
@@ -107,6 +107,6 @@ namespace etl
   {
     return etl::compare<T>::cmp(lhs, rhs);
   }
-}
+} // namespace etl
 
 #endif

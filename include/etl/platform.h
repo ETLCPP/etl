@@ -45,9 +45,9 @@ SOFTWARE.
   #define __STDC_CONSTANT_MACROS
 #endif
 
+#include <limits.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <limits.h>
 
 #include "file_error_numbers.h"
 
@@ -92,7 +92,8 @@ SOFTWARE.
 //*************************************
 // Helper macros, so we don't have to use double negatives.
 // The ETL will use the STL, unless ETL_NO_STL is defined.
-// With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL' in the code.
+// With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL'
+// in the code.
 #if defined(ETL_NO_STL)
   #define ETL_USING_STL     0
   #define ETL_NOT_USING_STL 1
@@ -133,7 +134,6 @@ SOFTWARE.
   #define ETL_NOT_USING_20BIT_TYPES 1
 #endif
 
-
 //*************************************
 // Helper macro for ETL_NO_64BIT_TYPES.
 #if defined(ETL_NO_64BIT_TYPES)
@@ -155,12 +155,24 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Figure out things about the compiler, if haven't already done so in etl_profile.h
-#include "profiles/determine_compiler_version.h"
-#include "profiles/determine_compiler_language_support.h"
+// Helper macro for ETL_FORMAT_NO_FLOATING_POINT.
+#if defined(ETL_FORMAT_NO_FLOATING_POINT)
+  #define ETL_USING_FORMAT_FLOATING_POINT     0
+  #define ETL_NOT_USING_FORMAT_FLOATING_POINT 1
+#else
+  #define ETL_USING_FORMAT_FLOATING_POINT     1
+  #define ETL_NOT_USING_FORMAT_FLOATING_POINT 0
+#endif
 
 //*************************************
-// See if we can determine the OS we're compiling on, if haven't already done so in etl_profile.h
+// Figure out things about the compiler, if haven't already done so in
+// etl_profile.h
+#include "profiles/determine_compiler_language_support.h"
+#include "profiles/determine_compiler_version.h"
+
+//*************************************
+// See if we can determine the OS we're compiling on, if haven't already done so
+// in etl_profile.h
 #include "profiles/determine_development_os.h"
 
 //*************************************
@@ -242,9 +254,9 @@ SOFTWARE.
 //*************************************
 // Option to enable repair-after-memcpy for icircular_buffer.
 #if defined(ETL_ICIRCULAR_BUFFER_REPAIR_ENABLE)
-#define ETL_HAS_ICIRCULAR_BUFFER_REPAIR 1
+  #define ETL_HAS_ICIRCULAR_BUFFER_REPAIR 1
 #else
-#define ETL_HAS_ICIRCULAR_BUFFER_REPAIR 0
+  #define ETL_HAS_ICIRCULAR_BUFFER_REPAIR 0
 #endif
 
 //*************************************
@@ -302,9 +314,9 @@ SOFTWARE.
 //*************************************
 // Indicate if etl::exception is to be derived from std::exception.
 #if defined(ETL_USE_STD_EXCEPTION)
-#if ETL_NOT_USING_STL
-  #error "Requested std base for etl::exception, but STL is not used"
-#endif
+  #if ETL_NOT_USING_STL
+    #error "Requested std base for etl::exception, but STL is not used"
+  #endif
   #define ETL_USING_STD_EXCEPTION 1
 #else
   #define ETL_USING_STD_EXCEPTION 0
@@ -313,9 +325,9 @@ SOFTWARE.
 //*************************************
 // Indicate if etl::literals::chrono_literals uses ETL verbose style.
 #if defined(ETL_USE_VERBOSE_CHRONO_LITERALS) && ETL_USING_CPP11
-#define ETL_USING_VERBOSE_CHRONO_LITERALS 1
+  #define ETL_USING_VERBOSE_CHRONO_LITERALS 1
 #else
-#define ETL_USING_VERBOSE_CHRONO_LITERALS 0
+  #define ETL_USING_VERBOSE_CHRONO_LITERALS 0
 #endif
 
 //*************************************
@@ -335,11 +347,12 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Indicate if etl::literals::chrono_literals has year (_hours, _minutes, _seconds, _milliseconds, _microseconds, _nanoseconds)
+// Indicate if etl::literals::chrono_literals has year (_hours, _minutes,
+// _seconds, _milliseconds, _microseconds, _nanoseconds)
 #if defined(ETL_DISABLE_CHRONO_LITERALS_DURATION) && ETL_USING_CPP11
-#define ETL_HAS_CHRONO_LITERALS_DURATION 0
+  #define ETL_HAS_CHRONO_LITERALS_DURATION 0
 #else
-#define ETL_HAS_CHRONO_LITERALS_DURATION 1
+  #define ETL_HAS_CHRONO_LITERALS_DURATION 1
 #endif
 
 //*************************************
@@ -370,18 +383,20 @@ SOFTWARE.
   #define ETL_LVALUE_REF_QUALIFIER        &
   #define ETL_RVALUE_REF_QUALIFIER        &&
   #if ETL_USING_EXCEPTIONS
-    #define ETL_NOEXCEPT                  noexcept
-    #define ETL_NOEXCEPT_EXPR(...)        noexcept(__VA_ARGS__)
-    #define ETL_NOEXCEPT_FROM(x)          noexcept(noexcept(x))
+    #define ETL_NOEXCEPT           noexcept
+    #define ETL_NOEXCEPT_EXPR(...) noexcept(__VA_ARGS__)
+    #define ETL_NOEXCEPT_IF(b)     noexcept((b))
+    #define ETL_NOEXCEPT_FROM(x)   noexcept(noexcept(x))
   #else
     #define ETL_NOEXCEPT
     #define ETL_NOEXCEPT_EXPR(...)
-    #define ETL_NOEXCEPT_FROM(x) 
+    #define ETL_NOEXCEPT_IF(b)
+    #define ETL_NOEXCEPT_FROM(x)
   #endif
 #else
   #define ETL_CONSTEXPR
   #define ETL_CONSTEXPR11
-  #define ETL_CONSTANT                    const
+  #define ETL_CONSTANT const
   #define ETL_DELETE
   #define ETL_EXPLICIT
   #define ETL_OVERRIDE
@@ -389,8 +404,9 @@ SOFTWARE.
   #define ETL_NORETURN
   #define ETL_NOEXCEPT
   #define ETL_NOEXCEPT_EXPR(...)
-  #define ETL_NOEXCEPT_FROM(x) 
-  #define ETL_MOVE(x) x
+  #define ETL_NOEXCEPT_IF(b)
+  #define ETL_NOEXCEPT_FROM(x)
+  #define ETL_MOVE(x)                     x
   #define ETL_ENUM_CLASS(name)            enum name
   #define ETL_ENUM_CLASS_TYPE(name, type) enum name
   #define ETL_LVALUE_REF_QUALIFIER
@@ -400,9 +416,9 @@ SOFTWARE.
 //*************************************
 // C++14
 #if ETL_USING_CPP14
-  #define ETL_CONSTEXPR14  constexpr
+  #define ETL_CONSTEXPR14 constexpr
 
-  #if !defined(ETL_IN_UNIT_TEST)   
+  #if !defined(ETL_IN_UNIT_TEST)
     #define ETL_DEPRECATED                [[deprecated]]
     #define ETL_DEPRECATED_REASON(reason) [[deprecated(reason)]]
   #else
@@ -448,7 +464,13 @@ SOFTWARE.
   #define ETL_UNLIKELY
   #define ETL_CONSTEXPR20
   #define ETL_CONSTEVAL
-  #define ETL_CONSTINIT
+  #if ETL_USING_CLANG_COMPILER && ETL_COMPILER_FULL_VERSION >= 40000
+    #define ETL_CONSTINIT __attribute__((require_constant_initialization))
+  #elif ETL_USING_GCC_COMPILER && ETL_COMPILER_FULL_VERSION >= 100000
+    #define ETL_CONSTINIT __constinit
+  #else
+    #define ETL_CONSTINIT
+  #endif
   #define ETL_NO_UNIQUE_ADDRESS
   #define ETL_EXPLICIT_EXPR(...) explicit
 #endif
@@ -470,21 +492,21 @@ SOFTWARE.
 //*************************************
 // Determine if the ETL can use char8_t type.
 #if ETL_NO_SMALL_CHAR_SUPPORT
-#include "private/diagnostic_cxx_20_compat_push.h"
-  typedef uint_least8_t char8_t;
-  #define ETL_HAS_CHAR8_T 1
+  #include "private/diagnostic_cxx_20_compat_push.h"
+typedef uint_least8_t char8_t;
+  #define ETL_HAS_CHAR8_T        1
   #define ETL_HAS_NATIVE_CHAR8_T 0
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 #else
-  #define ETL_HAS_CHAR8_T 1
+  #define ETL_HAS_CHAR8_T        1
   #define ETL_HAS_NATIVE_CHAR8_T 1
 #endif
 
 //*************************************
 // Define the large character types if necessary.
 #if ETL_NO_LARGE_CHAR_SUPPORT
-  typedef uint_least16_t char16_t;
-  typedef uint_least32_t char32_t;
+typedef uint_least16_t char16_t;
+typedef uint_least32_t char32_t;
   #define ETL_HAS_NATIVE_CHAR16_T 0
   #define ETL_HAS_NATIVE_CHAR32_T 0
 #else
@@ -507,7 +529,7 @@ SOFTWARE.
 #if !defined(ETL_NO_LIBC_WCHAR_H)
   #if defined(__has_include)
     #if !__has_include(<wchar.h>)
-        #define ETL_NO_LIBC_WCHAR_H
+      #define ETL_NO_LIBC_WCHAR_H
     #endif
   #endif
 #endif
@@ -540,27 +562,19 @@ SOFTWARE.
 
 //*************************************
 // Determine if the ETL should support atomics.
-#if defined(ETL_NO_ATOMICS) || \
-    defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || \
-    defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS) || \
-    defined(__STDC_NO_ATOMICS__)
-  #define ETL_HAS_ATOMIC 0
+#if defined(ETL_NO_ATOMICS) || defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0) || defined(ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS) \
+  || defined(__STDC_NO_ATOMICS__)
+  #define ETL_HAS_ATOMIC                  0
   #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0
 #else
-  #if ((ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || \
-        defined(ETL_COMPILER_ARM5)  || \
-        defined(ETL_COMPILER_ARM6)  || \
-        defined(ETL_COMPILER_GCC)   || \
-        defined(ETL_COMPILER_CLANG))
+  #if ((ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) \
+       || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
     #define ETL_HAS_ATOMIC 1
   #else
     #define ETL_HAS_ATOMIC 0
   #endif
-  #if ((ETL_USING_CPP17 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || \
-        defined(ETL_COMPILER_ARM5)  || \
-        defined(ETL_COMPILER_ARM6)  || \
-        defined(ETL_COMPILER_GCC)   || \
-        defined(ETL_COMPILER_CLANG))
+  #if ((ETL_USING_CPP17 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) \
+       || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
     #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 1
   #else
     #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0
@@ -575,13 +589,13 @@ SOFTWARE.
 
 #if (ETL_USING_CPP11 && !defined(ETL_NO_INITIALIZER_LIST))
   // Use the compiler's std::initializer_list?
-  #if (ETL_USING_STL && ETL_NOT_USING_STLPORT && !defined(ETL_FORCE_ETL_INITIALIZER_LIST)) || defined(ETL_IN_UNIT_TEST) || defined(ETL_FORCE_STD_INITIALIZER_LIST)
+  #if (ETL_USING_STL && ETL_NOT_USING_STLPORT && !defined(ETL_FORCE_ETL_INITIALIZER_LIST)) || defined(ETL_IN_UNIT_TEST) \
+    || defined(ETL_FORCE_STD_INITIALIZER_LIST)
     #define ETL_HAS_INITIALIZER_LIST 1
   #else
     // Use the ETL's compatible version?
-    #if defined(ETL_COMPILER_MICROSOFT) || defined(ETL_COMPILER_GCC)  || defined(ETL_COMPILER_CLANG) || \
-        defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_IAR)   || \
-        defined(ETL_COMPILER_TEXAS_INSTRUMENTS) || defined(ETL_COMPILER_INTEL)
+    #if defined(ETL_COMPILER_MICROSOFT) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_ARM6) \
+      || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_IAR) || defined(ETL_COMPILER_TEXAS_INSTRUMENTS) || defined(ETL_COMPILER_INTEL)
       #define ETL_HAS_INITIALIZER_LIST 1
     #else
       #define ETL_HAS_INITIALIZER_LIST 0
@@ -594,18 +608,18 @@ SOFTWARE.
 //*************************************
 // Determine if the ETL should use __attribute__((packed).
 #if defined(ETL_COMPILER_CLANG) || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_INTEL) || defined(ETL_COMPILER_ARM6)
-  #define ETL_PACKED_CLASS(class_type)   class  __attribute__((packed)) class_type
+  #define ETL_PACKED_CLASS(class_type)   class __attribute__((packed)) class_type
   #define ETL_PACKED_STRUCT(struct_type) struct __attribute__((packed)) struct_type
   #define ETL_END_PACKED
   #define ETL_HAS_PACKED 1
 #elif defined(ETL_COMPILER_MICROSOFT)
-  #define ETL_PACKED_CLASS(class_type)   __pragma(pack(push, 1)) class  class_type
+  #define ETL_PACKED_CLASS(class_type)   __pragma(pack(push, 1)) class class_type
   #define ETL_PACKED_STRUCT(struct_type) __pragma(pack(push, 1)) struct struct_type
-  #define ETL_PACKED     
+  #define ETL_PACKED
   #define ETL_END_PACKED __pragma(pack(pop))
   #define ETL_HAS_PACKED 1
 #else
-  #define ETL_PACKED_CLASS(class_type)   class  class_type
+  #define ETL_PACKED_CLASS(class_type)   class class_type
   #define ETL_PACKED_STRUCT(struct_type) struct struct_type
   #define ETL_END_PACKED
   #define ETL_HAS_PACKED 0
@@ -625,8 +639,8 @@ namespace etl
   {
     // Documentation: https://www.etlcpp.com/etl_traits.html
     // General
-    static ETL_CONSTANT long cplusplus                        = __cplusplus;
-    static ETL_CONSTANT int  language_standard                = ETL_LANGUAGE_STANDARD;
+    static ETL_CONSTANT long cplusplus         = __cplusplus;
+    static ETL_CONSTANT int  language_standard = ETL_LANGUAGE_STANDARD;
 
     // Using...
     static ETL_CONSTANT bool using_stl                        = (ETL_USING_STL == 1);
@@ -651,7 +665,8 @@ namespace etl
     static ETL_CONSTANT bool using_exceptions                 = (ETL_USING_EXCEPTIONS == 1);
     static ETL_CONSTANT bool using_libc_wchar_h               = (ETL_USING_LIBC_WCHAR_H == 1);
     static ETL_CONSTANT bool using_std_exception              = (ETL_USING_STD_EXCEPTION == 1);
-    
+    static ETL_CONSTANT bool using_format_floating_point      = (ETL_USING_FORMAT_FLOATING_POINT == 1);
+
     // Has...
     static ETL_CONSTANT bool has_initializer_list             = (ETL_HAS_INITIALIZER_LIST == 1);
     static ETL_CONSTANT bool has_8bit_types                   = (ETL_USING_8BIT_TYPES == 1);
@@ -685,8 +700,8 @@ namespace etl
     static ETL_CONSTANT bool has_noexcept_function_type       = (ETL_HAS_NOEXCEPT_FUNCTION_TYPE == 1);
 
     // Is...
-    static ETL_CONSTANT bool is_debug_build                   = (ETL_IS_DEBUG_BUILD == 1);
-  }
-}
+    static ETL_CONSTANT bool is_debug_build = (ETL_IS_DEBUG_BUILD == 1);
+  } // namespace traits
+} // namespace etl
 
 #endif

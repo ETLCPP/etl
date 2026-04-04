@@ -48,8 +48,7 @@ namespace etl
       //*************************************************************************
       /// Construct from month and day.
       //*************************************************************************
-      ETL_CONSTEXPR14 month_day(const etl::chrono::month& m_, 
-                                const etl::chrono::day&   d_) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 month_day(const etl::chrono::month& m_, const etl::chrono::day& d_) ETL_NOEXCEPT
         : m(m_)
         , d(d_)
       {
@@ -58,8 +57,7 @@ namespace etl
       //*************************************************************************
       /// Returns the month.
       //*************************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
+      ETL_NODISCARD ETL_CONSTEXPR14 etl::chrono::month month() const ETL_NOEXCEPT
       {
         return m;
       }
@@ -67,8 +65,7 @@ namespace etl
       //*************************************************************************
       /// Returns the day.
       //*************************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
+      ETL_NODISCARD ETL_CONSTEXPR14 etl::chrono::day day() const ETL_NOEXCEPT
       {
         return d;
       }
@@ -76,9 +73,8 @@ namespace etl
       //*************************************************************************
       /// Returns true if the month/day is valid.
       //*************************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
-      {       
+      ETL_NODISCARD ETL_CONSTEXPR14 bool ok() const ETL_NOEXCEPT
+      {
         if (!m.ok() || !d.ok())
         {
           return false;
@@ -87,11 +83,9 @@ namespace etl
         unsigned max_day = 0;
 
         unsigned m_v = static_cast<unsigned>(m);
-        max_day = private_chrono::days_in_month[m_v];
+        max_day      = private_chrono::days_in_month[m_v];
 
-        return (max_day > 0) && 
-               (static_cast<unsigned>(d) >= 1) && 
-               (static_cast<unsigned>(d) <= max_day);
+        return (max_day > 0) && (static_cast<unsigned>(d) >= 1) && (static_cast<unsigned>(d) <= max_day);
       }
 
       //***********************************************************************
@@ -102,14 +96,17 @@ namespace etl
       /// else if day > other.day, returns 1
       /// else returns 0
       //***********************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 int compare(const month_day& other) const ETL_NOEXCEPT 
+      ETL_NODISCARD ETL_CONSTEXPR14 int compare(const month_day& other) const ETL_NOEXCEPT
       {
-        if (m < other.m) return -1;
-        if (m > other.m) return 1;
-        if (d < other.d) return -1;
-        if (d > other.d) return 1;
-      
+        if (m < other.m)
+          return -1;
+        if (m > other.m)
+          return 1;
+        if (d < other.d)
+          return -1;
+        if (d > other.d)
+          return 1;
+
         return 0;
       }
 
@@ -122,8 +119,7 @@ namespace etl
     //*************************************************************************
     /// Equality operator.
     //*************************************************************************
-    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_day& lhs, 
-                                            const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator==(const etl::chrono::month_day& lhs, const etl::chrono::month_day& rhs) ETL_NOEXCEPT
     {
       return (lhs.day() == rhs.day()) && (lhs.month() == rhs.month());
     }
@@ -131,8 +127,7 @@ namespace etl
     //*************************************************************************
     /// Equality operator.
     //*************************************************************************
-    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_day& lhs, 
-                                            const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator!=(const etl::chrono::month_day& lhs, const etl::chrono::month_day& rhs) ETL_NOEXCEPT
     {
       return !(lhs == rhs);
     }
@@ -140,9 +135,7 @@ namespace etl
     //*************************************************************************
     /// Less-than operator.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14
-    inline bool operator <(const etl::chrono::month_day& lhs,
-                           const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 inline bool operator<(const etl::chrono::month_day& lhs, const etl::chrono::month_day& rhs) ETL_NOEXCEPT
     {
       if (lhs.month() < rhs.month())
       {
@@ -161,9 +154,7 @@ namespace etl
     //*************************************************************************
     /// Less-than-equal operator.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14
-    inline bool operator <=(const etl::chrono::month_day& lhs,
-                            const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 inline bool operator<=(const etl::chrono::month_day& lhs, const etl::chrono::month_day& rhs) ETL_NOEXCEPT
     {
       return !(rhs < lhs);
     }
@@ -171,9 +162,7 @@ namespace etl
     //*************************************************************************
     /// Greater-than operator.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14
-    inline bool operator >(const etl::chrono::month_day& lhs,
-                           const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 inline bool operator>(const etl::chrono::month_day& lhs, const etl::chrono::month_day& rhs) ETL_NOEXCEPT
     {
       return rhs < lhs;
     }
@@ -181,9 +170,7 @@ namespace etl
     //*************************************************************************
     /// Greater-than-equal operator.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14
-    inline bool operator >=(const etl::chrono::month_day& lhs,
-                            const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 inline bool operator>=(const etl::chrono::month_day& lhs, const etl::chrono::month_day& rhs) ETL_NOEXCEPT
     {
       return !(lhs < rhs);
     }
@@ -192,8 +179,8 @@ namespace etl
     /// Spaceship operator
     //***********************************************************************
 #if ETL_USING_CPP20
-    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::month_day& lhs, 
-                                                     const etl::chrono::month_day& rhs) ETL_NOEXCEPT
+    [[nodiscard]]
+    inline constexpr auto operator<=>(const etl::chrono::month_day& lhs, const etl::chrono::month_day& rhs) ETL_NOEXCEPT
     {
       auto cmp = lhs.month() <=> rhs.month();
 
@@ -245,11 +232,12 @@ namespace etl
       /// else if month > other.month, returns 1
       /// else returns 0
       //***********************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 int compare(const month_day& other) const ETL_NOEXCEPT 
+      ETL_NODISCARD ETL_CONSTEXPR14 int compare(const month_day& other) const ETL_NOEXCEPT
       {
-        if (m < other.month()) return -1;
-        if (m > other.month()) return 1;
+        if (m < other.month())
+          return -1;
+        if (m > other.month())
+          return 1;
 
         return 0;
       }
@@ -262,8 +250,7 @@ namespace etl
     //***********************************************************************
     /// Equality operator
     //***********************************************************************
-    inline ETL_CONSTEXPR14 bool operator ==(const etl::chrono::month_day_last& mdl1, 
-                                            const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator==(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(mdl1.month()) == static_cast<unsigned>(mdl2.month()));
     }
@@ -271,8 +258,7 @@ namespace etl
     //***********************************************************************
     /// Inequality operator
     //***********************************************************************
-    inline ETL_CONSTEXPR14 bool operator !=(const etl::chrono::month_day_last& mdl1, 
-                                            const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
+    inline ETL_CONSTEXPR14 bool operator!=(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
     {
       return !(mdl1 == mdl2);
     }
@@ -280,9 +266,7 @@ namespace etl
     //*************************************************************************
     /// Less-than operator.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14
-    inline bool operator <(const etl::chrono::month_day_last& lhs,
-                           const etl::chrono::month_day_last& rhs) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 inline bool operator<(const etl::chrono::month_day_last& lhs, const etl::chrono::month_day_last& rhs) ETL_NOEXCEPT
     {
       return (lhs.month() < rhs.month());
     }
@@ -290,9 +274,7 @@ namespace etl
     //*************************************************************************
     /// Less-than-equal operator.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14
-    inline bool operator <=(const etl::chrono::month_day_last& lhs,
-                            const etl::chrono::month_day_last& rhs) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 inline bool operator<=(const etl::chrono::month_day_last& lhs, const etl::chrono::month_day_last& rhs) ETL_NOEXCEPT
     {
       return !(rhs < lhs);
     }
@@ -300,9 +282,7 @@ namespace etl
     //*************************************************************************
     /// Greater-than operator.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14
-    inline bool operator >(const etl::chrono::month_day_last& lhs,
-                           const etl::chrono::month_day_last& rhs) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 inline bool operator>(const etl::chrono::month_day_last& lhs, const etl::chrono::month_day_last& rhs) ETL_NOEXCEPT
     {
       return rhs < lhs;
     }
@@ -310,9 +290,7 @@ namespace etl
     //*************************************************************************
     /// Greater-than-equal operator.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14
-    inline bool operator >=(const etl::chrono::month_day_last& lhs,
-                            const etl::chrono::month_day_last& rhs) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 inline bool operator>=(const etl::chrono::month_day_last& lhs, const etl::chrono::month_day_last& rhs) ETL_NOEXCEPT
     {
       return !(lhs < rhs);
     }
@@ -321,12 +299,13 @@ namespace etl
     /// Spaceship operator
     //***********************************************************************
 #if ETL_USING_CPP20
-    [[nodiscard]] inline constexpr auto operator <=>(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
+    [[nodiscard]]
+    inline constexpr auto operator<=>(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
     {
       return (static_cast<unsigned>(mdl1.month()) <=> static_cast<unsigned>(mdl2.month()));
     }
 #endif
-  }
+  } // namespace chrono
 
   //*************************************************************************
   /// Hash function for etl::chrono::month_day
@@ -336,13 +315,13 @@ namespace etl
   struct hash<etl::chrono::month_day>
   {
     size_t operator()(const etl::chrono::month_day& md) const
-    {   
+    {
       etl::chrono::month::rep m = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(md.month()));
       etl::chrono::day::rep   d = static_cast<etl::chrono::day::rep>(static_cast<unsigned>(md.day()));
 
       uint8_t buffer[sizeof(m) + sizeof(d)];
 
-      memcpy(buffer,             &m, sizeof(m));
+      memcpy(buffer, &m, sizeof(m));
       memcpy(buffer + sizeof(m), &d, sizeof(d));
 
       return etl::private_hash::generic_hash<size_t>(buffer, buffer + sizeof(m) + sizeof(d));
@@ -360,11 +339,10 @@ namespace etl
     size_t operator()(const etl::chrono::month_day_last& mdl) const
     {
       etl::chrono::month::rep value = static_cast<etl::chrono::month::rep>(static_cast<unsigned>(mdl.month()));
-      const uint8_t* p = reinterpret_cast<const uint8_t*>(&value);
+      const uint8_t*          p     = reinterpret_cast<const uint8_t*>(&value);
 
       return etl::private_hash::generic_hash<size_t>(p, p + sizeof(value));
     }
   };
 #endif
-}
-
+} // namespace etl

@@ -35,7 +35,7 @@ SOFTWARE.
 #include "functional.h"
 #include "type_traits.h"
 
-//#include <math.h>
+// #include <math.h>
 #include <stdint.h>
 
 namespace etl
@@ -68,17 +68,17 @@ namespace etl
     {
       typedef double calc_t;
     };
-  }
+  } // namespace private_variance
 
   //***************************************************************************
   /// Variance Type.
   //***************************************************************************
   namespace private_variance
   {
-    template<typename T = void>
+    template <typename T = void>
     struct variance_type_helper
     {
-      static ETL_CONSTANT bool Sample = false;
+      static ETL_CONSTANT bool Sample     = false;
       static ETL_CONSTANT bool Population = true;
     };
 
@@ -87,7 +87,7 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT bool variance_type_helper<T>::Population;
-  }
+  } // namespace private_variance
 
   struct variance_type : public private_variance::variance_type_helper<>
   {
@@ -97,7 +97,7 @@ namespace etl
   /// Variance.
   //***************************************************************************
   template <bool Variance_Type, typename TInput, typename TCalc = TInput>
-  class variance 
+  class variance
     : public private_variance::variance_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
@@ -133,7 +133,7 @@ namespace etl
     void add(TInput value)
     {
       sum_of_squares += TCalc(value * value);
-      sum            += TCalc(value);
+      sum += TCalc(value);
       ++counter;
       recalculate = true;
     }
@@ -155,7 +155,7 @@ namespace etl
     /// operator ()
     /// Add a pair of values.
     //*********************************
-    void operator ()(TInput value)
+    void operator()(TInput value)
     {
       add(value);
     }
@@ -165,7 +165,7 @@ namespace etl
     /// Add a range.
     //*********************************
     template <typename TIterator>
-    void operator ()(TIterator first, TIterator last)
+    void operator()(TIterator first, TIterator last)
     {
       add(first, last);
     }
@@ -181,8 +181,8 @@ namespace etl
 
         if (counter != 0)
         {
-          double n = double(counter);
-          double adjustment = 1.0 / (n * (n - Adjustment)) ;
+          double n          = double(counter);
+          double adjustment = 1.0 / (n * (n - Adjustment));
 
           double square_of_sum = sum * sum;
 
@@ -224,13 +224,13 @@ namespace etl
     }
 
   private:
-  
-    calc_t   sum_of_squares;
-    calc_t   sum;
-    uint32_t counter;
+
+    calc_t         sum_of_squares;
+    calc_t         sum;
+    uint32_t       counter;
     mutable double variance_value;
     mutable bool   recalculate;
   };
-}
+} // namespace etl
 
 #endif

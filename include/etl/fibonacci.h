@@ -77,6 +77,6 @@ namespace etl
   template <size_t Value>
   inline constexpr size_t fibonacci_v = fibonacci<Value>::value;
 #endif
-}
+} // namespace etl
 
 #endif

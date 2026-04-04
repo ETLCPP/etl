@@ -32,17 +32,17 @@ SOFTWARE.
 #define ETL_JENKINS_INCLUDED
 
 #include "platform.h"
+#include "error_handler.h"
+#include "frame_check_sequence.h"
+#include "ihash.h"
+#include "iterator.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "error_handler.h"
-#include "ihash.h"
-#include "frame_check_sequence.h"
-#include "iterator.h"
 
 #include <stdint.h>
 
 #if defined(ETL_COMPILER_KEIL)
-#pragma diag_suppress 1300
+  #pragma diag_suppress 1300
 #endif
 
 ///\defgroup jenkins Jenkins 32 hash calculation
@@ -109,13 +109,13 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     jenkins(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
     }
   };
-}
+} // namespace etl
 
 #endif

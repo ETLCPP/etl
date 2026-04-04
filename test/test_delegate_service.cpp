@@ -41,11 +41,11 @@ namespace
   using Service = etl::delegate_service<Size, Offset>;
 
   //*****************************************************************************
-  bool global_called    = false;
-  bool member1_called   = false;
-  bool member2_called   = false;
-  bool unhandled_called = false;
-  size_t called_id      = UINT_MAX;
+  bool   global_called    = false;
+  bool   member1_called   = false;
+  bool   member2_called   = false;
+  bool   unhandled_called = false;
+  size_t called_id        = UINT_MAX;
 
   //*****************************************************************************
   // The global function taking no parameters.
@@ -118,7 +118,7 @@ namespace
       unhandled_called = false;
     }
   };
-}
+} // namespace
 
 namespace
 {
@@ -155,7 +155,7 @@ namespace
     {
       Service service;
 
-      service.register_delegate(Global,  global_callback);
+      service.register_delegate(Global, global_callback);
       service.register_delegate(Member1, object.callback);
       service.register_delegate(Member2, member_callback);
 
@@ -191,7 +191,7 @@ namespace
     {
       Service service;
 
-      service.register_delegate(Global,  global_callback);
+      service.register_delegate(Global, global_callback);
       service.register_delegate(Member1, object.callback);
       service.register_delegate(Member2, member_callback);
 
@@ -282,7 +282,7 @@ namespace
     {
       Service service;
 
-      service.register_delegate(Global,  global_callback);
+      service.register_delegate(Global, global_callback);
       service.register_delegate(Member2, member_callback);
 
       service.call(Member1);
@@ -318,7 +318,7 @@ namespace
     {
       Service service;
 
-      service.register_delegate(Global,  global_callback);
+      service.register_delegate(Global, global_callback);
       service.register_delegate(Member2, member_callback);
 
       service.register_unhandled_delegate(unhandled_callback);
@@ -332,6 +332,6 @@ namespace
       CHECK(unhandled_called);
     }
   }
-}
+} // namespace
 
 #endif

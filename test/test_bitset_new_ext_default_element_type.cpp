@@ -28,16 +28,16 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <bitset>
 #include <limits>
 #include <type_traits>
-#include <bitset>
 
-#include "etl/private/bitset_new.h"
+#include "etl/endianness.h"
 #include "etl/string.h"
-#include "etl/wstring.h"
 #include "etl/u16string.h"
 #include "etl/u32string.h"
-#include "etl/endianness.h"
+#include "etl/wstring.h"
+#include "etl/private/bitset_new.h"
 
 namespace
 {
@@ -122,7 +122,7 @@ namespace
       using BsExt = etl::bitset_ext<64>;
 
       BsExt::buffer_type buffer;
-      BsExt bs2a(buffer);
+      BsExt              bs2a(buffer);
 
       CHECK_THROW(BsExt bs1(nullptr), etl::bitset_invalid_buffer);
       CHECK_THROW(BsExt bs2b(bs2a, nullptr), etl::bitset_invalid_buffer);
@@ -137,8 +137,8 @@ namespace
     TEST(test_default_constructor_from_array)
     {
       etl::bitset_ext<64>::element_type buffer[etl::bitset_ext<64>::Number_Of_Elements];
-      std::bitset<64> compare;
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                   compare;
+      etl::bitset_ext<64>               data(buffer);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -153,8 +153,8 @@ namespace
     TEST(test_default_constructor_from_buffer_type)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare;
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare;
+      etl::bitset_ext<64>              data(buffer);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -169,8 +169,8 @@ namespace
     TEST(test_construct_from_value)
     {
       etl::bitset_ext<64>::buffer_type buffer1;
-      std::bitset<64> compare(0x123456731234567ULL);
-      etl::bitset_ext<64> data(0x123456731234567ULL, buffer1);
+      std::bitset<64>                  compare(0x123456731234567ULL);
+      etl::bitset_ext<64>              data(0x123456731234567ULL, buffer1);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -187,9 +187,9 @@ namespace
     {
       etl::bitset_ext<64>::buffer_type buffer1;
       etl::bitset_ext<64>::buffer_type buffer2;
-      std::bitset<64> compare(0x123456731234567ULL);
-      etl::bitset_ext<64> data(0x123456731234567ULL, buffer1);
-      etl::bitset_ext<64> data_copy(data, buffer2);
+      std::bitset<64>                  compare(0x123456731234567ULL);
+      etl::bitset_ext<64>              data(0x123456731234567ULL, buffer1);
+      etl::bitset_ext<64>              data_copy(data, buffer2);
 
       CHECK_EQUAL(compare.size(), data_copy.size());
       CHECK_EQUAL(compare.count(), data_copy.count());
@@ -204,8 +204,8 @@ namespace
     TEST(test_construct_from_excess_value)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(0x8765432187654321ULL);
-      etl::bitset_ext<64> data(0x8765432187654321ULL, buffer);
+      std::bitset<64>                  compare(0x8765432187654321ULL);
+      etl::bitset_ext<64>              data(0x8765432187654321ULL, buffer);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -221,10 +221,10 @@ namespace
     {
       etl::bitset_ext<64>::buffer_type buffer1;
       ETL_CONSTEXPR14 std::bitset<64> compare(0x123456731234567ULL);
-      etl::bitset_ext<64> data(0x123456731234567ULL, buffer1);
-      
+      etl::bitset_ext<64>       data(0x123456731234567ULL, buffer1);
+
       etl::bitset_ext<64>::buffer_type buffer2;
-      etl::bitset_ext<64> data_copy(buffer2);
+      etl::bitset_ext<64>              data_copy(buffer2);
 
       data_copy = data;
 
@@ -241,8 +241,8 @@ namespace
     TEST(test_construct_from_char_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data("110001001000110100010101100111001100010010001101000101011001", buffer);
+      std::bitset<64>                  compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data("110001001000110100010101100111001100010010001101000101011001", buffer);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -257,8 +257,8 @@ namespace
     TEST(test_construct_from_wchar_t_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(L"110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(L"110001001000110100010101100111001100010010001101000101011001", buffer);
+      std::bitset<64>                  compare(L"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(L"110001001000110100010101100111001100010010001101000101011001", buffer);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -273,8 +273,8 @@ namespace
     TEST(test_construct_from_char16_t_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(u"110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(u"110001001000110100010101100111001100010010001101000101011001", buffer);
+      std::bitset<64>                  compare(u"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(u"110001001000110100010101100111001100010010001101000101011001", buffer);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -289,8 +289,8 @@ namespace
     TEST(test_construct_from_char32_t_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(U"110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(U"110001001000110100010101100111001100010010001101000101011001", buffer);
+      std::bitset<64>                  compare(U"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(U"110001001000110100010101100111001100010010001101000101011001", buffer);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -307,7 +307,7 @@ namespace
       const char* s = nullptr;
 
       etl::bitset_ext<60>::buffer_type buffer;
-      etl::bitset_ext<60> data(s, buffer);
+      etl::bitset_ext<60>              data(s, buffer);
 
       CHECK_EQUAL(60, data.size());
       CHECK_EQUAL(0, data.count());
@@ -319,7 +319,7 @@ namespace
       const wchar_t* s = nullptr;
 
       etl::bitset_ext<60>::buffer_type buffer;
-      etl::bitset_ext<60> data(s, buffer);
+      etl::bitset_ext<60>              data(s, buffer);
 
       CHECK_EQUAL(60, data.size());
       CHECK_EQUAL(0, data.count());
@@ -331,7 +331,7 @@ namespace
       const char16_t* s = nullptr;
 
       etl::bitset_ext<60>::buffer_type buffer;
-      etl::bitset_ext<60> data(s, buffer);
+      etl::bitset_ext<60>              data(s, buffer);
 
       CHECK_EQUAL(60, data.size());
       CHECK_EQUAL(0, data.count());
@@ -343,7 +343,7 @@ namespace
       const char32_t* s = nullptr;
 
       etl::bitset_ext<60>::buffer_type buffer;
-      etl::bitset_ext<60> data(s, buffer);
+      etl::bitset_ext<60>              data(s, buffer);
 
       CHECK_EQUAL(60, data.size());
       CHECK_EQUAL(0, data.count());
@@ -353,8 +353,8 @@ namespace
     TEST(test_construct_from_excess_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001111100001");
-      etl::bitset_ext<64> data("110001001000110100010101100111001100010010001101000101011001111100001", buffer);
+      std::bitset<64>                  compare("110001001000110100010101100111001100010010001101000101011001111100001");
+      etl::bitset_ext<64>              data("110001001000110100010101100111001100010010001101000101011001111100001", buffer);
 
       CHECK_EQUAL(compare.size(), data.size());
       CHECK_EQUAL(compare.count(), data.count());
@@ -374,17 +374,17 @@ namespace
     TEST(test_set)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare;
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare;
+      etl::bitset_ext<64>              data(buffer);
 
       compare.set();
       data.set();
 
-      auto size = data.size();
+      auto size  = data.size();
       auto count = data.count();
-      auto none = data.none();
-      auto any = data.any();
-      auto all = data.all();
+      auto none  = data.none();
+      auto any   = data.any();
+      auto all   = data.all();
 
       CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
@@ -402,17 +402,17 @@ namespace
     TEST(test_set_less_than_full_size)
     {
       etl::bitset_ext<60>::buffer_type buffer;
-      std::bitset<60> compare;
-      etl::bitset_ext<60> data(buffer);
+      std::bitset<60>                  compare;
+      etl::bitset_ext<60>              data(buffer);
 
       compare.set();
       data.set();
 
-      auto size = data.size();
+      auto size  = data.size();
       auto count = data.count();
-      auto none = data.none();
-      auto any = data.any();
-      auto all = data.all();
+      auto none  = data.none();
+      auto any   = data.any();
+      auto all   = data.all();
 
       CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
@@ -429,9 +429,9 @@ namespace
     //*************************************************************************
     TEST(test_set_run_time_position_default_value)
     {
-      std::bitset<64> compare;
+      std::bitset<64>                  compare;
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
 
       compare.set(2);
       compare.set(3);
@@ -463,11 +463,11 @@ namespace
       auto any   = data.any();
       auto all   = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -478,9 +478,9 @@ namespace
     //*************************************************************************
     TEST(test_set_run_time_position_value)
     {
-      std::bitset<64> compare;
+      std::bitset<64>                  compare;
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
 
       compare.set(2);
       compare.set(3);
@@ -512,11 +512,11 @@ namespace
       auto any   = data.any();
       auto all   = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -527,9 +527,9 @@ namespace
     //*************************************************************************
     TEST(test_set_compile_time_position_run_time_default_value)
     {
-      std::bitset<64> compare;
+      std::bitset<64>                  compare;
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
 
       compare.set(2);
       compare.set(3);
@@ -561,11 +561,11 @@ namespace
       auto any   = data.any();
       auto all   = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -576,9 +576,9 @@ namespace
     //*************************************************************************
     TEST(test_set_compile_time_position_run_time_value)
     {
-      std::bitset<64> compare;
+      std::bitset<64>                  compare;
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
 
       compare.set(2);
       compare.set(3);
@@ -610,11 +610,11 @@ namespace
       auto any   = data.any();
       auto all   = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -625,9 +625,9 @@ namespace
     //*************************************************************************
     TEST(test_set_compile_time_position_value)
     {
-      std::bitset<64> compare;
+      std::bitset<64>                  compare;
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
 
       compare.set(2);
       compare.set(3);
@@ -659,11 +659,11 @@ namespace
       auto any   = data.any();
       auto all   = data.all();
 
-      CHECK_EQUAL(compare.size(),  size);
+      CHECK_EQUAL(compare.size(), size);
       CHECK_EQUAL(compare.count(), count);
-      CHECK_EQUAL(compare.none(),  none);
-      CHECK_EQUAL(compare.any(),   any);
-      CHECK_EQUAL(compare.all(),   all);
+      CHECK_EQUAL(compare.none(), none);
+      CHECK_EQUAL(compare.any(), any);
+      CHECK_EQUAL(compare.all(), all);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -675,8 +675,8 @@ namespace
     TEST(test_set_with_char_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(buffer);
 
       data.set("110001001000110100010101100111001100010010001101000101011001");
 
@@ -696,8 +696,8 @@ namespace
     TEST(test_set_with_wchar_t_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(L"110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare(L"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(buffer);
 
       data.set(L"110001001000110100010101100111001100010010001101000101011001");
 
@@ -717,8 +717,8 @@ namespace
     TEST(test_set_with_char16_t_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(u"110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare(u"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(buffer);
 
       data.set(u"110001001000110100010101100111001100010010001101000101011001");
 
@@ -738,8 +738,8 @@ namespace
     TEST(test_set_with_char32_t_string)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(U"110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare(U"110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(buffer);
 
       data.set(U"110001001000110100010101100111001100010010001101000101011001");
 
@@ -761,7 +761,7 @@ namespace
       const char* s = nullptr;
 
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
       data.set(s);
 
       CHECK_EQUAL(64, data.size());
@@ -774,7 +774,7 @@ namespace
       const wchar_t* s = nullptr;
 
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
       data.set(s);
 
       CHECK_EQUAL(64, data.size());
@@ -787,7 +787,7 @@ namespace
       const char16_t* s = nullptr;
 
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
       data.set(s);
 
       CHECK_EQUAL(64, data.size());
@@ -800,7 +800,7 @@ namespace
       const char32_t* s = nullptr;
 
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
       data.set(s);
 
       CHECK_EQUAL(64, data.size());
@@ -811,8 +811,8 @@ namespace
     TEST(test_from_string_with_char)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(buffer);
 
       data.from_string("110001001000110100010101100111001100010010001101000101011001");
 
@@ -832,8 +832,8 @@ namespace
     TEST(test_from_string_with_wchar_t)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(buffer);
 
       data.from_string(L"110001001000110100010101100111001100010010001101000101011001");
 
@@ -853,8 +853,8 @@ namespace
     TEST(test_from_string_with_char16_t)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(buffer);
 
       data.from_string(u"110001001000110100010101100111001100010010001101000101011001");
 
@@ -874,8 +874,8 @@ namespace
     TEST(test_from_string_with_char32_t)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001");
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset_ext<64>              data(buffer);
 
       data.from_string(U"110001001000110100010101100111001100010010001101000101011001");
 
@@ -897,7 +897,7 @@ namespace
       const char* s = nullptr;
 
       etl::bitset_ext<60>::buffer_type buffer;
-      etl::bitset_ext<60> data(buffer);
+      etl::bitset_ext<60>              data(buffer);
       data.from_string(s);
 
       CHECK_EQUAL(60, data.size());
@@ -910,7 +910,7 @@ namespace
       const wchar_t* s = nullptr;
 
       etl::bitset_ext<60>::buffer_type buffer;
-      etl::bitset_ext<60> data(buffer);
+      etl::bitset_ext<60>              data(buffer);
       data.from_string(s);
 
       CHECK_EQUAL(60, data.size());
@@ -923,7 +923,7 @@ namespace
       const char16_t* s = nullptr;
 
       etl::bitset_ext<60>::buffer_type buffer;
-      etl::bitset_ext<60> data(buffer);
+      etl::bitset_ext<60>              data(buffer);
       data.from_string(s);
 
       CHECK_EQUAL(60, data.size());
@@ -936,7 +936,7 @@ namespace
       const char16_t* s = nullptr;
 
       etl::bitset_ext<60>::buffer_type buffer;
-      etl::bitset_ext<60> data(buffer);
+      etl::bitset_ext<60>              data(buffer);
       data.from_string(s);
 
       CHECK_EQUAL(60, data.size());
@@ -947,8 +947,8 @@ namespace
     TEST(test_value_u8_min)
     {
       etl::bitset_ext<8>::buffer_type buffer;
-      etl::bitset_ext<8> data((unsigned long long)etl::integral_limits<uint8_t>::min, buffer);
-      uint8_t value = data.value<uint8_t>();
+      etl::bitset_ext<8>              data((unsigned long long)etl::integral_limits<uint8_t>::min, buffer);
+      uint8_t                         value = data.value<uint8_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint8_t>::min(), value);
     }
@@ -957,8 +957,8 @@ namespace
     TEST(test_value_u8_max)
     {
       etl::bitset_ext<8>::buffer_type buffer;
-      etl::bitset_ext<8> data((unsigned long long)etl::integral_limits<uint8_t>::max, buffer);
-      uint8_t value = data.value<uint8_t>();
+      etl::bitset_ext<8>              data((unsigned long long)etl::integral_limits<uint8_t>::max, buffer);
+      uint8_t                         value = data.value<uint8_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint8_t>::max(), value);
     }
@@ -967,8 +967,8 @@ namespace
     TEST(test_value_s8_min)
     {
       etl::bitset_ext<8>::buffer_type buffer;
-      etl::bitset_ext<8> data((unsigned long long)etl::integral_limits<uint8_t>::min, buffer);
-      uint8_t value = data.value<uint8_t>();
+      etl::bitset_ext<8>              data((unsigned long long)etl::integral_limits<uint8_t>::min, buffer);
+      uint8_t                         value = data.value<uint8_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint8_t>::min(), value);
     }
@@ -977,8 +977,8 @@ namespace
     TEST(test_value_s8_max)
     {
       etl::bitset_ext<8>::buffer_type buffer;
-      etl::bitset_ext<8> data((unsigned long long)etl::integral_limits<uint8_t>::max, buffer);
-      uint8_t value = data.value<uint8_t>();
+      etl::bitset_ext<8>              data((unsigned long long)etl::integral_limits<uint8_t>::max, buffer);
+      uint8_t                         value = data.value<uint8_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint8_t>::max(), value);
     }
@@ -987,8 +987,8 @@ namespace
     TEST(test_value_u16_min)
     {
       etl::bitset_ext<16>::buffer_type buffer;
-      etl::bitset_ext<16> data((unsigned long long)etl::integral_limits<uint16_t>::min, buffer);
-      uint16_t value = data.value<uint16_t>();
+      etl::bitset_ext<16>              data((unsigned long long)etl::integral_limits<uint16_t>::min, buffer);
+      uint16_t                         value = data.value<uint16_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint16_t>::min(), value);
     }
@@ -997,8 +997,8 @@ namespace
     TEST(test_value_u16_max)
     {
       etl::bitset_ext<16>::buffer_type buffer;
-      etl::bitset_ext<16> data((unsigned long long)etl::integral_limits<uint16_t>::max, buffer);
-      uint16_t value = data.value<uint16_t>();
+      etl::bitset_ext<16>              data((unsigned long long)etl::integral_limits<uint16_t>::max, buffer);
+      uint16_t                         value = data.value<uint16_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint16_t>::max(), value);
     }
@@ -1007,8 +1007,8 @@ namespace
     TEST(test_value_s16_min)
     {
       etl::bitset_ext<16>::buffer_type buffer;
-      etl::bitset_ext<16> data((unsigned long long)etl::integral_limits<uint16_t>::min, buffer);
-      uint16_t value = data.value<uint16_t>();
+      etl::bitset_ext<16>              data((unsigned long long)etl::integral_limits<uint16_t>::min, buffer);
+      uint16_t                         value = data.value<uint16_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint16_t>::min(), value);
     }
@@ -1017,8 +1017,8 @@ namespace
     TEST(test_value_s16_max)
     {
       etl::bitset_ext<16>::buffer_type buffer;
-      etl::bitset_ext<16> data((unsigned long long)etl::integral_limits<uint16_t>::max, buffer);
-      uint16_t value = data.value<uint16_t>();
+      etl::bitset_ext<16>              data((unsigned long long)etl::integral_limits<uint16_t>::max, buffer);
+      uint16_t                         value = data.value<uint16_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint16_t>::max(), value);
     }
@@ -1027,8 +1027,8 @@ namespace
     TEST(test_value_u32_min)
     {
       etl::bitset_ext<32>::buffer_type buffer;
-      etl::bitset_ext<32> data((unsigned long long)etl::integral_limits<uint32_t>::min, buffer);
-      uint32_t value = data.value<uint32_t>();
+      etl::bitset_ext<32>              data((unsigned long long)etl::integral_limits<uint32_t>::min, buffer);
+      uint32_t                         value = data.value<uint32_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint32_t>::min(), value);
     }
@@ -1037,8 +1037,8 @@ namespace
     TEST(test_value_u32_max)
     {
       etl::bitset_ext<32>::buffer_type buffer;
-      etl::bitset_ext<32> data((unsigned long long)etl::integral_limits<uint32_t>::max, buffer);
-      uint32_t value = data.value<uint32_t>();
+      etl::bitset_ext<32>              data((unsigned long long)etl::integral_limits<uint32_t>::max, buffer);
+      uint32_t                         value = data.value<uint32_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint32_t>::max(), value);
     }
@@ -1047,8 +1047,8 @@ namespace
     TEST(test_value_s32_min)
     {
       etl::bitset_ext<32>::buffer_type buffer;
-      etl::bitset_ext<32> data((unsigned long long)etl::integral_limits<uint32_t>::min, buffer);
-      uint32_t value = data.value<uint32_t>();
+      etl::bitset_ext<32>              data((unsigned long long)etl::integral_limits<uint32_t>::min, buffer);
+      uint32_t                         value = data.value<uint32_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint32_t>::min(), value);
     }
@@ -1057,8 +1057,8 @@ namespace
     TEST(test_value_s32_max)
     {
       etl::bitset_ext<32>::buffer_type buffer;
-      etl::bitset_ext<32> data((unsigned long long)etl::integral_limits<uint32_t>::max, buffer);
-      uint32_t value = data.value<uint32_t>();
+      etl::bitset_ext<32>              data((unsigned long long)etl::integral_limits<uint32_t>::max, buffer);
+      uint32_t                         value = data.value<uint32_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint32_t>::max(), value);
     }
@@ -1067,8 +1067,8 @@ namespace
     TEST(test_value_u64_min)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data((unsigned long long)etl::integral_limits<uint64_t>::min, buffer);
-      uint64_t value = data.value<uint64_t>();
+      etl::bitset_ext<64>              data((unsigned long long)etl::integral_limits<uint64_t>::min, buffer);
+      uint64_t                         value = data.value<uint64_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint64_t>::min(), value);
     }
@@ -1077,8 +1077,8 @@ namespace
     TEST(test_value_u64_max)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data((unsigned long long)etl::integral_limits<uint64_t>::max, buffer);
-      uint64_t value = data.value<uint64_t>();
+      etl::bitset_ext<64>              data((unsigned long long)etl::integral_limits<uint64_t>::max, buffer);
+      uint64_t                         value = data.value<uint64_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint64_t>::max(), value);
     }
@@ -1087,8 +1087,8 @@ namespace
     TEST(test_value_s64_min)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data((unsigned long long)etl::integral_limits<uint64_t>::min, buffer);
-      uint64_t value = data.value<uint64_t>();
+      etl::bitset_ext<64>              data((unsigned long long)etl::integral_limits<uint64_t>::min, buffer);
+      uint64_t                         value = data.value<uint64_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint64_t>::min(), value);
     }
@@ -1097,8 +1097,8 @@ namespace
     TEST(test_value_s64_max)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data((unsigned long long)etl::integral_limits<uint64_t>::max, buffer);
-      uint64_t value = data.value<uint64_t>();
+      etl::bitset_ext<64>              data((unsigned long long)etl::integral_limits<uint64_t>::max, buffer);
+      uint64_t                         value = data.value<uint64_t>();
 
       CHECK_EQUAL(std::numeric_limits<uint64_t>::max(), value);
     }
@@ -1107,8 +1107,8 @@ namespace
     TEST(test_to_ulong_min)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long>::bits>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long>::bits> data(etl::integral_limits<unsigned long>::min, buffer);
-      unsigned long value = data.to_ulong();
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits>              data(etl::integral_limits<unsigned long>::min, buffer);
+      unsigned long                                                           value = data.to_ulong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
     }
@@ -1117,8 +1117,8 @@ namespace
     TEST(test_to_ulong_max)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long>::bits>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long>::bits> data(etl::integral_limits<unsigned long>::max, buffer);
-      unsigned long value = data.to_ulong();
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits>              data(etl::integral_limits<unsigned long>::max, buffer);
+      unsigned long                                                           value = data.to_ulong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), value);
     }
@@ -1127,16 +1127,16 @@ namespace
     TEST(test_to_ulong_overflow)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long>::bits + 1>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long>::bits + 1> data(etl::integral_limits<unsigned long>::min, buffer);
+      etl::bitset_ext<etl::integral_limits<unsigned long>::bits + 1>              data(etl::integral_limits<unsigned long>::min, buffer);
       CHECK_THROW(data.to_ulong(), etl::bitset_overflow);
     }
 
     //*************************************************************************
     TEST(test_to_ullong_min)
     {
-      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits> data(etl::integral_limits<unsigned long long>::min, buffer);
-      unsigned long long value = data.to_ullong();
+      etl::bitset_ext< etl::integral_limits<unsigned long long>::bits>::buffer_type buffer;
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits>               data(etl::integral_limits<unsigned long long>::min, buffer);
+      unsigned long long                                                            value = data.to_ullong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long>::min(), value);
     }
@@ -1144,9 +1144,9 @@ namespace
     //*************************************************************************
     TEST(test_to_ullong_max)
     {
-      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits> data(etl::integral_limits<unsigned long long>::max, buffer);
-      unsigned long long value = data.to_ullong();
+      etl::bitset_ext< etl::integral_limits<unsigned long long>::bits>::buffer_type buffer;
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits>               data(etl::integral_limits<unsigned long long>::max, buffer);
+      unsigned long long                                                            value = data.to_ullong();
 
       CHECK_EQUAL(std::numeric_limits<unsigned long long>::max(), value);
     }
@@ -1155,7 +1155,7 @@ namespace
     TEST(test_to_ullong_overflow)
     {
       etl::bitset_ext<etl::integral_limits<unsigned long long>::bits + 1>::buffer_type buffer;
-      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits + 1> data(etl::integral_limits<unsigned long long>::min, buffer);
+      etl::bitset_ext<etl::integral_limits<unsigned long long>::bits + 1>              data(etl::integral_limits<unsigned long long>::min, buffer);
       CHECK_THROW(data.to_ullong(), etl::bitset_overflow);
     }
 
@@ -1163,8 +1163,8 @@ namespace
     TEST(test_position_set)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare;
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare;
+      etl::bitset_ext<64>              data(buffer);
 
       for (size_t i = 0UL; i < data.size(); ++i)
       {
@@ -1188,7 +1188,7 @@ namespace
     TEST(test_position_set_invalid_position_raises_bitset_overflow_github_issue_722)
     {
       etl::bitset_ext<12>::buffer_type buffer;
-      etl::bitset_ext<12> data(buffer);
+      etl::bitset_ext<12>              data(buffer);
 
       CHECK_THROW(data.set(13), etl::bitset_overflow);
     }
@@ -1197,8 +1197,8 @@ namespace
     TEST(test_reset)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(0xFFFFFFFFFFFFFFFULL);
-      etl::bitset_ext<64> data(0xFFFFFFFFFFFFFFFULL, buffer);
+      std::bitset<64>                  compare(0xFFFFFFFFFFFFFFFULL);
+      etl::bitset_ext<64>              data(0xFFFFFFFFFFFFFFFULL, buffer);
 
       compare.reset();
       data.reset();
@@ -1219,8 +1219,8 @@ namespace
     TEST(test_position_reset)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(0xFFFFFFFFFFFFFFFULL);
-      etl::bitset_ext<64> data(0xFFFFFFFFFFFFFFFULL, buffer);
+      std::bitset<64>                  compare(0xFFFFFFFFFFFFFFFULL);
+      etl::bitset_ext<64>              data(0xFFFFFFFFFFFFFFFULL, buffer);
 
       compare.reset(1);
       compare.reset(3);
@@ -1248,7 +1248,7 @@ namespace
     TEST(test_position_reset_invalid_position_raises_bitset_overflow_github_issue_722)
     {
       etl::bitset_ext<12>::buffer_type buffer;
-      etl::bitset_ext<12> data(buffer);
+      etl::bitset_ext<12>              data(buffer);
 
       CHECK_THROW(data.reset(13), etl::bitset_overflow);
     }
@@ -1257,7 +1257,7 @@ namespace
     TEST(test_position_flip_invalid_position_raises_bitset_overflow_github_issue_722)
     {
       etl::bitset_ext<12>::buffer_type buffer;
-      etl::bitset_ext<12> data(buffer);
+      etl::bitset_ext<12>              data(buffer);
 
       CHECK_THROW(data.flip(13), etl::bitset_overflow);
     }
@@ -1266,7 +1266,7 @@ namespace
     TEST(test_position_test_invalid_position_raises_bitset_overflow_github_issue_722)
     {
       etl::bitset_ext<12>::buffer_type buffer;
-      etl::bitset_ext<12> data(buffer);
+      etl::bitset_ext<12>              data(buffer);
 
       CHECK_THROW(data.test(13), etl::bitset_overflow);
     }
@@ -1275,8 +1275,8 @@ namespace
     TEST(test_index_operator_read)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare(0x3123456731234567ULL);
-      etl::bitset_ext<64> data(0x3123456731234567ULL, buffer);
+      std::bitset<64>                  compare(0x3123456731234567ULL);
+      etl::bitset_ext<64>              data(0x3123456731234567ULL, buffer);
 
       bool bc0 = compare[1U];
       bool bd0 = data[1U];
@@ -1299,11 +1299,11 @@ namespace
     TEST(test_index_operator_write)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      etl::bitset_ext<64> data(buffer);
+      etl::bitset_ext<64>              data(buffer);
 
-      data[1U] = true;
-      data[3U] = true;
-      data[7U] = true;
+      data[1U]  = true;
+      data[3U]  = true;
+      data[7U]  = true;
       data[13U] = true;
 
       CHECK(data[1U]);
@@ -1319,10 +1319,10 @@ namespace
       etl::bitset_ext<64>::buffer_type buffer2;
       etl::bitset_ext<64>::buffer_type buffer3;
       etl::bitset_ext<64>::buffer_type buffer4;
-      etl::bitset_ext<64> data1(ull(0x0000000000000000), buffer1);
-      etl::bitset_ext<64> data2(ull(0x0000010000000000), buffer2);
-      etl::bitset_ext<64> data3(ull(0x1000010001000100), buffer3);
-      etl::bitset_ext<64> data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
+      etl::bitset_ext<64>              data1(ull(0x0000000000000000), buffer1);
+      etl::bitset_ext<64>              data2(ull(0x0000010000000000), buffer2);
+      etl::bitset_ext<64>              data3(ull(0x1000010001000100), buffer3);
+      etl::bitset_ext<64>              data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
 
       bool bd1 = data1.any();
       bool bd2 = data2.any();
@@ -1342,10 +1342,10 @@ namespace
       etl::bitset_ext<64>::buffer_type buffer2;
       etl::bitset_ext<64>::buffer_type buffer3;
       etl::bitset_ext<64>::buffer_type buffer4;
-      etl::bitset_ext<64> data1(ull(0x0000000000000000), buffer1);
-      etl::bitset_ext<64> data2(ull(0x0000010000000000), buffer2);
-      etl::bitset_ext<64> data3(ull(0x1000010001000100), buffer3);
-      etl::bitset_ext<64> data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
+      etl::bitset_ext<64>              data1(ull(0x0000000000000000), buffer1);
+      etl::bitset_ext<64>              data2(ull(0x0000010000000000), buffer2);
+      etl::bitset_ext<64>              data3(ull(0x1000010001000100), buffer3);
+      etl::bitset_ext<64>              data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
 
       bool bd1 = data1.none();
       bool bd2 = data2.none();
@@ -1365,10 +1365,10 @@ namespace
       etl::bitset_ext<64>::buffer_type buffer2;
       etl::bitset_ext<64>::buffer_type buffer3;
       etl::bitset_ext<64>::buffer_type buffer4;
-      etl::bitset_ext<64> data1(ull(0x0000000000000000), buffer1);
-      etl::bitset_ext<64> data2(ull(0x0000010000000000), buffer2);
-      etl::bitset_ext<64> data3(ull(0x1000010001000100), buffer3);
-      etl::bitset_ext<64> data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
+      etl::bitset_ext<64>              data1(ull(0x0000000000000000), buffer1);
+      etl::bitset_ext<64>              data2(ull(0x0000010000000000), buffer2);
+      etl::bitset_ext<64>              data3(ull(0x1000010001000100), buffer3);
+      etl::bitset_ext<64>              data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
 
       bool bd1 = data1.all();
       bool bd2 = data2.all();
@@ -1388,10 +1388,10 @@ namespace
       etl::bitset_ext<60>::buffer_type buffer2;
       etl::bitset_ext<60>::buffer_type buffer3;
       etl::bitset_ext<60>::buffer_type buffer4;
-      etl::bitset_ext<60> data1(ull(0x0000000000000000), buffer1);
-      etl::bitset_ext<60> data2(ull(0x0000010000000000), buffer2);
-      etl::bitset_ext<60> data3(ull(0x1000010001000100), buffer3);
-      etl::bitset_ext<60> data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
+      etl::bitset_ext<60>              data1(ull(0x0000000000000000), buffer1);
+      etl::bitset_ext<60>              data2(ull(0x0000010000000000), buffer2);
+      etl::bitset_ext<60>              data3(ull(0x1000010001000100), buffer3);
+      etl::bitset_ext<60>              data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
 
       bool bd1 = data1.any();
       bool bd2 = data2.any();
@@ -1411,10 +1411,10 @@ namespace
       etl::bitset_ext<60>::buffer_type buffer2;
       etl::bitset_ext<60>::buffer_type buffer3;
       etl::bitset_ext<60>::buffer_type buffer4;
-      etl::bitset_ext<60> data1(ull(0x0000000000000000), buffer1);
-      etl::bitset_ext<60> data2(ull(0x0000010000000000), buffer2);
-      etl::bitset_ext<60> data3(ull(0x1000010001000100), buffer3);
-      etl::bitset_ext<60> data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
+      etl::bitset_ext<60>              data1(ull(0x0000000000000000), buffer1);
+      etl::bitset_ext<60>              data2(ull(0x0000010000000000), buffer2);
+      etl::bitset_ext<60>              data3(ull(0x1000010001000100), buffer3);
+      etl::bitset_ext<60>              data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
 
       bool bd1 = data1.none();
       bool bd2 = data2.none();
@@ -1434,10 +1434,10 @@ namespace
       etl::bitset_ext<60>::buffer_type buffer2;
       etl::bitset_ext<60>::buffer_type buffer3;
       etl::bitset_ext<60>::buffer_type buffer4;
-      etl::bitset_ext<60> data1(ull(0x0000000000000000), buffer1);
-      etl::bitset_ext<60> data2(ull(0x0000010000000000), buffer2);
-      etl::bitset_ext<60> data3(ull(0x1000010001000100), buffer3);
-      etl::bitset_ext<60> data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
+      etl::bitset_ext<60>              data1(ull(0x0000000000000000), buffer1);
+      etl::bitset_ext<60>              data2(ull(0x0000010000000000), buffer2);
+      etl::bitset_ext<60>              data3(ull(0x1000010001000100), buffer3);
+      etl::bitset_ext<60>              data4(ull(0xFFFFFFFFFFFFFFFF), buffer4);
 
       bool bd1 = data1.all();
       bool bd2 = data2.all();
@@ -1454,8 +1454,8 @@ namespace
     TEST(test_flip)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare;
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare;
+      etl::bitset_ext<64>              data(buffer);
 
       compare.flip();
       data.flip();
@@ -1470,8 +1470,8 @@ namespace
     TEST(test_flip_position)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare;
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare;
+      etl::bitset_ext<64>              data(buffer);
 
       compare.flip(1);
       compare.flip(3);
@@ -1493,8 +1493,8 @@ namespace
     TEST(test_flip_reference)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare;
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare;
+      etl::bitset_ext<64>              data(buffer);
 
       compare[1].flip();
       compare[3].flip();
@@ -1516,8 +1516,8 @@ namespace
     TEST(test_invert_reference)
     {
       etl::bitset_ext<64>::buffer_type buffer;
-      std::bitset<64> compare;
-      etl::bitset_ext<64> data(buffer);
+      std::bitset<64>                  compare;
+      etl::bitset_ext<64>              data(buffer);
 
       bool bc = ~compare[3];
       bool bd = ~data[3];
@@ -1525,7 +1525,7 @@ namespace
     }
 
     //*************************************************************************
-    void test_assignment_operator_helper(etl::bitset_ext<64>&from, etl::bitset_ext<64>&to)
+    void test_assignment_operator_helper(etl::bitset_ext<64> & from, etl::bitset_ext<64> & to)
     {
       to = from;
     }
@@ -1534,9 +1534,9 @@ namespace
     {
       etl::bitset_ext<64>::buffer_type buffer1;
       etl::bitset_ext<64>::buffer_type buffer2;
-      std::bitset<64> compare(0xFFFFFFFFFFFFFFFULL);
-      etl::bitset_ext<64> data1(0xFFFFFFFFFFFFFFFULL, buffer1);
-      etl::bitset_ext<64> data2(buffer2);
+      std::bitset<64>                  compare(0xFFFFFFFFFFFFFFFULL);
+      etl::bitset_ext<64>              data1(0xFFFFFFFFFFFFFFFULL, buffer1);
+      etl::bitset_ext<64>              data2(buffer2);
 
       test_assignment_operator_helper(data1, data2);
 
@@ -1552,11 +1552,11 @@ namespace
       etl::bitset_ext<64>::buffer_type buffer1;
       etl::bitset_ext<64>::buffer_type buffer2;
       etl::bitset_ext<64>::buffer_type buffer3;
-      etl::bitset_ext<64> data1(0x123456781234567ULL, buffer1);
-      etl::bitset_ext<64> data2(0x123456781234567ULL, buffer2);
-      etl::bitset_ext<64> data3(buffer3);
+      etl::bitset_ext<64>              data1(0x123456781234567ULL, buffer1);
+      etl::bitset_ext<64>              data2(0x123456781234567ULL, buffer2);
+      etl::bitset_ext<64>              data3(buffer3);
 
-      bool equal = (data1 == data2);
+      bool equal     = (data1 == data2);
       bool not_equal = !(data1 == data3);
 
       CHECK(equal);
@@ -1569,11 +1569,11 @@ namespace
       etl::bitset_ext<64>::buffer_type buffer1;
       etl::bitset_ext<64>::buffer_type buffer2;
       etl::bitset_ext<64>::buffer_type buffer3;
-      etl::bitset_ext<64> data1(0x123456781234567ULL, buffer1);
-      etl::bitset_ext<64> data2(0x123456781234567ULL, buffer2);
-      etl::bitset_ext<64> data3(buffer3);
+      etl::bitset_ext<64>              data1(0x123456781234567ULL, buffer1);
+      etl::bitset_ext<64>              data2(0x123456781234567ULL, buffer2);
+      etl::bitset_ext<64>              data3(buffer3);
 
-      bool equal = !(data1 != data2);
+      bool equal     = !(data1 != data2);
       bool not_equal = (data1 != data3);
 
       CHECK(equal);
@@ -1584,7 +1584,7 @@ namespace
     TEST(test_shift_left_operator)
     {
       uint64_t value = 0x0123456789ABCDEFULL;
-      uint64_t mask = 0xFFFFFFFFFFFFFFFFULL;
+      uint64_t mask  = 0xFFFFFFFFFFFFFFFFULL;
 
       etl::bitset_ext<64>::buffer_type buffer1;
       etl::bitset_ext<64>::buffer_type buffer2;
@@ -1693,44 +1693,44 @@ namespace
       etl::bitset_ext<8>::buffer_type buffer;
 
       etl::bitset_ext<8> bs1(ull(0x00), buffer);
-      size_t bs1fff = bs1.find_first(false);
-      size_t bs1fft = bs1.find_first(true);
+      size_t             bs1fff = bs1.find_first(false);
+      size_t             bs1fft = bs1.find_first(true);
       CHECK_EQUAL(0U, bs1fff);
       CHECK_EQUAL(etl::bitset_ext<>::npos, bs1fft);
 
       etl::bitset_ext<8> bs2(ull(0xFF), buffer);
-      size_t bs2fff = bs2.find_first(false);
-      size_t bs2fft = bs2.find_first(true);
+      size_t             bs2fff = bs2.find_first(false);
+      size_t             bs2fft = bs2.find_first(true);
       CHECK_EQUAL(etl::bitset_ext<>::npos, bs2fff);
       CHECK_EQUAL(0U, bs2fft);
 
       etl::bitset_ext<8> bs3(ull(0x01), buffer);
-      size_t bs3fff = bs3.find_first(false);
-      size_t bs3fft = bs3.find_first(true);
+      size_t             bs3fff = bs3.find_first(false);
+      size_t             bs3fft = bs3.find_first(true);
       CHECK_EQUAL(1U, bs3fff);
       CHECK_EQUAL(0U, bs3fft);
 
       etl::bitset_ext<8> bs4(ull(0x20), buffer);
-      size_t bs4fff = bs4.find_first(false);
-      size_t bs4fft = bs4.find_first(true);
+      size_t             bs4fff = bs4.find_first(false);
+      size_t             bs4fft = bs4.find_first(true);
       CHECK_EQUAL(0U, bs4fff);
       CHECK_EQUAL(5U, bs4fft);
 
       etl::bitset_ext<8> bs5(ull(0x21), buffer);
-      size_t bs5fff = bs5.find_first(false);
-      size_t bs5fft = bs5.find_first(true);
+      size_t             bs5fff = bs5.find_first(false);
+      size_t             bs5fft = bs5.find_first(true);
       CHECK_EQUAL(1U, bs5fff);
       CHECK_EQUAL(0U, bs5fft);
 
       etl::bitset_ext<8> bs6(ull(0x0E), buffer);
-      size_t bs6fff = bs6.find_first(false);
-      size_t bs6fft = bs6.find_first(true);
+      size_t             bs6fff = bs6.find_first(false);
+      size_t             bs6fft = bs6.find_first(true);
       CHECK_EQUAL(0U, bs6fff);
       CHECK_EQUAL(1U, bs6fft);
 
       etl::bitset_ext<8> bs7(ull(0x31), buffer);
-      size_t bs7fff = bs7.find_first(false);
-      size_t bs7fft = bs7.find_first(true);
+      size_t             bs7fff = bs7.find_first(false);
+      size_t             bs7fft = bs7.find_first(true);
       CHECK_EQUAL(1U, bs7fff);
       CHECK_EQUAL(0U, bs7fft);
     }
@@ -1741,33 +1741,33 @@ namespace
       etl::bitset_ext<8>::buffer_type buffer;
 
       etl::bitset_ext<8> bs1(ull(0x00), buffer);
-      size_t bs1fnf0 = bs1.find_next(false, 0);
-      size_t bs1fnf1 = bs1.find_next(false, 1);
-      size_t bs1fnt2 = bs1.find_next(true, 2);
+      size_t             bs1fnf0 = bs1.find_next(false, 0);
+      size_t             bs1fnf1 = bs1.find_next(false, 1);
+      size_t             bs1fnt2 = bs1.find_next(true, 2);
       CHECK_EQUAL(0U, bs1fnf0);
       CHECK_EQUAL(1U, bs1fnf1);
       CHECK_EQUAL(etl::bitset_ext<>::npos, bs1fnt2);
 
       etl::bitset_ext<8> bs2(ull(0xFF), buffer);
-      size_t bs2fnt0 = bs2.find_next(true, 0);
-      size_t bs2fnt1 = bs2.find_next(true, 1);
-      size_t bs2fnf2 = bs2.find_next(false, 2);
+      size_t             bs2fnt0 = bs2.find_next(true, 0);
+      size_t             bs2fnt1 = bs2.find_next(true, 1);
+      size_t             bs2fnf2 = bs2.find_next(false, 2);
       CHECK_EQUAL(0U, bs2fnt0);
       CHECK_EQUAL(1U, bs2fnt1);
       CHECK_EQUAL(etl::bitset_ext<>::npos, bs2fnf2);
 
       etl::bitset_ext<8> bs3(ull(0x0E), buffer);
-      size_t bs3fnf0 = bs3.find_next(false, 0);
-      size_t bs3fnt1 = bs3.find_next(true, 1);
-      size_t bs3fnf2 = bs3.find_next(false, 2);
+      size_t             bs3fnf0 = bs3.find_next(false, 0);
+      size_t             bs3fnt1 = bs3.find_next(true, 1);
+      size_t             bs3fnf2 = bs3.find_next(false, 2);
       CHECK_EQUAL(0U, bs3fnf0);
       CHECK_EQUAL(1U, bs3fnt1);
       CHECK_EQUAL(4U, bs3fnf2);
 
       etl::bitset_ext<8> bs4(ull(0x31), buffer);
-      size_t bs4fnt0 = bs4.find_next(true, 0);
-      size_t bs4fnf0 = bs4.find_next(false, 0);
-      size_t bs4fnt1 = bs4.find_next(true, 1);
+      size_t             bs4fnt0 = bs4.find_next(true, 0);
+      size_t             bs4fnf0 = bs4.find_next(false, 0);
+      size_t             bs4fnt1 = bs4.find_next(true, 1);
       CHECK_EQUAL(0U, bs4fnt0);
       CHECK_EQUAL(1U, bs4fnf0);
       CHECK_EQUAL(4U, bs4fnt1);
@@ -1799,7 +1799,7 @@ namespace
       using span_t = bs32::span_type;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       span_t s = b.span();
 
@@ -1808,7 +1808,7 @@ namespace
       CHECK_EQUAL(0x34UL, s[2]);
       CHECK_EQUAL(0x12UL, s[3]);
 
-      s[2] = 0x9AU;
+      s[2]           = 0x9AU;
       uint32_t value = b.value<uint32_t>();
       CHECK_EQUAL(0x129A5678UL, value);
     }
@@ -1820,7 +1820,7 @@ namespace
       using span_t = etl::bitset<32>::const_span_type;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       span_t s = b.span();
       CHECK_EQUAL(0x78UL, s[0]);
@@ -1835,12 +1835,13 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 data(0x12345678UL, buffer);
+      bs32              data(0x12345678UL, buffer);
 
-      etl::string<32> text = data.to_string('.', '*');
-      std::string stdtext = data.to_string<std::string>('.', '*');
+      etl::string<32> text    = data.to_string('.', '*');
+      std::string     stdtext = data.to_string<std::string>('.', '*');
 
-      //CHECK_THROW(b.to_string<etl::string<30>>('.', '*'), etl::bitset_ext_overflow);
+      // CHECK_THROW(b.to_string<etl::string<30>>('.', '*'),
+      // etl::bitset_ext_overflow);
       CHECK_EQUAL(std::string("...*..*...**.*...*.*.**..****..."), std::string(text.c_str()));
       CHECK_EQUAL(std::string("...*..*...**.*...*.*.**..****..."), std::string(stdtext.c_str()));
     }
@@ -1851,10 +1852,10 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
-      etl::wstring<32> text = b.to_string<etl::wstring<32>>(L'.', L'*');
-      std::wstring stdtext = b.to_string<std::wstring>(L'.', L'*');
+      etl::wstring<32> text    = b.to_string<etl::wstring<32>>(L'.', L'*');
+      std::wstring     stdtext = b.to_string<std::wstring>(L'.', L'*');
 
       CHECK(std::wstring(L"...*..*...**.*...*.*.**..****...") == std::wstring(text.c_str()));
       CHECK(std::wstring(L"...*..*...**.*...*.*.**..****...") == std::wstring(stdtext.c_str()));
@@ -1866,10 +1867,10 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
-      etl::u16string<32> text = b.to_string<etl::u16string<32>>(u'.', u'*');
-      std::u16string stdtext = b.to_string<std::u16string>(u'.', u'*');
+      etl::u16string<32> text    = b.to_string<etl::u16string<32>>(u'.', u'*');
+      std::u16string     stdtext = b.to_string<std::u16string>(u'.', u'*');
 
       CHECK(std::u16string(u"...*..*...**.*...*.*.**..****...") == std::u16string(text.c_str()));
       CHECK(std::u16string(u"...*..*...**.*...*.*.**..****...") == std::u16string(stdtext.c_str()));
@@ -1881,10 +1882,10 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
-      etl::u32string<32> text = b.to_string<etl::u32string<32>>(U'.', U'*');
-      std::u32string stdtext = b.to_string<std::u32string>(U'.', U'*');
+      etl::u32string<32> text    = b.to_string<etl::u32string<32>>(U'.', U'*');
+      std::u32string     stdtext = b.to_string<std::u32string>(U'.', U'*');
 
       CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(text.c_str()));
       CHECK(std::u32string(U"...*..*...**.*...*.*.**..****...") == std::u32string(stdtext.c_str()));
@@ -1896,7 +1897,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint8_t(0x38), (b.extract<uint8_t>(0, 6)));
       CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t>(1, 6)));
@@ -1936,7 +1937,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint8_t(0x38), (b.extract<uint8_t, 0, 6>()));
       CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t, 1, 6>()));
@@ -1967,8 +1968,8 @@ namespace
       CHECK_EQUAL_HEX(uint8_t(0x04), (b.extract<uint8_t, 26, 6>()));
 
       // The lines below should static assert.
-      //uint8_t v1 = b.extract<uint8_t, 26, 7>();
-      //uint8_t v1 = b.extract<uint8_t, 27, 6>();
+      // uint8_t v1 = b.extract<uint8_t, 26, 7>();
+      // uint8_t v1 = b.extract<uint8_t, 27, 6>();
     }
 
     //*************************************************************************
@@ -1977,7 +1978,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t>(0, 6)));
       CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t>(1, 6)));
@@ -2017,7 +2018,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(int8_t(0xF8), (b.extract<int8_t, 0, 6>()));
       CHECK_EQUAL_HEX(int8_t(0xFC), (b.extract<int8_t, 1, 6>()));
@@ -2048,8 +2049,8 @@ namespace
       CHECK_EQUAL_HEX(int8_t(0x04), (b.extract<int8_t, 26, 6>()));
 
       // The lines below should static assert.
-      //uint8_t v1 = b.extract<uint8_t, 26, 7>();
-      //uint8_t v1 = b.extract<uint8_t, 27, 6>();
+      // uint8_t v1 = b.extract<uint8_t, 26, 7>();
+      // uint8_t v1 = b.extract<uint8_t, 27, 6>();
     }
 
     //*************************************************************************
@@ -2058,7 +2059,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint8_t(0x78), b.extract<uint8_t>(0, 8));
       CHECK_EQUAL_HEX(uint8_t(0x3C), b.extract<uint8_t>(1, 8));
@@ -2096,7 +2097,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint8_t(0x78), (b.extract<uint8_t, 0, 8>()));
       CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t, 1, 8>()));
@@ -2125,8 +2126,8 @@ namespace
       CHECK_EQUAL_HEX(uint8_t(0x12), (b.extract<uint8_t, 24, 8>()));
 
       // The lines below should static assert.
-      //uint8_t v1 = b.extract<uint8_t, 24, 9>();
-      //uint8_t v2 = b.extract<uint8_t, 25, 8>();
+      // uint8_t v1 = b.extract<uint8_t, 24, 9>();
+      // uint8_t v2 = b.extract<uint8_t, 25, 8>();
     }
 
     //*************************************************************************
@@ -2135,7 +2136,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint8_t(0x78), b.extract<uint8_t>(0, 8));
       CHECK_EQUAL_HEX(uint8_t(0x3C), b.extract<uint8_t>(1, 8));
@@ -2173,7 +2174,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint8_t(0x78), (b.extract<uint8_t, 0, 8>()));
       CHECK_EQUAL_HEX(uint8_t(0x3C), (b.extract<uint8_t, 1, 8>()));
@@ -2202,8 +2203,8 @@ namespace
       CHECK_EQUAL_HEX(uint8_t(0x12), (b.extract<uint8_t, 24, 8>()));
 
       // The lines below should static assert.
-      //uint8_t v1 = b.extract<uint8_t, 24, 9>();
-      //uint8_t v2 = b.extract<uint8_t, 25, 8>();
+      // uint8_t v1 = b.extract<uint8_t, 24, 9>();
+      // uint8_t v2 = b.extract<uint8_t, 25, 8>();
     }
 
     //*************************************************************************
@@ -2212,7 +2213,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint16_t(0x1678), b.extract<uint16_t>(0, 13));
       CHECK_EQUAL_HEX(uint16_t(0x0B3C), b.extract<uint16_t>(1, 13));
@@ -2245,7 +2246,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint16_t(0x1678), (b.extract<uint16_t, 0, 13>()));
       CHECK_EQUAL_HEX(uint16_t(0x0B3C), (b.extract<uint16_t, 1, 13>()));
@@ -2269,8 +2270,8 @@ namespace
       CHECK_EQUAL_HEX(uint16_t(0x0246), (b.extract<uint16_t, 19, 13>()));
 
       // The lines below should static assert.
-      //uint16_t v1 = b.extract<uint16_t, 19, 14);
-      //uint16_t v2 = b.extract<uint16_t, 20, 13);
+      // uint16_t v1 = b.extract<uint16_t, 19, 14);
+      // uint16_t v2 = b.extract<uint16_t, 20, 13);
     }
 
     //*************************************************************************
@@ -2279,7 +2280,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint16_t(0x5678), b.extract<uint16_t>(0, 16));
       CHECK_EQUAL_HEX(uint16_t(0x2B3C), b.extract<uint16_t>(1, 16));
@@ -2309,7 +2310,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint16_t(0x5678), (b.extract<uint16_t, 0, 16>()));
       CHECK_EQUAL_HEX(uint16_t(0x2B3C), (b.extract<uint16_t, 1, 16>()));
@@ -2330,8 +2331,8 @@ namespace
       CHECK_EQUAL_HEX(uint16_t(0x1234), (b.extract<uint16_t, 16, 16>()));
 
       // The lines below should static assert.
-      //uint16_t v1 = b.extract<uint16_t, 16, 17>();
-      //uint16_t v2 = b.extract<uint16_t, 17, 16>();
+      // uint16_t v1 = b.extract<uint16_t, 16, 17>();
+      // uint16_t v2 = b.extract<uint16_t, 17, 16>();
     }
 
     //*************************************************************************
@@ -2340,7 +2341,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint16_t(0x5678), b.extract<uint16_t>(0, 16));
       CHECK_EQUAL_HEX(uint16_t(0x2B3C), b.extract<uint16_t>(1, 16));
@@ -2370,7 +2371,7 @@ namespace
       using bs32 = etl::bitset_ext<32>;
 
       bs32::buffer_type buffer;
-      bs32 b(0x12345678UL, buffer);
+      bs32              b(0x12345678UL, buffer);
 
       CHECK_EQUAL_HEX(uint16_t(0x5678), (b.extract<uint16_t, 0, 16>()));
       CHECK_EQUAL_HEX(uint16_t(0x2B3C), (b.extract<uint16_t, 1, 16>()));
@@ -2391,8 +2392,8 @@ namespace
       CHECK_EQUAL_HEX(uint16_t(0x1234), (b.extract<uint16_t, 16, 16>()));
 
       // The lines below should static assert.
-      //uint16_t v1 = b.extract<uint16_t, 16, 17>());
-      //uint16_t v2 = b.extract<uint16_t, 17, 16>());
+      // uint16_t v1 = b.extract<uint16_t, 16, 17>());
+      // uint16_t v2 = b.extract<uint16_t, 17, 16>());
     }
 
     //*************************************************************************
@@ -2460,4 +2461,4 @@ namespace
       CHECK_EQUAL(32, ETL_OR_STD17::size(b));
     }
   }
-}
+} // namespace

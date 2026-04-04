@@ -34,19 +34,21 @@ SOFTWARE.
 #if (ETL_USING_CPP11)
   #define ETL_STATIC_ASSERT(Condition, Message) static_assert(Condition, Message)
 #else
-  template <bool Condition>
-  struct ETL_ETL_STATIC_ASSERT_FAILED;
+template <bool Condition>
+struct ETL_ETL_STATIC_ASSERT_FAILED;
 
-  template <>
-  struct ETL_ETL_STATIC_ASSERT_FAILED<true> {};
+template <>
+struct ETL_ETL_STATIC_ASSERT_FAILED<true>
+{
+};
 
-  #define ETL_SA1(a,b) a##b
-  #define ETL_SA2(a,b) ETL_SA1(a,b)
-  #define ETL_STATIC_ASSERT(Condition, Message) \
-		  enum \
-		  { \
-        ETL_SA2(dummy, __LINE__) = sizeof(ETL_ETL_STATIC_ASSERT_FAILED<static_cast<bool>(Condition)>) \
-	    }
+  #define ETL_SA1(a, b) a##b
+  #define ETL_SA2(a, b) ETL_SA1(a, b)
+  #define ETL_STATIC_ASSERT(Condition, Message)                                                     \
+    enum                                                                                            \
+    {                                                                                               \
+      ETL_SA2(dummy, __LINE__) = sizeof(ETL_ETL_STATIC_ASSERT_FAILED<static_cast<bool>(Condition)>) \
+    }
 #endif
 
 #endif

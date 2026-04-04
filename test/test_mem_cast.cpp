@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include "etl/mem_cast.h"
 #include "etl/largest.h"
+#include "etl/mem_cast.h"
 
-#include <array>
-#include <vector>
 #include <algorithm>
+#include <array>
 #include <string>
+#include <vector>
 
 namespace
 {
@@ -54,8 +54,8 @@ namespace
     {
     }
 
-    char c;
-    double d;
+    char               c;
+    double             d;
     std::array<int, 3> a;
   };
 
@@ -76,29 +76,29 @@ namespace
       MemCast      memCast;
       MemCastTypes memCastTypes;
 
-      CHECK(sizeof(char)  <= MemCast::Size);
+      CHECK(sizeof(char) <= MemCast::Size);
       CHECK(sizeof(short) <= MemCast::Size);
-      CHECK(sizeof(Data)  <= MemCast::Size);
+      CHECK(sizeof(Data) <= MemCast::Size);
 
-      CHECK(sizeof(char)  <= memCast.Size);
+      CHECK(sizeof(char) <= memCast.Size);
       CHECK(sizeof(short) <= memCast.Size);
-      CHECK(sizeof(Data)  <= memCast.Size);
+      CHECK(sizeof(Data) <= memCast.Size);
 
-      CHECK(sizeof(char)  <= memCast.size());
+      CHECK(sizeof(char) <= memCast.size());
       CHECK(sizeof(short) <= memCast.size());
-      CHECK(sizeof(Data)  <= memCast.size());
+      CHECK(sizeof(Data) <= memCast.size());
 
-      CHECK(sizeof(char)  <= MemCastTypes::Size);
+      CHECK(sizeof(char) <= MemCastTypes::Size);
       CHECK(sizeof(short) <= MemCastTypes::Size);
-      CHECK(sizeof(Data)  <= MemCastTypes::Size);
+      CHECK(sizeof(Data) <= MemCastTypes::Size);
 
-      CHECK(sizeof(char)  <= memCastTypes.Size);
+      CHECK(sizeof(char) <= memCastTypes.Size);
       CHECK(sizeof(short) <= memCastTypes.Size);
-      CHECK(sizeof(Data)  <= memCastTypes.Size);
+      CHECK(sizeof(Data) <= memCastTypes.Size);
 
-      CHECK(sizeof(char)  <= memCastTypes.size());
+      CHECK(sizeof(char) <= memCastTypes.size());
       CHECK(sizeof(short) <= memCastTypes.size());
-      CHECK(sizeof(Data)  <= memCastTypes.size());
+      CHECK(sizeof(Data) <= memCastTypes.size());
     }
 
     //*************************************************************************
@@ -107,29 +107,29 @@ namespace
       MemCast      memCast;
       MemCastTypes memCastTypes;
 
-      CHECK(alignof(char)  <= MemCast::Alignment);
+      CHECK(alignof(char) <= MemCast::Alignment);
       CHECK(alignof(short) <= MemCast::Alignment);
-      CHECK(alignof(Data)  <= MemCast::Alignment);
+      CHECK(alignof(Data) <= MemCast::Alignment);
 
-      CHECK(alignof(char)  <= memCast.Alignment);
+      CHECK(alignof(char) <= memCast.Alignment);
       CHECK(alignof(short) <= memCast.Alignment);
-      CHECK(alignof(Data)  <= memCast.Alignment);
+      CHECK(alignof(Data) <= memCast.Alignment);
 
-      CHECK(alignof(char)  <= memCast.alignment());
+      CHECK(alignof(char) <= memCast.alignment());
       CHECK(alignof(short) <= memCast.alignment());
-      CHECK(alignof(Data)  <= memCast.alignment());
+      CHECK(alignof(Data) <= memCast.alignment());
 
-      CHECK(alignof(char)  <= MemCastTypes::Alignment);
+      CHECK(alignof(char) <= MemCastTypes::Alignment);
       CHECK(alignof(short) <= MemCastTypes::Alignment);
-      CHECK(alignof(Data)  <= MemCastTypes::Alignment);
+      CHECK(alignof(Data) <= MemCastTypes::Alignment);
 
-      CHECK(alignof(char)  <= memCastTypes.Alignment);
+      CHECK(alignof(char) <= memCastTypes.Alignment);
       CHECK(alignof(short) <= memCastTypes.Alignment);
-      CHECK(alignof(Data)  <= memCastTypes.Alignment);
+      CHECK(alignof(Data) <= memCastTypes.Alignment);
 
-      CHECK(alignof(char)  <= memCastTypes.alignment());
+      CHECK(alignof(char) <= memCastTypes.alignment());
       CHECK(alignof(short) <= memCastTypes.alignment());
-      CHECK(alignof(Data)  <= memCastTypes.alignment());
+      CHECK(alignof(Data) <= memCastTypes.alignment());
     }
 
     //*************************************************************************
@@ -143,22 +143,22 @@ namespace
       memCast.assign<double>(1.23);
       CHECK_EQUAL(1.23, memCast.ref<double>());
 
-      Data data(123, 1.23, std::array<int, 3>{ 1, 2, 3 });
+      Data data(123, 1.23, std::array<int, 3>{1, 2, 3});
       memCast.assign<Data>(data);
-      CHECK_EQUAL(123,  memCast.ref<Data>().c);
+      CHECK_EQUAL(123, memCast.ref<Data>().c);
       CHECK_EQUAL(1.23, memCast.ref<Data>().d);
-      CHECK_EQUAL(1,    memCast.ref<Data>().a[0]);
-      CHECK_EQUAL(2,    memCast.ref<Data>().a[1]);
-      CHECK_EQUAL(3,    memCast.ref<Data>().a[2]);
+      CHECK_EQUAL(1, memCast.ref<Data>().a[0]);
+      CHECK_EQUAL(2, memCast.ref<Data>().a[1]);
+      CHECK_EQUAL(3, memCast.ref<Data>().a[2]);
     }
 
     //*************************************************************************
     TEST(test_mem_cast_assign_type_at_dynamic_offset)
     {
-      MemCast memCast; 
+      MemCast memCast;
 
       using Array = std::array<int, 3>;
-      Array a{ 1, 2, 3 };
+      Array a{1, 2, 3};
 
       size_t offset = offsetof(Data, a);
 
@@ -171,10 +171,10 @@ namespace
     //*************************************************************************
     TEST(test_mem_cast_assign_type_at_static_offset)
     {
-      MemCast memCast; 
+      MemCast memCast;
 
       using Array = std::array<int, 3>;
-      Array a{ 1, 2, 3 };
+      Array a{1, 2, 3};
 
       constexpr size_t Offset = offsetof(Data, a);
 
@@ -187,7 +187,7 @@ namespace
     //*************************************************************************
     TEST(test_mem_cast_emplace_type)
     {
-      MemCast memCast; 
+      MemCast memCast;
 
       char mc1 = memCast.emplace<char>(123);
       CHECK_EQUAL(123, memCast.ref<char>());
@@ -197,32 +197,32 @@ namespace
       CHECK_EQUAL(1.23, memCast.ref<double>());
       CHECK_EQUAL(1.23, mc2);
 
-      Data& mc3 = memCast.emplace<Data>(123, 1.23, std::array<int, 3>{ 1, 2, 3 });
+      Data& mc3 = memCast.emplace<Data>(123, 1.23, std::array<int, 3>{1, 2, 3});
 
-      CHECK_EQUAL(123,  mc3.c);
+      CHECK_EQUAL(123, mc3.c);
       CHECK_EQUAL(1.23, mc3.d);
-      CHECK_EQUAL(1,    mc3.a[0]);
-      CHECK_EQUAL(2,    mc3.a[1]);
-      CHECK_EQUAL(3,    mc3.a[2]);
+      CHECK_EQUAL(1, mc3.a[0]);
+      CHECK_EQUAL(2, mc3.a[1]);
+      CHECK_EQUAL(3, mc3.a[2]);
 
-      CHECK_EQUAL(123,  memCast.ref<Data>().c);
+      CHECK_EQUAL(123, memCast.ref<Data>().c);
       CHECK_EQUAL(1.23, memCast.ref<Data>().d);
-      CHECK_EQUAL(1,    memCast.ref<Data>().a[0]);
-      CHECK_EQUAL(2,    memCast.ref<Data>().a[1]);
-      CHECK_EQUAL(3,    memCast.ref<Data>().a[2]);
+      CHECK_EQUAL(1, memCast.ref<Data>().a[0]);
+      CHECK_EQUAL(2, memCast.ref<Data>().a[1]);
+      CHECK_EQUAL(3, memCast.ref<Data>().a[2]);
     }
 
     //*************************************************************************
     TEST(test_mem_cast_emplace_type_at_dynamic_offset)
     {
-      MemCast memCast; 
+      MemCast memCast;
 
       using Array = std::array<int, 3>;
-      Array compare{ 4, 5, 6 };
+      Array compare{4, 5, 6};
 
       constexpr size_t ArrayOffset = offsetof(Data, a);
 
-      Array& data = memCast.emplace_at_offset<Array>(ArrayOffset, compare);
+      Array&         data            = memCast.emplace_at_offset<Array>(ArrayOffset, compare);
       const MemCast& constMemCastRef = memCast;
 
       CHECK_EQUAL(compare[0], memCast.ref<Data>().a[0]);
@@ -249,14 +249,14 @@ namespace
     //*************************************************************************
     TEST(test_mem_cast_emplace_type_at_static_offset)
     {
-      MemCast memCast; 
+      MemCast memCast;
 
       using Array = std::array<int, 3>;
-      Array compare{ 4, 5, 6 };
+      Array compare{4, 5, 6};
 
       constexpr size_t ArrayOffset = offsetof(Data, a);
 
-      Array& data = memCast.emplace_at_offset<Array, ArrayOffset>(compare);
+      Array&         data            = memCast.emplace_at_offset<Array, ArrayOffset>(compare);
       const MemCast& constMemCastRef = memCast;
 
       CHECK_EQUAL(compare[0], memCast.ref<Data>().a[0]);
@@ -283,16 +283,16 @@ namespace
     //*************************************************************************
     TEST(test_mem_cast_to_type)
     {
-      MemCast memCast; 
+      MemCast memCast;
 
       char* pbuffer = memCast.data();
-      *pbuffer = 123;
+      *pbuffer      = 123;
       CHECK_EQUAL(123, memCast.ref<char>());
 
       *reinterpret_cast<double*>(pbuffer) = 1.23;
       CHECK_EQUAL(1.23, memCast.ref<double>());
 
-      *reinterpret_cast<Data*>(pbuffer) = { 123, 1.23, { 1, 2, 3 } };
+      *reinterpret_cast<Data*>(pbuffer) = {123, 1.23, {1, 2, 3}};
       CHECK_EQUAL(123, memCast.ref<Data>().c);
       CHECK_EQUAL(1.23, memCast.ref<Data>().d);
       CHECK_EQUAL(1, memCast.ref<Data>().a[0]);
@@ -303,17 +303,17 @@ namespace
     //*************************************************************************
     TEST(test_const_mem_cast_to_type)
     {
-      MemCast memCast;
+      MemCast        memCast;
       const MemCast& memCastRef = memCast;
 
       char* pbuffer = memCast.data();
-      *pbuffer = 123;
+      *pbuffer      = 123;
       CHECK_EQUAL(123, memCastRef.ref<char>());
 
       *reinterpret_cast<double*>(pbuffer) = 1.23;
       CHECK_EQUAL(1.23, memCastRef.ref<double>());
 
-      *reinterpret_cast<Data*>(pbuffer) = { 123, 1.23, { 1, 2, 3 } };
+      *reinterpret_cast<Data*>(pbuffer) = {123, 1.23, {1, 2, 3}};
       CHECK_EQUAL(123, memCastRef.ref<Data>().c);
       CHECK_EQUAL(1.23, memCastRef.ref<Data>().d);
       CHECK_EQUAL(1, memCast.ref<Data>().a[0]);
@@ -327,13 +327,13 @@ namespace
       MemCastTypes memCastTypes;
 
       char* pbuffer = memCastTypes.data();
-      *pbuffer = 123;
+      *pbuffer      = 123;
       CHECK_EQUAL(123, memCastTypes.ref<char>());
 
       *reinterpret_cast<double*>(pbuffer) = 1.23;
       CHECK_EQUAL(1.23, memCastTypes.ref<double>());
 
-      *reinterpret_cast<Data*>(pbuffer) = { 123, 1.23, { 1, 2, 3 } };
+      *reinterpret_cast<Data*>(pbuffer) = {123, 1.23, {1, 2, 3}};
       CHECK_EQUAL(123, memCastTypes.ref<Data>().c);
       CHECK_EQUAL(1.23, memCastTypes.ref<Data>().d);
       CHECK_EQUAL(1, memCastTypes.ref<Data>().a[0]);
@@ -341,4 +341,4 @@ namespace
       CHECK_EQUAL(3, memCastTypes.ref<Data>().a[2]);
     }
   }
-}
+} // namespace

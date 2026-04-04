@@ -32,19 +32,40 @@ SOFTWARE.
 #define ETL_ABSOLUTE_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
+#include "error_handler.h"
 #include "integral_limits.h"
+#include "type_traits.h"
 
 namespace etl
 {
+  namespace private_absolute
+  {
+    //*************************************************************************
+    // Non-constexpr function that is never called for valid inputs.
+    // If reached during constant evaluation, the compiler emits an error
+    // because it's not constexpr.
+    // At runtime, triggers the ETL assert handler.
+    //*************************************************************************
+    template <typename T>
+    inline T signed_min_error()
+    {
+      ETL_ASSERT_FAIL(ETL_ERROR_GENERIC("absolute value of minimum signed integer is undefined"));
+      return T(0);
+    }
+  } // namespace private_absolute
+
   //***************************************************************************
   // For signed types.
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD
-  ETL_CONSTEXPR 
-  typename etl::enable_if<etl::is_signed<T>::value, T>::type
-    absolute(T value) ETL_NOEXCEPT
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if< etl::is_signed<T>::value && etl::is_integral<T>::value, T>::type absolute(T value)
+  {
+    return (value == etl::integral_limits<T>::min) ? etl::private_absolute::signed_min_error<T>() : static_cast<T>((value < T(0)) ? -value : value);
+  }
+
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if< etl::is_signed<T>::value && !etl::is_integral<T>::value, T>::type absolute(T value)
+    ETL_NOEXCEPT
   {
     return (value < T(0)) ? -value : value;
   }
@@ -53,10 +74,7 @@ namespace etl
   // For unsigned types.
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    absolute(T value) ETL_NOEXCEPT
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_unsigned<T>::value, T>::type absolute(T value) ETL_NOEXCEPT
   {
     return value;
   }
@@ -66,15 +84,14 @@ namespace etl
   // Returns the result as the unsigned type.
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD
-  ETL_CONSTEXPR 
-  typename etl::enable_if<etl::is_signed<T>::value, typename etl::make_unsigned<T>::type>::type
-    absolute_unsigned(T value) ETL_NOEXCEPT
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value, typename etl::make_unsigned<T>::type>::type absolute_unsigned(T value)
+    ETL_NOEXCEPT
   {
     typedef typename etl::make_unsigned<T>::type TReturn;
 
     return (value == etl::integral_limits<T>::min) ? (etl::integral_limits<TReturn>::max / 2U) + 1U
-                                                   : (value < T(0)) ? TReturn(-value) : TReturn(value);
+           : (value < T(0))                        ? TReturn(-value)
+                                                   : TReturn(value);
   }
 
   //***************************************************************************
@@ -82,14 +99,10 @@ namespace etl
   // Returns the result as the unsigned type.
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD
-  ETL_CONSTEXPR
-  typename etl::enable_if<etl::is_unsigned<T>::value, T>::type
-    absolute_unsigned(T value) ETL_NOEXCEPT
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_unsigned<T>::value, T>::type absolute_unsigned(T value) ETL_NOEXCEPT
   {
     return etl::absolute(value);
   }
-}
+} // namespace etl
 
 #endif
-

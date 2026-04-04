@@ -6,6 +6,7 @@ Thanks for considering a contribution! Here’s what you need to know before ope
 - If you are fixing a bug, add a unit test that *fails* before the bug fix is implemented.
 - Do not initiate a pull request until all of the units tests pass. See below for information on project files and test scripts.
 - Branches should be based on the branch `master`. If `development` has pending updates, I’ll rebase the PR against it before pulling..
+- For formatting help, you can use clang-format, or the convenience wrapper treefmt. See also [docs/source-formatting.md](docs/source-formatting.md)
 
 There is a project file for VS2022 for C++14, 17, 20, 23, and bash scripts that run the tests for C++11, 14, 17, 20, 23 under Linux with GCC and Clang.
 There are syntax-only check bash scripts that cover C++03, 11, 14, 17, 20, 23 under Linux with GCC and Clang.

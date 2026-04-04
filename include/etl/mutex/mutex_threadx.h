@@ -69,6 +69,7 @@ namespace etl
     }
 
   private:
+
     // Non-copyable
     mutex(const mutex&) ETL_DELETE;
     mutex& operator=(const mutex&) ETL_DELETE;
@@ -76,6 +77,6 @@ namespace etl
     // mutex handle
     TX_MUTEX mutex_handle;
   };
-}
+} // namespace etl
 
 #endif

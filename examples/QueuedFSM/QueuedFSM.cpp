@@ -31,9 +31,9 @@ SOFTWARE.
 // derived class.
 //*****************************************************************************
 
-#include "etl/queue.h"
 #include "etl/fsm.h"
 #include "etl/message_packet.h"
+#include "etl/queue.h"
 
 #include <iostream>
 #include <string>
@@ -122,7 +122,7 @@ public:
     while (!queue.empty())
     {
       message_packet& packet = queue.front();
-      etl::imessage& msg = packet.get();
+      etl::imessage&  msg    = packet.get();
       std::cout << "Processing message " << int(msg.get_message_id()) << std::endl;
 
       // Call the base class's receive function.
@@ -258,7 +258,7 @@ int main()
   State2 state2;
 
   // The list of states.
-  etl::ifsm_state* state_list[] = { &state1, &state2 };
+  etl::ifsm_state* state_list[] = {&state1, &state2};
 
   // Define some messages.
   Message1 m1(1);
@@ -285,4 +285,3 @@ int main()
 
   return 0;
 }
-

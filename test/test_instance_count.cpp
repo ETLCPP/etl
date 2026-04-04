@@ -30,10 +30,10 @@ SOFTWARE.
 
 #include "etl/instance_count.h"
 
-#include <list>
-#include <vector>
-#include <numeric>
 #include <atomic>
+#include <list>
+#include <numeric>
+#include <vector>
 
 namespace
 {
@@ -43,10 +43,12 @@ namespace
     TEST(test_count)
     {
       struct Test1 : public etl::instance_count<Test1>
-      {};
+      {
+      };
 
       struct Test2 : public etl::instance_count<Test2>
-      {};
+      {
+      };
 
       CHECK_EQUAL(0, Test1::get_instance_count());
       CHECK_EQUAL(0, Test2::get_instance_count());
@@ -77,10 +79,12 @@ namespace
     TEST(test_atomic_count)
     {
       struct Test1 : public etl::instance_count<Test1, std::atomic_uint8_t>
-      {};
+      {
+      };
 
       struct Test2 : public etl::instance_count<Test2>
-      {};
+      {
+      };
 
       CHECK_EQUAL(0, Test1::get_instance_count());
       CHECK_EQUAL(0, Test2::get_instance_count());
@@ -107,4 +111,4 @@ namespace
       CHECK_EQUAL(2, Test2::get_instance_count());
     }
   }
-}
+} // namespace
