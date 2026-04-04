@@ -115,6 +115,10 @@ target_sources(tests PRIVATE
 		checksum.h.t.cpp
 		chrono.h.t.cpp
 		concepts.h.t.cpp
+		const_map.h.t.cpp
+		const_multimap.h.t.cpp
+		const_multiset.h.t.cpp
+		const_set.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
 		closure.h.t.cpp
@@ -124,6 +128,7 @@ target_sources(tests PRIVATE
 		container.h.t.cpp
 		correlation.h.t.cpp
 		covariance.h.t.cpp
+		crc.h.t.cpp
 		crc1.h.t.cpp
 		crc16.h.t.cpp
 		crc16_a.h.t.cpp
@@ -163,6 +168,7 @@ target_sources(tests PRIVATE
 		crc32_q.h.t.cpp
 		crc32_xfer.h.t.cpp
 		crc64_ecma.h.t.cpp
+		crc64_iso.h.t.cpp
 		crc8_ccitt.h.t.cpp
 		crc8_cdma2000.h.t.cpp
 		crc8_darc.h.t.cpp
@@ -174,6 +180,7 @@ target_sources(tests PRIVATE
 		crc8_j1850_zero.h.t.cpp
 		crc8_maxim.h.t.cpp
 		crc8_opensafety.h.t.cpp
+		crc8_nrsc5.h.t.cpp
 		crc8_rohc.h.t.cpp
 		crc8_wcdma.h.t.cpp
 		cyclic_value.h.t.cpp
@@ -215,6 +222,7 @@ target_sources(tests PRIVATE
 		histogram.h.t.cpp
 		ihash.h.t.cpp
 		imemory_block_allocator.h.t.cpp
+		index_of_type.h.t.cpp
 		indirect_vector.h.t.cpp
 		initializer_list.h.t.cpp
 		inplace_function.h.t.cpp
@@ -239,6 +247,7 @@ target_sources(tests PRIVATE
 		list.h.t.cpp
 		log.h.t.cpp
 		macros.h.t.cpp
+		manchester.h.t.cpp
 		map.h.t.cpp
 		math.h.t.cpp
 		math_constants.h.t.cpp
@@ -284,6 +293,7 @@ target_sources(tests PRIVATE
 		poly_span.h.t.cpp
 		pool.h.t.cpp
 		power.h.t.cpp
+		print.h.t.cpp
 		priority_queue.h.t.cpp
 		pseudo_moving_average.h.t.cpp
 		quantize.h.t.cpp
@@ -295,6 +305,7 @@ target_sources(tests PRIVATE
 		queue_spsc_locked.h.t.cpp
 		radix.h.t.cpp
 		random.h.t.cpp
+		ranges.h.t.cpp
 		ratio.h.t.cpp
 		reference_counted_message.h.t.cpp
 		reference_counted_message_pool.h.t.cpp
@@ -306,6 +317,7 @@ target_sources(tests PRIVATE
 		rescale.h.t.cpp
 		result.h.t.cpp
 		rms.h.t.cpp
+		rounded_integral_division.h.t.cpp
 		scaled_rounding.h.t.cpp
 		scheduler.h.t.cpp
 		set.h.t.cpp
@@ -337,6 +349,7 @@ target_sources(tests PRIVATE
 		to_wstring.h.t.cpp
 		tuple.h.t.cpp
 		type_def.h.t.cpp
+		type_list.h.t.cpp
 		type_lookup.h.t.cpp
 		type_select.h.t.cpp
 		type_traits.h.t.cpp
