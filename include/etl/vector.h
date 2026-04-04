@@ -1081,7 +1081,7 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ivector(T* p_buffer_, size_t MAX_SIZE)
+    ivector(T* p_buffer_, size_t MAX_SIZE) ETL_NOEXCEPT
       : vector_base(MAX_SIZE)
       , p_buffer(p_buffer_)
       , p_end(p_buffer_)
@@ -1284,7 +1284,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector()
+    vector() ETL_NOEXCEPT
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       this->initialise();
@@ -1409,7 +1409,7 @@ namespace etl
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
     virtual
 #endif
-      ~vector()
+      ~vector() ETL_NOEXCEPT
     {
       this->clear();
     }
@@ -1466,7 +1466,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector_ext(void* buffer, size_t max_size)
+    vector_ext(void* buffer, size_t max_size) ETL_NOEXCEPT
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->initialise();
@@ -1590,7 +1590,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~vector_ext()
+    ~vector_ext() ETL_NOEXCEPT
     {
       this->clear();
     }
@@ -1625,7 +1625,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector()
+    vector() ETL_NOEXCEPT
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       this->initialise();
@@ -1765,7 +1765,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector_ext(void* buffer, size_t max_size)
+    vector_ext(void* buffer, size_t max_size) ETL_NOEXCEPT
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->initialise();
@@ -1872,7 +1872,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~vector_ext()
+    ~vector_ext() ETL_NOEXCEPT
     {
       this->clear();
     }
