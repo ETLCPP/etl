@@ -11526,6 +11526,7 @@
     <None Include="..\list_test_files.ps1" />
     <None Include="..\list_test_files.sh" />
     <None Include="..\meson.build" />
+    <None Include="..\run-coverage.sh" />
     <None Include="..\run-syntax-checks.sh" />
     <None Include="..\run-tests.sh" />
     <None Include="cpp.hint" />

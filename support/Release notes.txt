@@ -1,4 +1,9 @@
 ﻿===============================================================================
+20.47.1
+
+#1374 Fix initializer_list use in algorithm.h and definition of data() in iterator.h
+
+===============================================================================
 20.47.0
 
 #1219 Topic/expected monadic operations

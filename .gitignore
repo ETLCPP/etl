@@ -414,3 +414,8 @@ test/vs2022/Debug Clang C++20 - Optimised -O2
 include/etl/header_file_list.txt
 temp
 test/syntax_check/build-make
+hugo/public
+hugo/resources
+hugo/.hugo_build.lock
+docs/*.html
+test/build-coverage
