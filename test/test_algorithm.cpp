@@ -16495,6 +16495,7 @@ namespace
       CHECK_EQUAL(3, etl::ranges::min(-5, 3, etl::ranges::less{}, abs_proj));
     }
 
+  #if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(ranges_min_initializer_list)
     {
@@ -16517,6 +16518,7 @@ namespace
       };
       CHECK_EQUAL(9, etl::ranges::min({3, 1, 4, 5, 9, 2, 6}, etl::ranges::less{}, negate));
     }
+  #endif
 
     //*************************************************************************
     TEST(ranges_min_range)
@@ -16692,6 +16694,7 @@ namespace
       CHECK_EQUAL(-5, etl::ranges::max(-5, 3, etl::ranges::less{}, abs_proj));
     }
 
+  #if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(ranges_max_initializer_list)
     {
@@ -16714,6 +16717,7 @@ namespace
       };
       CHECK_EQUAL(1, etl::ranges::max({3, 1, 4, 5, 9, 2, 6}, etl::ranges::less{}, negate));
     }
+  #endif
 
     //*************************************************************************
     TEST(ranges_max_range)
@@ -16914,6 +16918,7 @@ namespace
       CHECK_EQUAL(-5, result2.max);
     }
 
+  #if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(ranges_minmax_initializer_list)
     {
@@ -16945,6 +16950,7 @@ namespace
       CHECK_EQUAL(9, result.min);
       CHECK_EQUAL(1, result.max);
     }
+  #endif
 
     //*************************************************************************
     TEST(ranges_minmax_range)
