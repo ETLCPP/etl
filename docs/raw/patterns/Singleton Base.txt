@@ -1,0 +1,41 @@
+Singleton Base
+
+Allows creation of a singleton base class.
+
+etl::singleton_base<typename T>
+T The type to use as a singleton.
+
+The class derived derived from this must call the constructor with the instance of itself.
+Mutiple call to the constructor will result in an etl::singleton_base_already_created assertion.
+
+Before the constructor Is called, the singleton is in the invalid state.
+
+See also etl::singleton
+____________________________________________________________________________________________________
+Static functions
+
+static T& instance()
+Returns a reference to the one instance of T.
+Asserts an etl::singleton_base_not_created if the instance has not been attached.
+____________________________________________________________________________________________________
+static bool is_valid()
+Returns true if the instance is has been attached, otherwise false.
+____________________________________________________________________________________________________
+Example
+
+class MyType : public etl::singleton_base<MyType>
+{
+ MyType()
+   : etl::singleton_base<MyType>(*this)
+  {
+  }
+};
+
+bool is_valid;
+is_valid = MyType::is_valid();   // true
+
+MyType& mt = MyType::instance(); // Get the instance
+
+
+
+

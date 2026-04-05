@@ -1,0 +1,88 @@
+to_string
+
+Functions that will render a text representation of bools, integrals, floating point, strings, string views and pointers.
+Uses etl::basic_format_spec to define the required formatting.
+
+It will convert to any of the ETL string types.
+____________________________________________________________________________________________________
+
+Default format specification
+Where StringType is etl::istring, etl::iwstring, etl::iu16string or etl::iu32string
+
+template <typename T>
+const StringType& to_string(const T value, 
+                            StringType& str, 
+                            const bool append = false)
+
+20.17.0
+template <typename T> // Where T is an integral
+const StringType& to_string(const T value, 
+                            uint32_t denominator_exponent,
+                            StringType& str, 
+                            const bool append = false)
+
+value   The value to convert to a string.
+str     The string in with to place the rendered text.
+append  If true then appends the text to the current string's content. Default false.
+____________________________________________________________________________________________________
+
+Supplied format specification
+Where StringType is etl::istring, etl::iwstring, etl::iu16string or etl::iu32string
+Where FormatType is etl::format_spec, etl::wformat_spec, etl::u16format_spec or etl::u32format_spec
+
+template <typename T>
+const StringType& to_string(const T value, 
+                            StringType& str, 
+                            const FormatType& format, 
+                            const bool append = false)
+
+20.17.0
+template <typename T> // Where T is an integral
+const StringType& to_string(const T value, 
+                            uint32_t denominator_exponent,
+                            StringType& str,
+                            const FormatType& format, 
+                            const bool append = false)
+
+value                The value to convert to a string.
+denominator_exponent The exponent of the value that is used to divide the value.
+str                  The string in with to place the rendered text.
+format               The format specification.
+append               If true then appends the text to the current string's content. Default false.
+____________________________________________________________________________________________________
+Examples
+
+Format as a hex character, minimum fill width of 8, fill with zeros
+etl::format_spec format;
+
+// Format as a hex character, minimum fill width of 8, fill with zeros.
+format.hex().width(8).fill('0'); 
+
+etl::string<8> text;
+
+// 'text' is set to "00123456"
+etl::to_string(1193046, text, format);
+____________________________________________________________________________________________________
+Format minimum fill width of 8, fill with space and three decimal digits
+etl::format_spec format;
+
+// Format minimum fill width of 8, fill with space and three decimal digits.
+format.width(8).fill(' ').precision(3); 
+
+etl::string<8> text;
+
+// 'text' is set to "   3.142"
+etl::to_string(3.1415, text, format); 
+____________________________________________________________________________________________________
+Format a floating point number
+etl::string<19> text = "The result is ";
+
+etl::to_string(3.1415, text, etl::format_spec().precision(3), true);
+// 'text' is set to "The result is 3.142"
+____________________________________________________________________________________________________
+Format an integral number and divide by 10000
+etl::string<19> text = "The result is ";
+
+etl::to_string(31415, 4U, text, etl::format_spec().precision(3), true);
+// 'text' is set to "The result is 3.142"
+

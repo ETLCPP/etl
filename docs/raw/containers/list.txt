@@ -1,0 +1,416 @@
+list
+
+A fixed capacity list.
+STL equivalent: std::list
+
+etl::list<typename T, size_t SIZE>
+etl::list_ext<typename T>
+
+Inherits from etl::ilist<T>
+etl::ilist may be used as a size independent pointer or reference type for any etl::list instance.
+
+Note: Does not support the member function swap
+____________________________________________________________________________________________________
+Shared Pools
+
+etl::list<typename T>
+This template may share pools with another etl::list of the same type.
+The list is initialised with the pool either at construction time or a call to set_pool(etl::ipool& pool)
+When pools are shared there are a few side effects that must be noted.
+
+size() and empty() will be O(N) complexity. For a normal etl::list they are O(1)
+
+Destruction of the container will always be O(N) regardless of whether the type store is trivially destructible or not.
+
+max_size() will return the potential maximum size of the list. The actual maximum size will dependent of how many elements the other lists sharing the pool have allocated.
+
+Pool must be declared with the list's pool_type.
+i.e.
+// The element type
+struct Point { int x; int y; };
+
+// The list type
+using List = etl::list_ext<Point>;
+
+// The shared pool
+etl::pool<List::pool_type, 10> pool;
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename... T>
+etl::list(T...)
+
+Example
+etl::list data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+Defines data as an list of int, of length 10, containing the supplied data.
+____________________________________________________________________________________________________
+Make template
+C++11 and above
+template <typename T, typename... TValues>
+  constexpr auto make_list(TValues&&... values)
+
+Example
+auto data = etl::make_list<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+____________________________________________________________________________________________________
+Member types
+
+value_type              T
+size_type               std::size_t
+difference_type         std::ptrdiff_t
+reference               value_type&
+const_reference         const value_type&
+rvalue_reference        value_type&&
+pointer                 value_type*
+const_pointer           const value_type*
+iterator                Bi-directional iterator
+const_iterator          Constant bi-directional iterator
+reverse_iterator        ETL_OR_STD::reverse_iterator<iterator>
+const_reverse_iterator  ETL_OR_STD::reverse_iterator<const_iterator>
+____________________________________________________________________________________________________
+Constructor
+
+etl::list<typename T, const size_t SIZE>();
+etl::list<typename T, const size_t SIZE>(size_t initialSize, parameter_t value = T());
+
+etl::list<typename T, const size_t SIZE>(const etl::list<typename T, const size_t SIZE>&);
+etl::list<typename T, const size_t SIZE>(etl::list<typename T, const size_t SIZE>&&);
+
+template <typename TIterator>
+etl::list<typename T, const size_t SIZE>(TIterator begin, TIterator end);
+
+Emits an etl::list_iterator if the iterators are invalid. If asserts or exceptions are disabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+For shared pool lists
+etl::list<typename T, const size_t SIZE>(etl::pool& pool);
+etl::list<typename T, const size_t SIZE>(size_t initialSize, parameter_t value, etl::pool& pool);
+
+template <typename TIterator>
+etl::list<typename T, const size_t SIZE>(TIterator begin, TIterator end, etl::pool& pool);
+
+Emits an etl::list_iterator if the iterators are invalid. If asserts or exceptions are disabled then undefined behaviour occurs.
+
+Copy constructor
+Implicit pool
+Uses the pool from other.
+etl::list<typename T, const size_t SIZE>(etl::list<typename T, size_t SIZE>& other);
+
+Explicit pool
+etl::list<typename T, const size_t SIZE>(etl::list<typename T, size_t SIZE>& other, etl::pool& pool);
+
+____________________________________________________________________________________________________
+Initialisation
+
+if the list is sharing pools then a set_pool(etl::pool&) is available.
+If a pool has already been set then the list is first cleared before updating to the new pool.
+
+The pool instance can be retrieved by call get_pool()
+____________________________________________________________________________________________________
+Element access
+
+T& front()
+const T& front() const
+Returns a reference or const reference to the first element.
+Undefined behaviour if the list is empty.
+____________________________________________________________________________________________________
+T& back()
+const T& back() const
+Returns a reference or const reference to the last element.
+Undefined behaviour if the list is empty.
+____________________________________________________________________________________________________
+Iterators
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the list.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the list.
+____________________________________________________________________________________________________
+reverse_iterator rbegin()
+const_reverse_iterator rbegin() const
+const_reverse_iterator crbegin() const
+Returns a reverse iterator to the beginning of the list.
+____________________________________________________________________________________________________
+reverse_iterator rend()
+const_reverse_iterator rend() const
+const_reverse_iterator crend() const
+Returns a reverse iterator to the end of the list.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the list is zero, otherwise false.
+____________________________________________________________________________________________________
+bool full() const
+Returns true if the size of the list is SIZE, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the list.
+____________________________________________________________________________________________________
+size_t available() const
+Returns the remaining available capacity in the list.
+____________________________________________________________________________________________________
+size_t max_size() const
+Returns the maximum possible size of the list .
+____________________________________________________________________________________________________
+Modifiers
+
+template <typename TIterator>
+void assign(TIterator begin, TIterator end);
+
+void assign(size_t n, parameter_t value);
+Fills the list with the values.
+____________________________________________________________________________________________________
+void push_front(const T& value);
+void push_front(T&& value);
+Pushes a value to the front of the list.
+initialise it. If the list is full then emits an etl::list_full error.
+____________________________________________________________________________________________________
+<=20.35.9
+C++03
+template <typename T1>
+void emplace_front(const T1& value1)
+
+template <typename T1, typename T2>
+void emplace_front(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+void emplace_front(const T1& value1, const T2& value2,
+                   const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+void emplace_front(const T1& value1, const T2& value2,
+                   const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+void emplace_front(Args&& ... args)
+
+>=20.35.10
+C++03
+template <typename T1>
+reference emplace_front(const T1& value1)
+
+template <typename T1, typename T2>
+reference emplace_front(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+reference emplace_front(const T1& value1, const T2& value2,
+                        const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+reference emplace_front(const T1& value1, const T2& value2,
+                        const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+reference emplace_front(Args&& …args)
+____________________________________________________________________________________________________
+void push_back(const T& value);
+void push_back(T&& value);
+Pushes a value to the back of the list.
+If the list is full and ETL_CHECK_PUSH_POP is defined then emits an etl::list_full error, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+<=20.35.9
+C++03
+template <typename T1>
+void emplace_back(const T1& value1)
+
+template <typename T1, typename T2>
+void emplace_back(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+void emplace_back(const T1& value1, const T2& value2,
+                  const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+void emplace_back(const T1& value1, const T2& value2,
+                  const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+void emplace_back(Args&& ... args)
+
+>=20.35.10
+C++03
+template <typename T1>
+reference emplace_back(const T1& value1)
+
+template <typename T1, typename T2>
+reference emplace_back(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+reference emplace_back(const T1& value1, const T2& value2,
+                       const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+reference emplace_back(const T1& value1, const T2& value2,
+                       const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+reference emplace_back(Args&& ... args)
+____________________________________________________________________________________________________
+void pop_front();
+Pop a value from the front of the list.
+If the list is empty and ETL_CHECK_PUSH_POP is defined then emits an etl::list_empty error, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+void pop_back();
+Pop a value from the back of the list.
+If the list is empty and ETL_CHECK_PUSH_POP is defined then emits an etl::list_empty error, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+<=20.19.0
+template <typename TIterator>
+void insert(iterator position, TIterator begin, TIterator end);
+
+iterator insert(iterator position, parameter_t value);
+void insert(iterator position, size_t n, parameter_t value);
+
+>=20.20.0
+template <typename TIterator>
+iterator insert(const_iterator position, TIterator begin, TIterator end);
+
+iterator insert(const_iterator position, parameter_t value);
+iterator insert(const_iterator position, size_t n, parameter_t value);
+Inserts values in to the list. If the list is full then emits an etl::list_full error.
+____________________________________________________________________________________________________
+C++03
+<=20.19.0
+void emplace(iterator position, const T1& value1);
+void emplace(iterator position, const T1& value1, const T2& value2);
+void emplace(iterator position, const T1& value1, const T2& value2, const T3& value3);
+void emplace(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4);
+
+>=20.20.0
+iterator emplace(const_iterator position, const T1& value1);
+iterator emplace(const_iterator position, const T1& value1, const T2& value2);
+iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3);
+iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4);
+Constructs an item at the insert point in the list 'in place'.
+Supports up to four constructor parameters.
+
+C++11
+<=20.19.0
+void emplace(iterator position, Args&& ... args)
+
+>=20.20.0
+void emplace(const_iterator position, Args&& ... args)
+Constructs an item at the insert point in the the list 'in place'.
+____________________________________________________________________________________________________
+template <typename TIterator>
+iterator erase(TIterator begin, TIterator end);
+
+<=20.19.0
+iterator erase(iterator position);
+
+<=20.20.0
+iterator erase(iterator position);
+iterator erase(const_iterator position);
+Erases values in the list.
+____________________________________________________________________________________________________
+void resize(size_t n);
+void resize(size_t n, parameter_t value);
+Resizes the list. If the new size is larger then the first assigns default constructed values, the second assigns the supplied value.
+If n is larger than the capacity then emits an etl::list_full error, if asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+void clear();
+Clears the list to a size of zero.
+____________________________________________________________________________________________________
+void splice(iterator to, etl::ilist& other);
+void splice(iterator to, etl::ilist&& other);
+Moves the elements in list other to before the position to.
+The operation performs copies between the different lists.
+____________________________________________________________________________________________________
+void splice(iterator to, etl::ilist& other, iterator from);
+void splice(iterator to, etl::ilist&& other, iterator from);
+Moves the element at position from in list other to before the position to.
+The operation is fast when spicing within the same list, otherwise performs copies between different lists.
+If from is not valid then undefined behaviour occurs.
+____________________________________________________________________________________________________
+void splice(iterator to, etl::ilist& other, iterator first, iterator last);
+void splice(iterator to, etl::ilist&& other, iterator first, iterator last);
+Moves the elements in the range first to one before last in list other to before the position to.
+The operation is fast when spicing within the same list, otherwise performs copies between different lists.
+____________________________________________________________________________________________________
+void merge(etl::ilist& other);
+void merge(etl::ilist&& other);
+Merges the elements in list other to this list.
+The lists must be sorted. If a debug compile and asserts or exceptions are enabled than an etl::list_unsorted is emitted if either list is unsorted, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+template <typename TCompare>
+void merge(etl::ilist& other, TCompare compare);
+
+template <typename TCompare>
+void merge(etl::ilist&& other, TCompare compare);
+Merges the elements in list other to this list using the supplied comparison function to determine order.
+The lists must already be sorted according to the compare function.
+If a debug compile and asserts or exceptions are enabled than an etl::list_unsorted is emitted if either list is unsorted, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+Operations
+
+void remove(const T& value);
+Removes from the container all the elements that compare equal to value.
+____________________________________________________________________________________________________
+template <typename TPredicate>
+void remove_if(TPredicate predicate);
+Removes from the container all the elements that satisfy predicate.
+____________________________________________________________________________________________________
+void unique();
+
+template <typename TPredicate>
+void unique(TPredicate predicate);
+The first version removes all but the first element from every group of consecutive elements.
+The second removes all but the first element from every group of consecutive elements that satisfy the binary predicate.
+____________________________________________________________________________________________________
+void sort();
+
+template <typename TCompare>
+void sort(TCompare compare);
+The first version sorts using the < operator.
+The second uses the supplied compare function.
+____________________________________________________________________________________________________
+void reverse();
+Reverses the order of the list.
+____________________________________________________________________________________________________
+Non-member functions
+
+==  true if the contents of the lists are equal, otherwise false.
+!=  true if the contents of the lists are not equal, otherwise false.
+<   true if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise false.
+<=  true if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise false.
+>   true if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise false.
+>=  true if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise false.
+____________________________________________________________________________________________________
+Shared pool example
+
+// The element type.
+struct Point { int x; int y; };
+
+// The list type
+using List = etl::list_ext<Point>;
+
+// The shared pool. Maximum of 10 items.
+etl::pool<List::pool_type, 10> pool;
+
+// The vector of lists with shared pools.
+etl::vector<List, 3> vector_of_lists(3, List(pool));
+
+// Make some data.
+Point point = { 1, 2 };
+
+// Push one to each list.
+vector_of_lists[0].push_back(point);
+vector_of_lists[1].push_back(point);
+vector_of_lists[2].push_back(point);
+
+size_t available = 0;
+
+available = vector_of_lists[0].available(); // Reports '7'
+available = vector_of_lists[1].available(); // Reports '7'
+available = vector_of_lists[2].available(); // Reports '7'
+
+

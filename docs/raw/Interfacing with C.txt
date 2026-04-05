@@ -1,0 +1,56 @@
+Interfacing with C
+
+Interfacing ETL containers with contiguous storage to a C API is fairly easy to do.
+____________________________________________________________________________________________________
+This is a C function that copies count characters , starting from 'a', to a buffer pointed to by start.
+
+size_t CFunctionCopyToBuffer(char* start, size_t count)
+{
+  size_t i = 0;
+  while (i < count)
+  {
+    *p++ = 'a' + i;
+    ++i;
+  }
+  return i;
+}
+____________________________________________________________________________________________________
+Array
+The ETL array is simply a C array wrapped in a C++ interface. 
+
+size_t length;
+etl::array<char, 26> buffer;
+length = CFunctionCopyToBuffer(buffer.data(), buffer.max_size() / 2);
+
+Array contains [ a, b, c, d, e, f, g, h, i, j, k, l, m ] 
+____________________________________________________________________________________________________
+Vector
+To use a vector with C, you must make room for the expected new data, and then adjust to the new size after copying.
+
+etl::vector<char, 26> buffer;
+buffer.uninitialized_resize(buffer.max_size()); // Make the vector as big as it can be.
+size_t newLength = CFunctionCopyToBuffer(buffer.data(), buffer.max_size() / 2);
+buffer.resize(newLength); // Now adjust it back to the actual new size.
+
+Vector contains [ a, b, c, d, e, f, g, h, i, j, k, l, m ] 
+____________________________________________________________________________________________________
+String
+Strings are terminated with null characters. We can use this to easily adjust the length after copying.
+
+etl::string<26> buffer;
+buffer.initialize_free_space(); // Ensure that the string's free space are terminators characters.
+CFunctionCopyToBuffer(buffer.data(), buffer.max_size() / 2);
+buffer.trim_to_terminator(); // Trim the string length at the first null terminator.
+
+String contains "abcdefghijklm" 
+
+// Lets add some more characters. Start at data_end() so we append to what's already there.
+// We'll use the alternative method to adjust the string length.
+// We could still use trim_to_terminator() if we wanted to.
+size_t oldSize = buffer.size(); // Remember the current size.
+buffer.uninitialized_resize(buffer.max_size()); // Make the string as big as it can be.
+size_t appendedSize = CFunctionCopyToBuffer(buffer.data_end(), buffer.max_size() / 2);
+buffer.uninitialized_resize(oldSize + appendedSize); // Now adjust it back to the actual new size.
+
+String contains "abcdefghijklmabcdefghijklm" 
+

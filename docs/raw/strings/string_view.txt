@@ -1,0 +1,260 @@
+string_view
+
+This class implements a view in to a range of a C string, etl::string (+ variants), std::string (+ variants).
+
+STL equivalents:
+std::basic_string_view
+std::string_view
+std::wstring_view
+std::u16string_view
+std::u32string_view
+____________________________________________________________________________________________________
+Classes
+
+etl::basic_string_view<typename T, typename TTraits = etl::char_traits<T>>
+____________________________________________________________________________________________________
+Typedefs
+
+etl::string_view<typename T>
+etl::wstring_view<typename T>
+etl::u16string_view<typename T>
+etl::u32string_view<typename T>
+____________________________________________________________________________________________________
+Member types
+
+value_type              T
+size_type               std::size_t
+difference_type         std::ptrdiff_t
+reference               value_type&
+const_reference         const value_type&
+pointer                 value_type*
+const_pointer           const value_type*
+iterator                Random access iterator
+const_iterator          Constant random access iterator
+reverse_iterator        std::reverse_iterator<iterator>
+const_reverse_iterator  std::reverse_iterator<const_iterator>
+____________________________________________________________________________________________________
+Constants
+
+size_t npos
+An end of view indicator by the functions that expect a view index.
+An error indicator for functions that return a view index.
+____________________________________________________________________________________________________
+Constructors
+
+ETL_CONSTEXPR basic_string_view()
+Default constructor.
+____________________________________________________________________________________________________
+
+ETL_CONSTEXPR basic_string_view(const T* begin, size_t size)
+Construct from a start and size.
+____________________________________________________________________________________________________
+
+ETL_CONSTEXPR basic_string_view(const T* begin)
+Construct from a zero terminated string.
+____________________________________________________________________________________________________
+
+ETL_CONSTEXPR basic_string_view(const etl::basic_string_view& other)
+Copy constructor.
+____________________________________________________________________________________________________
+
+ETL_CONSTEXPR basic_string_view(const std::basic_string_view& other)
+Construct from std::basic_string_view.
+For C++17 and STL only.
+20.39.5 and above.
+____________________________________________________________________________________________________
+Modifiers
+
+void remove_prefix(size_t n)
+Shrinks the view from the front.
+Undefined behaviour if n is larger than the string.
+____________________________________________________________________________________________________
+
+void remove_suffix(size_t n)
+Shrinks the view from the back.
+Undefined behaviour if n is larger than the string.
+____________________________________________________________________________________________________
+
+void swap(etl::basic_string_view<T, TTraits>& view)
+Swaps with another view.
+____________________________________________________________________________________________________
+Element access
+
+const T& at(size_t i) const
+Returns a const reference to the indexed element. 
+Emits an etl::string_view_uninitialised if the view is not initialised.
+Emits an etl::string_view_bounds if the index is not in range.
+If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+
+const_reference operator[](size_t i) const
+Returns a const reference to the indexed element.
+Undefined behaviour if the string is empty.
+____________________________________________________________________________________________________
+
+const_reference front() const
+Returns a const reference to the first element.
+Undefined behaviour if the string is empty.
+____________________________________________________________________________________________________
+
+const_reference back() const
+Returns a const reference to the last element.
+Undefined behaviour if the string is empty.
+____________________________________________________________________________________________________
+
+const_pointer data() const
+Returns a const pointer to the first element.
+Undefined behaviour if the string is empty.
+____________________________________________________________________________________________________
+Iterators
+
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the string view.
+____________________________________________________________________________________________________
+
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the string view.
+____________________________________________________________________________________________________
+
+const_iterator rbegin() const
+const_iterator crbegin() const
+Returns a reverse iterator to the beginning of the string view.
+____________________________________________________________________________________________________
+
+const_iterator rend() const
+const_iterator crend() const
+Returns a reverse iterator to the end of the string view.
+____________________________________________________________________________________________________
+Operations
+
+size_t copy(T* destination, size_t count, size_t position = 0) const
+Copies the sub-string at position for count characters or size() - count, whichever smaller,  to the string pointed to by destination.
+____________________________________________________________________________________________________
+
+basic_string_view substr(size_t position = 0, size_t count = npos) const
+Returns a view which is the sub-string at position for count characters or size() - count, whichever smaller.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the string view is zero, otherwise false.
+____________________________________________________________________________________________________
+
+size_t size() const
+Returns the size of the view.
+____________________________________________________________________________________________________
+
+size_t length() const
+Alternative for size().
+____________________________________________________________________________________________________
+
+size_t max_size() const
+Returns the maximum possible size of the view.
+____________________________________________________________________________________________________
+Compare
+
+int compare(basic_string_view v) const
+int compare(size_t position1, size_t count1, basic_string_view view) const
+int compare(size_t position1, size_t count1, 
+            basic_string_view view, 
+            size_t position2, size_t count2) const
+int compare(const T* text) const
+int compare(size_t position1, size_t count, const T* text) const
+int compare(size_t position1, size_t count1, const T* text, size_t count2) const
+Compares two character sequences.
+____________________________________________________________________________________________________
+Search
+
+bool starts_with(etl::basic_string_view view) const
+bool starts_with(T x) const
+bool starts_with(const T* x) const
+Checks if the string view begins with the given prefix.
+____________________________________________________________________________________________________
+
+bool ends_with(etl::basic_string_view view) const
+bool ends_with(T x) const
+bool ends_with(const T* x) const
+Checks if the string view ends with the given prefix.
+____________________________________________________________________________________________________
+
+size_t find(basic_string_view view, size_type position = 0) const
+size_t find(T c, size_t position = 0) const
+size_t find(const T* text, size_t position, size_t count) const
+size_t find(const T* text, size_t position = 0) const;
+Finds the first sub-string equal to the given character sequence.
+____________________________________________________________________________________________________
+
+size_t rfind(basic_string_view view, size_t position = npos) const
+size_t rfind(T c, size_t position = npos) const
+size_t rfind(const T* text, size_t position, size_t count) const
+size_t rfind(const T* text, size_t position = npos) const
+Finds the last sub-string equal to the given character sequence.
+____________________________________________________________________________________________________
+
+size_t find_first_of(basic_string_view view, size_t position = 0) const
+size_t find_first_of(T c, size_t position = 0) const
+size_t find_first_of(const T* text, size_t position, size_t count) const
+size_t find_first_of(const T* text, size_t position = 0) const
+Finds the first character equal to any of the characters in the given character sequence.
+____________________________________________________________________________________________________
+
+size_t find_last_of(basic_string_view view, size_t position = npos) const
+size_t find_last_of(T c, size_t position = npos) const
+size_t find_last_of(const T* text, size_t position, size_type count) const
+size_t find_last_of(const T* text, size_t position = npos) const
+Finds the last character equal to any of the characters in the given character sequence.
+____________________________________________________________________________________________________
+
+size_t find_first_not_of(basic_string_view view, size_t position = 0) const
+size_t find_first_not_of(T c, size_t position = 0) const
+size_t find_first_not_of(const T* text, size_t position, size_t count) const
+size_t find_first_not_of(const T* text, size_t position = 0) const
+Finds the first character not equal to any of the characters in the given character sequence.
+____________________________________________________________________________________________________
+
+size_t find_last_not_of(basic_string_view view, size_t position = npos) const
+size_t find_last_not_of(T c, size_t position = npos) const
+size_t find_last_not_of(const T* text, size_t position, size_t count) const
+size_t find_last_not_of(const T* text, size_t position = npos) const
+Finds the first character not equal to any of the characters in the given character sequence.
+____________________________________________________________________________________________________
+Non-member functions
+Lexicographically comparisons
+
+== true if the contents of the string views are equal, otherwise false.
+!= true if the contents of the string views are not equal, otherwise false.
+<  true if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise false.
+<= true if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise false.
+>  true if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise false.
+>= true if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise false
+
+void swap(etl::basic_string_view<T, TTraits> lhs,
+          etl::basic_string_view<T, TTraits> rhs)
+Swaps two views.
+____________________________________________________________________________________________________
+Hash
+
+etl::hash<etl::string_view>
+etl::hash<etl::wstring_view>
+etl::hash<etl::u16string_view>
+etl::hash<etl::u32string_view>
+____________________________________________________________________________________________________
+Example
+
+etl::string<10> greeting("Hello World");
+
+using View = etl::string_view;
+
+View view(greeting.begin() + 2, greeting.size() - 4);
+
+void Print(const View& view)
+{
+  std::cout << std::string(view.begin(), view.end());
+}
+
+Print(view); // Prints "llo Wo"
+
+size_t hashvalue = etl::hash<View>()(view);
+

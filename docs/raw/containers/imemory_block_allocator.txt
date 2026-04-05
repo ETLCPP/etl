@@ -1,0 +1,42 @@
+imemory_block_allocator
+
+The base of all memory block allocators. Inherits from traits class etl::successor<imemory_block_allocator>.
+
+Defines the functionality and interface for derived memory block allocators.
+
+The class defines a public non-virtual interface and protected virtual overrides.
+A derived class must define these overrides.
+____________________________________________________________________________________________________
+Non-virtual public interface
+
+void* allocate(size_t required_size, size_t required_alignment)
+Attempts to allocate a memory block of the required size (in char) and alignment and return a pointer to it. 
+If the allocator is unable to do this and it has a successor, then the request will be passed on to it, otherwise ETL_NULLPTR will be returned.
+____________________________________________________________________________________________________
+bool release(const void* const p)
+Attempts to release a memory block and returns true if successful. 
+If the allocator is unable to do this and it has a successor, then the request will be passed on to it, otherwise false will be returned.
+____________________________________________________________________________________________________
+Virtual protected interface
+
+virtual void* allocate_block(size_t required_size, size_t required_alignment) = 0;
+The derived class must implement this function.
+It will attempt to allocate a block of the required size. If it is unable to, it must return ETL_NULLPTR.
+____________________________________________________________________________________________________
+virtual bool release_block(const void* const) = 0;
+The derived class must implement this function.
+It will attempt to release a block. If it is unable to, it must return false.
+____________________________________________________________________________________________________
+Inherited from successor<imemory_block_allocator>
+
+typedef T successor_type;
+
+void set_successor(successor_type& s)
+Set the successor.
+____________________________________________________________________________________________________
+successor_type& get_successor() const
+Get the successor.
+____________________________________________________________________________________________________
+bool has_successor() const
+Do we have a successor?
+

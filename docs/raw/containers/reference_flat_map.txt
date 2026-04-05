@@ -1,0 +1,256 @@
+reference_flat_map
+reference_flat_multmap
+
+A fixed capacity reference map based on a sorted vector.
+The container stores references to objects, rather than the objects themselves.
+The container is an associative lookup table with O(N) insertion and erase, and O(log N) search.
+This container is best used for tables that are occasionally updated and spend most of their time being searched.
+The interface is most similar to std::map.
+Uses etl::less as the default key comparison method.
+
+etl::reference_flat_map<typename TKey, typename TMapped, const size_t SIZE, TKeyCompare = less>
+
+Inherits from etl::ireference_flat_map<TKey, TMapped, TKeyCompare>
+etl::ireference_flat_map may be used as a size independent pointer or reference type for any etl::reference_flat_map instance.
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename... TPairs>
+etl::reference_flat_map(TPairs...)
+
+Example
+etl::reference_flat_map data{ etl::pair{0, 1}, etl::pair{2, 3}, etl::pair{4, 5}, etl::pair{6, 7} };
+Defines data as an reference_flat_map of int/int pairs, of length 4, containing the supplied data.
+____________________________________________________________________________________________________
+Make template
+C++11 and above
+template <typename TKey, 
+          typename TMapped, 
+          typename TKeyCompare = etl::less<TKey>, 
+          typename... TPairs>
+constexpr auto make_reference_flat_map(TValues&&... values)
+
+Example
+auto data = etl::make_reference_flat_map<int. int>(etl::pair{0, 1}, etl::pair{2, 3}, 
+                                                   etl::pair{4, 5}, etl::pair{6, 7});
+____________________________________________________________________________________________________
+Member types
+
+key_type                TKey
+mapped_type             TMapped
+value_type              pair<key_type, mapped_type>
+size_type               size_t
+difference_type         ptrdiff_t
+reference               value_type&
+const_reference         const value_type&
+pointer                 value_type*
+const_pointer           const value_type*
+iterator                Random access iterator
+const_iterator          Constant random access iterator
+reverse_iterator        ETL_OR_STD::reverse_iterator<iterator>
+const_reverse_iterator  ETL_OR_STD::reverse_iterator<const_iterator>
+
+____________________________________________________________________________________________________
+Constructor
+
+etl::reference_flat_map<Tkey, TMapped, SIZE, TKeyCompare>();
+
+etl::reference_flat_map(const flat_map& other)
+
+template <typename TIterator>
+etl::reference_flat_map<Tkey, TMapped, SIZE, TKeyCompare>(TIterator begin, TIterator end);
+If the map is full then emits an etl::reference_flat_map_full. If asserts or exceptions are not enabled then undefined behaviour occurs.
+
+____________________________________________________________________________________________________
+Element access
+
+TMapped& at(key_parameter_t key)
+const TMapped& at(key_parameter_t key) const
+Returns a reference or const reference to the indexed element.
+Emits an etl::flat_map_out_of_range if the key is not in the table.  If asserts or exceptions are not enabled then undefined behaviour occurs.
+
+20.21.0
+C++11 or above
+For comparators that define is_transparent.
+
+template <typename K>
+TMapped& at(key_parameter_t key)
+
+template <typename K>
+const TMapped& at(key_parameter_t key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+For comparators that define is_transparent.
+
+template <typename K>
+iterator find(const K& key)
+
+template <typename K>
+const_iterator find(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+iterator lower_bound(const K& key)
+
+template <typename K>
+const_iterator lower_bound(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+iterator upper_bound(const K& key)
+
+template <typename K>
+const_iterator upper_bound(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+pair<iterator, iterator> equal_range(const K& key)
+
+template <typename K>pair<const_iterator, const_iterator> equal_range(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+bool contains(key_value_parameter_t  key) const
+Check if the container contains the key.
+
+20.21.0
+C++11 or above
+For comparators that define is_transparent.
+template <typename K>
+bool contains(const K& k) const
+Check if the container contains the key.
+____________________________________________________________________________________________________
+Iterators
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the map.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the map.
+____________________________________________________________________________________________________
+iterator rbegin()
+const_iterator rbegin() const
+const_iterator crbegin() const
+Returns a reverse iterator to the beginning of the map.
+____________________________________________________________________________________________________
+iterator rend()
+const_iterator rend() const
+const_iterator crend() const
+Returns a reverse iterator to the end of the map.
+
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the map is zero, otherwise false.
+____________________________________________________________________________________________________
+bool full() const
+Returns true if the size of the lookup is SIZE, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the lookup.
+____________________________________________________________________________________________________
+size_t max_size() const
+Returns the maximum possible size of the map.
+____________________________________________________________________________________________________
+size_t available() const
+Returns the remaining available capacity in the map.
+____________________________________________________________________________________________________
+Modifiers
+
+reference_flat_map& operator = (const reference_flat_map& rhs)
+Copies the data from another flat map.
+____________________________________________________________________________________________________
+
+pair<iterator, bool> insert(const value_type& value)
+
+iterator insert(iterator position, const value_type& value)
+
+template <typename TIterator>
+void insert(TIterator first, TIterator last)
+Inserts values in to the map. If the map is full then emits an etl::flat_map_full.
+If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+size_t erase(key_value_parameter_t key)
+
+void erase(iterator i_element)
+
+void erase(iterator first, iterator last)
+
+20.21.0
+template <typename K>
+size_t erase(K&& key)
+Erases values in the map.
+____________________________________________________________________________________________________
+void clear();
+Clears the lookup to a size of zero.
+Iterator are not checked for validity.
+____________________________________________________________________________________________________
+Search
+
+iterator find(key_value_parameter_t key)
+const_iterator find(key_value_parameter_t key) const
+____________________________________________________________________________________________________
+iterator lower_bound(key_value_parameter_t key)
+const_iterator lower_bound(key_value_parameter_t key) const
+____________________________________________________________________________________________________
+iterator upper_bound(key_value_parameter_t key)
+const_iterator upper_bound(key_value_parameter_t key) const
+____________________________________________________________________________________________________
+pair<iterator, iterator> equal_range(key_value_parameter_t key)
+pair<const_iterator , const_iterator > equal_range(key_value_parameter_t key) const
+____________________________________________________________________________________________________
+20.21.0
+For comparators that define is_transparent.
+
+template <typename K>
+iterator find(const K& key)
+
+template <typename K>
+const_iterator find(const K& key) const
+
+template <typename K>
+iterator lower_bound(const K& key)
+
+template <typename K>
+const_iterator lower_bound(const K& key) const
+
+template <typename K>
+iterator upper_bound(const K& key)
+
+template <typename K>
+const_iterator upper_bound(const K& key) const
+
+template <typename K>
+pair<iterator, iterator> equal_range(const K& key)
+
+template <typename K>
+pair<const_iterator, const_iterator> equal_range(const K& key) const
+____________________________________________________________________________________________________
+Non-member functions
+Lexicographically comparisons
+
+==  true if the contents of the maps are equal, otherwise false.
+!=  true if the contents of the maps are not equal, otherwise false.
+____________________________________________________________________________________________________
+Technical stuff
+
+Reference flat maps are different from the normal version in that the elements are not copied, but linked directly.
+This means that the lifetime of the element inserted must be as great as that of the map that contains it.
+Unlike most other reference containers, the map has a finite capacity.
+
+Flat maps are usually implemented internally as a sorted vector of key/value pairs. Whilst this makes searching fast, it can have a detrimental effect when items are inserted into a container that stores complex, non-trivial keys or values. 
+As inserting requires that all of the items above the insert position must be shifted, this can become an expensive operation for larger containers.
+
+To improve insertion performance ETL reference flat maps are implemented as vectors of pointers to key/value pairs, sorted by key value. An insertion will involve a copy of a range of pointers; an operation that can be made very fast.
+
+The downside is that access to an item via an iterator will involve one indirection and the overhead of the container will be one pointer per item. A normal flat map implementation does not have this overhead.
+

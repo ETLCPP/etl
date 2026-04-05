@@ -1,0 +1,161 @@
+optional
+
+A class where the value is optional. 
+If a value is not assigned then an object of the contained type is not constructed.
+
+etl::optional<T>
+
+If _DEBUG is defined then accesses to invalid data is detected either by throwing (ETL_THROW_EXCEPTIONS defined) or calling the error handler.
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename T>
+etl::optional(T)
+  -> etl::optional<T>;
+
+Example
+
+std::string text = "Hello";
+etl::optional opt{ text };
+
+Defines opt as containing a std::string, containing the supplied text.
+
+____________________________________________________________________________________________________
+Constructor
+
+optional()
+
+Default constructor.
+____________________________________________________________________________________________________
+
+optional(const T& value)
+optional(T&& value)
+
+Construct from value. Constructs a T.
+____________________________________________________________________________________________________
+
+optional(const optional<T>& other)
+optional(optional<T>&& other)
+
+Construct copy.  Constructs a T.
+____________________________________________________________________________________________________
+
+optional(nullopt)
+
+Construct empty value (same as default constructor).
+____________________________________________________________________________________________________
+
+template <typename... TArgs>
+ETL_CONSTEXPR14
+optional_impl(etl::in_place_t, TArgs&&... args)
+
+Constructor from variadic args.
+20.43.0
+____________________________________________________________________________________________________
+
+template <typename U, typename... TArgs>
+ETL_CONSTEXPR14
+optional_impl(etl::in_place_t, std::initializer_list<U> ilist, TArgs&&... args)
+
+Constructor from variadic args.
+20.43.0
+
+____________________________________________________________________________________________________
+
+~optional()
+
+Destructor. Destructs a T if a value has been assigned.
+
+____________________________________________________________________________________________________
+Operations
+
+optional& operator =(etl::nullopt)
+
+optional& operator =(const optional<T>& value)
+optional& operator =(optional<T>&& value)
+
+optional& operator =(const T& value)
+optional& operator =(T&& value)
+
+Note: 
+Unlike std::optional, assigning from { } will not clear the optional item to 'empty'.
+It will be assigned a default constructed 'value'.
+
+etl::optional<int> opt;
+opt = { }; // opt will contain 0.
+____________________________________________________________________________________________________
+void swap(optional& other)
+
+Swaps with the other optional
+
+____________________________________________________________________________________________________
+void reset()
+
+Resets the optional back to default.
+____________________________________________________________________________________________________
+C++03
+template <typename T1>
+void emplace(const T1& value1)
+
+template <typename T1, typename T2>
+void emplace(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+void emplace(const T1& value1, const T2& value2, const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+
+C++11
+template <typename ... Args>
+void emplace(Args && ... args)
+
+____________________________________________________________________________________________________
+Observers
+
+const T& value() const
+T& value();
+
+Returns the contained value. 
+____________________________________________________________________________________________________
+
+template <typename T >
+T value_or(T value) const
+
+template <typename T>
+T value_or(T value)
+
+Returns the contained value if *this is valid, otherwise returns value. 
+____________________________________________________________________________________________________
+
+const T* operator->() const
+T* operator->();
+
+Returns a pointer to the contained value.
+____________________________________________________________________________________________________
+
+const T& operator *() const
+T* operator *();
+
+Returns a reference to the contained value.
+
+____________________________________________________________________________________________________
+Tests
+
+explicit operator bool() const
+bool has_value() const
+
+Checks whether *this is in a valid state, i.e. whether the contained value is initialised.
+Returns true if valid, otherwise false.
+
+____________________________________________________________________________________________________
+Non-member functions
+
+==  true if the contents are equal, otherwise false.
+!=  true if the contents are not equal, otherwise false.
+<   true if the contents of the lhs are less than the contents of the rhs,  otherwise false.
+<=  true if the contents of the lhs are less than or equal to the contents of the rhs, otherwise false.
+>   true if the contents of the lhs are greater than the contents of the rhs,  otherwise false.
+>=  true if the contents of the lhs are greater than or equal to the contents of the rhs, otherwise false.
+

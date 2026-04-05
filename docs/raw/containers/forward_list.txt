@@ -1,0 +1,274 @@
+forward_list
+
+A fixed capacity forward list.
+STL equivalent: std::forward_list
+
+etl::forward_list<typename T, size_t SIZE>
+etl::forward_list_ext<typename T>
+
+Inherits from etl::iforward_list<T>
+etl::iforward_list may be used as a size independent pointer or reference type for any etl::forward_list instance.
+
+Note: Does not support the member function swap.
+____________________________________________________________________________________________________
+Shared Pools
+
+etl::forward_list_ext<typename T>
+This template may share pools with another etl::forward_list of the same type.
+The list is initialised with the pool either at construction time or a call to set_pool(etl::ipool& pool)
+When pools are shared there are a few side effects that must be noted.
+
+size() and empty() will be O(N) complexity. For a normal etl::forward_list they are O(1)
+
+Destruction of the container will always be O(N) regardless of whether the type store is trivially destructible or not.
+
+max_size() will return the potential maximum size of the list. The actual maximum size will dependent of how many elements the other lists sharing the pool have allocated.
+
+Pool must be declared with the list's pool_type.
+i.e.
+// The element type
+struct Point { int x; int y; };
+
+// The list type
+using List = etl::forward_list_ext<Point>;
+
+// The shared pool
+etl::pool<List::pool_type, 10> pool;
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename T...>
+etl::forward_list(T...)
+
+Example
+etl::forward_list data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+Defines data as an forward_list of int, of length 10, containing the supplied data.
+____________________________________________________________________________________________________
+Make template
+C++11 and above
+template <typename T, typename... TValues>
+  constexpr auto make_forward_list(TValues&&... values)
+
+Example
+auto data = etl::make_forward_list<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+____________________________________________________________________________________________________
+Member types
+
+value_type              T
+size_type               std::size_t
+difference_type         std::ptrdiff_t
+reference               value_type&
+const_reference         const value_type&
+pointer                 value_type*
+const_pointer           const value_type*
+iterator                Bi-directional iterator
+const_iterator          Constant bi-directional iterator
+____________________________________________________________________________________________________
+Constructor
+
+etl::forward_list<typename T, const size_t SIZE>();
+etl::forward_list<typename T, const size_t SIZE>(size_t initialSize, parameter_t value = T());
+template <typename TIterator>
+etl::forward_list<typename T, const size_t SIZE>(TIterator begin, TIterator end);
+
+Emits an etl::forward_list_iterator if the iterators are invalid. Emits an etl::forward_list_full if the list becomes full.
+If asserts or exceptions are disabled then undefined behaviour occurs.
+
+Copy constructor
+etl::forward_list<typename T, const size_t SIZE>
+  (etl::forward_list<typename T, const size_t SIZE>& other);
+____________________________________________________________________________________________________
+For shared pool lists
+etl::forward_list<typename T, const size_t SIZE>(etl::pool& pool);
+etl::forward_list<typename T, const size_t SIZE>(size_t initialSize, parameter_t value, etl::pool& pool);
+template <typename TIterator>
+etl::forward_list<typename T, const size_t SIZE>(TIterator begin, TIterator end, etl::pool& pool);
+
+Emits an etl::forward_list_iterator if the iterators are invalid. If asserts or exceptions are disabled then undefined behaviour occurs.
+
+Copy constructor
+Implicit pool
+Uses the pool from other.
+etl::forward_list<typename T, const size_t SIZE>(etl::forward_list<typename T, const size_t SIZE>& other);
+
+Explicit pool
+etl::forward_list<typename T, const size_t SIZE>(etl::forward_list<typename T, const size_t SIZE>& other, etl::pool& pool);
+
+____________________________________________________________________________________________________
+Element access
+
+T& front()
+const T& front() const
+Returns a reference or const reference to the first element.
+Undefined behaviour if the list is empty.
+____________________________________________________________________________________________________
+Iterators
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the forward list.
+Returns end() if the list is empty.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the forward list.
+____________________________________________________________________________________________________
+iterator before_begin()
+const_iterator before_begin() const
+const_iterator cbefore_begin() const
+Returns an iterator to before the beginning of the forward list.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the forward list is zero, otherwise false.
+____________________________________________________________________________________________________
+bool full() const
+Returns true if the size of the forward list is SIZE, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the forward list.
+____________________________________________________________________________________________________
+size_t available() const
+Returns the remaining available capacity in the forward list.
+____________________________________________________________________________________________________
+size_t max_size() const
+Returns the maximum possible size of the forward list .
+____________________________________________________________________________________________________
+Modifiers
+
+template <typename TIterator>
+void assign(TIterator begin, TIterator end);
+void assign(size_t n, parameter_t value);
+
+Fills the forward list with the values.
+Emits an etl::forward_list_iterator if the iterators are invalid. Emits an etl::forward_list_full if the list becomes full. If asserts or exceptions are disabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+void push_front(parameter_t value);
+
+Pushes a value to the front of the forward list. If the forward list is full and ETL_CHECK_PUSH_POP is defined then emits an etl::forward_list_full error, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+<=20.35.9
+C++03
+template <typename T1>
+void emplace_front(const T1& value1)
+
+template <typename T1, typename T2>
+void emplace_front(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+void emplace_front(const T1& value1, const T2& value2,
+                   const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+void emplace_front(const T1& value1, const T2& value2,
+                   const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+void emplace_front(Args&& ... args)
+Constructs an item at the front of the the list 'in place'.
+Supports up to four constructor parameters.
+If the forward list is full and ETL_CHECK_PUSH_POP is defined then emits an etl::forward_list_full error, otherwise undefined behaviour occurs.
+
+>=20.35.10
+C++03
+template <typename T1>
+reference emplace_front(const T1& value1)
+
+template <typename T1, typename T2>
+reference emplace_front(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+reference emplace_front(const T1& value1, const T2& value2,
+                        const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+reference emplace_front(const T1& value1, const T2& value2,
+                        const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+reference emplace_front(Args&& …args)
+Constructs an item at the front of the the list 'in place'.
+Supports up to four constructor parameters.
+If the forward list is full and ETL_CHECK_PUSH_POP is defined then emits an etl::forward_list_full error, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+void pop_front();
+Pop a value from the front of the forward list.
+If the forward list is empty and ETL_CHECK_PUSH_POP is defined then emits an etl::forward_list_empty error, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+<=20.19.0
+template <typename TIterator>
+void insert_after(iterator position, TIterator begin, TIterator end);
+
+iterator insert_after(iterator position, parameter_t value);
+void insert_after(iterator position, size_t n, parameter_t value);
+
+>=20.20.0
+template <typename TIterator>
+iterator insert_after(const_iterator position, TIterator begin, TIterator end);
+
+iterator insert_after(const_iterator position, parameter_t value);
+iterator insert_after(const_iterator position, size_t n, parameter_t value);
+Inserts values in to the forward list after the specified position. 
+If the forward list is full then emits an etl::forward_list_full error. If asserts or exceptions are disabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+<=20.19.0
+iterator erase_after(iterator position);
+iterator erase_after(iterator position, const_iterator end);
+
+>=20.20.0
+iterator erase_after(iterator position);
+iterator erase_after(const_iterator position);
+iterator erase_after(const_iterator position, const_iterator end);
+Erases elements after the specified position.
+The second version erases up to, but not including end.
+____________________________________________________________________________________________________
+void resize(size_t n);
+void resize(size_t n, parameter_t value);
+Resizes the forward list. If the new size is larger then the first assigns default constructed values, the second assigns the supplied value.
+If n is larger than the capacity then emits an etl::forward_list_full error, if asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+void clear();
+Clears the forward list to a size of zero.
+____________________________________________________________________________________________________
+Operations
+
+void remove(const T& value);
+Removes from the container all the elements that compare equal to value.
+____________________________________________________________________________________________________
+template <typename TPredicate>
+void remove_if(TPredicate predicate);
+Removes from the container all the elements that satisfy predicate.
+____________________________________________________________________________________________________
+void unique();
+
+template <typename TPredicate>
+void unique(TPredicate predicate);
+The first version removes all but the first element from every group of consecutive elements.
+The second removes all but the first element from every group of consecutive elements that satisfy the binary predicate.
+____________________________________________________________________________________________________
+void sort();
+
+template <typename TCompare>
+void sort(TCompare compare);
+The first version sorts using the < operator.
+The second uses the supplied compare function.
+____________________________________________________________________________________________________
+void reverse();
+Reverses the order of the container.
+____________________________________________________________________________________________________
+Non-member functions
+
+==  true if the contents of the lists are equal, otherwise false.
+!=  true if the contents of the lists are not equal, otherwise false.
+<   true if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise false.
+<=  true if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise false.
+>   true if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise false.
+>=  true if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise false.
+

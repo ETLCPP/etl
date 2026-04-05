@@ -1,0 +1,216 @@
+reference_flat_set
+reference_flat_multiset
+
+A fixed capacity set based on a sorted vector.
+The container stores references to objects, rather than the objects themselves.
+The container is an associative lookup table with O(N) insertion and erase, and O(log N) search.
+This container is best used for tables that are occasionally updated and spend most of their time being searched.
+The interface is most similar to std::set.
+Uses etl::less as the default key comparison method.
+
+etl::reference_flat_set<typename T, const size_t SIZE, TCompare = etl::less>
+
+Inherits from etl::ireference_flat_set<T, TCompare>
+etl::ireference_flat_set may be used as a size independent pointer or reference type for any etl::reference_flat_set instance.
+
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename... T>
+etl::reference_flat_set(T...)
+
+Example
+etl::reference_flat_setdata{ 0, 1, 2, 3, 4, 5, 6, 7 };
+Defines data as a set of int/int pairs, of length 8, containing the supplied data.
+____________________________________________________________________________________________________
+Make template
+C++11 and above
+template <typename TKey
+          typename... T>
+constexpr auto make_reference_flat_set(T&&... values)
+
+Example
+auto data = etl::make_reference_flat_set<int>(0, 1, 2, 3, 4, 5, 6, 7);
+
+____________________________________________________________________________________________________
+Member types
+
+key_type                T
+value_type              T
+size_type               size_t
+difference_type         ptrdiff_t
+reference               value_type&
+const_reference         const value_type&
+pointer                 value_type*
+const_pointer           const value_type*
+iterator                Random access iterator
+const_iterator          Constant random access iterator
+reverse_iterator        ETL_OR_STD:reverse_iterator<iterator>
+const_reverse_iterator  ETL_OR_STD::reverse_iterator<const_iterator>
+
+____________________________________________________________________________________________________
+Constructor
+etl::flat_set<T, SIZE, TCompare>();
+
+etl::flat_set(const flat_set& other)
+
+template <typename TIterator>
+etl::flat_set<T, SIZE, TCompare>(TIterator begin, TIterator end);
+If the set is full then emits an etl::reference_flat_set_full. If asserts or exceptions are not enabled then undefined behaviour occurs.
+
+____________________________________________________________________________________________________
+Iterators
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the set.
+____________________________________________________________________________________________________
+
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the set.
+____________________________________________________________________________________________________
+
+iterator rbegin()
+const_iterator rbegin() const
+const_iterator crbegin() const
+Returns a reverse iterator to the beginning of the set.
+____________________________________________________________________________________________________
+
+iterator rend()
+const_iterator rend() const
+const_iterator crend() const
+Returns a reverse iterator to the end of the set.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the set is zero, otherwise false.
+____________________________________________________________________________________________________
+
+bool full() const
+Returns true if the size of the lookup is SIZE, otherwise false.
+____________________________________________________________________________________________________
+
+size_t size() const
+Returns the size of the lookup.
+____________________________________________________________________________________________________
+
+size_t max_size() const
+Returns the maximum possible size of the set.
+____________________________________________________________________________________________________
+
+size_t available() const
+Returns the remaining available capacity in the set.
+____________________________________________________________________________________________________
+Modifiers
+
+flat_set& operator = (const flat_set& rhs)
+Copies the data from another flat set.
+____________________________________________________________________________________________________
+
+ETL_OR_STD::pair<iterator, bool> insert(const value_type& value)
+iterator insert(iterator position, const value_type& value)
+
+template <typename TIterator>
+void insert(TIterator first, TIterator last)
+Inserts values in to the set.
+If the set is full then emits an etl::reference_flat_set_full. If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+
+size_t erase(key_value_parameter_t key)
+void erase(iterator i_element)
+void erase(iterator first, iterator last)
+Erases values in the set.
+Iterators are not checked for validity.
+
+20.21.0
+template <typename K>
+size_t erase(K&& key)
+Erases values in the map.
+____________________________________________________________________________________________________
+
+void clear();
+Clears the lookup to a size of zero.
+____________________________________________________________________________________________________
+Search
+
+iterator find(key_value_parameter_t key)
+const_iterator find(key_value_parameter_t key) const
+____________________________________________________________________________________________________
+iterator lower_bound(key_value_parameter_t key)
+const_iterator lower_bound(key_value_parameter_t key) const
+____________________________________________________________________________________________________
+iterator upper_bound(key_value_parameter_t key)
+const_iterator upper_bound(key_value_parameter_t key) const
+____________________________________________________________________________________________________
+ETL_OR_STD::pair<iterator, iterator> equal_range(key_value_parameter_t key)
+ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+For comparators that define is_transparent.
+
+template <typename K>
+iterator find(const K& key)
+
+template <typename K>
+const_iterator find(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+iterator lower_bound(const K& key)
+
+template <typename K>
+const_iterator lower_bound(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+iterator upper_bound(const K& key)
+
+template <typename K>
+const_iterator upper_bound(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+pair<iterator, iterator> equal_range(const K& key)
+
+template <typename K>
+pair<const_iterator, const_iterator> equal_range(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+bool contains(key_value_parameter_t  key) const
+Check if the container contains the key.
+
+20.21.0
+C++11 or above
+For comparators that define is_transparent.
+template <typename K>
+bool contains(const K& k) const
+Check if the container contains the key.
+____________________________________________________________________________________________________
+Non-member functions
+Lexicographically comparisons
+
+==  true if the contents of the sets are equal, otherwise false.
+!=  true if the contents of the sets are not equal, otherwise false.
+____________________________________________________________________________________________________
+How it works
+
+Reference flat sets are different from the normal version in that the elements are not copied, but linked directly.
+This means that the lifetime of the element inserted must be as great as that of the set that contains it.
+Unlike most other reference containers, the set has a finite capacity.
+
+Flat sets are usually implemented internally as a sorted vector of values. Whilst this makes searching fast, it can have a detrimental effect when items are inserted into a container that stores complex, non-trivial values. 
+As Inserting requires that all of the items above the insert position must be shifted, this can become an expensive operation for larger containers.
+
+To improve insertion performance ETL reference flat sets are implemented as vectors of pointers to values, sorted by value. An insertion will involve a copy of a range of pointers; an operation that can be made very fast.
+
+The downside is that access to an item via an iterator will involve one indirection and the overhead of the container will be one pointer per item. A normal flat set implementation does not have this overhead.
+
+

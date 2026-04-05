@@ -1,0 +1,110 @@
+variant (legacy)
+Deprecated for C++11 and above. 
+This version is automatically selected if either the compiler does not support C++11, or ETL_USE_LEGACY_VARIANT is defined. See variant (new)
+
+A class that can contain one a several specified types in a type safe manner.
+Supports up to eight types.
+Supplies a nested reader visitor class that allows type safe access via sets of overloaded virtual read functions for each type.
+
+Accepts etl::visit
+20.28.0
+
+If ETL_USE_LEGACY_VARIANT is defined then variant is in the etl namespace.
+If ETL_USE_LEGACY_VARIANT is not defined then variant is in the etl::legacy namespace.
+20.30.0
+____________________________________________________________________________________________________
+Constructor
+
+variant()
+Default constructor.
+____________________________________________________________________________________________________
+template <typename T>
+variant(T value)
+Construct from value. A static assert will occur if T is not a supported type.
+____________________________________________________________________________________________________
+Operations
+
+template <typename T>
+variant& operator =(typename parameter_type<T>::type value)
+Assigns a value. A static assert occurs if the type T is not supported.
+
+If C++11 is not supported
+template <typename T, typename TP1>
+T& emplace(const TP1& value1)
+____________________________________________________________________________________________________
+template <typename T, typename TP1, typename TP2>
+T& emplace(const TP1& value1, const TP2& value2)
+____________________________________________________________________________________________________
+template <typename T, typename TP1, typename TP2, typename TP3>
+T& emplace(const TP1& value1, const TP2& value2, const TP3& value3)
+____________________________________________________________________________________________________
+template <typename T, typename TP1, typename TP2, typename TP3, typename TP4>
+T& emplace(const TP1& value1, const TP2& value2, const TP3& value3, const TP4& value4)
+____________________________________________________________________________________________________
+If C++11 or greater is supported
+template <typename T, typename... Args>
+T& emplace(Args&&... args)
+Constructs the value in-place using the supplied parameters.
+____________________________________________________________________________________________________
+void clear()
+Clears the variant of holding any type.
+____________________________________________________________________________________________________
+Access
+
+template <typename T>
+T& get()
+
+const template <typename T>
+T& get() const
+Gets a value.
+If T is a type not supported by the variant then a static assert occurs.
+If T is  a type that is not the type currently stored then a variant_incorrect_type_exception() error is emitted. If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+T* upcast_ptr<T>()
+const T* upcast_ptr<T>() const
+20.30.0
+For variant types that are polymorphic. Up-casts the variant to type T*.
+Types that cannot be up-cast will result in a nullptr return.
+____________________________________________________________________________________________________
+T& upcast<T>()
+const T& upcast<T>() const
+For variant types that are polymorphic. Up-casts the variant to type T.
+Types that cannot be up-cast will result in a runtime error etl::variant_not_a_base. 20.30.0
+____________________________________________________________________________________________________
+bool is_base_of<T>() const
+20.30.0
+Tests if the type T is a base of the current variant type.
+____________________________________________________________________________________________________
+call(reader& r)
+Calls the appropriate overloaded r.read()  function with the value.
+____________________________________________________________________________________________________
+template <typename T>
+variant& operator =(typename parameter_type<T>::type value)
+Assigns a value. A static assert occurs if the type T is not supported.
+____________________________________________________________________________________________________
+Any value stored in the variant can be implicitly cast to its current type.
+If the implicit cast is to a type not supported by the variant then a static assert occurs.
+If the implicit cast is to a type that is not the type currently stored then a etl::variant_incorrect_type_exception error is emitted.
+____________________________________________________________________________________________________
+Tests
+
+template <typename T>
+static bool is_supported_type()
+Returns true if T is supported by the variant, otherwise false.
+____________________________________________________________________________________________________
+bool is_same_type(const variant& other) const
+Returns true if the variant holds the same type as the other, otherwise false.
+____________________________________________________________________________________________________
+bool is_valid() const
+Returns true if the variant holds a valid value, otherwise false.
+____________________________________________________________________________________________________
+template <typename T>
+bool is_type() const
+Returns true if T is the type currently stored in the variant, otherwise false.
+____________________________________________________________________________________________________
+Visitation
+For STL style etl::visit
+20.28.0
+
+The ETL implements an STL style visit function.
+

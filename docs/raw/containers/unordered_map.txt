@@ -1,0 +1,192 @@
+unordered_map
+unordered_multimap
+
+A fixed capacity map.
+Uses std::less as the default key comparison method.
+STL equivalent: std::unordered_map / std::unordered_multimap
+
+This page just describes etl::unordered_map.
+
+template <typename TKey, 
+          typename TValue, 
+          size_t   MAX_SIZE, 
+          size_t   MAX_BUCKETS = MAX_SIZE, 
+          typename THash = etl::hash<TKey>, 
+          typename TKeyEqual = etl::equal_to<TKey>>
+class unordered_map
+
+Inherits from  iunordered_map<TKey, TValue, THash, TKeyEqual>
+etl::iunordered_map may be used as a size independent pointer or reference type for any etl::unordered_map instance.
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename... TPairs>
+etl::unordered_map(TPairs...)
+
+Example
+etl::unordered_map data{ etl::pair{0, 1}, etl::pair{2, 3}, etl::pair{4, 5}, etl::pair{6, 7} };
+Defines data as an map of int/int pairs, of length 4, containing the supplied data.
+____________________________________________________________________________________________________
+Make template
+C++11 and above
+template <typename TKey, 
+          typename TValue, 
+          typename THash       = etl::hash<TKey>, 
+          typename TKeyEqual   = etl::equal_to<TKey>
+          typename... TPairs>
+constexpr auto make_unordered_map(TValues&&... values)
+
+Example
+auto data = etl::make_unordered_map<int, int>(etl::pair{0, 1}, etl::pair{2, 3}, 
+                                              etl::pair{4, 5}, etl::pair{6, 7});
+____________________________________________________________________________________________________
+Member types
+
+value_type              pair<const TKey, T>
+key_type                The type of the key value
+mapped_type             The type of the mapped value
+hasher                  The type used to hash the key
+key_equal               The functor used to compare keys
+reference               A reference to a value_type
+const_reference         A reference to a const value_type
+pointer                 A pointer to a value_type
+const_pointer           A pointer to a const value_type
+size_type               The type used for size information
+iterator                Random access iterator
+const_iterator          Constant random access iterator
+local_iterator          Iterator to a bucket
+local_const_iterator    A const iterator to a bucket
+____________________________________________________________________________________________________
+Constructor
+
+unordered_map()
+Default constructor
+
+unordered_map(const unordered_map& other)
+Copy constructor
+
+template <typename TIterator>
+unordered_map(TIterator begin, TIterator end);
+Construct from a range
+____________________________________________________________________________________________________
+Element access
+
+mapped_type& at(key_parameter_t key)
+const mapped_type& at(key_parameter_t key) const
+Returns a reference or const reference to the indexed element. 
+Emits an etl::map_out_of_range if the key is not in the table. If assert or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+mapped_type& operator[](key_parameter_t key)
+Returns a reference to the indexed element.
+If the key does not exist then one is created using the default constructor. If the map is full then emits an etl::map_full. If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+iterator find(key_parameter_t key);
+const_iterator find (key_parameter_t key) const;
+Searches the container for an element with a key equivalent to key and returns an iterator to it if found, otherwise it returns an iterator to etl::map::end()
+____________________________________________________________________________________________________
+bool contains(const_key_reference key) const
+Check if the map contains the key.
+
+template <typename K, typename KE = TKeyEqual>
+bool contains(const K& key) const
+Check if the map contains the key.
+Enabled if the comparator is transparent.
+____________________________________________________________________________________________________
+size_type count(key_parameter_t key) const;
+Count elements with a specific key.
+Searches the container for elements with a key equivalent to key and returns the number of matches
+____________________________________________________________________________________________________
+iterator lower_bound(key_parameter_t key);
+const_iterator lower_bound(key_parameter_t key) const;
+Returns the iterator to the lower bound.
+Returns an iterator pointing to the first element in the container whose key is not considered to go before key (i.e., either it is equivalent or goes after).
+____________________________________________________________________________________________________
+iterator upper_bound(key_parameter_t key);
+const_iterator upper_bound(key_parameter_t key) const;
+Return the iterator to the upper bound.
+Returns an iterator pointing to the first element in the container whose key is considered to go after key.
+____________________________________________________________________________________________________
+pair<iterator, iterator> equal_range(key_parameter_t key);
+pair<const_iterator, const_iterator> equal_range(key_parameter_t key) const;
+Get the range of equal elements.
+Returns the bounds of a range that includes all the elements in the container which have a key equivalent to key.
+____________________________________________________________________________________________________
+Iterators
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the map.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the map.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the map is zero, otherwise false.
+____________________________________________________________________________________________________
+bool full() const
+Returns true if the size of the map is SIZE, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the map.
+____________________________________________________________________________________________________
+size_t max_size() const
+Returns the maximum possible size of the map.
+____________________________________________________________________________________________________
+size_t available() const
+Returns the remaining available capacity in the map.
+____________________________________________________________________________________________________
+size_type get_bucket_index(key_parameter_t key) const
+Returns the bucket index for the key.
+____________________________________________________________________________________________________
+size_type bucket_size(key_parameter_t key) const
+Returns the size of the bucket key.
+____________________________________________________________________________________________________
+size_type max_bucket_count() const
+Returns the maximum number of the buckets the container can hold.
+____________________________________________________________________________________________________
+float load_factor() const
+Returns the load factor = size / bucket_count
+____________________________________________________________________________________________________
+hasher hash_function() const
+Returns the function that hashes the keys.
+____________________________________________________________________________________________________
+key_equal key_eq() const
+Returns the function that compares the keys.
+____________________________________________________________________________________________________
+Modifiers
+
+template <typename TIterator>
+void assign(TIterator first, TIterator last)
+Assigns elements from a range.
+Clears the container before assigning.
+____________________________________________________________________________________________________
+pair<iterator, bool> insert(const value_type& key_value_pair)
+iterator insert(const_iterator, const value_type& key_value_pair)
+____________
+template <template TIterator>
+void insert(TIterator first, TIterator last)
+Inserts values in to the map. 
+If the map is full then emits an etl::unordered_map_full error. If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+size_t erase(key_parameter_t key)
+____________
+iterator erase(const_iterator ielement)
+____________
+iterator erase(const_iterator first, const_iterator last)
+Erases values in the map.
+Iterator are not checked for validity.
+____________________________________________________________________________________________________
+void clear();
+Clears the map to a size of zero.
+____________________________________________________________________________________________________
+Non-member functions
+
+==  true if the contents of the maps are equal, otherwise false.
+!=  true if the contents of the maps are not equal, otherwise false.
+

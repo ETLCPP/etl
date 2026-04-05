@@ -3,8 +3,6 @@ title: "Embedded Template Library"
 weight: 998
 ---
 
----
-
 {{< callout type="warning">}}
 **This documentation is still under development, and very much incomplete.**
 {{< /callout >}}
@@ -35,9 +33,8 @@ weight: 998
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++20.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++23.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-syntax-checks.yml/badge.svg?branch=master)
-
+[![coverage](https://github.com/ETLCPP/etl/actions/workflows/coverage.yml/badge.svg)](https://github.com/ETLCPP/etl/actions/workflows/coverage.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
-
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://www.etlcpp.com/sponsor.html)
 </div>
 

@@ -1,0 +1,360 @@
+deque
+
+A fixed capacity deque.
+STL equivalent: std::deque
+
+etl::deque<typename T, const size_t SIZE>
+
+Inherits from etl::ideque<T>
+etl::ideque may be used as a size independent pointer or reference type for any etl::deque instance.
+
+Has the ability to be copied by low level functions such as memcpy by use of a repair() function.
+See the function reference for an example of use.
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename... T>
+etl::deque(T...)
+
+Example
+etl::deque data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+Defines data as an deque of int, of length 10, containing the supplied data.
+____________________________________________________________________________________________________
+Make template
+C++11 and above
+template <typename T, typename... TValues>
+  constexpr auto make_deque(TValues&&... values)
+
+Example
+auto data = etl::make_deque<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+____________________________________________________________________________________________________
+Member types
+
+value_type              T
+size_type               std::size_t
+difference_type         std::ptrdiff_t
+reference               value_type&
+const_reference         const value_type&
+rvalue_reference        value_type&&
+pointer                 value_type*
+const_pointer           const value_type*
+iterator                Random access iterator
+const_iterator          Constant random access iterator
+reverse_iterator        std::reverse_iterator<iterator>
+const_reverse_iterator  std::reverse_iterator<const_iterator>
+____________________________________________________________________________________________________
+Static Constants
+
+MAX_SIZE  The maximum size of the deque.
+____________________________________________________________________________________________________
+Constructor
+
+etl::deque<typename T, const size_t SIZE>();
+etl::deque<typename T, const size_t SIZE>(size_t initialSize);
+etl::deque<typename T, const size_t SIZE>(size_t initialSize, parameter_t value);
+
+template <typename TIterator>
+etl::deque<typename T, const size_t SIZE>(TIterator begin, TIterator end);
+
+etl::deque<typename T, const size_t SIZE>(const etl::deque<typename T, const size_t SIZE>& other);
+etl::deque<typename T, const size_t SIZE>(etl::deque<typename T, const size_t SIZE>&& other);
+
+____________________________________________________________________________________________________
+Element access
+
+T& at(size_t i)
+const T& at(size_t i) const
+Returns a reference or const reference to the indexed element. 
+Emits an etl::deque_out_of_range if the index is out of range of the array. Undefined behaviour if asserts or exceptions are not enabled.
+____________________________________________________________________________________________________
+T& operator[](size_t i)
+const T& operator[](size_t i) const
+Returns a reference or const reference to the indexed element.
+____________________________________________________________________________________________________
+T& front()
+const T& front() const
+Returns a reference or const reference to the first element.
+____________________________________________________________________________________________________
+T& back()
+const T& back() const
+Returns a reference or const reference to the last element.
+____________________________________________________________________________________________________
+void fill(value_type value)
+Fill the current size of the buffer with value
+20.24.0
+____________________________________________________________________________________________________
+Iterators
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the deque.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the deque.
+____________________________________________________________________________________________________
+reverse_iterator rbegin()
+const_reverse_iterator rbegin() const
+const_reverse_iterator crbegin() const
+Returns a reverse iterator to the beginning of the deque.
+____________________________________________________________________________________________________
+
+iterator rend()
+const_reverse_iterator rend() const
+const_reverse_iterator crend() const
+Returns a reverse iterator to the end of the deque.
+
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the deque is zero, otherwise false.
+____________________________________________________________________________________________________
+bool full() const
+Returns true if the size of the deque is SIZE, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the deque.
+____________________________________________________________________________________________________
+void resize(size_t new_size, T value = T())
+Resizes the deque, up to the maximum capacity.
+Emits an etl::deque_full if the deque does not have the capacity.
+____________________________________________________________________________________________________
+size_t max_size() const
+Returns the maximum possible size of the deque.
+____________________________________________________________________________________________________
+size_t capacity() const
+Returns the maximum possible size of the deque.
+____________________________________________________________________________________________________
+size_t available() const
+Returns the remaining available capacity in the deque.
+____________________________________________________________________________________________________
+Modifiers
+
+template <typename TIterator>
+void assign(TIterator begin, TIterator end);
+Fills the deque with the range. 
+The range is not checked for validity.
+____________________________________________________________________________________________________
+void assign(size_t n, const_reference value);
+Fills the deque with the values. 
+Emits etl::deque_iterator if the distance between begin and end is illegal, otherwise undefined behaviour if asserts or exceptions are not enabled.
+____________________________________________________________________________________________________
+void push_front(const_reference value);
+void push_front(rvalue_reference value);
+Pushes a value to the front of the deque.
+If the deque is full and ETL_CHECK_PUSH_POP is defined then emits an etl::deque_full, otherwise undefined behaviour if asserts or exceptions are not enabled.
+____________________________________________________________________________________________________
+void push_back(const_reference value);
+void push_back(rvalue_reference value);
+Pushes a value to the back of the deque.
+If the deque is full and ETL_CHECK_PUSH_POP is defined then emits an etl::deque_full, otherwise undefined behaviour if asserts or exceptions are not enabled.
+____________________________________________________________________________________________________
+void pop_front();
+Pop a value from the front of the deque.
+If the deque is empty and ETL_CHECK_PUSH_POP is defined then emits an etl::deque_empty, otherwise undefined behaviour if asserts or exceptions are not enabled.
+____________________________________________________________________________________________________
+void pop_back();
+Pop a value from the back of the deque.
+If the deque is empty and ETL_CHECK_PUSH_POP is defined then emits an etl::deque_empty, otherwise undefined behaviour if asserts or exceptions are not enabled.
+____________________________________________________________________________________________________
+void insert(iterator position, size_t n, parameter_t value);
+<=20.19.0
+template <typename TIterator>
+void insert(iterator position, TIterator begin, TIterator end);
+iterator insert(iterator position, parameter_t value);
+iterator insert(iterator position, rvalue_reference value);
+
+>=20.20.0
+template <typename TIterator>
+iterator insert(const_iterator position, TIterator begin, TIterator end);
+iterator insert(const_iterator position, parameter_t value);
+iterator insert(const_iterator position, rvalue_reference value);
+Inserts values in to the deque. If the deque is full then emits an etl::deque_full exception.
+Undefined behaviour if asserts or exceptions are not enabled.
+____________________________________________________________________________________________________
+template <typename TIterator>
+iterator erase(TIterator begin, TIterator end);
+
+<= 20.19.0
+iterator erase(iterator position);
+
+>= 20.20.0
+iterator erase(iterator position);
+iterator erase(const_iterator position);
+Erases values in the deque.
+Undefined behaviour if asserts or exceptions are not enabled and begin, end or position are invalid.
+____________________________________________________________________________________________________
+<=20.19.0
+C++03
+template <typename T1>
+iterator emplace(iterator insert_position, const T1& value1)
+
+template <typename T1, typename T2>
+iterator emplace(iterator insert_position, const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+iterator emplace(iterator insert_position, const T1& value1, const T2& value2,
+                                           const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+iterator emplace(iterator insert_position, const T1& value1, const T2& value2,
+                                           const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+iterator emplace(iterator insert_position, Args&& ... args)
+
+>=20.20.0
+C++03
+template <typename T1>
+iterator emplace(const_iterator insert_position, const T1& value1)
+
+template <typename T1, typename T2>
+iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2,
+                                                 const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+iterator emplace(const_iterator insert_position, const T1& value1, const T2& value2,
+                                                 const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+iterator emplace(const_iterator insert_position, Args&& ... args)
+____________________________________________________________________________________________________
+<=20.35.9
+C++03
+template <typename T1>
+void emplace_front(const T1& value1)
+
+template <typename T1, typename T2>
+void emplace_front(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+void emplace_front(const T1& value1, const T2& value2,
+                   const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+void emplace_front(const T1& value1, const T2& value2,
+                   const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+void emplace_front(Args&& ... args)
+
+>=20.35.10
+C++03
+template <typename T1>
+reference emplace_front(const T1& value1)
+
+template <typename T1, typename T2>
+reference emplace_front(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+reference emplace_front(const T1& value1, const T2& value2,
+                        const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+reference emplace_front(const T1& value1, const T2& value2,
+                        const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+reference emplace_front(Args&& ... args)
+____________________________________________________________________________________________________
+<=20.35.9
+C++03
+template <typename T1>
+void emplace_back(const T1& value1)
+
+template <typename T1, typename T2>
+void emplace_back(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+void emplace_back(const T1& value1, const T2& value2,
+                  const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+void emplace_back(const T1& value1, const T2& value2,
+                  const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+void emplace_back(Args&& ... args)
+
+>=20.35.10
+C++03
+template <typename T1>
+reference emplace_back(const T1& value1)
+
+template <typename T1, typename T2>
+reference emplace_back(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+reference emplace_back(const T1& value1, const T2& value2,
+                       const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+reference emplace_back(const T1& value1, const T2& value2,
+                       const T3& value3, const T4& value4)
+
+C++11 and above
+template <typename ... Args>
+reference emplace_back(Args&& ... args)
+____________________________________________________________________________________________________
+void clear();
+Clears the deque to a size of zero.
+____________________________________________________________________________________________________
+void repair()
+This function must be called if the deque has been copied via a low level method such as memcpy.
+This can only be called from an etl::deque instance, unless ETL_IDEQUE_REPAIR_ENABLE is defined. Be aware that doing this introduces a virtual function to the class.
+
+Has no effect if the object has not been copied in this way.
+
+NOTE: 
+The contained type must be trivially copyable.
+Compilers that satisfy the C++11 type traits support check in platform.h will generate an assert if the type is incompatible.
+
+Example:
+typedef etl::deque<int, 10> Data;
+
+Data data(8, 1);
+
+char buffer[sizeof(Data)];
+
+memcpy(&buffer, &data, sizeof(Data));
+
+Data& rdata(*reinterpret_cast<Data*>(buffer));
+
+// Do not access the copied object in any way until you have called this.
+rdata.repair();
+____________________________________________________________________________________________________
+
+etl::deque<typename T, const size_t SIZE>& 
+    operator =(const etl::deque<typename T, const size_t SIZE>& other);
+
+etl::deque<typename T, const size_t SIZE>& 
+    operator =(etl::deque<typename T, const size_t SIZE>&& other);
+
+etl::ideque<typename T>& 
+    operator =(const etl::ideque<typename T>& other);
+
+etl::deque<typename T>& 
+    operator =(etl::deque<typename T>&& other);
+____________________________________________________________________________________________________
+Non-member functions
+
+==  true if the contents of the vectors are equal, otherwise false.
+!=  true if the contents of the vectors are not equal, otherwise false.
+<   true if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise false.
+<=  true if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise false.
+>   true if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise false.
+>=  true if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise false.
+
+

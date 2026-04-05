@@ -1,0 +1,159 @@
+intrusive_list
+
+An intrusive list.
+No STL equivalent.
+
+etl::intrusive_list<typename TValue, typename TLink>
+
+TValue is the type that contains the actual values. It is derived from Tlink. Tlink is the link type for this list. 
+See Intrusive links.
+
+Before 20.37.0 the default link type was etl::bidirectional_link<0>
+____________________________________________________________________________________________________
+Member types
+
+typedef TLink             link_type;
+typedef TValue            value_type;
+typedef value_type*       pointer;
+typedef const value_type* const_pointer;
+typedef value_type&       reference;
+typedef const value_type& const_reference;
+typedef size_t            size_type;
+____________________________________________________________________________________________________
+Constructors
+
+etl::intrusive_list<typename TValue, typename TLink>();
+____________________________________________________________________________________________________
+template <typename TIterator>
+etl::intrusive_list<typename TValue, typename TLink>(TIterator begin, TIterator end);
+____________________________________________________________________________________________________
+template <typename... TLinks>
+intrusive_list(TLink& first, TLinks&... links);
+____________________________________________________________________________________________________
+Element access
+
+TValue& front()
+const T& front() const
+Returns a reference or const reference to the first element.
+____________________________________________________________________________________________________
+TValue& back()
+const T& back() const
+Returns a reference or const reference to the last element.
+____________________________________________________________________________________________________
+Iterators
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the list.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the list.
+____________________________________________________________________________________________________
+iterator rbegin()
+const_iterator rbegin() const
+const_iterator crbegin() const
+Returns a reverse iterator to the beginning of the list.
+____________________________________________________________________________________________________
+iterator rend()
+const_iterator rend() const
+const_iterator crend() const
+Returns a reverse iterator to the end of the list.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the list is zero, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the list.
+____________________________________________________________________________________________________
+Modifiers
+
+template <typename TIterator>
+void assign(TIterator begin, TIterator end);
+Fills the list with the values.
+____________________________________________________________________________________________________
+void push_front(value_type& value);
+Pushes a value to the front of the list. 
+____________________________________________________________________________________________________
+void push_back(value_type& value);
+Pushes a value to the back of the list.
+____________________________________________________________________________________________________
+void pop_front();
+Pop a value from the front of the list.
+Emits an etl::intrusive_list_empty if the list is empty. If asserts or exceptions are disabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+void pop_back();
+Pop a value from the back of the list.
+Emits an etl::intrusive_list_empty if the list is empty. If asserts or exceptions are disabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+template <typename TIterator>
+void insert(iterator position, TIterator begin, TIterator end);
+
+iterator insert(iterator position, value_type& value);
+Inserts values in to the list.
+position is not checked for validity.
+____________________________________________________________________________________________________
+template <typename TIterator>
+iterator erase(TIterator begin, TIterator end);
+
+iterator erase(iterator position);
+Erases values in the list.
+Iterators are not checked for validity.
+____________________________________________________________________________________________________
+void clear();
+Clears the list to a size of zero. No elements are destructed.
+____________________________________________________________________________________________________
+void splice(iterator position, list_type& list);
+void splice(iterator position, list_type& list, iterator isource);
+void splice(iterator position, list_type& list, iterator begin_, iterator end_);
+Splices elements from a list into this list.
+Iterators are not checked for validity.
+____________________________________________________________________________________________________
+void merge(list_type& list);
+Merges the sorted elements of 'list' into this list. Merges are stable.
+If a debug compile and asserts or exceptions are enabled than an etl::intrusive_list_unsorted is emitted if either list is unsorted, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+template <typename TCompare>
+void merge(list_type& list, Tcompare compare);
+Merges the sorted elements of list into this list. Comparison functor is supplied in compare. Merges are stable.
+If a debug compile and asserts or exceptions are enabled than an etl::intrusive_list_unsorted is emitted if either list is unsorted, otherwise undefined behaviour occurs.
+____________________________________________________________________________________________________
+Operations
+
+void remove(const T& value);
+Removes from the container all the elements that compare equal to value.
+____________________________________________________________________________________________________
+template <typename TPredicate>
+void remove_if(TPredicate predicate);
+Removes from the container all the elements that satisfy predicate.
+____________________________________________________________________________________________________
+void unique();
+
+template <typename TPredicate>
+void unique(TPredicate predicate);
+The first version removes all but the first element from every group of consecutive elements.
+The second removes all but the first element from every group of consecutive elements that satisfy the binary predicate.
+____________________________________________________________________________________________________
+void sort();
+
+template <typename TCompare>
+void sort(TCompare compare);
+The first version sorts using the < operator.
+The second uses the supplied compare function.
+____________________________________________________________________________________________________
+void reverse();
+Reverses the order of the list.
+____________________________________________________________________________________________________
+Non-member functions
+
+==  true if the contents of the lists are equal, otherwise false.
+!=  true if the contents of the lists are not equal, otherwise false.
+<   true if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise false.
+<=  true if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise false.
+>   true if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise false.
+>=  true if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise false.
+

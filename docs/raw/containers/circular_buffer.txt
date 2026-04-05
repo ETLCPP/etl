@@ -1,0 +1,172 @@
+circular_buffer
+
+A fixed capacity circular buffer.
+STL equivalent: none
+
+etl::circular_buffer<typename T, size_t SIZE>
+etl::circular_buffer_ext<typename T>
+
+Inherits from etl::icircular_buffer<T>
+etl::icircular_buffer may be used as a size independent pointer or reference type for any etl::circular_buffer instance.
+____________________________________________________________________________________________________
+External buffer
+
+etl::circular_buffer_ext<typename T>
+For this template the constructor expects pointer and size parameters to the externally provided buffer. This buffer must not be shared concurrently with any other vector.
+When a circular with an external buffer is moved, the data is moved, not the pointer to the buffer.
+The external buffer MUST be declared one item larger that the intended capacity of the circular buffer.
+
+A swap on a circular buffer with an external buffer is fast as it will swap buffer pointers rather than copying items.
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename T, typename... Ts>
+etl::circular_buffer(T, Ts...)
+  -> etl::circular_buffer<etl::enable_if_t<(etl::is_same_v<T, Ts> && ...), T>, 1U + sizeof...(Ts)>;
+
+Example
+etl::circular_buffer data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+Defines data as an circular_buffer of int, of length 10, containing the supplied data.
+____________________________________________________________________________________________________
+Member types
+
+value_type              T
+size_type               std::size_t
+difference_type         std::ptrdiff_t
+reference               value_type&
+const_reference         const value_type&
+rvalue_reference        value_type&&
+pointer                 value_type*
+const_pointer           const value_type*
+iterator                Random access iterator
+const_iterator          Constant random access iterator
+reverse_iterator        reverse_iterator<iterator>
+const_reverse_iterator  reverse_iterator<const_iterator>
+____________________________________________________________________________________________________
+Static Constants
+
+MAX_SIZE  The maximum size of the circular_buffer.
+____________________________________________________________________________________________________
+Constructor
+
+circular_buffer<typename T, size_t SIZE>();
+
+circular_buffer<typename T, size_t SIZE>(const etl::circular_buffer<typename T, size_t SIZE>& other);
+
+circular_buffer<typename T, size_t SIZE>(etl::circular_buffer<typename T, size_t SIZE>&& other);
+____________________________________________________________________________________________________
+circular_buffer_ext(void* buffer, size_t max_size)
+
+circular_buffer_ext(size_t max_size) 20.32.1
+
+template <typename TIterator>
+circular_buffer_ext(TIterator first, const TIterator& last, void* buffer, size_t max_size)
+
+circular_buffer_ext(std::initializer_list<T> init, void* buffer, size_t max_size)
+
+circular_buffer_ext(const circular_buffer_ext& other, void* buffer, size_t max_size)
+____________________________________________________________________________________________________
+Status
+
+bool is_valid() const
+Returns true if the buffer has been set through the constructor or set_buffer.
+For circular_buffer_ext only.
+20.32.1
+____________________________________________________________________________________________________
+Element access
+
+reference operator[](size_t i)
+const_reference operator[](size_t i) const
+Returns a reference or const reference to the indexed element
+____________________________________________________________________________________________________
+reference front()
+const_reference front() const
+Returns a reference or const reference to the first element.
+____________________________________________________________________________________________________
+reference back()
+const_reference back() const
+Returns a reference or const reference to the last element.
+____________________________________________________________________________________________________
+void fill(value_type value)
+Fill the current size of the buffer with value
+20.24.0
+____________________________________________________________________________________________________
+Iterators
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the circular_buffer.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the circular_buffer.
+____________________________________________________________________________________________________
+iterator rbegin()
+const_reverse_iterator rbegin() const
+const_reverse_iterator crbegin() const
+Returns a reverse iterator to the beginning of the circular_buffer.
+____________________________________________________________________________________________________
+iterator rend()
+const_reverse_iterator rend() const
+const_reverse_iterator crend() const
+Returns a reverse iterator to the end of the circular_buffer.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the circular_buffer is zero, otherwise false.
+____________________________________________________________________________________________________
+bool full() const
+Returns true if the size of the circular_buffer is SIZE, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the circular_buffer.
+____________________________________________________________________________________________________
+size_t max_size() const
+Returns the maximum possible size of the circular_buffer.
+____________________________________________________________________________________________________
+size_t capacity() const
+Returns the maximum possible size of the circular_buffer.
+____________________________________________________________________________________________________
+size_t available() const
+Returns the remaining available capacity in the circular_buffer.
+____________________________________________________________________________________________________
+Modifiers
+
+void set_buffer(void* buffer)
+Sets the associated buffer.
+For circular_buffer_ext only.
+20.32.1
+____________________________________________________________________________________________________
+void push(const_reference value)
+void push(rvalue_reference value)
+Pushes a value to the back of the circular_buffer.
+____________________________________________________________________________________________________
+template <typename TIterator>
+void push(TIterator first, const TIterator& last)
+Pushes values to the back of the circular_buffer.
+____________________________________________________________________________________________________
+void pop()
+Pop a value from the front of the circular_buffer.
+____________________________________________________________________________________________________
+void clear()
+Clears the circular_buffer to a size of zero.
+____________________________________________________________________________________________________
+void swap(circular_buffer<T, SIZE>& other)
+Swaps the circular_buffer with other.
+
+void swap(circular_buffer_ext<T> other)
+Swaps the circular_buffer_ext with other.
+The internal pointers to the external buffers are swapped.
+____________________________________________________________________________________________________
+Non-member functions
+
+==  true if the contents of the vectors are equal, otherwise false.
+!=  true if the contents of the vectors are not equal, otherwise false.
+swap Swaps two circular buffers. A circular buffer with internal storage copies items while one with an external buffer will swap pointers.
+
+

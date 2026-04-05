@@ -1,0 +1,77 @@
+priority_queue
+
+A fixed capacity priority queue.
+STL equivalent: std::priority_queue
+
+etl::priority_queue<typename T, const size_t SIZE>
+
+Inherits from etl::ipriority_queue<T>
+etl::ipriority_queue may be used as a size independent pointer or reference type for any etl::priority_queue instance.
+____________________________________________________________________________________________________
+Member types
+
+value_type T
+size_type  std::size_t
+____________________________________________________________________________________________________
+Constructor
+
+etl::priority_queue<typename T, const size_t SIZE>();
+____________________________________________________________________________________________________
+Element access
+
+T& top()
+const T& top() const
+Returns a reference or const reference to the first element.
+Undefined behaviour if the queue is empty.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the queue is zero, otherwise false.
+____________________________________________________________________________________________________
+
+bool full() const
+Returns true if the size of the queue is SIZE, otherwise false.
+____________________________________________________________________________________________________
+
+size_t size() const
+Returns the size of the queue.
+____________________________________________________________________________________________________
+
+size_t available() const
+Returns the remaining available capacity in the queue.
+____________________________________________________________________________________________________
+
+size_t max_size() const
+Returns the maximum possible size of the queue.
+____________________________________________________________________________________________________
+
+size_t capacity() const
+Returns the maximum possible size of the queue .
+____________________________________________________________________________________________________
+Modifiers
+
+void push(const T& value);
+void push(T&& value);
+Pushes a value to the queue.
+If the queue is full then emits an etl::queue_full error. If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+C++03
+void emplace(const T1& value1);
+void emplace(const T1& value1, const T2& value2);
+void emplace(const T1& value1, const T2& value2, const T3& value3);
+void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4);
+
+C++11
+void emplace(Args&&… args);
+Constructs an item in the the queue 'in place'.
+C++03: Supports up to four constructor parameters.
+Emits an etl::queue_full if the queue is full and ETL_CHECK_PUSH_POP is defined. If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+void pop();
+Pop a value from the front of the list.
+Undefined behaviour if the queue is empty.
+____________________________________________________________________________________________________
+void clear();
+Clears the queue to a size of zero.
+

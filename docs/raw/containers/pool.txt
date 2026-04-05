@@ -1,0 +1,173 @@
+pool
+
+A fixed capacity object pool, where allocation and release are O(1) operations.
+STL equivalent: none
+
+Internally define storage
+etl::pool<typename T, size_t Size>
+etl::generic_pool<const size_t Type_Size, size_t Alignment, size_t Size>
+
+Externally define storage
+etl::pool_ext<typename T>
+etl::generic_pool_ext<size_t Type_Size, size_t Alignment>
+
+____________________________________________________________________________________________________
+etl::generic_pool Inherits from etl::ipool
+etl::pool Inherits from etl::generic_pool
+etl::ipool may be used as a size and type independent pointer or reference type for any etl::pool or etl::generic_pool instance.
+____________________________________________________________________________________________________
+ipool.h        defines etl::ipool
+generic_pool.h defines etl::generic_pool
+pool.h         defines etl::pool and includes ipool.h and ipool.h.
+
+Notes
+When using etl::generic_pool, Type_Size must be set to the size of the largest type to be stored, and Alignment set to the largest alignment of all of the types to be stored.
+This may be achieved using etl::largest.
+
+typedef etl::largest<uint8_t, uint32_t, double> largest;
+etl::generic_pool<largest::size, largest::alignment, 4> pool;
+
+When using allocate the pool does not construct or destruct anything. It merely provides access to memory that is sized and aligned to contain a T object, or any type that has a compatible alignment, in the case of etl::generic_pool. 
+It is up to the user of the pool to handle the lifetime of the object. Objects are  returned to the pool by calling release.
+
+Objects can be constructed by calling a create function which will call the objects constructor. Calling destroy will call the destructor for the object and release it back to the pool.
+
+class Data
+{
+   ...
+};
+
+etl::pool<Data, 10> data_pool;
+
+// Create.
+Data* pdata = new (data_pool.allocate<Data>()) Data();
+
+// Destroy
+pdata->~Data();
+data_pool.release(pdata);
+____________________________________________________________________________________________________
+Heterogeneous pools may be constructed by either basing the pool's type on a union, using etl::variant or etl::generic_pool.
+
+union Data
+{
+  char   text[100];
+  int    counter;
+  double ratio;
+};
+
+etl::pool<Data, 10> data_pool;
+
+char   *pc = data_pool.allocate<char>();
+int    *pi = data_pool.allocate<int>();
+double *pd = data_pool.allocate<double>();
+
+pool
+____________________________________________________________________________________________________
+Constructor
+
+pool()
+
+Constructs a pool. No elements are constructed.
+
+____________________________________________________________________________________________________
+Operations
+
+template <typename T>
+T* allocate()
+
+Allocates an item from the pool and returns a pointer to it.
+If the pool has no free items then an etl::pool_no_allocation() is emitted and a nullptr is returned.
+Note: Does not call the object's constructor.
+____________________________________________________________________________________________________
+
+void release(const void* const p_object);
+
+Releases an object back to the pool.
+If the object does not belong to the pool an etl::pool_object_not_in_pool() is emitted.
+Note: Does not call the object's destructor.
+____________________________________________________________________________________________________
+
+void release_all();
+
+Releases all objects back to the pool.
+Note: Does not destruct any T objects.
+____________________________________________________________________________________________________
+
+bool is_in_pool(const T* const p_object) const;
+
+Checks to see if an object belongs to the pool.
+Returns true if it does, otherwise false.
+____________________________________________________________________________________________________
+
+C++03
+template <typename T>
+T* create()
+
+template <typename T, typename T1>
+T* create(const T1& value1)
+
+template <typename T, typename T1, typename T2>
+T* create(const T1& value1, const T2& value2)
+
+template <typename T, typename T1, typename T2, typename T3>
+T* create(const T1& value1, const T2& value2, const T3& value3)
+
+template <typename T, typename T1, typename T2, typename T3, typename T4>
+T* create(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+
+C++11
+template <typename T, typename... Args>
+T* create(Args&&... args)
+
+There is a matching destroy function.
+template <typename T>
+void destroy(const void* const p_object)
+
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+
+Returns true if there are no allocated objects in the pool, otherwise false.
+____________________________________________________________________________________________________
+
+bool full() const
+
+Returns true if there are no free objects in the pool, otherwise false.
+____________________________________________________________________________________________________
+
+size_t available() const
+
+Returns the remaining available free objects in the pool.
+____________________________________________________________________________________________________
+
+size_t size() const
+
+Returns the number of allocated objects in the pool.
+____________________________________________________________________________________________________
+
+size_t max_size() const
+
+Returns the maximum number of objects in the pool.
+
+____________________________________________________________________________________________________
+Constants
+
+etl::pool
+TYPE_SIZE  The size of an item in the pool.
+SIZE       The maximum number of items in the pool.
+ALIGNMENT  The alignment of items in the pool.
+
+etl::generic_pool
+TYPE_SIZE  The maximum size of an item in the pool.
+SIZE       The maximum number of items in the pool.
+ALIGNMENT  The alignment of items in the pool.
+
+____________________________________________________________________________________________________
+Technical stuff
+
+The pool is based around a block of memory, with storage for Size items, properly aligned for type T.
+Each item in the pool is a union of a uintptr_t and a type T. Free items contain a pointer to the next free item. Allocated items contain a T value. Allocation is quick as all that is necessary is to return the address of the next free item. Release is also very quick as the item's content is simply replaced with the address of the current next free item.
+
+On first use the memory block is uninitialised. On each new allocation a new item is initialised with the address of the next free item. This just-in-time initialisation means that construction does not involve writing to a potentially large amount of memory in one go.
+

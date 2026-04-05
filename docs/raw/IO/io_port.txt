@@ -1,0 +1,210 @@
+io_port
+
+>= 20.39.0
+A set of templates for building interface classes to memory mapped hardware ports.
+They avoid the need to directly map carefully packed (and possibly non-portable) structures onto memory addresses.
+
+Note: A read from a write-only,  or write to a read-only port will result in a compile time error.
+
+Defines classes for the following IO types:-
+Read / Write.
+Read only.
+Write only.
+Write only with shadow register.
+
+With a shadow register, the value written is stored locally and may be read back.
+
+The port may either have an address fixed at compile time or set at runtime. The compile time versions require no extra overhead compared to a plain memory mapped structure.
+
+Ports may be sent as parameters to algorithms that expect iterators, except the runtime address version of io_port_wos, which must use the built-in iterator if the shadow value is to be correctly updated for writes.
+
+All classes define the following typedefs.
+
+T                 value_type
+volatile T*       pointer
+volatile const T* const_pointer
+volatile T&       reference
+volatile const T& const_reference
+
+Compile time port addresses
+____________________________________________________________________________________________________
+io_port_rw
+Read/write port.
+io_port_rw<typename T, uintptr_t Address>
+____________________________________________________________________________________________________
+iterator
+const_iterator
+____________________________________________________________________________________________________
+operator T() const
+Read the value. Conversion operator to T.
+____________________________________________________________________________________________________
+iterator iter()
+Get an iterator to this port.
+___________________________________________________________________________________________________
+const_iterator iter() const
+const_iterator citer() const
+Get a const_iterator to this port.
+____________________________________________________________________________________________________
+T read() const
+Read the value.
+____________________________________________________________________________________________________
+void write(T value)
+Write the value.
+____________________________________________________________________________________________________
+io_port_rw& operator =(T value)
+Write the value.
+___________________________________________________________________________________________________
+pointer get_address()
+const_pointer get_address() const
+Gets the address of the port.
+___________________________________________________________________________________________________
+io_port_rw& operator |=(value_type value)
+Or-Equals operator.
+___________________________________________________________________________________________________
+io_port_rw& operator &=(value_type value)
+And-Equals operator.
+___________________________________________________________________________________________________
+io_port_rw& operator ^=(value_type value)
+Exclusive-Or-Equals operator.
+___________________________________________________________________________________________________
+io_port_rw& operator <<=(int shift)
+Left-Shift-Equals operator.
+___________________________________________________________________________________________________
+io_port_rw& operator >>=(int shift)
+Right-Shift-Equals operator.
+___________________________________________________________________________________________________
+value_type operator ~() const
+Not operator.
+____________________________________________________________________________________________________
+io_port_ro
+Read only port.
+io_port_ro<typename T, uintptr_t Address>
+____________________________________________________________________________________________________
+const_iterator
+____________________________________________________________________________________________________
+operator T() const
+Read the value. Conversion operator to T.
+___________________________________________________________________________________________________
+const_iterator iter() const
+const_iterator citer() const
+Get a const_iterator to this port.
+____________________________________________________________________________________________________
+T read() const
+Read the value.
+___________________________________________________________________________________________________
+const_pointer get_address() const
+Gets the address of the port.
+____________________________________________________________________________________________________
+io_port_wo
+Write only port.
+io_port_wo<typename T, uintptr_t Address>
+____________________________________________________________________________________________________
+iterator
+____________________________________________________________________________________________________
+iterator iter()
+Get an iterator to this port.
+____________________________________________________________________________________________________
+void write(T value)
+Write the value.
+____________________________________________________________________________________________________
+io_port_wo& operator =(T value)
+Write the value.
+___________________________________________________________________________________________________
+pointer get_address()
+Gets the address of the port.
+____________________________________________________________________________________________________
+io_port_wos
+Write only port, with shadow register for reading.
+io_port_wos<typename T, uintptr_t Address>
+____________________________________________________________________________________________________
+iterator
+const_iterator
+____________________________________________________________________________________________________
+operator T() const
+Read the value. Conversion operator to T.
+____________________________________________________________________________________________________
+iterator iter()
+Get an iterator to this port.
+___________________________________________________________________________________________________
+const_iterator iter() const
+const_iterator citer() const
+Get a const_iterator to this port.
+____________________________________________________________________________________________________
+T read() const
+Read the value.
+____________________________________________________________________________________________________
+void write(T value)
+Write the value.
+____________________________________________________________________________________________________
+io_port_rw& operator =(T value)
+Write the value.
+___________________________________________________________________________________________________
+pointer get_address()
+const_pointer get_address() const
+Gets the address of the port.
+___________________________________________________________________________________________________
+io_port_rw& operator |=(value_type value)
+Or-Equals operator.
+___________________________________________________________________________________________________
+io_port_rw& operator &=(value_type value)
+And-Equals operator.
+___________________________________________________________________________________________________
+io_port_rw& operator ^=(value_type value)
+Exclusive-Or-Equals operator.
+___________________________________________________________________________________________________
+io_port_rw& operator <<=(int shift)
+Left-Shift-Equals operator.
+___________________________________________________________________________________________________
+io_port_rw& operator >>=(int shift)
+Right-Shift-Equals operator.
+___________________________________________________________________________________________________
+value_type operator ~() const
+Not operator.
+____________________________________________________________________________________________________
+Example serial port
+
+The example uses a port at a compile time address.
+
+rxdata  is an 8 bit read only port.
+txdata  is an 8 bit write only port.
+control is a 16 bit write only port, with shadow register.
+status  is a 16 bit read only port. It shares an address with control.
+option  is an 8 bit read/write port.
+
+template <uintptr_t Address>
+struct serial_port
+{
+  etl::io_port_ro<char,      Address>     rxdata;  // Read only rx data register.
+  etl::io_port_wo<char,      Address + 1> txdata;  // Write only tx register.
+  etl::io_port_wos<uint16_t, Address + 2> control; // Write only, with shadow, control register.
+  etl::io_port_ro<uint16_t,  Address + 2> status;  // Read only status register.
+  etl::io_port_ro<char,      Address>     option;  // Read/Write register.
+};
+
+serial_port<0x800> port; // A serial port at address 0x800
+
+// Read Rx data
+char data   = port.rxdata;
+
+// Write Tx data
+port.txdata = 'A';
+
+// Compile error! txdata is write only.
+data = port.txdata;
+
+// Write to the control register and read back what we wrote.
+port.control = 0x1234;
+uint16_t control = port.control;
+
+// Flip bit 3 of the control register.
+port.control ^= 0x0080;
+
+// Read from the status register.
+uint16_t status = port.status;
+
+// Copy data from a buffer to the Tx data port.
+std::copy(txBuffer.begin(), txBuffer.end(), serial_port.txdata.iter());
+
+// Copy data from the Rx data port to a buffer.
+std::copy_n(serial_port.rxdata, serial_port.status, std::back_inserter(rxBuffer)); 
+

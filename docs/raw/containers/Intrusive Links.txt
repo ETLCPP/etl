@@ -1,0 +1,279 @@
+Intrusive Links
+
+A set of link structures designed to be used within containers such as etl::intrusive_list.
+They are parameterised by an id that allows them to be multiply inherited from when creating objects that must exist in more than one intrusive container.
+
+There are link and unlink functions supplied to manage connections between links. The functions will accept any permutation of pointer and reference parameters, though reference parameters offer the best performance. 
+For bidirectional links, unlinking a node will automatically adjust the links of the surrounding nodes at the same level.
+____________________________________________________________________________________________________
+Forward link
+template <size_t ID_>
+struct forward_link
+____________________________________________________________________________________________________
+Template parameters
+const size_t ID_ A unique id for this link level.
+____________________________________________________________________________________________________
+Public constants
+enum ID The unique id for this link level.
+____________________________________________________________________________________________________
+Public variables
+forward_link<ID>* etl_next A pointer to the next forward link at this level.
+____________________________________________________________________________________________________
+Public functions
+clear() Clears the pointers to nullptr.
+____________________________________________________________________________________________________
+Link functions
+
+template <typename TLink>
+struct is_forward_link
+
+template <typename TLink>
+inline constexpr bool is_forward_link_v;
+C++17
+
+// link
+template <typename TLink>
+void link(TLink& lhs, TLink& rhs)
+  
+template <typename TLink>
+void link(TLink* lhs, TLink* rhs)
+
+template <typename TLink>
+void link(TLink& lhs, TLink* rhs)
+
+template <typename TLink>
+void link(TLink* lhs, TLink& rhs)
+
+  // link_splice
+template <typename TLink>
+void link_splice(TLink& lhs, TLink& rhs)
+
+template <typename TLink>
+void link_splice(TLink* lhs, TLink* rhs)
+
+template <typename TLink>
+void link_splice(TLink& lhs, TLink* rhs)
+
+template <typename TLink>
+void link_splice(TLink* lhs, TLink& rhs)
+
+template <typename TLink>
+void link_splice(TLink& lhs, TLink& first, TLink& last)
+
+template <typename TLink>
+void link_splice(TLink* lhs, TLink& first, TLink& last)
+
+// unlink_after
+template <typename TLink>
+TLink* unlink_after(TLink& node)
+
+template <typename TLink>
+TLink* unlink_after(TLink& before, TLink& last)
+
+// is_linked
+template <typename TLink>
+bool is_linked(TLink& node)
+
+template <typename TLink>
+bool is_linked(TLink* node)
+
+// link_clear
+template <typename TLink>
+void link_clear(TLink& start)
+
+template <typename TLink>
+void link_clear(TLink* start)
+
+// link_clear_range
+template <typename TLink>
+void link_clear_range(TLink& start)
+
+template <typename TLink>
+void link_clear_range(TLink* start)
+
+// create_linked_list
+template <typename TLink, typename... TLinks>
+TLink* create_linked_list(TLink& first, TLinks&... links)
+Create a linked list from a number of forward_link nodes.
+
+// detach_linked_list
+template <typename TLink>
+void detach_linked_list(TLink& first)
+
+template <typename TLink>
+void detach_linked_list(TLink* first)
+____________________________________________________________________________________________________
+Link test
+20.37.0
+template <typename T>
+etl::is_forward_link
+Tests if type T is an etl::is_forward_link
+
+template <typename T>
+etl::is_forward_link_v
+From C++17
+____________________________________________________________________________________________________
+Bidirectional link
+template <const size_t ID_>
+struct bidirectional_link
+____________________________________________________________________________________________________
+Template parameters
+const size_t ID_ A unique id for this link level.
+____________________________________________________________________________________________________
+Public constants
+enum ID     The unique id for this link level.
+____________________________________________________________________________________________________
+Public variables
+bidirectional_link<ID>* etl_previous A pointer to the previous bidirectional link at this level.
+bidirectional_link<ID>* etl_next     A pointer to the next bidirectional link at this level.
+____________________________________________________________________________________________________
+Public functions
+clear()  Clears the pointers to nullptr.
+reverse()Reverses the links.
+____________________________________________________________________________________________________
+Link functions
+void etl::link<type>(lhs, rhs)
+Link lhs to rhs.
+
+void etl::link_splice<type>(lhs, rhs) 
+Link lhs to rhs and rhs to what lhs pointed to. If lhs is not nullptr then it must be initialised.
+
+void etl::link_splice<type>(lhs, first, last)
+Link lhs to the range first, last and last to what lhs pointed to. If lhs is not nullptr then it must be initialised.
+
+void etl::unlink(node)                 
+Unlink the specified node. Elements either side are joined.
+
+void etl::unlink(first, last)
+Unlinks the range of nodes from first to last inclusive. 
+The range first/last remain linked to each other.
+____________________________________________________________________________________________________
+Link test
+20.37.0
+template <typename T>
+etl::is_bidirectional_link
+Tests if type T is an etl::is_bidirectional_link
+
+template <typename T>
+etl::is_bidirectional_link_v
+From C++17
+____________________________________________________________________________________________________
+Tree link
+template <const size_t ID_>
+struct tree_link
+____________________________________________________________________________________________________
+Template parameters
+const size_t ID_ A unique id for this link level.
+____________________________________________________________________________________________________
+Public constants
+enum ID The unique id for this link level.
+____________________________________________________________________________________________________
+Public variables
+tree_link<ID>* etl_parent A pointer to the parent tree link at this level.
+tree_link<ID>* etl_left   A pointer to the left tree link at this level.
+tree_link<ID>* etl_right  A pointer to the right tree link at this level.
+____________________________________________________________________________________________________
+Public functions
+clear() Clears the pointers to nullptr.
+____________________________________________________________________________________________________
+Link functions
+void etl::link_left<type>(parent, leaf)  Links leaf to the left of parent.
+void etl::link_right<type>(parent, leaf) Links leaf to the right of parent.
+
+void etl::link_rotate_left<type>(parent, leaf)  Rotates the link left making leaf the new parent.
+void etl::link_rotate_right<type>(parent, leaf) Rotates the link right making leaf the new parent.
+
+void etl::link_rotate<type>(parent, leaf) Rotates the link left or right making leaf the new parent.
+                                          Chooses left or right rotate depending on the leaf connection.
+____________________________________________________________________________________________________
+Link test
+20.37.0
+template <typename T>
+etl::is_tree_link
+Tests if type T is an etl::is_tree_link
+
+template <typename T>
+etl::is_tree_link_v
+From C++17
+____________________________________________________________________________________________________
+Example 1
+A simple two level intrusive list.
+
+// The link levels
+typedef etl::bidirectional_link<0> level0_t;
+typedef etl::bidirectional_link<1> level1_t;
+
+constexpr bool is_bdl = etl::is_bidirectional_link_v<level0_t>;
+
+// The item stored in the lists
+struct item : public level0_t, public level1_t
+{
+  item(int value)
+    :: value(value)
+  {
+  }
+
+  int value;
+};
+
+item data0(0);
+item data1(1);
+item data2(2);
+item data3(3);
+
+etl::intrusive_list<item, level0_t> level0_list;
+etl::intrusive_list<item, level1_t> level1_list;
+
+// Add items to level0 list
+level0_list.push_back(data0);
+level0_list.push_back(data1);
+level0_list.push_back(data2);
+
+// Add items to level1 list
+level1_list.push_back(data3);
+level1_list.push_back(data2);
+level1_list.push_back(data1);
+____________________________________________________________________________________________________
+Example 2
+Manual list manipulation.
+
+typedef etl::bidirectional_link<0> level0_t;
+typedef etl::bidirectional_link<1> level1_t;
+
+// The item stored in the lists
+struct item : public level0_t, public level1_t
+{
+  item(int value)
+    :: value(value)
+  {
+  }
+
+  int value;
+};
+
+item data0(0);
+item data1(1);
+item data2(2);
+item data3(3);
+
+// Set the first and last nodes links to nullptr.
+data0.level0_t::clear();
+data3.level0_t::clear();
+
+// Make the links.
+etl::link<level0_t>(data0, data1);
+etl::link<level0_t>(data1, data2);
+etl::link<level0_t>(data2, data3); // Level 0 = data0, data1, data2, data3
+
+// Set the first and last nodes links to nullptr.
+data2.level1_t::clear();
+data1.level1_t::clear();
+
+// Make the links.
+etl::link<level1_t>(data2, data3);
+etl::link<level1_t>(data3, data0);
+etl::link<level1_t>(data0, data1); // Level 1 = data2, data3, data0, data1
+
+// Disconnect a node.
+etl::unlink<level1_t>(data3); // Level 1 = data2, data0, data1
+TLink*TLink*

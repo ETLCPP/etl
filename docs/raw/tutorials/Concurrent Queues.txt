@@ -1,0 +1,25 @@
+Concurrent Queues
+The ETL defines a selection of concurrent queue types to be used in interrupt driven or multi-threaded applications.
+The queues may be either Single Producer / Single Consumer (SPSC) or Multi Producer / Multi Consumer (MPMC)
+
+The queues use different methods to protect access to the queue. You must select one that matches your platform and requirements.
+
+The queues have a slightly different API from the standard etl::queue. The push and pop member functions return a boolean flag to indicate if the required operation was successful. This allows the calling function to either defer a retry to a later time, or block until successful.
+
+There are currently three concurrent queues defined.
+
+queue_spsc_isr
+queue_spsc_isr
+This queue is designed to be used in an interrupt driven context, where one end of the queue is driven from an interrupt and the other from the main application loop. The direction of the queue to/from the interrupt is not important, but only one end must be interrupt driven.
+
+The queue expects a type to be supplied that defines static void lock() and void unlock() functions. These must disable and re-enable the relevant interrupt. They must also affect a memory barrier to ensure that the calls are not re-sequenced by the compiler or processor.
+
+queue_spsc_atomic
+queue_spsc_atomic
+This queue uses atomic integral counters internally to enable a lock-free queue to be defined. The ability to use this queue is dependent on whether your compiler supports atomic operations. If your compiler supports C++11 or above or you are using GCC with support for __sync built-ins then the answer is yes.
+
+queue_mpmc_mutex
+queue_mpmc_mutex
+This queue uses a user supplied mutex type to enable access. By using a mutex the queue may be multi producer / multi consumer. Users of C++11 or above may use std::mutex.
+
+

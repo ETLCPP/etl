@@ -1,0 +1,17 @@
+tuple
+
+C++11 and above
+A fixed-size collection of heterogeneous values.
+STL equivalent: std::tuple
+
+std::tuple
+____________________________________________________________________________________________________
+template <typename T>
+struct is_tuple
+Defined as etl::true_type if T is an etl::tuple, otherwise etl::false_type.
+____________________________________________________________________________________________________
+Constructor
+
+etl::tuplestack<typename... TTypes>();
+
+

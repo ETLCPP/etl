@@ -1,0 +1,234 @@
+flat_set
+flat_multiset
+
+A fixed capacity set based on a sorted vector.
+The container is an associative lookup table with O(N) insertion and erase, and O(log N) search.
+This container is best used for tables that are occasionally updated and spend most of their time being searched.
+The interface is most similar to std::set.
+Uses std::less as the default key comparison method.
+
+etl::flat_set<typename T, const size_t SIZE, TCompare = etl::less>
+
+Inherits from etl::iflat_set<T, TCompare>
+etl::iflat_set may be used as a size independent pointer or reference type for any etl::flat_set instance..
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+template <typename... T>
+etl::flat_set(T...)
+
+Example
+etl::flat_set data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+Defines data as an flat_set of int, of length 10, containing the supplied data.
+____________________________________________________________________________________________________
+Make template
+C++11 and above
+template <typename TKey, 
+          typename TKeyCompare = etl::less<TKey>, 
+          typename... TPairs>
+constexpr auto make_flat_set(TValues&&... values)
+
+Example
+auto data = etl::make_flat_set<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+____________________________________________________________________________________________________
+Member types
+
+key_type                T
+value_type              T
+size_type               std::size_t
+difference_type         std::ptrdiff_t
+reference               T&
+const_reference         const T&
+rvalue_reference        T&&
+pointer                 T*
+const_pointer           const T*
+iterator                Random access iterator
+const_iterator          Constant random access iterator
+reverse_iterator        reverse_iterator<iterator>
+const_reverse_iterator  reverse_iterator<const_iterator>
+
+____________________________________________________________________________________________________
+Static Constants
+
+MAX_SIZE  The maximum size of the flat set.
+____________________________________________________________________________________________________
+Constructor
+
+etl::flat_set<T, SIZE, TCompare>();
+
+etl::flat_set(const flat_set& other)
+etl::flat_set(flat_set&&)
+
+template <typename TIterator>
+etl::flat_set<T, SIZE, TCompare>(TIterator begin, TIterator end);
+____________________________________________________________________________________________________
+Iterators
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Returns an iterator to the beginning of the set.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Returns an iterator to the end of the set.
+____________________________________________________________________________________________________
+iterator rbegin()
+const_iterator rbegin() const
+const_iterator crbegin() const
+Returns a reverse iterator to the beginning of the set.
+____________________________________________________________________________________________________
+iterator rend()
+const_iterator rend() const
+const_iterator crend() const
+Returns a reverse iterator to the end of the set.
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+Returns true if the size of the set is zero, otherwise false.
+____________________________________________________________________________________________________
+bool full() const
+Returns true if the size of the lookup is SIZE, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the lookup.
+____________________________________________________________________________________________________
+size_t max_size() const
+Returns the maximum possible size of the set.
+____________________________________________________________________________________________________
+size_t available() const
+Returns the remaining available capacity in the set.
+____________________________________________________________________________________________________
+Modifiers
+
+flat_set& operator = (const flat_set& rhs)
+flat_set& operator = (flat_set&& rhs)
+Copies or moves the data from another flat set.
+____________________________________________________________________________________________________
+pair<iterator, bool> insert(const_reference value)
+iterator insert(iterator position, const_reference value)
+pair<iterator, bool> insert(rvalue_reference value)
+iterator insert(iterator position, rvalue_reference  value)
+
+template <typename TIterator>
+void insert(TIterator first, TIterator last)
+Inserts values in to the set. 
+If the set is full then emits an etl::flat_set_full. If asserts or exceptions are not enabled then undefined behaviour occurs.
+____________________________________________________________________________________________________
+pair<iterator, bool> emplace(parameter_t value)
+Inserts a value into the map by constructing directly into storage.
+____________________________________________________________________________________________________
+C++03
+template <typename T1>
+pair<iterator, bool> emplace(const T1& value1)
+
+template <typename T1, typename T2>
+pair<iterator, bool> emplace(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+Inserts values into the map by constructing directly into storage. The value is constructed from the set of 'value' parameters.
+
+C++11
+template <typename ... Args>
+pair<iterator, bool> emplace(Args && ... args)
+____________________________________________________________________________________________________
+size_t erase(parameter_t key)
+void erase(iterator i_element)
+void erase(iterator first, iterator last)
+
+>=20.20.0
+iterator erase(iterator i_element)
+iterator erase(const_iterator i_element)
+iterator erase(const_iterator first, const_iterator last)
+
+20.21.0
+template <typename K>
+size_t erase(K&& key)
+Erases values in the set.
+Iterator parameters are not checked for validity.
+____________________________________________________________________________________________________
+void clear();
+Clears the lookup to a size of zero.
+____________________________________________________________________________________________________
+Search
+
+iterator find(parameter_t key)
+const_iterator find(parameter_t key) const
+
+iterator lower_bound(parameter_t key)
+const_iterator lower_bound(parameter_t key) const
+
+iterator upper_bound(parameter_t key)
+const_iterator upper_bound(parameter_t key) const
+
+pair<iterator, iterator> equal_range(parameter_t key)
+pair<const_iterator, const_iterator> equal_range(parameter_t key) const
+____________________________________________________________________________________________________20.21.0
+C++11 or above
+For comparators that define is_transparent.
+
+template <typename K>
+iterator find(const K& key)
+
+template <typename K>
+const_iterator find(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+iterator lower_bound(const K& key)
+
+template <typename K>
+const_iterator lower_bound(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+iterator upper_bound(const K& key)
+
+template <typename K>
+const_iterator upper_bound(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+C++11 or above
+template <typename K>
+pair<iterator, iterator> equal_range(const K& key)
+
+template <typename K>
+pair<const_iterator, const_iterator> equal_range(const K& key) const
+____________________________________________________________________________________________________
+20.21.0
+bool contains(key_value_parameter_t  key) const
+Check if the container contains the key.
+
+20.21.0
+C++11 or above
+For comparators that define is_transparent.
+template <typename K>
+bool contains(const K& k) const
+Check if the container contains the key.
+____________________________________________________________________________________________________
+Non-member functions
+
+Lexicographically comparisons
+
+==  true if the contents of the sets are equal, otherwise false.
+!=  true if the contents of the sets are not equal, otherwise false.
+____________________________________________________________________________________________________
+How it works
+
+Flat sets are usually implemented internally as a sorted vector of values. Whilst this makes searching fast, it can have a detrimental effect when items are inserted into a container that stores complex, non-trivial values. 
+As Inserting requires that all of the items above the insert position must be shifted, this can become an expensive operation for larger containers.
+
+To improve insertion performance ETL flat sets are implemented as vectors of pointers to values, sorted by value. An insertion will involve a copy of a range of pointers; an operation that can be made very fast.
+
+The downside is that access to an item via an iterator will involve one indirection and the overhead of the container will be one pointer per item. A normal flat set implementation does not have this overhead.
+static 

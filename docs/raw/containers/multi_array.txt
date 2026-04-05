@@ -1,0 +1,27 @@
+multi_array
+
+A fixed capacity multi-dimensional array.
+STL equivalent: None
+
+For C++11 or greater only.
+
+etl::multi_array<typename T, const size_t Dx...>
+
+See also
+array
+____________________________________________________________________________________________________
+Description
+
+The etl::multi_array class is defined as a recursive variadic template.
+It defines a multi-dimensional array class based on nested etl::array definitions.
+
+Example
+
+etl::multi_array<int, 2, 3, 4>
+
+is equivalent to
+
+etl::array<etl::array<etl::array<int, 4>, 3>, 2>
+
+Each dimension of an etl::multi_array supports all of the members of an etl::array.
+

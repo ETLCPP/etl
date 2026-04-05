@@ -1,0 +1,71 @@
+Enabling compiler built-ins
+20.24.0
+
+Many of the features or options in the ETL can be enhanced by the use of compiler built-ins.
+If built-ins are available and the STL is not used, then many copy type algorithms may be declared as constexpr. 
+Also, some type traits can detect types more correctly.
+____________________________________________________________________________________________________
+Controlling Macros
+If any of these are set to 1, then the ETL will use the compiler built-ins, were applicable.
+Setting them to 0 will disable the use of the built-in.
+Setting any of these in the project or etl_profile.h will override any later tests.
+
+ETL_USE_BUILTIN_MEMCPY
+ETL_USE_BUILTIN_MEMCMP
+ETL_USE_BUILTIN_MEMMOVE
+ETL_USE_BUILTIN_MEMSET
+
+ETL_USE_BUILTIN_IS_ASSIGNABLE
+ETL_USE_BUILTIN_IS_CONSTRUCTIBLE
+ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE
+ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE
+ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE
+____________________________________________________________________________________________________
+Defining macros
+The use of built-ins can be controlled by macros.
+
+If ETL_USING_MEM_BUILTINS is defined and the corresponding macro has not already been set, then following
+will be set to 1.
+ETL_USE_BUILTIN_MEMCPY
+ETL_USE_BUILTIN_MEMCMP
+ETL_USE_BUILTIN_MEMMOVE
+ETL_USE_BUILTIN_MEMSET
+
+If ETL_USING_TYPE_TRAITS_BUILTINS is defined and the corresponding macro has not already been set, then following
+will be set to 1.
+ETL_USE_BUILTIN_IS_ASSIGNABLE
+ETL_USE_BUILTIN_IS_CONSTRUCTIBLE
+ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE
+ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE
+ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE
+____________________________________________________________________________________________________
+Detection of built-ins
+These tests occur after the above macro tests.
+The ETL will attempt to check the availability of compiler built-ins.
+
+If __has_builtin exists, then the existence of the following built-ins are checked. 
+If not already defined, the corresponding macro is set according to the result.
+____________________________________________________________________________________________________
+Sets ETL_USE_BUILTIN_MEMCPY = 1 if __builtin_memcmp exists, otherwise 0.
+
+Sets ETL_USE_BUILTIN_MEMCPY = 1 if __builtin_memcpy exists, otherwise 0.
+
+Sets ETL_USE_BUILTIN_MEMMOVE = 1 if __builtin_memmove exists, otherwise 0.
+
+Sets ETL_USE_BUILTIN_MEMSET = 1 if __builtin_memset exists, otherwise 0.
+
+Sets ETL_USE_BUILTIN_IS_ASSIGNABLE = 1 if __is_assignable exists, otherwise 0.
+
+Sets ETL_USE_BUILTIN_IS_CONSTRUCTIBLE = 1 if __is_constructible exists, otherwise 0.
+
+Sets ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE = 1 if __has_trivial_constructor or __is_trivially_constructible exists, otherwise 0.
+
+Sets ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE = 1 if __has_trivial_destructor 
+or __is_trivially_destructible exists, otherwise 0.
+
+Sets ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE = 1 if __has_trivial_copy 
+or __is_trivially_copyable exists, otherwise 0.
+____________________________________________________________________________________________________
+Default
+Finally, any macro that has so far not been defined will be defined as 0.
+

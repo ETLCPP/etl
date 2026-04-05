@@ -1,0 +1,145 @@
+queue_mpmc_mutex
+
+A fixed capacity multi-producer, multi-consumer queue for multi-threaded systems that uses etl::mutex to control access.
+
+etl::queue_mpmc_mutex<typename T, 
+                      const size_t SIZE, 
+                      const size_t MEMORY_MODEL = etl::memory_model::MEMORY_MODEL_LARGE>
+
+Inherits from etl::iqueue_mpmc_mutex<T>
+etl::iqueue_mpmc_mutex may be used as a size independent pointer or reference type for any etl::queue_mpmc_mutex instance of the same implementation.
+
+The memory model determines the type used internally for indexes and size, to allow for the most efficient implementation for the application.
+
+Maximum queue sizes:
+MEMORY_MODEL_SMALL   255
+MEMORY_MODEL_MEDIUM  65535
+MEMORY_MODEL_LARGE   2147483647
+MEMORY_MODEL_HUGE    9223372036854775807
+
+See memory_model.h
+
+____________________________________________________________________________________________________
+Member types
+
+value_type      T
+size_type       <based on memory model>
+pointer         value_type*
+const_pointer   const value_type*
+reference       value_type&
+const_reference const value_type&
+
+____________________________________________________________________________________________________
+Constructor
+
+queue_mpmc_mutex();
+
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+
+Returns true if the size of the queue is zero, otherwise false.
+____________________________________________________________________________________________________
+
+bool full() const
+
+Returns true if the size of the queue is SIZE, otherwise false.
+____________________________________________________________________________________________________
+
+size_t size() const
+
+Returns the size of the queue.
+____________________________________________________________________________________________________
+
+size_t available() const
+size_t available_from_isr() const
+
+Returns the remaining available capacity in the queue.
+____________________________________________________________________________________________________
+
+ETL_CONSTEXPR size_t max_size() const
+
+Returns the maximum possible size of the queue.
+____________________________________________________________________________________________________
+
+ETL_CONSTEXPR size_t capacity() const
+
+Returns the maximum possible size of the queue.
+
+____________________________________________________________________________________________________
+Modifiers
+bool push(const T& value);
+bool push(T&& value);
+
+Pushes a value to the back of the queue. 
+Returns true if successful, otherwise false.
+____________________________________________________________________________________________________
+
+bool pop();
+
+Pop a value from the front of the list.
+Returns true if successful, otherwise false.
+____________________________________________________________________________________________________
+
+bool pop(T& value);
+bool pop(T&& value);
+
+Pop a value from the front of the list and place it in value.
+Returns true if successful, otherwise false.
+____________________________________________________________________________________________________
+
+void clear();
+
+Clears the queue to a size of zero
+____________________________________________________________________________________________________
+
+C++03
+bool emplace(const T1& value1);
+bool emplace(const T1& value1, const T2& value2);
+bool emplace(const T1& value1, const T2& value2, const T3& value3);
+bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4);
+
+C++11
+bool emplace(Args&&… args);
+
+Constructs an item in the the queue 'in place'.
+C++03: Supports up to four constructor parameters.
+
+____________________________________________________________________________________________________
+Notes
+
+Remember that thread context switches may occur between calls to the access protected functions. For example, a call to empty() may return true, but a subsequent call to pop() may succeed if a context switch occurred between the two and pushed a new value.
+
+____________________________________________________________________________________________________
+Example
+
+etl::queue_mpmc_mutex<char, 10> queue;
+
+int main()
+{
+  while (true)
+  {
+    char c;
+
+    if (queue.pop(c))
+    {
+      Print(c);
+    }
+  }
+}
+
+void FunctionInThread1(char c)
+{
+  while (!queue.push(c))
+  {
+  }
+}
+
+void FunctionInThread2(char c)
+{
+  while (!queue.push(c))
+  {
+  }
+}
+

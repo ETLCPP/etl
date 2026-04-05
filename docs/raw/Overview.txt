@@ -1,0 +1,52 @@
+Overview
+The contents of template class library can be classified in to one of five areas.
+
+Containers
+A set of containers that have their capacity fixed at compile time. The APIs are designed to match those in the STL as closely as possible whilst also including extensions applicable to their fixed size nature. Some are equivalents of STL containers; others have no standard equivalent. Due to the underlying storage architecture the containers are extremely cache friendly.
+
+Patterns
+A set of templates that supply the basic framework for implementing popular design patterns. Template techniques are used to ensure that implementation mistakes are usually caught at compile time.
+
+Maths
+A set of mathematical templates; both compile time constants and algorithms such as hash codes and CRCs.
+
+Utilities
+A catch-all for all other template classes. Some of these are reverse engineered from the C++ 11 standard; others being generally useful utilities.
+
+Frameworks
+A set of templates that present the framework code for functionality such as state machines, message routers etc.
+
+Generators
+Some files in the library are created from a 'generator' header using Python and COG. This is to accommodate handling of unknown numbers of types. The default number is often set at 16. If you wish to handle more types than this then the generator scripts must be rerun with the updated sizes.
+See Generators for more information on how this is done.
+
+Error handling
+Finding errors within an embedded system can be difficult due to the performance and space restrictions imposed upon the platform. The library allows a variety of methods to catch errors, allowing the performance and space overheads to be chosen according to the situation and requirements. See error_handler
+
+Macros
+Optional features in the ETL are controlled by project wide macro definitions.
+See Macros
+
+Unit tests
+The library is supplied with a full set of unit tests, with project files for Visual Studio 2017 and Code::Blocks with GCC (Windows & Linux configurations are included). There are currently over 3300 tests.
+
+The library is also automatically built online using AppVeyor.
+
+There are also Keil, MDK5 and IAR projects. These are not unit tests; they are merely there to test that the code compiles without errors under these compilers.
+
+There are examples for Arduino provided.
+
+Why use ETL containers?
+You may be thinking "Why should I use ETL containers over what the STL or Boost has to offer?".
+
+STL
+By default STL containers allocate their storage from the heap. This can often be a issue for embedded projects with limited RAM. Alternatively, the STL containers allow an allocator class to be provided as a template parameter. These will be used in place of the standard heap based allocators. There are a couple of issues with this technique that make it awkward to implement and use. 
+
+The easiest way to implement a fixed allocation custom allocator is to have the it contain the fixed storage. I have found issues with this technique in the past. One is that allocators should be normally be equivalent (one instance of an allocator should be able to release the memory allocated by another) and should not have state. To implement fixed capacity allocators in this way makes the use of fixed capacity containers very awkward.
+
+Boost
+The Boost library is an amazing collection of very useful and innovative classes, but its usefulness for embedded work is debatable. Many classes in Boost will use heap memory 'under the hood'.
+
+ETL
+The ETL containers have a fixed maximum size. This allows the memory requirements for the application to be known at compile time. Also, as the storage for ETL containers is contiguous, there is no possibility of memory fragmentation. This ensures deterministic performance for all containers.
+

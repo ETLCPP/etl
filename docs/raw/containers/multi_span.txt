@@ -1,0 +1,99 @@
+multi_span
+
+This class implements a span of a range of spans.
+Allows implementation of Scatter/Gather to multiple buffers or ports.
+Iterating through the multi_span will iterate through the collection of spans consecutively.
+The list of spans must be in a contiguous list, such as an array or vector.
+
+etl::multi_span<typename T>
+Where T is the element type of the spans.
+____________________________________________________________________________________________________
+Member types
+
+element_type            T
+value_type              remove_cv<T>::type
+size_type               size_t
+difference_type         ptrdiff_t
+reference               value_type&
+const_reference         const value_type&
+pointer                 value_type*
+const_pointer           const value_type*
+iterator                Forward iterator <20.39.5 
+                        Bidirectional iterator >=20.39.5
+const_iterator          Constant Forward iterator <20.39.5 
+                        Constant bidirectional iterator >=20.39.5
+reverse_iterator        ETL_OR_STD::reverse_iterator<iterator> 
+const_reverse_iterator  ETL_OR_STD::reverse_iterator<const_iterator>
+
+span_type               etl::span<T>
+span_list_type          etl::span<const span_type>
+____________________________________________________________________________________________________
+Constructors
+
+ETL_CONSTEXPR multi_span(span_list_type span_list)
+____________________________________________________________________________________________________
+template <typename TContainer>
+ETL_CONSTEXPR multi_span(TContainer& a) ETL_NOEXCEPT
+____________________________________________________________________________________________________
+template <typename TContainer>
+ETL_CONSTEXPR multi_span(const TContainer& a) ETL_NOEXCEPT
+____________________________________________________________________________________________________
+template <typename TIterator>
+ETL_CONSTEXPR multi_span(TIterator begin, TIterator end)
+____________________________________________________________________________________________________
+template <typename TIterator>
+ETL_CONSTEXPR multi_span(TIterator begin, size_t length)
+____________________________________________________________________________________________________
+ETL_CONSTEXPR multi_span(const multi_span& other)
+____________________________________________________________________________________________________
+Access
+
+ETL_CONSTEXPR14 multi_span& operator =(const multi_span& other) ETL_NOEXCEPT
+Assign from a other multi_span
+____________________________________________________________________________________________________
+Iterators
+
+ETL_CONSTEXPR iterator begin() const ETL_NOEXCEPT
+Returns an iterator to the beginning of the span.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR iterator end() const ETL_NOEXCEPT
+Returns an iterator to the end of the span.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR iterator cbegin() const ETL_NOEXCEPT
+Returns a const iterator to the beginning of the span.
+20.39.5
+____________________________________________________________________________________________________
+ETL_CONSTEXPR iterator cend() const ETL_NOEXCEPT
+Returns a const iterator to the end of the span.
+20.39.5
+____________________________________________________________________________________________________
+ETL_CONSTEXPR iterator rbegin() const ETL_NOEXCEPT
+Returns a reverse iterator to the beginning of the span.
+20.39.5
+____________________________________________________________________________________________________
+ETL_CONSTEXPR iterator rend() const ETL_NOEXCEPT
+Returns a reverse  iterator to the end of the span.
+20.39.5
+____________________________________________________________________________________________________
+ETL_CONSTEXPR iterator crbegin() const ETL_NOEXCEPT
+Returns a const reverse iterator to the beginning of the span.
+20.39.5
+____________________________________________________________________________________________________
+ETL_CONSTEXPR iterator crend() const ETL_NOEXCEPT
+Returns a const reverse iterator to the end of the span.
+20.39.5
+____________________________________________________________________________________________________
+Capacity
+
+ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
+Returns true if the size of the multi_span is zero, otherwise false.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
+Returns the size of the multi_span.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
+Returns the size of the multi_span in bytes.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR size_t size_spans() const ETL_NOEXCEPT
+Returns the number of the spans.
+

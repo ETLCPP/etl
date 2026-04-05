@@ -1,0 +1,84 @@
+Locked Queues
+
+There are several lockable queues in the ETL.
+Each offers a different method of locking and unlocking a queue for modification.
+____________________________________________________________________________________________________
+queue_spsc_isr
+
+template <typename T, size_t SIZE, typename TAccess>
+class queue_spsc_isr
+
+This queue was originally designed for use with an Interrupt Service Routine (ISR), where functionality would be provided to it to enable and disable interrupts. This is achieved in this queue by supplying a template parameter type that implements two static functions; 
+
+lock()
+unlock()
+
+The first disables the relevant interrupts and the second enables them.
+The queue, of course, is not limited to just interrupts.
+____________________________________________________________________________________________________
+Example
+struct InterruptControl
+{
+  static void lock()
+  {
+    OsDisableInterrupts();
+  }
+
+  static void unlock()
+  {
+    OsEnableInterrupts();
+  }
+};
+
+etl::queue_spsc_isr<char, 100, InterruptControl> charQueue;
+____________________________________________________________________________________________________
+queue_spsc_locked
+
+template <typename T, size_t SIZE>
+class queue_spsc_locked
+
+This queue is similar to the above, but the access control functions are supplied at run time as references to etl::ifunction.
+____________________________________________________________________________________________________
+Example
+void QueueLock()
+{
+  OsDisableInterrupts();
+}
+
+void QueueUnlock()
+{
+  OsEnableInterrupts();
+}
+
+etl::function_fv<QueueLock>   queueLock;
+etl::function_fv<QueueUnlock> queueUnlock;
+
+etl::queue_spsc_isr<char, 100> charQueue(queueLock, queueUnlock);
+____________________________________________________________________________________________________
+queue_lockable
+
+template <typename T, size_t SIZE>
+class queue_lockable
+
+This queue provides access to locking by providing two pure virtual functions, lock() and unlock() that the user of the queue must supply implementations for.
+____________________________________________________________________________________________________
+Example
+class QueueInt : public etl::queue_lockable<int, 4>
+{
+public:
+
+  QueueInt()
+  {
+  }
+
+  void lock() const override
+  {
+    OsDisableInterrupts();
+  }
+
+  void unlock() const override
+  {
+    OsEnableInterrupts();
+  }
+};
+

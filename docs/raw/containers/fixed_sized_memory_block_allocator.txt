@@ -1,0 +1,20 @@
+fixed_sized_memory_block_allocator
+
+A fixed capacity memory block pool.
+Implements an etl::imemory_block_allocator. See here.
+
+template <size_t VBlock_Size, size_t VAlignment, size_t VSize>
+class fixed_sized_memory_block_allocator : public imemory_block_allocator
+____________________________________________________________________________________________________
+Template parameters
+
+VBlock_Size The required size of each block.
+VAlignment  The required alignment of each block.
+VSize       The number of blocks.
+____________________________________________________________________________________________________
+Constants
+
+size_t Block_Size = VBlock_Size;
+size_t Alignment  = VAlignment;
+size_t Size       = VSize;
+

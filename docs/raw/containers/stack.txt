@@ -1,0 +1,108 @@
+stack
+
+A fixed capacity stack.
+STL equivalent: std::stack
+
+etl::stack<typename T, const size_t SIZE>
+
+Inherits from etl::istack<T>
+etl::istack may be used as a size independent pointer or reference type for any etl::stack instance.
+
+____________________________________________________________________________________________________
+Member types
+
+value_type T
+size_type  std::size_t
+
+____________________________________________________________________________________________________
+Constructor
+
+etl::stack<typename T, const size_t SIZE>();
+
+Default constructs SIZE elements.
+
+____________________________________________________________________________________________________
+Element access
+
+T& top()
+const T& top() const
+
+Returns a reference or const reference to the element at the top of the stack.
+Undefined behaviour if the stack is empty.
+
+____________________________________________________________________________________________________
+Capacity
+
+bool empty() const
+
+Returns true if the size of the stack is zero, otherwise false.
+____________________________________________________________________________________________________
+
+bool full() const
+
+Returns true if the size of the stack is SIZE, otherwise false.
+____________________________________________________________________________________________________
+
+size_t size() const
+
+Returns the size of the stack.
+____________________________________________________________________________________________________
+
+size_t available() const
+
+Returns the remaining available capacity in the stack.
+____________________________________________________________________________________________________
+
+size_t max_size() const
+
+Returns the maximum possible size of the stack.
+____________________________________________________________________________________________________
+
+size_t capacity() const
+
+Returns the maximum possible size of the stack.
+
+____________________________________________________________________________________________________
+Modifiers
+
+void push(parameter_t value);
+
+Pushes a value to the top of the stack.
+Emits an etl::stack_full if the stack is full and ETL_CHECK_PUSH_POP is defined. If asserts or exceptions are not enabled undefined behaviour occurs.
+____________________________________________________________________________________________________
+
+C++03
+void emplace(const T1& value1);
+void emplace(const T1& value1, const T2& value2);
+void emplace(const T1& value1, const T2& value2, const T3& value3);
+void emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4);
+
+C++11
+void emplace(Args&&… args);
+
+Constructs an item in the the stack 'in place'.
+Supports up to four constructor parameters.
+Emits an etl::stack_full if the stack is full and ETL_CHECK_PUSH_POP is defined. If asserts or exceptions are not enabled undefined behaviour occurs.
+____________________________________________________________________________________________________
+
+void pop();
+
+Pop a value from the top of the stack.
+Emits an etl::stack_empty if the stack is empty and ETL_CHECK_PUSH_POP is defined. If asserts or exceptions are not enabled undefined behaviour occurs.
+____________________________________________________________________________________________________
+
+void pop_into(const T& destination);
+
+Pop a value from the top of the stack and places it in destination.
+Emits an etl::stack_empty if the queue is empty and ETL_CHECK_PUSH_POP is defined. If asserts or exceptions are not enabled undefined behaviour occurs.
+____________________________________________________________________________________________________
+
+void reverse();
+
+Reverses the stack order.
+____________________________________________________________________________________________________
+
+void clear();
+
+Clears the stack to a size of zero.
+
