@@ -36,6 +36,8 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
+#if ETL_USING_CPP11
+
 namespace etl
 {
   namespace private_rounded_integral_division
@@ -783,4 +785,5 @@ namespace etl
   }
 } // namespace etl
 
+#endif
 #endif
