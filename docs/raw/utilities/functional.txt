@@ -1,0 +1,105 @@
+functional
+Defines functional classes from the STL.
+____________________________________________________________________________________________________
+reference_wrapper
+
+etl::reference_wrapper is a class template that wraps a reference in a copyable, assignable object.
+A clone of std::reference_wrapper
+____________________________________________________________________________________________________
+unary_function
+
+template <typename TArgumentType, typename TResultType>
+struct unary_function
+
+Typedefs
+TArgumentType argument_type
+TResultType   result_type
+____________________________________________________________________________________________________
+binary_function
+
+template <typename TFirstArgumentType, typename TSecondArgumentType, typename TResultType>
+struct binary_function
+
+Typedefs
+TFirstArgumentType  first_argument_type
+TSecondArgumentType second_argument_type
+TResultType         result_type
+____________________________________________________________________________________________________
+bind1st
+
+template <typename TFunction>
+class binder1st
+
+template <typename F, typename T>
+binder1st<F> bind1st(const F& f, const T& x)
+____________________________________________________________________________________________________
+bind2nd
+
+template <typename TFunction>
+class binder2nd
+
+template <typename F, typename T>
+binder2nd<F> bind2nd(const F& f, const T& x)
+____________________________________________________________________________________________________
+Comparisons
+
+template <typename T = void>
+struct less
+
+20.21.0
+template <>
+struct less<void> 
+Transparent comparator. Defines is_transparent.
+____________________________________________________________________________________________________
+template <typename T = void>
+struct less_equal
+
+20.21.0
+template <>
+struct less_equal<void>
+Transparent comparator. Defines is_transparent.
+____________________________________________________________________________________________________
+template <typename T = void>
+struct greater
+
+20.21.0
+template <>
+struct greater<void>
+Transparent comparator. Defines is_transparent.
+____________________________________________________________________________________________________
+template <typename T = void>
+struct greater_equal
+
+20.21.0
+template <>
+struct greater_equal<void>
+Transparent comparator. Defines is_transparent.
+____________________________________________________________________________________________________
+template <typename T = void>
+struct equal_to
+
+20.21.0
+template <>
+struct equal_to<void>
+Transparent comparator. Defines is_transparent.
+____________________________________________________________________________________________________
+template <typename T = void>
+struct not_equal_to
+
+20.21.0
+template <>
+struct not_equal_to<void>
+Transparent comparator. Defines is_transparent.
+____________________________________________________________________________________________________
+mem_fn
+
+20.38.11
+template <typename TReturnType, typename TClassType, typename... TArgs>
+<functor> mem_fn(TReturnType(TClassType::* member_function)(TArgs...))
+Returns a functor that wraps a member function of TClassType, taking TArgs and returning TReturnType.
+
+20.38.11
+template <typename TReturnType, typename TClassType, typename... TArgs>
+<functor> mem_fn(TReturnType(TClassType::* member_function)(TArgs...) const)
+Returns a functor that wraps a const member function of TClassType, taking TArgs and returning TReturnType.
+

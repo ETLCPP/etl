@@ -1,0 +1,14 @@
+nth_type
+
+
+Defines the nth type in a variadic list of types.
+
+template <size_t N, typename... TTypes>
+struct nth_type;
+
+template <size_t N, typename... TTypes>
+using nth_type_t = typename nth_type<N, TTypes...>::type;
+
+Member type is defined as the nth type in the type list.
+Static asserts if N is out of range.
+

@@ -1,0 +1,56 @@
+RMS
+(Root Mean Square)
+20.9.0
+
+template <typename TInput, typename TCalc = TInput>
+class rms : public etl::unary_function<TInput, void> 
+
+TInput The input data type.
+TCalc  The type to use for internal calculations. By default, equal to TInput.
+____________________________________________________________________________________________________
+rms()
+Default constructor.
+
+template <typename TIterator>
+rms(TIterator first, TIterator last)
+Construct from an iterator range.
+____________________________________________________________________________________________________
+void add(TInput value1)
+Add a value.
+
+template <typename TIterator>
+void add(TIterator first, TIterator last)
+Add a range of values.
+____________________________________________________________________________________________________
+void operator()(TInput value)
+Add a values.
+
+template <typename TIterator>
+void operator()(TIterator first, TIterator last)
+Add a range of values.
+____________________________________________________________________________________________________
+double get_rms()
+Returns the calculated RMS for the data.
+____________________________________________________________________________________________________
+operator double()
+Returns the calculated RMS value for the data.
+____________________________________________________________________________________________________
+size_t count() const
+Get the total number added entries.
+____________________________________________________________________________________________________
+void clear()
+Clear the mean.
+____________________________________________________________________________________________________
+Example
+
+std::array<char, 10> input
+{
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+};
+
+etl::rms<char, int32_t> rms(input.begin(), input.end());
+
+double rms_result;
+
+rms_result = rms; // rms_result  == 5.21
+

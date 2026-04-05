@@ -1,0 +1,139 @@
+byte_stream_reader
+20.17.0
+A binary streaming utility that allows boolean, integral and floating point values to be read from an array of char or unsigned char. By default, values are stored in the byte stream in network order (Big Endian). This can be changed by specifying in the constructor.
+
+class byte_stream_reader
+
+Note for floating point
+Be aware that floating point representations can change between platforms.
+For example long double is 8 bytes for MS compilers and 12 for GCC.
+____________________________________________________________________________________________________
+Types
+
+iterator         char*
+const_iterator   const char*
+____________________________________________________________________________________________________
+Constructors
+
+byte_stream_reader(etl::span<char> span, etl::endian stream_endianness)
+Construct from span.
+____________________________________________________________________________________________________
+byte_stream_reader(etl::span<const char> span, etl::endian stream_endianness)
+Construct from span.
+____________________________________________________________________________________________________
+byte_stream_reader(const void* begin, const void* end, etl::endian stream_endianness)
+Construct from range.
+____________________________________________________________________________________________________
+byte_stream_reader(const void* begin, size_t length, etl::endian stream_endianness)
+Construct from begin and length.
+____________________________________________________________________________________________________
+template <typename T, size_t Size>
+byte_stream_reader(T(&begin)[Size], etl::endian stream_endianness)
+Construct from array.
+____________________________________________________________________________________________________
+template <typename T, size_t Size>
+byte_stream_reader(const T(&begin)[Size], etl::endian stream_endianness)
+Construct from const array.
+___________________________________________________________________________________________________
+Read
+Checked
+The following functions will only read from the buffer if there is enough room to do so.
+
+template <typename T>
+etl::optional<T> read()
+Read an integral value from the stream.
+____________________________________________________________________________________________________
+template <typename T>
+etl::optional<etl::span<T>> read(size_t n)
+Read a byte range from the stream.
+____________________________________________________________________________________________________
+template <typename T>
+etl::optional<etl::span<const T>> read(etl::span<T> range)
+Read a range of T from the stream.
+____________________________________________________________________________________________________
+template <typename T>
+etl::optional<etl::span<const T>> read(const T* start, size_t length)
+Read a range of T from the stream.
+
+Unchecked 20.18.0
+The following functions will always read from the buffer. They do not check for free space.
+
+template <typename T>
+etl::optional<T> read_unchecked()
+Read an integral value from the stream.
+____________________________________________________________________________________________________
+template <typename T>
+etl::optional<etl::span<T>> read_unchecked(size_t n)
+Read a byte range from the stream.
+____________________________________________________________________________________________________
+template <typename T>
+etl::optional<etl::span<const T>> read_unchecked(etl::span<T> range)
+Read a range of T from the stream.
+____________________________________________________________________________________________________
+template <typename T>
+etl::optional<etl::span<const T>> read_unchecked(T* start, size_t length)
+Read a range of T from the stream.
+____________________________________________________________________________________________________
+Status
+
+bool empty() const
+Returns true if the byte stream is empty.
+____________________________________________________________________________________________________
+size_t size_bytes() const
+Returns the number of bytes used in the stream.
+____________________________________________________________________________________________________
+template <typename T>
+size_t available() const
+The number of T left in the stream.
+____________________________________________________________________________________________________
+Access
+
+void restart(size_t n = 0U)
+Sets the index back to position n in the stream. Default = 0.
+____________________________________________________________________________________________________
+template <typename T>
+bool skip(size_t n)
+Skip n items of T, if the total space is available.
+Returns true if the skip was possible.
+Returns false if the full skip size was not possible.
+
+20.29.1
+template <typename T>
+bool skip(size_t n)
+Skip n items of T, if the total space is available.
+Returns true if the skip was possible.
+Asserts etl::byte_stream_overflow and returns false if the skip size was not possible.
+____________________________________________________________________________________________________
+const_iterator begin() const
+Returns start of the stream.
+____________________________________________________________________________________________________
+const_iterator end() const
+Returns end of the stream.
+____________________________________________________________________________________________________
+const_iterator cbegin() const
+Returns start of the stream.
+____________________________________________________________________________________________________
+const_iterator cend() const
+Returns end of the stream.
+____________________________________________________________________________________________________
+etl::span<char> used_data() const
+Returns a span of the used portion of the stream.
+____________________________________________________________________________________________________
+etl::span<char> free_data() const
+Returns a span of the free portion of the stream.
+____________________________________________________________________________________________________
+etl::span<char> data() const
+Returns a span of whole the stream.
+____________________________________________________________________________________________________
+Non-member functions
+
+Default implementation of the read functions.
+For integral and floating point types only.
+Specialise these to support custom types.
+
+template <typename T> 20.18.0
+T read_unchecked(etl::byte_stream_reader& stream)
+____________________________________________________________________________________________________
+template <typename T>
+etl::optional<T> read(etl::byte_stream_reader& stream)
+

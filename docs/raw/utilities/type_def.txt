@@ -1,0 +1,65 @@
+type_def
+Typesafe typedefs
+
+A method of declaring types that are strongly typesafe.
+Avoids the problem of inadvertently mixing different typedef'd types.
+
+etl::type_def is noexcept from 20.42.0
+________________________________________________________________________________________________
+The problem
+Typdefs do not give you a lot of type safety, allowing the following runtime errors to occur.
+
+typedef int event_t;
+typedef int action_t;
+
+void DoEvent(event_t event, action_t action)
+{
+    ...
+    event_t evt = action; // Oops! Runtime error. :-(
+
+    int e = event;
+    int a = action;
+    ...
+
+    e = a; // Oops! Runtime error. :-(
+}
+
+event_t  event  = 1;
+action_t action = 2;
+
+DoEvent(action, event); // Oops! Runtime error. :-(
+________________________________________________________________________________________________
+The solution
+ETL typedefs are strongly typed and will not allow the errors above to be compiled.
+
+#include "type_def.h"
+
+ETL_TYPEDEF(int, event_t);
+ETL_TYPEDEF(int, action_t);
+
+void DoEvent(event_t event, action_t action)
+{
+    ...
+    event_t evt = action; // Compile time error. :-)
+
+    int e = event;  // Implicit conversion to underlying type.
+    int a = action; // Implicit conversion to underlying type.
+    ...
+    
+    e = a; // Compile time error. :-)
+}
+
+event_t  event  = 1; // Implicit construction from underlying type.
+action_t action = 2; // Implicit construction from underlying type.
+
+DoEvent(action, event); // Compile time error. :-)
+
+
+The class defines two class types; value_type which represents the underlying type and id_type that represents the typedef unique type id.
+
+The class defines all of the operators that the underlying type may be expected to support.
+
+Also the class defines two get() member functions that return a const or non-const reference to the internal value, for data binding purposes.
+T& get()
+const T& get() const
+

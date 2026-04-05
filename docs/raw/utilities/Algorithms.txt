@@ -1,0 +1,931 @@
+Algorithms
+A set of algorithms from the STL.
+
+If ETL_NO_STL is defined then the ETL implements its own reverse engineered versions.
+Otherwise, the ETL will  often be a wrapper around the STL's implementation.
+
+Functions returning pair will either use std::pair or, if ETL_NO_STL is defined, etl::pair.
+
+Constexpr
+Some algorithms will be constexpr, dependent on the compiler support and ETL setup.
+
+ETL_FORCE_CONSTEXPR_ALGORITHMS
+If this macro is defined, then certain algorithms will be always be constexpr, regardless of STL setting or availability of compiler built-ins. The downside, if the STL is not use, is that some copy algorithms may be less efficient when used at run-time.
+See the descriptions below.
+____________________________________________________________________________________________________
+swap
+Only defined if ETL_NO_STL is defined.
+
+template <typename T>
+void swap(T& a, T& b) ETL_NOEXCEPT
+Swaps two values
+____________________________________________________________________________________________________
+template <typename T, size_t N>
+void swap(T(&a)[N], T(&b)[N]) ETL_NOEXCEPT
+Swaps two arrays
+https://en.cppreference.com/w/cpp/algorithm/swap
+____________________________________________________________________________________________________
+iter_swap
+template <typename TIterator1, typename TIterator2>
+void iter_swap(TIterator1 a, TIterator2 b)
+Swaps the elements pointed to by two iterators
+https://en.cppreference.com/w/cpp/algorithm/iter_swap
+____________________________________________________________________________________________________
+swap_ranges
+template <typename T1terator1, typename TIterator2>
+TIterator2 swap_ranges(T1terator1 first1,
+                       T1terator1 last1,
+                       TIterator2 first2)
+Swaps two ranges of elements
+https://en.cppreference.com/w/cpp/algorithm/swap_ranges
+____________________________________________________________________________________________________
+copy
+template <typename TInputIterator, typename TOutputIterator>
+TOutputIterator copy(TInputIterator sb, TInputIterator se, TOutputIterator db)
+Copies the elements in the range, defined by sb, se, to another range beginning at db
+https://en.cppreference.com/w/cpp/algorithm/copy
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The iterator is non-pointer or the type is not trivially copyable and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, built-in memcpy is supports, and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1, and C++14 is supported.
+____________________________________________________________________________________________________
+copy_s
+ETL extension
+template <typename TInputIterator, typename TOutputIterator>
+TOutputIterator copy_s(TInputIterator  i_begin, TInputIterator  i_end,
+                       TOutputIterator o_begin, TOutputIterator o_end)
+A safer four parameter version that will stop copying when either iterator reaches the end of its range.
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The iterator is non-pointer or the type is not trivially copyable and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, built-in memcpy is supports, and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1, and C++14 is supported.
+____________________________________________________________________________________________________
+copy_n
+template <typename TInputIterator, typename TSize, typename TOutputIterator>
+TOutputIterator copy_n(TInputIterator begin, TSize n, TOutputIterator result)
+Copies exactly n values from the range beginning at begin to the range beginning at result.
+https://en.cppreference.com/w/cpp/algorithm/copy_n
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The iterator is non-pointer or the type is not trivially copyable and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, built-in memcpy is supports, and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1, and C++14 is supported.
+____________________________________________________________________________________________________
+copy_n_s
+ETL extension
+template <typename TInputIterator, typename TSize, typename TOutputIterator>
+TOutputIterator copy_n_s(TInputIterator i_begin,
+                         TSize n,
+                         TOutputIterator o_begin, TOutputIterator o_end)
+A safer version that will stop copying when either n items have been  copied or the output iterator reaches the end of its range.
+____________________________________________________________________________________________________
+template <typename TInputIterator, typename TSize1, typename TOutputIterator, typename TSize2>
+TOutputIterator copy_n_s(TIterator i_begin,
+                         TSize1 n1,
+                         TOutputIterator o_begin,
+                         TSize1 n2,)
+A safer version that will stop copying when either n1 or n2 items have been  copied.
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The iterator is non-pointer or the type is not trivially copyable and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, built-in memcpy is supports, and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1, and C++14 is supported.
+____________________________________________________________________________________________________
+copy_if
+template <typename TIterator, typename TOutputIterator, typename TUnaryPredicate>
+ETL_CONSTEXPR14
+TOutputIterator copy_if(TIterator begin, TIterator end, TOutputIterator out, TUnaryPredicate predicate)
+Only copies the elements for which the predicate predicate returns true
+
+https://en.cppreference.com/w/cpp/algorithm/copy
+____________________________________________________________________________________________________
+copy_if_s
+ETL extension
+template <typename TIterator, typename TOutputIterator, typename TUnaryPredicate>
+ETL_CONSTEXPR14
+TOutputIterator copy_if_s(TIterator i_begin,        TIterator i_end,
+                          TOutputIterator o_begin,  TOutputIterator o_end,
+                          TUnaryPredicate predicate)
+A safer version that will stop copying when either iterator reaches the end of its range
+____________________________________________________________________________________________________
+copy_n_if
+ETL extension
+template <typename TIterator, typename TSize, typename TOutputIterator, typename TUnaryPredicate>
+ETL_CONSTEXPR14
+TOutputIterator copy_n_if(TIterator begin, TSize n, TOutputIterator out, TUnaryPredicate predicate)
+A combination of copy_if and copy_n
+____________________________________________________________________________________________________
+reverse_copy
+template <typename TIterator1, typename TIterator2>
+TIterator2 reverse_copy(TIterator1 sb, TIterator1 se, TIterator2 db)
+Copies the elements from the range sb, se to another range beginning at db in such a way that the elements in the new range are in reverse order.
+https://en.cppreference.com/w/cpp/algorithm/reverse_copy
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The STL is in use and ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1.
+⦁	The STL is not in use.
+____________________________________________________________________________________________________
+copy_backward
+template <typename TIterator1, typename TIterator2>
+TIterator2 copy_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+Copies the elements from the range, defined by sb, se  to another range ending at db
+The elements are copied in reverse order.
+https://en.cppreference.com/w/cpp/algorithm/copy_backward
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The STL is in use and ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1.
+⦁	The STL is not in use.
+____________________________________________________________________________________________________
+count
+template <typename TIterator, typename T>
+typename iterator_traits<TIterator>::difference_type count(TIterator first, 
+                                                           TIterator last, 
+                                                           const T& value)
+Counts the elements that are equal to value
+https://en.cppreference.com/w/cpp/algorithm/count
+____________________________________________________________________________________________________
+count_if
+template <typename TIterator, typename TUnaryPredicate>
+typename iterator_traits<TIterator>::difference_type count_if(TIterator first, 
+                                                              TIterator last, 
+                                                              TUnaryPredicate predicate)
+Counts the elements where predicate returns true
+https://en.cppreference.com/w/cpp/algorithm/count
+____________________________________________________________________________________________________
+equal
+template <typename TIterator1, typename TIterator2>
+bool equal(TIterator1 first1, TIterator1 last1, TIterator2 first2)
+Returns true if the range first1, last1 is equal to the range first2, first2 + distance(first1, last1)
+https://en.cppreference.com/w/cpp/algorithm/equal
+____________________________________________________________________________________________________
+lexicographical_compare
+template <typename TIterator1, typename TIterator2>
+bool lexicographical_compare(TIterator1 first1, TIterator1 last1,
+                             TIterator2 first2, TIterator2 last2)
+Checks if the range first1, last1 is lexicographically less than the range first2, last2, using the 'less-than' operator
+____________________________________________________________________________________________________
+template <typename TIterator1, typename TIterator2, typename TCompare>
+bool lexicographical_compare(TIterator1 first1, TIterator1 last1,
+                             TIterator2 first2, TIterator2 last2,
+                             TCompare compare)
+Checks if the range first1, last1 is lexicographically less than the range first2, last2, using compare
+https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
+____________________________________________________________________________________________________
+heap
+Heap control functions
+
+Make Heap
+template <typename TIterator>
+void make_heap(TIterator first, TIterator last)
+
+template <typename TIterator, typename TCompare>
+void make_heap(TIterator first, TIterator last, TCompare compare)
+
+https://en.cppreference.com/w/cpp/algorithm/make_heap
+____________________________________________________________________________________________________
+Is Heap
+template <typename TIterator>
+bool is_heap(TIterator first, TIterator last)
+
+template <typename TIterator, typename TCompare>
+bool is_heap(TIterator first, TIterator last, TCompare compare)
+
+https://en.cppreference.com/w/cpp/algorithm/is_heap
+____________________________________________________________________________________________________
+Pop Heap
+template <typename TIterator>
+void pop_heap(TIterator first, TIterator last)
+
+template <typename TIterator, typename TCompare>
+void pop_heap(TIterator first, TIterator last, TCompare compare)
+
+https://en.cppreference.com/w/cpp/algorithm/pop_heap
+____________________________________________________________________________________________________
+Push Heap
+template <typename TIterator>
+void push_heap(TIterator first, TIterator last)
+
+template <typename TIterator, typename TCompare>
+void push_heap(TIterator first, TIterator last, TCompare compare)
+
+https://en.cppreference.com/w/cpp/algorithm/push_heap
+____________________________________________________________________________________________________
+min
+template <typename T>
+ETL_CONSTEXPR const T& min(const T& a, const T& b)
+Returns the minimum of the two values
+____________________________________________________________________________________________________
+template <typename T, typename TCompare>
+ETL_CONSTEXPR const T& min(const T& a, const T& b, TCompare compare)
+Returns the value where compare returns true if a is less than b
+
+https://en.cppreference.com/w/cpp/algorithm/min
+____________________________________________________________________________________________________
+max
+template <typename T>
+ETL_CONSTEXPR const T& max(const T& a, const T& b)
+Returns the maximum of the two values
+____________________________________________________________________________________________________
+template <typename T, typename TCompare>
+ETL_CONSTEXPR const T& max(const T& a, const T& b, TCompare compare)
+Returns the value where compare returns true if a is less than b
+
+https://en.cppreference.com/w/cpp/algorithm/max
+____________________________________________________________________________________________________
+minmax
+template <typename T> 
+pair<const T&, const T&> minmax(const T& a, const T& b)
+Returns the lesser and greater values
+____________________________________________________________________________________________________
+template <typename T, typename TCompare> 
+pair<const T&, const T&> minmax(const T& a, const T& b, TCompare compare)
+Returns the lesser and greater values using compare
+
+https://en.cppreference.com/w/cpp/algorithm/minmax
+____________________________________________________________________________________________________
+min_element
+template <typename TIterator>
+TIterator min_element(TIterator begin, TIterator end)
+Finds the smallest element in the range begin, end
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+TIterator min_element(TIterator begin, TIterator end, TCompare compare)
+Finds the smallest element in the range begin, end using compare
+
+https://en.cppreference.com/w/cpp/algorithm/min_element
+____________________________________________________________________________________________________
+max_element
+template <typename TIterator>
+TIterator max_element(TIterator begin, TIterator end)
+Finds the greatest element in the range begin, end
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+TIterator max_element(TIterator begin, TIterator end, TCompare compare)
+Finds the greatest element in the range begin, end using compare
+
+https://en.cppreference.com/w/cpp/algorithm/max_element
+____________________________________________________________________________________________________
+minmax_element
+template <typename TIterator>
+pair<TIterator, TIterator> minmax_element(TIterator begin, TIterator end)
+Finds the smallest and greatest element in the range begin, end
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+pair<TIterator, TIterator> minmax_element(TIterator begin, TIterator end, TCompare compare)
+Finds the smallest and greatest element in the range begin, end using compare
+
+https://en.cppreference.com/w/cpp/algorithm/minmax_element
+____________________________________________________________________________________________________
+multimin
+multimin_compare
+multimin_iter
+multimin_iter_compare
+ETL extension
+C++11 only 
+Variadic functions to return the minimum value, or iterator to value, from a variable length parameter list.
+
+template <typename T, typename... Tx>
+constexpr const T& multimin(const T& t, const Tx&... tx)
+____________________________________________________________________________________________________
+template <typename TCompare, typename T, typename... Tx>
+constexpr const T& multimin_compare(TCompare compare, const T& t, const Tx&... tx)
+____________________________________________________________________________________________________
+template <typename TIterator, typename... TIteratorx>
+constexpr const TIterator& multimin_iter(const TIterator& t, const TIteratorx&... tx)
+____________________________________________________________________________________________________
+template <typename TCompare, typename TIterator, typename... TIteratorx>
+constexpr const TIterator& multimin_iter_compare(TCompare compare, 
+                                                 const TIterator& t, const TIteratorx&... tx)
+____________________________________________________________________________________________________
+Example
+int minimum;
+
+minimum = etl::multimin(1, 2, 3, 4, 5, 6, 7, 8));
+minimum = etl::multimin_compare(std::less<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
+minimum = etl::multimin_compare(std::greater<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
+
+int i[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+int* p_minimum;
+
+p_minimum = etl::multimin_iter(&i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+p_minimum = etl::multimin_iter_compare(std::less<int>(), 
+                                       &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+p_minimum = etl::multimin_iter_compare(std::greater<int>(), 
+                                       &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+____________________________________________________________________________________________________
+multimax
+multimax_compare
+multimax_iter
+multimax_iter_compare
+ETL extension
+
+C++11 only variadic functions to return the maximum value, or iterator to value, from a variable length parameter list.
+
+template <typename T, typename... Tx>
+constexpr const T& multimax(const T& t, const Tx&... tx)
+____________________________________________________________________________________________________
+template <typename TCompare, typename T, typename... Tx>
+constexpr const T& multimax_compare(TCompare compare, const T& t, const Tx&... tx)
+____________________________________________________________________________________________________
+template <typename TIterator, typename... TIteratorx>
+constexpr const TIterator& multimax_iter(const TIterator& t, const TIteratorx&... tx)
+____________________________________________________________________________________________________
+template <typename TCompare, typename TIterator, typename... TIteratorx>
+constexpr const TIterator& multimax_iter_compare(TCompare             compare, 
+                                                 const TIterator&     t, 
+                                                 const TIteratorx&... tx)
+____________________________________________________________________________________________________
+Example
+int maximum;
+
+maximum = etl::multimax(1, 2, 3, 4, 5, 6, 7, 8));
+maximum = etl::multimax_compare(std::less<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
+maximum = etl::multimax_compare(std::greater<int>(), 1, 2, 3, 4, 5, 6, 7, 8));
+
+int i[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+int* p_maximum;
+
+p_maximum = etl::multimax_iter(&i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+p_maximum = etl::multimax_iter_compare(std::less<int>(), 
+                                       &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+p_maximum = etl::multimax_iter_compare(std::greater<int>(), 
+                                       &i[0], &i[1], &i[2], &i[3], &i[4], &i[5], &i[6], &i[7]));
+____________________________________________________________________________________________________
+move
+template <typename TIterator1, typename TIterator2>
+TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
+Moves the elements in the range sb, se to another range beginning at db
+
+https://en.cppreference.com/w/cpp/algorithm/move
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The iterator is non-pointer or the type is not trivially copyable and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, built-in memcpy is supports, and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1, and C++14 is supported.
+____________________________________________________________________________________________________
+move_s
+ETL extension
+template <typename TInputIterator, typename TOutputIterator>
+TOutputIterator move_s(TInputIterator  i_begin, TInputIterator  i_end,
+                       TOutputIterator o_begin, TOutputIterator o_end)
+A safer four parameter version that will stop moving when either iterator reaches the end of its range.
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The iterator is non-pointer or the type is not trivially copyable and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, built-in memcpy is supports, and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1, and C++14 is supported.
+____________________________________________________________________________________________________
+move_backward
+template <typename TIterator1, typename TIterator2>
+TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
+Moves the elements in the range sb, se to another range ending at de
+The elements are moved in reverse order
+
+https://en.cppreference.com/w/cpp/algorithm/move_backward
+
+Constexpr
+This function is constexpr under the following conditions.
+⦁	The STL is in use and C++20 is supported.
+⦁	The iterator is non-pointer or the type is not trivially copyable and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, built-in memcpy is supports, and C++14 is supported.
+⦁	The iterator is a pointer, the type is trivially copyable, ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1, and C++14 is supported.
+____________________________________________________________________________________________________
+reverse
+template <typename TIterator>
+void reverse(TIterator b, TIterator e)
+Reverses the order of the elements in the range b, e
+
+https://en.cppreference.com/w/cpp/algorithm/reverse
+____________________________________________________________________________________________________
+for_each_if
+ETL extension
+template <typename TIterator, typename TUnaryFunction, typename TUnaryPredicate>
+TUnaryFunction for_each_if(TIterator       begin,
+                           const TIterator end,
+                           TUnaryFunction  function,
+                           TUnaryPredicate predicate)
+Applies function to each element if predicate returns true
+____________________________________________________________________________________________________
+for_each_n
+ETL extension
+template <typename TIterator, typename TSize, typename TUnaryFunction>
+TIterator for_each_n(TIterator       begin,
+                     TSize           n,
+                     TUnaryFunction  function)
+Applies function to n  elements, starting from begin
+____________________________________________________________________________________________________
+for_each_n_if
+ETL extension
+template <typename TIterator, typename TSize, typename TUnaryFunction, typename TUnaryPredicate>
+TIterator for_each_n_if(TIterator       begin,
+                        TSize           n,
+                        TUnaryFunction  function,
+                        TUnaryPredicate predicate)
+Combination of for_each_if and for_each_n
+____________________________________________________________________________________________________
+fill
+template <typename TIterator, typename TValue>
+void fill(TIterator first, TIterator last, const TValue& value)
+Assigns the given value to the elements in the range first, last
+
+https://en.cppreference.com/w/cpp/algorithm/fill
+____________________________________________________________________________________________________
+fill_n
+template <typename TIterator, typename TSize, typename TValue>
+TIterator fill_n(TIterator first, TSize count, const TValue& value)
+Assigns the given value to the first count elements in the range beginning at first
+
+https://en.cppreference.com/w/cpp/algorithm/fill_n
+____________________________________________________________________________________________________
+find
+template <typename TIterator, typename T>
+TIterator find(TIterator first, TIterator last, const T& value)
+Searches for an element equal to value
+
+https://en.cppreference.com/w/cpp/algorithm/find
+____________________________________________________________________________________________________
+find_end
+Searches for the last occurrence of the sequence b, e in the range sb, be
+
+template <typename TIterator1, typename TIterator2>
+TIterator1 find_end(TIterator1 b, TIterator1 e,
+                    TIterator2 sb, TIterator2 se)
+____________________________________________________________________________________________________
+template <typename TIterator1, typename TIterator2, typename TPredicate>
+TIterator1 find_end(TIterator1 b, TIterator1 e,
+                    TIterator2 sb, TIterator2 se,
+                    TPredicate predicate)
+
+https://en.cppreference.com/w/cpp/algorithm/find_end
+____________________________________________________________________________________________________
+find_if
+template <typename TIterator, typename TUnaryPredicate>
+TIterator find_if(TIterator first, TIterator last, TUnaryPredicate predicate)
+Searches for the first element that satisfies the predicate
+
+https://en.cppreference.com/w/cpp/algorithm/find
+____________________________________________________________________________________________________
+find_if_not
+template <typename TIterator, typename TUnaryPredicate>
+TIterator find_if_not(TIterator begin, TIterator end, TUnaryPredicate predicate)
+Searches for the first element that does not satisfy the predicate
+
+https://en.cppreference.com/w/cpp/algorithm/find
+____________________________________________________________________________________________________
+lower_bound
+template <typename TIterator, typename TValue>
+TIterator lower_bound(TIterator first, TIterator last, const TValue& value)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TValue, typename TCompare>
+TIterator lower_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
+
+https://en.cppreference.com/w/cpp/algorithm/lower_bound
+____________________________________________________________________________________________________
+upper_bound
+template <typename TIterator, typename TValue>
+TIterator upper_bound(TIterator first, TIterator last, const TValue& value)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TValue, typename TCompare>
+TIterator upper_bound(TIterator first, TIterator last, const TValue& value, TCompare compare)
+
+https://en.cppreference.com/w/cpp/algorithm/upper_bound
+____________________________________________________________________________________________________
+equal_range
+template <typename TIterator, typename TValue>
+pair<TIterator, TIterator> equal_range(TIterator first, TIterator last, const TValue& value)
+Returns an iterator pointing to the first element in the range first, last that is not less than value, or last if no such element is found.
+____________________________________________________________________________________________________
+template <typename TIterator, typename TValue, typename TCompare>
+pair<TIterator, TIterator> equal_range(TIterator first, TIterator last, 
+                                       const TValue& value, TCompare compare)
+Returns an iterator pointing to the first element in the range first, last that is not less than value using compare, or last if no such element is found.
+
+https://en.cppreference.com/w/cpp/algorithm/equal_range
+____________________________________________________________________________________________________
+binary_find
+ETL extension
+template <typename TIterator, typename TValue>
+TIterator binary_find(TIterator     begin,
+                      TIterator     end,
+                      const TValue& value)
+Finds the first item in a sorted container that matches the value.
+Returns an iterator to the value or end.
+____________________________________________________________________________________________________
+ETL extension
+template <typename TIterator, typename TValue, typename TBinaryPredicate, typename TBinaryEquality>
+TIterator binary_find(TIterator        begin,
+                      TIterator        end,
+                      const TValue&    value,
+                      TBinaryPredicate predicate,
+                      TBinaryEquality  equality)
+Finds the first item in a sorted container that matches the value.
+Returns an iterator to the value or end.
+Comparison and equality predicates are supplied.
+____________________________________________________________________________________________________
+search
+template <typename TIterator1, typename TIterator2>
+TIterator1 search(TIterator1 first, TIterator1 last, 
+                  TIterator2 search_first, TIterator2 search_last)
+Searches for the first occurrence of the sequence of elements first, last in the range search_first, search_last
+____________________________________________________________________________________________________
+template <typename TIterator1, typename TIterator2, typename TCompare>
+TIterator1 search(TIterator1 first, TIterator1 last, 
+                  TIterator2 search_first, TIterator2 search_last,
+                  TCompare compare)
+Searches for the first occurrence of the sequence of elements first, last in the range search_first, search_last
+Uses compare to check equality of the values
+
+https://en.cppreference.com/w/cpp/algorithm/search
+____________________________________________________________________________________________________
+binary_search
+template <typename TIterator, typename T, typename Compare>
+bool binary_search(TIterator first, TIterator last, const T& value, Compare compare)
+
+template <typename TIterator, typename T>
+bool binary_search(TIterator first, TIterator last, const T& value)
+
+https://en.cppreference.com/w/cpp/algorithm/binary_search
+____________________________________________________________________________________________________
+all_of
+template <typename TIterator, typename TUnaryPredicate>
+bool all_of(TIterator begin, TIterator end, TUnaryPredicate predicate)
+Checks if predicate returns true for all elements in the range begin, end
+
+https://en.cppreference.com/w/cpp/algorithm/all_any_none_of
+____________________________________________________________________________________________________
+any_of
+template <typename TIterator, typename TUnaryPredicate>
+bool any_of(TIterator begin, TIterator end, TUnaryPredicate predicate)
+Checks if predicate returns true for at least one element in the range begin, end
+
+https://en.cppreference.com/w/cpp/algorithm/all_any_none_of
+____________________________________________________________________________________________________
+none_of
+template <typename TIterator, typename TUnaryPredicate>
+bool none_of(TIterator begin, TIterator end, TUnaryPredicate predicate)
+Checks if predicate returns true for no elements in the range begin, end
+
+https://en.cppreference.com/w/cpp/algorithm/all_any_none_of
+____________________________________________________________________________________________________
+is_permutation
+Returns true if there exists a permutation of the elements in the range begin1, end1 that makes that range equal to the second range
+
+template <typename TIterator1, typename TIterator2>
+bool is_permutation(TIterator1 begin1, 
+                    TIterator1 end1, 
+                    TIterator2 begin2)
+____________________________________________________________________________________________________
+template <typename TIterator1, typename TIterator2>
+bool is_permutation(TIterator1 begin1, 
+                    TIterator1 end1, 
+                    TIterator2 begin2, 
+                    TIterator2 end2)
+____________________________________________________________________________________________________
+template <typename TIterator1, 
+          typename TIterator2, 
+          typename TBinaryPredicate>
+bool is_permutation(TIterator1       begin1, 
+                    TIterator1       end1, 
+                    TIterator2       begin2, 
+                    TBinaryPredicate predicate)
+____________________________________________________________________________________________________
+template <typename TIterator1, 
+          typename TIterator2, 
+          typename TBinaryPredicate>
+bool is_permutation(TIterator1       begin1, 
+                    TIterator1       end1, 
+                    TIterator2       begin2, 
+                    TIterator2       end2, 
+                    TBinaryPredicate predicate)
+
+https://en.cppreference.com/w/cpp/algorithm/is_permutation
+____________________________________________________________________________________________________
+is_partitioned
+template <typename TIterator, typename TUnaryPredicate>
+bool is_partitioned(TIterator begin, 
+                    TIterator end, 
+                    TUnaryPredicate predicate)
+Returns true if all elements in the range  begin, end that satisfy the predicate appear before all elements that don't. Also returns true if begin, end is empty.
+
+https://en.cppreference.com/w/cpp/algorithm/is_partitioned
+____________________________________________________________________________________________________
+partition_point
+template <typename TIterator, typename TUnaryPredicate>
+TIterator partition_point(TIterator begin, 
+                          TIterator end,  
+                          TUnaryPredicate predicate)
+Examines the partitioned range begin, end and locates the end of the first partition according to predicate
+
+https://en.cppreference.com/w/cpp/algorithm/partition_point
+____________________________________________________________________________________________________
+partition_copy
+template <typename TSource, 
+          typename TDestinationTrue, 
+          typename TDestinationFalse, 
+          typename TUnaryPredicate>
+pair<TDestinationTrue, TDestinationFalse> partition_copy(TSource           begin,
+                                                         TSource           end, 
+                                                         TDestinationTrue  destination_true,
+                                                         TDestinationFalse destination_false,
+                                                         TUnaryPredicate   predicate)
+
+Copies the elements from the range begin, end to two different ranges depending on the value returned by the predicate. 
+The elements that satisfy the predicate p are copied to the range beginning at destination_true. The rest of the elements are copied to the range beginning at destination_false.
+
+https://en.cppreference.com/w/cpp/algorithm/partition_copy
+____________________________________________________________________________________________________
+partition_transform
+ETL extension
+Transforms data from the source to one of two destinations.
+If the predicate returns true then the source data if modified by function_true and stored in destination_true.
+If the predicate returns false then the source data if modified by function_false and stored in destination_false.
+
+One input range.
+template <typename TSource, 
+          typename TDestinationTrue, 
+          typename TDestinationFalse,
+          typename TUnaryFunctionTrue, 
+          typename TUnaryFunctionFalse, 
+          typename TUnaryPredicate>
+pair<TDestinationTrue, TDestinationFalse>
+  partition_transform(TSource             begin,
+                      TSource             end,
+                      TDestinationTrue    destination_true,
+                      TDestinationFalse   destination_false,
+                      TUnaryFunctionTrue  function_true,
+                      TUnaryFunctionFalse function_false,
+                      TUnaryPredicate     predicate)
+____________________________________________________________________________________________________
+Two input ranges.
+template <typename TSource1,
+          typename TSource2, 
+          typename TDestinationTrue, 
+          typename TDestinationFalse,
+          typename TUnaryFunctionTrue, 
+          typename TUnaryFunctionFalse, 
+          typename TUnaryPredicate>
+pair<TDestinationTrue, TDestinationFalse>
+  partition_transform(TSource1             begin1,
+                      TSource1             end1,
+                      TSource2             begin2,
+                      TDestinationTrue     destination_true,
+                      TDestinationFalse    destination_false,
+                      TBinaryFunctionTrue  function_true,
+                      TBinaryFunctionFalse function_false,
+                      TBinaryPredicate     predicate)
+____________________________________________________________________________________________________
+rotate
+template <typename TIterator>
+TIterator rotate(TIterator first, TIterator middle, TIterator last)
+Performs a left rotation on the range of elements
+
+https://en.cppreference.com/w/cpp/algorithm/rotate
+____________________________________________________________________________________________________
+transform_s
+ETL extension
+A  safer version that will stop transforming when either iterator reaches the end of its range.
+
+template <typename TIterator, 
+          typename TOutputIterator, 
+          typename TUnaryPredicate>
+void transform_s(TIterator       i_begin,        
+                 TIterator       i_end,
+                 TOutputIterator o_begin,  
+                 TOutputIterator o_end,
+                 TUnaryFunction  function)
+____________________________________________________________________________________________________
+transform_n
+ETL extension
+Transform over n elements
+
+One input range.
+template <typename TInputIterator, 
+          typename TSize, 
+          typename TOutputIterator, 
+          typename TUnaryFunction>
+void transform_n(TInputIterator  i_begin,
+                 TSize           n,
+                 TOutputIterator o_begin,
+                 TUnaryFunction  function)
+____________________________________________________________________________________________________
+Two input ranges.
+template <typename TInputIterator1,
+          typename TInputIterator2, 
+          typename TSize, 
+          typename TOutputIterator, 
+          typename TBinaryFunction>
+void transform_n(TInputIterator1 i_begin1,
+                 TInputIterator2 i_begin2,
+                 TSize           n,
+                 TOutputIterator o_begin,
+                 TBinaryFunction function)
+____________________________________________________________________________________________________
+transform_if
+ETL extension
+Transforms data from the source based on a predicate.
+If the predicate returns true then the source data if modified by function and stored in the output range.
+If the predicate returns false then the source data is ignored.
+
+One input range.
+template <typename TInputIterator, 
+          typename TOutputIterator, 
+          typename TUnaryFunction, 
+          typename TUnaryPredicate>
+TOutputIterator transform_if(TInputIterator  i_begin,  
+                             TInputIterator  i_end,
+                             TOutputIterator o_begin, 
+                             TUnaryFunction  function,
+                             TUnaryPredicate predicate)
+____________________________________________________________________________________________________
+Two input ranges.
+template <typename TInputIterator1, 
+          typename TInputIterator2,
+          typename TOutputIterator, 
+          typename TBinaryFunction, 
+          typename TBinaryPredicate>
+TOutputIterator transform_if(TInputIterator1  i_begin1,
+                             TInputIterator1  i_end1,
+                             TInputIterator2  i_begin2, 
+                             TOutputIterator  o_begin,
+                             TBinaryFunction  function,
+                             TBinaryPredicate predicate)
+____________________________________________________________________________________________________
+transform_n_if
+ETL extension
+Transforms data from the source based on a predicate for 'n' items.
+If the predicate returns true then the source data if modified by function and stored in the output range.
+If the predicate returns false then the source data is ignored.
+
+One input range.
+template <typename TInputIterator,
+          typename TSize,
+          typename TOutputIterator, 
+          typename TUnaryFunction, 
+          typename TUnaryPredicate>
+TOutputIterator transform_if(TInputIterator  i_begin,  
+                             TSize           n,
+                             TOutputIterator o_begin, 
+                             TUnaryFunction  function,
+                             TUnaryPredicate predicate)
+____________________________________________________________________________________________________
+Two input ranges.
+template <typename TInputIterator1, 
+          typename TInputIterator2,
+          typename TSize,
+          typename TOutputIterator, 
+          typename TBinaryFunction, 
+          typename TBinaryPredicate>
+TOutputIterator transform_if(TInputIterator1  i_begin1,
+                             TSize            n,
+                             TInputIterator2  i_begin2, 
+                             TOutputIterator  o_begin,
+                             TBinaryFunction  function,
+                             TBinaryPredicate predicate)
+____________________________________________________________________________________________________
+shell_sort
+ETL extension
+Sorts a range using the shell sort algorithm.
+
+template <typename TIterator>
+void shell_sort(TIterator first, TIterator last)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+void shell_sort(TIterator first, TIterator last, TCompare compare)
+
+https://en.wikipedia.org/wiki/Shellsort
+____________________________________________________________________________________________________
+insertion_sort
+ETL extension
+Sorts a range using the insertion sort algorithm.
+
+template <typename TIterator>
+void insertion_sort(TIterator first, TIterator last)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+void insertion_sort(TIterator first, TIterator last, TCompare compare)
+
+https://en.wikipedia.org/wiki/Insertion_sort
+____________________________________________________________________________________________________
+heap_sort
+ETL extension
+16.2.0
+Sorts a range using the heap sort algorithm.
+
+template <typename TIterator>
+void heap_sort(TIterator first, TIterator last)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+void heap_sort(TIterator first, TIterator last, TCompare compare)
+
+https://en.wikipedia.org/wiki/Heapsort
+____________________________________________________________________________________________________
+selection_sort
+ETL extension
+20.7.0
+Sorts a range using the selection sort algorithm.
+
+template <typename TIterator>
+void selection_sort(TIterator first, TIterator last)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+void selection_sort(TIterator first, TIterator last, TCompare compare)
+
+https://en.wikipedia.org/wiki/Selectionsort
+____________________________________________________________________________________________________
+sort
+Sorts a range.
+
+template <typename TIterator>
+void sort(TIterator first, TIterator last)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+void sort(TIterator first, TIterator last, TCompare compare)
+
+If ETL_NO_STL is defined then uses etl::shell_sort, otherwise calls std::sort.
+
+https://en.cppreference.com/w/cpp/algorithm/sort
+____________________________________________________________________________________________________
+stable_sort
+Stable sorts a range.
+
+template <typename TIterator>
+void stable_sort(TIterator first, TIterator last)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+void stable_sort(TIterator first, TIterator last, TCompare compare)
+
+If ETL_NO_STL is defined then uses etl::insertion_sort, otherwise calls std::stable_sort.
+
+https://en.cppreference.com/w/cpp/algorithm/stable_sort
+____________________________________________________________________________________________________
+is_sorted
+Returns true is the range is sorted
+
+template <typename TIterator>
+bool is_sorted(TIterator begin, TIterator end)
+____________________________________________________________________________________________________
+
+template <typename TIterator, typename TCompare>
+bool is_sorted(TIterator begin, TIterator end, TCompare compare)
+
+https://en.cppreference.com/w/cpp/algorithm/is_sorted
+____________________________________________________________________________________________________
+is_sorted_until
+Returns an iterator the first element that is not sorted
+
+template <typename TIterator>
+TIterator is_sorted_until(TIterator begin, TIterator end)
+____________________________________________________________________________________________________
+template <typename TIterator, typename TCompare>
+TIterator is_sorted_until(TIterator begin, TIterator end, TCompare compare) 
+
+https://en.cppreference.com/w/cpp/algorithm/is_sorted_until
+____________________________________________________________________________________________________
+clamp
+Clamps a value between two limits.
+
+template <typename T, typename TCompare>
+ETL_CONSTEXPR const T& clamp(const T& value, const T& low, const T& high, TCompare compare)
+____________________________________________________________________________________________________
+template <typename T>
+ETL_CONSTEXPR const T& clamp(const T& value, const T& low, const T& high )
+____________________________________________________________________________________________________
+accumulate
+Reverse engineered std::accumulate
+
+template <typename TIterator, typename T>
+ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum)
+
+template <typename TIterator, typename T, typename TBinaryOperation>
+ETL_CONSTEXPR14 T accumulate(TIterator first, TIterator last, T sum, TBinaryOperation operation)
+____________________________________________________________________________________________________
+remove
+template <typename TIterator, typename T>
+TIterator remove(TIterator first, TIterator last, const T& value)
+Removes all elements that are equal to value.
+____________________________________________________________________________________________________
+remove_if
+template <typename TIterator, typename TUnaryPredicate>
+TIterator remove_if(TIterator first, TIterator last, TPredicate predicate)
+Removes all elements that satisfy the predicate.
+  

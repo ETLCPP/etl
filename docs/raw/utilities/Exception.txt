@@ -1,0 +1,29 @@
+Exception
+The base class for all ETL exceptions.
+
+Typedefs
+typedef string_type  const char*;
+typedef numeric_type int;
+
+Constructor
+exception(string_type reason, string_type file_name, numeric_type line_number);
+
+Access
+string_type what() const;
+Gets the reason for the exception.
+
+Example
+struct vector_full : public etl::exception
+{
+  vector_full(string_type file_name, numeric_type line_number)
+    : exception(ETL_ERROR_TEXT("Vector: full", "E123"), file_name, line_number)
+  {
+  }
+};
+
+Usually error will be called via the ETL error macro.
+
+ETL_ERROR(derived_exception_class)
+
+See error_handler.h
+

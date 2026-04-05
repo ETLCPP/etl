@@ -1,0 +1,163 @@
+tuple
+
+20.41.0
+A fixed-size collection of heterogeneous values.
+STL equivalent: std::tuple
+Adds additional functionality to std::tuple.
+
+etl::tuple<typename... Types>
+____________________________________________________________________________________________________
+Template deduction guides
+C++17 and above
+
+Template deduction guide from variadic arguments.
+template <typename... TArgs>
+tuple(TArgs... args) -> tuple<TArgs...>;
+
+Template deduction guide from pair.
+template <typename T1, typename T2>
+tuple(ETL_OR_STD::pair<T1, T2>) -> tuple<T1, T2>;
+
+Example
+etl::tuple tp(1, 2.2, 3, std::string("4"));
+
+Equivalent to:
+etl::tuple<int, double, int, std::string> t(1, 2.2, 3, std::string("4"));
+____________________________________________________________________________________________________
+Make tuple
+
+template <typename... Types>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+etl::tuple<etl::unwrap_ref_decay_t<Types>...> make_tuple(Types&&... args)
+
+Example
+auto t = etl::make_tuple(1, 2.2, 3, std::string("4"));
+
+Equivalent to:
+etl::tuple<int, double, int, std::string> t(1, 2.2, 3, std::string("4"));
+____________________________________________________________________________________________________
+Member types
+
+value_type             The first type contained by this tuple.
+this_type              The type of this tuple.
+base_type              The type of the base tuple to this tuple. This is a tuple of all types except for the first.
+index_sequence_type    The index_sequence type for this tuple.
+____________________________________________________________________________________________________
+Constructor
+
+Default or copy constructs each element.
+Can be initialised like a C array.
+
+etl::array<int, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+____________________________________________________________________________________________________
+Access
+
+template <size_t Index, typename Tuple>
+etl::tuple_element;
+____________________________________________________________________________________________________
+Capacity
+
+template <typename Tuple>
+struct tuple_size;
+____________________________________________________________________________________________________
+ETL Extensions
+
+template <typename T>
+struct is_tuple
+If T is a tuple etl::is_tuple is defined as etl::true_type, otherwise etl::false_type.
+____________________________________________________________________________________________________
+Specialisations of STL to allow the use of C++ structured bindings.
+
+template <typename... Types>
+struct tuple_size<etl::tuple<Types...>>
+Specialisation of tuple_size to allow the use of C++ structured bindings.
+Declared in namespace std.
+
+template <size_t Index, typename... Types>
+struct tuple_element<Index, etl::tuple<Types...>>
+Specialisation of tuple_element to allow the use of C++ structured bindings.
+Declared in namespace std.
+____________________________________________________________________________________________________
+Convert an etl::tuple to a std::tuple
+
+template <typename... Types>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+auto to_std(const etl::tuple<Types...>& etl_tuple)
+Converts an etl::tuple to a std::tuple.
+Enabled when STL is available.
+
+template <typename... Types>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+auto to_std(etl::tuple<Types...>&& etl_tuple)
+Converts an etl::tuple to a std::tuple.
+Enabled when STL is available.
+____________________________________________________________________________________________________
+Convert an std::tuple to a etl::tuple
+
+template <typename... Types>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+auto to_etl(const std::tuple<Types...>& std_tuple)
+Converts a std::tuple to an etl::tuple.
+Enabled when STL is available.
+
+template <typename... Types>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+auto to_etl(std::tuple<Types...>&& std_tuple)
+Converts a std::tuple to an etl::tuple.
+Enabled when STL is available.
+____________________________________________________________________________________________________
+Create a tuple from selected elements of another
+
+template <typename Tuple, size_t... Indices>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+auto select_from_tuple(Tuple&& tuple, etl::index_sequence<Indices...>)
+Creates a new tuple by selecting elements from another, given a run time index sequence.
+Static asserts if the number of indices does not match the tuple size.
+
+template <size_t... Indices, typename Tuple>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+auto select_from_tuple(Tuple&& tuple)
+Creates a new tuple by selecting elements from another, given a template parameter index sequence.
+Static asserts if the number of indices does not match the tuple size.
+____________________________________________________________________________________________________
+Non-member functions
+
+template <size_t Index, typename... Types>
+ETL_CONSTEXPR14
+etl::tuple_element_t<Index, etl::tuple<Types...>>& get(tuple<Types...>&);
+
+template <size_t Index, typename... Types>
+ETL_CONSTEXPR14 
+etl::tuple_element_t<Index, etl::tuple<Types...>>&& get(tuple<Types...>&&);
+
+template <size_t Index, typename... Types>
+ETL_CONSTEXPR14 
+const etl::tuple_element_t<Index, etl::tuple<Types...>>& get(const tuple<Types...>&);
+    
+template <size_t Index, typename... Types>
+ETL_CONSTEXPR14 
+const etl::tuple_element_t<Index, etl::tuple<Types...>>&& get(const tuple<Types...>&&);
+
+template <typename T, typename... Types>
+ETL_CONSTEXPR14
+T& get(tuple<Types...>&);
+
+template <typename T, typename... Types>
+ETL_CONSTEXPR14
+T&& get(tuple<Types...>&&);
+
+template <typename T, typename... Types>
+ETL_CONSTEXPR14
+const T& get(const tuple<Types...>&);
+
+template <typename T, typename... Types>
+ETL_CONSTEXPR14
+const T&& get(const tuple<Types...>&&);
+

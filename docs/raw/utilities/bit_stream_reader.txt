@@ -1,0 +1,163 @@
+bit_stream_reader
+
+A binary streaming utility that allows values to be read from an array of char or unsigned char using custom bits widths for efficient packing. Values may be streamed in either msb or lsb format.
+
+Read functions come in both checked and unchecked forms.
+Unchecked reads return a value of the specified type.
+Checked reads assert that there is enough space to read the value, and return an etl::optional containing the type.
+
+bool
+Stored as 1 bit.
+
+Integrals
+By default, stored using full bit width, otherwise uses the specified width.
+
+Custom types
+The user may create specializations of the non-member etl::read functions to stream custom types. Specialisations must be defined in the etl namespace.
+____________________________________________________________________________________________________
+Types
+
+value_type     char
+const_iterator const char*
+____________________________________________________________________________________________________
+Member functions
+
+bit_stream_reader(etl::span<char> span, etl::endian stream_endianness)
+span
+A char span of the read buffer.
+stream_endianness
+The endianness of the stream.
+etl::endian::little or etl::endian::big 
+____________________________________________________________________________________________________
+bit_stream_reader(etl::span<unsigned char> span, etl::endian stream_endianness)
+span
+An unsigned char span of the read buffer.
+stream_endianness
+The endianness of the stream.
+etl::endian::little or etl::endian::big
+____________________________________________________________________________________________________
+bit_stream_reader(void* begin, void* end, etl::endian stream_endianness)
+begin
+A pointer to the beginning of the read buffer.
+end
+A pointer to the beginning of the read buffer.
+stream_endianness
+The endianness of the stream.
+etl::endian::little or etl::endian::big
+____________________________________________________________________________________________________
+bit_stream_reader(void* begin, size_t length, etl::endian stream_endianness)
+begin
+A pointer to the beginning of the read buffer.
+length
+The length, in char, of the read buffer.
+stream_endianness
+The endianness of the stream.
+etl::endian::little or etl::endian::big
+____________________________________________________________________________________________________
+void restart()
+Sets the reader back to the beginning of the stream.
+____________________________________________________________________________________________________
+bool read_unchecked<bool>()
+Unchecked read for bool types.
+
+etl::optional<bool> read<bool>()
+Checked read for bool types.
+____________________________________________________________________________________________________
+template <typename T>
+T read_unchecked(uint_least8_t nbits = CHAR_BIT * sizeof(T))
+Unchecked read.
+Enabled for integral types.
+
+template <typename T>
+etl::optional<T> read(uint_least8_t nbits = CHAR_BIT * sizeof(T))
+Checked read.
+Enabled for integral types.
+____________________________________________________________________________________________________
+bool skip(size_t nbits)
+Skip forward in the stream by nbits.
+If there are not enough bits remaining in the stream it assert an etl::bit_stream_overflow and return false.
+____________________________________________________________________________________________________
+size_t size_bytes() const
+Returns the number of bytes in the stream buffer.
+____________________________________________________________________________________________________
+size_t size_bits() const
+Returns the number of bits in the stream buffer.
+____________________________________________________________________________________________________
+const_iterator begin() const
+const_iterator cbegin() const
+Returns start of the stream buffer.
+____________________________________________________________________________________________________
+const_iterator end() const
+const_iterator cend() const
+Returns end of the stream.
+____________________________________________________________________________________________________
+etl::span<const char> data() const
+Returns a span of whole the stream buffer.
+____________________________________________________________________________________________________
+Non-member functions
+
+template <typename T>
+T read_unchecked(etl::bit_stream_reader& stream)
+Reads an unchecked type from a stream by calling stream.read_unchecked<T>()
+
+template <typename T>
+T read_unchecked(etl::bit_stream_reader& stream, uint_least8_t nbits)
+Reads an unchecked type from a stream by calling stream.read_unchecked<T>(nbits)
+____________________________________________________________________________________________________
+template <typename T>
+etl::optional<T> read(etl::bit_stream_reader& stream)
+Reads a checked type from a stream by calling stream.read<T>()
+
+template <typename T>
+etl::optional<T> read(etl::bit_stream_reader& stream, uint_least8_t nbits)
+Reads a checked type from a stream by calling stream.read<T>(nbits)
+____________________________________________________________________________________________________
+template <>
+bool read_unchecked<bool>(etl::bit_stream_reader& stream)
+Specialisation for bool.
+Reads an unchecked bool from a stream by calling stream.read_unchecked<bool>()
+
+template <>
+etl::optional<bool> read<bool>(etl::bit_stream_reader& stream)
+Specialisation for bool.
+Reads a checked bool from a stream by calling stream.read<bool>()
+____________________________________________________________________________________________________
+By specialisation of the templates, the user may create readers for custom types.
+____________________________________________________________________________________________________
+Example
+
+char c           = 26;         // 6 bits
+unsigned short s = 6742;       // 13 bits
+int32_t i        = 2448037;    // 23 bits
+
+struct CustomType
+{
+char c           = -10;       // 7 bits
+unsigned short s = 1878;      // 11 bits
+int32_t i        = -10836646; // 25 bits
+};
+
+namespace etl
+{
+  // Specialisation for Custom.
+  // Must be defined in the etl namespace.
+  template <>
+  etl::optional<CustomType> read_unchecked<CustomType>(etl::bit_stream_reader& stream)
+  {
+    char c    = stream.read_unchecked<char, 7U>();
+    short s   = stream.read_unchecked<short , 11U>();
+    int32_t i = stream.read_unchecked<int32_t, 25U>();
+
+    return CustomType { c.value(), s.value(), i.value() };
+  }
+}
+
+std::array<char, 100U> storage; // Assume the buffer gets filled with bit stream data.
+etl::bit_stream_reader bit_stream(storage.data(), storage.size());
+
+// Read unchecked values from the stream.
+char c            = etl::read_unchecked<char>(bit_stream, 6U);
+unsigned short s  = etl::read_unchecked<unsigned short>(bit_stream, 13U);
+CustomType custom = etl::read_unchecked<Custom>(bit_stream);
+int32_t i         = etl::read_unchecked<>(bit_stream, 23U);
+

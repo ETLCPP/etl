@@ -1,0 +1,143 @@
+Constants
+A set of compile time constants.
+
+____________________________________________________________________________________________________
+log.h
+log
+template <size_t N, size_t BASE>
+struct log;
+
+Defines the member value as the log of N to base BASE.
+Set to the integer below the ideal floating point value.
+
+C++17 and above
+template <size_t N, size_t BASE>
+inline constexpr size_t log_v = log<N, BASE>::value;
+____________________________________________________________________________________________________
+log2
+template <size_t N>
+struct log2;
+
+Defines the member value as the log of N to base 2
+Set to the integer below the ideal floating point value.
+
+C++17 and above
+template <size_t N>
+inline constexpr size_t log2_v = log2<N>::value;
+
+____________________________________________________________________________________________________
+log10
+template <size_t N>
+struct log10;
+
+Defines the member value as the log of N to base 10
+Set to the integer below the ideal floating point value.
+
+C++17 and above
+template <size_t N>
+inline constexpr size_t log10_v = log10<N>::value;
+
+____________________________________________________________________________________________________
+power.h
+power
+template <size_t N, size_t POWER> 
+struct power;
+
+Defines the member value as N raised to the power POWER.
+
+C++17 and above
+template <size_t N, size_t POWER>
+inline constexpr size_t power_v = power<N, POWER>::value;
+
+____________________________________________________________________________________________________
+power_of_2_round_up
+template <size_t N> 
+struct power_of_2_round_up;
+
+Defines the member value to the next equal or higher power of 2.
+
+power_of_2_round_up<7> -> 8
+power_of_2_round_up<8> -> 8
+power_of_2_round_up<9> -> 16
+
+C++17 and above
+template <size_t N, size_t POWER>
+inline constexpr size_t power_of_2_round_up_v = power_of_2_round_up<N, POWER>::value;
+____________________________________________________________________________________________________
+power_of_2_round_down
+template <size_t N> 
+struct power_of_2_round_down;
+
+Defines the member value to the next equal or lower power of 2.
+
+power_of_2_round_down<7> -> 4
+power_of_2_round_down<8> -> 4
+power_of_2_round_down<9> -> 8
+
+C++17 and above
+template <size_t N, size_t POWER>
+inline constexpr size_t power_of_2_round_down_v = power_of_2_round_down<N, POWER>::value;
+
+____________________________________________________________________________________________________
+is_power_of_2
+template <size_t N> 
+struct is_power_of_2;
+
+Defines the member value to true if N is a power of 2, otherwise false.
+
+C++17 and above
+template <size_t N, size_t POWER>
+inline constexpr size_t is_power_of_2_v = is_power_of_2<N, POWER>::value;
+
+____________________________________________________________________________________________________
+sqrt.h
+sqrt
+template <size_t N, size_t I = 1>
+struct sqrt;
+
+Defines the member value as the largest integer that, when squared, is at less than or equal to N.
+
+C++17 and above
+template <size_t N, size_t I = 1>
+inline constexpr size_t sqrt_v = sqrt<N, POWER>::value;
+
+____________________________________________________________________________________________________
+factorial.h
+factorial
+template <const size_t N> 
+struct factorial;
+
+Defines the member value as the Nth factorial.
+
+C++17 and above
+template <size_t N>
+inline constexpr size_t factorial_v = factorial<N>::value;
+
+____________________________________________________________________________________________________
+fibbonacci.h
+fibbonacci
+template <const size_t N> 
+struct fibbonacci;
+
+Defines the member value as the Nth in the Fibbonacci sequence
+
+C++17 and above
+template <size_t N>
+inline constexpr size_t fibbonacci_v = fibbonacci<N>::value;
+
+____________________________________________________________________________________________________
+math_constants.h
+
+Namespace : etl::math
+
+ETL_CONSTANT double pi               = 3.14159265358979;
+ETL_CONSTANT double pi_reciprocal    = 0.31830988618379;
+ETL_CONSTANT double pi_squared       = 9.86960440108936;
+ETL_CONSTANT double e                = 2.71828182845905;
+ETL_CONSTANT double e_reciprocal     = 0.36787944117144;
+ETL_CONSTANT double e_squared        = 7.38905609893065;
+ETL_CONSTANT double root2            = 1.41421356237310;
+ETL_CONSTANT double root2_reciprocal = 0.70710678118655;
+ETL_CONSTANT double euler            = 0.57721566490153;
+ETL_CONSTANT double golden_ratio     = 1.61803398874989;
+

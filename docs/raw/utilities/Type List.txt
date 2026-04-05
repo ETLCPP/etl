@@ -1,0 +1,79 @@
+Type List
+
+Defines a tuple of types, but unlike a tuple, does not contain any values.
+This is an empty class.
+Valid for C++11 and above.
+____________________________________________________________________________________________________
+type_list
+
+etl::type_select<typename... TTypes>
+Creates a tuple of types from a set of template type parameters.
+____________________________________________________________________________________________________
+Member types
+index_sequence_type
+The index_sequence type for this type_list.
+____________________________________________________________________________________________________
+Type list creation
+____________________________________________________________________________________________________
+Using global types
+
+template <typename TTypeList, size_t... Indices>
+type_list_select
+Defines a new type_list by selecting types from a given type_list, according to an index sequence.
+____________________________________________________________________________________________________
+template <typename... TTypeLists>
+type_list_cat
+Defines a new type list by concatenating a list of etl::type_list objects.
+std::tuple style access.
+____________________________________________________________________________________________________
+Type list properties
+____________________________________________________________________________________________________
+Using member types
+
+static constexpr size_t size();
+Returns the number of types in the type list.
+____________________________________________________________________________________________________
+Using global types
+
+template <typename TTypelist>
+type_list_size
+Defines value as the size of the type list.
+tuple style access.
+
+template <typename TTypelist>
+type_list_size_v C++17 and above
+____________________________________________________________________________________________________
+etl::nth_type<size_t N, typename TTypeList>
+Defines the nth type in the type list.
+____________________________________________________________________________________________________
+template <typename TFromList, typename TToList>
+type_lists_are_convertible
+Checks that types in a type_list are convertible to the type in another.
+Defines value as true or false.
+20.43.0
+
+template <typename TFromList, typename TToList>
+type_lists_are_convertible_v C++17 and above
+20.43.0
+____________________________________________________________________________________________________
+Examples
+
+using TypeList1 = etl::type_list<char, short, int, long>
+using TypeList2 = etl::type_list<float, double>
+using TypeList3 = etl::type_list<unsigned char, unsigned short>
+____________________________________________________________________________________________________
+Using member types
+
+// Get the size of TypeList1
+constexpr size_t typeList1Size = TypeList1::size();
+____________________________________________________________________________________________________
+Using tuple style global types
+
+// Get the size of TypeList1
+constexpr size_t typeList1Size = etl::type_list_size_v<TypeList1>;
+
+// Define the type list 
+// etl::type_list<char, short, int, long, float, double, unsigned char, unsigned short>
+using Concatenated = etl::type_list_cat<TypeList1, TypeList2, TypeList3>
+
+

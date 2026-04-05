@@ -1,0 +1,17 @@
+last_spec
+last_spec is a tag type that is used in conjunction with other calendar types to indicate the last thing in a sequence.
+Back to chrono
+____________________________________________________________________________________________________
+last_spec
+
+struct last_spec
+{
+  explicit last_spec() = default;
+};
+
+inline constexpr last_spec last{};
+
+Example:
+
+2025_y/March/last for last day of March 2025 i.e. 2025-03-31
+

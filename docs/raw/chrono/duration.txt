@@ -1,0 +1,335 @@
+duration
+Templates representing a time intervals.
+Back to chrono
+____________________________________________________________________________________________________
+duration_values
+
+STL equivalent: std::chrono::duration_values
+
+template <typename TRep>
+struct duration_values
+
+ETL_NODISCARD static ETL_CONSTEXPR TRep zero() ETL_NOEXCEPT
+Returns TRep(0)
+______________________________________________
+ETL_NODISCARD static ETL_CONSTEXPR14 TRep min() ETL_NOEXCEPT
+Returns etl::numeric_limits<TRep>::min()
+______________________________________________
+ETL_NODISCARD static ETL_CONSTEXPR14 TRep max() ETL_NOEXCEPT
+Returns etl::numeric_limits<TRep>::max()
+
+____________________________________________________________________________________________________
+duration
+
+STL equivalent: std::chrono::duration
+
+template <typename TRep, typename TPeriod = etl::ratio<1>>
+class duration
+______________________________________________
+using rep = TRep
+using period = typename TPeriod::type;
+____________________________________________________________________________________________________
+Construction
+
+ETL_CONSTEXPR 
+duration() 
+ETL_NOEXCEPT
+Default constructor.
+______________________________________________
+ETL_CONSTEXPR14
+duration(const etl::chrono::duration<TRep, TPeriod>& other) 
+ETL_NOEXCEPT
+______________________________________________
+template <typename TRep2>
+ETL_CONSTEXPR14 
+explicit duration(const TRep2& value) 
+ETL_NOEXCEPT
+______________________________________________
+template <typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+duration(const etl::chrono::duration<TRep2, TPeriod2>& other) 
+ETL_NOEXCEPT
+Construct from another duration type.
+Enabled if etl::ratio_divide<TPeriod2, TPeriod>::den == 1
+____________________________________________________________________________________________________
+Tests
+
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+int compare(const time_point& other) const 
+ETL_NOEXCEPT
+Compare day with another.
+if time_point < other, returns -1
+else if time_point > other, returns 1
+else returns 0
+____________________________________________________________________________________________________
+Assignment
+
+ETL_CONSTEXPR14 
+etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
+______________________________________________
+template <typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
+____________________________________________________________________________________________________
+Convertion
+
+ETL_CONSTEXPR14 
+TRep count() const 
+ETL_NOEXCEPT
+Returns the duration count as a numeric.
+______________________________________________
+ETL_CONSTEXPR14 
+etl::common_type_t<duration> operator +() const 
+ETL_NOEXCEPT
+Implements unary plus.
+______________________________________________
+ETL_CONSTEXPR14 
+etl::common_type_t<duration> operator -() const 
+ETL_NOEXCEPT
+Implements unary minus.
+______________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+etl::chrono::duration<TRep, TPeriod> absolute() const 
+ETL_NOEXCEPT
+Returns the absolute value of the duration.
+____________________________________________________________________________________________________
+Constants
+
+ETL_NODISCARD
+static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> zero()  
+ETL_NOEXCEPT
+Returns the duration zero value.
+______________________________________________
+ETL_NODISCARD
+static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> min()
+ETL_NOEXCEPT
+Returns the minimum duration value.
+______________________________________________
+ETL_NODISCARD
+static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> max()
+ETL_NOEXCEPT
+Returns the maximum duration value.
+____________________________________________________________________________________________________
+Increment/decrement
+
+ETL_CONSTEXPR14 
+duration& operator ++()
+ETL_NOEXCEPT
+Pre-increments the duration count.
+______________________________________________
+ETL_CONSTEXPR14 
+duration operator ++(int)
+ETL_NOEXCEPT
+Post-increments the duration count.
+______________________________________________
+ETL_CONSTEXPR14 
+duration& operator --()
+ETL_NOEXCEPT
+Pre-decrements the duration count.
+______________________________________________
+ETL_CONSTEXPR14 
+duration operator --(int)
+ETL_NOEXCEPT
+Post-decrements the duration count.
+____________________________________________________________________________________________________
+Mathematical operators
+
+ETL_CONSTEXPR14 
+duration& operator +=(const duration<TRep, TPeriod>& d)
+ETL_NOEXCEPT
+Adds duration d to this duration.
+______________________________________________
+ETL_CONSTEXPR14 
+duration& operator -=(const duration<TRep, TPeriod>& d)
+ETL_NOEXCEPT
+Subtracts duration d to this duration.
+______________________________________________
+ETL_CONSTEXPR14 
+duration& operator *=(const TRep& r) 
+ETL_NOEXCEPT
+Multiplies this duration by r.
+______________________________________________
+ETL_CONSTEXPR14 
+duration& operator /=(const TRep& r)
+ETL_NOEXCEPT
+Divides this duration by r.
+______________________________________________
+ETL_CONSTEXPR14 
+duration& operator %=(const TRep& r)
+ETL_NOEXCEPT
+Sets this duration to the modulus of r.
+______________________________________________
+ETL_CONSTEXPR14 
+duration& operator %=(const duration<TRep, TPeriod>& d)
+ETL_NOEXCEPT
+Sets this duration to the modulus of duration d.
+____________________________________________________________________________________________________
+Comparison
+
+template <typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+int compare(const duration<TRep2, TPeriod2>& other) const
+ETL_NOEXCEPT
+Compare duration with another.
+If duration < other, returns -1
+else if duration > other, returns 1
+else returns 0
+____________________________________________________________________________________________________
+Non-member mathematical operators
+
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+etl::common_type_t<etl::chrono::duration<TRep1, TPeriod1>, 
+                   etl::chrono::duration<TRep2, TPeriod2>>
+operator +(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+           const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+ETL_NOEXCEPT
+Operator +
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14
+etl::common_type_t<etl::chrono::duration<TRep1, TPeriod1>, 
+                   etl::chrono::duration<TRep2, TPeriod2> >::type 
+operator -(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+           const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+ETL_NOEXCEPT
+Operator -
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2>
+ETL_CONSTEXPR14
+etl::chrono::duration<etl::common_type_t<TRep1, TRep2>, TPeriod1>>
+operator *(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+           const TRep2& rhs)
+ETL_NOEXCEPT
+Operator *
+Enabled if TRep2 is not a specialization of etl::chrono::duration.
+______________________________________________
+template <typename TRep1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+etl::chrono::duration<etl::common_type_t<TRep1, TRep2>, TPeriod2>
+operator *(const TRep1& lhs, 
+           const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+ETL_NOEXCEPT
+Operator *
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2>
+ETL_CONSTEXPR14 
+etl::common_type_t<TRep1, TRep2>, TPeriod1>
+operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+           const TRep2& rhs)
+ETL_NOEXCEPT
+Operator /
+Enabled if TRep2 is not a specialization of etl::chrono::duration.
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14
+etl::common_type_t<TRep1, TRep2>
+operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+           const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+ETL_NOEXCEPT
+Operator /
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2>
+ETL_CONSTEXPR14 
+etl::chrono::duration<etl::common_type_t<TRep1, TRep2>, TPeriod1>
+operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+           const TRep2& rhs)
+ETL_NOEXCEPT
+Operator %
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+etl::common_type_t<etl::chrono::duration<TRep1, TPeriod1>, 
+                   etl::chrono::duration<TRep2, TPeriod2>>
+operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+           const etl::chrono::duration<TRep2, TPeriod2>& rhs)
+ETL_NOEXCEPT
+Operator %
+____________________________________________________________________________________________________
+Non-member comparison operators
+
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14
+bool operator ==(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                 const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+ETL_NOEXCEPT
+Checks for equality.
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+bool operator !=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                 const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+ETL_NOEXCEPT
+Checks for inequality.
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+bool operator <(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+ETL_NOEXCEPT
+Checks for less-than.
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+bool operator <=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                 const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+ETL_NOEXCEPT
+Checks for less-than-or-equal.
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14
+bool operator >(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+ETL_NOEXCEPT
+Checks for greater-than.
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14
+bool operator >=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                 const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+ETL_NOEXCEPT
+Checks for greater-than-or-equal.
+______________________________________________
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+[[nodiscard]] 
+constexpr 
+auto operator <=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+                  const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+noexcept
+Spaceship operator.
+C++20
+____________________________________________________________________________________________________
+common_type
+
+template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
+struct common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>
+etl::common_type specialisation for etl::duration.
+____________________________________________________________________________________________________
+Hash
+
+template <typename TRep, typename TPeriod>
+struct hash<etl::chrono::duration<TRep, TPeriod>>
+____________________________________________________________________________________________________
+Pre-defined duration types
+
+etl::chrono::years
+etl::chrono::months
+etl::chrono::weeks
+etl::chrono::days
+etl::chrono::hours
+etl::chrono::minutes
+etl::chrono::seconds
+etl::chrono::milliseconds
+etl::chrono::microseconds
+etl::chrono::nanoseconds
+____________________________________________________________________________________________________
+duration_cast
+
+template <typename TToDuration, typename TRep, typename TPeriod>
+ETL_CONSTEXPR14 
+TToDuration duration_cast(const etl::chrono::duration<TRep, TPeriod>& d)
+ETL_NOEXCEPT
+Converts from one duration type to another.
+

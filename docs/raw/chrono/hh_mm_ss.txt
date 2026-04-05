@@ -1,0 +1,87 @@
+hh_mm_ss
+A type to hold hous, minutes, and seconds.
+Back to chrono
+____________________________________________________________________________________________________
+absolute
+
+template <typename TDuration>
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+TDuration absolute(TDuration dur) 
+ETL_NOEXCEPT
+A specialisation of absolute for etl::chrono::duration.
+Returns the absolute duration value.
+____________________________________________________________________________________________________
+hh_mm_ss
+
+template <typename TDuration>
+class hh_mm_ss
+
+Static asserts if TDuration is not a specialisation of etl::chrono::duration.
+____________________________________________________________________________________________________
+Class constant
+
+static constexpr int fractional_width;
+The number of fractional digits.
+____________________________________________________________________________________________________
+Class type
+
+precision
+The return type for to_duration.
+____________________________________________________________________________________________________
+Constructors
+
+ETL_CONSTEXPR 
+hh_mm_ss() 
+ETL_NOEXCEPT
+Default constructor.
+______________________________________________
+ETL_CONSTEXPR14
+explicit hh_mm_ss(TDuration d) 
+ETL_NOEXCEPT
+Construct from duration.
+ ____________________________________________________________________________________________________
+Access
+
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+bool is_negative() const 
+ETL_NOEXCEPT
+Checks for negative duration.
+______________________________________________
+ETL_NODISCARD 
+ETL_CONSTEXPR14 
+etl::chrono::hours hours() const 
+ETL_NOEXCEPT
+Returns the hours.
+______________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+etl::chrono::minutes minutes() const 
+ETL_NOEXCEPT
+Returns the minutes.
+______________________________________________
+ETL_NODISCARD 
+ETL_CONSTEXPR14
+etl::chrono::seconds seconds() const 
+ETL_NOEXCEPT
+Returns the seconds.
+______________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+precision subseconds() const 
+ETL_NOEXCEPT
+Returns the subseconds.
+______________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+explicit operator precision() const 
+ETL_NOEXCEPT
+Returns the duration.
+______________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+precision to_duration() const 
+ETL_NOEXCEPT
+Returns the duration.
+

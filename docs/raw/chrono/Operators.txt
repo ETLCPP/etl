@@ -1,0 +1,224 @@
+Operators
+Operators for building dates.
+Back to chrono
+____________________________________________________________________________________________________
+month_day
+
+Create from month and day.
+
+ETL_CONSTEXPR14 
+etl::chrono::month_day operator /(const etl::chrono::month& m,
+                                  const etl::chrono::day& d) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_day operator /(const etl::chrono::month& m, 
+                                  int d) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_day operator /(int m, 
+                                  const etl::chrono::day& d) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_day operator /(const etl::chrono::day& d, 
+                                  const etl::chrono::month& m) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_day operator /(const etl::chrono::day& d, 
+                                  int m) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+month_day_last
+
+ETL_CONSTEXPR14 
+etl::chrono::month_day_last operator /(const etl::chrono::month& m,
+                                       etl::chrono::last_spec)
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_day_last operator /(int m, 
+                                       etl::chrono::last_spec) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_day_last operator /(etl::chrono::last_spec,
+                                       const etl::chrono::month& m) 
+ETL_NOEXCEPT
+     
+ETL_CONSTEXPR14 
+etl::chrono::month_day_last operator /(etl::chrono::last_spec, 
+                                      int m) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+month_weekday
+
+ETL_CONSTEXPR14 
+etl::chrono::month_weekday operator /(const etl::chrono::month& m,
+                                      const etl::chrono::weekday_indexed& wdi) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_weekday operator /(int m, 
+                                      const etl::chrono::weekday_indexed& wdi) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_weekday operator /(const etl::chrono::weekday_indexed& wdi,
+                                      const etl::chrono::month& m) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_weekday operator /(const etl::chrono::weekday_indexed& wdi, 
+                                      int m) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+month_weekday_last
+
+ETL_CONSTEXPR14 
+etl::chrono::month_weekday_last operator /(const etl::chrono::month& m,
+                                           const etl::chrono::weekday_last& wdl)
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_weekday_last operator /(int m,
+                                           const etl::chrono::weekday_last& wdl) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_weekday_last operator /(const etl::chrono::weekday_last& wdl,
+                                           const etl::chrono::month& m) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::month_weekday_last operator /(const etl::chrono::weekday_last& wdl,
+                                           int m) 
+ETL_NOEXCEPT
+
+____________________________________________________________________________________________________
+year_month
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month operator /(const etl::chrono::year& y,
+                                   const etl::chrono::month& m) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month operator /(const etl::chrono::year& y,
+                                   int m) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+year_month_day
+
+ETL_CONSTEXPR14 etl::chrono::year_month_day operator /(const etl::chrono::year_month& ym,
+                                                       const etl::chrono::day& d) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 etl::chrono::year_month_day operator /(const etl::chrono::year_month& ym, 
+                                                       int d ) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+year_month_day
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day operator /(const etl::chrono::year& y,
+                                       const etl::chrono::month_day& md) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day operator /(int y,
+                                       const etl::chrono::month_day& md) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day operator /(const etl::chrono::month_day& md,
+                                       const etl::chrono::year& y) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day operator /(const etl::chrono::month_day& md,
+                                       int y) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+year_month_day_last
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day_last operator /(const etl::chrono::year_month& ym,
+                                            etl::chrono::last_spec) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day_last operator /(const etl::chrono::year& y,
+                                            const etl::chrono::month_day_last& mdl) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day_last operator /(int y,
+                                            const etl::chrono::month_day_last& mdl) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day_last operator /(const etl::chrono::month_day_last& mdl,
+                                            const etl::chrono::year& y)
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_day_last operator /(const etl::chrono::month_day_last& mdl,
+                                            int y) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+year_month_weekday
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday operator /(const etl::chrono::year_month& ym,
+                                           const etl::chrono::weekday_indexed& wdi) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday operator /(const etl::chrono::year& y,
+                                           const etl::chrono::month_weekday& mwd) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday operator /(int y, 
+                                           const etl::chrono::month_weekday& mwd) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday operator /(const etl::chrono::month_weekday& mwd,
+                                           const etl::chrono::year& y) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday operator /(const etl::chrono::month_weekday& mwd, 
+                                           int y) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+year_month_weekday_last
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday_last operator /(const etl::chrono::year_month& ym,
+                                                const etl::chrono::weekday_last& wdl) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday_last operator /(const etl::chrono::year& y,
+                                                const etl::chrono::month_weekday_last& mwdl) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday_last operator /(int y,
+                                                const etl::chrono::month_weekday_last& mwdl) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday_last operator /(const etl::chrono::month_weekday_last& mwdl,
+                                                const etl::chrono::year& y) 
+ETL_NOEXCEPT
+
+ETL_CONSTEXPR14 
+etl::chrono::year_month_weekday_last operator /(const etl::chrono::month_weekday_last& mwdl,
+                                                int y) 
+ETL_NOEXCEPT

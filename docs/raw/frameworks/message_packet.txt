@@ -1,0 +1,103 @@
+message_packet
+
+A container for more than one type of message.
+The messages must have been derived from etl::imessage.
+
+The messages types that the packet may contain are listed as template parameters.
+e.g. etl::message_packet<Message1, Message2, Message3>
+
+From 20.40.0 message types are not rquired to have a virtual destructor.
+
+____________________________________________________________________________________________________
+message_packet()
+Default constructs a message packet.
+is_valid() returns false.
+___________________________________________________________________________________________________
+explicit message_packet(const etl::imessage&)
+Constructs a message packet from an etl::imessage reference.
+Asserts an etl::unhandled_message_exception error if the parameter is not one listed in the template parameter list.
+___________________________________________________________________________________________________
+explicit message_packet(etl::imessage&&) C++11
+Move constructs a message packet from an etl::imessage rvalue reference.
+Emits an etl::unhandled_message_exception error if the parameter is not one listed in the template parameter list.
+___________________________________________________________________________________________________
+20.22.0
+template <typename TMessage>
+explicit message_packet(const TMessage&)
+Constructs a message packet from a TMessage reference.
+Emits a compile time static assert if the parameter is not one listed in the template parameter list.
+___________________________________________________________________________________________________
+20.22.0
+template <typename TMessage>
+explicit message_packet(TMessage&&) C++11
+Move constructs a message packet from a TMessage rvalue reference.
+Emits a compile time static assert if the parameter is not one listed in the template parameter list.
+___________________________________________________________________________________________________
+message_packet(const message_packet&)
+Constructs a message packet from an message_packet reference.
+Emits an etl::unhandled_message_exception error if the parameter is not one listed in the template parameter list.
+___________________________________________________________________________________________________
+message_packet(message_packet&&)
+Move constructs a message packet from an message_packet rvalue reference.
+Emits an etl::unhandled_message_exception if the parameter is not one listed in the template parameter list.
+___________________________________________________________________________________________________
+message_packet& operator =(const message_packet&)
+Assigns a message packet from an message_packet reference.
+Emits an etl::unhandled_message_exception error if the parameter is not one listed in the template parameter list.
+___________________________________________________________________________________________________
+message_packet& operator =(message_packet&&)
+Move assigns a message packet from an message_packet rvalue reference.
+Emits an etl::unhandled_message_exception error if the parameter is not one listed in the template parameter list.
+___________________________________________________________________________________________________
+etl::imessage& get()
+const etl::imessage& get() const
+Returns a reference to an etl::imessage
+___________________________________________________________________________________________________
+bool is_valid() const
+Returns true if the packet contains a valid message, otherwise false.
+____________________________________________________________________________________________________
+Constants
+
+SIZE      The size of the largest message.
+ALIGNMENT The largest message alignment.
+____________________________________________________________________________________________________
+Example
+
+enum
+{
+  MESSAGE1,
+  MESSAGE2,
+  MESSAGE3
+};
+
+struct Message1 : public etl::message<MESSAGE1>
+{
+};
+
+struct Message2 : public etl::message<MESSAGE2>
+{
+};
+
+struct Message3 : public etl::message<MESSAGE3>
+{
+};
+
+using Packet = etl::message_packet<Message1, Message2>
+
+Message1 message1;
+Message2 message2;
+Message3 message3;
+
+Packet packet1(message1);
+Packet packet2(message2);
+Packet packet3(message3); // Runtime time error! Packet does not support Message3 type.
+
+etl::imessage& m1 = message1;
+Packet packet4(m1); // Construct from an etl::imessage reference.
+
+etl::imessage& m3 = message3;
+Packet packet4(m3); // Asserts etl::unhandled_message_exception! Packet does not support Message3 type.
+
+etl::imessage& m = packet2.get(); // Get a reference to an etl::imessage from the packet.
+
+

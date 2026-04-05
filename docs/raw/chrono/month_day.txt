@@ -1,0 +1,104 @@
+month_day
+A template representing a month and day.
+Back to chrono
+____________________________________________________________________________________________________
+month_day
+
+STL equivalent: std::chrono::month_day
+
+class month_day
+____________________________________________________________________________________________________
+Construction
+
+ETL_CONSTEXPR 
+month_day()
+Default constructor.
+______________________________________________
+ETL_CONSTEXPR14 
+month_day(const etl::chrono::month& m, 
+          const etl::chrono::day&   d) 
+ETL_NOEXCEPT
+Construct from month and day.
+____________________________________________________________________________________________________
+Access
+
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+etl::chrono::month month() const 
+ETL_NOEXCEPT
+Returns the month.
+______________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+etl::chrono::day day() const 
+ETL_NOEXCEPT
+Returns the day.
+____________________________________________________________________________________________________
+Tests
+
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+bool ok() const 
+ETL_NOEXCEPT
+Returns true if the month and day is within the valid limits.
+______________________________________________
+ETL_CONSTEXPR14 
+int compare(const month_day& other) const 
+ETL_NOEXCEPT 
+Compare month_day with another.
+if month < other.month, returns -1
+else if month > other.month, returns 1
+else if day < other.day, returns -1
+else if day > other.day, returns 1
+else returns 0
+____________________________________________________________________________________________________
+Non-member comparison operators
+
+ETL_CONSTEXPR14 
+bool operator ==(const etl::chrono::month_day& lhs, 
+                 const etl::chrono::month_day& rhs) 
+ETL_NOEXCEPT
+Equality operator.
+______________________________________________
+ETL_CONSTEXPR14 
+bool operator !=(const etl::chrono::month_day& lhs, 
+                 const etl::chrono::month_day& rhs) 
+ETL_NOEXCEPT
+Inequality operator.
+______________________________________________
+ETL_CONSTEXPR14 
+bool operator <(const etl::chrono::month_day& lhs, 
+                const etl::chrono::month_day& rhs) 
+ETL_NOEXCEPT
+Less-than operator.
+______________________________________________
+ETL_CONSTEXPR14 
+bool operator <=(const etl::chrono::month_day& lhs, 
+                 const etl::chrono::month_day& rhs) 
+ETL_NOEXCEPT
+Less-than-equal operator.
+______________________________________________
+ETL_CONSTEXPR14 
+bool operator <(const etl::chrono::month_day& lhs, 
+                const etl::chrono::month_day& rhs) 
+ETL_NOEXCEPT
+Greater-than operator.
+______________________________________________
+ETL_CONSTEXPR14 
+bool operator <=(const etl::chrono::month_day& lhs, 
+                 const etl::chrono::month_day& rhs) 
+ETL_NOEXCEPT
+Greater-than-equal operator.
+______________________________________________
+[[nodiscard]] constexpr
+auto operator <=>(const etl::chrono::month_day& lhs, 
+                  const etl::chrono::month_day& rhs)
+ETL_NOEXCEPT
+Spaceship operator
+____________________________________________________________________________________________________
+Hash
+
+template <typename TRep, typename TPeriod>
+struct hash<etl::chrono::month_day>
+Hash function for etl::chrono::month_day
+

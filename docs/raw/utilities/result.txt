@@ -1,0 +1,81 @@
+result
+
+20.17.0
+A generic result type for returning either a result or an error.
+Deprecated. Use etl::expected
+
+template <typename TValue, typename TError>
+class result
+
+Specialisation for void result.
+template <typename TError>
+class result<void, TError>
+____________________________________________________________________________________________________
+result() = delete;
+Cannot be default constructed
+
+result(const result& other)
+Copy constructor
+
+result(result&& other)
+Move constructor
+____________________________________________________________________________________________________
+result(const TValue& value)
+Construct from a value
+Not valid for void specialisation
+
+result(TValue&& value)
+Move construct from a value
+Not valid for void specialisation
+____________________________________________________________________________________________________
+result(const TError& err)
+Construct from error
+
+result(TError&& err)
+Move construct from error
+____________________________________________________________________________________________________
+result& operator =(const result& other)
+Copy assign
+
+result& operator =(result&& other)
+Move assign 
+____________________________________________________________________________________________________
+result& operator =(const TValue& value)
+Copy assign from value
+Not valid for void specialisation
+
+result& operator =(TValue&& value)
+Move assign from value
+Not valid for void specialisation
+____________________________________________________________________________________________________
+result& operator =(const TError& err)
+Copy assign from error
+
+result& operator =(TError&& err)
+Move assign from error
+____________________________________________________________________________________________________
+bool is_value() const
+true if result contains a value
+____________________________________________________________________________________________________
+bool is_error() const
+true if result contains an error
+____________________________________________________________________________________________________
+const TValue& value() const
+Returns a const reference to the value.
+Undefined if the result does not contain an value.
+Not valid for void specialisation
+
+TValue&& value()
+Returns an rvalue reference to the value.
+Undefined if the result does not contain an value.
+Not valid for void specialisation
+____________________________________________________________________________________________________
+const TError& error() const
+Returns a const reference to the error.
+Undefined if the result does not contain an error.
+
+TError&& error()
+Returns an rvalue reference to the error.
+Undefined if the result does not contain an error.
+
+

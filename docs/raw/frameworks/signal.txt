@@ -1,0 +1,257 @@
+signal
+20.44.0
+
+A class that implements simple signal/slot framework.
+Uses etl::delegate as the default slot type, though other types may be used.
+
+template <typename TFunction, size_t Size, typename TSlot = etl::delegate<TFunction>>
+class signal
+TFunction  The callback function signature.
+Size       The maximum numbr of slots for the signal.
+TSlot      The callback slot type. Default = etl::delegate<TFunction>
+____________________________________________________________________________________________________
+Types
+
+slot_type Defined as the slot type.
+size_type The size type used internally.
+span_type The span type used in the connect API.
+____________________________________________________________________________________________________
+Constructors
+
+template <typename... TSlots>
+ETL_CONSTEXPR14 explicit signal(TSlots&&... slots) ETL_NOEXCEPT
+Construct the signal from a variadic list of slots.
+Can be used as a constexpr constructor.
+Static asserts if any of the 
+____________________________________________________________________________________________________
+Connect
+
+bool connect(const slot_type& slot)
+Connects the slot, if not already connected and returns true.
+If the signal is full, ETL_ASSERTs etl::signal_full and returns false.
+____________________________________________________________________________________________________
+bool connect(std::initializer_list<const slot_type> slots)
+Connects all of the slots and returns true.
+If the number of slots exceeds the signal's max size, asserts an etl::signal_full and returns false.
+Enabled if ETL_HAS_INITIALIZER_LIST and ETL_USING_CPP17 are defined as 1.
+____________________________________________________________________________________________________
+bool connect(const span_type slots)
+Connects all of the slots and returns true.
+If the number of slots exceeds the signal's max size, asserts an etl::signal_full and returns false.
+____________________________________________________________________________________________________
+Disconnect
+
+void disconnect(const slot_type& slot) ETL_NOEXCEPT
+Disconnects slot from the signal.
+If the signal does not contain the slot. there is no error.
+____________________________________________________________________________________________________
+void disconnect(std::initializer_list<const slot_type> slots) ETL_NOEXCEPT
+Disconnects all of the slots from the signal.
+If the signal does not contain a particular slot, there is no error.
+Enabled if ETL_HAS_INITIALIZER_LIST and ETL_USING_CPP17 are defined as 1.
+____________________________________________________________________________________________________
+void disconnect(const span_type slots) ETL_NOEXCEPT
+Disconnects all of the slots from the signal.
+If the signal does not contain a particular slot, there is no error.
+____________________________________________________________________________________________________
+void disconnect_all() ETL_NOEXCEPT
+Disconnects all slots from the signal.
+____________________________________________________________________________________________________
+Status
+    
+ETL_CONSTEXPR14 bool connected(const slot_type& slot) const ETL_NOEXCEPT
+Checks if a slot is connected to the signal.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 bool empty() const ETL_NOEXCEPT
+Return true if the signal has no slots connected.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 bool full() const ETL_NOEXCEPT
+Return true if the signal has the maximum number of slots connected.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 size_type max_size() const ETL_NOEXCEPT
+Returns the total number of slots that can be connected.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 size_type size() const ETL_NOEXCEPT
+Returns the total slots currently connected.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 size_type available() const ETL_NOEXCEPT
+Returns the total empty slots available.
+____________________________________________________________________________________________________
+Call
+
+template <typename... TArgs>
+void operator()(TArgs&&... args) const ETL_NOEXCEPT
+Function operator that calls each slot with the supplied parameters.
+____________________________________________________________________________________________________
+Errors
+
+etl::signal_full  Indicates that an attempt to add a slot to a full signal occurred.
+
+Inherits from etl::signal_exception
+____________________________________________________________________________________________________
+Examples
+
+constexpr size_t MaxSlots = 3;
+
+using callback_type = void(int a, int b);
+using signal_type   = etl::signal<callback_type, MaxSlots>;
+using slot_type     = signal_type::slot_type;
+using span_type     = signal_type::span_type;
+
+using not_slot_type = etl::delegate<void(int)>;
+____________________________________________________________________________________________________
+Defining the slot functions
+
+void Function1(int a, int b)
+{
+  std::cout << "Function1: " << a << "," << b << "\n";
+}
+
+void Function2(int a, int b)
+{
+  std::cout << "Function2: " << a << "," << b << "\n";
+}
+
+void Function3(int a, int b)
+{
+  std::cout << "Function3: " << a << "," << b << "\n";
+}
+
+void Function4(int a, int b)
+{
+  std::cout << "Function4: " << a << "," << b << "\n";
+}
+
+void Function5(int a)
+{
+  std::cout << "Function5: " << a << "\n";
+}
+____________________________________________________________________________________________________
+Creating the slots
+
+constexpr slot_type MakeSlot1() noexcept
+{
+return slot_type::create<Function1>();
+}
+
+constexpr slot_type MakeSlot2() noexcept
+{
+return slot_type::create<Function2>();
+}
+
+constexpr slot_type MakeSlot3() noexcept
+{
+return slot_type::create<Function3>();
+}
+
+constexpr slot_type MakeSlot4() noexcept
+{
+return slot_type::create<Function4>();
+}
+
+constexpr not_slot_type MakeSlot5() noexcept
+{
+return not_slot_type::create<Function5>();
+}
+____________________________________________________________________________________________________
+Defining the signal as constexpr
+
+// Define the signal and connect as constexpr
+constexpr signal_type({ MakeSlot1(), MakeSlot2(), MakeSlot3() });
+
+// Define the signal and connect as constexpr.
+// Static assert "Number of slots exceeds capacity"
+constexpr signal_type({ MakeSlot1(), MakeSlot2(), MakeSlot3(), MakeSlot4() });
+
+// Define the signal and connect as constexpr.
+// Static assert "All slots must be slot_type"
+constexpr signal_type({ MakeSlot1(), MakeSlot2(), MakeSlot5() });
+____________________________________________________________________________________________________
+Defining the signal at runtime
+
+// Define the signal.
+signal_type signal;
+
+// Connect one at a time.
+signal.connect(MakeSlot1());
+signal.connect(MakeSlot2());
+signal.connect(MakeSlot3());
+
+// Connect using initializer_list.
+signal.connect({ MakeSlot1(), MakeSlot2(), MakeSlot3() });
+
+// Connect using span.
+const slot_type slot_list[] = { MakeSlot1(), MakeSlot2(), MakeSlot3() };
+signal.connect(slot_list);
+____________________________________________________________________________________________________
+Checking the status
+
+// Define the signal.
+signal_type signal;
+
+signal.max_size()             // Returns 3
+signal.size()                 // Returns 0
+signal.available()            // Returns 3
+signal.empty();               // Returns true
+signal.full();                // Returns false
+signal.connected(MakeSlot1()) // Returns false
+signal.connected(MakeSlot2()) // Returns false
+signal.connected(MakeSlot3()) // Returns false
+
+signal.connect(MakeSlot1());  // Returns true
+
+signal.max_size()             // Returns 3
+signal.size()                 // Returns 1
+signal.available()            // Returns 2
+signal.empty();               // Returns false
+signal.full();                // Returns false
+signal.connected(MakeSlot1()) // Returns true
+signal.connected(MakeSlot2()) // Returns false
+signal.connected(MakeSlot3()) // Returns false
+
+signal.connect(MakeSlot1());  // Already connected. Returns true
+
+signal.max_size()             // Returns 3
+signal.size()                 // Returns 1
+signal.available()            // Returns 2
+signal.empty();               // Returns false
+signal.full();                // Returns false
+signal.connected(MakeSlot1()) // Returns true
+signal.connected(MakeSlot2()) // Returns false
+signal.connected(MakeSlot3()) // Returns false
+
+signal.connect(MakeSlot2());  // Returns true
+
+signal.max_size()             // Returns 3
+signal.size()                 // Returns 2
+signal.available()            // Returns 1
+signal.empty();               // Returns false
+signal.full();                // Returns false
+signal.connected(MakeSlot1()) // Returns true
+signal.connected(MakeSlot2()) // Returns true
+signal.connected(MakeSlot3()) // Returns false
+
+signal.connect(MakeSlot3());  // Returns true
+
+signal.max_size()             // Returns 3
+signal.size()                 // Returns 3
+signal.available()            // Returns 0
+signal.empty();               // Returns false
+signal.full();                // Returns true
+signal.connected(MakeSlot1()) // Returns true
+signal.connected(MakeSlot2()) // Returns true
+signal.connected(MakeSlot3()) // Returns true
+
+signal.connect(MakeSlot4());  // ETL_ASSERT etl::signal_full. Returns false
+____________________________________________________________________________________________________
+Calling the signal
+
+signal_type signal({ MakeSlot1(), MakeSlot2(), MakeSlot3() });
+
+signal(1, 2); // Call all of the slots with the parameters 1 & 2
+
+Output
+Function1: 1,2
+Function2: 1,2
+Function3: 1,2
+

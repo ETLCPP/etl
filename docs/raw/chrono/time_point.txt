@@ -1,0 +1,182 @@
+time_point
+etl::chrono::time_point represents a point in time.
+Back to chrono
+____________________________________________________________________________________________________
+tme_point
+
+Represents a point in time storing a TDuration indicating the time 
+interval from the start of the TClock's epoch.
+
+template <typename TClock, typename TDuration = typename TClock::duration>
+class time_point
+____________________________________________________________________________________________________
+Member types
+
+using clock    = TClock
+using duration = TDuration
+using rep      = typename TDuration::rep
+using period   = typename TDuration::period
+____________________________________________________________________________________________________
+Constructors
+
+ETL_CONSTEXPR 
+time_point() 
+ETL_NOEXCEPT
+Default constructor.
+______________________________________________
+ETL_CONSTEXPR14 
+explicit time_point(const duration& dur_) 
+ETL_NOEXCEPT
+Construct from a duration.
+______________________________________________
+ETL_CONSTEXPR14 
+time_point(const time_point& rhs) 
+ETL_NOEXCEPT
+Copy constructor.
+______________________________________________
+template <typename TDuration2>
+ETL_CONSTEXPR14 
+explicit time_point(const time_point<clock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+Copy construct from another time_point with a different duration type.
+____________________________________________________________________________________________________
+Assignment
+
+ETL_CONSTEXPR14 
+time_point& operator =(const time_point& rhs) 
+ETL_NOEXCEPT
+Assignment operator.
+____________________________________________________________________________________________________
+Access
+
+ETL_NODISCARD
+ETL_CONSTEXPR14 duration time_since_epoch() const 
+ETL_NOEXCEPT
+Returns a duration representing the amount of time between this and the clock's epoch.
+____________________________________________________________________________________________________
+Member arithmetic operators
+
+ETL_CONSTEXPR14 time_point& operator +=(const duration& rhs) 
+ETL_NOEXCEPT
+Adds a duration.
+______________________________________________
+ETL_CONSTEXPR14 time_point& operator -=(const duration& rhs) 
+ETL_NOEXCEPT
+Subtracts a duration.
+____________________________________________________________________________________________________
+Constants
+
+ETL_NODISCARD
+static ETL_CONSTEXPR14 time_point min() 
+ETL_NOEXCEPT
+Returns a time_point with the smallest possible duration.
+______________________________________________
+ETL_NODISCARD
+static ETL_CONSTEXPR14 time_point max() 
+ETL_NOEXCEPT
+Returns a time_point with the largest possible duration.
+____________________________________________________________________________________________________
+Rounding
+
+template <typename TToDuration, typename TClock, typename TDuration>
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+etl::chrono::time_point<TClock, TToDuration>
+  floor(const etl::chrono::time_point<TClock, TDuration>& tp) 
+ETL_NOEXCEPT
+Rounds down a duration to the nearest lower precision.
+______________________________________________
+template <typename TToDuration, typename TClock, typename TDuration>
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+etl::chrono::time_point<TClock, TToDuration>
+  ceil(const etl::chrono::time_point<TClock, TDuration>& tp) 
+ETL_NOEXCEPT
+Rounds up a duration to the nearest higher precision.
+______________________________________________
+template <typename TToDuration, typename TClock, typename TDuration>
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+etl::chrono::time_point<TClock, TToDuration>
+  round(const etl::chrono::time_point<TClock, TDuration>& tp) 
+ETL_NOEXCEPT
+Rounds a duration to the nearest precision.
+If the duration is exactly halfway, it rounds away from zero.
+____________________________________________________________________________________________________
+Casting
+
+template <typename TToDuration, typename TClock, typename TDuration>
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+etl::chrono::time_point<TClock, TToDuration>
+  time_point_cast(const etl::chrono::time_point<TClock, TDuration>& tp) 
+ETL_NOEXCEPT
+____________________________________________________________________________________________________
+Comparison
+
+ETL_NODISCARD
+ETL_CONSTEXPR14 int compare(const time_point& other) const 
+ETL_NOEXCEPT
+Compare day with another.
+If time_point < other, returns -1
+else if time_point > other, returns 1
+else returns 0
+____________________________________________________________________________________________________
+Non-member comparison operators
+
+template <typename TClock, typename TDuration1, typename TDuration2>
+ETL_CONSTEXPR14 
+bool operator ==(const time_point<TClock, TDuration1>& lhs, 
+                 const time_point<TClock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+Equality operator
+______________________________________________
+template <typename TClock, typename TDuration1, typename TDuration2>
+ETL_CONSTEXPR14 
+bool operator !=(const time_point<TClock, TDuration1>& lhs, 
+                 const time_point<TClock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+Inequality operator
+______________________________________________
+template <typename TClock, typename TDuration1, typename TDuration2>
+ETL_CONSTEXPR14 
+bool operator <(const time_point<TClock, TDuration1>& lhs, 
+                const time_point<TClock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+Less-than operator
+______________________________________________
+template <typename TClock, typename TDuration1, typename TDuration2>
+ETL_CONSTEXPR14 
+bool operator <=(const time_point<TClock, TDuration1>& lhs, 
+                 const time_point<TClock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+Less-than-equal operator
+______________________________________________
+template <typename TClock, typename TDuration1, typename TDuration2>
+ETL_CONSTEXPR14 
+bool operator >(const time_point<TClock, TDuration1>& lhs, 
+                const time_point<TClock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+Greater-than operator
+______________________________________________
+template <typename TClock, typename TDuration1, typename TDuration2>
+ETL_CONSTEXPR14 
+bool operator >=(const time_point<TClock, TDuration1>& lhs,
+                 const time_point<TClock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+Greater-than-equal operator
+______________________________________________
+template <typename TClock, typename TDuration1, typename TDuration2>
+[[nodiscard]] constexpr auto operator <=>(const etl::chrono::time_point<TClock, TDuration1>& lhs, 
+                                          const etl::chrono::time_point<TClock, TDuration2>& rhs) 
+noexcept
+Spaceship operator
+C++20
+____________________________________________________________________________________________________
+etl::common_type specialisation
+
+template <typename TClock, typename TDuration1, typename TDuration2>
+struct common_type<etl::chrono::time_point<TClock, TDuration1>, 
+                   etl::chrono::time_point<TClock, TDuration2>>
+Defines type, which is the common type of two etl::chrono::time_point
+

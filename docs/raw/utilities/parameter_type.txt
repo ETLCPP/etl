@@ -1,0 +1,41 @@
+parameter_type
+Allows the method of passing a parameter to be determined by the type.
+By default, if the type is fundamental or a pointer, then the parameter type is 'by value', otherwise 'by const reference'.
+
+template <typename T>
+struct parameter_type;
+
+Defines type.
+
+The template may be specialised for specific types.
+
+Example
+class MyClass
+{
+};
+
+template <>
+struct parameter_type<MyClass>
+{
+  // Pass Myclass by value.
+  typedef MyClass type;
+};
+
+template <typename T>
+void Do_Stuff(typename etl::parameter_type<T>::type parameter)
+{
+}
+
+// Pass by value.
+int i = 1;
+Do_Stuff(i);
+
+// Pass by const reference.
+etl::vector<int, 10> data;
+Do_Stuff(data);
+
+// Pass by value
+MyClass myClass;
+Do_Stuff(myClass);
+
+

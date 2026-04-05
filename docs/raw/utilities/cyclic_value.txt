@@ -1,0 +1,87 @@
+cyclic_value
+Provides a value that cycles between two limits.
+Supports increments, decrements and arbitrary advance.
+Supports compile time and runtime variants
+
+template <typename T, const T FIRST = 0, const T LAST = 0>
+class cyclic_value
+
+etl::cyclic_value<int, 2, 7> value_ct; // Compile time. Fixed range of 2 to 7 inclusive.
+
+etl::cyclic_value<int> value_rt(2, 7); // Run time. Modifiable range.
+value_rt.set(3, 8);
+____________________________________________________________________________________________________
+Constructor
+cyclic_value<int> value;
+Creates a runtime cyclic value of type int with default constructed initial defined limits.
+
+cyclic_value<int, N, M> value;
+Creates a compile time cyclic value of type int with fixed limits of N and M.
+
+cyclic_value<int> value(N, M);
+Creates a runtime cyclic value of type int with initial defined limits of N and M.
+____________________________________________________________________________________________________
+Modifiers
+cyclic_value& operator ++();
+cyclic_value& operator ++(int);
+Increments the value. If the value is at the last value then is set to the first.
+
+cyclic_value& operator --();
+cyclic_value& operator --(int);
+Decrements the value. If the value is at the first value then is set to the last.
+
+void advance(int n);
+Advances the value by the specified amount, wrapping if necessary.
+
+____________________________________________________________________________________________________
+Access
+T get() const;
+Gets the current value
+
+T first() const;
+Sets the current value to the first value
+
+T last() const;
+Sets the current value to the last value
+
+void set(T first, T last);
+Sets the new first and last values. Sets the current value to first.
+
+void set(T value);
+Sets the current value.
+
+void to_first();
+Sets the current value to the first value
+
+void to_last();
+Sets the current value to the last value
+____________________________________________________________________________________________________
+Operations
+
+void swap(cyclic_value<T, FIRST, LAST>& other);
+Swaps with another cyclic value.
+
+void swap(cyclic_value<T, FIRST, LAST>& lhs, cyclic_value<T, FIRST, LAST>& rhs);
+Swaps with another cyclic value.
+____________________________________________________________________________________________________
+Operators
+operator T();
+operator const T() const;
+Conversion operators to T.
+
+cyclic_value& operator =(T t);
+Sets the current value to t.
+____________________________________________________________________________________________________
+Non-member functions
+template <typename T, const T FIRST, const T LAST>
+void swap(cyclic_value<T, FIRST, LAST>& lhs, cyclic_value<T, FIRST, LAST>& rhs)
+Swaps two cyclic values.
+
+template <typename T, const T FIRST, const T LAST>
+bool operator == (cyclic_value<T, FIRST, LAST>& lhs, cyclic_value<T, FIRST, LAST>& rhs)
+Checks equality of two cyclic values.
+
+template <typename T, const T FIRST, const T LAST>
+bool operator != (cyclic_value<T, FIRST, LAST>& lhs, cyclic_value<T, FIRST, LAST>& rhs)
+Checks inequality of two cyclic values.
+

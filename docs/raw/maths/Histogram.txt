@@ -1,0 +1,157 @@
+Histogram
+20.9.0
+____________________________________________________________________________________________________
+histogram
+
+Types
+const_iterator The iterator used to traverse the histogram data.
+key_type       The index type for the histogram.
+count_type     The type used for the histogram counter.
+value_type     The type returned from the histogram.
+____________________________________________________________________________________________________
+Constants
+Max_Size The maximum number of elements in the histogram.
+____________________________________________________________________________________________________
+template <typename TKey, typename TCount, size_t Max_Keys>
+class histogram
+A histogram where the start index of the  keys is defined in the constructor.
+
+histogram()
+Default constructor.
+
+template <typename TIterator>
+histogram(TIterator first, TIterator last)
+Construct from an iterator range.
+____________________________________________________________________________________________________
+template <typename TKey, typename TCount, size_t Max_Keys, size_t Start_Index>
+class histogram
+A histogram where the start index of the  keys is defined as a template parameter.
+
+histogram()
+Default constructor.
+
+template <typename TIterator>
+histogram(TIterator first, TIterator last)
+Construct from an iterator range.
+____________________________________________________________________________________________________
+histogram(const histogram& other)
+Copy constructor.
+
+histogram(histogram&& other)
+Move constructor.
+
+histogram& operator =(const histogram& rhs)
+Assignment operator.
+
+histogram& operator =(histogram&& rhs)
+Move assignment operator.
+____________________________________________________________________________________________________
+void add(key_type key)
+Increment the count for the key.
+
+template <typename TIterator>
+void add(TIterator first, TIterator last)
+Increment the counts for the keys from an iterator range.
+____________________________________________________________________________________________________
+void operator ()(key_type key)
+Increment the count for the key.
+
+template <typename TIterator>
+void operator ()(TIterator first, TIterator last)
+Increment the counts for the keys from an iterator range.
+____________________________________________________________________________________________________
+value_type operator [](key_type key) const
+Get the count for a key.
+____________________________________________________________________________________________________
+const_iterator begin() const
+const_iterator cbegin() const
+Get the iterator to the first histogram entry.
+____________________________________________________________________________________________________
+const_iterator end() const
+const_iterator cend() const
+Get the iterator to the last + 1 histogram entry.
+____________________________________________________________________________________________________
+void clear()
+Clear the counts to zero.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR size_t size() const
+Get the number of items in the histogram.
+Always equal to max_size().
+____________________________________________________________________________________________________
+ETL_CONSTEXPR size_t max_size() const
+Get the number of items in the histogram.
+____________________________________________________________________________________________________
+size_t count() const
+ Get the total of all the counts.
+____________________________________________________________________________________________________
+sparse_histogram
+
+Types
+const_iterator The iterator used to traverse the histogram data.
+key_type       The index type for the histogram.
+count_type     The type used for the histogram counter.
+value_type     The type returned from the histogram. A pair containing the key and count.
+____________________________________________________________________________________________________
+Constants
+Max_Size The maximum number of elements in the histogram.
+____________________________________________________________________________________________________
+template <typename TKey, typename TCount, size_t Max_Keys>
+class sparse_histogram
+A histogram where the keys are sparse or non-integral types.
+
+sparse_histogram()
+Default constructor.
+
+template <typename TIterator>
+sparse_histogram(TIterator first, TIterator last)
+Construct from an iterator range.
+
+sparse_histogram(const sparse_histogram& other)
+Copy constructor.
+
+sparse_histogram(sparse_histogram&& other)
+Move constructor.
+
+sparse_histogram& operator =(const sparse_histogram& rhs)
+Assignment operator.
+
+sparse_histogram& operator =(sparse_histogram&& rhs)
+Move assignment operator.
+____________________________________________________________________________________________________
+void add(key_type key)
+Increment the count for the key.
+
+template <typename TIterator>
+void add(TIterator first, TIterator last)
+Increment the counts for the keys from an iterator range.
+____________________________________________________________________________________________________
+void operator ()(key_type key)
+Increment the count for the key.
+
+template <typename TIterator>
+void operator ()(TIterator first, TIterator last)
+Increment the counts for the keys from an iterator range.
+____________________________________________________________________________________________________
+const value_type& operator [](key_type key) const
+Get the count for a key.
+____________________________________________________________________________________________________
+const_iterator begin() const
+const_iterator cbegin() const
+Get the iterator to the first histogram entry.
+____________________________________________________________________________________________________
+const_iterator end() const
+const_iterator cend() const
+Get the iterator to the last + 1 histogram entry.
+____________________________________________________________________________________________________
+void clear()
+Clear the counts to zero.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR size_t size() const
+Get the number of items in the histogram.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR size_t max_size() const
+Get the number of items in the histogram.
+____________________________________________________________________________________________________
+size_t count() const
+ Get the total of all the counts.
+

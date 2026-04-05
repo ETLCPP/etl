@@ -1,0 +1,419 @@
+Checksums & hashes
+A set of algorithms for producing checksums and hashes from data.
+____________________________________________________________________________________________________
+Generic hashes
+Type                   Class                Header
+Checksum               checksum             checksum.h (8, 16, 32 or 64 bit)
+BSD Checksum           bsd_checksum         checksum.h (8, 16, 32 or 64 bit)
+XOR Checksum           xor_checksum         checksum.h (8, 16, 32 or 64 bit)
+XOR + Rotate Checksum  xor_rotate_checksum  checksum.h (8, 16, 32 or 64 bit)
+Parity                 parity_checksum      checksum.h (8, 16, 32 or 64 bit)
+
+FNV-1 32 bit           fnv1_32              fnv1.h
+FNV-1 64 bit           fnv1_64              fnv1.h
+FNV-1a 32 bit          fnv1a_32             fnv1.h
+FNV-1a 64 bit          fnv1a_64             fnv1.h
+
+Jenkins                jenkins              jenkins.h
+
+Pearson                pearson              pearson.h
+
+Murmur3                murmur3              murmur3.h (32 or 64 bit)
+____________________________________________________________________________________________________
+CRC hashes
+Type                   Class                   Table size       Header
+CRC1                   crc1                      0              crc1.h, crc.h
+
+CRC8 CCITT             crc8_ccitt              256              crc8_ccitt.h, crc.h
+                       crc8_ccitt_t4             4
+                       crc8_ccitt_t16           16
+                       crc8_ccitt_t256         256
+                       crc8_ccitt_t<N>         N = 4, 16, 256
+
+CRC8 CDMA2000          crc8_cdma2000           256              crc8_cdma2000.h, crc.h
+                       crc8_cdma2000_t4          4
+                       crc8_cdma2000_t16        16
+                       crc8_cdma2000_t256      256
+                       crc8_cdma2000_t<N>      N = 4, 16, 256
+
+CRC8 DARC              crc8_darc               256              crc8_darc.h, crc.h
+                       crc8_darc_t4              4
+                       crc8_darc_t16            16
+                       crc8_darc_t256          256
+                       crc8_darc_t<N>          N = 4, 16, 256
+
+CRC8 EBU               crc8_ebu                256              crc8_ebu.h, crc.h
+                       crc8_ebu_t4               4
+                       crc8_ebu_t16             16
+                       crc8_ebu_t256           256
+                       crc8_ebu_t<N>           N = 4, 16, 256
+
+CRC8 ICODE             crc8_icode              256              crc8_icode.h, crc.h
+                       crc8_icode_t4             4
+                       crc8_icode_t16           16
+                       crc8_icode_t256         256
+                       crc8_icode_t<N>         N = 4, 16, 256
+
+CRC8 ITU               crc8_itu                256              crc8_itu.h, crc.h
+                       crc8_itu_t4               4
+                       crc8_itu_t16             16
+                       crc8_itu_t256           256
+                       crc8_itu_t<N>           N = 4, 16, 256
+
+CRC8 J1850             crc8_j1850              256              crc8_j1850.h, crc.h
+                       crc8_j1850_t4             4
+                       crc8_j1850_t16           16
+                       crc8_j1850_t256         256
+                       crc8_j1850<N>           N = 4, 16, 256
+
+CRC8 J1850 Zero        crc8_j1850_zero         256              crc8_j1850_zero.h, crc.h
+                       crc8_j1850_zero_t4        4
+                       crc8_j1850_zero_t16      16
+                       crc8_j1850_zero_t256    256
+                       crc8_j1850_zero<N>      N = 4, 16, 256
+
+CRC8 MAXIM             crc8_maxim              256              crc8_maxim.h, crc.h
+                       crc8_maxim_t4             4
+                       crc8_maxim_t16           16
+                       crc8_maxim_t256         256
+                       crc8_maxim_t<N>         N = 4, 16, 256
+
+CRC8 Opensafety        crc8_opensafety         256              crc8_opensafety.h, crc.h
+20.42.2                crc8_opensafety_t4        4
+                       crc8_opensafety_t16      16
+                       crc8_opensafety_t256    256
+                       crc8_opensafety_t<N>    N = 4, 16, 256
+
+CRC8 ROHC              crc8_rohc               256              crc8_rohc.h, crc.h
+                       crc8_rohc_t4              4
+                       crc8_rohc_t16            16
+                       crc8_rohc_t256          256
+                       crc8_rohc_t<N>          N = 4, 16, 256
+
+CRC8 WCDMA             crc8_wcdma              256              crc8_wcdma.h, crc.h
+                       crc8_wcdma_t4             4
+                       crc8_wcdma_t16           16
+                       crc8_wcdma_t256         256
+                       crc8_wcdma_t<N>         N = 4, 16, 256
+____________________________________________________________________________________________________
+CRC16                  crc16                   256               crc16.h, crc.h
+                       crc16_t4                  4
+                       crc16_t16                16
+                       crc16_t256              256
+                       crc16_t<N>              N = 4, 16, 256
+
+CRC16-A                crc16_a                 256               crc16_a.h, crc.h
+                       crc16_a_t4                4
+                       crc16_a_t16              16
+                       crc16_a_t256            256
+                       crc16_a_t<N>            N = 4, 16, 256
+
+CRC16 Aug CCITT        crc16_aug_ccitt         256               crc16_aug_ccitt.h, crc.h
+                       crc16_aug_ccitt_t4        4
+                       crc16_aug_ccitt_t16      16
+                       crc16_aug_ccitt_t256    256
+                       crc16_aug_ccitt_t<N>    N = 4, 16, 256
+
+CRC16 BUYPASS          crc16_buypass           256               crc16_buypass.h, crc.h
+                       crc16_buypass_t4          4
+                       crc16_buypass_t16        16
+                       crc16_buypass_t256      256
+                       crc16_buypass_t<N>      N = 4, 16, 256
+
+CRC16 CCITT            crc16_ccitt             256               crc16_ccitt.h, crc.h
+                       crc16_ccitt_t4            4
+                       crc16_ccitt_t16          16
+                       crc16_ccitt_t256        256
+                       crc16_ccitt_t<N>        N = 4, 16, 256
+
+CRC16 CDMA2000         crc16_cdma2000          256               crc16_cdma2000.h, crc.h
+                       crc16_cdma2000_t4         4
+                       crc16_cdma2000_t16       16
+                       crc16_cdma2000_t256     256
+                       crc16_cdma2000_t<N>     N = 4, 16, 256
+
+CRC16 DDS110           crc16_dds110            256               crc16_dds110.h, crc.h
+                       crc16_dds110_t4           4
+                       crc16_dds110_t16         16
+                       crc16_dds110_t256       256
+                       crc16_dds110_t<N>       N = 4, 16, 256
+
+CRC16 DECTR            crc16_dectr             256               crc16_dectr.h, crc.h
+                       crc16_dectr_t4            4
+                       crc16_dectr_t16          16
+                       crc16_dectr_t256        256
+                       crc16_dectr_t<N>        N = 4, 16, 256
+
+CRC16 DECTX            crc16_dectx             256               crc16_dectx.h, crc.h
+                       crc16_dectx_t4            4
+                       crc16_dectx_t16          16
+                       crc16_dectx_t256        256
+                       crc16_dectx_t<N>        N = 4, 16, 256
+
+CRC16 DNP              crc16_dnp               256               crc16_dnp.h, crc.h
+                       crc16_dnp_t4              4
+                       crc16_dnp_t16            16
+                       crc16_dnp_t256          256
+                       crc16_dnp_t<N>          N = 4, 16, 256
+
+CRC16 EN13757          crc16_en13757           256               crc16_en13757.h, crc.h
+                       crc16_en13757_t4          4
+                       crc16_en13757_t16        16
+                       crc16_en13757_t256      256
+                       crc16_en13757_t<N>      N = 4, 16, 256
+
+CRC16 GENIBUS          crc16_genibus           256               crc16_genibus.h, crc.h
+                       crc16_genibus_t4          4
+                       crc16_genibus_t16        16
+                       crc16_genibus_t256      256
+                       crc16_genibus_t<N>      N = 4, 16, 256
+
+CRC16 KERMIT           crc16_kermit            256               crc16_kermit.h, crc.h
+                       crc16_kermit_t4          4
+                       crc16_kermit_t16        16
+                       crc16_kermit_t256      256
+                       crc16_kermit_t<N>      N = 4, 16, 256
+
+CRC16 MAXIM            crc16_maxim             256               crc16_maxim.h, crc.h
+                       crc16_maxim_t4            4
+                       crc16_maxim_t16          16
+                       crc16_maxim_t256        256
+                       crc16_maxim_t<N>        N = 4, 16, 256
+
+CRC16 MCRF4XX          crc16_mcrf4xx           256               crc16_mcrf4xx.h, crc.h
+                       crc16_mcrf4xx_t4          4
+                       crc16_mcrf4xx_t16        16
+                       crc16_mcrf4xx_t256      256
+                       crc16_mcrf4xx_t<N>      N = 4, 16, 256
+
+CRC16 MODBUS           crc16_modbus            256               crc16_modbus.h, crc.h
+                       crc16_modbus_t4           4
+                       crc16_modbus_t16         16
+                       crc16_modbus_t256       256
+                       crc16_modbus_t<N>       N = 4, 16, 256
+
+CRC16 Opensafety-A     crc16_opensafety_a      256              crc16_opensafety_a.h, crc.h
+20.42.2                crc16_opensafety_a_t4     4
+                       crc16_opensafety_a_t16   16
+                       crc16_opensafety_a_t256 256
+crc16_opensafety_a_t<N> N = 4, 16, 256
+
+CRC16 Opensafety-B     crc16_opensafety_b      256              crc16_opensafety_b.h, crc.h
+20.42.2                crc16_opensafety_b_t4     4
+                       crc16_opensafety_b_t16   16
+                       crc16_opensafety_b_t256 256
+                       crc16_opensafety_b_t<N> N = 4, 16, 256
+
+CRC16 PROFIBUS         crc16_profibus          256               crc16_profibus.h, crc.h
+                       crc16_profibus_t4         4
+                       crc16_profibus_t16       16
+                       crc16_profibus_t256     256
+                       crc16_profibus_t<N>     N = 4, 16, 256
+
+CRC16 RIELLO           crc16_riello            256               crc16_riello.h, crc.h
+                       crc16_riello_t4           4
+                       crc16_riello_t16         16
+                       crc16_riello_t256       256
+                       crc16_riello_t<N>       N = 4, 16, 256
+
+CRC16 T10DIF           crc16_t10dif            256               crc16_t10dif.h, crc.h
+                       crc16_t10dif_t4           4
+                       crc16_t10dif_t16         16
+                       crc16_t10dif_t256       256
+                       crc16_t10dif_t<N>       N = 4, 16, 256
+
+CRC16 TELEDISK         crc16_teledisk          256               crc16_teledisk.h, crc.h
+                       crc16_teledisk_t4         4
+                       crc16_teledisk_t16       16
+                       crc16_teledisk_t256     256
+                       crc16_teledisk_t<N>     N = 4, 16, 256
+
+CRC16 TMS37157         crc16_tms37157          256               crc16_tms37157.h, crc.h
+                       crc16_tms37157_t4         4
+                       crc16_tms37157_t16       16
+                       crc16_tms37157_t256     256
+                       crc16_tms37157_t<N>     N = 4, 16, 256
+
+CRC16 USB              crc16_usb               256               crc16_usb.h, crc.h
+                       crc16_usb_t4              4
+                       crc16_usb_t16            16
+                       crc16_usb_t256          256
+                       crc16_usb_t<N>          N = 4, 16, 256
+
+CRC16 X25              crc16_x25               256               crc16_x25.h, crc.h
+                       crc16_x25_t4              4
+                       crc16_x25_t16            16
+                       crc16_x25_t256          256
+                       crc16_x25_t<N>          N = 4, 16, 256
+
+CRC16 XMODEM           crc16_xmodem            256               crc16_xmodem.h, crc.h
+                       crc16_xmodem_t4           4
+                       crc16_xmodem_t16         16
+                       crc16_xmodem_t256       256
+                       crc16_xmodem_t<N>       N = 4, 16, 256
+____________________________________________________________________________________________________
+CRC32                  crc32                   256               crc32.h, crc.h
+                       crc32_t4                  4
+                       crc32_t16                16
+                       crc32_t256              256
+                       crc32_t<N>              N = 4, 16, 256
+
+CRC32 BZIP2            crc32_bzip2             256               crc32_bzip2.h, crc.h
+                       crc32_bzip2_t4            4
+                       crc32_bzip2_t16          16
+                       crc32_bzip2_t256        256
+                       crc32_bzip2_t<N>        N = 4, 16, 256
+
+CRC32-C                crc32_c                 256               crc32_c.h, crc.h     
+                       crc32_c_t4                4
+                       crc32_c_t16              16
+                       crc32_c_t256            256
+                       crc32_c_t<N>            N = 4, 16, 256
+
+CRC32-D                crc32_d                 256               crc32_d.h, crc.h     
+                       crc32_d_t4                4
+                       crc32_d_t16              16
+                       crc32_d_t256            256
+                       crc32_d_t<N>            N = 4, 16, 256
+
+CRC32 JAMCRC           crc32_jamcrc            256               crc32_jamcrc.h, crc.h
+                       crc32_jamcrc_t4           4
+                       crc32_jamcrc_t16         16
+                       crc32_jamcrc_t256       256
+                       crc32_jamcrc_t<N>       N = 4, 16, 256
+
+CRC32 MPEG2            crc32_mpeg2             256               crc32_mpeg2.h, crc.h
+                       crc32_mpeg2_t4            4
+                       crc32_mpeg2_t16          16
+                       crc32_mpeg2_t256        256
+                       crc32_mpeg2_t<N>        N = 4, 16, 256
+
+CRC32 POSIX            crc32_posix             256                crc32_posix.h, crc.h
+                       crc32_posix_t4            4
+                       crc32_posix_t16          16
+                       crc32_posix_t256        256
+                       crc32_posix_t<N>        N = 4, 16, 256
+
+CRC32-Q                crc32_q                 256                crc32_q.h, crc.h    
+                       crc32_q_t4                4
+                       crc32_q_t16              16
+                       crc32_q_t256            256
+                       crc32_q_t<N>            N = 4, 16, 256
+
+CRC32 XFER             crc32_xfer              256                crc32_xfer.h, crc.h
+                       crc32_xfer_t4             4
+                       crc32_xfer_t16           16
+                       crc32_xfer_t256         256
+                       crc32_xfer_t<N>        N = 4, 16, 256
+____________________________________________________________________________________________________
+CRC64 ECMA             crc64_ecma              256               crc64_ecma.h, crc.h
+                       crc32_ecma_t4             4
+                       crc32_ecma_t16           16
+                       crc32_ecma_t256         256
+                       crc32_ecma_t<N>         N = 4, 16, 256
+
+CRC64 ISO              crc64_iso               256               crc64_iso.h, crc.h
+20.42.2                crc32_iso_t4              4
+                       crc32_iso_t16            16
+                       crc32_iso_t256          256
+                       crc32_iso_t<N>          N = 4, 16, 256
+
+The library also includes etl::hash which is a reverse engineered version of std::hash in hash.h
+
+All hashing templates have the same API, apart from the members returning the hash value, which return the appropriate type.
+
+A hash that requires finalising before the value is read should do it in the conversion operator and value() member functions. Trying to add values after finalisation should result in an etl::hash_finalised error being asserted. Construction or reset should clear any finalisation flag.
+____________________________________________________________________________________________________
+Hash API
+All hashing algorithms supply the following API.
+
+Default constructor
+Initialises the hash value to its appropriate starting value.
+____________________________________________________________________________________________________
+Constructor from a range. (Any iterator type)
+Creates a hash from the supplied range.
+____________________________________________________________________________________________________
+void reset();
+Resets the hash to the initial condition.
+____________________________________________________________________________________________________
+void add(uint8_t value);
+Adds a uint8_t to the hash.
+____________________________________________________________________________________________________
+template <typename TIterator>
+void add(TIterator begin, Titerator end);
+
+Adds a range of values to the hash.
+If the type pointed to must be default castable to uint8_t.
+____________________________________________________________________________________________________
+value_type value() const;
+Returns the hash value.
+The hash will be finalised if required.
+____________________________________________________________________________________________________
+operator value_type() const;
+Returns the hash value.
+The hash will be finalised if required.
+__________________________________________________________________________________________________
+iterator input()
+Returns an iterator that allows the input of new values.
+
+Example
+std::array data{ 9, 1, 8, 2, 7, 3, 6, 4, 5 };
+etl::crc32 crc_calculator;
+std::copy(data.begin(), data.end(), crc_calculator.input());
+uint32_t crc = crc_calculator.value();
+____________________________________________________________________________________________________
+Creating a new frame check type.
+The frame_check_sequence class may be customised with new policies that contain the expected typedef and  member functions:-
+
+Example
+
+struct special_16
+{
+  typedef uint16_t value_type;
+
+  inline uint16_t initial() const
+  {
+    return 0xFFFF; // The initial value.
+  }
+
+  inline uint16_t add(T sum, uint8_t value) const
+  {
+    return etl::rotate_left(sum, 3) ^ value; // How to add each value.
+  }
+
+  inline uint16_t final(T sum) const
+  {
+    return ~sum; // How to read the final value.
+  }
+};
+
+The hash class would be declared as follows.
+
+//*************************************************************************
+/// Special checksum
+//*************************************************************************
+class special_checksum : public etl::frame_check_sequence<special_16>
+{
+public:
+
+  //*************************************************************************
+  /// Default constructor.
+  //*************************************************************************
+  special_checksum()
+  {
+    this->reset();
+  }
+
+  //*************************************************************************
+  /// Constructor from range.
+  /// \param begin Start of the range.
+  /// \param end   End of the range.
+  //*************************************************************************
+  template <typename TIterator>
+  special_checksum(TIterator begin, const TIterator end)
+  {
+    this->reset();
+    this->add(begin, end);
+  }
+};
+  

@@ -1,0 +1,96 @@
+Message Router Registry
+
+20.6.0
+A class that will act as a registry for all message router types.
+When iterating through the registry, routers with identical IDs are ordered by insertion.
+
+Defines the following classes:-
+etl::imessage_router_registry
+etl::message_router_registry
+____________________________________________________________________________________________________
+imessage_router_registry
+
+The base class for all router registries.
+
+Iterators
+iterator
+const_iterator
+____________________________________________________________________________________________________
+Member functions
+
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+Get the beginning of the registry.
+____________________________________________________________________________________________________
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+Get the end of the registry.
+____________________________________________________________________________________________________
+iterator lower_bound(etl::message_router_id_t id)
+const_iterator lower_bound(etl::message_router_id_t id) const
+Get the lower bound in the registry of the router with the specified ID.
+____________________________________________________________________________________________________
+iterator upper_bound(etl::message_router_id_t id)
+const_iterator upper_bound(etl::message_router_id_t id) const
+Get the upper bound in the registry of the router with the specified ID.
+____________________________________________________________________________________________________
+etl::imessage_router* find(etl::message_router_id_t id)
+const etl::imessage_router* find(etl::message_router_id_t id) const
+ Returns a pointer to the first router with the specified ID, or ETL_NULLPTR if it cannot be found.
+____________________________________________________________________________________________________
+void add(etl::imessage_router& router)
+void add(etl::imessage_router* p_router)
+Registers a router.
+If the registry is full then an ETL assert is emitted (etl::message_router_registry_full).
+Duplicate routers will be ignored.
+
+template <typename TIterator>
+void add(TIterator first, const TIterator& last)
+Registers a collection of routers.
+If the registry becomes full then an ETL assert is emitted (etl::message_router_registry_full).
+Duplicate routers will be ignored.
+____________________________________________________________________________________________________
+void remove(etl::message_router_id_t id)
+Unregisters a router.
+____________________________________________________________________________________________________
+bool contains(const etl::message_router_id_t id) const
+bool contains(const etl::imessage_router* const p_router) const
+bool contains(const etl::imessage_router& router) const
+Returns true if the registry contains a router that has the specified ID or object.
+____________________________________________________________________________________________________
+bool empty() const
+Returns true if the registry is empty, otherwise false.
+____________________________________________________________________________________________________
+bool full() const
+Returns true if the registry is full, otherwise false.
+____________________________________________________________________________________________________
+size_t size() const
+Returns the size of the registry.
+____________________________________________________________________________________________________
+size_t available() const
+Returns the available size of the registry.
+____________________________________________________________________________________________________
+size_t max_size() const
+Returns the maximum size of the registry.
+____________________________________________________________________________________________________
+message_router_registry
+
+message_router_registry()
+Default constructor.
+____________________________________________________________________________________________________
+template <typename TIterator>
+message_router_registry(TIterator first, const TIterator& last)
+Constructs from an iterator range.
+____________________________________________________________________________________________________
+message_router_registry(std::initializer_list<etl::imessage_router*> init)
+Initializer_list constructor.
+Enabled for C++11 or above and when using the STL.
+____________________________________________________________________________________________________
+message_router_registry(const message_router_registry& rhs)
+Copy constructor.
+____________________________________________________________________________________________________
+message_router_registry& operator =(const message_router_registry& rhs)
+Assignment operator.
+

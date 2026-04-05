@@ -1,0 +1,104 @@
+function
+Note: This class is deprecated. Please use the more versatile etl::delegate class here.
+
+A set of wrapper templates to allow a member or static function to be called without the caller having to know the specific details of the callee apart from the parameter type. The templates allow the called function to be abstracted.
+
+This may be used to implement a platform abstraction layer that allows an embedded application to interface with multiple hardware platforms.
+
+etl::function     Callbacks to free or member functions taking zero or one parameter.
+                  Function pointer at runtime.
+
+etl::function_fv  Callback to a free function taking no parameters. (Functiion Void)
+                  Function pointer at compile time.
+
+etl::function_fp  Callback to a free function taking one parameter.  (Functiion Parameter)
+                  Function pointer at compile time.
+
+etl::function_mv  Callback to a member function taking no parameters.  (Member Void)
+                  Function pointer at compile time.
+
+etl::function_imv Callback to a member function taking no parameters.  (Instance Member Void)
+                  Instance reference and function pointer at compile time.
+
+etl::function_mp  Callback to a member function taking one parameter.   (Member Parameter)
+                  Function pointer at compile time.
+
+etl::function_imp Callback to a member function taking one parameter.  (Instance Member Parameter)
+                  Instance reference and function pointer at compile time.
+
+See the tutorial.
+
+____________________________________________________________________________________________________
+Interface classes.
+
+template <typename TParameter>
+class ifunction
+
+Interface class for a function taking one parameter.
+____________________________________________________________________________________________________
+template <>
+class ifunction<void>
+
+Interface class for a function taking no parameters.
+
+All of the following classes are derived from the above.
+
+____________________________________________________________________________________________________
+Function address at run time.
+The functions are called indirectly through an internal pointer.
+
+template <typename TObject, typename TParameter>
+class function : public ifunction<TParameter>
+
+Class for a member function taking one parameter.
+____________________________________________________________________________________________________
+template <typename TObject>
+class function<TObject, void> : public ifunction<void>
+
+Class for a member function taking no parameters.
+____________________________________________________________________________________________________
+template <typename TParameter>
+class function<void, TParameter> : public ifunction<TParameter>
+
+Class for a free function taking one parameter.
+____________________________________________________________________________________________________
+template <>
+class function<void, void> : public ifunction<void>
+
+Class for a free function taking no parameters.
+
+____________________________________________________________________________________________________
+Function address at compile time.
+These will be more efficient than the previous definitions, as the one level of indirection is eliminated.
+
+template <typename TObject, void (TObject::*Function)()>
+class function_mv : public ifunction<void>
+
+Class for a member function taking no parameters.
+____________________________________________________________________________________________________
+
+template <typename TObject, TObject& Instance, void (TObject::*Function)()>
+class function_imv : public ifunction<void>
+
+Class for a member function taking no parameters.
+____________________________________________________________________________________________________
+template <typename TObject, typename TParameter, void (TObject::*Function)(TParameter)>
+class function_mp : public ifunction<TParameter>
+
+Class for a member function taking one parameter.
+____________________________________________________________________________________________________
+template <typename TObject, typename TParameter, TObject& Instance, void (TObject::*Function)(TParameter)>
+class function_imp : public ifunction<TParameter>
+
+Class for a member function taking one parameter.
+____________________________________________________________________________________________________
+template <void (*Function)()>
+class function_fv : public ifunction<void>
+
+Class for a free function taking no parameters.
+____________________________________________________________________________________________________
+template <typename TParameter, void (*Function)()>
+class function_fp : public ifunction<TParameter>
+
+Class for a free function taking one parameter.
+

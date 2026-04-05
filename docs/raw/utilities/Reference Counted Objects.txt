@@ -1,0 +1,88 @@
+Reference Counted Objects
+
+Reference counted objects types
+Defines the following classes.
+
+etl::ireference_counter
+The interface of all reference counters.
+
+etl::reference_counter<TCounter>
+A reference counter using TCounter as the counter.
+
+etl::reference_counter<void>
+A null reference counter. The reference count always reports as 1.
+
+etl::ireference_counted_object
+The interface of all reference counted object types.
+
+etl::reference_counted_object<typename TObject, typename TCounter>
+Derived from etl::ireference_counted_object
+
+etl::atomic_counted_object<typename TObject>
+A template alias of etl::reference_counted_object<typename TObject, etl::atomic_int32_t>
+____________________________________________________________________________________________________
+ireference_counter
+
+etl::ireference_counter
+The interface of all reference counters.
+
+virtual ~ireference_counter() {};
+virtual void set_reference_count(int32_t value) = 0;
+virtual void increment_reference_count() = 0;
+ETL_NODISCARD virtual int32_t decrement_reference_count() = 0;
+ETL_NODISCARD virtual int32_t get_reference_count() const = 0;
+____________________________________________________________________________________________________
+reference_counter
+
+etl::reference_counter<TCounter>
+A reference counter that uses type TCounter to count.
+
+etl::reference_counter<void>
+A dummy reference counter that  always returns a count of 1.
+Used for persistent objects.
+____________________________________________________________________________________________________
+ireference_counted_object
+
+etl::ireference_counted_object<typename TObject, typename TCounter>
+The interface of all reference counted object types.
+____________________________________________________________________________________________________
+virtual ~ireference_counted_object()
+____________________________________________________________________________________________________
+ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() = 0;
+Get a reference to the reference counter.
+____________________________________________________________________________________________________
+ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const = 0; 
+Get a const reference to the reference counter.
+____________________________________________________________________________________________________
+reference_counted_object
+
+etl::reference_counted_object<typename TObject, typename TCounter>     
+The implementation of a reference counted object.
+____________________________________________________________________________________________________
+reference_counted_object(const TObject& object)
+Constructs from an .
+The object is copied.
+____________________________________________________________________________________________________
+reference_counted_object()
+Constructs from an .
+The object is default constructed.
+____________________________________________________________________________________________________
+ETL_NODISCARD TObject& get_object() ETL_OVERRIDE
+Get a reference to the object.
+____________________________________________________________________________________________________
+ETL_NODISCARD const TObject& get_object() const ETL_OVERRIDE
+Get a const reference to the object.
+____________________________________________________________________________________________________
+ETL_NODISCARD etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
+Get a reference to the reference counter.
+____________________________________________________________________________________________________
+ETL_NODISCARD const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
+Get a const reference to the reference counter.
+____________________________________________________________________________________________________
+For C++11, with atomic support.
+
+template <typename TObject>
+using atomic_counted_object = etl::reference_counted_object<TObject, etl::atomic_int32_t>;
+Defines an alias to a reference counted object that uses an atomic.
+
+

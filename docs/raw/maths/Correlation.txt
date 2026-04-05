@@ -1,0 +1,74 @@
+Correlation
+20.9.0
+Calculates the correlation of two sets of data.
+
+template <bool Correlation_Type, typename TInput, typename TCalc = TInput>
+class correlation : public etl::binary_function<TInput, TInput, void>
+
+Correlation_Type Population or Sample.
+TInput           The input data type.
+TCalc            The type to use for internal calculations. By default, equal to TInput.
+____________________________________________________________________________________________________
+correlation_type
+etl::correlation_type::Sample     
+etl::correlation_type::Population 
+____________________________________________________________________________________________________
+correlation
+correlation()
+Default constructor.
+
+template <typename TIterator>
+correlation(TIterator first1, TIterator last1, TIterator first2)
+Construct from two iterator ranges.
+____________________________________________________________________________________________________
+void add(TInput value1, TInput value2)
+Add a pair of values.
+
+template <typename TIterator>
+void add(TIterator first1, TIterator last1, TIterator first2)
+Add a range of values.
+____________________________________________________________________________________________________
+void operator()(TInput value1, TInput value2)
+Add a pair of values.
+
+template <typename TIterator>
+void operator()(TIterator first1, TIterator last1, TIterator first2)
+Add a range of values.
+____________________________________________________________________________________________________
+double get_covariance() const
+Returns the calculated covariance for the data.
+____________________________________________________________________________________________________
+double get_correlation() const
+Returns the calculated correlation for the data.
+____________________________________________________________________________________________________
+operator double() const
+Returns the calculated correlation for the data.
+____________________________________________________________________________________________________
+size_t count() const
+Get the total number added entries.
+____________________________________________________________________________________________________
+void clear()
+Clear the correlation.
+____________________________________________________________________________________________________
+Example
+
+std::array<char, 10> input_c
+{
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+};
+
+std::array<char, 10> input_c_inv
+{
+  0, -1, -2, -3, -4, -5, -6, -7, -8, -9
+};
+
+etl::correlation<etl::correlation_type::Population, char, int32_t> correlation(input_c.begin(),     
+                                                                               input_c.end(), 
+                                                                               input_c_inv.begin());
+
+double correlation_result;
+double covariance_result;
+
+correlation_result = correlation;                  // correlation_result == -1.0
+covariance_result  = correlation.get_covariance(); // covariance_result  == -8.25
+

@@ -1,0 +1,70 @@
+weekday_last
+A template representing a weekday_last.
+Back to chrono
+____________________________________________________________________________________________________
+weekday_last
+
+STL equivalent: std::chrono::weekday_last
+
+class weekday_last
+____________________________________________________________________________________________________
+Construction
+
+ETL_CONSTEXPR 
+weekday_last()
+ETL_NOEXCEPT
+Default constructor.
+______________________________________________
+ETL_CONSTEXPR14 
+weekday_last(const etl::chrono::weekday& wd)
+ETL_NOEXCEPT
+Construct from weekday and index.
+______________________________________________
+ETL_CONSTEXPR14 
+weekday_last(const etl::chrono::weekday_last& other) 
+ETL_NOEXCEPT
+Copy constructor.
+____________________________________________________________________________________________________
+Tests
+
+ETL_NODISCARD
+ETL_CONSTEXPR14 
+bool ok() const 
+ETL_NOEXCEPT
+Returns true if the weekday_last valid.
+____________________________________________________________________________________________________
+Assignment
+
+ETL_CONSTEXPR14 
+etl::chrono::weekday_last& operator =(const etl::chrono::weekday_last& rhs) 
+ETL_NOEXCEPT
+Assignment operator      
+____________________________________________________________________________________________________
+Access
+
+ETL_CONSTEXPR14 
+etl::chrono::weekday weekday() const 
+ETL_NOEXCEPT
+Gets the weekday.
+____________________________________________________________________________________________________
+Non-member comparison operators
+
+ETL_CONSTEXPR14 
+bool operator ==(const etl::chrono::weekday_last& m1, 
+                 const etl::chrono::weekday_last& m2)
+ETL_NOEXCEPT
+Equality operator.
+______________________________________________
+ETL_CONSTEXPR14 
+bool operator !=(const etl::chrono::weekday_last& m1, 
+                 const etl::chrono::weekday_last& m2) 
+ETL_NOEXCEPT
+Inequality operator.
+____________________________________________________________________________________________________
+Hash
+
+template <>
+struct hash<etl::chrono::weekday_last>
+Hash function for etl::chrono::weekday_last
+ 
+

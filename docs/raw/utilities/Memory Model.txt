@@ -1,0 +1,26 @@
+Memory Model 
+This header defines enumerations and type lookups for supporting various memory models for the ETL.
+These allow template classes to use optimally sized variables for the model.
+For example, if a container will never have more than 256 elements then indexes and counts may be contained in an 8 bit type.
+
+memory_model
+A user type that defines values for four different memory models.
+MEMORY_MODEL_SMALL
+MEMORY_MODEL_MEDIUM
+MEMORY_MODEL_LARGE
+MEMORY_MODEL_HUGE
+
+Example
+etl::memory_model::MEMORY_MODEL_LARGE
+____________________________________________________________________________________________________
+size_type_lookup
+A type lookup template that defines a type that equates to the size type for memory model.
+
+using size_type = typename etl::size_type_lookup<etl::memory_model::MEMORY_MODEL_LARGE>::type;
+
+The defined types are...
+MEMORY_MODEL_SMALL   uint_least8_t
+MEMORY_MODEL_MEDIUM  uint_least16_t
+MEMORY_MODEL_LARGE   uint_least32_t
+MEMORY_MODEL_HUGE    uint_least64_t
+

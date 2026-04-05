@@ -1,0 +1,67 @@
+Covariance
+20.9.0
+template <bool Correlation_Type, typename TInput, typename TCalc = TInput>
+class correlation : public etl::binary_function<TInput, TInput, void>
+
+Covariance_Type Population or Sample.
+TInput          The input data type.
+TCalc           The type to use for internal calculations. By default, equal to TInput.
+____________________________________________________________________________________________________
+covariance_type
+etl::covariance_type::Sample     
+etl::covariance_type::Population 
+____________________________________________________________________________________________________
+covariance
+covariance()
+Default constructor.
+
+template <typename TIterator>
+covariance(TIterator first1, TIterator last1, TIterator first2)
+Construct from two iterator ranges.
+____________________________________________________________________________________________________
+void add(TInput value1, TInput value2)
+Add a pair of values.
+
+template <typename TIterator>
+void add(TIterator first1, TIterator last1, TIterator first2)
+Add a range of values.
+____________________________________________________________________________________________________
+void operator()(TInput value1, TInput value2)
+Add a pair of values.
+
+template <typename TIterator>
+void operator()(TIterator first1, TIterator last1, TIterator first2)
+Add a range of values.
+____________________________________________________________________________________________________
+double get_covariance() const
+Returns the calculated covariance for the data.
+____________________________________________________________________________________________________
+operator double() const
+Returns the calculated covariance for the data.
+____________________________________________________________________________________________________
+size_t count() const
+Get the total number added entries.
+____________________________________________________________________________________________________
+void clear()
+Clear the covariance.
+____________________________________________________________________________________________________
+Example
+
+std::array<char, 10> input_c
+{
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+};
+
+std::array<char, 10> input_c_inv
+{
+  0, -1, -2, -3, -4, -5, -6, -7, -8, -9
+};
+
+etl::covariance<etl::covariance_type::Population, char, int32_t> covariance(input_c.begin(),     
+                                                                            input_c.end(), 
+                                                                            input_c_inv.begin());
+
+double covariance_result;
+
+covariance_result  = covariance; // covariance_result  == -8.25
+

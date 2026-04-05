@@ -1,0 +1,89 @@
+flags
+Provides a wrapper around a set of binary flags.
+Supports compile time and runtime variants
+
+template <typename T, T MASK = etl::integral_limits<T>::max>
+class flags
+
+T must be an unsigned integral type.
+MASK is used to exclude unused or undefine bits from operations of the flags. By default, all bits are included.
+
+Most member functions may be chained.
+bool isF5Set = flags.set(bitPattern, true).flip().test(F5);
+____________________________________________________________________________________________________
+Constructor
+
+ETL_CONSTEXPR flags() ETL_NOEXCEPT
+Constructs a flag set with all elements set to 0 (false).
+____________________________________________________________________________________________________
+ETL_CONSTEXPR flags(value_type pattern) ETL_NOEXCEPT
+Constructs a flag set with elements set to pattern.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR flags(const flags<T, MASK>& pattern) ETL_NOEXCEPT
+Constructs a flag set with elements set to pattern.
+____________________________________________________________________________________________________
+Modifiers
+
+ETL_CONSTEXPR14 flags<T, MASK>& operator =(flags<T, MASK> other) ETL_NOEXCEPT
+Assigns from another flags object.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 flags<T, MASK>& operator =(value_type pattern) ETL_NOEXCEPT
+Assigns from a bit pattern.
+____________________________________________________________________________________________________
+template <value_type pattern, bool value>
+ETL_CONSTEXPR14 flags<T, MASK>& set() ETL_NOEXCEPT
+____________________________________________________________________________________________________
+template <value_type pattern>
+ETL_CONSTEXPR14 flags<T, MASK>& set(bool value) ETL_NOEXCEPT
+____________________________________________________________________________________________________
+template <value_type pattern>
+ETL_CONSTEXPR14 flags<T, MASK>& set() ETL_NOEXCEPT
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 flags<T, MASK>& set(value_type pattern) ETL_NOEXCEPT
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 flags<T, MASK>& set(value_type pattern, bool value) ETL_NOEXCEPT
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 flags<T, MASK>& clear() ETL_NOEXCEPT
+____________________________________________________________________________________________________
+template <value_type pattern>
+ETL_CONSTEXPR14 flags<T, MASK>& reset() ETL_NOEXCEPT
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 flags<T, MASK>& reset(value_type pattern) ETL_NOEXCEPT
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 flags<T, MASK>& flip() ETL_NOEXCEPT
+____________________________________________________________________________________________________
+template <value_type pattern>
+ETL_CONSTEXPR14 flags<T, MASK>& flip() ETL_NOEXCEPT
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 flags<T, MASK>& flip(value_type pattern) ETL_NOEXCEPT
+____________________________________________________________________________________________________
+Access
+
+template <value_type pattern>
+ETL_CONSTEXPR bool test() const ETL_NOEXCEPT
+Test the bits for the compile time pattern.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR bool test(value_type pattern) const ETL_NOEXCEPT
+Test the bits for the run time pattern.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR value_type value() const ETL_NOEXCEPT
+ETL_CONSTEXPR operator value_type() const ETL_NOEXCEPT
+Returns the value of the flags as a value_type.
+____________________________________________________________________________________________________
+Operations
+
+____________________________________________________________________________________________________
+Non-member functions
+
+template <typename T, T MASK>
+void swap(flags<T, MASK>& lhs, flags<T, MASK>& rhs)
+Swaps two flags.
+
+template <typename T, T MASK>
+bool operator == (flags<T, MASK>& lhs, flags<T, MASK>& rhs)
+Checks equality of two flags.
+
+template <typename T, T MASK>
+bool operator != (flags<T, MASK>& lhs, flags<T, MASK>& rhs)
+Checks inequality of two flags.
+

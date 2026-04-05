@@ -1,0 +1,155 @@
+Type Lookup
+Compile time mapping of id to type, type to id and type to type.
+This file is generated from type_lookup_generator.h and can be created by running generate_type_lookup.bat.
+
+For a less complex solution for simple id to type lookup, see etl::type_select.
+____________________________________________________________________________________________________
+type_id_pair
+Support structure for type_id_lookup.
+
+etl::type_id_pair<typename T, size_t ID>
+Defines:
+type The type.
+ID   The id associated with the type.
+____________________________________________________________________________________________________
+type_type_pair
+Support structure for type_type_lookup.
+
+etl::type_type_pair<typename T1, typename T2>
+
+Defines:
+type1 The indexing type.
+type2 The associated type.
+____________________________________________________________________________________________________
+type_id_lookup
+Creates a class for compile time id to type and type to id mappings.
+
+etl::type_id_lookup<typename T1, ...>
+The number of types that can be handled is determined by the generator.
+Each template parameter is a type_id_pair.
+
+The class contains two nested templates
+____________________________________________________________________________________________________
+type_from_id
+Gets the type from the id.
+type_from_id<size_t ID>
+
+Defines:
+type The associated type.
+
+C++14 and above
+template <int ID>
+using type_from_id_t = typename type_from_id<ID>::type;
+____________________________________________________________________________________________________
+id_from_type
+Gets the id from the type.
+id_from_type<typename T>
+
+Defines:
+ID The associated id.
+
+C++ 17 and above
+template <typename T>
+constexpr size_t id_from_type_v = id_from_type<T>::value;
+____________________________________________________________________________________________________
+Static functions
+Gets the id from the type.
+template <typename T>
+static unsigned int get_id_from_type(const T&)
+
+template <typename T>
+static unsigned int get_id_from_type()
+____________________________________________________________________________________________________
+type_type_lookup
+Creates a class for compile time type to type mapping.
+
+etl::type_id_lookup<typename T1, ...>
+The number of types that can be handled is determined by the generator.
+Each template parameter is a type_id_pair.
+
+The class contains one nested template.
+____________________________________________________________________________________________________
+type_from_type
+type_from_type<typename T>
+
+Defines:
+type The associated type.
+
+C++14 and above
+template <typename T>
+using type_from_type_t = typename type_from_type<T>::type;
+____________________________________________________________________________________________________
+nth_type
+Gets the nth type in a variadic type list.
+
+template <size_t N, typename... TTypes>
+struct nth_type
+Defines member type as the nth type in the variadic type list.
+
+template <size_t N, typename... TTypes>
+using nth_type_t = typename nth_type<N, TTypes...>::type;
+Type alias defined as the nth type in the variadic type list.
+____________________________________________________________________________________________________
+Examples
+____________________________________________________________________________________________________
+type_id_lookup
+enum
+{
+  INT32  = 32,
+  STRING = 1,
+  UINT8  = 8,
+  OTHER  = 0
+};
+
+typedef etl::type_id_pair<int32_t,     INT32>  TypeIdInt32;
+typedef etl::type_id_pair<uint8_t,     UINT8>  TypeIdUint8;
+typedef etl::type_id_pair<std::string, STRING> TypeIdString;
+
+// Type from Id / Id from Type.
+typedef etl::type_id_lookup<TypeIdInt32, TypeIdString, TypeIdUint8> TypeIdLookup;
+
+// int32_t
+typename TypeIdLookup::type_from_id_t<INT32>
+
+// uint8_t
+typename TypeIdLookup::type_from_id_t<UINT8>
+
+// std::string
+typename TypeIdLookup::type_from_id_t<STRING>
+
+// Compile error
+typename TypeIdLookup::type_from_id_t<OTHER>
+
+// INT32
+TypeIdLookup::id_from_type_v<int32_t>
+
+// UINT8
+TypeIdLookup::id_from_type_v<uint8_t>
+
+// STRING
+TypeIdLookup::id_from_type_v<std::string>
+
+// Compile error
+TypeIdLookup::id_from_type_v<double>
+____________________________________________________________________________________________________
+type_type_lookup
+// Get the next larger type.
+typedef etl::type_type_pair<int16_t, int32_t>  TypeInt16;
+typedef etl::type_type_pair<uint8_t, uint16_t> TypeUint8;
+typedef etl::type_type_pair<float,   double>   TypeFloat;
+
+// Type from Type.
+etl::type_type_lookup<TypeInt16, TypeUint8, TypeFloat> TypeTypeLookup;
+
+// int32_t
+typename TypeTypeLookup::type_from_type_t<int16_t>
+
+// uint16_t
+typename TypeTypeLookup::type_from_type_t<uint8_t>
+
+// double
+typename TypeTypeLookup::type_from_type_t<float>
+
+// Compile error
+typename TypeTypeLookup::type_from_type_t<int32_t>
+

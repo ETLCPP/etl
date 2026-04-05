@@ -1,0 +1,29 @@
+initializer_list
+20.24.0
+
+template <typename T>
+class initializer_list
+
+The initializer_list template class is a special case in that it must have a definition that is compatible with what the compiler expects. It must also be defined under the std namespace.
+
+This header will either include the standard <initializer_list> header, or attempt to define a std::initializer_list template class that is compatible with the current compiler.
+
+The header will define ETL_USING_INITIALIZER_LIST to either 1 or 0 dependant of whether std::initializer_list is available or not.
+
+The ETL will select the STL version if you are using the STL and ETL_FORCE_ETL_INITIALIZER_LIST is not defined or, 
+ETL_FORCE_STD_INITIALIZER_LIST is defined.
+
+The ETL's version will be selected if you are not using the STL or ETL_FORCE_ETL_INITIALIZER_LIST is defined.
+____________________________________________________________________________________________________
+What issues might I come across?
+If you are not using the STL, and one of the system headers or libraries that you include reference the standard initializer_list definition then the compiler will complain of duplicate definitions. In this case you will have to force the ETL to use the STL definition. There are two macros that force selection of one or other definition.
+
+Define one of these macros to force the selection.
+ETL_FORCE_ETL_INITIALIZER_LIST
+ETL_FORCE_STD_INITIALIZER_LIST 
+
+Defining ETL_NO_INITIALIZER_LIST will disable the use of std::initializer_list for the ETL.
+____________________________________________________________________________________________________
+
+If you get "No definition for initializer_list is currently available for your compiler. Visit https://github.com/ETLCPP/etl/issues to request support", it may be that neither of the ETL definitions of initializer_list are compatible with your compiler. In that case please raise an issue here. Alternatively, your compiler may be compatible with GCC/clang. Try adding the compiler's Identifier macro to the conditional compilation directive.
+

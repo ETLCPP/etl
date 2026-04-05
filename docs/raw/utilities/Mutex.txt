@@ -1,0 +1,13 @@
+Mutex
+This header attempts to replicate std::mutex.
+
+If ETL_CPP11_SUPPORTED  and  ETL_USING_STL are defined as 1 then etl::mutex will be defined in terms of std::mutex.
+Otherwise it will be implemented in terms of the built-in support, if available, from the compiler. For example, early GCC, Clang and Arm compilers will use the __sync built-ins.
+
+If there is an ETL mutex type available for your platform then ETL_HAS_MUTEX will be set to 1, otherwise it will be set to 0.
+
+The mutex implementation will normally be selected by the compiler being used.
+For FreeRTOS and CMSIS-RTOS2 you must define one of the following.
+ETL_TARGET_OS_FREERTOS
+ETL_TARGET_OS_CMSIS_OS2
+

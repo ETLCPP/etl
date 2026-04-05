@@ -1,0 +1,246 @@
+Message Timer
+This class has been superseded.
+Consider using message_timer_atomic or message_timer_locked.
+
+A software timer class that can manage up to 254 timers. Each one may be repeating or single shot.
+When a timer triggers it will send the defined message to the selected message router or bus.
+The timers are driven from a call to tick(uint32_t count). This call would normally be made from a high priority interrupt routine. The destination router will receive the message in the same context as the tick call.
+The call to tick has a low overhead when a timer is not 'due'. Internally the timers are stored in 'first timeout' order so only the head of the list needs to be checked. 
+
+Each timer may have a period of up to 232-2 ticks (4,294,967,294).
+At 1ms per tick this would equate to just over 49 days.
+
+Defines the following classes:-
+etl::imessage_timer
+etl::message_timer
+etl::message_timer_data
+
+Uses definitions from timer.h
+____________________________________________________________________________________________________
+Usage notes
+The message timer is designed to be used in a timer interrupt/thread - single foreground task environment. The timer tick call may pre-empt the foreground task, except when a timer function is within a ETL_DISABLE_TIMER_UPDATES / ETL_ENABLE_TIMER_UPDATES section. These macros will either use an atomic semaphore or contain code to disable or enable the relevant timer interrupts.
+
+There are two macros that control which mechanism is used.
+____________________________________________________________________________________________________
+ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK
+
+The framework relies on an atomic counter type. By default this is defined as etl::timer_semaphore_t.
+This in turn is either defined as std::atomic<uint32_t>, if the compiler supports std::atomic, or 
+etl::atomic<uint32_t> if there is an atomic_xxx.h defined for the platform. A user defined type may be used for the semaphore by defining ETL_TIMER_SEMAPHORE_TYPE. Only the timer interrupt/thread and one foreground  task may call register_timer, unregister_timer, clear, start or stop.
+With this mechanism, calls to tick are never disabled. If the foreground thread is within a disable/enable section when the timer interrupt/thread is activated then the tick update will be deferred until the next tick period. The timer interrupt/thread may interrogate the return value of tick() to check whether the update was deferred.
+____________________________________________________________________________________________________
+ETL_MESSAGE_TIMER_USE_INTERRUPT_LOCK
+
+The user must supply two macro definitions (ETL_MESSAGE_TIMER_DISABLE_INTERRUPTS and ETL_MESSAGE_TIMER_ENABLE_INTERRUPTS) to control interrupt enables. These macros must enable/disable all interrupts that may call tick, register_timer, unregister_timer, clear, start or stop.
+The user should ensure that mechanisms, such as memory barriers are used to disable re-ordering of the instructions.
+If the foreground task is within a disable/enable section when the timer interrupt is triggered then the tick update will be deferred until the interrupts are re-enabled. Depending on the resolution of the timers, the interrupt routine may be able to compensate for the delay by passing a modified tick count to tick().
+____________________________________________________________________________________________________
+imessage_timer
+
+The base class for all timer controllers.
+
+Member functions
+etl::timer::id::type register_timer(const etl::imessage&     message,                                                   
+                                    etl::imessage_router&    router,
+                                    uint32_t                 period,
+                                    bool                     repeating,
+                                    etl::message_router_id_t destination_router_id =                   
+                                                         etl::imessage_router::ALL_MESSAGE_ROUTERS)
+Registers a timer.
+message               A reference to the message that will be sent when the timer expires.
+router                A reference to a router or bus that will receive to message.
+period                The timer period in ticks.
+repeating             false if single shot, true if repeating.
+destination_router_id The id of the destination router. Only valid if the router is a bus. Default to all routers.
+
+Returns the allocated timer id or etl::timer::id::NO_TIMER if one was not available.
+____________________________________________________________________________________________________
+bool unregister_timer(etl::timer::id::type id)
+Unregisters a timer.
+If the timer is active then it will be stopped.
+Returns true if a timer with the id was successfully unregistered.
+____________________________________________________________________________________________________
+void enable(bool state)
+Enables or disables the timer manager according to the state.
+____________________________________________________________________________________________________
+bool is_running() const
+Returns true if the timer manager is enabled.
+____________________________________________________________________________________________________
+void clear()
+Clears the message timer back to the initial state. All timers will be stopped and unregistered.
+____________________________________________________________________________________________________
+bool tick(uint32_t count)
+This function updates the internal tick counter (if enabled) and must be passed the number of ticks that have occurred since the last call. If the count encompasses more than one period of a repeating timer then the timer will be triggered multiple times in one call to tick.
+Returns true if the tick counter was updated, otherwise false. This may be used by the calling routine to accumulate unprocessed tick counts.
+___________________________________________________________________________________________________
+bool start(etl::timer::id::type id, bool immediate = false)
+Starts the timer with the specified id.
+If the timer is already running then the timer Is restarted from the current tick count.
+If immediate is true then the timer is triggered on the next call to tick(). Note: Single shot timers will only trigger once.
+If the id does not correspond to a registered timer then returns false.
+____________________________________________________________________________________________________
+bool stop(etl::timer::id::type id)
+Stops the timer with the specified id.
+Does nothing if the timer is already stopped.
+if the id does not correspond to a registered timer then returns false.
+____________________________________________________________________________________________________
+bool set_period(etl::timer::id::type id_, uint32_t period)
+Stops the timer with the specified id.
+Sets a new timer period.
+Returns true if successful.
+____________________________________________________________________________________________________
+bool set_mode(etl::timer::id::type id_, bool repeating)
+Stops the timer with the specified id.
+Sets a new timer mode.
+Returns true if successful.
+____________________________________________________________________________________________________
+etl::timer::id::type time_to_next()
+Returns the time to the next timeout.
+20.38.0
+____________________________________________________________________________________________________
+Constants
+MAX_TIMERS
+____________________________________________________________________________________________________
+message_timer
+
+Template parameters
+MAX_TIMERS The number of timers to be supported. The maximum number is 254.
+A value of 255 will result in a compile error.
+
+____________________________________________________________________________________________________
+Example
+
+//***************************************************************************
+// The set of messages.
+//***************************************************************************
+enum
+{
+  MESSAGE1,
+  MESSAGE2,
+  MESSAGE3,
+};
+
+enum
+{
+  ROUTER1 = 1,
+};
+
+struct Message1 : public etl::message<MESSAGE1>
+{
+};
+
+struct Message2 : public etl::message<MESSAGE2>
+{
+};
+
+struct Message3 : public etl::message<MESSAGE3>
+{
+};
+
+Message1 message1;
+Message2 message2;
+Message3 message3;
+
+//***************************************************************************
+// Router that handles messages 1, 2, 3
+//***************************************************************************
+class Router1 : public etl::message_router<Router1, Message1, Message2, Message3>
+{
+public:
+
+  Router1()
+    : message_router(ROUTER1)
+  {
+ }
+
+  void on_receive(const Message1& msg)
+  {
+    printf("Message 1 received\n");
+  }
+
+  void on_receive(const Message2& msg)
+  {
+    printf("Message 2 received\n");
+  }
+
+  void on_receive(const Message3& msg)
+  {
+    printf("Message 3 received\n");
+  }
+
+  void on_receive_unknown(const etl::imessage& msg)
+  {
+  }
+};
+  
+//***************************************************************************
+// Bus that handles messages.
+//***************************************************************************
+class Bus1 : public etl::message_bus<1>
+{
+};
+
+//***************************************************************************
+// Router, bus and timer controller.
+//***************************************************************************
+Router1 router1;
+Bus1    bus1;
+
+etl::message_timer<3> timer_controller;
+
+//***************************************************************************
+// The main loop.
+//***************************************************************************
+int main()
+{
+  bus1.subscribe(router1);
+
+  etl::timer::id::type id1 = timer_controller.register_timer(message1, 
+                                                             router1, 
+                                                             1000,
+                                                             etl::timer::mode::SINGLE_SHOT);
+
+  etl::timer::id::type id2 = timer_controller.register_timer(message2, 
+                                                             bus1, 
+                                                             100, 
+                                                             etl::timer::mode::REPEATING);
+
+  etl::timer::id::type id3 = timer_controller.register_timer(message3, 
+                                                             router1, 
+                                                             10, 
+                                                             etl::timer::mode::REPEATING);
+
+  timer_controller.start(id1);
+  timer_controller.start(id2);
+  timer_controller.start(id3);
+
+  timer_controller.enable(true);
+
+  // Start timer interrupts here.
+
+  while (true)
+  {
+    // Loop forever.
+  }
+
+  return 0;
+}
+
+//***************************************************************************
+// The interrupt timer callback.
+//***************************************************************************
+void timer_interrupt()
+{
+  const uint32_t TICK = 1;
+  static uint32_t nticks = TICK;
+
+  if (timer_controller.tick(nticks))
+  {
+    nticks = TICK;
+  }
+  else
+  {
+    nticks += TICK;
+  }
+}
+

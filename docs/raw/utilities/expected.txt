@@ -1,0 +1,297 @@
+expected
+
+20.35.13
+STL equivalent: std::expected
+
+A generic result type for returning either a result or an error.
+Replacement for etl::result
+
+template <typename TValue, typename TError>
+class expected
+
+Specialisation for void result.
+template <typename TError>
+class expected<void, TError>
+____________________________________________________________________________________________________
+Unexpected type
+template <typename TError>
+class unexpected<TError>
+____________________________________________________________________________________________________
+A tag type for in-place construction of an unexpected value in an etl::expected object
+struct unexpect_t;
+
+A constant of type etl::unexpect_t which is directly passed to a constructor of etl::expected to construct an unexpected value.
+inline constexpr unexpect_t unexpect; >= C++17
+static const unexpect_t unexpect;     < C++17
+____________________________________________________________________________________________________
+unexpected
+
+template <typename TError>
+class unexpected<TError>
+____________________________________________________________________________________________________
+Types
+error_type   TError
+____________________________________________________________________________________________________
+Member functions
+
+ETL_CONSTEXPR
+unexpected(const unexpected& other)
+Copy constructor
+____________________________________________________________________________________________________
+ETL_CONSTEXPR 
+unexpected(unexpected&& other)
+Move constructor.
+>= C++11
+____________________________________________________________________________________________________
+template <typename TError>
+constexpr explicit unexpected(TError&& e)
+Construct from argument.
+>= C++11
+____________________________________________________________________________________________________
+template <typename TError>
+explicit unexpected(const TError& e)
+Construct from argument.
+< C++11
+____________________________________________________________________________________________________
+template <typename... TArgs>
+constexpr explicit unexpected(etl::in_place_t, TArgs&&... args)
+ Construct from arguments.
+>= C++11
+____________________________________________________________________________________________________
+template <typename U, typename... TArgs>
+constexpr explicit unexpected(etl::in_place_t, std::initializer_list<U> init, TArgs&&... args)
+Construct from initializer_list and arguments.
+>= C++11
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14
+etl::unexpected<TError>& operator =(const etl::unexpected<TError>& rhs)
+Assign from etl::unexpected
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14
+etl::unexpected<TError>& operator =(etl::unexpected<TError>&& rhs)
+Move assign from etl::unexpected
+>= C++11
+____________________________________________________________________________________________________
+TError& error() & noexcept
+Get the error.
+>= C++11
+____________________________________________________________________________________________________
+constexpr const TError& error() const& noexcept
+Get the error.
+>= C++11
+____________________________________________________________________________________________________
+TError&& error() && noexcept
+Get the error.
+>= C++11
+____________________________________________________________________________________________________
+constexpr TError&& error() const&& noexcept
+Get the error.
+>= C++11
+____________________________________________________________________________________________________
+const TError& error() const
+Get the error.
+< C++11
+____________________________________________________________________________________________________
+void swap(etl::unexpected<TError>& other)
+Swap with another etl::unexpected
+____________________________________________________________________________________________________
+expected
+
+template <typename TValue, typename TError>
+class expected
+
+Specialisation for void value type.
+template <typename TError>
+class expected<void, TError>
+____________________________________________________________________________________________________
+Types
+this_type       etl::expected<TValue, TError>
+value_type      TValue
+error_type      TError
+unexpected_type etl::unexpected<TError>
+____________________________________________________________________________________________________
+Member functions
+
+ETL_CONSTEXPR14 expected() ETL_NOEXCEPT
+Default constructor
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 expected(const value_type& value) ETL_NOEXCEPT
+Constructor
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 expected(value_type&& value) ETL_NOEXCEPT
+Constructor
+>= C++11
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 expected(const expected& other) ETL_NOEXCEPT
+Copy constructor
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 expected(expected&& other) ETL_NOEXCEPT
+Move constructor
+>= C++11
+____________________________________________________________________________________________________
+template <typename F>
+ETL_CONSTEXPR14 explicit expected(const etl::unexpected<F>& ue)
+Copy construct from unexpected type.
+____________________________________________________________________________________________________
+template <typename F>
+ETL_CONSTEXPR14 explicit expected(etl::unexpected<F>&& ue)
+Move construct from unexpected type.
+>= C++11
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 explicit expected(etl::in_place_t) ETL_NOEXCEPT
+Construct with default value type.
+____________________________________________________________________________________________________
+template <typename... TArgs>
+ETL_CONSTEXPR14 explicit expected(etl::in_place_t, TArgs&&... args)
+Construct value type from arguments.
+>= C++11
+____________________________________________________________________________________________________
+template <typename U, typename... TArgs>
+ETL_CONSTEXPR14 explicit expected(etl::in_place_t, std::initializer_list<U> il, TArgs&&... args)
+Construct value type from initializer_list and arguments.
+____________________________________________________________________________________________________
+template <typename... TArgs>
+ETL_CONSTEXPR14 explicit expected(etl::unexpect_t, TArgs&&... args)
+Construct error type from arguments.
+>= C++11
+____________________________________________________________________________________________________
+template <typename U, typename... TArgs>
+ETL_CONSTEXPR14 explicit expected(etl::unexpect_t, std::initializer_list<U> il, TArgs&&... args)
+Construct error type from initializer_list and arguments.
+>= C++11
+____________________________________________________________________________________________________
+this_type& operator =(const this_type& other)
+Copy assign 
+____________________________________________________________________________________________________
+this_type& operator =(this_type&& other)
+Move assign
+>= C++11
+____________________________________________________________________________________________________
+expected& operator =(const value_type& value)
+Copy assign from value
+____________________________________________________________________________________________________
+expected& operator =(value_type&& value)
+Move assign from value
+>= C++11
+____________________________________________________________________________________________________
+expected& operator =(const unexpected_type& error)
+Copy assign from error
+____________________________________________________________________________________________________
+expected& operator =(unexpected_type&& error)
+Move assign from error
+>= C++11
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 value_type& value()&
+Get the value.
+Undefined if has_value() returns false.
+Not valid for void specialisation.
+>= C++11
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 const value_type& value() const&
+Get the value.
+Undefined if has_value() returns false.
+Not valid for void specialisation.
+>= C++11
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 value_type&& value()&&
+Get the value.
+Undefined if has_value() returns false.
+Not valid for void specialisation.
+>= C++11
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 const value_type&& value() const&&
+Get the value.
+Undefined if has_value() returns false.
+Not valid for void specialisation.
+>= C++11
+____________________________________________________________________________________________________
+value_type& value() const
+Get the value.
+Undefined if has_value() returns false.
+Not valid for void specialisation.
+____________________________________________________________________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14
+bool has_value() const
+Returns true if the class contains a value.
+____________________________________________________________________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14
+operator bool() const
+Returns true if the class contains a value.
+____________________________________________________________________________________________________
+template <typename U>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+value_type value_or(U&& default_value) const&
+Returns the value or default_value if has_value() returns false.
+>= C++11
+____________________________________________________________________________________________________
+template <typename U>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+value_type value_or(U&& default_value)&&
+Returns the value or default_value if has_value() returns false.
+>= C++11
+____________________________________________________________________________________________________
+template <typename U>
+value_type value_or(const U& default_value) const
+Returns the value or default_value if has_value() returns false.
+< C++11
+____________________________________________________________________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14
+error_type& error()& ETL_NOEXCEPT
+Returns the error.
+Undefined if has_value() returns true.
+>= C++11
+____________________________________________________________________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14
+const error_type& error() const& ETL_NOEXCEPT
+Returns the error.
+Undefined if has_value() returns true.
+>= C++11
+____________________________________________________________________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14
+error_type&& error() && ETL_NOEXCEPT
+Returns the error.
+Undefined if has_value() returns true.
+>= C++11
+____________________________________________________________________________________________________
+ETL_NODISCARD
+ETL_CONSTEXPR14
+const error_type&& error() const&& ETL_NOEXCEPT
+Returns the error.
+Undefined if has_value() returns true.
+>= C++11
+____________________________________________________________________________________________________
+error_type& error() const
+Returns the error.
+Undefined if has_value() returns true.
+< C++11
+____________________________________________________________________________________________________
+template <typename... TArgs>
+ETL_CONSTEXPR14 value_type& emplace(TArgs&&... args) ETL_NOEXCEPT
+Returns the error if has_value() returns false.
+Undefined if has_value() returns true.
+>= C++11
+____________________________________________________________________________________________________
+template <typename U, typename... TArgs>
+ETL_CONSTEXPR14 value_type& emplace(std::initializer_list<U>& il, TArgs&&... args) ETL_NOEXCEPT
+Create from arguments.
+>= C++11
+____________________________________________________________________________________________________
+value_type* operator ->()
+Class member access operator.
+____________________________________________________________________________________________________
+const value_type* operator ->() const
+Const class member access operator.
+____________________________________________________________________________________________________
+value_type& operator *()
+Dereference operator.
+____________________________________________________________________________________________________
+const value_type& operator *() const
+Dereference operator.
+

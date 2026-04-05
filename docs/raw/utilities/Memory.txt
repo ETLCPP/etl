@@ -1,0 +1,448 @@
+Memory 
+
+These functions will create objects in uninitialised memory.
+POD types will be default or value initialised, Non-trivial types by calling placement new.
+____________________________________________________________________________________________________
+address_of
+
+template <typename T>
+T* addressof(T& t)
+Returns the address of an object.
+____________________________________________________________________________________________________
+default_delete
+
+template <typename T>
+struct default_delete
+
+template <typename T>
+struct default_delete<T[]>
+____________________________________________________________________________________________________
+Create / Destroy
+Functions that create or destroy items in uninitialised memory.
+
+template <typename T>
+void create_default_at(T* p)
+
+template <typename T, typename TCounter>
+void create_default_at(T* p, Tcounter count)
+
+Creates a default value. For POD types this will be undefined.
+The second version is supplied a counter, which will be incremented.
+____________________________________________________________________________________________________
+template <typename T>
+void create_value_at(T* p)
+
+template <typename T, typename TCounter>
+void create_value_at(T* p, Tcounter count)
+
+Creates a default value by constructing the  item with T().
+The second version is supplied a counter, which will be incremented.
+
+____________________________________________________________________________________________________
+template <typename T>
+void create_copy_at(T* p)
+
+template <typename T, typename TCounter>
+void create_copy_at(T* p, const T& value, Tcounter count)
+
+Creates a default value by constructing the  item with T(value).
+The second version is supplied a counter, which will be incremented.
+
+____________________________________________________________________________________________________
+template <typename T, typename TCounter>
+T& make_default_at(T* p, Tcounter count)
+
+Creates a default value. For POD types this will be undefined.
+Returns a reference to the new object.
+The second version is supplied a counter, which will be incremented.
+
+template <typename T>
+T& make_value_at(T* p)
+
+____________________________________________________________________________________________________
+template <typename T, typename TCounter>
+T& make_value_at(T* p, Tcounter count)
+
+Creates a default value by constructing the  item with T().
+Returns a reference to the new object.
+The second version is supplied a counter, which will be incremented.
+
+template <typename T>
+T& make_copy_at(T* p)
+____________________________________________________________________________________________________
+template <typename T, typename TCounter>
+T& make_copy_at(T* p, const T& value, Tcounter count)
+
+Creates a default value by constructing the  item with T(value).
+Returns a reference to the new object.
+The second version is supplied a counter, which will be incremented.
+
+template <typename T>
+void destroy_at(T* p)
+____________________________________________________________________________________________________
+template <typename T, typename TCounter>
+void destroy_at(T* p, TCounter& count)
+
+Calls the destructor for non-pod types.
+The second version is supplied a counter, which will be decremented.
+
+template <typename T, typename TSize >
+void destroy_n(T* p, TSize n)
+____________________________________________________________________________________________________
+template <typename T, typename TSize, typename TCounter>
+void destroy_n(T* p, TSize n, TCounter& count)
+
+Calls the destructor for a range of non-pod types, starting at address p.
+The second version is supplied a counter, which will be decremented by the number of items destructed.
+
+template <typename T>
+void destroy(T* p, T* p_end)
+____________________________________________________________________________________________________
+template <typename T, typename TCounter>
+void destroy(T* p, T* p_end, TCounter& count)
+
+Calls the destructor for a range of non-pod types, starting at address p.
+The second version is supplied a counter, which will be decremented by the number of items destructed.
+____________________________________________________________________________________________________
+template <typename T>
+struct create_copy
+
+Derive from this, passing the derived class as the template parameter.
+Provides the following member functions that constructs a copy at the specified address.
+____________________________________________________________________________________________________
+void create_copy_at(void* p);
+____________________________________________________________________________________________________
+template <typename TCounter>
+void create_copy_at(void* p, Tcounter& count);
+____________________________________________________________________________________________________
+T& make_copy_at(void* p);
+____________________________________________________________________________________________________
+template <typename TCounter>
+T& make_copy_at(void* p, Tcounter& count);
+____________________________________________________________________________________________________
+Example:
+class Test : public etl::create_copy<Test>
+{
+  // Other members.
+};
+
+// Allocate memory large enough to contain a 'Test' object.
+char buffer[sizeof(Test)];
+
+Test test;
+
+// Copy construct 'test' into the buffer memory.
+Test& t = test.make_copy_at(buffer);
+____________________________________________________________________________________________________
+Create / Destroy objects
+Functions that create or destroy objects in uninitialised memory.
+Variations of the functions above that don't require an explicit reinterpret_cast.
+
+template <typename TObject>
+TObject& construct_object_at(void* p, TObject&& object)
+20.35.12
+Construct the object at p.
+In a debug build the pointer is checked for correct alignment. An etl::alignment_error is asserted if incorrect.
+____________________________________________________________________________________________________
+template <typename TObject, typename... TArgs>
+TObject& construct_object_at(void* p, TArgs&&... args)
+20.35.12
+Construct the object at p from arguments.
+In a debug build the pointer is checked for correct alignment. An etl::alignment_error is asserted if incorrect.
+____________________________________________________________________________________________________
+template <typename TObject>
+TObject& get_object_at(void* p)
+20.35.12
+Get the object at p.
+In a debug build the pointer is checked for correct alignment. An etl::alignment_error is asserted if incorrect.
+____________________________________________________________________________________________________
+template <typename TObject>
+void destroy_object_at(void* p)
+20.35.12
+Destroy the object at p.
+In a debug build the pointer is checked for correct alignment. An etl::alignment_error is asserted if incorrect.
+____________________________________________________________________________________________________
+uninitialzed_fill
+
+template <typename TIterator, typename TSize, typename T>
+TIterator uninitialized_fill_n(TIterator o_begin, TSize count, const T& value)
+
+template <typename TIterator, typename TSize, typename T, typename TCounter>
+TIterator uninitialized_fill_n(TIterator o_begin, TSize count, const T& value, typename TCounter)
+
+Fills uninitialised memory with N values.
+____________________________________________________________________________________________________
+template <typename TIterator, typename T>
+TIterator uninitialized_fill(TIterator o_begin, TIterator o_end, const T& value)
+
+template <typename TIterator, typename TSize, typename T, typename TCounter>
+TIterator uninitialized_fill_n(TIterator o_begin, TSize count, const T& value, typename TCounter)
+
+Fills uninitialised memory range with a value.
+____________________________________________________________________________________________________
+uninitialised_copy
+
+template <typename TInputIterator, typename TOutputIterator>
+TIterator uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
+
+template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+TIterator uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, typename TCounter)
+
+Copies a range of objects to uninitialised memory. 
+____________________________________________________________________________________________________
+uninitialized_copy_n
+
+template <typename TInputIterator, typename TSize, typename TOutputIterator>
+TIterator uninitialized_copy_n(TInputIterator i_begin, TSize count, TOutputIterator o_begin)
+
+template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
+TIterator uninitialized_copy_n(TInputIterator i_begin, TSize count, TOutputIterator o_begin, typename TCounter)
+
+Copies N objects to uninitialised memory.
+____________________________________________________________________________________________________
+uninitialized_move
+
+template <typename TInputIterator, typename TOutputIterator>
+TIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
+
+template <typename TInputIterator, typename TOutputIterator, typename TCounter>
+TIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, typename TCounter)
+
+Moves a range of objects to uninitialised memory. 
+
+Note: If using C++03 then this function will call etl::uninitialized_copy
+____________________________________________________________________________________________________
+uninitialized_copy_n
+
+template <typename TInputIterator, typename TSize, typename TOutputIterator>
+TIterator uninitialized_move_n(TInputIterator i_begin, TSize count, TOutputIterator o_begin)
+
+template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
+TIterator uninitialized_move_n(TInputIterator i_begin, TSize count, TOutputIterator o_begin, typename TCounter)
+
+Moves N objects to uninitialised memory.
+
+Note: If using C++03 then this function will call etl::uninitialized_copy_n
+____________________________________________________________________________________________________
+uninitialized_default_construct
+
+template <typename TOutputIterator>
+void uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end)
+____________________________________________________________________________________________________
+template <typename TOutputIterator, typename TCounter>
+void uninitialized_default_construct(TOutputIterator o_begin, TOutputIterator o_end, typename TCounter)
+____________________________________________________________________________________________________
+template <typename TOutputIterator, typename TSize>
+TOutputIterator uninitialized_default_construct_n(TOutputIterator o_begin, TSize n)
+____________________________________________________________________________________________________
+template <typename TOutputIterator, typename TSize, typename TCounter>
+TOutputIterator uninitialized_default_construct_n(TOutputIterator o_begin, TSize n, TCounter& count)
+
+Creates default values. For POD types this will be undefined.
+____________________________________________________________________________________________________
+uninitialized_value_construct
+
+template <typename TOutputIterator>
+void uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end)
+____________________________________________________________________________________________________
+template <typename TOutputIterator, typename TCounter>
+void uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end, TCounter& count)
+____________________________________________________________________________________________________
+template <typename TOutputIterator, typename TSize>
+TOutputIterator uninitialized_value_construct_n(TOutputIterator o_begin, TSize n)
+____________________________________________________________________________________________________
+template <typename TOutputIterator, typename TSize, typename TCounter>
+TOutputIterator uninitialized_value_construct_n(TOutputIterator o_begin, TSize n, TCounter& count)
+
+Creates values constructed with T().
+____________________________________________________________________________________________________
+unique_ptr
+Like std::unique_ptr, etl::unique_ptr is a smart pointer that owns and manages another object through a pointer and disposes of that object when the unique_ptr goes out of scope.
+
+https://en.cppreference.com/w/cpp/memory/unique_ptr
+
+template<typename T>
+class unique_ptr 
+____________________________________________________________________________________________________
+template<typename T>
+class unique_ptr<T[]> 
+____________________________________________________________________________________________________
+Memory clear
+
+void memory_clear(volatile char* p, size_t n)
+
+template <typename T>
+void memory_clear(volatile T &object)
+
+A low level function that clears an object's memory to zero.
+
+template <typename T>
+void memory_clear_range(volatile T* begin, size_t n)
+
+template <typename T>
+void memory_clear_range(volatile T* begin, volatile T* end)
+
+A low level function that clears a range to zero.
+____________________________________________________________________________________________________
+Memory set
+
+void memory_set(volatile char* p, size_t n, char value)
+
+template <typename T>
+void memory_set(volatile T &object, char value)
+
+Low level functions that clear an object's memory to a value.
+
+template <typename T>
+void memory_set_range(volatile T* begin, size_t n, char value)
+
+template <typename T>
+void memory_set_range(volatile T* begin, volatile T* end, char value)
+
+Low level functions that set a range to a value.
+____________________________________________________________________________________________________
+wipe_on_destruct
+
+A template class that will wipe the derived objects storage to zero on destruction.
+Designed to eliminate sensitive data lurking around in memory after an object has been destructed.
+
+template <typename T>
+struct wipe_on_destruct
+T is the derived class whose storage must be wiped.
+
+Example
+
+struct UserData : public etl::wipe_on_destruct<UserData>
+{
+  char secret_passcode[16];
+  char sensitive_user_name[16];
+};
+
+When an instance of UserData is destructed, the memory that it occupied will be set to zero.
+____________________________________________________________________________________________________
+uninitialized_buffer
+
+template <size_t VObject_Size, size_t VN_Objects, size_t VAlignment>
+class uninitialized_buffer
+Creates an uninitialized memory buffer of VN_Objects each of VObject_Size with alignment VAlignment.
+____________________________________________________________________________________________________
+uninitialized_buffer_of
+
+template <typename T, size_t VN_Objects>
+class uninitialized_buffer_of
+Creates an uninitialized memory buffer of VN_Objects each of type T.
+____________________________________________________________________________________________________
+mem_copy
+20.26.0
+
+template <typename TPointer>
+TPointer mem_copy(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+Template wrapper for memcpy.
+Copies all of the bytes in the source range to the destination range.
+Type must be trivially copyable.
+sb Pointer to source begin.
+se Pointer to source end.
+db Pointer to destination begin.
+Returns a pointer to the destination.
+____________________________________________________________________________________________________
+template <typename TPointer>
+TPointer mem_copy(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+Template wrapper for memcpy.
+Copies all of the bytes in the source range to the destination range.
+Type must be trivially copyable.
+sb Pointer to source begin.
+n  Source length.
+db Pointer to destination begin.
+Returns a pointer to the destination.
+____________________________________________________________________________________________________
+mem_move
+20.26.0
+
+template <typename TPointer>
+TPointer mem_move(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+Template wrapper for memmove.
+Moves all of the bytes in the source range to the destination range.
+Type must be trivially copyable.
+sb Pointer to source begin.
+se Pointer to source end.
+db Pointer to destination begin.
+Returns a pointer to the destination.
+____________________________________________________________________________________________________
+template <typename TPointer>
+TPointer mem_move(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+Template wrapper for memmove.
+Moves all of the bytes in the source range to the destination range.
+Type must be trivially copyable.
+sb Pointer to source begin.
+n  Source length.
+db Pointer to destination begin.
+Returns a pointer to the destination.
+____________________________________________________________________________________________________
+mem_compare
+20.26.0
+
+template <typename TPointer>
+TPointer mem_compare(const TPointer sb, const TPointer se, TPointer db) ETL_NOEXCEPT
+Template wrapper for memcmp.
+Searches all of the bytes in the range for value.
+Type must be trivially copyable.
+sb Pointer to source begin.
+se Pointer to source end.
+db Pointer to destination begin.
+Returns <0, 0, >0. See documentation for memcmp.
+____________________________________________________________________________________________________
+template <typename TPointer>
+TPointer mem_compare(const TPointer sb, size_t n, TPointer db) ETL_NOEXCEPT
+Template wrapper for memcmp.
+Type must be trivially copyable.
+sb Pointer to source begin.
+n  Source length.
+db Pointer to destination begin.
+Returns <0, 0, >0. See documentation for memcmp.
+____________________________________________________________________________________________________
+mem_set
+20.26.0
+
+template <typename TPointer, typename T>
+TPointer mem_set(const TPointer db, const TPointer de, T value) ETL_NOEXCEPT
+Template wrapper for memset.
+Sets all of the bytes in the range to value.
+Type must be trivially copyable.
+db    Pointer to destination begin.
+de    Pointer to destination end.
+value The value to write to the memory. This value is cast to char.
+Returns a pointer to the destination.
+____________________________________________________________________________________________________
+template <typename TPointer, typename T>
+TPointer mem_set(const TPointer db, size_t n, T value) ETL_NOEXCEPT
+Template wrapper for memset.
+Sets all of the bytes in the range to value.
+Type must be trivially copyable.
+db    Pointer to destination begin.
+n     Destination length.
+value The value to write to the memory. This value is cast to char.
+Returns a pointer to the destination.
+____________________________________________________________________________________________________
+mem_char
+20.26.0
+
+template <typename TPointer, typename T>
+TPointer mem_char(const TPointer sb, const TPointer se, T value) ETL_NOEXCEPT
+Template wrapper for memchr.
+Searches all of the bytes in the range for value.
+Type must be trivially copyable.
+db    Pointer to source begin.
+de    Pointer to source begin.
+value The value to search for. This value is cast to char.
+Returns a pointer to the character or se if not found.
+____________________________________________________________________________________________________
+template <typename TPointer, typename T>
+TPointer mem_char(const TPointer sb, size_t n, T value) ETL_NOEXCEPT
+Template wrapper for memchr.
+Searches all of the bytes in the range for value.
+Type must be trivially copyable.
+db    Pointer to destination begin.
+n     Source length.
+value The value to search for. This value is cast to char.
+Returns a pointer to the character or sb + n if not found.
+

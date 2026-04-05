@@ -1,0 +1,200 @@
+Callback Timer Atomic
+20.22.0
+
+A software timer class that can manage up to 254 timers. Each one may be repeating or single shot.
+When a timer triggers it will call the selected function. The function may be a class member or free function.
+The timers are driven from a call to tick(uint32_t count). This call would normally be made from a high priority interrupt routine. The destination function will receive the callback in the same context as the tick call.
+The call to tick has a low overhead when a timer is not 'due'. Internally the timers are stored in 'first timeout' order so only the head of the list needs to be checked.
+
+Each timer may have a period of up to 232-2 ticks (4,294,967,294).
+At 1ms per tick this would equate to just over 49 days.
+
+The framework relies on an atomic counter type. With this mechanism, calls to tick are never disabled. If the foreground thread is within a disable/enable section when the timer interrupt/thread is activated then the tick update will be deferred until the next tick period. The timer interrupt/thread may interrogate the return value of tick() to check whether the update was deferred.
+
+Defines the following classes:-
+etl::icallback_timer_atomic<uint_least8_t MAX_TIMERS, typename TSemaphore>
+etl::callback_timer_atomic<typename TSemaphore>
+
+20.25.0
+From this version, an atomic 'semaphore' counter type must be supplied.
+
+Uses definitions from timer.h
+
+Important:
+For correct operation of the timer framework, the routine that calls tick must not be pre-emptible by another routine that calls a timer function. Also, calls to the timer framework may only be made from the caller of tick and one other, lower priority, thread of execution
+____________________________________________________________________________________________________
+icallback_timer_atomic
+The base class for all timer controllers.
+
+Type definitions
+callback_type etl::delegate<void(void)>
+The function type used for callbacks.
+_____________________________________________________________________________________________________
+Member functions
+etl::timer::id::type register_timer(callback_type callback,
+                                    uint32_t      period,                                        
+                                    bool          repeating)
+Registers a timer calling a free or static function.
+callback   A delegate to the callback funtion that will be callled when the timer expires.
+period     The timer period in ticks.
+repeating  false if single shot, true if repeating.
+
+Returns the allocated timer id or etl::timer::mode::NO_TIMER if one was not available.
+____________________________________________________________________________________________________
+bool unregister_timer(etl::timer::id::type id)
+Unregisters a timer.
+If the timer is active then it will be stopped.
+Returns true if a timer with the id was successfully unregistered.
+___________________________________________________________________________________________________
+void enable(bool state)
+Enables or disables the timer manager according to the state.
+____________________________________________________________________________________________________
+bool is_running() const
+Returns true if the timer manager is enabled.
+____________________________________________________________________________________________________
+void clear()
+Clears the callback timer back to the initial state. All timers will be stopped and unregistered.
+____________________________________________________________________________________________________
+bool tick(uint32_t count)
+This function updates the internal tick counter (if enabled) and must pass the number of ticks that have occurred since the last call. If the count encompasses more than one period of a repeating timer then the timer will be triggered multiple times in one call to tick.
+Returns true if the tick counter was updated, otherwise false. This may be used by the calling routine to accumulate unprocessed tick counts.
+____________________________________________________________________________________________________
+bool start(etl::timer::id::type id, bool immediate = false)
+Starts the timer with the specified id.
+If the timer is already running then the timer Is restarted from the current tick count.
+If immediate is true then the timer is triggered on the next call to tick(). Note: Single shot timers will only trigger once.
+If the id does not correspond to a registered timer then returns false.
+____________________________________________________________________________________________________
+bool stop(etl::timer::id::type id)
+Stops the timer with the specified id.
+Does nothing if the timer is already stopped.
+if the id does not correspond to a registered timer then returns false.
+____________________________________________________________________________________________________
+bool set_period(etl::timer::id::type id, uint32_t period)
+Stops the timer with the specified id.
+Sets a new timer period.
+Returns true if successful.
+____________________________________________________________________________________________________
+bool set_mode(etl::timer::id::type id, bool repeating)
+Stops the timer with the specified id.
+Sets a new timer mode.
+Returns true if successful.
+____________________________________________________________________________________________________
+etl::timer::id::type time_to_next()
+Returns the time to the next timeout.
+20.38.0
+____________________________________________________________________________________________________
+Constants
+MAX_TIMERS
+The maximum number of timer that can be handled.
+____________________________________________________________________________________________________
+callback_timer_atomic
+
+Template parameters
+MAX_TIMERS The number of timers to be supported. The maximum number is 254.
+A value of 255 will result in a compile error.
+____________________________________________________________________________________________________
+message_timer_atomic()
+Default construct.
+____________________________________________________________________________________________________
+Example
+
+//***************************************************************************
+// Class callback via etl::function
+//***************************************************************************
+class Test
+{
+public:
+
+  Test()
+    : ticks(0)
+  {
+  }
+
+  void callback()
+  {
+    ++ticks;
+  }
+
+  int ticks;
+};
+  
+Test test;
+
+using callback_type = etl::icallback_timer_atomic<std::atomic_int32_t>::callback_type;
+
+callback_type member_callback = callback_type::create<Test, test, &Test::callback> member_callback;
+
+//***************************************************************************
+// Free function callback via etl::function
+//***************************************************************************
+int free_ticks1 = 0;
+
+void free_callback1()
+{
+  ++free_ticks;
+}
+
+callback_type free_callback1 = callback_type::create<free_function_callback>();
+
+//***************************************************************************
+// Free function callback via function pointer
+//***************************************************************************
+int free_ticks2 = 0;
+
+void free_callback2()
+{
+  ++free_ticks2;
+}
+
+//***************************************************************************
+// Timer controller.
+//***************************************************************************
+etl::callback_timer_atomic<2, std::atomic_int32_t> timer_controller;
+
+//***************************************************************************
+// The main loop.
+//***************************************************************************
+int main()
+{
+  etl::timer::id::type id1 = timer_controller.register_timer(member_callback,
+                                                             1000,
+                                                             etl::timer::mode::SINGLE_SHOT);
+
+  etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback,
+                                                             100,
+                                                             etl::timer::mode::REPEATING);
+
+  timer_controller.start(id1);
+  timer_controller.start(id2);
+
+  timer_controller.enable(true);
+
+  // Start timer interrupts here.
+
+  while (true)
+  {
+    // Loop forever.
+  }
+
+  return 0;
+}
+
+//***************************************************************************
+// The interrupt timer callback.
+//***************************************************************************
+void timer_interrupt()
+{
+  const uint32_t TICK = 1;
+  static uint32_t nticks = TICK;
+
+  if (timer_controller.tick(nticks))
+  {
+    nticks = TICK;
+  }
+  else
+  {
+    nticks += TICK;
+  }
+}
+

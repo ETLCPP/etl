@@ -1,0 +1,31 @@
+instance_count
+Inherit from this class to count instances of a class.
+
+<20.25.0
+etl::instance_count<typename T>
+This class is not thread safe.
+
+20.25.0
+etl::instance_count<typename T, typename TCounter = uint32_t>
+This class is not thread safe unless TCounter is an atomic type.
+____________________________________________________________________________________________________
+Types
+
+type         The type being counted.
+counter_type The type used for the counter.
+____________________________________________________________________________________________________
+Member functions
+
+static const counter_type& get_instance_count()
+Returns a const reference to the current count.
+____________________________________________________________________________________________________
+static void reset_instance_count()
+Resets the count to zero.
+____________________________________________________________________________________________________
+Example
+Instances of My_Class will be counted and can be accessed by the inherited member function get_instance_count().
+
+class My_Class : public etl::instance_count<My_Class, std::atomic_uint8_t>
+{
+};
+
