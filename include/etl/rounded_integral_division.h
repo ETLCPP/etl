@@ -567,7 +567,7 @@ namespace etl
 
     // Work with magnitudes in unsigned form (avoids abs() overflow for
     // T::min()).
-    typedef typename std::make_unsigned<T>::type utype;
+    typedef typename etl::make_unsigned<T>::type utype;
     const utype                                  abs_denominator  = (denominator < 0) ? (utype(0) - utype(denominator)) : utype(denominator);
     const utype                                  abs_remainder    = (remainder < 0) ? (utype(0) - utype(remainder)) : utype(remainder);
     const utype                                  half_denominator = abs_denominator / 2U;
