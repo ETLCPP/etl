@@ -3801,7 +3801,7 @@
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
     <ClCompile Include="..\test_print.cpp">
-      <Filter>Tests</Filter>
+      <Filter>Tests\Strings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3987,6 +3987,11 @@
     </None>
     <None Include="..\..\docs\custom.css">
       <Filter>Documentation</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-format.yaml" />
+    <None Include="..\..\.github\workflows\clang-format_update.yaml" />
+    <None Include="..\run-coverage.sh">
+      <Filter>Tests\Scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

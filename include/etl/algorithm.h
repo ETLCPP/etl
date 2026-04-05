@@ -43,6 +43,7 @@ SOFTWARE.
 #include "exception.h"
 #include "functional.h"
 #include "gcd.h"
+#include "initializer_list.h"
 #include "invoke.h"
 #include "iterator.h"
 #include "largest.h"
@@ -7020,6 +7021,7 @@ namespace etl
         return etl::invoke(comp, etl::invoke(proj, b), etl::invoke(proj, a)) ? b : a;
       }
 
+  #if ETL_HAS_INITIALIZER_LIST
       template <class T, class Comp = ranges::less, class Proj = etl::identity>
       constexpr T operator()(std::initializer_list<T> r, Comp comp = {}, Proj proj = {}) const
       {
@@ -7036,6 +7038,7 @@ namespace etl
         }
         return *smallest;
       }
+  #endif
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>
       constexpr ranges::range_value_t<R> operator()(R&& r, Comp comp = {}, Proj proj = {}) const
@@ -7098,6 +7101,7 @@ namespace etl
         return etl::invoke(comp, etl::invoke(proj, a), etl::invoke(proj, b)) ? b : a;
       }
 
+  #if ETL_HAS_INITIALIZER_LIST
       template <class T, class Comp = ranges::less, class Proj = etl::identity>
       constexpr T operator()(std::initializer_list<T> r, Comp comp = {}, Proj proj = {}) const
       {
@@ -7114,6 +7118,7 @@ namespace etl
         }
         return *largest;
       }
+  #endif
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>
       constexpr ranges::range_value_t<R> operator()(R&& r, Comp comp = {}, Proj proj = {}) const
@@ -7180,6 +7185,7 @@ namespace etl
         return {a, b};
       }
 
+  #if ETL_HAS_INITIALIZER_LIST
       template <class T, class Comp = ranges::less, class Proj = etl::identity>
       constexpr ranges::minmax_result<T> operator()(std::initializer_list<T> r, Comp comp = {}, Proj proj = {}) const
       {
@@ -7202,6 +7208,7 @@ namespace etl
         }
         return {*smallest, *largest};
       }
+  #endif
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>
       constexpr ranges::minmax_result<ranges::range_value_t<R>> operator()(R&& r, Comp comp = {}, Proj proj = {}) const
