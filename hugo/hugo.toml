@@ -2,7 +2,6 @@ baseURL = 'http://localhost/'
 #baseURL = 'https://www.etlcpp.com/hugo/'
 languageCode = 'en-gb'
 title = 'Embedded Template Library'
-theme = 'hextra'
 
 [markup]
   [markup.highlight]
@@ -19,6 +18,9 @@ theme = 'hextra'
   [[module.mounts]]
     source = "../docs"
     target = "content/docs"
+
+  [[module.imports]]
+    path = 'github.com/imfing/hextra'
 
 [params]
   contentDir = "content/docs"
