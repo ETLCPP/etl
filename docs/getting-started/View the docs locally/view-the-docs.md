@@ -1,5 +1,5 @@
 ---
-title: "2: Viewing the documentation"
+title: "View the documentation"
 weight: 72
 ---
 

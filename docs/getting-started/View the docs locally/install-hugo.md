@@ -1,17 +1,24 @@
 ---
-title: "1: Installing Hugo"
-weight: 71
+title: "Install Hugo"
+weight: 72
 ---
 
-Here's how to install the **extended version** of Hugo on each platform:
+You need to install **Hugo** if you want to replicate the ETL online documentation.
 
-*The extended version includes support for Sass/SCSS compilation and WebP image processing, which is required by many Hugo themes.*
+You need to install the **extended version** of **Hugo** on each platform:
+
+*The extended version includes support for Sass/SCSS compilation and WebP image processing, which is required by many **Hugo** themes.*
 
 ## Install Go
 
 Hugo requires **Go** to support Hugo Modules.
 
 Visit [here](https://go.dev/dl/) to install the version applicable to your OS.
+
+Check that it is installed correctly with the command  
+```bash
+go version
+```
 
 ## Windows
 
@@ -54,9 +61,7 @@ sudo apt install hugo
 ```bash
 # Replace x.x.x with the latest version number
 wget https://github.com/gohugoio/hugo/releases/download/vx.x.x/hugo_extended_x.x.x_linux-amd64.tar.gz
-
 tar -xzf hugo_extended_x.x.x_linux-amd64.tar.gz
-
 sudo mv hugo /usr/local/bin/
 ```
 
