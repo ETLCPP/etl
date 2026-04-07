@@ -1,4 +1,4 @@
 ---
-title: "IO buffers"
+title: "IO"
 weight: 100
 ---

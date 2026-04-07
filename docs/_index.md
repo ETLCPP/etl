@@ -1,6 +1,7 @@
 ---
 title: "Embedded Template Library"
 weight: 998
+type: hextra-home
 ---
 
 {{< callout type="warning">}}
@@ -13,29 +14,47 @@ weight: 998
 
 <div class="not-prose badges">
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
-![Release date](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3) 
-![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17/20/23-blue.svg) 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![GitHub contributors](https://img.shields.io/github/contributors-anon/ETLCPP/etl) 
-![GitHub forks](https://img.shields.io/github/forks/ETLCPP/etl?style=flat) 
-![GitHub Repo stars](https://img.shields.io/github/stars/ETLCPP/etl?style=flat)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/msvc.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++17.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++20.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++23.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-syntax-checks.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++11.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++14.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++17.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++20.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++23.yml/badge.svg?branch=master)
-![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-syntax-checks.yml/badge.svg?branch=master)
-[![coverage](https://github.com/ETLCPP/etl/actions/workflows/coverage.yml/badge.svg)](https://github.com/ETLCPP/etl/actions/workflows/coverage.yml)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
-[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://www.etlcpp.com/sponsor.html)
+<div>
+    <img src="https://img.shields.io/github/v/release/jwellbelove/etl" alt="release">
+    <img src="https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3" alt="date">
+    <img src="https://img.shields.io/badge/c%2B%2B-98/03/11/14/17/20/23-blue.svg" alt="standard">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license">
+    <img src="https://img.shields.io/github/contributors-anon/ETLCPP/etl" alt="contributors">
+    <img src="https://img.shields.io/github/forks/ETLCPP/etl?style=flat" alt="forks">
+    <img src="https://img.shields.io/github/stars/ETLCPP/etl?style=flat" alt="stars">
+  </div>
+
+  <div>
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/msvc.yml/badge.svg?branch=master" alt="CI MSVC">
+  </div>
+
+  <div>
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master" alt="CI GCC 11">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master" alt="CI GCC 14">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/gcc-c++17.yml/badge.svg?branch=master" alt="CI GCC 17">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/gcc-c++20.yml/badge.svg?branch=master" alt="CI GCC 20">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/gcc-c++23.yml/badge.svg?branch=master" alt="CI GCC 23">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/gcc-syntax-checks.yml/badge.svg?branch=master" alt="CI GCC syntax">
+  </div>
+
+  <div>
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/clang-c++11.yml/badge.svg?branch=master" alt="CI Clang 11">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/clang-c++14.yml/badge.svg?branch=master" alt="CI Clang 14">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/clang-c++17.yml/badge.svg?branch=master" alt="CI Clang 17">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/clang-c++20.yml/badge.svg?branch=master" alt="CI Clang 20">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/clang-c++23.yml/badge.svg?branch=master" alt="CI Clang 23">
+    <img src="https://github.com/ETLCPP/etl/actions/workflows/clang-syntax-checks.yml/badge.svg?branch=master" alt="CI Clang syntax">
+  </div>
+
+  <div>
+    <a href="https://github.com/ETLCPP/etl/actions/workflows/coverage.yml"><img src="https://github.com/ETLCPP/etl/actions/workflows/coverage.yml/badge.svg" alt="coverage"></a>
+    <a href="https://www.codacy.com/manual/jwellbelove/etl"><img src="https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946" alt="Codacy"></a>
+  </div>
+  
+  <div>
+    <a href="https://www.etlcpp.com/sponsor.html"><img src="https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86" alt="Sponsor"></a>
+  </div>
+
 </div>
 
 ## Motivation
@@ -50,7 +69,7 @@ What’s needed is a template library specifically designed for embedded systems
 
 The Embedded Template Library (ETL) is not intended as a full replacement for the C++ Standard Template Library (STL), but rather as a complementary solution tailored specifically for embedded systems.  
 
-### Its design goals include:
+**Its design goals include**
 
 - Providing a set of containers with fixed or maximum sizes defined at compile-time.
 - Offering APIs that closely resemble those of the STL, enabling familiar and consistent usage.

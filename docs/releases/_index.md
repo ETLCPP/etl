@@ -3,8 +3,6 @@ title: "Releases"
 weight: 2002
 ---
 
----
-
 Click on the links to see the original Github page.
 
 ## 20.46.2
@@ -15,8 +13,7 @@ Click on the links to see the original Github page.
 ## 20.46.1
 
 **Pull requests:**  
-[#1317](https://github.com/ETLCPP/etl/pull/1317) `etl` `multiset` `iterator` invalidation during erase leads to incorrect sorted order in depth first traversal  
-&emsp;Also fixed `multimap` `erase` and added tests for both.
+[#1317](https://github.com/ETLCPP/etl/pull/1317) `etl` `multiset` `iterator` invalidation during erase leads to incorrect sorted order in depth first traversal. Also fixed `multimap` `erase` and added tests for both.
 
 ## 20.46.0
 

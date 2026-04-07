@@ -3,331 +3,217 @@ title: "delegate"
 weight: 1
 ---
 
-{{< callout type="info">}}
-  Header: `delegate.h`  
-  Supported: `20.45.0`  
-  Similar to: [std::function](https://en.cppreference.com/w/cpp/utility/functional/function.html)
-{{< /callout >}}
+etl::delegate is a type-safe, generic, and efficient delegate implementation. A delegate is essentially a type-safe function pointer. It can be used to encapsulate a callable unit (like a function, a function pointer, member function, or a callable object like a functor or a lambda function) and call it later.
 
-A small, in-place function wrapper that stores callable objects inside a fixed-size buffer (no dynamic allocation). It supports free functions, member functions, functors, and lambdas, with both runtime and compile-time bindings.
+etl::delegate is similar in a lot of ways to std::function_ref introduced with C++26.
 
-```cpp
-template <typename TSignature,
-          size_t Object_Size      = ETL_DEFAULT_INPLACE_FUNCTION_SIZE,
-          size_t Object_Alignment = ETL_DEFAULT_INPLACE_FUNCTION_ALIGNMENT>
-class inplace_function;
-```
+The delegate functions may be defined at compile time and/or runtime, depending on the function type.
+Most delegates can only be constructed via a create function, except lambdas and functors, which can be created by the delegate constructor.
 
-The defaults are defined as follows:-
+This may be used to implement a platform abstraction layer that allows an embedded application to interface with multiple hardware platforms.
 
-```cpp
-#if !defined(ETL_DEFAULT_INPLACE_FUNCTION_SIZE)
-  #define ETL_DEFAULT_INPLACE_FUNCTION_SIZE 32
-#endif
-```
+Here's a high-level overview of how etl::delegate works:
+Creation: 
+When you create a delegate, you specify the function signature that it should match. This is done using template parameters. For example, etl::delegate<void(int)> creates a delegate that can hold references to functions that take an integer as an argument and return void.
+Assignment: 
+You can assign a function to the delegate using the create method. The function you assign must match the delegate's function signature. For example, if you have a delegate of type etl::delegate<void(int)>, you could assign a function void myFunction(int) to it like this: 
+auto myDelegate = etl::delegate<void(int)>::create<myFunction>();
+Invocation: 
+Once a function has been assigned to the delegate, you can call that function through the delegate just like you would call a regular function. For example, if myDelegate is a delegate that holds a reference to myFunction, you could call myFunction through the delegate like this: myDelegate(123);
+____________________________________________________________________________________________________
+Notes: 
+<=20.21.0 
+This class only supports >=C++11.
 
-```cpp
-#if !defined(ETL_DEFAULT_INPLACE_FUNCTION_ALIGNMENT)
-  #define ETL_DEFAULT_INPLACE_FUNCTION_ALIGNMENT alignof(void*)
-#endif
-```
+>=20.22.0 
+This class is automatically selects C++03 or C++11 versions based on the value of ETL_USING_CPP11
+The C++03 variant only supports delegates taking 0 or 1 parameter.
 
-Set your own definitions if you require different defaults.
+etl::delegate is non-owning. You cannot use lambdas that capture variables that will have gone out of scope when the delegate is called. This would result in  dangling references. Lambdas are not copied; The delegate merely keeps pointers to lambdas. This also applies to functors.
 
-## Template Parameters
+>=20.40.0
+Move constructors from lambdas or functors are disabled, thereby stopping a delegate being created from a temporary defined in aparameter.
 
-```cpp
-TSignature
-```
-The function signature. e.g. `int(char, float)`  
+>=20.42.0
+etl::delegate is noexcept
+____________________________________________________________________________________________________
+etl::delegate<TReturn(TParams…)>
 
----
+20.22.0
+For C++03 
+etl::delegate<TReturn(void)>
+etl::delegate<TReturn(TParam)>
 
-```cpp
-Object_Size
-```
-Size of the internal storage buffer.  
-Defaults to `ETL_DEFAULT_INPLACE_FUNCTION_SIZE`.
+For the examples below, assume the following definitions.
 
----
-
-```cpp
-Object_Alignment
-```
-Alignment of the internal storage buffer.  
-Defaults to `ETL_DEFAULT_INPLACE_FUNCTION_ALIGNMENT`.
-
-## Exceptions
-
-```cpp
-etl::inplace_function_exception
-```
-Base exception.
-
----
-
-```cpp
-etl::inplace_function_uninitialized
-```
-Thrown (via `ETL_ASSERT`) when invoked without a target.
-
----
-
-## Member Types
-
-```cpp
-function_type
-```
-
-```cpp
-return_type
-```
-
-```cpp
-argument_types
-```
-
-## Constructors
-
-**Description**  
-Default constructor.
-
-**Description**  
-Copy/move constructors.
-
-**Description**  
-Construction from a free function pointer.
-
-**Description**  
-Construction from an object + member function pointer (const or non-const).
-
-**Description**  
-Construction from a lambda/functor (const or non-const).
-
-## Assignment
-
-**Description**  
-Copy/move assignment.
-
-**Description**  
-Assignment from nullptr clears the target.
-
-**Description**  
-Assignment from function pointer.
-
-**Description**  
-Assignment from lambda/functor.
-
-## Invocation
-
-```cpp
-operator()
-```
-**Description**  
-Invokes the bound callable and asserts if uninitialised.
-
-**Parameters**  
-
-**Returns**  
-
----
-
-```cpp
-call_if(...)
-```
-**Description**  
-Calls the delegate function, if valid.  
-Indicates success in the return type.  
-
-**Parameters**  
-`TArgs...`  
-
-**Returns**  
-For `void` return `bool` indicating whether it executed.  
-For non-void returns `etl::optional<TReturn>`.
-
----
-
-```cpp
-call_or(...)
-```
-**Description**  
-Invokes the target or a fallback callable.
-
-## Observers
-
-```cpp
-bool is_valid() const
-```
-**Returns**  
-Returns `true` if there is a valid callable.
-
----
-
-```cpp
-explicit operator bool() const
-```
-**Description**  
-
-**Parameters**  
-
-**Returns**  
-Returns the result of `is_valid()`
-
-## Modifiers
-
-```cpp
-void clear()
-```
-**Description**  
-Clears any stored callable.
-
----
-
-```cpp
-void swap(inplace_function& other)
-```
-**Description**  
-Swaps with another inplace_function.
-
----
-
-## Storage Introspection
-
-```cpp
-static constexpr size_t size()
-```
-**Returns**  
-Returns the size of the internal storage.
-
----
-
-```cpp
-static constexpr size_t alignment()
-```
-**Returns**  
-Returns the alignment of the internal storage.
-
-## Compile-Time Binding (No Payload)
-
-### Free function
-
-```cpp
-template <TReturn(*Function)(TArgs...)>
-void set()
-```
-Sets the callable to `Function`.
-
----
-
-```cpp
-template <TReturn(*Function)(TArgs...)>
-inplace_function<TReturn(TArgs...),
-                         Object_Size,
-                         Object_Alignment> create()
-```
-**Description**  
-Creates an `etl::inplace_function` using `Function`.
-
-### Member function + instance (external linkage)
-
-```cpp
-template <typename TObject, TReturn(TObject::*Method)(TArgs...), TObject& Instance>
-set<TObject, &TMethod, Instance>()
-```
-**Description**  
-Sets the callable to the member function `Method` for the object `Instance`.
-
----
-
-```cpp
-create<TObject, &TMethod, Instance>()
-```
-**Description**  
-
-### Callable object + instance (operator())
-
-```cpp
-set<T, Instance>()
-```
-**Description**  
-
-```cpp
-create<T, Instance>()
-```
-**Description**  
-
-## Helper Aliases
-
-```cpp
-etl::inplace_function_for<TSignature, TStorage>
-```
-**Description**  
-
-```cpp
-etl::inplace_function_for_any<TSignature, T0, ...>
-```
-**Description**  
-
-## Helper Factories
-
-```cpp
-make_inplace_function(function_ptr)
-```
-**Description**  
-
-```cpp
-make_inplace_function(obj, &Type::Method)
-```
-**Description**  
-
-```cpp
-make_inplace_function(lambda_or_functor)
-```
-**Description**  
-
-```cpp
-make_inplace_function<TSignature>(function_like)
-```
-**Description**  
-
-C++17-only overloads also exist for compile-time binding.
-
-## Example
-
-```cpp
-#include "etl/inplace_function.h"
-
-int add(int a, int b) { return a + b; }
-
-struct Accumulator
+class Test
 {
-  int base = 0;
-
-  int add_to(int v) { return base + v; }
+public:
+  
+  int member_function(int);
+  static int member_static(int);
+  int operator()(int);
+  int operator()(int) const;
 };
 
-void example()
-{
-  etl::inplace_function<int(int, int)> f(add);
-  int sum = f(1, 2);
+Test test;
 
-  Accumulator acc{ 10 };
+int global(int);
 
-  etl::inplace_function<int(int)> g(&Accumulator::add_to, acc);
+auto lambda = [](int i){ return i; };
+____________________________________________________________________________________________________
+Public types
 
-  int result = g(5);
-}
-```
+return_type    TReturn                     20.43.0
+argument_types etl::type_list<TParams...>  20.43.0
+____________________________________________________________________________________________________
+Run time construction
 
-## Notes
+Lambdas
+etl::delegate<int(int)> d(lambda);
+etl::delegate<int(int)> d = lambda;
+etl::delegate<int(int)> d = etl::delegate<int(int)>::create(lambda);
 
-If the callable object is larger than `Object_Size` or requires stricter alignment than `Object_Alignment`, compilation fails with a `static_assert`.
+d.set(lambda);
+
+Functors
+etl::delegate<int(int)> d(test);
+etl::delegate<int(int)> d = test;
+etl::delegate<int(int)> d = etl::delegate<int(int)>::create(test);
+
+d.set<test>();
+
+Member functions
+etl::delegate<int(int)> d = etl::delegate<int(int)>::create<Test, &Test::member_function>(test);
+
+d.set<Test, &Test::member_function>(test);
+d.set<Test, test, &Test::member_function>();
+____________________________________________________________________________________________________
+Compile time construction
+
+Global functions
+auto d = etl::delegate<int(int)>::create<global>();
+
+Member functions (if the instance is known at compile time)
+auto d = etl::delegate<int(int)>::create<Test, test, &Test::member_function>(); // Deprecated
+auto d = etl::delegate<int(int)>::create<Test, &Test::member_function, test>(); // New
+
+Functors (if the instance is known at compile time)
+auto d = etl::delegate<int(int)>::create<Test, test>();
+auto d = etl::delegate<int(int)>::create<const Test, test>();
+Note: These are disabled for GCC <= v8.1 as it generates an 'Internal Compiler Error'.
+
+Static member functions
+auto d = etl::delegate<int(int)>::create<Test::member_static>();
+____________________________________________________________________________________________________
+Constexpr
+
+Most delegates can be declared as constexpr. (C++11 and above)
+static Test test;
+constexpr auto d = etl::delegate<int(int)>::create<Test, test, &Test::member_function>();
+
+All create functions are constexpr under C++14.
+All create functions are [[nodiscard]] under C++17.
+____________________________________________________________________________________________________
+Calling the delegate
+
+The delegate may be called as a function with the defined parameter signature.
+
+etl::delegate<int(int)> d;
+
+int r = d(3);
+____________________________________________________________________________________________________
+Operations
+
+ETL_CONSTEXPR14 delegate()
+Constructs an uninitialised delegate.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 delegate(const delegate& other)
+Copy constructs a delegate.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 TReturn operator()(TParams... args) const ETL_NOEXCEPT
+Executes the delegate.
+constexpr from 20.42.1
+____________________________________________________________________________________________________
+20.17.0
+ETL_CONSTEXPR14 bool call_if(TParams... args) const ETL_NOEXCEPT
+For delegates returning void.
+Calls the delegate if valid.
+Returns true if valid, otherwise false.
+constexpr from 20.42.2
+
+ETL_CONSTEXPR14 etl::optional<TReturn> call_if(TParams... args) const ETL_NOEXCEPT
+For delegates returning TReturn.
+Calls the delegate if valid.
+Returns a valid etl::optional<TReturn> containing the return value, if valid.
+constexpr from 20.42.2
+____________________________________________________________________________________________________
+20.17.0
+template <typename TAlternative>
+ETL_CONSTEXPR14 TReturn call_or(TAlternative alternative, TParams... args) const ETL_NOEXCEPT
+Calls the delegate if valid, otherwise calls alternative.
+constexpr from 20.42.2
+
+template <TReturn(*Method)(TParams...)>
+ETL_CONSTEXPR14 TReturn call_or(TParams... args) const ETL_NOEXCEPT
+Calls the delegate if valid, otherwise calls Method.
+____________________________________________________________________________________________________
+void clear() ETL_NOEXCEPT
+Sets the delegate back to the uninitialised state.
+____________________________________________________________________________________________________
+ETL_NODISCARD ETL_CONSTEXPR14 bool is_valid() const ETL_NOEXCEPT
+ETL_CONSTEXPR14 operator bool() const
+Returns true if the delegate has been initialised, otherwise false.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 operator =() ETL_NOEXCEPT
+Assigns from another delegate or lambda.
+____________________________________________________________________________________________________
+ETL_CONSTEXPR14 operator ==() ETL_NOEXCEPT
+ETL_CONSTEXPR14 operator !=() ETL_NOEXCEPT
+Compares delegates.
+____________________________________________________________________________________________________
+make_delegate
+For C++17 and above.
+20.39.5
+____________________________________________________________________________________________________
+template <auto Function>
+constexpr auto make_delegate() noexcept
+Make a delegate from a free function.
+Returns etl::delegate<function_type>::create<Function>();
+____________________________________________________________________________________________________
+template <typename TLambda>
+constexpr auto make_delegate(TLambda& instance) noexcept
+Make a delegate from a functor or lambda function.
+Returns etl::delegate<function_type>(instance);
+____________________________________________________________________________________________________
+template <typename T, T& Instance>
+constexpr auto make_delegate() noexcept
+Make a delegate from a functor, compile time.
+Returns etl::delegate<function_type>::create<T, Instance>();
+____________________________________________________________________________________________________
+template <typename T, auto Method, T& Instance>
+constexpr auto make_delegate() noexcept
+Make a delegate from a member function at compile time.
+Returns etl::delegate<function_type>::create<T, Method, Instance>();
+____________________________________________________________________________________________________
+template <typename T, auto Method, const T& Instance>
+constexpr auto make_delegate() noexcept
+Make a delegate from a const member function at compile time.
+Returns etl::delegate<function_type>::create<T, Method, Instance>();
+____________________________________________________________________________________________________
+template <typename T, auto Method>
+constexpr auto make_delegate(T& instance) noexcept
+Make a delegate from a member function at run time.
+Returns etl::delegate<function_type>::create<T, Method>(instance);
+____________________________________________________________________________________________________
+template <typename T, auto Method>
+constexpr auto make_delegate(const T& instance) noexcept
+Make a delegate from a member function at run time.
+Returns etl::delegate<function_type>::create<T, Method>(instance);
 
 
-`operator()` asserts when called without a target; use `call_if` or `call_or` to avoid this.
 
-Prefer `inplace_function_for`, `inplace_function_for_any` or `make_inplace_function` to deduce storage sizes safely.
+
 
 
 

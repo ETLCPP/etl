@@ -12,8 +12,9 @@ html:not(.dark) .highlight .chroma .cpf {
 html:not(.dark) h1 { 
   color: coral !important;
   width: 100%;
-  border-bottom: 3px solid black !important;
-  padding-bottom: 0.5rem;
+  background-color: rgb(246, 246, 246) !important;
+  border: rgb(194, 97, 62) solid 3px !important;
+  padding: 0.5rem 0.5rem !important;
 }
 
 html:not(.dark) h2 { 
@@ -24,7 +25,7 @@ html:not(.dark) h2 {
 html:not(.dark) h3, 
 html:not(.dark) h4 
 { 
-  color: rgb(29, 172, 29) !important; 
+  color: darkgoldenrod !important; 
 }
 
 html:not(.dark) p { 
@@ -65,8 +66,8 @@ html:not(.dark) .hextra-sidebar-active-item {
   color: black !important;
 }
 
-html:not(.dark) .content p.red-text {
-  color: red !important;
+html:not(.dark) .content p.label-text {
+  color: darkgoldenrod !important;
 }
 
 /* Regular item hover */
@@ -116,9 +117,11 @@ html.dark .hx\:dark\:bg-dark {
 
 html.dark h1 
 { 
-  color: coral !important; 
-  border-bottom: 2px solid #c0c0c0 !important;
-  padding-bottom: 0.5rem;
+  color: coral !important;
+  width: 100%;
+  background-color: rgb(50, 50, 50) !important;
+  border: rgb(148, 75, 48) solid 2px !important;
+  padding: 0.5rem 0.5rem !important;
 }
 
 html.dark h2 { 
@@ -177,7 +180,7 @@ html.dark .hextra-code-block .highlight .chroma span.p {
   color: #c0c0c0;
 }
 
-html.dark .content p.red-text {
+html.dark .content p.label-text {
   color: salmon !important;
 }
 
@@ -234,6 +237,11 @@ html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
   width: 100%;
 }
 
+.hextra-code-block {
+  margin-top: 0.5rem !important;
+
+}
+
 /* .highlight .chroma .c1
 {
   color: forestgreen !important;
@@ -263,6 +271,13 @@ html.dark .hextra-code-block .highlight .chroma .cpf {
   margin: 0;
 }
 
+.badges div {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
 .content ul li {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
@@ -276,6 +291,7 @@ h1 {
   font-weight: 500 !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.0em !important;
+  border-radius: 0.75rem !important;
 }
 
 h2 {
@@ -293,7 +309,8 @@ h3 {
   font-weight: normal !important;
   font-size: 130% !important;
   margin-top: 0.5em !important;
-  margin-bottom: 0.5em !important;
+  margin-bottom: 0em !important;
+  padding: 0 !important;
 }
 
 h4 {
@@ -326,13 +343,33 @@ dl dd {
   font-size: 1rem !important;
 }
 
-code {
+ol {
   font-family: 'Roboto Mono', monospace !important;
   font-style: normal !important;
   font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+ol li {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+ol li code {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+code {
+  font-family: 'Roboto Mono', monospace !important;
+  font-weight: normal !important;
+  font-style: normal !important;
   font-size: 0.9rem !important;
   border: none !important;
-  border-radius: 2px !important;
 }
 
 pre code {
@@ -340,7 +377,6 @@ pre code {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 0.9rem !important;
-  padding-left: 0 !important;
   margin-left: 0 !important;
   border: none !important;
 }
@@ -348,20 +384,18 @@ pre code {
 pre {
   font-family: 'Roboto Mono', monospace !important;
   font-size: 0.9rem !important;
-  margin-top: 2em !important;
+  margin-top: 0em !important;
   margin-bottom: 0em !important;
-  padding-top: 0.5em !important;
-  padding-bottom: 0.5em !important;
   padding-left: 0.5em !important;
+  padding-right: 0.5em !important;
   border: none !important;
-  border-radius: 2px !important;
 }
 
 hr {
     height: 2px !important;
     border: none !important;
-    margin-top: 10px !important;
-    margin-bottom: 1px !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
 }
 
 p {

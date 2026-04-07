@@ -11,7 +11,7 @@ You need to install the **extended version** of **Hugo** on each platform:
 
 ## Install Go
 
-Hugo requires **Go** to support Hugo Modules.
+**Hugo** requires **Go** to support **Hugo Modules**.
 
 Visit [here](https://go.dev/dl/) to install the version applicable to your OS.
 
@@ -21,6 +21,9 @@ go version
 ```
 
 ## Windows
+<div class="not-prose badges">
+  <img src="/Windows.png" alt="Windows" align="left" style="margin-right: 15px;">
+</div>
 
 **Option 1: Winget (recommended)**
 ```powershell
@@ -45,6 +48,9 @@ scoop install hugo-extended
 1. Add that folder to your system `PATH`
 
 ## Linux
+<div class="not-prose badges">
+  <img src="/Linux.png" alt="Linux" align="left" style="margin-right: 15px;">
+</div>
 
 **Option 1: Snap**
 ```bash
@@ -66,6 +72,9 @@ sudo mv hugo /usr/local/bin/
 ```
 
 ## macOS
+<div class="not-prose badges">
+  <img src="/macOS.png" alt="macOS" align="left" style="margin-right: 15px;">
+</div>
 
 **Option 1: Homebrew (recommended)**
 ```bash

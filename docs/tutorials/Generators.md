@@ -1,4 +1,7 @@
-Generators
+---
+title: "Generators"
+---
+
 Some templates within the ETL are designed to support a variable number of template parameters. To accommodate this, these template classes have a number of specialisations to handle each variant. The ETL sets this number to a reasonable default, but there will almost certainly be circumstances where these are too small for the project at hand.
 
 To this end, the ETL supplies 'generators' to enable the creation of customised variants of these template classes.

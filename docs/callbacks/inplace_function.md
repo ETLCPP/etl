@@ -259,6 +259,7 @@ The alignment of the internal storage.
 template <TReturn(*Function)(TArgs...)>
 void set()
 ```
+**Description**  
 Sets the callable to `Function`.
 
 ---
@@ -271,6 +272,8 @@ inplace_function<TReturn(TArgs...),
 ```
 **Description**  
 Creates an `etl::inplace_function` using `Function`.
+
+---
 
 ### Member function + instance (external linkage)
 
@@ -292,6 +295,8 @@ create<TObject, &TMethod, Instance>()
 
 **Returns**
 
+---
+
 ### Callable object + instance (operator())
 
 ```cpp
@@ -302,6 +307,8 @@ set<T, Instance>()
 **Parameters**  
 
 **Returns**
+
+---
 
 ```cpp
 create<T, Instance>()
@@ -323,7 +330,7 @@ etl::inplace_function_for<TSignature, TStorage>
 
 **Returns**
 
-
+---
 
 ```cpp
 etl::inplace_function_for_any<TSignature, T0, ...>
