@@ -149,6 +149,7 @@ namespace std
 
 namespace
 {
+    #include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_ranges)
   {
     //*************************************************************************
@@ -5732,6 +5733,7 @@ namespace
       CHECK_EQUAL(30, v_out[2]);
     }
   }
+    #include "etl/private/diagnostic_pop.h"
 } // namespace
 
   #endif
