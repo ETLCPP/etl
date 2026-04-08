@@ -44,7 +44,7 @@ namespace etl
   /// \tparam TSignature The callback signature.
   /// \tparam TCallback  The callback type, defaults to etl::delegate<TSignature>.
   //*************************************************************************
-  template <typename TSignature, typename TCallback = etl::delegate<TSignature>>
+  template <typename TSignature, typename TCallback = etl::delegate<TSignature> >
   class closure;
 
 #if ETL_USING_CPP11 && !defined(ETL_CLOSURE_FORCE_CPP03_IMPLEMENTATION)
@@ -66,9 +66,10 @@ namespace etl
   {
   public:
 
-    ETL_DEPRECATED using delegate_type = TCallback;                ///< The callback type to be invoked. Deprecated, use callback_type instead.
-    using callback_type                = TCallback;                ///< The callback type to be invoked.
-    using argument_types               = etl::type_list<TArgs...>; ///< The type list of arguments.
+    ETL_DEPRECATED_REASON("Use callback_type") using delegate_type =
+      TCallback;                                     ///< The callback type to be invoked. Deprecated, use callback_type instead.
+    using callback_type  = TCallback;                ///< The callback type to be invoked.
+    using argument_types = etl::type_list<TArgs...>; ///< The type list of arguments.
 
     //*********************************************************************
     /// Construct a closure with a callback and its arguments.
