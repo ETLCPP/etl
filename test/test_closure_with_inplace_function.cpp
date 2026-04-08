@@ -109,7 +109,7 @@ namespace
     //*************************************************************************
     TEST(test_1_arg_reference)
     {
-      int                     v1 = 4;
+      int                                      v1 = 4;
       etl::closure<f1_ref_type, ipf1_ref_type> c1_ref(ipf1_ref, v1);
       CHECK_EQUAL(12, c1_ref());
       v1 = 5;

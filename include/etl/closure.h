@@ -66,8 +66,9 @@ namespace etl
   {
   public:
 
-    using callback_type  = TCallback;                 ///< The callback type to be invoked.
-    using argument_types = etl::type_list<TArgs...>;  ///< The type list of arguments.
+    ETL_DEPRECATED using delegate_type = TCallback;                ///< The callback type to be invoked. Deprecated, use callback_type instead.
+    using callback_type                = TCallback;                ///< The callback type to be invoked.
+    using argument_types               = etl::type_list<TArgs...>; ///< The type list of arguments.
 
     //*********************************************************************
     /// Construct a closure with a callback and its arguments.
