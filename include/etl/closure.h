@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "delegate.h"
+#include "invoke.h"
 #include "tuple.h"
 #include "type_list.h"
 #include "utility.h"
@@ -70,6 +71,9 @@ namespace etl
       TCallback;                                     ///< The callback type to be invoked. Deprecated, use callback_type instead.
     using callback_type  = TCallback;                ///< The callback type to be invoked.
     using argument_types = etl::type_list<TArgs...>; ///< The type list of arguments.
+
+    static_assert(etl::is_invocable_r<TReturn, TCallback, TArgs...>::value, "Callback is not invocable with the specified arguments");
+    static_assert(etl::is_copy_constructible<TCallback>::value, "Callback type must be copy constructible");
 
     //*********************************************************************
     /// Construct a closure with a callback and its arguments.
