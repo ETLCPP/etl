@@ -285,6 +285,11 @@ html.dark .hextra-code-block .highlight .chroma .cpf {
   font-size: 110% !important;
 }
 
+.err {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
 h1 {
   font-family: Roboto, sans-serif !important;
   font-style: i !important;
