@@ -29,12 +29,13 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/closure.h"
+#include "etl/inplace_function.h"
 
 #include <stdexcept>
 
 namespace
 {
-  SUITE(test_closure)
+  SUITE(test_closure_with_inplace_function)
   {
     int f1(int a1)
     {
@@ -73,20 +74,35 @@ namespace
       return a1 * 3 + a2 * a3 + a4 * a5;
     }
 
-    etl::delegate<int(int)>                     df1          = etl::delegate<int(int)>::create<&f1>();
-    etl::delegate<int(int)>                     df1_throwing = etl::delegate<int(int)>::create<&f1_throwing>();
-    etl::delegate<void(int)>                    df1_void     = etl::delegate<void(int)>::create<&f1_void>();
-    etl::delegate<int(int, int)>                df2          = etl::delegate<int(int, int)>::create<&f2>();
-    etl::delegate<int(int, int, int)>           df3          = etl::delegate<int(int, int, int)>::create<&f3>();
-    etl::delegate<int(int, int, int, int)>      df4          = etl::delegate<int(int, int, int, int)>::create<&f4>();
-    etl::delegate<int(int, int, int, int, int)> df5          = etl::delegate<int(int, int, int, int, int)>::create<&f5>();
+    using f1_type      = int(int);
+    using f1_ref_type  = int(int&);
+    using f1_void_type = void(int);
+    using f2_type      = int(int, int);
+    using f3_type      = int(int, int, int);
+    using f4_type      = int(int, int, int, int);
+    using f5_type      = int(int, int, int, int, int);
 
-    etl::delegate<int(int&)> df1_ref = etl::delegate<int(int&)>::create<&f1_ref>();
+    using ipf1_type      = etl::inplace_function<f1_type>;
+    using ipf1_ref_type  = etl::inplace_function<f1_ref_type>;
+    using ipf1_void_type = etl::inplace_function<f1_void_type>;
+    using ipf2_type      = etl::inplace_function<f2_type>;
+    using ipf3_type      = etl::inplace_function<f3_type>;
+    using ipf4_type      = etl::inplace_function<f4_type>;
+    using ipf5_type      = etl::inplace_function<f5_type>;
+
+    ipf1_type      ipf1          = ipf1_type::create<&f1>();
+    ipf1_type      ipf1_throwing = ipf1_type::create<&f1_throwing>();
+    ipf1_ref_type  ipf1_ref      = ipf1_ref_type::create<&f1_ref>();
+    ipf1_void_type ipf1_void     = ipf1_void_type::create<&f1_void>();
+    ipf2_type      ipf2          = ipf2_type::create<&f2>();
+    ipf3_type      ipf3          = ipf3_type::create<&f3>();
+    ipf4_type      ipf4          = ipf4_type::create<&f4>();
+    ipf5_type      ipf5          = ipf5_type::create<&f5>();
 
     //*************************************************************************
     TEST(test_1_arg)
     {
-      etl::closure<int(int)> c1(df1, 4);
+      etl::closure<f1_type, ipf1_type> c1(ipf1, 4);
       CHECK_EQUAL(12, c1());
     }
 
@@ -94,7 +110,7 @@ namespace
     TEST(test_1_arg_reference)
     {
       int                     v1 = 4;
-      etl::closure<int(int&)> c1_ref(df1_ref, v1);
+      etl::closure<f1_ref_type, ipf1_ref_type> c1_ref(ipf1_ref, v1);
       CHECK_EQUAL(12, c1_ref());
       v1 = 5;
       CHECK_EQUAL(15, c1_ref());
@@ -107,30 +123,30 @@ namespace
       {
         return a + 11;
       };
-      etl::delegate<int(int)> df1_lambda(l);
+      ipf1_type ipf1_lambda(l);
 
-      etl::closure<int(int)> c1_lambda(df1_lambda, 5);
+      etl::closure<f1_type, ipf1_type> c1_lambda(ipf1_lambda, 5);
       CHECK_EQUAL(16, c1_lambda());
     }
 
     //*************************************************************************
     TEST(test_throwing)
     {
-      etl::closure<int(int)> c1(df1_throwing, 4);
+      etl::closure<f1_type, ipf1_type> c1(ipf1_throwing, 4);
       CHECK_THROW(c1(), std::runtime_error);
     }
 
     //*************************************************************************
     TEST(test_void)
     {
-      etl::closure<void(int)> c1(df1_void, 4);
+      etl::closure<f1_void_type, ipf1_void_type> c1(ipf1_void, 4);
       c1();
     }
 
     //*************************************************************************
     TEST(test_2_args)
     {
-      etl::closure<int(int, int)> c2(df2, 4, 3);
+      etl::closure<f2_type, ipf2_type> c2(ipf2, 4, 3);
       CHECK_EQUAL(15, c2());
     }
 
@@ -138,7 +154,7 @@ namespace
     //*************************************************************************
     TEST(test_2_args_bind)
     {
-      etl::closure<int(int, int)> c2(df2, 4, 3);
+      etl::closure<f2_type, ipf2_type> c2(ipf2, 4, 3);
       CHECK_EQUAL(15, c2());
 
       c2.bind<0>(7);
@@ -149,7 +165,7 @@ namespace
     //*************************************************************************
     TEST(test_2_args_bind_all)
     {
-      etl::closure<int(int, int)> c2(df2, 4, 3);
+      etl::closure<f2_type, ipf2_type> c2(ipf2, 4, 3);
       CHECK_EQUAL(15, c2());
 
       c2.bind(7, 8);
@@ -160,28 +176,28 @@ namespace
     //*************************************************************************
     TEST(test_3_args)
     {
-      etl::closure<int(int, int, int)> c3(df3, 4, 3, 2);
+      etl::closure<f3_type, ipf3_type> c3(ipf3, 4, 3, 2);
       CHECK_EQUAL(18, c3());
     }
 
     //*************************************************************************
     TEST(test_4_args)
     {
-      etl::closure<int(int, int, int, int)> c4(df4, 4, 3, 2, 1);
+      etl::closure<f4_type, ipf4_type> c4(ipf4, 4, 3, 2, 1);
       CHECK_EQUAL(19, c4());
     }
 
     //*************************************************************************
     TEST(test_5_args)
     {
-      etl::closure<int(int, int, int, int, int)> c5(df5, 4, 3, 2, 1, 5);
+      etl::closure<f5_type, ipf5_type> c5(ipf5, 4, 3, 2, 1, 5);
       CHECK_EQUAL(23, c5());
     }
 
     //*************************************************************************
     TEST(test_bind_static_assert)
     {
-      etl::closure<int(int, int)> c(df2, 1, 2);
+      etl::closure<f2_type, ipf2_type> c(ipf2, 1, 2);
 
       // Uncomment to generate static_assert errors.
       // c.bind(1);                // Argument count mismatch
