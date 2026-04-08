@@ -149,7 +149,14 @@ namespace
 
       if (ETL_PLATFORM_32BIT)
       {
-        CHECK_EQUAL(0xEC6A8D69UL, hash);
+        if (etl::endianness::value() == etl::endian::little)
+        {
+          CHECK_EQUAL(0xEC6A8D69UL, hash);
+        }
+        else
+        {
+          CHECK_EQUAL(0x5F69FD19UL, hash);
+        }
       }
 
       if (ETL_PLATFORM_64BIT)
@@ -165,7 +172,14 @@ namespace
 
       if (ETL_PLATFORM_32BIT)
       {
-        CHECK_EQUAL(0xEC6A8D69UL, hash);
+        if (etl::endianness::value() == etl::endian::little)
+        {
+          CHECK_EQUAL(0xEC6A8D69UL, hash);
+        }
+        else
+        {
+          CHECK_EQUAL(0x5F69FD19UL, hash);
+        }
       }
 
       if (ETL_PLATFORM_64BIT)
@@ -177,7 +191,7 @@ namespace
     //*************************************************************************
     TEST(test_hash_float)
     {
-      size_t hash = etl::hash<float>()((float)(1.2345));
+      size_t hash = etl::hash<float>()(1.2345f);
 
       if (ETL_PLATFORM_32BIT)
       {
@@ -204,7 +218,14 @@ namespace
 
       if (ETL_PLATFORM_32BIT)
       {
-        CHECK_EQUAL(0x86FBF224UL, hash);
+        if (etl::endianness::value() == etl::endian::little)
+        {
+          CHECK_EQUAL(0x86FBF224UL, hash);
+        }
+        else
+        {
+          CHECK_EQUAL(0xD1F372DEUL, hash);
+        }
       }
 
       if (ETL_PLATFORM_64BIT)
