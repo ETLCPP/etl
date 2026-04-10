@@ -83,8 +83,9 @@ add_executable(etl_tests
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
-	test_closure.cpp
-	test_closure_constexpr.cpp
+	test_closure_with_default_delegate.cpp
+	test_closure_with_default_delegate_constexpr.cpp
+	test_closure_with_inplace_function.cpp
 	test_compare.cpp
 	test_concepts.cpp
 	test_constant.cpp
@@ -524,7 +525,7 @@ if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Cla
 			target_link_options(etl_tests
 				PRIVATE
 				-fsanitize=address,undefined,bounds
-				)	
+				)
 		endif()
 	endif ()
 endif ()

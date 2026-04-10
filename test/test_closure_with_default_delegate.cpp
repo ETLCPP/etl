@@ -34,7 +34,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_closure)
+  SUITE(test_closure_with_default_delegate)
   {
     int f1(int a1)
     {
