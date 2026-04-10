@@ -959,11 +959,16 @@ namespace etl
   ETL_CONSTANT bool is_random_access_iterator_concept<T>::value;
 
 #if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
+  #if ETL_CPP11_SUPPORTED
   //*****************************************************************************
   /// Get the 'begin' iterator.
+  /// Note: Contains SFINAE guard, ensuring they only participate in overload
+  /// resolution when TContainer actually has the corresponding member function.
+  /// This prevents ADL from matching these templates when std::ranges::begin
+  /// performs an unqualified call on etl:: iterator types.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<TContainer&>().begin())> >
   ETL_CONSTEXPR typename TContainer::iterator begin(TContainer& container)
   {
     return container.begin();
@@ -973,7 +978,7 @@ namespace etl
   /// Get the 'begin' const_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().begin())> >
   ETL_CONSTEXPR typename TContainer::const_iterator begin(const TContainer& container)
   {
     return container.begin();
@@ -983,7 +988,7 @@ namespace etl
   /// Get the 'begin' const_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().cbegin())> >
   ETL_CONSTEXPR typename TContainer::const_iterator cbegin(const TContainer& container)
   {
     return container.cbegin();
@@ -993,7 +998,7 @@ namespace etl
   /// Get the 'end' iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<TContainer&>().end())> >
   ETL_CONSTEXPR typename TContainer::iterator end(TContainer& container)
   {
     return container.end();
@@ -1003,7 +1008,7 @@ namespace etl
   /// Get the 'end' const_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().end())> >
   ETL_CONSTEXPR typename TContainer::const_iterator end(const TContainer& container)
   {
     return container.end();
@@ -1013,11 +1018,73 @@ namespace etl
   /// Get the 'end' const_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().cend())> >
   ETL_CONSTEXPR typename TContainer::const_iterator cend(const TContainer& container)
   {
     return container.cend();
   }
+  #else
+  // C++03 fallback: no SFINAE guards needed since std::ranges does not exist.
+  //*****************************************************************************
+  /// Get the 'begin' iterator.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::iterator begin(TContainer& container)
+  {
+    return container.begin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' const_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::const_iterator begin(const TContainer& container)
+  {
+    return container.begin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' const_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::const_iterator cbegin(const TContainer& container)
+  {
+    return container.cbegin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::iterator end(TContainer& container)
+  {
+    return container.end();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' const_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::const_iterator end(const TContainer& container)
+  {
+    return container.end();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' const_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::const_iterator cend(const TContainer& container)
+  {
+    return container.cend();
+  }
+  #endif
 
   //*****************************************************************************
   /// Get the 'begin' pointer for an array.
@@ -1081,11 +1148,13 @@ namespace etl
 #endif
 
 #if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
+  #if ETL_CPP11_SUPPORTED
   //*****************************************************************************
   /// Get the 'begin' reverse_iterator for a container.
+  /// Note: Contains SFINAE guard (see begin/end above for rationale).
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<TContainer&>().rbegin())> >
   ETL_CONSTEXPR typename TContainer::reverse_iterator rbegin(TContainer& container)
   {
     return container.rbegin();
@@ -1095,7 +1164,7 @@ namespace etl
   /// Get the 'begin' reverse_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().rbegin())> >
   ETL_CONSTEXPR typename TContainer::const_reverse_iterator rbegin(const TContainer& container)
   {
     return container.rbegin();
@@ -1105,7 +1174,7 @@ namespace etl
   /// Get the 'begin' reverse_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().crbegin())> >
   ETL_CONSTEXPR typename TContainer::const_reverse_iterator crbegin(const TContainer& container)
   {
     return container.crbegin();
@@ -1115,7 +1184,7 @@ namespace etl
   /// Get the 'end' reverse_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<TContainer&>().rend())> >
   ETL_CONSTEXPR typename TContainer::reverse_iterator rend(TContainer& container)
   {
     return container.rend();
@@ -1125,7 +1194,7 @@ namespace etl
   /// Get the 'end' reverse_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().rend())> >
   ETL_CONSTEXPR typename TContainer::const_reverse_iterator rend(const TContainer& container)
   {
     return container.rend();
@@ -1135,11 +1204,73 @@ namespace etl
   /// Get the 'end' reverse_iterator for a container.
   ///\ingroup container
   //*****************************************************************************
-  template <typename TContainer>
+  template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().crend())> >
   ETL_CONSTEXPR typename TContainer::const_reverse_iterator crend(const TContainer& container)
   {
     return container.crend();
   }
+  #else
+  // C++03 fallback: no SFINAE guards needed since std::ranges does not exist.
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::reverse_iterator rbegin(TContainer& container)
+  {
+    return container.rbegin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::const_reverse_iterator rbegin(const TContainer& container)
+  {
+    return container.rbegin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'begin' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::const_reverse_iterator crbegin(const TContainer& container)
+  {
+    return container.crbegin();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::reverse_iterator rend(TContainer& container)
+  {
+    return container.rend();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::const_reverse_iterator rend(const TContainer& container)
+  {
+    return container.rend();
+  }
+
+  //*****************************************************************************
+  /// Get the 'end' reverse_iterator for a container.
+  ///\ingroup container
+  //*****************************************************************************
+  template <typename TContainer>
+  typename TContainer::const_reverse_iterator crend(const TContainer& container)
+  {
+    return container.crend();
+  }
+  #endif
 
   //*****************************************************************************
   /// Get the 'begin' reverse_iterator for an array.
