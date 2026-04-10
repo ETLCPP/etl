@@ -171,12 +171,13 @@ designed to be run **from the project root**.
 
 ### Supported architectures
 
-| Argument | Target | QEMU binary |
-|---|---|---|
-| `armhf` | ARM hard-float (32-bit) | `qemu-arm-static` |
-| `i386` | x86 32-bit | `qemu-i386-static` |
-| `riscv64` | RISC-V 64-bit | `qemu-riscv64-static` |
-| `s390x` | IBM Z (64-bit) | `qemu-s390x-static` |
+| Argument | Target | Endianness | QEMU binary |
+|---|---|---|---|
+| `armhf` | ARM hard-float (32-bit) | Little | `qemu-arm-static` |
+| `i386` | x86 32-bit | Little | `qemu-i386-static` |
+| `powerpc` | PowerPC 32-bit | Big | `qemu-ppc` |
+| `riscv64` | RISC-V 64-bit | Little | `qemu-riscv64-static` |
+| `s390x` | IBM Z (64-bit) | Big | `qemu-s390x-static` |
 
 ### Synopsis
 
@@ -301,6 +302,7 @@ branches triggers a comprehensive set of GitHub Actions workflows defined in
 | `msvc.yml` | MSVC 2022 | C++17 | Windows, STL & No STL |
 | `gcc-c++23-armhf.yml` | GCC cross | C++23 | armhf via QEMU |
 | `gcc-c++23-i386.yml` | GCC cross | C++23 | i386 via QEMU |
+| `gcc-c++23-powerpc.yml` | GCC cross | C++23 | powerpc via QEMU |
 | `gcc-c++23-riscv64.yml` | GCC cross | C++23 | RISC-V 64 via QEMU |
 | `gcc-c++23-s390x.yml` | GCC cross | C++23 | s390x via QEMU |
 | `coverage.yml` | GCC | — | Generates lcov coverage report, deploys to GitHub Pages |
