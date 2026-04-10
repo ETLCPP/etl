@@ -33,53 +33,62 @@ SOFTWARE.
 
 #include "platform.h"
 #include "delegate.h"
+#include "invoke.h"
 #include "tuple.h"
 #include "type_list.h"
 #include "utility.h"
 
 namespace etl
 {
-#if ETL_USING_CPP11 && !defined(ETL_CLOSURE_FORCE_CPP03_IMPLEMENTATION)
   //*************************************************************************
   /// Base template for closure.
+  /// \tparam TSignature The callback signature.
+  /// \tparam TCallback  The callback type, defaults to etl::delegate<TSignature>.
   //*************************************************************************
-  template <typename>
+  template <typename TSignature, typename TCallback = etl::delegate<TSignature> >
   class closure;
 
+#if ETL_USING_CPP11 && !defined(ETL_CLOSURE_FORCE_CPP03_IMPLEMENTATION)
   //*************************************************************************
-  /// Closure for binding arguments to a delegate and invoking it later.
-  /// Stores a delegate and its arguments, allowing deferred execution.
+  /// Closure for binding arguments to a callback and invoking it later.
+  /// Stores a callback and its arguments, allowing deferred execution.
   /// Arguments are stored in a tuple and can be rebound using bind().
   /// Example usage:
   /// \code
   /// etl::closure<void(int, int)> c(my_delegate, 1, 2);
   /// c(); // Invokes my_delegate(1, 2)
   /// \endcode
-  /// \tparam TReturn The return type of the delegate.
-  /// \tparam TArgs   The argument types of the delegate.
+  /// \tparam TReturn The return type of the callback.
+  /// \tparam TArgs   The argument types of the callback.
+  /// \tparam TCallback The callback type.
   //*************************************************************************
-  template <typename TReturn, typename... TArgs>
-  class closure<TReturn(TArgs...)>
+  template <typename TReturn, typename... TArgs, typename TCallback>
+  class closure<TReturn(TArgs...), TCallback>
   {
   public:
 
-    using delegate_type  = etl::delegate<TReturn(TArgs...)>; ///< The delegate type to be invoked.
-    using argument_types = etl::type_list<TArgs...>;         ///< The type list of arguments.
+    ETL_DEPRECATED_REASON("Use callback_type") using delegate_type =
+      TCallback;                                     ///< The callback type to be invoked. Deprecated, use callback_type instead.
+    using callback_type  = TCallback;                ///< The callback type to be invoked.
+    using argument_types = etl::type_list<TArgs...>; ///< The type list of arguments.
+
+    static_assert(etl::is_invocable_r<TReturn, TCallback, TArgs...>::value, "Callback is not invocable with the specified arguments");
+    static_assert(etl::is_copy_constructible<TCallback>::value, "Callback type must be copy constructible");
 
     //*********************************************************************
-    /// Construct a closure with a delegate and its arguments.
-    /// \param f    The delegate to be invoked.
-    /// \param args The arguments to bind to the delegate.
+    /// Construct a closure with a callback and its arguments.
+    /// \param f    The callback to be invoked.
+    /// \param args The arguments to bind to the callback.
     //*********************************************************************
-    ETL_CONSTEXPR14 closure(const delegate_type& f, const TArgs... args)
+    ETL_CONSTEXPR14 closure(const callback_type& f, const TArgs... args)
       : m_f(f)
       , m_args(args...)
     {
     }
 
     //*********************************************************************
-    /// Invoke the stored delegate with the bound arguments.
-    /// \return The result of the delegate invocation.
+    /// Invoke the stored callback with the bound arguments.
+    /// \return The result of the callback invocation.
     //*********************************************************************
     ETL_CONSTEXPR14 TReturn operator()() const
     {
@@ -131,7 +140,7 @@ namespace etl
     //*********************************************************************
     /// Execute the closure with the stored arguments.
     /// \tparam idx Index sequence for tuple unpacking.
-    /// \return The result of the delegate invocation.
+    /// \return The result of the callback invocation.
     //*********************************************************************
     template <size_t... Indexes>
     ETL_CONSTEXPR14 TReturn execute(etl::index_sequence<Indexes...>) const
@@ -139,43 +148,38 @@ namespace etl
       return m_f(etl::get<Indexes>(m_args)...);
     }
 
-    delegate_type        m_f;    ///< The delegate to invoke.
+    callback_type        m_f;    ///< The callback to invoke.
     etl::tuple<TArgs...> m_args; ///< The bound arguments.
   };
 #else
   //*************************************************************************
-  /// Base template for closure.
-  //*************************************************************************
-  template <typename>
-  class closure;
-
-  //*************************************************************************
-  /// Closure for binding one argument to a delegate and invoking it later.
-  /// \tparam TReturn The return type of the delegate.
+  /// Closure for binding one argument to a callback and invoking it later.
+  /// \tparam TReturn The return type of the callback.
   /// \tparam TArg0    The type of the argument.
+  /// \tparam TCallback The callback type.
   //*************************************************************************
-  template <typename TReturn, typename TArg0>
-  class closure<TReturn(TArg0)>
+  template <typename TReturn, typename TArg0, typename TCallback>
+  class closure<TReturn(TArg0), TCallback>
   {
   public:
 
-    /// The delegate type to be invoked.
-    typedef etl::delegate<TReturn(TArg0)> delegate_type;
+    /// The callback type to be invoked.
+    typedef TCallback callback_type;
 
     //*********************************************************************
-    /// Construct a closure with a delegate and its argument.
-    /// \param f    The delegate to be invoked.
-    /// \param arg0 The argument to bind to the delegate.
+    /// Construct a closure with a callback and its argument.
+    /// \param f    The callback to be invoked.
+    /// \param arg0 The argument to bind to the callback.
     //*********************************************************************
-    closure(const delegate_type& f, const TArg0 arg0)
+    closure(const callback_type& f, const TArg0 arg0)
       : m_f(f)
       , m_arg0(arg0)
     {
     }
 
     //*********************************************************************
-    /// Invoke the stored delegate with the bound argument.
-    /// \return The result of the delegate invocation.
+    /// Invoke the stored callback with the bound argument.
+    /// \return The result of the callback invocation.
     //*********************************************************************
     TReturn operator()() const
     {
@@ -184,30 +188,31 @@ namespace etl
 
   private:
 
-    delegate_type m_f; ///< The delegate to invoke.
+    callback_type m_f; ///< The callback to invoke.
     TArg0         m_arg0;
   };
 
   //*************************************************************************
-  /// Closure for binding two arguments to a delegate and invoking it later.
-  /// \tparam TReturn The return type of the delegate.
+  /// Closure for binding two arguments to a callback and invoking it later.
+  /// \tparam TReturn The return type of the callback.
   /// \tparam TArg0    The type of the first argument.
   /// \tparam TArg1    The type of the second argument.
+  /// \tparam TCallback The callback type.
   //*************************************************************************
-  template <typename TReturn, typename TArg0, typename TArg1>
-  class closure<TReturn(TArg0, TArg1)>
+  template <typename TReturn, typename TArg0, typename TArg1, typename TCallback>
+  class closure<TReturn(TArg0, TArg1), TCallback>
   {
   public:
 
-    typedef etl::delegate<TReturn(TArg0, TArg1)> delegate_type;
+    typedef TCallback callback_type;
 
     //*********************************************************************
-    /// Construct a closure with a delegate and its arguments.
-    /// \param f    The delegate to be invoked.
+    /// Construct a closure with a callback and its arguments.
+    /// \param f    The callback to be invoked.
     /// \param arg0 The first argument to bind.
     /// \param arg1 The second argument to bind.
     //*********************************************************************
-    closure(const delegate_type& f, const TArg0 arg0, const TArg1 arg1)
+    closure(const callback_type& f, const TArg0 arg0, const TArg1 arg1)
       : m_f(f)
       , m_arg0(arg0)
       , m_arg1(arg1)
@@ -215,8 +220,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Invoke the stored delegate with the bound arguments.
-    /// \return The result of the delegate invocation.
+    /// Invoke the stored callback with the bound arguments.
+    /// \return The result of the callback invocation.
     //*********************************************************************
     TReturn operator()() const
     {
@@ -225,33 +230,34 @@ namespace etl
 
   private:
 
-    delegate_type m_f; ///< The delegate to invoke.
+    callback_type m_f; ///< The callback to invoke.
     TArg0         m_arg0;
     TArg1         m_arg1;
   };
 
   //*************************************************************************
-  /// Closure for binding three arguments to a delegate and invoking it later.
-  /// \tparam TReturn The return type of the delegate.
+  /// Closure for binding three arguments to a callback and invoking it later.
+  /// \tparam TReturn The return type of the callback.
   /// \tparam TArg0    The type of the first argument.
   /// \tparam TArg1    The type of the second argument.
   /// \tparam TArg2    The type of the third argument.
+  /// \tparam TCallback The callback type.
   //*************************************************************************
-  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2>
-  class closure<TReturn(TArg0, TArg1, TArg2)>
+  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TCallback>
+  class closure<TReturn(TArg0, TArg1, TArg2), TCallback>
   {
   public:
 
-    typedef etl::delegate<TReturn(TArg0, TArg1, TArg2)> delegate_type;
+    typedef TCallback callback_type;
 
     //*********************************************************************
-    /// Construct a closure with a delegate and its arguments.
-    /// \param f    The delegate to be invoked.
+    /// Construct a closure with a callback and its arguments.
+    /// \param f    The callback to be invoked.
     /// \param arg0 The first argument to bind.
     /// \param arg1 The second argument to bind.
     /// \param arg2 The third argument to bind.
     //*********************************************************************
-    closure(const delegate_type& f, const TArg0 arg0, const TArg1 arg1, const TArg2 arg2)
+    closure(const callback_type& f, const TArg0 arg0, const TArg1 arg1, const TArg2 arg2)
       : m_f(f)
       , m_arg0(arg0)
       , m_arg1(arg1)
@@ -260,8 +266,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Invoke the stored delegate with the bound arguments.
-    /// \return The result of the delegate invocation.
+    /// Invoke the stored callback with the bound arguments.
+    /// \return The result of the callback invocation.
     //*********************************************************************
     TReturn operator()() const
     {
@@ -270,36 +276,37 @@ namespace etl
 
   private:
 
-    delegate_type m_f; ///< The delegate to invoke.
+    callback_type m_f; ///< The callback to invoke.
     TArg0         m_arg0;
     TArg1         m_arg1;
     TArg2         m_arg2;
   };
 
   //*************************************************************************
-  /// Closure for binding four arguments to a delegate and invoking it later.
-  /// \tparam TReturn The return type of the delegate.
+  /// Closure for binding four arguments to a callback and invoking it later.
+  /// \tparam TReturn The return type of the callback.
   /// \tparam TArg0    The type of the first argument.
   /// \tparam TArg1    The type of the second argument.
   /// \tparam TArg2    The type of the third argument.
   /// \tparam TArg3    The type of the fourth argument.
+  /// \tparam TCallback The callback type.
   //*************************************************************************
-  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TArg3>
-  class closure<TReturn(TArg0, TArg1, TArg2, TArg3)>
+  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TCallback>
+  class closure<TReturn(TArg0, TArg1, TArg2, TArg3), TCallback>
   {
   public:
 
-    typedef etl::delegate<TReturn(TArg0, TArg1, TArg2, TArg3)> delegate_type;
+    typedef TCallback callback_type;
 
     //*********************************************************************
-    /// Construct a closure with a delegate and its arguments.
-    /// \param f    The delegate to be invoked.
+    /// Construct a closure with a callback and its arguments.
+    /// \param f    The callback to be invoked.
     /// \param arg0 The first argument to bind.
     /// \param arg1 The second argument to bind.
     /// \param arg2 The third argument to bind.
     /// \param arg3 The fourth argument to bind.
     //*********************************************************************
-    closure(const delegate_type& f, const TArg0 arg0, const TArg1 arg1, const TArg2 arg2, const TArg3 arg3)
+    closure(const callback_type& f, const TArg0 arg0, const TArg1 arg1, const TArg2 arg2, const TArg3 arg3)
       : m_f(f)
       , m_arg0(arg0)
       , m_arg1(arg1)
@@ -309,8 +316,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Invoke the stored delegate with the bound arguments.
-    /// \return The result of the delegate invocation.
+    /// Invoke the stored callback with the bound arguments.
+    /// \return The result of the callback invocation.
     //*********************************************************************
     TReturn operator()() const
     {
@@ -319,7 +326,7 @@ namespace etl
 
   private:
 
-    delegate_type m_f; ///< The delegate to invoke.
+    callback_type m_f; ///< The callback to invoke.
     TArg0         m_arg0;
     TArg1         m_arg1;
     TArg2         m_arg2;
@@ -327,31 +334,32 @@ namespace etl
   };
 
   //*************************************************************************
-  /// Closure for binding five arguments to a delegate and invoking it later.
-  /// \tparam TReturn The return type of the delegate.
+  /// Closure for binding five arguments to a callback and invoking it later.
+  /// \tparam TReturn The return type of the callback.
   /// \tparam TArg0    The type of the first argument.
   /// \tparam TArg1    The type of the second argument.
   /// \tparam TArg2    The type of the third argument.
   /// \tparam TArg3    The type of the fourth argument.
   /// \tparam TArg4    The type of the fifth argument.
+  /// \tparam TCallback The callback type.
   //*************************************************************************
-  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4>
-  class closure<TReturn(TArg0, TArg1, TArg2, TArg3, TArg4)>
+  template <typename TReturn, typename TArg0, typename TArg1, typename TArg2, typename TArg3, typename TArg4, typename TCallback>
+  class closure<TReturn(TArg0, TArg1, TArg2, TArg3, TArg4), TCallback>
   {
   public:
 
-    typedef etl::delegate<TReturn(TArg0, TArg1, TArg2, TArg3, TArg4)> delegate_type;
+    typedef TCallback callback_type;
 
     //*********************************************************************
-    /// Construct a closure with a delegate and its arguments.
-    /// \param f    The delegate to be invoked.
+    /// Construct a closure with a callback and its arguments.
+    /// \param f    The callback to be invoked.
     /// \param arg0 The first argument to bind.
     /// \param arg1 The second argument to bind.
     /// \param arg2 The third argument to bind.
     /// \param arg3 The fourth argument to bind.
     /// \param arg4 The fifth argument to bind.
     //*********************************************************************
-    closure(const delegate_type& f, const TArg0 arg0, const TArg1 arg1, const TArg2 arg2, const TArg3 arg3, const TArg4 arg4)
+    closure(const callback_type& f, const TArg0 arg0, const TArg1 arg1, const TArg2 arg2, const TArg3 arg3, const TArg4 arg4)
       : m_f(f)
       , m_arg0(arg0)
       , m_arg1(arg1)
@@ -362,8 +370,8 @@ namespace etl
     }
 
     //*********************************************************************
-    /// Invoke the stored delegate with the bound arguments.
-    /// \return The result of the delegate invocation.
+    /// Invoke the stored callback with the bound arguments.
+    /// \return The result of the callback invocation.
     //*********************************************************************
     TReturn operator()() const
     {
@@ -372,7 +380,7 @@ namespace etl
 
   private:
 
-    delegate_type m_f; ///< The delegate to invoke.
+    callback_type m_f; ///< The callback to invoke.
     TArg0         m_arg0;
     TArg1         m_arg1;
     TArg2         m_arg2;
