@@ -10273,8 +10273,9 @@
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />
-    <ClCompile Include="..\test_closure.cpp" />
-    <ClCompile Include="..\test_closure_constexpr.cpp" />
+    <ClCompile Include="..\test_closure_with_default_delegate.cpp" />
+    <ClCompile Include="..\test_closure_with_default_delegate_constexpr.cpp" />
+    <ClCompile Include="..\test_closure_with_inplace_function.cpp" />
     <ClCompile Include="..\test_concepts.cpp" />
     <ClCompile Include="..\test_const_map.cpp" />
     <ClCompile Include="..\test_const_map_constexpr.cpp" />
