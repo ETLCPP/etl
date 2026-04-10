@@ -14,18 +14,14 @@ set -e
 usage()
 {
   echo "Usage: run-tests.sh <architecture>"
-  echo "Architecture: armhf|i386|riscv64|s390x"
+  echo "Architecture: armhf|i386|powerpc|riscv64|s390x"
   echo "(run from project root)"
 }
 
-if [ "$1" = "armhf" ] ; then
-  ARCH=armhf
-elif [ "$1" = "i386" ] ; then
-  ARCH=i386
-elif [ "$1" = "riscv64" ] ; then
-  ARCH=riscv64
-elif [ "$1" = "s390x" ] ; then
-  ARCH=s390x
+ARCHLIST="armhf i386 powerpc riscv64 s390x"
+
+if [[ " $ARCHLIST " =~ " $1 " ]] ; then
+  ARCH=$1
 else
   echo "Unsupported architecture: $1"
   usage
@@ -51,11 +47,10 @@ elif [ "$2" = "inside_container" ] ; then
   cmake --build .
 
   echo "Running tests via CTest (using QEMU emulator from toolchain)..."
-  ctest --output-on-failure
+  ctest -V --output-on-failure
   echo "Tests successful."
 else
   echo "Invalid second argument: $2"
   usage
   exit 1
 fi
-
