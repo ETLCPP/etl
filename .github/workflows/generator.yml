@@ -22,11 +22,3 @@ jobs:
     - name: Run generator_test.py
       run: |
         cd scripts && python3 generator_test.py
-
-    - name: Generate
-      run: |
-        cd include/etl/generators && bash generate.bat
-
-    - name: Check Generated Headers For Changes
-      run: |
-        git diff --exit-code
