@@ -36,3 +36,11 @@ The ETL provides a set of string to examine and manipulate strings.
 ## Format Specification
 
 A class is defined to format the output of `etl::to_string`, `etl::to_wstring`, `etl::to_u16string`, and `etl::to_u32string`.  
+
+## Format
+
+A C++20 style `etl::format`.
+
+## Print
+
+A C++23 style `etl::print`
