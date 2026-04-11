@@ -128,7 +128,6 @@ target_sources(tests PRIVATE
 		container.h.t.cpp
 		correlation.h.t.cpp
 		covariance.h.t.cpp
-		crc.h.t.cpp
 		crc1.h.t.cpp
 		crc16.h.t.cpp
 		crc16_a.h.t.cpp
