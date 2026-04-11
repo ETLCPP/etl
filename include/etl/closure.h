@@ -67,7 +67,7 @@ namespace etl
   {
   public:
 
-    ETL_DEPRECATED_REASON("Use callback_type") using delegate_type =
+    using delegate_type ETL_DEPRECATED_REASON("Use callback_type") =
       TCallback;                                     ///< The callback type to be invoked. Deprecated, use callback_type instead.
     using callback_type  = TCallback;                ///< The callback type to be invoked.
     using argument_types = etl::type_list<TArgs...>; ///< The type list of arguments.
