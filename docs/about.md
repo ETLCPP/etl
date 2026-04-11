@@ -40,6 +40,13 @@ The application is liable to have a close coupling with the solution. For exampl
 >ISEP  - It's Somebody Else's Problem  
 >GIRFT - Get It Right First Time
 
+## Why not use 'C'?
+**Greenspun's Tenth Rule** has an unofficial C corollary:  
+*"Any sufficiently advanced C program contains an ad hoc, informally specified, bug-ridden, slow implementation of half of C++."*
+
+I spent 12 years programming in pure C.  
+I discovered that I had been reverse engineering C++ all that time.  
+
 ## About me
 I have been involved in technology and computer systems for all of my working life and have amassed considerable knowledge of designing and implementing systems that are both performant and correct.  
 My role normally encompasses the entire project life-cycle, from specification to maintenance phase. 

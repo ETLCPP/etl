@@ -1,7 +1,15 @@
-Base64
+---
+title: "Base64"
+---
+
+{{< callout type="info">}}
+  Header: `base64.h`
+          `base64_encoder.h`
+          `base64_decoder.h  
+  Supported: `20.38.4`  
+{{< /callout >}}
+
 Encodes and decodes data to and from Base64 format.
-etl::base64
-20.38.4
 ____________________________________________________________________________________________________
 Encode
 
