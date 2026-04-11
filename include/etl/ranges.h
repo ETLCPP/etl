@@ -2960,7 +2960,7 @@ namespace etl
         iterator() = default;
 
         iterator(const_iterator_type current, const_iterator_type segment_end, bool is_end)
-          : _current(current)
+          : _current_it(current)
           , _segment_end(segment_end)
           , _is_end(is_end || (current == segment_end))
         {
@@ -2968,18 +2968,18 @@ namespace etl
 
         reference operator*() const
         {
-          return *_current;
+          return *_current_it;
         }
 
         pointer operator->() const
         {
-          return &(*_current);
+          return &(*_current_it);
         }
 
         iterator& operator++()
         {
-          ++_current;
-          if (_current == _segment_end)
+          ++_current_it;
+          if (_current_it == _segment_end)
           {
             _is_end = true;
           }
@@ -3003,7 +3003,7 @@ namespace etl
           {
             return false;
           }
-          return _current == other._current;
+          return _current_it == other._current_it;
         }
 
         constexpr bool operator!=(const iterator& other) const
@@ -3013,7 +3013,7 @@ namespace etl
 
       private:
 
-        const_iterator_type _current{};
+        const_iterator_type _current_it{};
         const_iterator_type _segment_end{};
         bool                _is_end = true;
       };
@@ -3364,7 +3364,7 @@ namespace etl
       concat_iterator(size_t index, concat_view<Ranges...>& view, iterator_variant_type current)
         : _ranges_index{index}
         , _view(view)
-        , _current(current)
+        , _current_it(current)
       {
       }
 
@@ -3372,7 +3372,7 @@ namespace etl
 
       constexpr reference operator*() const
       {
-        return _view.get_value(_ranges_index, _current);
+        return _view.get_value(_ranges_index, _current_it);
       }
 
       constexpr decltype(auto) operator[](difference_type pos) const
@@ -3382,14 +3382,14 @@ namespace etl
         {
           for (difference_type i = 0; i < pos; ++i)
           {
-            tmp._view.advance(tmp._ranges_index, tmp._current, 1);
+            tmp._view.advance(tmp._ranges_index, tmp._current_it, 1);
           }
         }
         if (pos < 0)
         {
           for (difference_type i = 0; i < -pos; ++i)
           {
-            tmp._view.advance(tmp._ranges_index, tmp._current, -1);
+            tmp._view.advance(tmp._ranges_index, tmp._current_it, -1);
           }
         }
         return *tmp;
@@ -3397,27 +3397,27 @@ namespace etl
 
       constexpr concat_iterator& operator++()
       {
-        _view.advance(_ranges_index, _current, 1);
+        _view.advance(_ranges_index, _current_it, 1);
         return *this;
       }
 
       constexpr concat_iterator operator++(int)
       {
         auto result = *this;
-        _view.advance(_ranges_index, _current, 1);
+        _view.advance(_ranges_index, _current_it, 1);
         return result;
       }
 
       constexpr concat_iterator& operator--()
       {
-        _view.advance(_ranges_index, _current, -1);
+        _view.advance(_ranges_index, _current_it, -1);
         return *this;
       }
 
       constexpr concat_iterator operator--(int)
       {
         auto result = *this;
-        _view.advance(_ranges_index, _current, -1);
+        _view.advance(_ranges_index, _current_it, -1);
         return result;
       }
 
@@ -3425,7 +3425,7 @@ namespace etl
       {
         for (difference_type i = 0; i < n; ++i)
         {
-          _view.advance(_ranges_index, _current, 1);
+          _view.advance(_ranges_index, _current_it, 1);
         }
         return *this;
       }
@@ -3434,7 +3434,7 @@ namespace etl
       {
         for (difference_type i = 0; i < n; ++i)
         {
-          _view.advance(_ranges_index, _current, -1);
+          _view.advance(_ranges_index, _current_it, -1);
         }
         return *this;
       }
@@ -3442,12 +3442,12 @@ namespace etl
       friend constexpr bool operator==(const concat_iterator<Ranges...>& x, etl::default_sentinel_t)
       {
         return x._ranges_index == x._view.number_of_ranges - 1
-               && etl::get<x._view.number_of_ranges - 1>(x._current) == etl::get<x._view.number_of_ranges - 1>(x._view).end();
+               && etl::get<x._view.number_of_ranges - 1>(x._current_it) == etl::get<x._view.number_of_ranges - 1>(x._view).end();
       }
 
       friend constexpr bool operator==(const concat_iterator<Ranges...>& x, const concat_iterator<Ranges...>& y)
       {
-        return x._ranges_index == y._ranges_index && x._current.index() == y._current.index() && x._current == y._current;
+        return x._ranges_index == y._ranges_index && x._current_it.index() == y._current_it.index() && x._current_it == y._current_it;
       }
 
       friend constexpr bool operator!=(const concat_iterator<Ranges...>& x, etl::default_sentinel_t)
@@ -3464,7 +3464,7 @@ namespace etl
 
       size_t                        _ranges_index;
       const concat_view<Ranges...>& _view;
-      iterator_variant_type         _current;
+      iterator_variant_type         _current_it;
     };
 
     template <class... Ranges>
@@ -5731,7 +5731,7 @@ namespace etl
       using iterator_category = ETL_OR_STD::forward_iterator_tag;
 
       constexpr cartesian_product_iterator(iterators_type current, iterators_type begins, iterators_type ends, bool is_end = false)
-        : _current(current)
+        : _current_it(current)
         , _begins(begins)
         , _ends(ends)
         , _is_end(is_end)
@@ -5784,7 +5784,7 @@ namespace etl
       template <size_t I>
       constexpr etl::enable_if_t<(I > 0)> increment_at()
       {
-        auto& it = etl::get<I>(_current);
+        auto& it = etl::get<I>(_current_it);
         ++it;
         if (it == etl::get<I>(_ends))
         {
@@ -5796,7 +5796,7 @@ namespace etl
       template <size_t I>
       constexpr etl::enable_if_t<(I == 0)> increment_at()
       {
-        auto& it = etl::get<0>(_current);
+        auto& it = etl::get<0>(_current_it);
         ++it;
         if (it == etl::get<0>(_ends))
         {
@@ -5807,16 +5807,16 @@ namespace etl
       template <size_t... Is>
       constexpr value_type deref(etl::index_sequence<Is...>) const
       {
-        return value_type(*etl::get<Is>(_current)...);
+        return value_type(*etl::get<Is>(_current_it)...);
       }
 
       template <size_t... Is>
       constexpr bool all_equal(const cartesian_product_iterator& other, etl::index_sequence<Is...>) const
       {
-        return ((etl::get<Is>(_current) == etl::get<Is>(other._current)) && ...);
+        return ((etl::get<Is>(_current_it) == etl::get<Is>(other._current_it)) && ...);
       }
 
-      iterators_type _current;
+      iterators_type _current_it;
       iterators_type _begins;
       iterators_type _ends;
       bool           _is_end;
