@@ -34,8 +34,6 @@ SOFTWARE.
 #include <limits>
 #include <stdint.h>
 
-#if ETL_USING_CPP11
-
 namespace
 {
   SUITE(test_constant)
@@ -912,5 +910,3 @@ namespace
     }
   }
 } // namespace
-
-#endif
