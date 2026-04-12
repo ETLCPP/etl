@@ -105,7 +105,3 @@ You should see `+extended` in the output, e.g.:
 ```
 hugo v0.147.0+extended linux/amd64 BuildDate=...
 ```
-
----
-
-**Why extended?** The extended version includes support for **Sass/SCSS** compilation and **WebP** image processing — required by many Hugo themes.

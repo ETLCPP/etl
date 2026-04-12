@@ -19,11 +19,11 @@ const_iterator          Constant forward iterator
 ____________________________________________________________________________________________________
 Constructor
 
-etl::bresenham_line<T>;
+etl::bresenham_line<T>();
 etl::bresenham_line<T>(T first_x, T first_y, T last_x, T last_y);
 etl::bresenham_line<T>(const etl::coordinate_2d<T>& first, const etl::coordinate_2d<T>& last);
 ____________________________________________________________________________________________________
-Initialization
+Initialisation
 
 void reset(T first_x, T first_y, T last_x, T last_y);
 void reset(const etl::coordinate_2d<T>& first, const etl::coordinate_2d<T>& last);

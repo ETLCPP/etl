@@ -1,6 +1,0 @@
-
-Generate hugo for local
-hugo --cleanDestinationDir
-
-Generate hugo for remote test
-hugo --cleanDestinationDir --baseURL "https://www.etlcpp.com/hugo/"

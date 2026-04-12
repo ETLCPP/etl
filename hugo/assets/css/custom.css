@@ -13,7 +13,7 @@ html:not(.dark) h1 {
   color: coral !important;
   width: 100%;
   background-color: rgb(246, 246, 246) !important;
-  border: rgb(194, 97, 62) solid 3px !important;
+  border: black solid 3px !important;
   padding: 0.5rem 0.5rem !important;
 }
 
@@ -25,7 +25,8 @@ html:not(.dark) h2 {
 html:not(.dark) h3, 
 html:not(.dark) h4 
 { 
-  color: darkgoldenrod !important; 
+  color: darkgoldenrod !important;
+  border-bottom: 2px solid darkgrey !important; 
 }
 
 html:not(.dark) p { 
@@ -120,7 +121,7 @@ html.dark h1
   color: coral !important;
   width: 100%;
   background-color: rgb(50, 50, 50) !important;
-  border: rgb(148, 75, 48) solid 2px !important;
+  border: lightgrey solid 2px !important;
   padding: 0.5rem 0.5rem !important;
 }
 
@@ -132,6 +133,7 @@ html.dark h2 {
 html.dark h3, 
 html.dark h4 { 
   color: lightgreen !important;
+  border-bottom: 2px solid #505050 !important; 
 }
 
 html.dark p { 
@@ -312,10 +314,11 @@ h3 {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
-  font-size: 130% !important;
-  margin-top: 0.5em !important;
+  font-size: 120% !important;
+  margin-top: 0.7em !important;
   margin-bottom: 0em !important;
   padding: 0 !important;
+  display: inline-block;
 }
 
 h4 {
@@ -325,6 +328,7 @@ h4 {
   font-size: 110% !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.5em !important;
+  display: inline-block;
 }
 
 dl {
@@ -408,7 +412,12 @@ p {
   font-style: normal !important;
   font-weight: normal !important;
   font-size: 110% !important;
-  margin-top: 1em !important;
+  margin-top: 0.5em !important;
+}
+
+tr td code{
+  font-family: 'Roboto Mono', monospace !important;
+  font-size: 0.8rem !important;
 }
 
 
