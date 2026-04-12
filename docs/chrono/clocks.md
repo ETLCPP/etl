@@ -1,94 +1,123 @@
-Clocks
-Back to chrono
-____________________________________________________________________________________________________
-Macros
-Default macro definitions.
-Define these in etl_profile.h to set your own duration types for the clocks.
+---
+title: "Clocks"
+---
 
-ETL_CHRONO_SYSTEM_CLOCK_DURATION           etl::chrono::nanoseconds
-ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY          true
-ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION  etl::chrono::nanoseconds
-ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY true
-ETL_CHRONO_STEADY_CLOCK_DURATION           etl::chrono::nanoseconds
-____________________________________________________________________________________________________
-Platform clock access
+## Macros
+Default macro definitions.  
+Define these in `etl_profile.h` to set your own duration types for the clocks.
+
+| Macro                                        | Definition                 |
+| -------------------------------------------- | -------------------------- |
+| `ETL_CHRONO_SYSTEM_CLOCK_DURATION`           | `etl::chrono::nanoseconds` |
+| `ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY`          | `true`                     |
+| `ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION`  | `etl::chrono::nanoseconds` |
+| `ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY` | `true`                     |
+| `ETL_CHRONO_STEADY_CLOCK_DURATION`           | `etl::chrono::nanoseconds` |
+
+## Platform clock access
 Declarations of the functions that must be defined to interface the clocks with the underlying platform.
 
+```cpp
 extern "C" ETL_CHRONO_SYSTEM_CLOCK_DURATION::rep          etl_get_system_clock();
 extern "C" ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION::rep etl_get_high_resolution_clock();
 extern "C" ETL_CHRONO_STEADY_CLOCK_DURATION::rep          etl_get_steady_clock();
+```
 
 These functions must return the current count of the underlying clock. The value is in terms of the 
 clock duration defined for that clock.
 
-Example:
-If the system_clock duration is set to etl::chrono::nanoseconds, then a return value of 1000 represents 1000ns.
-____________________________________________________________________________________________________
-system_clock
+**Example**  
+If the `system_clock` duration is set to `etl::chrono::nanoseconds`, then a return value of `1000` represents `1000ns`.
 
+## system_clock
+
+```cpp
 class system_clock
+```
 
-Member types
+### Member types
+```cpp
 using duration   = ETL_CHRONO_SYSTEM_CLOCK_DURATION
 using rep        = duration::rep
 using period     = duration::period
 using time_point = time_point<system_clock, duration>
+```
 
-Member functions
+### Member functions
+```cpp
 static time_point  now() ETL_NOEXCEPT
 static time_t      to_time_t(const time_point& t) ETL_NOEXCEPT
 static time_point  from_time_t(time_t t) ETL_NOEXCEPT
-____________________________________________________________________________________________________
-high_resolution_clock
+```
 
+## high_resolution_clock
+```cpp
 class high_resolution_clock
+```
 
-Member types
+### Member types
+```cpp
 using duration   = ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION
 using rep        = duration::rep
 using period     = duration::period
 using time_point = time_point<high_resolution_clock, duration>
+```
 
-Member functions
+### Member functions
+```cpp
 static time_point now() ETL_NOEXCEPT
-____________________________________________________________________________________________________
-steady_clock
+```
 
+## steady_clock
+```cpp
 class steady_clock
+```
 
-Member types
+### Member types
+```cpp
 using duration   = ETL_CHRONO_STEADY_CLOCK_DURATION
 using rep        = duration::rep
 using period     = duration::period
 using time_point = time_point<steady_clock, duration>
+```
 
-Member functions
+### Member functions
+```cpp
 static time_point now() ETL_NOEXCEPT
-____________________________________________________________________________________________________
-system_time
+```
 
+## system_time
+```cpp
 template <typename Duration>
 using sys_time = etl::chrono::time_point<etl::chrono::system_clock, Duration>
 
 using sys_seconds = sys_time<etl::chrono::seconds>
 using sys_days    = sys_time<etl::chrono::days>
-____________________________________________________________________________________________________
-local_time
+```
 
+## local_time
+```cpp
 struct local_t
+```
 
+```cpp
 template <typename TDuration>
 using local_time = etl::chrono::time_point<etl::chrono::local_t, TDuration>
 
 using local_seconds = local_time<etl::chrono::seconds>
 using local_days    = local_time<etl::chrono::days>
-____________________________________________________________________________________________________
-clock_cast
+```
 
-Cast a time point from one clock to another.
+## clock_cast
+
+Cast a time point from one clock to another.  
 This implementation assumes all clock epochs are the same.
 
-template <typename TToClock, typename TFromClock, typename TFromDuration>
-ETL_CONSTEXPR14 etl::chrono::time_point<TToClock, typename TToClock::duration>
+```cpp
+template <typename TToClock, 
+          typename TFromClock, 
+          typename TFromDuration>
+ETL_CONSTEXPR14 etl::chrono::time_point<TToClock, 
+                                        typename TToClock::duration>
   clock_cast(const etl::chrono::time_point<TFromClock, TFromDuration>& from_time_point) ETL_NOEXCEPT
-
+```

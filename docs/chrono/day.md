@@ -1,181 +1,297 @@
-day
+---
+title: "day"
+---
+
+{{< callout type="info">}}
+  Header: `chrono.h`  
+  Supported: `TBC`  
+  Similar to: [std::chrono::day](https://en.cppreference.com/w/cpp/chrono/day.html)
+{{< /callout >}}
+
 A template representing a day.
-Back to chrono
-____________________________________________________________________________________________________
-day
 
-STL equivalent: std::chrono::day
-
+```cpp
 class day
-____________________________________________________________________________________________________
-Typesdefs
-rep  The internal representation.
-____________________________________________________________________________________________________
-Construction
+```
 
+## Typesdefs
+rep  The internal representation.
+
+## Construction
+```cpp
 ETL_CONSTEXPR 
 day()
 ETL_NOEXCEPT
+```
+**Description**  
 Default constructor.
-______________________________________________
+
+---
+```cpp
 ETL_CONSTEXPR 
 explicit day(unsigned value) 
 ETL_NOEXCEPT
+```
+**Description**  
 Construct from unsigned.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 day(const etl::chrono::day& other) 
 ETL_NOEXCEPT
+```
+**Description**  
 Copy constructor.
-____________________________________________________________________________________________________
-Tests
 
+## Tests
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 bool ok() const 
 ETL_NOEXCEPT
-Returns true if the day is within the valid range.
-______________________________________________
+```
+**Return**  
+`true` if the day is within the valid range.
+
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 int compare(const etl::chrono::day& other) const 
 ETL_NOEXCEPT
-Compare day with another.
-if day < other, returns -1
-else if day > other, returns 1
-else returns 0
-____________________________________________________________________________________________________
-Assignment
+```
+**Description**  
+Compare `day` with another.
+if `day < other`, returns `-1`
+else if `day > other`, returns `1`
+else returns `0`
 
+## Assignment
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::day& operator =(const etl::chrono::day& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Assignment operator      
-____________________________________________________________________________________________________
-Increment/decrement
 
+## Increment/decrement
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::day& operator ++() 
 ETL_NOEXCEPT
+```
+**Description**  
 Pre-increment operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::day operator ++(int) 
 ETL_NOEXCEPT
+```
+**Description**  
 Post-increment operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::day& operator --() 
 ETL_NOEXCEPT
+```
+**Description**  
 Pre-decrement operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::day operator --(int) 
 ETL_NOEXCEPT
+```
+**Description**  
 Post-decrement operator.
-____________________________________________________________________________________________________
-Mathematical operators
 
+## Mathematical operators
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::day& operator +=(const etl::chrono::days& ms) 
 ETL_NOEXCEPT
+```
+**Description**  
 Plus-equals operator adding etl::chrono::days.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::day& operator -=(const etl::chrono::days& ms) 
 ETL_NOEXCEPT
-Minus-equals operator subtracting etl::chrono::days.
-____________________________________________________________________________________________________
-Conversion
+```
+**Description**  
+Minus-equals operator subtracting `etl::chrono::days`.
 
+## Conversion
+```cpp
 ETL_CONSTEXPR14 
 operator unsigned() const 
 ETL_NOEXCEPT
+```
+**Description**  
 Conversion operator to unsigned int.
-____________________________________________________________________________________________________
-Non-member mathematical operators
 
+## Non-member mathematical operators
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::day operator +(const etl::chrono::day& m, 
                               const etl::chrono::days& ms) 
 ETL_NOEXCEPT
-Add etl::chrono::days to etl::chrono::day.
-Returns etl::chrono::day.
-______________________________________________
+```
+**Description**  
+Add `etl::chrono::days` to `etl::chrono::day`.  
+
+**Return**  
+`etl::chrono::day.`
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::day operator +(const etl::chrono::days& ms, 
                               const etl::chrono::day& m) 
 ETL_NOEXCEPT
-Add etl::chrono::day to etl::chrono::days.
-Returns etl::chrono::day.
-______________________________________________
+```
+**Description**  
+Add `etl::chrono::day` to `etl::chrono::days`.  
+
+**Return**  
+`etl::chrono::day`.
+
+---
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::day operator -(const etl::chrono::day& m, 
                               const etl::chrono::days& ms) 
 ETL_NOEXCEPT
-Subtract etl::chrono::days from etl::chrono::day.
-Returns etl::chrono::day.
-______________________________________________
+```
+**Description**  
+Subtract `etl::chrono::days` from `etl::chrono::day`.  
+
+**Return**  
+`etl::chrono::day`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::day operator -(const etl::chrono::days& ms, 
                               const etl::chrono::day& m) 
 ETL_NOEXCEPT
-Subtract etl::chrono::day from etl::chrono::days.
-Returns etl::chrono::days.
-______________________________________________
+```
+**Description**  
+Subtract `etl::chrono::day` from `etl::chrono::days`.  
+
+**Return**  
+`etl::chrono::days`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::days operator -(const etl::chrono::day& m1, 
                                const etl::chrono::day& m2) ETL_NOEXCEPT
-Subtract etl::chrono::day from etl::chrono::day.
-Returns etl::chrono::days.
-____________________________________________________________________________________________________
-Non-member comparison operators
+```
+**Description**  
+Subtract `etl::chrono::day` from `etl::chrono::day`.
 
+**Return**  
+`etl::chrono::days`.
+
+## Non-member comparison operators
+```cpp
 ETL_CONSTEXPR14 
 bool operator ==(const etl::chrono::day& m1, 
                  const etl::chrono::day& m2)
 ETL_NOEXCEPT
+```
+**Description**  
 Equality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator !=(const etl::chrono::day& m1, 
                  const etl::chrono::day& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Inequality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <(const etl::chrono::day& m1, 
                 const etl::chrono::day& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Less-than operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <=(const etl::chrono::day& m1, 
                  const etl::chrono::day& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Less-than-or-equal operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator >(const etl::chrono::day& m1, 
                 const etl::chrono::day& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Greater-than operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 bool operator >=(const etl::chrono::day& m1, 
                  const etl::chrono::day& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Greater-than-or-equal operator.
-______________________________________________
+
+---
+
+```cpp
 [[nodiscard]] inline constexpr 
 auto operator <=>(const etl::chrono::day& m1, 
                   const etl::chrono::day& m2) 
 noexcept
+```
+**Description**  
 Spaceship operator.
 C++20
-____________________________________________________________________________________________________
-Defined days
 
+## Defined days
+
+```cpp
 etl::chrono::January
 etl::chrono::February
 etl::chrono::March
@@ -188,10 +304,14 @@ etl::chrono::September
 etl::chrono::October
 etl::chrono::November
 etl::chrono::December
-____________________________________________________________________________________________________
-Hash
+```
 
+## Hash
+
+```cpp
 template <>
 struct hash<etl::chrono::day>
-Hash function for etl::chrono::day
+```
+**Description**  
+Hash function for `etl::chrono::day`.
 
