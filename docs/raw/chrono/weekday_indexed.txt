@@ -1,5 +1,5 @@
 weekday_indexed
-A template representing a weekday_indexed.
+A class representing a weekday_indexed.
 Back to chrono
 ____________________________________________________________________________________________________
 weekday_indexed

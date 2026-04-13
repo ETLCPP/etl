@@ -1,5 +1,5 @@
 weekday
-A template representing a weekday.
+A class representing a weekday.
 Back to chrono
 ____________________________________________________________________________________________________
 weekday

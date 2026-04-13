@@ -8,7 +8,7 @@ title: "year_month"
   Similar to: [std::chrono::year_month](https://en.cppreference.com/w/cpp/chrono/year_month.html)
 {{< /callout >}}
 
-A template representing a year and month.
+A class representing a year and month.
 
 ```cpp
 class year_month
@@ -199,11 +199,11 @@ int compare(const year_month& other) const
 ETL_NOEXCEPT
 ```
 **Description**  
-Compare year_month with another.
-if `month < other.month`, returns `-1`
-else if `month > other.month`, returns `1`
-else if `day < other.day`, returns `-1`
-else if `day > other.day`, returns `1`
+Compare year_month with another.  
+if `month < other.month`, returns `-1`  
+else if `month > other.month`, returns `1`  
+else if `day < other.day`, returns `-1`  
+else if `day > other.day`, returns `1`  
 else returns `0`;
 
 ## Hash

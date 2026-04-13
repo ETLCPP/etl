@@ -1,197 +1,319 @@
-month
-A template representing a month.
-Back to chrono
-____________________________________________________________________________________________________
-month
+---
+title: "month"
+---
 
-STL equivalent: std::chrono::month
+{{< callout type="info">}}
+  Header: `chrono.h`  
+  Since: `20.41.0`  
+  Similar to: [std::chrono::month](https://en.cppreference.com/w/cpp/chrono/month.html)
+{{< /callout >}}
 
+A class representing a month.
+
+```cpp
 class month
-____________________________________________________________________________________________________
-Typesdefs
-rep  The internal representation.
-____________________________________________________________________________________________________
-Construction
+```
+## Member types
+`rep` The internal representation.
 
+## Construction
+```cpp
 ETL_CONSTEXPR 
 month()
 ETL_NOEXCEPT
+```
+**Description**  
 Default constructor.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR 
 explicit month(unsigned value) 
 ETL_NOEXCEPT
+```
+**Description**  
 Construct from unsigned.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 month(const etl::chrono::month& other) 
 ETL_NOEXCEPT
+```
+**Description**  
 Copy constructor.
-____________________________________________________________________________________________________
-Tests
 
+## Tests
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 bool ok() const 
 ETL_NOEXCEPT
+```
+**Description**  
 Returns true if the month is in range.
-______________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 int compare(const etl::chrono::month& other) const 
 ETL_NOEXCEPT
-Compare month with another.
-if month < other, returns -1
-else if month > other, returns 1
+```
+**Description**  
+Compare month with another.  
+if month < other, returns -1  
+else if month > other, returns 1  
 else returns 0
-____________________________________________________________________________________________________
-Assignment
 
+## Assignment
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::month& operator =(const etl::chrono::month& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Assignment operator      
-____________________________________________________________________________________________________
-Increment/decrement
 
+## Increment / decrement
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::month& operator ++() 
 ETL_NOEXCEPT
+```
+**Description**  
 Pre-increment operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::month operator ++(int) 
 ETL_NOEXCEPT
+```
+**Description**  
 Post-increment operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::month& operator --() 
 ETL_NOEXCEPT
+```
+**Description**  
 Pre-decrement operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::month operator --(int) 
 ETL_NOEXCEPT
+```
+**Description**  
 Post-decrement operator.
-____________________________________________________________________________________________________
-Mathematical operators
 
+## Mathematical operators
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::month& operator +=(const etl::chrono::months& ms) 
 ETL_NOEXCEPT
-Plus-equals operator adding etl::chrono::months.
-______________________________________________
+```
+**Description**  
+Plus-equals operator adding `etl::chrono::months`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::month& operator -=(const etl::chrono::months& ms) 
 ETL_NOEXCEPT
-Minus-equals operator subtracting etl::chrono::months.
-____________________________________________________________________________________________________
-Constants
+```
+**Description**  
+Minus-equals operator subtracting `etl::chrono::months`.
 
+##  Constants
+
+```cpp
 ETL_NODISCARD
 static 
 ETL_CONSTEXPR14
 etl::chrono::month min()
 ETL_NOEXCEPT
+```
+**Description**  
 The minimum month value for which ok() will return true.
-______________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD
 static 
 ETL_CONSTEXPR14 
 etl::chrono::month max()
 ETL_NOEXCEPT
+```
+**Description**  
 The maximum month  value for which ok() will return true.
-____________________________________________________________________________________________________
-Conversion
 
+## Conversion
+
+```cpp
 ETL_CONSTEXPR14 
 operator unsigned() const 
 ETL_NOEXCEPT
-Conversion operator to unsigned int.
-____________________________________________________________________________________________________
-Non-member mathematical operators
+```
+**Description**  
+Conversion operator to `unsigned int`.
 
+## Non-member mathematical operators
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::month operator +(const etl::chrono::month& m, 
                               const etl::chrono::months& ms) 
 ETL_NOEXCEPT
-Add etl::chrono::months to etl::chrono::month.
-Returns etl::chrono::month.
-______________________________________________
+```
+**Description**  
+Add `etl::chrono::months` to `etl::chrono::month`.
+**Return**  
+`etl::chrono::month.`
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::month operator +(const etl::chrono::months& ms, 
                               const etl::chrono::month& m) 
 ETL_NOEXCEPT
-Add etl::chrono::month to etl::chrono::months.
-Returns etl::chrono::month.
-______________________________________________
+```
+**Description**  
+Add `etl::chrono::month` to `etl::chrono::months`.
+**Return**  
+`etl::chrono::month`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::month operator -(const etl::chrono::month& m, 
                               const etl::chrono::months& ms) 
 ETL_NOEXCEPT
-Subtract etl::chrono::months from etl::chrono::month.
-Returns etl::chrono::month.
-______________________________________________
+```
+**Description**  
+Subtract `etl::chrono::months` from `etl::chrono::month`.
+**Return**  
+`etl::chrono::month`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::month operator -(const etl::chrono::months& ms, 
                               const etl::chrono::month& m) 
 ETL_NOEXCEPT
-Subtract etl::chrono::month from etl::chrono::months.
-Returns etl::chrono::months.
-______________________________________________
+```
+**Description**  
+Subtract `etl::chrono::month` from `etl::chrono::months`.
+**Return**  
+`etl::chrono::months`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::months operator -(const etl::chrono::month& m1, 
                                const etl::chrono::month& m2) ETL_NOEXCEPT
-Subtract etl::chrono::month from etl::chrono::month.
-Returns etl::chrono::months.
-____________________________________________________________________________________________________
-Non-member comparison operators
+**Description**  
+Subtract `etl::chrono::month` from `etl::chrono::month`.
+**Return**  
+`etl::chrono::months`.
 
+## Non-member comparison operators
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator ==(const etl::chrono::month& m1, 
                  const etl::chrono::month& m2)
 ETL_NOEXCEPT
+```
+**Description**  
 Equality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator !=(const etl::chrono::month& m1, 
                  const etl::chrono::month& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Inequality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <(const etl::chrono::month& m1, 
                 const etl::chrono::month& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Less-than operator.
-______________________________________________
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <=(const etl::chrono::month& m1, 
                  const etl::chrono::month& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Less-than-or-equal operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator >(const etl::chrono::month& m1, 
                 const etl::chrono::month& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Greater-than operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 bool operator >=(const etl::chrono::month& m1, 
                  const etl::chrono::month& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Greater-than-or-equal operator.
-______________________________________________
+
+---
+
+```cpp
 [[nodiscard]] inline constexpr 
 auto operator <=>(const etl::chrono::month& m1, 
                   const etl::chrono::month& m2) 
 noexcept
-Spaceship operator.
+```
+**Description**  
+Spaceship operator.  
 C++20
-____________________________________________________________________________________________________
-Defined months
 
+## Defined months
+```cpp
 etl::chrono::January
 etl::chrono::February
 etl::chrono::March
@@ -204,10 +326,11 @@ etl::chrono::September
 etl::chrono::October
 etl::chrono::November
 etl::chrono::December
-____________________________________________________________________________________________________
-Hash
-
+```
+## Hash
+```cpp
 template <>
 struct hash<etl::chrono::month>
-Hash function for etl::chrono::month
+```
+Hash function for `etl::chrono::month`.
 

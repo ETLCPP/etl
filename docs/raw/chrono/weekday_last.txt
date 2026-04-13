@@ -1,5 +1,5 @@
 weekday_last
-A template representing a weekday_last.
+A class representing a weekday_last.
 Back to chrono
 ____________________________________________________________________________________________________
 weekday_last

@@ -60,7 +60,7 @@ auto data = etl::make_array<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 `reverse_iterator`  
 `const_reverse_iterator`
 
-'etl::array' iterators are random access.
+`etl::array` iterators are random access.
 
 ## Static Constants
 

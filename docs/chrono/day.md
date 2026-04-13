@@ -8,7 +8,7 @@ title: "day"
   Similar to: [std::chrono::day](https://en.cppreference.com/w/cpp/chrono/day.html)
 {{< /callout >}}
 
-A template representing a day.
+A class representing a day.
 
 ```cpp
 class day
@@ -64,9 +64,9 @@ int compare(const etl::chrono::day& other) const
 ETL_NOEXCEPT
 ```
 **Description**  
-Compare `day` with another.
-if `day < other`, returns `-1`
-else if `day > other`, returns `1`
+Compare `day` with another.  
+if `day < other`, returns `-1`  
+else if `day > other`, returns `1`  
 else returns `0`
 
 ## Assignment

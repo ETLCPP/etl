@@ -8,7 +8,7 @@ title: "year"
   Similar to: [std::chrono::year](https://en.cppreference.com/w/cpp/chrono/year.html)
 {{< /callout >}}
 
-A template representing a year.
+A class representing a year.
 
 ```cpp
 class year
@@ -55,9 +55,9 @@ int compare(const etl::chrono::year& other) const
 ETL_NOEXCEPT
 ```
 **Description**  
-Compare day with another.
-if `year < other`, returns `-1`
-else if `year > other`, returns `1`
+Compare day with another.  
+if `year < other`, returns `-1`  
+else if `year > other`, returns `1`  
 else returns `0`
 
 ## Assignment

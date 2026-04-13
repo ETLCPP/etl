@@ -93,7 +93,7 @@ int compare(const time_point& other) const
 ETL_NOEXCEPT
 ```
 **Description**  
-Compare day with another.
+Compare day with another.  
 if `time_point < other`, returns `-1`  
 else if `time_point > other`, returns `1`  
 else returns `0`

@@ -1,5 +1,5 @@
 year_month_day_last
-A template representing a year and month.
+A class representing a year and month.
 Back to chrono
 ____________________________________________________________________________________________________
 year_month_day_last

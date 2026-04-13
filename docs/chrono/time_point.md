@@ -175,9 +175,9 @@ ETL_CONSTEXPR14 int compare(const time_point& other) const
 ETL_NOEXCEPT
 ```
 **Description**  
-Compare day with another.
-If time_point < other, returns -1
-else if time_point > other, returns 1
+Compare day with another.  
+If time_point < other, returns -1  
+else if time_point > other, returns 1  
 else returns 0
 
 ## Non-member comparison operators

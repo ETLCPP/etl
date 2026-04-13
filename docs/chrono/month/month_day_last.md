@@ -1,91 +1,147 @@
-month_day_last
-A template representing a month and day.
-Back to chrono
-____________________________________________________________________________________________________
-month_day_last
+---
+title: "month_day_last"
+---
 
-STL equivalent: std::chrono::month_day_last
+{{< callout type="info">}}
+  Header: `chrono.h`  
+  Since: `20.41.0`  
+  Similar to: [std::chrono::month_day_last](https://en.cppreference.com/w/cpp/chrono/month_day_last.html)
+{{< /callout >}}
 
+A class representing a month and last day.
+
+```cpp
 class month_day_last
-____________________________________________________________________________________________________
-Construction
+```
 
+## Construction
+
+```cpp
 ETL_CONSTEXPR14 
 explicit month_day_last(const etl::chrono::month& m) 
 ETL_NOEXCEPT
+```
+**Description**  
 Construct from month.
-____________________________________________________________________________________________________
-Access
 
+## Access
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::month month() const 
 ETL_NOEXCEPT
-Returns the month.
-____________________________________________________________________________________________________
-Tests
+```
+**Return**  
+The month.
 
+## Tests
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 bool ok() const 
 ETL_NOEXCEPT
-Returns true if the month is within the valid limits.
-______________________________________________
+```
+**Return**  
+`true` if the month is within the valid limits.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 int compare(const month_day_last& other) const 
 ETL_NOEXCEPT 
-Compare month_day_last with another.
-if month < other.month, returns -1
-else if month > other.month, returns 1
-else returns 0
-____________________________________________________________________________________________________
-Non-member comparison operators
+```
+**Description**  
+Compare `month_day_last` with another.  
+if `month < other.month`, returns `-1`  
+else if `month > other.month`, returns `1`  
+else returns `0`
 
+## Non-member comparison operators
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator ==(const etl::chrono::month_day_last& lhs, 
                  const etl::chrono::month_day_last& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Equality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator !=(const etl::chrono::month_day_last& lhs, 
                  const etl::chrono::month_day_last& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Inequality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <(const etl::chrono::month_day_last& lhs, 
                 const etl::chrono::month_day_last& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Less-than operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <=(const etl::chrono::month_day_last& lhs, 
                  const etl::chrono::month_day_last& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Less-than-equal operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <(const etl::chrono::month_day_last& lhs, 
                 const etl::chrono::month_day_last& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Greater-than operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <=(const etl::chrono::month_day_last& lhs, 
                  const etl::chrono::month_day_last& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Greater-than-equal operator.
-______________________________________________
+
+---
+
+```cpp
 [[nodiscard]] constexpr
 auto operator <=>(const etl::chrono::month_day_last& lhs, 
                   const etl::chrono::month_day_last& rhs)
 ETL_NOEXCEPT
-Spaceship operator
-____________________________________________________________________________________________________
-Hash
+```
+**Description**  
+Spaceship operator.  
+C++20
 
+## Hash
+
+```cpp
 template <typename TRep, typename TPeriod>
 struct hash<etl::chrono::month_day_last>
-Hash function for etl::chrono::month_day_last
-
+```
+**Description**  
+Hash function for `etl::chrono::month_day_last`.
