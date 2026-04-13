@@ -11,39 +11,19 @@ jobs:
   build-gcc-cpp23-linux-no-stl-armhf:
     name: GCC C++23 Linux - No STL - armhf
     runs-on: ubuntu-24.04
-    container:
-      image: debian:trixie
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: |
-        dpkg --add-architecture armhf
-        apt-get update
-        apt-get install -y \
-          binfmt-support \
-          build-essential \
-          cmake \
-          make \
-          ninja-build \
-          git \
-          wget \
-          file \
-          gcc-arm-linux-gnueabihf \
-          g++-arm-linux-gnueabihf \
-          libc6:armhf \
-          libstdc++6:armhf \
-          qemu-user-static \
-          qemu-user
+    - name: Build Docker image
+      run: docker build -t etl-armhf -f .devcontainer/armhf/Dockerfile .
 
-    - name: Build
+    - name: Build and run tests
       run: |
-        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
-         -DETL_CXX_STANDARD=23 -DCMAKE_TOOLCHAIN_FILE=.devcontainer/armhf/toolchain-armhf.cmake \
-         -DEXTRA_TESTING_FLAGS=-v \
-         ./
-        cmake --build . -- -j "$(getconf _NPROCESSORS_ONLN)"
-
-    - name: Run tests
-      run: ctest -V
+        docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-armhf bash -c "\
+          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
+           -DETL_CXX_STANDARD=23 -DCMAKE_TOOLCHAIN_FILE=.devcontainer/armhf/toolchain-armhf.cmake \
+           -DEXTRA_TESTING_FLAGS=-v \
+           ./ && \
+          cmake --build . -- -j \$(getconf _NPROCESSORS_ONLN) && \
+          ctest -V"

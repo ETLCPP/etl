@@ -11,62 +11,19 @@ jobs:
   build-gcc-cpp23-linux-no-stl-powerpc:
     name: GCC C++23 Linux - No STL - powerpc
     runs-on: ubuntu-24.04
-    container:
-      image: debian:sid-20260406
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install base dependencies
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        dpkg --add-architecture powerpc
-        apt-get update
-        apt-get install -y --no-install-recommends \
-          binfmt-support \
-          gpg \
-          ca-certificates \
-          cmake \
-          make \
-          ninja-build \
-          git \
-          wget \
-          file \
-          debian-ports-archive-keyring
+    - name: Build Docker image
+      run: docker build -t etl-powerpc -f .devcontainer/powerpc/Dockerfile .
 
-    - name: Configure powerpc apt sources
+    - name: Build and run tests
       run: |
-        printf '%s\n' \
-          'Types: deb' \
-          'URIs: http://snapshot.debian.org/archive/debian-ports/20260406T000000Z' \
-          'Suites: sid' \
-          'Components: main' \
-          'Architectures: powerpc' \
-          'Signed-By: /usr/share/keyrings/debian-ports-archive-keyring.gpg' \
-          > /etc/apt/sources.list.d/powerpc.sources
-        echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid
-
-    - name: Install cross-compilation tools
-      env:
-        DEBIAN_FRONTEND: noninteractive
-      run: |
-        apt-get update
-        apt-get install -y --no-install-recommends \
-          qemu-user-static \
-          qemu-user \
-          gcc-powerpc-linux-gnu \
-          g++-powerpc-linux-gnu \
-          libc6:powerpc \
-          libstdc++6:powerpc
-
-    - name: Build
-      run: |
-        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
-         -DETL_CXX_STANDARD=23 -DCMAKE_TOOLCHAIN_FILE=.devcontainer/powerpc/toolchain-powerpc.cmake \
-         -DEXTRA_TESTING_FLAGS=-v \
-         ./
-        cmake --build . -- -j "$(getconf _NPROCESSORS_ONLN)"
-
-    - name: Run tests
-      run: ctest -V
+        docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-powerpc bash -c "\
+          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
+           -DETL_CXX_STANDARD=23 -DCMAKE_TOOLCHAIN_FILE=.devcontainer/powerpc/toolchain-powerpc.cmake \
+           -DEXTRA_TESTING_FLAGS=-v \
+           ./ && \
+          cmake --build . -- -j \$(getconf _NPROCESSORS_ONLN) && \
+          ctest -V"
