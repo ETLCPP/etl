@@ -4,7 +4,7 @@ title: "day"
 
 {{< callout type="info">}}
   Header: `chrono.h`  
-  Supported: `TBC`  
+  Since: `TBC`  
   Similar to: [std::chrono::day](https://en.cppreference.com/w/cpp/chrono/day.html)
 {{< /callout >}}
 

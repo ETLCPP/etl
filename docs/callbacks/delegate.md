@@ -4,7 +4,7 @@ title: "delegate"
 
 {{< callout type="info">}}
   Header: `delegate.h`  
-  Supported: `TBC`  
+  Since: `TBC`  
   Similar to: [std::function_ref](https://en.cppreference.com/w/cpp/utility/functional/function_ref.html)
 {{< /callout >}}
 

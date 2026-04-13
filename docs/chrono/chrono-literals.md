@@ -2,7 +2,13 @@
 title: "Chrono literals"
 ---
 
-The ETL Chrono literals are define slightly differently from the STL in that they are user defined, as opposed to language defined.
+{{< callout type="info">}}
+  Header: `chrono.h`  
+  Since: `20.41.0`  
+  Similar to: [std::literals::chrono_literals](https://en.cppreference.com/w/cpp/chrono.html#Literals)
+{{< /callout >}}
+
+The ETL Chrono literals are define slightly differently from the STL in that they are *user* defined, as opposed to *language* defined.
 
 **Example**  
 For STL, the literal to define year `2025` would be `2025y`. 
@@ -23,7 +29,7 @@ If enabled, the example of `2025_y` would be written as `2025_year`.
 | `etl::chrono::microseconds` | `500_us`   | `500_microseconds`  |
 | `etl::chrono::nanoseconds`  | `500_ns`   | `500_nanoseconds`   |
 
-Chrono literals may by accessed by using one of the following:-
+Chrono literals may by accessed by using one of the following namespaces.
 
 ```cpp
 using namespace etl::chrono;

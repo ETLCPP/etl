@@ -4,7 +4,7 @@ title: "delegate_observable"
 
 {{< callout type="info">}}
   Header: `delegate_observable.h`  
-  Supported: `TBC`  
+  Since: `TBC`  
 {{< /callout >}}
 
 `etl::delegate_observable` is a variation on the observer pattern idea, but using delegates as the callback mechanism.

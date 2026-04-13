@@ -5,7 +5,7 @@ weight: 1
 
 {{< callout type="info">}}
   Header: `inplace_function.h`  
-  Supported: `20.45.0`  
+  Since: `20.45.0`  
   Similar to: [std::function](https://en.cppreference.com/w/cpp/utility/functional/function.html)
 {{< /callout >}}
 

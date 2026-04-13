@@ -4,7 +4,7 @@ title: "io_port"
 
 {{< callout type="info">}}
   Header: `io_port.h`  
-  Supported: `20.39.0`  
+  Since: `20.39.0`  
 {{< /callout >}}
 
 A set of templates for building interface classes to memory mapped hardware ports.

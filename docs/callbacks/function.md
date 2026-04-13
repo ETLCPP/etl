@@ -8,7 +8,7 @@ title: "function"
 
 {{< callout type="info">}}
   Header: `function.h`  
-  Supported: `TBC`  
+  Since: `TBC`  
 {{< /callout >}}
 
 A set of wrapper templates to allow a member or static function to be called without the caller having to know the specific details of the callee apart from the parameter type. The templates allow the called function to be abstracted.  

@@ -4,7 +4,7 @@ title: "debounce"
 
 {{< callout type="info">}}
   Header: `debounce.h`  
-  Supported: `TBC`  
+  Since: `TBC`  
 {{< /callout >}}
 
 A class to debounce signals.

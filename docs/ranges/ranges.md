@@ -5,7 +5,7 @@ weight: 1
 
 {{< callout >}}
   Header: `ranges.h`  
-  Supported: 20.46.2  
+  Since: 20.46.2  
   Similar to: [std::ranges](https://en.cppreference.com/w/cpp/ranges.html)
 {{< /callout >}}
 

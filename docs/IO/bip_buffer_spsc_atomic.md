@@ -4,7 +4,7 @@ title: "bip_buffer_spsc_atomic"
 
 {{< callout >}}
   Header: `bip_buffer_spsc_atomic.h`  
-  Supported: tbc
+  Since: tbc
 {{< /callout >}}
 
 A fixed capacity bipartite buffer.  

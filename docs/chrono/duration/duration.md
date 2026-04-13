@@ -4,7 +4,7 @@ title: "duration"
 
 {{< callout type="info">}}
   Header: `chrono.h`  
-  Supported: `TBC`  
+  Since: `TBC`  
   Similar to: [std::chrono::duration](https://en.cppreference.com/w/cpp/chrono/duration.html)  
   Similar to: [std::chrono::duration_values](https://en.cppreference.com/w/cpp/chrono/duration_values.html)
 {{< /callout >}}
@@ -48,7 +48,7 @@ using rep = TRep
 using period = typename TPeriod::type;
 ```
 
-## Construction
+### Construction
 ```cpp
 ETL_CONSTEXPR 
 duration() 
@@ -85,7 +85,7 @@ ETL_NOEXCEPT
 Construct from another duration type.  
 Enabled if `etl::ratio_divide<TPeriod2, TPeriod>::den == 1`
 
-## Tests
+### Tests
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
@@ -98,7 +98,7 @@ if `time_point < other`, returns `-1`
 else if `time_point > other`, returns `1`  
 else returns `0`
 
-## Assignment
+### Assignment
 ```cpp
 ETL_CONSTEXPR14 
 etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
@@ -112,7 +112,7 @@ ETL_CONSTEXPR14
 etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
 ```
 
-## Convertion
+### Convertion
 ```cpp
 ETL_CONSTEXPR14 
 TRep count() const 
@@ -154,7 +154,7 @@ The absolute value of the duration.
 
 ---
 
-## Constants
+### Constants
 ```cpp
 ETL_NODISCARD
 static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> zero()  
@@ -221,7 +221,7 @@ ETL_NOEXCEPT
 **Description**  
 Post-decrements the duration count.
 
-## Mathematical operators
+### Mathematical operators
 ```cpp
 ETL_CONSTEXPR14 
 duration& operator +=(const duration<TRep, TPeriod>& d)
@@ -279,7 +279,7 @@ ETL_NOEXCEPT
 **Description**  
 Sets this duration to the modulus of duration `d`.
 
-## Comparison
+### Comparison
 ```cpp
 template <typename TRep2, typename TPeriod2>
 ETL_CONSTEXPR14 
@@ -292,7 +292,7 @@ If `duration < other`, returns `-1`
 else if `duration > other`, returns `1`  
 else returns `0`
 
-## Non-member mathematical operators
+### Non-member mathematical operators
 ```cpp
 template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
 ETL_CONSTEXPR14 
@@ -400,7 +400,7 @@ ETL_NOEXCEPT
 **Description**  
 Operator `%`
 
-## Non-member comparison operators
+### Non-member comparison operators
 ```cpp
 template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
 ETL_CONSTEXPR14

@@ -5,7 +5,7 @@ weight: 1
 
 {{< callout >}}
   Header: `array.h`  
-  Supported: All versions  
+  Since: All versions  
   Similar to: [std::array](https://en.cppreference.com/w/cpp/container/array.html)
 {{< /callout >}}
 

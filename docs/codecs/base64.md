@@ -7,7 +7,7 @@ title: "Base64"
   `base64.h` Common definitions  
   `base64_encoder.h` Encoder class  
   `base64_decoder.h` Decoder class  
-  Supported: `20.38.4`  
+  Since: `20.38.4`  
 {{< /callout >}}
 
 Encodes and decodes data to and from Base64 format.

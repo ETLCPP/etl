@@ -4,7 +4,7 @@ title: "buffer_descriptors"
 
 {{< callout >}}
   Header: `buffer_descriptors.h`  
-  Supported: All versions  
+  Since: All versions  
 {{< /callout >}}
 
 A set of descriptors to a collection of buffers.

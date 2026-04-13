@@ -4,7 +4,7 @@ title: "array_wrapper"
 
 {{< callout >}}
   Header: `array_wrapper.h`  
-  Supported: All versions  
+  Since: All versions  
 {{< /callout >}}
 
 This class implements a zero cost C++ interface around a const or non-const C array. It presents the same API as std::array.

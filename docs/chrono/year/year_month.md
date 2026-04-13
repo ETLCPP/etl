@@ -1,133 +1,214 @@
-year_month
+---
+title: "year_month"
+---
+
+{{< callout type="info">}}
+  Header: `chrono.h`  
+  Since: `20.41.0`  
+  Similar to: [std::chrono::year_month](https://en.cppreference.com/w/cpp/chrono/year_month.html)
+{{< /callout >}}
+
 A template representing a year and month.
-Back to chrono
-____________________________________________________________________________________________________
-year_month
 
-STL equivalent: std::chrono::year_month
-
+```cpp
 class year_month
-____________________________________________________________________________________________________
-Construction
+```
 
+## Construction
+```cpp
 ETL_CONSTEXPR 
 year_month()
+```
+**Description**  
 Default constructor.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 year_month(const etl::chrono::year&  y, 
            const etl::chrono::month& m) 
 ETL_NOEXCEPT
+```
+**Description**  
 Construct from month and day.
-____________________________________________________________________________________________________
-Access
 
+## Access
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::year year() const 
 ETL_NOEXCEPT
-Returns the year.
-______________________________________________
+```
+**Return**  
+The year.
+
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::month month() const 
 ETL_NOEXCEPT
-Returns the month.
-____________________________________________________________________________________________________
-Tests
+```
+**Return**  
+The month.
 
+## Tests
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 bool ok() const 
 ETL_NOEXCEPT
-Returns true if the year and month is within the valid limits.
-______________________________________________
+```
+**Return**  
+`true` if the year and month is within the valid limits.
+
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 int compare(const etl::chrono::year_month& other) const 
 ETL_NOEXCEPT
-if (y < other.y) return -1
-if (y > other.y) return 1
-if (m < other.m) return -1
-if (m > other.m) return 1
-else return 0
-____________________________________________________________________________________________________
-Non-member mathematical operators
+```
+**Description**  
+If `y < other.y` return `-1`
+If `y > other.y` return `1`
+If `m < other.m` return `-1`
+If `m > other.m` return `1`
+Else return `0`
 
+## Non-member mathematical operators
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::year_month operator +(const etl::chrono::year_month& ym,
                                    const etl::chrono::years&      dy)
-Adds etl::chrono::years.
-______________________________________________
+```
+**Description**  
+Adds `etl::chrono::years`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::year_month operator +(const etl::chrono::years&      dy,
                                    const etl::chrono::year_month& ym) 
 ETL_NOEXCEPT
-Adds etl::chrono::years.
-______________________________________________
+```
+**Description**  
+Adds `etl::chrono::years`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::year_month operator +(const etl::chrono::year_month& ym,
                                    const etl::chrono::months&     dm) 
 ETL_NOEXCEPT
-Adds etl::chrono::months.
-______________________________________________
+```
+**Description**  
+Adds `etl::chrono::months`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month operator +(const etl::chrono::months& dm,
                                    const etl::chrono::year_month& ym) 
 ETL_NOEXCEPT
-Adds etl::chrono::months.
-______________________________________________
+```
+**Description**  
+Adds `etl::chrono::months`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month operator -(const etl::chrono::year_month& ym,
                                    const etl::chrono::years&      dy) 
 ETL_NOEXCEPT
-Subtracts etl::chrono::years.
-______________________________________________
+```
+**Description**  
+Subtracts `etl::chrono::years`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month operator -(const etl::chrono::year_month& ym,
                                    const etl::chrono::months&     dm) 
 ETL_NOEXCEPT
-Subtracts etl::chrono::months.
-______________________________________________
+```
+**Description**  
+Subtracts `etl::chrono::months`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::months operator -(const etl::chrono::year_month& ym1,
                                const etl::chrono::year_month& ym2) 
 ETL_NOEXCEPT
-Subtracts etl::chrono::year_month.
-____________________________________________________________________________________________________
-Non-member comparison operators
+```
+**Description**  
+Subtracts `etl::chrono::year_month`.
 
+## Non-member comparison operators
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator ==(const etl::chrono::year_month& lhs, 
                  const etl::chrono::year_month& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Equality operator.
-______________________________________________
-ETL_CONSTEXPR14 
+
+---
+
+```cpp
+ETL_CONSTEXPR14
 bool operator !=(const etl::chrono::year_month& lhs, 
                  const etl::chrono::year_month& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Inequality operator.
-______________________________________________
+
+---
+
+```cpp
 [[nodiscard]] friend constexpr
 auto operator <=>(const etl::chrono::year_month& lhs, 
                   const etl::chrono::year_month& rhs)
 ETL_NOEXCEPT
-Spaceship operator
-______________________________________________
+```
+**Description**  
+Spaceship operator  
+C++20
+
+---
+
+```
 ETL_CONSTEXPR14 
 int compare(const year_month& other) const 
-ETL_NOEXCEPT 
+ETL_NOEXCEPT
+```
+**Description**  
 Compare year_month with another.
-if month < other.month, returns -1
-else if month > other.month, returns 1
-else if day < other.day, returns -1
-else if day > other.day, returns 1
-else returns 0;
-____________________________________________________________________________________________________
-Hash
+if `month < other.month`, returns `-1`
+else if `month > other.month`, returns `1`
+else if `day < other.day`, returns `-1`
+else if `day > other.day`, returns `1`
+else returns `0`;
+
+## Hash
 
 template <typename TRep, typename TPeriod>
 struct hash<etl::chrono::year_month>
-Hash function for etl::chrono::year_month
-
+**Description**  
+Hash function for `etl::chrono::year_month`.
