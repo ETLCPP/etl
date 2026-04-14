@@ -42,6 +42,7 @@ SOFTWARE.
 
 namespace
 {
+#include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_forward_list)
   {
     const size_t SIZE = 20UL;
@@ -1929,4 +1930,5 @@ namespace
       CHECK(data3 > data1);
     }
   }
+#include "etl/private/diagnostic_pop.h"
 } // namespace
