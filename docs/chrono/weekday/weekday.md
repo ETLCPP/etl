@@ -1,218 +1,372 @@
-weekday
+---
+title: "weekday"
+---
+
+{{< callout type="info">}}
+  Header: `chrono.h`  
+  Since: `20.41.0`  
+  Similar to: [std::chrono::weekday](https://en.cppreference.com/w/cpp/chrono/weekday.html)
+{{< /callout >}}
+
 A class representing a weekday.
-Back to chrono
-____________________________________________________________________________________________________
-weekday
 
-STL equivalent: std::chrono::weekday
-
+```cpp
 class weekday
-____________________________________________________________________________________________________
-Construction
+```
 
+## Construction
+
+```cpp
 ETL_CONSTEXPR 
 weekday()
 ETL_NOEXCEPT
+```
+**Description**  
 Default constructor.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR 
 explicit weekday(unsigned value) 
 ETL_NOEXCEPT
-Construct from unsigned.
-______________________________________________
+```
+**Description**  
+Construct from `unsigned`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 weekday(const etl::chrono::sys_days& sd)
 ETL_NOEXCEPT
-Construct from sys_days.
-______________________________________________
+```
+**Description**  
+Construct from `sys_days`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 weekday(const etl::chrono::local_days& sd)
 ETL_NOEXCEPT
-Construct from local_days.
-______________________________________________
+```
+**Description**  
+Construct from `local_days`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 weekday(const etl::chrono::weekday& other) 
 ETL_NOEXCEPT
+```
+**Description**  
 Copy constructor.
-____________________________________________________________________________________________________
-Tests
 
+## Tests
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 bool ok() const 
 ETL_NOEXCEPT
-Returns true if the weekday is valid
-______________________________________________
+```
+**Return**  
+`true` if the weekday is valid
+
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 bool is_weekend() const 
 ETL_NOEXCEPT
-Returns true if the weekday is a Saturday or Sunday.
-____________________________________________________________________________________________________
-Assignment
+```
+**Return**  
+`true` if the weekday is a Saturday or Sunday.
 
+## Assignment
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekday& operator =(const etl::chrono::weekday& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Assignment operator      
-____________________________________________________________________________________________________
-Access
 
+## Access
+
+```cpp
 ETL_CONSTEXPR14 
 int c_encoding() const 
 ETL_NOEXCEPT
+```
+**Description**  
 Gets the value of the weekday using C encoding.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 
 int iso_encoding() const 
 ETL_NOEXCEPT
+```
+**Description**  
 Gets the value of the weekday using ISO encoding.
 
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::weekday_indexed operator[](unsigned index) const 
 ETL_NOEXCEPT
+```
+**Description**  
 Index operator, from index.
-  
+
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::weekday_last operator[](etl::chrono::last_spec last) const 
 ETL_NOEXCEPT
-Index operator, from etl::chrono::last_spec.
-____________________________________________________________________________________________________
-Increment/decrement
+```
+**Description**  
+Index operator, from `etl::chrono::last_spec`.
 
+## Increment/decrement
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekday& operator ++() 
 ETL_NOEXCEPT
+```
+**Description**  
 Pre-increment operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::weekday operator ++(int) 
 ETL_NOEXCEPT
+```
+**Description**  
 Post-increment operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::weekday& operator --() 
 ETL_NOEXCEPT
+```
+**Description**  
 Pre-decrement operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekday operator --(int) 
 ETL_NOEXCEPT
+```
+**Description**  
 Post-decrement operator.
-____________________________________________________________________________________________________
-Mathematical operators
 
+## Mathematical operators
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekday& operator +=(const etl::chrono::weekdays& ms) 
 ETL_NOEXCEPT
-Plus-equals operator adding etl::chrono::weekdays.
-______________________________________________
+```
+**Description**  
+Plus-equals operator adding `etl::chrono::weekdays`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekday& operator -=(const etl::chrono::weekdays& ms) 
 ETL_NOEXCEPT
-Minus-equals operator subtracting etl::chrono::weekdays.
-____________________________________________________________________________________________________
-Constants
+```
+**Description**  
+Minus-equals operator subtracting `etl::chrono::weekdays`.
 
+## Constants
+
+```cpp
 ETL_NODISCARD
 static 
 ETL_CONSTEXPR14
 etl::chrono::weekday min()
 ETL_NOEXCEPT
-The minimum weekday value for which ok() will return true.
-______________________________________________
+```
+**Description**  
+The minimum weekday value for which `ok()` will return true.
+
+---
+
+```cpp
 ETL_NODISCARD
 static 
 ETL_CONSTEXPR14 
 etl::chrono::weekday max()
 ETL_NOEXCEPT
-The maximum weekday  value for which ok() will return true.
-____________________________________________________________________________________________________
-Non-member mathematical operators
+```
+**Description**  
+The maximum weekday  value for which `ok()` will return true.
 
+## Non-member mathematical operators
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekday operator +(const etl::chrono::weekday& m, 
                                 const etl::chrono::weekdays& ms) 
 ETL_NOEXCEPT
-Add etl::chrono::weekdays to etl::chrono::weekday.
-Returns etl::chrono::weekday.
-______________________________________________
+```
+**Description**  
+Add `etl::chrono::weekdays` to `etl::chrono::weekday`.
+**Return**  
+`etl::chrono::weekday`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekday operator +(const etl::chrono::weekdays& ms, 
                                 const etl::chrono::weekday& m) 
 ETL_NOEXCEPT
-Add etl::chrono::weekday to etl::chrono::weekdays.
-Returns etl::chrono::weekday.
-______________________________________________
+```
+**Description**  
+Add `etl::chrono::weekday` to `etl::chrono::weekdays`.
+**Return**  
+`etl::chrono::weekday`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekday operator -(const etl::chrono::weekday& m, 
                                 const etl::chrono::weekdays& ms) 
 ETL_NOEXCEPT
-Subtract etl::chrono::weekdays from etl::chrono::weekday.
-Returns etl::chrono::weekday.
-______________________________________________
+```
+**Description**  
+Subtract `etl::chrono::weekdays` from `etl::chrono::weekday`.
+**Return**  
+`etl::chrono::weekday`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::weekday operator -(const etl::chrono::weekdays& ms, 
                                 const etl::chrono::weekday& m) 
 ETL_NOEXCEPT
-Subtract etl::chrono::weekday from etl::chrono::weekdays.
-Returns etl::chrono::weekdays.
-______________________________________________
+```
+**Description**  
+Subtract `etl::chrono::weekday` from `etl::chrono::weekdays`.
+**Return**  
+`etl::chrono::weekdays`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::weekdays operator -(const etl::chrono::weekday& m1, 
                                  const etl::chrono::weekday& m2) ETL_NOEXCEPT
-Subtract etl::chrono::weekday from etl::chrono::weekday.
-Returns etl::chrono::weekdays.
-____________________________________________________________________________________________________
-Non-member comparison operators
+```
+**Description**  
+Subtract `etl::chrono::weekday` from `etl::chrono::weekday`.
+**Return**  
+`etl::chrono::weekdays`.
 
+## Non-member comparison operators
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator ==(const etl::chrono::weekday& m1, 
                  const etl::chrono::weekday& m2)
 ETL_NOEXCEPT
+```
+**Description**  
 Equality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator !=(const etl::chrono::weekday& m1, 
                  const etl::chrono::weekday& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Inequality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <(const etl::chrono::weekday& m1, 
                 const etl::chrono::weekday& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Less-than operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator <=(const etl::chrono::weekday& m1, 
                  const etl::chrono::weekday& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Less-than-or-equal operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator >(const etl::chrono::weekday& m1, 
                 const etl::chrono::weekday& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Greater-than operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 bool operator >=(const etl::chrono::weekday& m1, 
                  const etl::chrono::weekday& m2) 
 ETL_NOEXCEPT
+```
+**Description**  
 Greater-than-or-equal operator.
-______________________________________________
+
+---
+
+```cpp
 [[nodiscard]] inline constexpr 
 auto operator <=>(const etl::chrono::weekday& m1, 
                   const etl::chrono::weekday& m2) 
 noexcept
-Spaceship operator.
+```
+**Description**  
+Spaceship operator.  
 C++20
-____________________________________________________________________________________________________
-Defined weekdays
 
+## Defined weekdays
+
+```cpp
 etl::chrono::Monday
 etl::chrono::Tuesday
 etl::chrono::Wednesday
@@ -220,10 +374,13 @@ etl::chrono::Thursday
 etl::chrono::Friday
 etl::chrono::Saturday
 etl::chrono::Sunday
-____________________________________________________________________________________________________
-Hash
+```
 
+## Hash
+
+```cpp
 template <>
 struct hash<etl::chrono::weekday>
-Hash function for etl::chrono::weekday
- 
+```
+**Description**  
+Hash function for `etl::chrono::weekday`.

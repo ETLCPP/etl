@@ -1,5 +1,5 @@
 ---
-title: "Duration"
+title: "Durations"
 weight: 100
 ---
 

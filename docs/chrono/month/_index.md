@@ -1,5 +1,5 @@
 ---
-title: "Month"
+title: "Months"
 weight: 100
 ---
 

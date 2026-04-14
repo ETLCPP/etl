@@ -1,164 +1,251 @@
-year_month_day_last
-A class representing a year and month.
-Back to chrono
-____________________________________________________________________________________________________
-year_month_day_last
+---
+title: "year_month_day_last"
+---
 
-STL equivalent: std::chrono::year_month_day_last
+{{< callout type="info">}}
+  Header: `chrono.h`  
+  Since: `20.41.0`  
+  Similar to: [std::chrono::year_month_day_last](https://en.cppreference.com/w/cpp/chrono/year_month_day_last.html)
+{{< /callout >}}
 
+A class representing a year, month and last day.
+
+```cpp
 class year_month_day_last
-____________________________________________________________________________________________________
-Construction
+```
 
+## Construction
+
+```cpp
 ETL_CONSTEXPR year_month_day_last()
+```
+**Description**  
 Default constructor.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 year_month_day(const etl::chrono::year&  y, 
                const etl::chrono::month_day_last& mdl) 
 ETL_NOEXCEPT
+```
+**Description**  
 Construct from month and day.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 year_month_day(const etl::chrono::year_month_day_last& ymdl) 
 ETL_NOEXCEPT
-Construct from year_month_day_last.
-____________________________________________________________________________________________________
-Access
+```
+**Description**  
+Construct from `year_month_day_last`.
 
+## Access
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::year year() const 
 ETL_NOEXCEPT
-Returns the year.
-______________________________________________
+```
+**Return**  
+The year.
+
+---
+
+```coo
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::month month() const 
 ETL_NOEXCEPT
-Returns the month.
-______________________________________________
+```
+**Return**  
+The month.
+
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::month_day_last month_day_last() const 
 ETL_NOEXCEPT
-Returns the month.
-____________________________________________________________________________________________________
-Tests
+```
+**Returns**  
+The month.
 
+## Tests
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 bool ok() const 
 ETL_NOEXCEPT
-Returns true if the year and month is within the valid limits.
-______________________________________________
+```
+**Return**  
+`true` if the year and month is within the valid limits.
+
+---
+
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 int compare(const etl::chrono::year_month_day_last& other) const 
 ETL_NOEXCEPT
-Compare year_month_day with another.
-if year < other.year, returns -1
-else if year > other.year, returns 1
-if month < other.month, returns -1
-else if month > other.month, returns 1
-else returns 0
-____________________________________________________________________________________________________
-operators
+```
+**Description**  
+Compare `year_month_day` with another.
+if `year < other.year`, returns `-1`
+else if `year > other.year`, returns `1`
+if `month < other.month`, returns `-1`
+else if `month > other.month`, returns `1`
+else returns `0`
 
+## operators
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month_day_last& operator +=(const etl::chrono::years& dy) 
 ETL_NOEXCEPT
-Adds etl::chrono::years.
+```
+Adds `etl::chrono::years`.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month_day_last& operator +=(const etl::chrono::months& dm) 
 ETL_NOEXCEPT
-Adds etl::chrono::months.
+```
+**Description**  
+Adds `etl::chrono::months`.
 
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::year_month_day_last& operator -=(const etl::chrono::years& dy)
 ETL_NOEXCEPT
-Subtracts etl::chrono::years.
+```
+**Description**  
+Subtracts `etl::chrono::years`.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month_day_last& operator -=(const etl::chrono::months& dm)
 ETL_NOEXCEPT
-Subtracts etl::chrono::months.
-____________________________________________________________________________________________________
-Non-member operators
+```
+**Description**  
+Subtracts `etl::chrono::months`.
 
+## Non-member operators
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::year_month_day_last operator +(const etl::chrono::year_month_day_last& ym,
                                             const etl::chrono::years&               dy)
-Adds etl::chrono::years.
-______________________________________________
+```
+**Description**  
+Adds `etl::chrono::years`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::year_month_day_last operator +(const etl::chrono::years&               dy,
                                             const etl::chrono::year_month_day_last& ym) 
 ETL_NOEXCEPT
-Adds etl::chrono::years.
-______________________________________________
+```
+**Description**  
+Adds `etl::chrono::years`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14
 etl::chrono::year_month_day_last operator +(const etl::chrono::year_month_day_last& ym,
                                             const etl::chrono::months&              dm) 
 ETL_NOEXCEPT
-Adds etl::chrono::months.
-______________________________________________
+```
+**Description**  
+Adds `etl::chrono::months`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month_day_last operator +(const etl::chrono::months&              dm,
                                             const etl::chrono::year_month_day_last& ym) 
 ETL_NOEXCEPT
-Adds etl::chrono::months.
-______________________________________________
+```
+**Description**  
+Adds `etl::chrono::months`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month_last operator -(const etl::chrono::year_month_day_last& ym,
                                         const etl::chrono::years&               dy) 
 ETL_NOEXCEPT
-Subtracts etl::chrono::years.
-______________________________________________
+```
+**Description**  
+Subtracts `etl::chrono::years`.
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 etl::chrono::year_month_day_last operator -(const etl::chrono::year_month_day& ym,
                                    const etl::chrono::months&     dm) 
 ETL_NOEXCEPT
-Subtracts etl::chrono::months.
-___________________________________________________________________________________________________
-Non-member comparison operators
+```
+**Description**  
+Subtracts `etl::chrono::months`.
 
+## Non-member comparison operators
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator ==(const etl::chrono::year_month_day_last& lhs, 
                  const etl::chrono::year_month_day_last& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Equality operator.
-______________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 
 bool operator !=(const etl::chrono::year_month_day_last& lhs, 
                  const etl::chrono::year_month_day_last& rhs) 
 ETL_NOEXCEPT
+```
+**Description**  
 Inequality operator.
-______________________________________________
+
+---
+
+```cpp
 [[nodiscard]] friend constexpr
 auto operator <=>(const etl::chrono::year_month_day& lhs, 
                   const etl::chrono::year_month_day& rhs)
 ETL_NOEXCEPT
-Spaceship operator
-______________________________________________
-ETL_CONSTEXPR14 
-int compare(const year_month& other) const 
-ETL_NOEXCEPT 
-Compare year_month_day with another.
-if year < other.year, returns -1
-else if year > other.year, returns 1
-if month < other.month, returns -1
-else if month > other.month, returns 1
-else if day < other.day, returns -1
-else if day > other.day, returns 1
-else returns 0
-____________________________________________________________________________________________________
-Hash
+```
+**Description**  
+Spaceship operator.  
+C++20
 
+## Hash
+
+```cpp
 template <>
 struct hash<etl::chrono::year_month_day_last>
-Hash function for etl::chrono::year_month_day_last
-
-
-
+```
+**Description**  
+Hash function for `etl::chrono::year_month_day_last`.

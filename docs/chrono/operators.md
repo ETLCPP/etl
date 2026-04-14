@@ -1,5 +1,5 @@
 ---
-title: "operators"
+title: "Operators"
 ---
 
 {{< callout type="info">}}

@@ -1,5 +1,5 @@
 ---
-title: "Weekday"
+title: "Weekdays"
 weight: 100
 ---
 
