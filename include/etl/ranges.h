@@ -735,8 +735,23 @@ namespace etl
       inline constexpr private_views::repeat repeat;
     } // namespace views
 
-    template <class Range>
-    class range_adapter_closure
+    // Non-template base so ADL finds exactly one operator| definition.
+    class range_adapter_closure_base
+    {
+      // Found via ADL on the RHS (any type that derives from
+      // range_adapter_closure_base).  Placing the operator here instead of at
+      // global/namespace scope avoids conflicts with std::ranges::operator|.
+      template <class Range, class Closure,
+                typename = etl::enable_if_t< etl::is_base_of_v<range_adapter_closure_base, etl::decay_t<Closure>>
+                                             && etl::is_invocable_v<etl::decay_t<Closure>, Range>>>
+      friend auto operator|(Range&& r, Closure&& c)
+      {
+        return etl::forward<Closure>(c)(etl::forward<Range>(r));
+      }
+    };
+
+    template <class Derived>
+    class range_adapter_closure : public range_adapter_closure_base
     {
     };
 
@@ -932,7 +947,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct all
+        struct all : public range_adapter_closure_base
         {
           template < class Range,
                      etl::enable_if_t<etl::is_base_of_v< etl::ranges::view_interface<etl::decay_t<Range>>, etl::decay_t<Range>>, int> = 0>
@@ -1422,7 +1437,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct as_rvalue
+        struct as_rvalue : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -1501,7 +1516,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct as_const
+        struct as_const : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -1726,7 +1741,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct cache_latest
+        struct cache_latest : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -1802,7 +1817,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct reverse
+        struct reverse : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -2397,7 +2412,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct join
+        struct join : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -4244,7 +4259,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct common
+        struct common : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -4404,7 +4419,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct enumerate
+        struct enumerate : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -4569,7 +4584,7 @@ namespace etl
       namespace private_views
       {
         template <size_t N>
-        struct elements_fn
+        struct elements_fn : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -4797,7 +4812,7 @@ namespace etl
       namespace private_views
       {
         template <size_t N>
-        struct adjacent_fn
+        struct adjacent_fn : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -6064,7 +6079,7 @@ namespace etl
     {
       namespace private_views
       {
-        struct to_input
+        struct to_input : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
@@ -6151,13 +6166,6 @@ namespace etl
 
   namespace views = ranges::views;
 } // namespace etl
-
-template < class Range, typename RangeAdaptorClosure, typename = etl::enable_if_t<etl::is_invocable_v<RangeAdaptorClosure, Range>>>
-
-auto operator|(Range&& r, RangeAdaptorClosure rac)
-{
-  return rac(etl::forward<Range>(r));
-}
 
 #endif
 
