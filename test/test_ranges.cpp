@@ -37,6 +37,14 @@ SOFTWARE.
 #include <sstream>
 #include <vector>
 
+// Issue #1391: include <ranges> when available to verify etl::operator|
+// does not conflict with std::ranges::operator|.
+#if ETL_USING_STL && ETL_USING_CPP20 && defined(__has_include)
+  #if __has_include(<ranges>)
+    #include <ranges>
+  #endif
+#endif
+
 #if ETL_USING_CPP17
 
   // C++03 does not support move semantics as used in the ranges library
