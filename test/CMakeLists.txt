@@ -385,6 +385,7 @@ option(ETL_NO_STL "No STL" OFF)
 set(EXTRA_COMPILE_OPTIONS "" CACHE STRING "Additional compiler options")
 set(EXTRA_LINK_OPTIONS "" CACHE STRING "Additional linker options")
 set(EXTRA_LINK_LIBS "" CACHE STRING "Additional libraries to link")
+set(EXTRA_TESTING_FLAGS "" CACHE STRING "Additional testing flags for ctest")
 
 if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
@@ -538,7 +539,7 @@ target_link_libraries(etl_tests PRIVATE UnitTestpp ${EXTRA_LINK_LIBS})
 
 enable_testing()
 # Enable the 'make test' CMake target using the executable defined above
-add_test(NAME etl_unit_tests COMMAND etl_tests)
+add_test(NAME etl_unit_tests COMMAND etl_tests ${EXTRA_TESTING_FLAGS})
 
 # Since ctest will only show you the results of the single executable
 # define a target that will output all of the failing or passing tests

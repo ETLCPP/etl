@@ -594,8 +594,8 @@ namespace
 
       for (size_t i = 0; i < MAX_SIZE; ++i)
       {
-        data_result    = data.insert(i);
-        compare_result = compare_data.insert(i);
+        data_result    = data.insert(static_cast<int>(i));
+        compare_result = compare_data.insert(static_cast<int>(i));
 
         // Check that both return successful return results
         CHECK_EQUAL(*data_result.first, *compare_result.first);
@@ -608,8 +608,8 @@ namespace
       // not throw error
       for (size_t i = 0; i < MAX_SIZE; ++i)
       {
-        data_result    = data.insert(i);
-        compare_result = compare_data.insert(i);
+        data_result    = data.insert(static_cast<int>(i));
+        compare_result = compare_data.insert(static_cast<int>(i));
 
         // Check that both return successful return results
         CHECK_EQUAL(*data_result.first, *compare_result.first);

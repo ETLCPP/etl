@@ -130,11 +130,11 @@ namespace etl
   {
     if (a > b)
     {
-      return b + (etl::distance(b, a) / 2U);
+      return b + (etl::distance(b, a) / 2);
     }
     else
     {
-      return a + (etl::distance(a, b) / 2U);
+      return a + (etl::distance(a, b) / 2);
     }
   }
 
@@ -151,11 +151,11 @@ namespace etl
   {
     if (a > b)
     {
-      return b + (etl::distance(b, a) / 2U);
+      return b + (etl::distance(b, a) / 2);
     }
     else
     {
-      return a + (etl::distance(a, b) / 2U);
+      return a + (etl::distance(a, b) / 2);
     }
   }
 
@@ -172,7 +172,7 @@ namespace etl
                               || etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value)),
                          int>::type = 0)
   {
-    etl::advance(a, etl::distance(a, b) / 2U);
+    etl::advance(a, etl::distance(a, b) / 2);
     return a;
   }
 

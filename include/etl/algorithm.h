@@ -558,7 +558,8 @@ namespace etl
   {
     while (first != last)
     {
-      *first = value;
+      // This cast is necessary because the signedness can differ
+      *first = static_cast<typename etl::iterator_traits<TIterator>::value_type>(value);
       ++first;
     }
   }

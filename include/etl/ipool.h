@@ -644,7 +644,7 @@ namespace etl
       // in debug.
 #if ETL_IS_DEBUG_BUILD
       // Is the address on a valid object boundary?
-      bool is_valid_address = ((distance % Item_Size) == 0);
+      bool is_valid_address = ((static_cast<size_t>(distance) % Item_Size) == 0);
 #else
       bool is_valid_address = true;
 #endif
