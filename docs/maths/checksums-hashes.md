@@ -1,7 +1,11 @@
-Checksums & hashes
+---
+title: "Checksums & hashes"
+---
+
 A set of algorithms for producing checksums and hashes from data.
-____________________________________________________________________________________________________
-Generic hashes
+
+## Generic hashes
+```
 Type                   Class                Header
 Checksum               checksum             checksum.h (8, 16, 32 or 64 bit)
 BSD Checksum           bsd_checksum         checksum.h (8, 16, 32 or 64 bit)
@@ -19,11 +23,17 @@ Jenkins                jenkins              jenkins.h
 Pearson                pearson              pearson.h
 
 Murmur3                murmur3              murmur3.h (32 or 64 bit)
-____________________________________________________________________________________________________
-CRC hashes
+```
+
+## CRC1
+```
 Type                   Class                   Table size       Header
 CRC1                   crc1                      0              crc1.h, crc.h
+```
 
+## CRC8
+```
+Type                   Class                   Table size       Header
 CRC8 CCITT             crc8_ccitt              256              crc8_ccitt.h, crc.h
                        crc8_ccitt_t4             4
                        crc8_ccitt_t16           16
@@ -95,7 +105,10 @@ CRC8 WCDMA             crc8_wcdma              256              crc8_wcdma.h, cr
                        crc8_wcdma_t16           16
                        crc8_wcdma_t256         256
                        crc8_wcdma_t<N>         N = 4, 16, 256
-____________________________________________________________________________________________________
+```
+## CRC16
+```
+Type                   Class                   Table size        Header
 CRC16                  crc16                   256               crc16.h, crc.h
                        crc16_t4                  4
                        crc16_t16                16
@@ -251,7 +264,11 @@ CRC16 XMODEM           crc16_xmodem            256               crc16_xmodem.h,
                        crc16_xmodem_t16         16
                        crc16_xmodem_t256       256
                        crc16_xmodem_t<N>       N = 4, 16, 256
-____________________________________________________________________________________________________
+```
+
+## CRC32
+```
+Type                   Class                   Table size        Header
 CRC32                  crc32                   256               crc32.h, crc.h
                        crc32_t4                  4
                        crc32_t16                16
@@ -305,7 +322,11 @@ CRC32 XFER             crc32_xfer              256                crc32_xfer.h, 
                        crc32_xfer_t16           16
                        crc32_xfer_t256         256
                        crc32_xfer_t<N>        N = 4, 16, 256
-____________________________________________________________________________________________________
+```
+
+## CRC32
+```
+Type                   Class                   Table size        Header
 CRC64 ECMA             crc64_ecma              256               crc64_ecma.h, crc.h
                        crc32_ecma_t4             4
                        crc32_ecma_t16           16
@@ -317,56 +338,85 @@ CRC64 ISO              crc64_iso               256               crc64_iso.h, cr
                        crc32_iso_t16            16
                        crc32_iso_t256          256
                        crc32_iso_t<N>          N = 4, 16, 256
+```
 
-The library also includes etl::hash which is a reverse engineered version of std::hash in hash.h
+## Hash
+The library also includes etl::hash which is a reverse engineered version of `std::hash` in `hash.h`
 
 All hashing templates have the same API, apart from the members returning the hash value, which return the appropriate type.
 
-A hash that requires finalising before the value is read should do it in the conversion operator and value() member functions. Trying to add values after finalisation should result in an etl::hash_finalised error being asserted. Construction or reset should clear any finalisation flag.
-____________________________________________________________________________________________________
-Hash API
+A hash that requires finalising before the value is read should do it in the conversion operator and `value()` member functions. Trying to add values after finalisation should result in an `etl::hash_finalised error` being asserted. Construction or reset should clear any finalisation flag.
+
+## Hash API
 All hashing algorithms supply the following API.
 
 Default constructor
 Initialises the hash value to its appropriate starting value.
-____________________________________________________________________________________________________
+
 Constructor from a range. (Any iterator type)
 Creates a hash from the supplied range.
-____________________________________________________________________________________________________
+
+```cpp
 void reset();
+```
+**Decsription**
 Resets the hash to the initial condition.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 void add(uint8_t value);
-Adds a uint8_t to the hash.
-____________________________________________________________________________________________________
+```
+Adds a `uint8_t` to the hash.
+
+```cpp
 template <typename TIterator>
 void add(TIterator begin, Titerator end);
-
+```
+**Description**
 Adds a range of values to the hash.
-If the type pointed to must be default castable to uint8_t.
-____________________________________________________________________________________________________
-value_type value() const;
-Returns the hash value.
-The hash will be finalised if required.
-____________________________________________________________________________________________________
-operator value_type() const;
-Returns the hash value.
-The hash will be finalised if required.
-__________________________________________________________________________________________________
-iterator input()
-Returns an iterator that allows the input of new values.
+If the type pointed to must be default castable to `uint8_t`.
 
-Example
+---
+
+```cpp
+value_type value() const;
+```
+**Return**  
+The hash value.
+The hash will be finalised if required.
+
+---
+
+```cpp
+operator value_type() const;
+```
+**Return**  
+The hash value.
+The hash will be finalised if required.
+
+---
+
+```cpp
+iterator input()
+```
+**Return**  
+An iterator that allows the input of new values.
+
+**Example**  
+```cpp
 std::array data{ 9, 1, 8, 2, 7, 3, 6, 4, 5 };
 etl::crc32 crc_calculator;
 std::copy(data.begin(), data.end(), crc_calculator.input());
 uint32_t crc = crc_calculator.value();
-____________________________________________________________________________________________________
-Creating a new frame check type.
+```
+
+## Creating a new frame check type.
 The frame_check_sequence class may be customised with new policies that contain the expected typedef and  member functions:-
 
-Example
+**Example**  
 
+```cpp
 struct special_16
 {
   typedef uint16_t value_type;
@@ -386,9 +436,11 @@ struct special_16
     return ~sum; // How to read the final value.
   }
 };
+```
 
 The hash class would be declared as follows.
 
+```cpp
 //*************************************************************************
 /// Special checksum
 //*************************************************************************
@@ -416,4 +468,4 @@ public:
     this->add(begin, end);
   }
 };
-  
+```  
