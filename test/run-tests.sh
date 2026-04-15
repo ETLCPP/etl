@@ -56,7 +56,7 @@ PrintHelp()
 	echo "$HelpColour"
 	echo "----------------------------------------------------------------------------------------------------------"
 	echo " Syntax          : ./run-tests.sh <C++ Standard> <Optimisation> <Threads> <Sanitizer> <Compiler> <Verbose>"
-	echo " C++ Standard    : 11, 14, 17, 20, 23 or all                                                              "
+	echo " C++ Standard    : 11, 14, 17, 20, 23, 26 or all                                                          "
 	echo " Optimisation    : 0, 1, 2 or 3. Default = 0                                                              "
 	echo " Threads         : Number of threads to use. Default = 4                                                  "
 	echo " Sanitizer       : s enables sanitizer checks, n disables. Default disabled                               "
@@ -126,8 +126,10 @@ elif [ "$1" = "20" ]; then
   cxx_standards="20"
 elif [ "$1" = "23" ]; then
   cxx_standards="23"
+elif [ "$1" = "26" ]; then
+  cxx_standards="26"
 elif [ "$1" = "all" ]; then
-  cxx_standards="11 14 17 20 23"
+  cxx_standards="11 14 17 20 23 26"
 else
   PrintHelp
   exit

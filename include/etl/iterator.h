@@ -958,8 +958,43 @@ namespace etl
   template <typename T>
   ETL_CONSTANT bool is_random_access_iterator_concept<T>::value;
 
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// Trait to detect if a type is a container (has iterator and begin/end)
+  /// but is not itself an iterator.
+  /// Used to constrain begin()/end() free functions in C++26.
+  //***************************************************************************
+  namespace private_iterator
+  {
+    // Check if T has iterator_category (i.e., is an iterator)
+    template <typename T, typename = void>
+    struct has_iterator_category : etl::false_type
+    {
+    };
+
+    template <typename T>
+    struct has_iterator_category<T, etl::void_t<typename T::iterator_category>> : etl::true_type
+    {
+    };
+
+    // is_container: has iterator/const_iterator/begin/end but does NOT have iterator_category
+    template <typename T, typename = void>
+    struct is_container : etl::false_type
+    {
+    };
+
+    template <typename T>
+    struct is_container<
+      T, etl::void_t< typename T::iterator, typename T::const_iterator, decltype(etl::declval<T&>().begin()), decltype(etl::declval<T&>().end()) >>
+      : etl::bool_constant<!has_iterator_category<T>::value>
+    {
+    };
+  } // namespace private_iterator
+#endif
+
 #if ETL_NOT_USING_STL || ETL_CPP11_NOT_SUPPORTED
-  #if ETL_CPP11_SUPPORTED
+  #if ETL_USING_CPP11
+
   //*****************************************************************************
   /// Get the 'begin' iterator.
   /// Note: Contains SFINAE guard, ensuring they only participate in overload
@@ -969,7 +1004,8 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<TContainer&>().begin())> >
-  ETL_CONSTEXPR typename TContainer::iterator begin(TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::iterator>::type
+    begin(TContainer& container)
   {
     return container.begin();
   }
@@ -979,7 +1015,8 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().begin())> >
-  ETL_CONSTEXPR typename TContainer::const_iterator begin(const TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::const_iterator>::type
+    begin(const TContainer& container)
   {
     return container.begin();
   }
@@ -989,7 +1026,8 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().cbegin())> >
-  ETL_CONSTEXPR typename TContainer::const_iterator cbegin(const TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::const_iterator>::type
+    cbegin(const TContainer& container)
   {
     return container.cbegin();
   }
@@ -999,7 +1037,7 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<TContainer&>().end())> >
-  ETL_CONSTEXPR typename TContainer::iterator end(TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::iterator>::type end(TContainer& container)
   {
     return container.end();
   }
@@ -1009,7 +1047,8 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().end())> >
-  ETL_CONSTEXPR typename TContainer::const_iterator end(const TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::const_iterator>::type
+    end(const TContainer& container)
   {
     return container.end();
   }
@@ -1019,12 +1058,15 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().cend())> >
-  ETL_CONSTEXPR typename TContainer::const_iterator cend(const TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::const_iterator>::type
+    cend(const TContainer& container)
   {
     return container.cend();
   }
   #else
-  // C++03 fallback: no SFINAE guards needed since std::ranges does not exist.
+  // C++03 fallback:
+  //  - no SFINAE guards needed since std::ranges does not exist
+  //  - no constraint needed as C++26 ADL issue doesn't apply
   //*****************************************************************************
   /// Get the 'begin' iterator.
   ///\ingroup container
@@ -1148,14 +1190,15 @@ namespace etl
 #endif
 
 #if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
-  #if ETL_CPP11_SUPPORTED
+  #if ETL_USING_CPP11
   //*****************************************************************************
   /// Get the 'begin' reverse_iterator for a container.
   /// Note: Contains SFINAE guard (see begin/end above for rationale).
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<TContainer&>().rbegin())> >
-  ETL_CONSTEXPR typename TContainer::reverse_iterator rbegin(TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::reverse_iterator>::type
+    rbegin(TContainer& container)
   {
     return container.rbegin();
   }
@@ -1165,7 +1208,8 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().rbegin())> >
-  ETL_CONSTEXPR typename TContainer::const_reverse_iterator rbegin(const TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::const_reverse_iterator>::type
+    rbegin(const TContainer& container)
   {
     return container.rbegin();
   }
@@ -1175,7 +1219,8 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().crbegin())> >
-  ETL_CONSTEXPR typename TContainer::const_reverse_iterator crbegin(const TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::const_reverse_iterator>::type
+    crbegin(const TContainer& container)
   {
     return container.crbegin();
   }
@@ -1185,7 +1230,8 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<TContainer&>().rend())> >
-  ETL_CONSTEXPR typename TContainer::reverse_iterator rend(TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::reverse_iterator>::type
+    rend(TContainer& container)
   {
     return container.rend();
   }
@@ -1195,7 +1241,8 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().rend())> >
-  ETL_CONSTEXPR typename TContainer::const_reverse_iterator rend(const TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::const_reverse_iterator>::type
+    rend(const TContainer& container)
   {
     return container.rend();
   }
@@ -1205,12 +1252,15 @@ namespace etl
   ///\ingroup container
   //*****************************************************************************
   template <typename TContainer, typename = etl::void_t<decltype(etl::declval<const TContainer&>().crend())> >
-  ETL_CONSTEXPR typename TContainer::const_reverse_iterator crend(const TContainer& container)
+  ETL_CONSTEXPR typename etl::enable_if<private_iterator::is_container<TContainer>::value, typename TContainer::const_reverse_iterator>::type
+    crend(const TContainer& container)
   {
     return container.crend();
   }
   #else
-  // C++03 fallback: no SFINAE guards needed since std::ranges does not exist.
+  // C++03 fallback:
+  //  - no SFINAE guards needed since std::ranges does not exist.
+  //  - no constraint needed as C++26 ADL issue doesn't apply
   //*****************************************************************************
   /// Get the 'begin' reverse_iterator for a container.
   ///\ingroup container

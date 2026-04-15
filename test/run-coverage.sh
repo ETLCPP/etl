@@ -44,7 +44,7 @@ mkdir -p "$BUILD"
 cd "$BUILD" || exit 1
 touch total.info
 
-for CXXSTD in 11 14 17 20 23; do
+for CXXSTD in 11 14 17 20 23 26; do
   for NOSTL in OFF ON; do
     rm -rf CMakeFiles
     cmake -DEXTRA_COMPILE_OPTIONS="--coverage" \
