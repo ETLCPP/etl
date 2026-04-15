@@ -34,11 +34,7 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#if ETL_CPP11_NOT_SUPPORTED
-  #if !defined(ETL_IN_UNIT_TEST)
-    #error NOT SUPPORTED FOR C++03 OR BELOW
-  #endif
-#else
+#if ETL_CPP11_SUPPORTED
 namespace etl
 {
   //***************************************************************************
