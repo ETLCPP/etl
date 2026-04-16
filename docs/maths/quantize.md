@@ -1,26 +1,47 @@
-Quantize
-20.9.0
+---
+title: "quantize"
+---
+
+{{< callout type="info">}}
+  Header: `quantize.h`  
+  Since: `20.9.0`  
+{{< /callout >}}
+
 Quantizes an input range.
 
+```cpp
 template <typename TInput, typename TCompare = etl::less<TInput> >
 class quantize : public etl::unary_function<TInput, TInput>
+```
 
-TInput   The input data type.
-TCompare The functor type used to compare values to the threshold. The default is etl::less
-____________________________________________________________________________________________________
+`TInput`   The input data type.
+`TCompare` The functor type used to compare values to the threshold. The default is `etl::less`.
+
+---
+
+```cpp
 quantize(const TInput* p_thresholds, 
          const TInput* p_quantizations, 
          size_t        n_quantizations, 
          TCompare      compare = TCompare())
-p_thresholds    A pointer to the list of threshold values.
-p_quantizations A pointer to the list of quantization values. One more than the number of thresholds.
-n_quantizations The number of quantization values.
-____________________________________________________________________________________________________
-TInput operator()(TInput value) const
-Quantatize a value.
-____________________________________________________________________________________________________
-Example
+```
+**Description**  
+`p_thresholds`    A pointer to the list of threshold values.  
+`p_quantizations` A pointer to the list of quantization values. One more than the number of thresholds.  
+`n_quantizations` The number of quantization values.  
 
+---
+
+```cpp
+TInput operator()(TInput value) const
+```
+**Description**  
+Quantatize a value.
+
+---
+
+## Example
+```cpp
 constexpr size_t Size        = 20U;
 constexpr size_t NThresholds = 4U;
 
@@ -46,4 +67,4 @@ etl::quantize<int> quantize(thresholds.data(), quantizations.data(), quantizatio
 std::transform(input.begin(), input.end(), output.begin(), quantize);
 
 // output = 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5
-
+```

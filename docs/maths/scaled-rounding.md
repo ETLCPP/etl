@@ -1,29 +1,35 @@
-Scaled Rounding
-Rounding algorithms for scaled integral values.
+---
+title: "Scaled Rounding"
+---
 
-From 20.40.1 all scaling functions are ETL_NODISCARD and ETL_CONSTEXPR14.
+Rounding algorithms for scaled integral values.  
 
-It is often advantageous to use scaled integral values rather than floating point for performance reasons.
-These functions will round the supplied values according to various popular rounding algorithms.
-See http://www.clivemaxfield.com/diycalculator/sp-round.shtml
+From `20.40.1` all scaling functions are `ETL_NODISCARD` and `ETL_CONSTEXPR14`.  
 
-The results may be scaled or unscaled.
-Scaled : The result has the same scaling as the input value.
-Unscaled : The result has the scaling factor removed from the input value. 'Unscaled' is a little faster than 'scaled'.
+It is often advantageous to use scaled integral values rather than floating point for performance reasons.  
+These functions will round the supplied values according to various popular rounding algorithms.  
+See [http://www.clivemaxfield.com/diycalculator/sp-round.shtml](http://www.clivemaxfield.com/diycalculator/sp-round.shtml)  
 
-Assume a scaling factor of 10 for all of the examples below (simulated one decimal place).
-i.e. 5.1 => 51
-____________________________________________________________________________________________________
-Round Ceiling
+The results may be scaled or unscaled.  
+**Scaled**  
+The result has the same scaling as the input value.  
+
+**Unscaled**  
+The result has the scaling factor removed from the input value. 'Unscaled' is a little faster than 'scaled'.  
+
+Assume a scaling factor of `10` for all of the examples below (simulated one decimal place).  
+i.e. `5.1` => `51`
+
+## Round Ceiling
 
 Values are rounded to the next more positive integral value.
 
-Scaling = 10
-Therefore 54 represents 5.4
-
+```cpp
 template <size_t Scaling, typename T>
 T round_ceiling_scaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -50    -5.4 => -5.0
 -55 => -50    -5.5 => -5.0
 -56 => -50    -5.6 => -5.0
@@ -31,10 +37,16 @@ T round_ceiling_scaled(T value)
  54 => 60      5.4 => 6.0
  55 => 60      5.5 => 6.0
  56 => 60      5.5 => 6.0
+```
 
+---
+
+```cpp
 template <size_t Scaling, typename T>
 T round_ceiling_unscaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -5    -5.4 => -5
 -55 => -5    -5.5 => -5
 -56 => -5    -5.6 => -5
@@ -42,17 +54,18 @@ T round_ceiling_unscaled(T value)
  54 => 6      5.4 => 6
  55 => 6      5.5 => 6
  56 => 6      5.6 => 6
-____________________________________________________________________________________________________
-Round Floor
+ ```
+
+## Round Floor
 
 Values are rounded to the next more negative integral value.
 
-Scaling = 10
-Therefore 54 represents 5.4
-
+```cpp
 template <size_t Scaling, typename T>
 T round_floor_scaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -60     -5.4 => -6.0
 -55 => -60     -5.5 => -6.0
 -56 => -60     -5.6 => -6.0
@@ -60,10 +73,16 @@ T round_floor_scaled(T value)
  54 => 50       5.4 => 5.0
  55 => 50       5.5 => 5.0
  56 => 50       5.6 => 5.0
+```
 
+---
+
+```cpp
 template <size_t Scaling, typename T>
 T round_floor_unscaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -6      -5.4 => -6
 -55 => -6      -5.5 => -6
 -56 => -6      -5.6 => -6
@@ -71,14 +90,19 @@ T round_floor_unscaled(T value)
  54 => 5        5.4 => 5
  55 => 5        5.5 => 5
  56 => 5        5.6 => 5
-____________________________________________________________________________________________________
-Round Half Up
+```
 
-Values are rounded to the nearest integral value. 'Half' values are rounded up (towards infinity).
+## Round Half Up
 
+Values are rounded to the nearest integral value.  
+'Half' values are rounded up (towards infinity).
+
+```cpp
 template <size_t Scaling, typename T>
 T round_half_up_scaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -50     -5.4 => -5.0
 -55 => -60     -5.5 => -5.0
 -56 => -60     -5.6 => -5.0
@@ -86,10 +110,16 @@ T round_half_up_scaled(T value)
  54 => 50
  55 => 60
  56 => 60
+```
 
+---
+
+```cpp
 template <size_t Scaling, typename T>
 T round_half_up_unscaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -5
 -55 => -6
 -56 => -6
@@ -97,14 +127,19 @@ T round_half_up_unscaled(T value)
  54 => 5
  55 => 6
  56 => 6
-____________________________________________________________________________________________________
-Round Half Down
+ ```
 
-Values are rounded to the nearest integral value. 'Half' values are rounded down (towards zero).
+## Round Half Down
 
+Values are rounded to the nearest integral value.  
+'Half' values are rounded down (towards zero).
+
+```cpp
 template <size_t Scaling, typename T>
 T round_half_down_scaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -50
 -55 => -50
 -56 => -60
@@ -112,10 +147,16 @@ T round_half_down_scaled(T value)
 54 => 50
 55 => 50
 56 => 60
+```
 
+---
+
+```cpp
 template <size_t Scaling, typename T>
 T round_half_down_unscaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -5
 -55 => -5
 -56 => -6
@@ -123,14 +164,20 @@ T round_half_down_unscaled(T value)
 54 =>  5
 55 =>  5
 56 =>  6
-____________________________________________________________________________________________________
-Round To Zero
+```
+
+---
+
+## Round To Zero
 
 Values are rounded towards zero.
 
+```cpp
 template <size_t Scaling, typename T>
 T round_zero_scaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -50
 -55 => -50
 -56 => -50
@@ -138,10 +185,16 @@ T round_zero_scaled(T value)
 54 => 50
 55 => 50
 56 => 50
+```
 
+---
+
+```cpp
 template <size_t Scaling, typename T>
 T round_zero_unscaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -5
 -55 => -5
 -56 => -5
@@ -149,15 +202,18 @@ T round_zero_unscaled(T value)
 54 => 5
 55 => 5
 56 => 5
+```
 
-____________________________________________________________________________________________________
-Round To Infinity
+## Round To Infinity
 
 Values are rounded towards infinity.
 
+```cpp
 template <size_t Scaling, typename T>
 T round_infinity_scaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -60
 -55 => -60
 -56 => -60
@@ -165,10 +221,16 @@ T round_infinity_scaled(T value)
 54 => 60
 55 => 60
 56 => 60
+```
 
+---
+
+```cpp
 template <size_t Scaling, typename T>
 T round_infinity_unscaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -6
 -55 => -6
 -56 => -6
@@ -176,15 +238,19 @@ T round_infinity_unscaled(T value)
 54 => 6
 55 => 6
 56 => 6
+```
 
-____________________________________________________________________________________________________
-Round Half Even (Banker's Rounding)
+## Round Half Even (Banker's Rounding)
 
-Values are rounded to the nearest integral value. 'Half' values are rounded to the nearest even value.
+Values are rounded to the nearest integral value.  
+'Half' values are rounded to the nearest even value.
 
+```cpp
 template <size_t Scaling, typename T>
 T round_half_even_scaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -50
 -55 => -60
 -56 => -60
@@ -198,10 +264,16 @@ T round_half_even_scaled(T value)
 64 => 60
 65 => 60
 66 => 70
+```
 
+---
+
+```cpp
 template <size_t Scaling, typename T>
 T round_half_even_unscaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -5
 -55 => -6
 -56 => -6
@@ -215,15 +287,21 @@ T round_half_even_unscaled(T value)
 64 => 6
 65 => 6
 66 => 7
+```
 
-____________________________________________________________________________________________________
-Round Half Odd
+---
 
-Values are rounded to the nearest integral value. 'Half' values are rounded to the nearest odd value.
+## Round Half Odd
 
+Values are rounded to the nearest integral value.  
+'Half' values are rounded to the nearest odd value.
+
+```cpp
 template <size_t Scaling, typename T>
 T round_half_even_scaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -50
 -55 => -50
 -56 => -60
@@ -237,10 +315,16 @@ T round_half_even_scaled(T value)
 64 => 60
 65 => 70
 66 => 70
+```
 
+---
+
+```cpp
 template <size_t Scaling, typename T>
 T round_half_even_unscaled(T value)
-
+```
+**Description**  |
+```cpp
 -54 => -5
 -55 => -5
 -56 => -6
@@ -254,4 +338,4 @@ T round_half_even_unscaled(T value)
 64 => 6
 65 => 7
 66 => 7
-
+```

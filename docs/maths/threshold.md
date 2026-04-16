@@ -1,23 +1,40 @@
-Threshold
-20.9.0
+---
+title: "threshold"
+---
 
+{{< callout type="info">}}
+  Header: `threshold.h`  
+  Since: `20.9.0`  
+{{< /callout >}}
+
+```cpp
 template <typename TInput, typename TCompare = etl::less<TInput> >
 class threshold : public etl::unary_function<TInput, TInput>
+```
 
-TInput   The input data type.
-TCompare The functor type used to compare values to the threshold. The default is etl::less
-____________________________________________________________________________________________________
+`TInput`   The input data type.  
+`TCompare` The functor type used to compare values to the threshold. The default is `etl::less`.
+
+---
+
+```cpp
 threshold(TInput   threshold_value, 
           TInput   true_value, 
           TInput   false_value, 
           TCompare compare = TCompare())
+```
+**Description**  
 Constructor.
-____________________________________________________________________________________________________
-TInput operator()(TInput value) const
-Threshold a value.
-____________________________________________________________________________________________________
-Example
 
+---
+
+```cpp
+TInput operator()(TInput value) const
+```
+Threshold a value.
+
+## Example
+```cpp
 std::array<int, 10> input
 {
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9
@@ -30,4 +47,4 @@ etl::threshold<int> threshold(4, 0, 9); // Compares each value to 4 and output 0
 std::transform(input.begin(), input.end(), output.begin(), threshold);
 
 // output == 0, 0, 0, 0, 9, 9, 9, 9, 9, 9
-
+```
