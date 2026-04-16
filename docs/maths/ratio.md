@@ -68,22 +68,30 @@ typedef ratio<1000000000000000000LL * 1000000000LL, 1>    ronna;
 typedef ratio<1000000000000000000LL * 1000000000000LL, 1> quetta;
 ```
 
-An approximation of PI to 6 digits.
+---
+
 ```cpp
 typedef ratio<355, 113> ratio_pi;
 ```
+An approximation of PI to 6 digits.
 
-An approximation of root 2.
+---
+
 ```cpp
 typedef ratio<239, 169> ratio_root2;
 ```
+An approximation of root 2.
 
-An approximation of 1 over root 2.
+---
+
 ```cpp
 typedef ratio<169, 239> ratio_1_over_root2;
 ```
+An approximation of 1 over root 2.
 
-An approximation of e.
+---
+
 ```cpp
 typedef ratio<326, 120> ratio_e;
 ```
+An approximation of e.
