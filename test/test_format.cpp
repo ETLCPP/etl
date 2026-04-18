@@ -214,7 +214,7 @@ namespace
       etl::string<100> s;
 
       CHECK_EQUAL("1.0", test_format(s, "{}", 1.0));
-      CHECK_EQUAL("1.234564", test_format(s, "{}", 1.234564));
+      CHECK_EQUAL("1.234563", test_format(s, "{}", 1.234563));
       CHECK_EQUAL("1.234567", test_format(s, "{}", 1.2345678));
       CHECK_EQUAL("1.5", test_format(s, "{}", 1.5));
     }

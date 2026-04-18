@@ -135,6 +135,14 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_MEMCHR)
     #define ETL_USING_BUILTIN_MEMCHR __has_builtin(__builtin_memchr)
   #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF)
+    #define ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF __has_builtin(__is_virtual_base_of)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE __has_builtin(__is_trivially_relocatable)
+  #endif
 #endif
 
 // The default. Set to 0, if not already set.
@@ -186,6 +194,14 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_MEMCHR 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF)
+  #define ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE)
+  #define ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE 0
+#endif
+
 namespace etl
 {
   namespace traits
@@ -204,6 +220,8 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_memset                     = (ETL_USING_BUILTIN_MEMSET == 1);
     static ETL_CONSTANT bool using_builtin_memcmp                     = (ETL_USING_BUILTIN_MEMCMP == 1);
     static ETL_CONSTANT bool using_builtin_memchr                     = (ETL_USING_BUILTIN_MEMCHR == 1);
+    static ETL_CONSTANT bool using_builtin_is_virtual_base_of         = (ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivially_relocatable   = (ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE == 1);
   } // namespace traits
 } // namespace etl
 
