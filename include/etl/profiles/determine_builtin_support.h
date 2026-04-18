@@ -60,7 +60,10 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED)
     #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED 1
   #endif
+#endif
 
+#if defined(ETL_USE_BUILTIN_MEM_FUNCTIONS) // Set all of them to be true if not
+                                           // already defined
   #if !defined(ETL_USING_BUILTIN_MEMCPY)
     #define ETL_USING_BUILTIN_MEMCPY 1
   #endif
