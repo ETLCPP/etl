@@ -9,9 +9,6 @@ Functions returning pair will either use std::pair or, if ETL_NO_STL is defined,
 Constexpr
 Some algorithms will be constexpr, dependent on the compiler support and ETL setup.
 
-ETL_FORCE_CONSTEXPR_ALGORITHMS
-If this macro is defined, then certain algorithms will be always be constexpr, regardless of STL setting or availability of compiler built-ins. The downside, if the STL is not use, is that some copy algorithms may be less efficient when used at run-time.
-See the descriptions below.
 ____________________________________________________________________________________________________
 swap
 Only defined if ETL_NO_STL is defined.
@@ -134,7 +131,6 @@ https://en.cppreference.com/w/cpp/algorithm/reverse_copy
 Constexpr
 This function is constexpr under the following conditions.
 ⦁	The STL is in use and C++20 is supported.
-⦁	The STL is in use and ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1.
 ⦁	The STL is not in use.
 ____________________________________________________________________________________________________
 copy_backward
@@ -147,7 +143,6 @@ https://en.cppreference.com/w/cpp/algorithm/copy_backward
 Constexpr
 This function is constexpr under the following conditions.
 ⦁	The STL is in use and C++20 is supported.
-⦁	The STL is in use and ETL_FORCE_CONSTEXPR_ALGORITHMS is defined as 1.
 ⦁	The STL is not in use.
 ____________________________________________________________________________________________________
 count

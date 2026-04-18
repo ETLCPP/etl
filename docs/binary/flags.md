@@ -1,49 +1,104 @@
-flags
-Provides a wrapper around a set of binary flags.
-Supports compile time and runtime variants
+---
+title: "flags"
+---
 
+{{< callout type="info">}}
+  Header: `flags.h`  
+  Since: `TBC`  
+{{< /callout >}}
+
+Provides a wrapper around a set of binary flags.  
+Supports compile time and runtime variants  
+
+```cpp
 template <typename T, T MASK = etl::integral_limits<T>::max>
 class flags
+```
+`T` must be an unsigned integral type.  
+`MASK` is used to exclude unused or undefine bits from operations of the flags. By default, all bits are included.  
 
-T must be an unsigned integral type.
-MASK is used to exclude unused or undefine bits from operations of the flags. By default, all bits are included.
-
-Most member functions may be chained.
+Most member functions may be chained.  
+```cpp
 bool isF5Set = flags.set(bitPattern, true).flip().test(F5);
-____________________________________________________________________________________________________
-Constructor
+```
 
+## Constructor
+```cpp
 ETL_CONSTEXPR flags() ETL_NOEXCEPT
-Constructs a flag set with all elements set to 0 (false).
-____________________________________________________________________________________________________
-ETL_CONSTEXPR flags(value_type pattern) ETL_NOEXCEPT
-Constructs a flag set with elements set to pattern.
-____________________________________________________________________________________________________
-ETL_CONSTEXPR flags(const flags<T, MASK>& pattern) ETL_NOEXCEPT
-Constructs a flag set with elements set to pattern.
-____________________________________________________________________________________________________
-Modifiers
+```
+**Description**
+Constructs a flag set with all elements set to `0` (`false`).
 
+---
+
+```cpp
+ETL_CONSTEXPR flags(value_type pattern) ETL_NOEXCEPT
+```
+**Description**
+Constructs a flag set with elements set to pattern.
+
+---
+
+```cpp
+ETL_CONSTEXPR flags(const flags<T, MASK>& pattern) ETL_NOEXCEPT
+```
+**Description**
+Constructs a flag set with elements set to pattern.
+
+## Modifiers
+
+```cpp
 ETL_CONSTEXPR14 flags<T, MASK>& operator =(flags<T, MASK> other) ETL_NOEXCEPT
+```
+**Description**
 Assigns from another flags object.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 flags<T, MASK>& operator =(value_type pattern) ETL_NOEXCEPT
+```
+**Description**
 Assigns from a bit pattern.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 template <value_type pattern, bool value>
 ETL_CONSTEXPR14 flags<T, MASK>& set() ETL_NOEXCEPT
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <value_type pattern>
 ETL_CONSTEXPR14 flags<T, MASK>& set(bool value) ETL_NOEXCEPT
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <value_type pattern>
 ETL_CONSTEXPR14 flags<T, MASK>& set() ETL_NOEXCEPT
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 ETL_CONSTEXPR14 flags<T, MASK>& set(value_type pattern) ETL_NOEXCEPT
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 ETL_CONSTEXPR14 flags<T, MASK>& set(value_type pattern, bool value) ETL_NOEXCEPT
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 ETL_CONSTEXPR14 flags<T, MASK>& clear() ETL_NOEXCEPT
+```
 ____________________________________________________________________________________________________
 template <value_type pattern>
 ETL_CONSTEXPR14 flags<T, MASK>& reset() ETL_NOEXCEPT
