@@ -38,7 +38,7 @@ public:
   {
     p->~value_type();
     pool.release(p);
-    ETL_DECREMENT_DEBUG_COUNT
+    ETL_DECREMENT_DEBUG_COUNT;
   }
 
 private:
