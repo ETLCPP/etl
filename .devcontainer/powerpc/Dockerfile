@@ -20,6 +20,14 @@ RUN dpkg --add-architecture powerpc && \
     debian-ports-archive-keyring \
     && rm -rf /var/lib/apt/lists/*
 
+RUN cat <<EOF > /etc/apt/sources.list.d/debian.sources
+Types: deb
+URIs: http://snapshot.debian.org/archive/debian/20260406T000000Z
+Suites: sid
+Components: main
+Signed-By: /usr/share/keyrings/debian-archive-keyring.pgp
+EOF
+
 RUN cat <<EOF > /etc/apt/sources.list.d/powerpc.sources
 Types: deb
 URIs: http://snapshot.debian.org/archive/debian-ports/20260406T000000Z
