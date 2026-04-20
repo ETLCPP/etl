@@ -59,8 +59,8 @@ SOFTWARE.
   #endif
 
   #if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK)
-    #define ETL_DISABLE_TIMER_UPDATES (++process_semaphore)
-    #define ETL_ENABLE_TIMER_UPDATES  (--process_semaphore)
+    #define ETL_DISABLE_TIMER_UPDATES (++process_semaphore);
+    #define ETL_ENABLE_TIMER_UPDATES  (--process_semaphore);
     #define ETL_TIMER_UPDATES_ENABLED (process_semaphore.load() == 0)
   #endif
 #endif
@@ -70,8 +70,8 @@ SOFTWARE.
     #error ETL_CALLBACK_TIMER_DISABLE_INTERRUPTS and/or ETL_CALLBACK_TIMER_ENABLE_INTERRUPTS not defined
   #endif
 
-  #define ETL_DISABLE_TIMER_UPDATES ETL_CALLBACK_TIMER_DISABLE_INTERRUPTS
-  #define ETL_ENABLE_TIMER_UPDATES  ETL_CALLBACK_TIMER_ENABLE_INTERRUPTS
+  #define ETL_DISABLE_TIMER_UPDATES ETL_CALLBACK_TIMER_DISABLE_INTERRUPTS;
+  #define ETL_ENABLE_TIMER_UPDATES  ETL_CALLBACK_TIMER_ENABLE_INTERRUPTS;
   #define ETL_TIMER_UPDATES_ENABLED true
 #endif
 
@@ -195,10 +195,10 @@ namespace etl
         {
           if (timer.is_active())
           {
-            ETL_DISABLE_TIMER_UPDATES;
+            ETL_DISABLE_TIMER_UPDATES
             active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
-            ETL_ENABLE_TIMER_UPDATES;
+            ETL_ENABLE_TIMER_UPDATES
           }
 
           // Reset in-place.
@@ -233,9 +233,9 @@ namespace etl
     //*******************************************
     void clear()
     {
-      ETL_DISABLE_TIMER_UPDATES;
+      ETL_DISABLE_TIMER_UPDATES
       active_list.clear();
-      ETL_ENABLE_TIMER_UPDATES;
+      ETL_ENABLE_TIMER_UPDATES
 
       for (int i = 0; i < MAX_TIMERS; ++i)
       {
@@ -333,7 +333,7 @@ namespace etl
           // Has a valid period.
           if (timer.period != etl::timer::state::Inactive)
           {
-            ETL_DISABLE_TIMER_UPDATES;
+            ETL_DISABLE_TIMER_UPDATES
             if (timer.is_active())
             {
               active_list.remove(timer.id, false);
@@ -343,7 +343,7 @@ namespace etl
             timer.delta = immediate_ ? 0 : timer.period;
             active_list.insert(timer.id);
             insert_callback.call_if(timer.id);
-            ETL_ENABLE_TIMER_UPDATES;
+            ETL_ENABLE_TIMER_UPDATES
 
             result = true;
           }
@@ -370,10 +370,10 @@ namespace etl
         {
           if (timer.is_active())
           {
-            ETL_DISABLE_TIMER_UPDATES;
+            ETL_DISABLE_TIMER_UPDATES
             active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
-            ETL_ENABLE_TIMER_UPDATES;
+            ETL_ENABLE_TIMER_UPDATES
           }
 
           result = true;

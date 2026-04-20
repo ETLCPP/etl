@@ -184,6 +184,12 @@ namespace etl
       etl::fsm_state_id_t next_state_id;
       // State which was active when the on_enter triggered a state change
       etl::fsm_state_id_t active_state_id;
+
+      do_enters_result(etl::fsm_state_id_t next_state_id_, etl::fsm_state_id_t active_state_id_)
+        : next_state_id(next_state_id_)
+        , active_state_id(active_state_id_)
+      {
+      }
     };
 
     //*******************************************
@@ -221,7 +227,7 @@ namespace etl
       // changed
       if (next_state != ifsm_state::No_State_Change)
       {
-        return {next_state, p_target->get_state_id()};
+        return do_enters_result(next_state, p_target->get_state_id());
       }
 
       // Activate default child if we need to activate any initial states in an
@@ -238,7 +244,7 @@ namespace etl
           // state changed
           if (next_state != ifsm_state::No_State_Change)
           {
-            return {next_state, p_target->get_state_id()};
+            return do_enters_result(next_state, p_target->get_state_id());
           }
         }
 
@@ -247,7 +253,7 @@ namespace etl
 
       // Wrapping No_State_Change in a static_cast gets rid of the "undefined
       // reference" error when compiling on C++11
-      return {next_state, static_cast<fsm_state_id_t>(ifsm_state::No_State_Change)};
+      return do_enters_result(next_state, static_cast<fsm_state_id_t>(ifsm_state::No_State_Change));
     }
 
     //*******************************************
