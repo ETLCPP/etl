@@ -2728,6 +2728,9 @@ namespace etl
   #if ETL_HAS_STD_TRIVIALLY_RELOCATABLE && ETL_USING_STL
   template <typename T>
   using is_trivially_relocatable = std::is_trivially_relocatable<T>;
+  #elif ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE
+  template <typename T>
+  using is_trivially_relocatable = etl::bool_constant<__builtin_is_cpp_trivially_relocatable(T)>;
   #elif ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
   template <typename T>
   using is_trivially_relocatable = etl::bool_constant<__is_trivially_relocatable(T)>;
@@ -2977,7 +2980,9 @@ namespace etl
   template <typename T>
   struct is_trivially_relocatable
   {
-  #if ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+  #if ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE
+    static ETL_CONSTANT bool value = __builtin_is_cpp_trivially_relocatable(T);
+  #elif ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
     static ETL_CONSTANT bool value = __is_trivially_relocatable(T);
   #else
     static ETL_CONSTANT bool value = etl::is_trivially_copyable<T>::value && etl::is_trivially_destructible<T>::value;
@@ -3500,7 +3505,9 @@ namespace etl
   //*********************************************
   // is_trivially_relocatable
   template <typename T>
-  #if ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+  #if ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE
+  struct is_trivially_relocatable : public etl::bool_constant<__builtin_is_cpp_trivially_relocatable(T)>
+  #elif ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
   struct is_trivially_relocatable : public etl::bool_constant<__is_trivially_relocatable(T)>
   #else
   struct is_trivially_relocatable : public etl::bool_constant<etl::is_trivially_copyable<T>::value && etl::is_trivially_destructible<T>::value>
