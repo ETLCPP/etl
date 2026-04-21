@@ -2,6 +2,11 @@
 title: alignment
 ---
 
+{{< callout type="info">}}
+  Header: `alignment.h`  
+  Since: `TBC`  
+{{< /callout >}}
+
 A way of aligning memory storage through template parameters.
 
 ## type_with_alignment

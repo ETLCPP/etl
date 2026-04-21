@@ -1,0 +1,426 @@
+---
+title: "mem_cast"
+---
+
+{{< callout type="info">}}
+  Header: `mem_cast.h`
+  Since: `20.11.0`  
+{{< /callout >}}
+
+Helper classes that simplify the interpretation of memory blocks.  
+The member functions contain both compile and run time error checks for correct sized buffers.
+
+```cpp
+etl::mem_cast
+etl::mem_cast_ptr
+etl::mem_cast_types
+```
+
+## Error types
+
+```cpp
+class mem_cast_exception : public etl::exception
+```
+The base exception type for mem_cast types.
+
+```cpp
+class mem_cast_size_exception : public etl::mem_cast_exception
+```
+The exception type when the type size is too large.
+
+```cpp
+class mem_cast_nullptr_exception : public etl::mem_cast_exception
+```
+The exception type when the buffer pointer is null.
+
+## mem_cast
+```cpp
+template <size_t Size, size_t Alignment>
+class mem_cast
+```
+The class is parameterised by the required memory block size and alignment.
+
+## Member constants
+
+```cpp
+static ETL_CONSTANT size_t Size;
+static ETL_CONSTANT size_t Alignment;
+```
+
+## Member functions
+```cpp
+mem_cast()
+```
+Default constructor.  
+The internal memory block contents are undefined.
+
+---
+
+```cpp
+template <size_t Other_Size, size_t Other_Alignment>
+mem_cast(const mem_cast<Other_Size, Other_Alignment>& other)
+```
+Copy constructor.  
+Copies the contents of the source buffer.  
+Static asserts if the other buffer is not large enough.  
+
+---
+
+```cpp
+template <size_t Other_Size, size_t Other_Alignment>
+mem_cast& operator =(const mem_cast<Other_Size, Other_Alignment>& rhs)
+```
+Assignment operator.  
+Static asserts if the rhs buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+void assign(const T& value)
+```
+Assign from value.  
+Static asserts if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+void assign_at_offset(size_t offset, const T& value)
+```
+Assign from value at an offset from the start of the memory block.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T, size_t Offset>
+void assign_at_offset(const T& value)
+```
+Assign from value at an offset from the start of the memory block.  
+Static asserts if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T, typename... TArgs>
+void emplace(TArgs... args)
+```
+Emplace from parameters.  
+Static asserts if the buffer is not large enough.  
+C++11 or above.
+
+---
+
+```cpp
+template <typename T, typename... TArgs>
+void emplace_at_offset(size_t offset, TArgs... args)
+```
+Emplace from parameters at an offset from the start of the memory block.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.  
+C++11 or above.
+
+---
+
+```cpp
+template <typename T, size_t Offset, typename... TArgs>
+void emplace_at_offset(TArgs... args)
+```
+Emplace from parameters at an offset from the start of the memory block.  
+Static asserts if the buffer is not large enough.  
+C++11 or above.
+
+---
+
+```cpp
+template <typename T>
+ETL_NODISCARD T& ref()
+```
+Get a reference to `T`.  
+Static asserts if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+ETL_NODISCARD const T& ref() const
+```
+Get a const reference to `T`.  
+Static asserts if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+ETL_NODISCARD T& ref_at_offset(size_t offset)
+```
+Get a reference to T at an offset from the start of the memory block (dynamic).  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+ETL_NODISCARD const T& ref_at_offset(size_t offset) const
+```
+Get a const reference to `T` at an offset from the start of the memory block (dynamic).  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T, size_t Offset>
+ETL_NODISCARD T& ref_at_offset()
+```
+Get a reference to `T` at an offset from the start of the memory block (static).  
+Static asserts if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T, size_t Offset>
+ETL_NODISCARD const T& ref_at_offset() const
+```
+Get a const reference to `T` at an offset from the start of the memory block (static).  
+Static asserts if the buffer is not large enough.
+
+---
+
+```cpp
+ETL_NODISCARD static ETL_CONSTEXPR size_t size()
+```
+Get the size of the buffer.
+
+---
+
+```cpp
+ETL_NODISCARD static ETL_CONSTEXPR size_t alignment()
+```
+Get the alignment of the buffer.
+
+---
+
+```cpp
+ETL_NODISCARD char* data()
+```
+Get a pointer to the internal buffer.
+
+---
+
+```cpp
+ETL_NODISCARD const char* data() const
+```
+Get a const pointer to the internal buffer
+
+## mem_cast_ptr
+This class contains a pointer to an external memory block.
+```cpp
+class mem_cast_ptr
+```
+
+## Member constants
+```cpp
+static ETL_CONSTANT size_t Undefined_Size;
+```
+
+## Member functions
+```cpp
+mem_cast_ptr()
+```
+Default constructor.  
+The internal pointer to the memory block is initialised as `nullptr`.  
+The size is defined as `Undefined_Size`.
+
+```cpp
+mem_cast_ptr(const mem_cast_ptr& other)
+```
+Copy constructor.  
+Copies the memory block pointer, not the contents of the memory block.
+
+---
+
+```cpp
+mem_cast_ptr& operator =(const mem_cast_ptr& rhs)
+```
+Assignment operator.  
+Copies the memory block pointer, not the contents of the memory block.
+
+---
+
+```cpp
+template <typename T>
+void assign(const T& value)
+```
+Assign from value.  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+void assign_at_offset(size_t offset, const T& value)
+```
+Assign from value at an offset from the start of the memory block.  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T, size_t Offset>
+void assign_at_offset(const T& value)
+```
+Assign from value at an offset from the start of the memory block.
+
+---
+
+```cpp
+template <typename T, typename... TArgs>
+void emplace(TArgs... args)
+```
+Emplace from parameters.  
+C++11 or above.
+
+---
+
+```cpp
+template <typename T, typename... TArgs>
+void emplace_at_offset(size_t offset, TArgs... args)
+```
+Emplace from parameters at offset.  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.  
+C++11 or above.
+
+---
+
+```cpp
+template <typename T, size_t Offset, typename... TArgs>
+void emplace_at_offset(TArgs... args)
+```
+Emplace from parameters at offset.  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.  
+C++11 or above.
+
+---
+
+```cpp
+template <typename T>
+ETL_NODISCARD T& ref()
+```
+Get a reference to `T`.  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+ETL_NODISCARD const T& ref() const
+```
+Get a const reference to `T`.  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+ETL_NODISCARD T& ref_at_offset(size_t offset)
+```
+Get a reference to `T` at an offset from the start of the memory block (dynamic).
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T>
+ETL_NODISCARD const T& ref_at_offset(size_t offset) const
+```
+Get a const reference to `T` at offset (dynamic).  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T, size_t Offset>
+ETL_NODISCARD T& ref_at_offset()
+```
+Get a reference to `T` at an offset from the start of the memory block (static).  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+template <typename T, size_t Offset>
+ETL_NODISCARD const T& ref_at_offset() const
+```
+Get a const reference to T at an offset from the start of the memory block (static).  
+Raises an `etl::mem_cast_nullptr_exception` `ETL_ASSERT` if the memory block pointer is null.  
+Raises an `etl::mem_cast_size_exception` `ETL_ASSERT` if the buffer is not large enough.
+
+---
+
+```cpp
+ETL_NODISCARD size_t size() const
+```
+Get the size of the buffer.
+
+---
+
+```cpp
+ETL_NODISCARD size_t alignment() const
+```
+Get the alignment of the buffer.
+
+---
+
+```cpp
+void data(char* pbuffer, size_t buffer_size = Undefined_Size)
+```
+Set the pointer to the external buffer.  
+The default size is `Undefined_Size`.
+
+---
+
+```cpp
+ETL_NODISCARD char* data()
+```
+Get a pointer to the internal buffer.
+
+---
+
+```cpp
+ETL_NODISCARD const char* data() const
+```
+Get a const pointer to the internal buffer
+
+## mem_cast_types
+A variant of `etl::mem_cast` that deduces the size and alignment from the supplied list of types.
+
+### C++03
+```cpp
+template <typename T1,         typename T2  = char, typename T3  = char, typename T4  = char,
+          typename T5  = char, typename T6  = char, typename T7  = char, typename T8  = char,
+          typename T9  = char, typename T10 = char, typename T11 = char, typename T12 = char,
+          typename T13 = char, typename T14 = char, typename T15 = char, typename T16 = char>
+struct mem_cast_types :
+  public etl::mem_cast<etl::largest<T1, T2, T3, T4, T5, T6, T7, T8, 
+                                    T9, T10, T11, T12, T13, T14, T15, T16>::size,
+                       etl::largest<T1, T2, T3, T4, T5, T6, T7, T8,
+                                    T9, T10, T11, T12, T13, T14, T15, T16>::alignment>
+{
+};
+```
+
+### C++11 and above
+```cpp
+template <typename... TTypes>
+using mem_cast_types = etl::mem_cast<etl::largest<TTypes...>::size, 
+                                     etl::largest<TTypes...>::alignment>;
+```

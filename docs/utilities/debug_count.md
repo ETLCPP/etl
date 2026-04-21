@@ -2,6 +2,11 @@
 title: "debug_count"
 ---
 
+{{< callout type="info">}}
+  Header: `debug_count.h`  
+  Since: `TBC`  
+{{< /callout >}}
+
 A utility class designed for debugging purposes. This is used in the ETL containers to check that all placement new'd items have been destructed. When neither `DEBUG` or `_DEBUG` is defined then this class does nothing and will be optimised away.
 
 If the count is decremented below zero then an assert will be generated.  

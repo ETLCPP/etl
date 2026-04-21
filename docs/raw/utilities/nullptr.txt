@@ -1,8 +1,0 @@
-nullptr
-
-
-Defines ETL_NULLPTR as either nullptr or NULL, dependent on the compiler support.
-
-Defines etl::nullptr_t
-20.39.0
-

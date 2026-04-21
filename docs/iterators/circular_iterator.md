@@ -1,131 +1,235 @@
-circular_iterator
-20.34.0
-An iterator wrapper where increments and decrements will roll around the boundaries of an iterator range.
-It is constructed with the begin and end of the range, plus an optional start position.
-May be used with forward, bidirectional and random access iterators.
+---
+title: "circular_iterator"
+---
 
+{{< callout type="info">}}
+  Header: `circular_iterator.h`  
+  Since: `20.34.0`  
+{{< /callout >}}
+
+An iterator wrapper where increments and decrements will roll around the boundaries of an iterator range.  
+It is constructed with the begin and end of the range, plus an optional start position.  
+May be used with forward, bidirectional and random access iterators.  
+
+```cpp
 template <typename TIterator>
 etl::circular_iterator final;
+```
 
-See also: fixed_iterator
-____________________________________________________________________________________________________
-Types
+## Types
 
+```cpp
 value_type
 difference_type
 pointer
 reference
 iterator_category
-____________________________________________________________________________________________________
-Constructors
+```
 
+## Constructors
+```cpp
 ETL_CONSTEXPR14 circular_iterator()
+```
 Default constructor.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 circular_iterator(TIterator itr_begin, TIterator itr_end)
+```
 Construct from iterators.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 circular_iterator(TIterator itr_begin, TIterator itr_end, TIterator itr_start)
+```
 Construct from iterators and start position
 
-ETL_CONSTEXPR14 circular_iterator(const circular_iterator& other)
-Copy constructor
-____________________________________________________________________________________________________
-Member functions
+---
 
+```cpp
+ETL_CONSTEXPR14 circular_iterator(const circular_iterator& other)
+```
+Copy constructor
+
+## Member functions
+```cpp
 ETL_CONSTEXPR14 circular_iterator& operator =(const circular_iterator& other)
+```
 Assignment operator
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 size_t size() const
+```
 Returns the length of the range.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 bool empty() const
+```
 Returns true if the range is empty.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 value_type operator *()
+```
 Dereference operator
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 const value_type operator *() const
+```
 Dereference operator
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 TIterator operator ->()
+```
 -> operator
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 const TIterator operator ->() const
+```
 -> operator
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 operator TIterator() const
+```
 Conversion operator
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 TIterator current() const
+```
 Conversion to the base iterator type
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 circular_iterator& operator ++()
-Increment
-Forward iterator
-Bidirectional iterator
+```
+Increment  
+Forward iterator  
+Bidirectional iterator  
 Random access iterator
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 circular_iterator operator ++(int)
-Increment
-Forward iterator
-Bidirectional iterator
-Random access iterator
-____________________________________________________________________________________________________
+```
+Increment  
+Forward iterator  
+Bidirectional iterator  
+Random access iterator  
+
+---
+
+```cpp
 ETL_CONSTEXPR14 circular_iterator& operator --()
-Decrement
-Bidirectional iterator
-Random access iterator
-____________________________________________________________________________________________________
+``
+Decrement  
+Bidirectional iterator  
+Random access iterator  
+
+---
+
+```cpp
 ETL_CONSTEXPR14 circular_iterator operator --(int)
-Decrement
-Bidirectional iterator
-Random access iterator
-____________________________________________________________________________________________________
+```
+Decrement  
+Bidirectional iterator  
+Random access iterator  
+
+---
+
+```cpp
 ETL_CONSTEXPR14 circular_iterator& operator +=(difference_type offset)
-+= operator
+```
++= operator  
 Random access iterator
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 circular_iterator& operator -=(typename 
                                                etl::iterator_traits<TIterator>::difference_type 
                                                offset)
+```
 -= operator
 Random access iterator
-____________________________________________________________________________________________________
-Non-member functions
 
+## Non-member functions
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR14 
 typename etl::iterator_traits<TIterator>::difference_type 
 operator - (etl::circular_iterator<TIterator>& lhs, etl::circular_iterator<TIterator>& rhs)
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR14
 bool operator ==(const etl::circular_iterator<TIterator>& lhs,
                  const etl::circular_iterator<TIterator>& rhs)
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR14 bool operator ==(const etl::circular_iterator<TIterator>& lhs,
                                  TIterator rhs)
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR14 bool operator ==(TIterator lhs,
                                  const etl::circular_iterator<TIterator>& rhs)
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR14 bool operator !=(const etl::circular_iterator<TIterator>& lhs,
                                  const etl::circular_iterator<TIterator>& rhs)
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR14 bool operator !=(const etl::circular_iterator<TIterator>& lhs,
                                  TIterator rhs)
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR14 bool operator !=(TIterator& lhs,
                                  const etl::circular_iterator<TIterator>& rhs)
-____________________________________________________________________________________________________
-Example
+```
 
+## Example
+```cpp
 std::list<int> data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 // The start position to loop from.
@@ -146,4 +250,4 @@ for (int = 0; i < 10; ++i)
 
 Prints the following
 (2,9)(5,6)(8,3)(1,0)(4,7)(7,4)(0,1)(3,8)(6,5)(9,2)
-
+```

@@ -2,6 +2,11 @@
 title: "type_id"
 ---
 
+{{< callout type="info">}}
+  Header: `type_id.h`  
+  Since: `TBC`  
+{{< /callout >}}
+
 Below is a concise, technical overview of the `etl::type_id` facility, suitable for design documentation or code review context.
 
 ## Overview: 

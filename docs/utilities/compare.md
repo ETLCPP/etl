@@ -1,29 +1,60 @@
-compare
-A helper class that defines <=, >, >= in terms of std::less or a user supplied compare type. 
+---
+title: "compare"
+---
 
-template <typename T, typename TLess = std::less<T> >
+{{< callout type="info">}}
+  Header: `compare.h`  
+  Since: `TBC`  
+{{< /callout >}}
+
+A helper class that defines `<=`, `>`, `>=` in terms of `etl::less` or a user supplied compare type. 
+
+```cpp
+template <typename T, typename TLess = etl::less<T> >
 struct compare
-____________________________________________________________________________________________________
-Types
+```
+
+## Types
+```cpp
 first_argument_type;
 second_argument_type;
 result_type;
-____________________________________________________________________________________________________
-Members
+```
+
+## Members
+```cpp
 static result_type lt(first_argument_type lhs, second_argument_type rhs)
-Returns true if lhs < rhs, otherwise false.
+```
+**Return**  
+`true` if `lhs < rhs`, otherwise `false`.
 
+---
+
+```cpp
 static result_type lte(first_argument_type lhs, second_argument_type rhs)
-Returns true if lhs <= rhs, otherwise false.
+```
+**Return**  
+`true` if `lhs <= rhs`, otherwise `false`.
 
+---
+
+```cpp
 static result_type gt(first_argument_type lhs, second_argument_type rhs)
-Returns true if lhs > rhs, otherwise false.
+```
+**Return**  
+`true` if `lhs > rhs`, otherwise `false`.
 
+---
+
+```cpp
 static result_type gte(first_argument_type lhs, second_argument_type rhs)
-Returns true if lhs >= rhs, otherwise false.
-____________________________________________________________________________________________________
-Example 1
-Using std::less
+```
+**Return**  
+`true` if `lhs >= rhs`, otherwise `false`.
+
+## Example 1
+```cpp
+using std::less
 struct Test
 {
   int a;
@@ -53,9 +84,11 @@ bool operator >=(const Test& lhs, const Test& rhs)
 {
   return Compare::gte(lhs, rhs);
 }
-____________________________________________________________________________________________________
-Example 2
+```
+
+## Example 2
 Separate 'less-than' class.
+```cpp
 struct Test
 {
   int a;
@@ -91,9 +124,12 @@ bool operator >=(const Test& lhs, const Test& rhs)
 {
   return Compare::gte(lhs, rhs);
 }
-____________________________________________________________________________________________________
-Example 3
+```
+
+## Example 3
 Inheritance
+
+```cpp
 struct Test : public etl::compare<Test>
 {
   int a;
@@ -121,5 +157,4 @@ bool operator >=(const Test& lhs, const Test& rhs)
 {
   return Test::gte(lhs, rhs);
 }
-
-
+```
