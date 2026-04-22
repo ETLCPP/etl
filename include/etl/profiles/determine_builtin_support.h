@@ -159,6 +159,12 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE __has_builtin(__is_trivially_relocatable)
   #endif
+
+  // __builtin_is_cpp_trivially_relocatable replaces __is_trivially_relocatable by an
+  // effort of standardization for newer C++ standards
+  #if !defined(ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE)
+    #define ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE __has_builtin(__builtin_is_cpp_trivially_relocatable)
+  #endif
 #endif
 
 // The default. Set to 0, if not already set.
@@ -226,28 +232,33 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE)
+  #define ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE 0
+#endif
+
 namespace etl
 {
   namespace traits
   {
     // Documentation: https://www.etlcpp.com/etl_traits.html
 
-    static ETL_CONSTANT bool using_builtin_is_assignable              = (ETL_USING_BUILTIN_IS_ASSIGNABLE == 1);
-    static ETL_CONSTANT bool using_builtin_is_constructible           = (ETL_USING_BUILTIN_IS_CONSTRUCTIBLE == 1);
-    static ETL_CONSTANT bool using_builtin_is_nothrow_constructible   = (ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE == 1);
-    static ETL_CONSTANT bool using_builtin_is_nothrow_assignable      = (ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE == 1);
-    static ETL_CONSTANT bool using_builtin_is_trivially_constructible = (ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1);
-    static ETL_CONSTANT bool using_builtin_is_trivially_destructible  = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
-    static ETL_CONSTANT bool using_builtin_is_trivially_copyable      = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
-    static ETL_CONSTANT bool using_builtin_underlying_type            = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
-    static ETL_CONSTANT bool using_builtin_is_constant_evaluated      = (ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1);
-    static ETL_CONSTANT bool using_builtin_memcpy                     = (ETL_USING_BUILTIN_MEMCPY == 1);
-    static ETL_CONSTANT bool using_builtin_memmove                    = (ETL_USING_BUILTIN_MEMMOVE == 1);
-    static ETL_CONSTANT bool using_builtin_memset                     = (ETL_USING_BUILTIN_MEMSET == 1);
-    static ETL_CONSTANT bool using_builtin_memcmp                     = (ETL_USING_BUILTIN_MEMCMP == 1);
-    static ETL_CONSTANT bool using_builtin_memchr                     = (ETL_USING_BUILTIN_MEMCHR == 1);
-    static ETL_CONSTANT bool using_builtin_is_virtual_base_of         = (ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF == 1);
-    static ETL_CONSTANT bool using_builtin_is_trivially_relocatable   = (ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_assignable                        = (ETL_USING_BUILTIN_IS_ASSIGNABLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_constructible                     = (ETL_USING_BUILTIN_IS_CONSTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_nothrow_constructible             = (ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_nothrow_assignable                = (ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivially_constructible           = (ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivially_destructible            = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivially_copyable                = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
+    static ETL_CONSTANT bool using_builtin_underlying_type                      = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
+    static ETL_CONSTANT bool using_builtin_is_constant_evaluated                = (ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1);
+    static ETL_CONSTANT bool using_builtin_memcpy                               = (ETL_USING_BUILTIN_MEMCPY == 1);
+    static ETL_CONSTANT bool using_builtin_memmove                              = (ETL_USING_BUILTIN_MEMMOVE == 1);
+    static ETL_CONSTANT bool using_builtin_memset                               = (ETL_USING_BUILTIN_MEMSET == 1);
+    static ETL_CONSTANT bool using_builtin_memcmp                               = (ETL_USING_BUILTIN_MEMCMP == 1);
+    static ETL_CONSTANT bool using_builtin_memchr                               = (ETL_USING_BUILTIN_MEMCHR == 1);
+    static ETL_CONSTANT bool using_builtin_is_virtual_base_of                   = (ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivially_relocatable             = (ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE == 1);
+    static ETL_CONSTANT bool using_builtin_builtin_is_cpp_trivially_relocatable = (ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE == 1);
   } // namespace traits
 } // namespace etl
 
