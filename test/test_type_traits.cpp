@@ -1007,6 +1007,64 @@ namespace
       CHECK((std::is_base_of<int, char>::value) == (etl::is_base_of<int, char>::value));
     }
 
+#if ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF
+    //*************************************************************************
+    TEST(test_is_virtual_base_of)
+    {
+      struct A
+      {
+      };
+      struct B : public A // Non-virtual base
+      {
+      };
+      struct C : virtual public A // Virtual base
+      {
+      };
+      struct D
+        : public B
+        , virtual public A // A is both virtual and non-virtual base
+      {
+      };
+      struct E : public C // A is indirect virtual base
+      {
+      };
+      struct F // Unrelated class
+      {
+      };
+
+      // A is not a virtual base of A (same class)
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<A, A>::value));
+
+      // A is NOT a virtual base of B (it's a non-virtual base)
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<A, B>::value));
+
+      // A IS a virtual base of C
+      CHECK_EQUAL(true, (etl::is_virtual_base_of<A, C>::value));
+
+      // A IS a virtual base of D (even though it's also a non-virtual base via B)
+      CHECK_EQUAL(true, (etl::is_virtual_base_of<A, D>::value));
+
+      // A IS a virtual base of E (indirect virtual base)
+      CHECK_EQUAL(true, (etl::is_virtual_base_of<A, E>::value));
+
+      // Unrelated classes
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<A, F>::value));
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<F, A>::value));
+
+      // Fundamental types
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<int, int>::value));
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<int, char>::value));
+
+  #if ETL_USING_CPP17
+      // Test the _v helper
+      CHECK_EQUAL(false, etl::is_virtual_base_of_v<A, B>);
+      CHECK_EQUAL(true, etl::is_virtual_base_of_v<A, C>);
+      CHECK_EQUAL(true, etl::is_virtual_base_of_v<A, D>);
+      CHECK_EQUAL(true, etl::is_virtual_base_of_v<A, E>);
+  #endif
+    }
+#endif
+
     //*************************************************************************
     TEST(test_types)
     {
@@ -1721,6 +1779,110 @@ namespace
     #endif
   #endif
 #endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_relocatable)
+    {
+      // Trivially relocatable types (trivially copyable and trivially destructible)
+      // Primitive types should always be detected as trivially relocatable
+      CHECK_TRUE(etl::is_trivially_relocatable<int>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<double>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<int*>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<const int*>::value);
+
+      // POD struct should be trivially relocatable when proper detection is available
+      struct TrivialStruct
+      {
+        int    x;
+        double y;
+      };
+
+      // Struct with non-trivial destructor should NOT be trivially relocatable
+      struct NonTrivialDestructor
+      {
+        ~NonTrivialDestructor() {}
+      };
+      CHECK_FALSE(etl::is_trivially_relocatable<NonTrivialDestructor>::value);
+
+      // Struct with non-trivial copy constructor should NOT be trivially relocatable
+      struct NonTrivialCopy
+      {
+        NonTrivialCopy() = default;
+        NonTrivialCopy(const NonTrivialCopy&) {}
+        NonTrivialCopy& operator=(const NonTrivialCopy&) = default;
+      };
+      CHECK_FALSE(etl::is_trivially_relocatable<NonTrivialCopy>::value);
+
+#if ETL_USING_STL || ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+      // These tests require STL or compiler builtins to correctly detect struct/array triviality
+      CHECK_TRUE(etl::is_trivially_relocatable<int[10]>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<TrivialStruct>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<TrivialStruct[5]>::value);
+#endif
+
+#if ETL_USING_CPP17
+      // Test the _v helper variable
+      CHECK_TRUE(etl::is_trivially_relocatable_v<int>);
+      CHECK_TRUE(etl::is_trivially_relocatable_v<double>);
+      CHECK_TRUE(etl::is_trivially_relocatable_v<int*>);
+  #if ETL_USING_STL || ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+      CHECK_TRUE(etl::is_trivially_relocatable_v<TrivialStruct>);
+  #endif
+      CHECK_FALSE(etl::is_trivially_relocatable_v<NonTrivialDestructor>);
+      CHECK_FALSE(etl::is_trivially_relocatable_v<NonTrivialCopy>);
+#endif
+
+      // Verify consistency: if a type is trivially_copyable AND trivially_destructible,
+      // then it should be trivially_relocatable. The reverse may not hold when compiler
+      // builtins provide more accurate detection than the fallback implementations.
+      CHECK_TRUE(!(etl::is_trivially_copyable<int>::value && etl::is_trivially_destructible<int>::value)
+                 || etl::is_trivially_relocatable<int>::value);
+      CHECK_TRUE(!(etl::is_trivially_copyable<TrivialStruct>::value && etl::is_trivially_destructible<TrivialStruct>::value)
+                 || etl::is_trivially_relocatable<TrivialStruct>::value);
+      // Non-trivially destructible types should never be trivially relocatable
+      CHECK_FALSE(etl::is_trivially_relocatable<NonTrivialDestructor>::value);
+      // Non-trivially copyable types should never be trivially relocatable
+      CHECK_FALSE(etl::is_trivially_relocatable<NonTrivialCopy>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_relocatable)
+    {
+      // Trivially relocatable types should always be nothrow relocatable
+      // Primitive types should always be detected correctly
+      CHECK_TRUE(etl::is_nothrow_relocatable<int>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<double>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<int*>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<const int*>::value);
+
+      // POD struct should be nothrow relocatable when proper detection is available
+      struct TrivialStruct
+      {
+        int    x;
+        double y;
+      };
+
+#if ETL_USING_STL || ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+      // These tests require STL or compiler builtins to correctly detect struct/array triviality
+      CHECK_TRUE(etl::is_nothrow_relocatable<int[10]>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<TrivialStruct>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<TrivialStruct[5]>::value);
+#endif
+
+#if ETL_USING_CPP17
+      // Test the _v helper variable
+      CHECK_TRUE(etl::is_nothrow_relocatable_v<int>);
+      CHECK_TRUE(etl::is_nothrow_relocatable_v<double>);
+      CHECK_TRUE(etl::is_nothrow_relocatable_v<int*>);
+  #if ETL_USING_STL || ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+      CHECK_TRUE(etl::is_nothrow_relocatable_v<TrivialStruct>);
+  #endif
+#endif
+
+      // Verify consistency: nothrow_relocatable should be at least as permissive as trivially_relocatable
+      CHECK_TRUE(!etl::is_trivially_relocatable<int>::value || etl::is_nothrow_relocatable<int>::value);
+      CHECK_TRUE(!etl::is_trivially_relocatable<TrivialStruct>::value || etl::is_nothrow_relocatable<TrivialStruct>::value);
     }
 
     //*************************************************************************

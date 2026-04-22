@@ -479,7 +479,9 @@ namespace etl
     {
       ETL_ASSERT_CHECK_PUSH_POP(size() != CAPACITY, ETL_ERROR(vector_full));
 
+  #include "private/diagnostic_sign_conversion_push.h"
       ::new (p_end) T(etl::forward<Args>(args)...);
+  #include "private/diagnostic_pop.h"
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
       return back();
@@ -668,7 +670,9 @@ namespace etl
         (*position_).~T();
       }
 
+  #include "private/diagnostic_sign_conversion_push.h"
       ::new (p) T(etl::forward<Args>(args)...);
+  #include "private/diagnostic_pop.h"
 
       return position_;
     }
