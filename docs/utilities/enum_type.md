@@ -1,12 +1,20 @@
-enum_type
-Smart enumerations.
+---
+title: "enum_type"
+---
 
-A method of declaring enumerations that allow grouping within a structure.
-Avoids the problem of clashing names that can occur with standard enumerations.
+{{< callout type="info">}}
+  Header: `enum_type.h`  
+{{< /callout >}}
 
-One way to think of the code is as a type with built-in constants and an optional conversion to a string
+Smart enumerations.  
 
-Example
+A method of declaring enumerations that allow grouping within a structure.  
+Avoids the problem of clashing names that can occur with standard enumerations. 
+
+One way to think of the code is as a type with built-in constants and an optional conversion to a string.  
+
+## Example
+```cpp
 struct CompassDirection
 {
   enum enum_type
@@ -40,6 +48,6 @@ direction = CompassDirection(3);     // Explicit conversion from an invalid valu
 direction = value;                   // **** Compilation error ****
  
 std::cout << "Direction = " << direction.c_str(); // Prints "Direction = North"
+```
 
-If a conversion to a string is not required then the ENUM_TYPE declarations may be omitted. In that case the c_str() function will return a "?". This will also be the case for any enumeration value that does not have an ENUM_TYPE entry.
-
+If a conversion to a string is not required then the `ETL_ENUM_TYPE` declarations may be omitted. In that case the `c_str()` function will return a `"?"`. This will also be the case for any enumeration value that does not have an `ETL_ENUM_TYPE` entry.
