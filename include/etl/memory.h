@@ -2259,47 +2259,43 @@ namespace etl
     pointer  p;
     TDeleter deleter;
   };
-} // namespace etl
 
-//*****************************************************************************
-// Global functions for unique_ptr
-//*****************************************************************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator==(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return lhs.get() == rhs.get();
-}
+  //*****************************************************************************
+  // Comparison operators for unique_ptr
+  //*****************************************************************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator==(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return lhs.get() == rhs.get();
+  }
 
-//*********************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator<(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
-}
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator<(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
+  }
 
-//*********************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator<=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return !(rhs < lhs);
-}
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator<=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return !(rhs < lhs);
+  }
 
-//*********************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator>(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return (rhs < lhs);
-}
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator>(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return (rhs < lhs);
+  }
 
-//*********************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator>=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return !(lhs < rhs);
-}
-
-namespace etl
-{
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator>=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return !(lhs < rhs);
+  }
   //*****************************************************************************
   /// Default construct an item at address p.
   ///\ingroup memory
