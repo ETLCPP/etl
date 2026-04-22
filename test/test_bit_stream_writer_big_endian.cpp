@@ -614,7 +614,7 @@ namespace
     TEST(test_write_multiple_full_size)
     {
       char           c1 = 90;                                // 0x5A
-      char           c2 = -91;                               // 0xA5
+      char           c2 = static_cast<char>(-91);            // 0xA5
       unsigned short s1 = 4660;                              // 0x1234
       unsigned short s2 = 22136;                             // 0x5678
       int32_t        i1 = static_cast<int32_t>(0x89ABCDEFU); // 0x89ABCDEF
@@ -660,7 +660,7 @@ namespace
     TEST(test_write_multiple_variable_size)
     {
       char           c1 = 90;                                // 0x5A       6 bits
-      char           c2 = -91;                               // 0xA5       7 bits
+      char           c2 = static_cast<char>(-91);            // 0xA5       7 bits
       unsigned short s1 = 4660;                              // 0x1234     13 bits
       unsigned short s2 = 22136;                             // 0x5678     11 bits
       int32_t        i1 = static_cast<int32_t>(0x89ABCDEFU); // 0x89ABCDEF 23 bits
@@ -705,7 +705,7 @@ namespace
       Accumulator accumulator;
 
       char           c1 = 90;                                // 0x5A       6 bits
-      char           c2 = -91;                               // 0xA5       7 bits
+      char           c2 = static_cast<char>(-91);            // 0xA5       7 bits
       unsigned short s1 = 4660U;                             // 0x1234     13 bits
       unsigned short s2 = 22136U;                            // 0x5678     11 bits
       int32_t        i1 = static_cast<int32_t>(0x89ABCDEFU); // 0x89ABCDEF 23 bits

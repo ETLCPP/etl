@@ -47,6 +47,64 @@ SOFTWARE.
 #include <type_traits>
 #include <vector>
 
+//***************************************************************************
+/// A non-trivially-relocatable type that tracks moves and destructions.
+/// Used to exercise the manual move-and-destroy path of etl::relocate.
+//***************************************************************************
+struct relocatable_t
+{
+  int  value;
+  bool was_moved_into; ///< true when this object was constructed via move
+
+  static int destructor_count;
+
+  static void reset_counts()
+  {
+    destructor_count = 0;
+  }
+
+  explicit relocatable_t(int v = 0)
+    : value(v)
+    , was_moved_into(false)
+  {
+  }
+
+  relocatable_t(relocatable_t&& other) ETL_NOEXCEPT
+    : value(other.value)
+    , was_moved_into(true)
+  {
+    other.value = -1; // mark source as moved-from
+  }
+
+  ~relocatable_t()
+  {
+    ++destructor_count;
+  }
+
+  // Non-copyable to make the intent clear.
+  relocatable_t(const relocatable_t&)            = delete;
+  relocatable_t& operator=(const relocatable_t&) = delete;
+  relocatable_t& operator=(relocatable_t&&)      = delete;
+};
+
+int relocatable_t::destructor_count = 0;
+
+// In configurations where etl::is_nothrow_relocatable is a class template
+// (non-STL builds), we must provide an explicit specialisation so that
+// etl::relocate is enabled for relocatable_t.  When the STL is available the
+// trait is a type alias that already evaluates to true for types with a
+// nothrow move constructor and a nothrow destructor, so no specialisation is
+// needed (or even possible).
+#if !(ETL_USING_STL && ETL_USING_CPP11)
+namespace etl
+{
+  template <>
+  struct is_nothrow_relocatable<relocatable_t> : public etl::true_type
+  {
+  };
+} // namespace etl
+#endif
+
 namespace
 {
   typedef std::string    non_trivial_t;
@@ -2658,6 +2716,268 @@ namespace
       auto result = etl::ranges::destroy_n(p, 0);
 
       CHECK(result == p);
+    }
+#endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_trivially_relocate_trivial)
+    {
+      alignas(trivial_t) unsigned char src_buffer[sizeof(trivial_t) * SIZE];
+      alignas(trivial_t) unsigned char dst_buffer[sizeof(trivial_t) * SIZE];
+
+      trivial_t* src = reinterpret_cast<trivial_t*>(src_buffer);
+      trivial_t* dst = reinterpret_cast<trivial_t*>(dst_buffer);
+
+      // Initialize source
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        src[i] = test_data_trivial[i];
+      }
+
+      // Relocate
+      trivial_t* result = etl::trivially_relocate(src, src + SIZE, dst);
+
+      // Check result
+      CHECK(result == dst + SIZE);
+
+      // Check destination values
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], dst[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_trivially_relocate_same_location)
+    {
+      alignas(trivial_t) unsigned char buffer[sizeof(trivial_t) * SIZE];
+      trivial_t*                       p = reinterpret_cast<trivial_t*>(buffer);
+
+      // Initialize
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        p[i] = test_data_trivial[i];
+      }
+
+      // Relocate to same location should return last
+      trivial_t* result = etl::trivially_relocate(p, p + SIZE, p);
+
+      CHECK(result == p + SIZE);
+
+      // Values should be unchanged
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], p[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_trivially_relocate_empty_range)
+    {
+      alignas(trivial_t) unsigned char src_buffer[sizeof(trivial_t) * SIZE];
+      alignas(trivial_t) unsigned char dst_buffer[sizeof(trivial_t) * SIZE];
+
+      trivial_t* src = reinterpret_cast<trivial_t*>(src_buffer);
+      trivial_t* dst = reinterpret_cast<trivial_t*>(dst_buffer);
+
+      // Relocate empty range
+      trivial_t* result = etl::trivially_relocate(src, src, dst);
+
+      CHECK(result == dst);
+    }
+
+    //*************************************************************************
+    TEST(test_trivially_relocate_overlapping_forward)
+    {
+      alignas(trivial_t) unsigned char buffer[sizeof(trivial_t) * (SIZE + 2)];
+      trivial_t*                       p = reinterpret_cast<trivial_t*>(buffer);
+
+      // Initialize
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        p[i] = test_data_trivial[i];
+      }
+
+      // Relocate forward (overlapping) - shift elements by 2
+      trivial_t* result = etl::trivially_relocate(p, p + SIZE, p + 2);
+
+      CHECK(result == p + SIZE + 2);
+
+      // Check values
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], p[i + 2]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_trivial)
+    {
+      alignas(trivial_t) unsigned char src_buffer[sizeof(trivial_t) * SIZE];
+      alignas(trivial_t) unsigned char dst_buffer[sizeof(trivial_t) * SIZE];
+
+      trivial_t* src = reinterpret_cast<trivial_t*>(src_buffer);
+      trivial_t* dst = reinterpret_cast<trivial_t*>(dst_buffer);
+
+      // Initialize source
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        src[i] = test_data_trivial[i];
+      }
+
+      // Relocate
+      trivial_t* result = etl::relocate(src, src + SIZE, dst);
+
+      // Check result
+      CHECK(result == dst + SIZE);
+
+      // Check destination values
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], dst[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_same_location)
+    {
+      alignas(trivial_t) unsigned char buffer[sizeof(trivial_t) * SIZE];
+      trivial_t*                       p = reinterpret_cast<trivial_t*>(buffer);
+
+      // Initialize
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        p[i] = test_data_trivial[i];
+      }
+
+      // Relocate to same location should return last
+      trivial_t* result = etl::relocate(p, p + SIZE, p);
+
+      CHECK(result == p + SIZE);
+
+      // Values should be unchanged
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], p[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_empty_range)
+    {
+      alignas(trivial_t) unsigned char src_buffer[sizeof(trivial_t) * SIZE];
+      alignas(trivial_t) unsigned char dst_buffer[sizeof(trivial_t) * SIZE];
+
+      trivial_t* src = reinterpret_cast<trivial_t*>(src_buffer);
+      trivial_t* dst = reinterpret_cast<trivial_t*>(dst_buffer);
+
+      // Relocate empty range
+      trivial_t* result = etl::relocate(src, src, dst);
+
+      CHECK(result == dst);
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_non_trivial)
+    {
+      const size_t N = 5;
+
+      alignas(relocatable_t) unsigned char src_buffer[sizeof(relocatable_t) * N];
+      alignas(relocatable_t) unsigned char dst_buffer[sizeof(relocatable_t) * N];
+
+      relocatable_t* src = reinterpret_cast<relocatable_t*>(src_buffer);
+      relocatable_t* dst = reinterpret_cast<relocatable_t*>(dst_buffer);
+
+      // Placement-new source objects
+      for (size_t i = 0; i < N; ++i)
+      {
+        ::new (static_cast<void*>(src + i)) relocatable_t(static_cast<int>(i + 1));
+      }
+
+      relocatable_t::reset_counts();
+
+      // Relocate (non-trivial path: move-construct into dst, destroy src)
+      relocatable_t* result = etl::relocate(src, src + N, dst);
+
+      // Returned pointer must be one-past-end of destination
+      CHECK(result == dst + N);
+
+      // Destination objects were move-constructed with correct values
+      for (size_t i = 0; i < N; ++i)
+      {
+        CHECK_EQUAL(static_cast<int>(i + 1), dst[i].value);
+        CHECK(dst[i].was_moved_into);
+      }
+
+      // Destructors were called for the N source objects
+      CHECK_EQUAL(static_cast<int>(N), relocatable_t::destructor_count);
+
+      // Clean up destination objects
+      relocatable_t::reset_counts();
+      for (size_t i = 0; i < N; ++i)
+      {
+        dst[i].~relocatable_t();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_non_trivial_same_location)
+    {
+      const size_t N = 5;
+
+      alignas(relocatable_t) unsigned char buffer[sizeof(relocatable_t) * N];
+      relocatable_t*                       p = reinterpret_cast<relocatable_t*>(buffer);
+
+      // Placement-new objects
+      for (size_t i = 0; i < N; ++i)
+      {
+        ::new (static_cast<void*>(p + i)) relocatable_t(static_cast<int>(i + 1));
+      }
+
+      relocatable_t::reset_counts();
+
+      // Relocating to the same location should be a no-op (early return)
+      relocatable_t* result = etl::relocate(p, p + N, p);
+
+      CHECK(result == p + N);
+
+      // No destructors should have been called (no move-and-destroy performed)
+      CHECK_EQUAL(0, relocatable_t::destructor_count);
+
+      // Values should be unchanged
+      for (size_t i = 0; i < N; ++i)
+      {
+        CHECK_EQUAL(static_cast<int>(i + 1), p[i].value);
+        CHECK(!p[i].was_moved_into);
+      }
+
+      // Clean up
+      relocatable_t::reset_counts();
+      for (size_t i = 0; i < N; ++i)
+      {
+        p[i].~relocatable_t();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_non_trivial_empty_range)
+    {
+      alignas(relocatable_t) unsigned char src_buffer[sizeof(relocatable_t)];
+      alignas(relocatable_t) unsigned char dst_buffer[sizeof(relocatable_t)];
+
+      relocatable_t* src = reinterpret_cast<relocatable_t*>(src_buffer);
+      relocatable_t* dst = reinterpret_cast<relocatable_t*>(dst_buffer);
+
+      relocatable_t::reset_counts();
+
+      // Empty range: first == last
+      relocatable_t* result = etl::relocate(src, src, dst);
+
+      CHECK(result == dst);
+
+      // No destructors should have been called
+      CHECK_EQUAL(0, relocatable_t::destructor_count);
     }
 #endif
   }
