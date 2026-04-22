@@ -10,6 +10,8 @@ weight: 2003
 
 [Bit Twiddling Hacks](https://graphics.stanford.edu/~seander/bithacks.html#IntegerLog)  
 
+[Design Patterns](https://refactoring.guru/design-patterns)
+
 ## Embedded Operating Systems
 
 [FreeRTOS](https://freertos.org/)  

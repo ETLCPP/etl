@@ -8,10 +8,6 @@ type: hextra-home
 **This documentation is still under development, and very much incomplete.**
 {{< /callout >}}
 
-{{< callout emoji="❓">}}
- [***Is the ETL free?***]({{< ref "Is the ETL free.md" >}})
-{{< /callout >}}
-
 <div class="not-prose badges">
 
 <div>
@@ -122,7 +118,11 @@ Continuous integration via GitHub Actions.
 ## Support the ETL
 Maintaining the ETL can take a lot of man-hours of work, but unfortunately it doesn't pay the bills. When I have to take on paying work, the ETL gets a lot less attention. So if you have found the library is an important component in your work and you would like to help out, then please consider by supporting the project.
 
+---
+
 [**Is the ETL free?**]({{< relref "is the ETL free.md" >}})
+
+---
 
 Any help porting the library to work under different platforms and compilers would be gratefully received.  
 I am especially interested in people who are using Keil, IAR, Green Hills, TI Code Composer etc, bare metal

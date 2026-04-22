@@ -3,6 +3,14 @@ title: "About"
 weight: 3002
 ---
 
+## About me
+I have been involved in technology and computer systems for all of my working life and have amassed considerable knowledge of designing and implementing systems that are both performant and correct.  
+My role normally encompasses the entire project life-cycle, from specification to maintenance phase. 
+
+Most systems I have worked on have required high speed and deterministic performance, often within a highly constrained platform. I am experienced in designing and adapting algorithms to solutions that are both space and time efficient, avoiding the normal overheads of standard solutions.
+
+Acting as a mentor for colleagues has often been a significant, though unofficial, part of my role.  
+
 ## Why write this library?
 I wrote this library, and all the others I have written over the
 years, because I'm lazy.
@@ -46,11 +54,3 @@ The application is liable to have a close coupling with the solution. For exampl
 
 I spent 12 years programming in pure C.  
 I discovered that I had been reverse engineering C++ all that time.  
-
-## About me
-I have been involved in technology and computer systems for all of my working life and have amassed considerable knowledge of designing and implementing systems that are both performant and correct.  
-My role normally encompasses the entire project life-cycle, from specification to maintenance phase. 
-
-Most systems I have worked on have required high speed and deterministic performance, often within a highly constrained platform. I am experienced in designing and adapting algorithms to solutions that are both space and time efficient, avoiding the normal overheads of standard solutions.
-
-Acting as a mentor for colleagues has often been a significant, though unofficial, part of my role.  
