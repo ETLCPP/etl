@@ -41,6 +41,14 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_CONSTRUCTIBLE 1
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE 1
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 1
   #endif
@@ -94,6 +102,14 @@ SOFTWARE.
 
   #if !defined(ETL_USING_BUILTIN_IS_CONSTRUCTIBLE)
     #define ETL_USING_BUILTIN_IS_CONSTRUCTIBLE __has_builtin(__is_constructible)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE __has_builtin(__is_nothrow_constructible)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE __has_builtin(__is_nothrow_assignable)
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
@@ -154,6 +170,14 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_IS_CONSTRUCTIBLE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE)
+  #define ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE)
+  #define ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE 0
+#endif
+
 #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 0
 #endif
@@ -210,6 +234,8 @@ namespace etl
 
     static ETL_CONSTANT bool using_builtin_is_assignable              = (ETL_USING_BUILTIN_IS_ASSIGNABLE == 1);
     static ETL_CONSTANT bool using_builtin_is_constructible           = (ETL_USING_BUILTIN_IS_CONSTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_nothrow_constructible   = (ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_nothrow_assignable      = (ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_constructible = (ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_destructible  = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable      = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
