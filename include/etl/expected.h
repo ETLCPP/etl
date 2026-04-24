@@ -725,6 +725,39 @@ namespace etl
     }
 #endif
 
+    //*******************************************
+    /// Returns a pointer to the value if has_value(), otherwise returns nullptr.
+    /// Allows expected to be used as a range of 0 or 1 elements.
+    //*******************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 value_type* begin() ETL_NOEXCEPT
+    {
+      return has_value() ? &etl::get<value_type>(storage) : ETL_NULLPTR;
+    }
+
+    //*******************************************
+    /// Returns a pointer past the value if has_value(), otherwise returns nullptr.
+    //*******************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 value_type* end() ETL_NOEXCEPT
+    {
+      return has_value() ? &etl::get<value_type>(storage) + 1 : ETL_NULLPTR;
+    }
+
+    //*******************************************
+    /// Returns a const pointer to the value if has_value(), otherwise returns nullptr.
+    //*******************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 const value_type* begin() const ETL_NOEXCEPT
+    {
+      return has_value() ? &etl::get<value_type>(storage) : ETL_NULLPTR;
+    }
+
+    //*******************************************
+    /// Returns a const pointer past the value if has_value(), otherwise returns nullptr.
+    //*******************************************
+    ETL_NODISCARD ETL_CONSTEXPR14 const value_type* end() const ETL_NOEXCEPT
+    {
+      return has_value() ? &etl::get<value_type>(storage) + 1 : ETL_NULLPTR;
+    }
+
 #if ETL_USING_CPP11
     template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TValue&>::type>::type>
     auto transform(F&& f) & -> expected<U, TError>
