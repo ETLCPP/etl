@@ -3396,29 +3396,26 @@ namespace etl
     // Pointer to the storage for the bitset.
     element_type* pbuffer;
   };
-} // namespace etl
 
-//***************************************************************************
-/// operator !=
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 bool operator!=(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
-{
-  return !(lhs == rhs);
-}
+  //***************************************************************************
+  /// operator !=
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 bool operator!=(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
 
-//*************************************************************************
-/// swap
-//*************************************************************************
-template <size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 void swap(etl::bitset_ext<Active_Bits, TElement>& lhs, etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
-{
-  lhs.swap(rhs);
-}
+  //*************************************************************************
+  /// swap
+  //*************************************************************************
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 void swap(etl::bitset_ext<Active_Bits, TElement>& lhs, etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  {
+    lhs.swap(rhs);
+  }
 
-namespace etl
-{
   namespace private_bitset
   {
     //*************************************************************************
@@ -3464,215 +3461,216 @@ namespace etl
       return true;
     }
   } // namespace private_bitset
+
+  //***************************************************************************
+  /// operator ==
+  /// bitset
+  /// Different element types
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+    operator==(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  {
+    // Get a span of each type.
+    typename etl::bitset<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
+    typename etl::bitset<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
+
+    // Put the bitset with the largest element type as the first argument.
+    if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
+    {
+      return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
+    }
+    else
+    {
+      return etl::private_bitset::compare_bitset_spans(rhs_span, lhs_span);
+    }
+  }
+
+  //***************************************************************************
+  /// operator !=
+  /// bitset
+  /// Different element types
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+    operator!=(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
+
+  //***************************************************************************
+  /// operator ==
+  /// bitset_ext
+  /// Different element types
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+    operator==(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  {
+    // Get a span of each type.
+    typename etl::bitset_ext<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
+    typename etl::bitset_ext<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
+
+    // Put the bitset with the largest element type as the first argument.
+    if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
+    {
+      return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
+    }
+    else
+    {
+      return etl::private_bitset::compare_bitset_spans(rhs_span, lhs_span);
+    }
+  }
+
+  //***************************************************************************
+  /// operator !=
+  /// bitset_ext
+  /// Different element types
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+    operator!=(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
+
+  //***************************************************************************
+  /// operator ==
+  /// bitset compared with bitset_ext, same element types.
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 bool operator==(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  {
+    const char   Storage_Model      = etl::bitset<Active_Bits, TElement>::Storage_Model;
+    const size_t Number_Of_Elements = etl::bitset<Active_Bits, TElement>::Number_Of_Elements;
+
+    typename etl::bitset<Active_Bits, TElement>::const_span_type     lhs_span = lhs.span();
+    typename etl::bitset_ext<Active_Bits, TElement>::const_span_type rhs_span = rhs.span();
+
+    typedef etl::bitset_impl<TElement, Storage_Model> implementation;
+
+    return implementation::operator_equality(lhs_span.begin(), rhs_span.begin(), Number_Of_Elements);
+  }
+
+  //***************************************************************************
+  /// operator !=
+  /// bitset compared with bitset_ext, same element types.
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 bool operator!=(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
+
+  //***************************************************************************
+  /// operator ==
+  /// bitset_ext compared with bitset, same element types.
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 bool operator==(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  {
+    const char   Storage_Model      = etl::bitset<Active_Bits, TElement>::Storage_Model;
+    const size_t Number_Of_Elements = etl::bitset<Active_Bits, TElement>::Number_Of_Elements;
+
+    typename etl::bitset_ext<Active_Bits, TElement>::const_span_type lhs_span = lhs.span();
+    typename etl::bitset<Active_Bits, TElement>::const_span_type     rhs_span = rhs.span();
+
+    typedef etl::bitset_impl<TElement, Storage_Model> implementation;
+
+    return implementation::operator_equality(lhs_span.begin(), rhs_span.begin(), Number_Of_Elements);
+  }
+
+  //***************************************************************************
+  /// operator !=
+  /// bitset_ext compared with bitset, same element types.
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 bool operator!=(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
+
+  //***************************************************************************
+  /// operator ==
+  /// bitset compared with bitset_ext, different element types.
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+    operator==(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  {
+    // Get a span of each type.
+    typename etl::bitset<Active_Bits, TLhsElement>::const_span_type     lhs_span = lhs.span();
+    typename etl::bitset_ext<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
+
+    // Put the bitset with the largest element type as the first argument.
+    if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
+    {
+      return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
+    }
+    else
+    {
+      return etl::private_bitset::compare_bitset_spans(rhs_span, lhs_span);
+    }
+  }
+
+  //***************************************************************************
+  /// operator !=
+  /// bitset compared with bitset_ext, different element types.
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+    operator!=(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
+
+  //***************************************************************************
+  /// operator ==
+  /// bitset_ext compared with bitset, different element types.
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+    operator==(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  {
+    // Get a span of each type.
+    typename etl::bitset_ext<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
+    typename etl::bitset<Active_Bits, TRhsElement>::const_span_type     rhs_span = rhs.span();
+
+    // Put the bitset with the largest element type as the first argument.
+    if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
+    {
+      return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
+    }
+    else
+    {
+      return etl::private_bitset::compare_bitset_spans(rhs_span, lhs_span);
+    }
+  }
+
+  //***************************************************************************
+  /// operator !=
+  /// bitset_ext compared with bitset, different element types.
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
+  ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
+    operator!=(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
+
 } // namespace etl
-
-//***************************************************************************
-/// operator ==
-/// bitset
-/// Different element types
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
-ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator==(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
-{
-  // Get a span of each type.
-  typename etl::bitset<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
-  typename etl::bitset<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
-
-  // Put the bitset with the largest element type as the first argument.
-  if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
-  {
-    return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
-  }
-  else
-  {
-    return etl::private_bitset::compare_bitset_spans(rhs_span, lhs_span);
-  }
-}
-
-//***************************************************************************
-/// operator !=
-/// bitset
-/// Different element types
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
-ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator!=(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
-{
-  return !(lhs == rhs);
-}
-
-//***************************************************************************
-/// operator ==
-/// bitset_ext
-/// Different element types
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
-ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator==(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
-{
-  // Get a span of each type.
-  typename etl::bitset_ext<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
-  typename etl::bitset_ext<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
-
-  // Put the bitset with the largest element type as the first argument.
-  if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
-  {
-    return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
-  }
-  else
-  {
-    return etl::private_bitset::compare_bitset_spans(rhs_span, lhs_span);
-  }
-}
-
-//***************************************************************************
-/// operator !=
-/// bitset_ext
-/// Different element types
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
-ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator!=(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
-{
-  return !(lhs == rhs);
-}
-
-//***************************************************************************
-/// operator ==
-/// bitset compared with bitset_ext, same element types.
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 bool operator==(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
-{
-  const char   Storage_Model      = etl::bitset<Active_Bits, TElement>::Storage_Model;
-  const size_t Number_Of_Elements = etl::bitset<Active_Bits, TElement>::Number_Of_Elements;
-
-  typename etl::bitset<Active_Bits, TElement>::const_span_type     lhs_span = lhs.span();
-  typename etl::bitset_ext<Active_Bits, TElement>::const_span_type rhs_span = rhs.span();
-
-  typedef etl::bitset_impl<TElement, Storage_Model> implementation;
-
-  return implementation::operator_equality(lhs_span.begin(), rhs_span.begin(), Number_Of_Elements);
-}
-
-//***************************************************************************
-/// operator !=
-/// bitset compared with bitset_ext, same element types.
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 bool operator!=(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset_ext<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
-{
-  return !(lhs == rhs);
-}
-
-//***************************************************************************
-/// operator ==
-/// bitset_ext compared with bitset, same element types.
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 bool operator==(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
-{
-  const char   Storage_Model      = etl::bitset<Active_Bits, TElement>::Storage_Model;
-  const size_t Number_Of_Elements = etl::bitset<Active_Bits, TElement>::Number_Of_Elements;
-
-  typename etl::bitset_ext<Active_Bits, TElement>::const_span_type lhs_span = lhs.span();
-  typename etl::bitset<Active_Bits, TElement>::const_span_type     rhs_span = rhs.span();
-
-  typedef etl::bitset_impl<TElement, Storage_Model> implementation;
-
-  return implementation::operator_equality(lhs_span.begin(), rhs_span.begin(), Number_Of_Elements);
-}
-
-//***************************************************************************
-/// operator !=
-/// bitset_ext compared with bitset, same element types.
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 bool operator!=(const etl::bitset_ext<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
-{
-  return !(lhs == rhs);
-}
-
-//***************************************************************************
-/// operator ==
-/// bitset compared with bitset_ext, different element types.
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
-ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator==(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
-{
-  // Get a span of each type.
-  typename etl::bitset<Active_Bits, TLhsElement>::const_span_type     lhs_span = lhs.span();
-  typename etl::bitset_ext<Active_Bits, TRhsElement>::const_span_type rhs_span = rhs.span();
-
-  // Put the bitset with the largest element type as the first argument.
-  if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
-  {
-    return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
-  }
-  else
-  {
-    return etl::private_bitset::compare_bitset_spans(rhs_span, lhs_span);
-  }
-}
-
-//***************************************************************************
-/// operator !=
-/// bitset compared with bitset_ext, different element types.
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
-ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator!=(const etl::bitset<Active_Bits, TLhsElement>& lhs, const etl::bitset_ext<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
-{
-  return !(lhs == rhs);
-}
-
-//***************************************************************************
-/// operator ==
-/// bitset_ext compared with bitset, different element types.
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
-ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator==(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
-{
-  // Get a span of each type.
-  typename etl::bitset_ext<Active_Bits, TLhsElement>::const_span_type lhs_span = lhs.span();
-  typename etl::bitset<Active_Bits, TRhsElement>::const_span_type     rhs_span = rhs.span();
-
-  // Put the bitset with the largest element type as the first argument.
-  if ETL_IF_CONSTEXPR (sizeof(TLhsElement) > sizeof(TRhsElement))
-  {
-    return etl::private_bitset::compare_bitset_spans(lhs_span, rhs_span);
-  }
-  else
-  {
-    return etl::private_bitset::compare_bitset_spans(rhs_span, lhs_span);
-  }
-}
-
-//***************************************************************************
-/// operator !=
-/// bitset_ext compared with bitset, different element types.
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TLhsElement, typename TRhsElement>
-ETL_CONSTEXPR14 typename etl::enable_if<!etl::is_same<TLhsElement, TRhsElement>::value, bool>::type
-  operator!=(const etl::bitset_ext<Active_Bits, TLhsElement>& lhs, const etl::bitset<Active_Bits, TRhsElement>& rhs) ETL_NOEXCEPT
-{
-  return !(lhs == rhs);
-}
 
 #include "minmax_pop.h"
 
