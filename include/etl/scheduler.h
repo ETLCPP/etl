@@ -287,7 +287,7 @@ namespace etl
 
       if (!task_list.full())
       {
-        typename task_list_t::iterator itask = etl::upper_bound(task_list.begin(), task_list.end(), task.get_task_priority(), compare_priority());
+        task_list_t::iterator itask = etl::upper_bound(task_list.begin(), task_list.end(), task.get_task_priority(), compare_priority());
 
         task_list.insert(itask, &task);
 

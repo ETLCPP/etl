@@ -43,6 +43,8 @@ SOFTWARE.
 
 #include <stdint.h>
 
+#include "private/diagnostic_cxx_11_extensions_push.h"
+
 namespace etl
 {
   template <typename, uintptr_t>
@@ -1374,5 +1376,7 @@ namespace etl
     pointer    address;
   };
 } // namespace etl
+
+#include "private/diagnostic_pop.h"
 
 #endif

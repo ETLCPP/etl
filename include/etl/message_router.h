@@ -77,6 +77,7 @@ namespace etl
 
   namespace private_message_router
   {
+#if ETL_USING_CPP11
     //***************************************************************************
     // Traits for a message router.
     // message packet type
@@ -86,8 +87,6 @@ namespace etl
     template <typename... TMessageTypes>
     class traits
     {
-#if ETL_USING_CPP11
-
     private:
 
       using message_id_sequence = etl::index_sequence<TMessageTypes::ID...>;
@@ -102,7 +101,6 @@ namespace etl
       static_assert(etl::type_list_all_of<message_types, etl::is_message_type>::value,
                     "All TMessageTypes must satisfy the condition etl::is_message_type");
       static_assert(etl::index_sequence_is_unique<message_id_sequence>::value, "All message IDs must be unique");
-#endif
     };
 
     //***************************************************************************
@@ -116,12 +114,19 @@ namespace etl
     {
     public:
 
-#if ETL_USING_CPP11
       using message_packet       = etl::message_packet<>;
       using message_types        = etl::type_list<>;
       using sorted_message_types = etl::type_list<>;
-#endif
     };
+#else
+    //***************************************************************************
+    // C++03 empty traits placeholder.
+    //***************************************************************************
+    template <typename T1 = void>
+    class traits
+    {
+    };
+#endif
   } // namespace private_message_router
 
   //***************************************************************************

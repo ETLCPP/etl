@@ -1,0 +1,182 @@
+---
+# TODO: Enable these checks in smaller steps
+# cppcoreguidelines-*,
+# portability-* if needed
+# readability-*, -readability-magic-numbers,
+# misc-*, -misc-no-recursion,
+# modernize-*, -modernize-use-trailing-return-type,
+# performance-*,
+
+Checks: >-
+    cert-*, -cert-dcl37-c, -cert-dcl51-cpp,
+    clang-analyzer-*,
+    bugprone-*,
+    -bugprone-easily-swappable-parameters,
+    cppcoreguidelines-pro-type-vararg,
+    cppcoreguidelines-pro-type-reinterpret-cast,
+    llvm-*,-llvm-header-guard,-llvm-include-order,
+    google-readability-casting
+ExtraArgs: ['-Wno-unknown-warning-option']
+HeaderFileExtensions: ['h', 'hpp']
+HeaderFilterRegex: '.*include/etl/.*'
+ImplementationFileExtensions: ['cpp']
+UseColor: true
+# TODO: Enable these when readability check is enabled
+# CheckOptions :
+#  - key: readability-identifier-naming.AbstractClassCase
+#    value: snake_case
+#  - key: readability-identifier-naming.AbstractClassPrefix
+#    value: I
+#  - key: readability-identifier-naming.AbstractClassSuffix
+#    value: ''
+#  - key: readability-identifier-naming.ClassCase
+#    value: snake_case
+#  - key: readability-identifier-naming.ClassPrefix
+#    value: ''
+#  - key: readability-identifier-naming.ClassSuffix
+#    value: ''
+#  - key: readability-identifier-naming.GlobalConstantCase
+#    value: UPPER_CASE
+#  - key: readability-identifier-naming.GlobalConstantPrefix
+#    value: ''
+#  - key: readability-identifier-naming.GlobalConstantSuffix
+#    value: ''
+#  - key: readability-identifier-naming.ConstantCase
+#    value: snake_case
+#  - key: readability-identifier-naming.ConstantPrefix
+#    value: ''
+#  - key: readability-identifier-naming.ConstantSuffix
+#    value: ''
+#  - key: readability-identifier-naming.ConstantMemberCase
+#    value: snake_case
+#  - key: readability-identifier-naming.ConstantMemberPrefix
+#    value: k
+#  - key: readability-identifier-naming.ConstantMemberSuffix
+#    value: ''
+#  - key: readability-identifier-naming.StaticConstantCase
+#    value: snake_case
+#  - key: readability-identifier-naming.StaticConstantPrefix
+#    value: k
+#  - key: readability-identifier-naming.StaticConstantSuffix
+#    value: ''
+#  - key: readability-identifier-naming.EnumCase
+#    value: snake_case
+#  - key: readability-identifier-naming.EnumPrefix
+#    value: ''
+#  - key: readability-identifier-naming.EnumSuffix
+#    value: ''
+#  - key: readability-identifier-naming.EnumConstantCase
+#    value: snake_case
+#  - key: readability-identifier-naming.EnumConstantPrefix
+#    value: ''
+#  - key: readability-identifier-naming.EnumConstantSuffix
+#    value: ''
+#  - key: readability-identifier-naming.GlobalVariableCase
+#    value: snake_case
+#  - key: readability-identifier-naming.GlobalVariablePrefix
+#    value: g
+#  - key: readability-identifier-naming.GlobalVariableSuffix
+#    value: ''
+#  - key: readability-identifier-naming.LocalVariableCase
+#    value: snake_case
+#  - key: readability-identifier-naming.LocalVariablePrefix
+#    value: ''
+#  - key: readability-identifier-naming.LocalVariableSuffix
+#    value: ''
+#  - key: readability-identifier-naming.StructCase
+#    value: aNy_CasE
+#  - key: readability-identifier-naming.StructPrefix
+#    value: ''
+#  - key: readability-identifier-naming.StructSuffix
+#    value: ''
+#  - key: readability-identifier-naming.FunctionCase
+#    value: snake_case
+#  - key: readability-identifier-naming.FunctionPrefix
+#    value: ''
+#  - key: readability-identifier-naming.FunctionSuffix
+#    value: ''
+#  - key: readability-identifier-naming.MethodCase
+#    value: snake_case
+#  - key: readability-identifier-naming.MethodPrefix
+#    value: ''
+#  - key: readability-identifier-naming.MethodSuffix
+#    value: ''
+#  - key: readability-identifier-naming.ParameterCase
+#    value: snake_case
+#  - key: readability-identifier-naming.PrivateMethodCase
+#    value: snake_case
+#  - key: readability-identifier-naming.PrivateMethodPrefix
+#    value: ''
+#  - key: readability-identifier-naming.PrivateMethodSuffix
+#    value: ''
+#  - key: readability-identifier-naming.PublicMethodCase
+#    value: snake_case
+#  - key: readability-identifier-naming.PublicMethodPrefix
+#    value: ''
+#  - key: readability-identifier-naming.PublicMethodSuffix
+#    value: ''
+#  - key: readability-identifier-naming.MemberCase
+#    value: snake_case
+#  - key: readability-identifier-naming.MemberPrefix
+#    value: _
+#  - key: readability-identifier-naming.MemberSuffix
+#    value: ''
+#  - key: readability-identifier-naming.PrivateMemberCase
+#    value: snake_case
+#  - key: readability-identifier-naming.PrivateMemberPrefix
+#    value: _
+#  - key: readability-identifier-naming.PrivateMemberSuffix
+#    value: ''
+#  - key: readability-identifier-naming.PublicMemberCase
+#    value: snake_case
+#  - key: readability-identifier-naming.PublicMemberPrefix
+#    value: ''
+#  - key: readability-identifier-naming.PublicMemberSuffix
+#    value: ''
+#  - key: readability-identifier-naming.NamespaceCase
+#    value: lower_case
+#  - key: readability-identifier-naming.NamespacePrefix
+#    value: ''
+#  - key: readability-identifier-naming.NamespaceSuffix
+#    value: ''
+#  - key: readability-identifier-naming.InlineNamespaceCase
+#    value: lower_case
+#  - key: readability-identifier-naming.InlineNamespacePrefix
+#    value: ''
+#  - key: readability-identifier-naming.InlineNamespaceSuffix
+#    value: ''
+#  - key: readability-identifier-length.IgnoredParameterNames
+#    value: ^(n|id|a|b|x|y)$
+#  - key: readability-identifier-length.IgnoredLoopCounterNames
+#    value: ^[ijkxy_]$
+#  - key: readability-identifier-naming.GlobalFunctionCase
+#    value: snake_case
+#  - key: readability-identifier-naming.GlobalFunctionPrefix
+#    value: ''
+#  - key: readability-identifier-naming.GlobalFunctionSuffix
+#    value: ''
+#  - key: readability-identifier-naming.TemplateParameterCase
+#    value: CamelCase
+#  - key: readability-identifier-naming.TemplateParameterPrefix
+#    value: ''
+#  - key: readability-identifier-naming.TemplateParameterSuffix
+#    value: ''
+#  - key: readability-identifier-naming.TemplateTemplateParameterCase
+#    value: CamelCase
+#  - key: readability-identifier-naming.TemplateTemplateParameterPrefix
+#    value: 'TPL'
+#  - key: readability-identifier-naming.TemplateTemplateParameterSuffix
+#    value: ''
+#  - key: readability-identifier-naming.TypeTemplateParameterCase
+#    value: CamelCase
+#  - key: readability-identifier-naming.TypeTemplateParameterPrefix
+#    value: 'T'
+#  - key: readability-identifier-naming.TypeTemplateParameterSuffix
+#    value: ''
+#  - key: readability-identifier-naming.ValueTemplateParameterCase
+#    value: UPPER_CASE
+#  - key: readability-identifier-naming.ValueTemplateParameterPrefix
+#    value: ''
+#  - key: readability-identifier-naming.ValueTemplateParameterSuffix
+#    value: ''
+...
