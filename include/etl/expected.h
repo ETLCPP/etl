@@ -1188,7 +1188,7 @@ namespace etl
 
     enum
     {
-      Uninitialised,
+      Void_Type,
       Error_Type
     };
 
