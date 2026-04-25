@@ -10,10 +10,9 @@ html:not(.dark) .highlight .chroma .cpf {
 }
 
 html:not(.dark) h1 { 
-  color: coral !important;
+  color: white !important;
   width: 100%;
-  background-color: rgb(246, 246, 246) !important;
-  border: black solid 3px !important;
+  background-color: royalblue !important;
   padding: 0.5rem 0.5rem !important;
 }
 
@@ -118,10 +117,10 @@ html.dark .hx\:dark\:bg-dark {
 
 html.dark h1 
 { 
-  color: coral !important;
+  color: white !important;
   width: 100%;
-  background-color: rgb(50, 50, 50) !important;
-  border: lightgrey solid 2px !important;
+  #background-color: rgb(50, 50, 50) !important;
+  background-color: #7099c7 !important;
   padding: 0.5rem 0.5rem !important;
 }
 
@@ -296,9 +295,10 @@ h1 {
   font-family: Roboto, sans-serif !important;
   font-style: i !important;
   font-weight: 500 !important;
+  font-size: 180% !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.0em !important;
-  border-radius: 0.75rem !important;
+  border-radius: 0.5rem !important;
 }
 
 h2 {

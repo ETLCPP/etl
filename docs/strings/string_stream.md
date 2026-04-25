@@ -2,6 +2,10 @@
 title: "string_stream"
 ---
 
+{{< callout type="info">}}
+  Header: `string_stream.h`  
+{{< /callout >}}
+
 ## Streaming types
 `string_stream`  
 `wstring_stream`  

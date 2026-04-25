@@ -1,66 +1,82 @@
-Visitor
-A set of template classes to enable the easy creation of objects using the Visitor pattern.
-The purpose of these classes is to create a base classes with pure virtual functions for each supplied type. 
-Any derived class that tries to instantiate an object from it will then be forced to supply an overridden version for each and every function. See the tutorial.
+---
+title: "visitor"
+---
 
-There are two templated classes:-
+{{< callout type="info">}}
+  Header: `visitor.h`  
+{{< /callout >}}
 
-____________________________________________________________________________________________________
-visitable
-The visitable base class. 
+A set of template classes to enable the easy creation of objects using the Visitor pattern.  
+The purpose of these classes is to create a base classes with pure virtual functions for each supplied type.   
+Any derived class that tries to instantiate an object from it will then be forced to supply an overridden version for each and every function.  
 
-Classes derived from this are visitable by the types declared in the template parameter list. A pure virtual accept function will be created for each visitor type.
+There are two templated classes; `visitor` and `visitable`.
 
-C++03
+## visitable
+The visitable base class.  
+
+Classes derived from this are visitable by the types declared in the template parameter list. A pure virtual `accept` function will be created for each visitor type.  
+
+**C++03**  
 Up to four visitor types may be specified. 
 
+```cpp
 template <typename T1, typename T2 = void, typename T3 = void, typename T4 = void>
-class visitable
+class visitable;
+```
 
-____________________________________________________________________________________________________
-
-C++11 and above
+**C++11 and above**  
 Any number of visitor types may be specified.
 
+```cpp
 template <typename... Types>
 class visitable;
+```
 
-____________________________________________________________________________________________________
-visitor
-The visitor base class. 
-Classes derived from this can be passed to objects derived from visitable.
-A pure virtual visit function will be created for each specified type.
+## visitor
+The visitor base class.  
+Classes derived from this can be passed to objects derived from `visitable`.  
+A pure virtual `visit` function will be created for each specified type.  
 
-C++03
+**C++03**  
  Up to sixteen types may be specified in the template parameter list
 
+```cpp
 template <typename T1,         typename T2  = void, typename T3  = void, typename T4  = void,
-          typename T5  = void, typename T6  = void, typename T7  = void, typename T8  = void,
+      0    typename T5  = void, typename T6  = void, typename T7  = void, typename T8  = void,
           typename T9  = void, typename T10 = void, typename T11 = void, typename T12 = void, 
           typename T13 = void, typename T14 = void, typename T15 = void, typename T16 = void>
-class visitor
-____________________________________________________________________________________________________
-C++11 and above
-Any number of types may be specified.
+class visitor;
+```
 
+**C++11 and above**
+Any number of types may be specified.  
+
+```cpp
 template <typename... Types>
-class visitor
-____________________________________________________________________________________________________
-is_visitor
-Detects whether a type is a visitor.
-20.37.0
+class visitor;
+```
 
+## is_visitor
+Detects whether a type is a visitor.  
+Since: `20.37.0`.
+
+```cpp
 template <typename T>
 struct is_visitor;
-Derived from etl::bool_constant
-____________________________________________________________________________________________________
-C++17 and above.
+```
+Derived from `etl::bool_constant`
+
+**C++17 and above**  
+```cpp
 template <typename T>
 struct is_visitor_v;
-____________________________________________________________________________________________________
-Example
+```
 
-Before 20.37.0
+## Example
+
+Before: `20.37.0`
+```cpp
 All arguments are passed by reference.
 
 class Square;
@@ -115,10 +131,14 @@ Triangle triangle;
 square.accept(visitor);   // visitor's visit(Square) is called.
 circle.accept(visitor);   // visitor's visit(Circle&) is called.
 triangle.accept(visitor); // visitor's visit(const Triangle&) is called.
-____________________________________________________________________________________________________
-From 20.37.0
+```
+
+---
+
+Since: `20.37.0`  
 Arguments are passed according to the template parameters.
 
+```cpp
 class Square;
 class Circle;
 class Triangle;
@@ -171,5 +191,4 @@ Triangle triangle;
 square.accept(visitor);   // visitor's visit(Square) is called.
 circle.accept(visitor);   // visitor's visit(Circle&) is called.
 triangle.accept(visitor); // visitor's visit(const Triangle&) is called.
-
-
+```
