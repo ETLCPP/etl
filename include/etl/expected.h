@@ -1381,24 +1381,25 @@ namespace etl
   {
     return !(lhs == rhs);
   }
+
+  //*******************************************
+  /// Swap etl::expected.
+  //*******************************************
+  template <typename TValue, typename TError>
+  ETL_CONSTEXPR14 void swap(etl::expected<TValue, TError>& lhs, etl::expected<TValue, TError>& rhs)
+  {
+    lhs.swap(rhs);
+  }
+
+  //*******************************************
+  /// Swap etl::unexpected.
+  //*******************************************
+  template <typename TError>
+  ETL_CONSTEXPR14 void swap(etl::unexpected<TError>& lhs, etl::unexpected<TError>& rhs)
+  {
+    lhs.swap(rhs);
+  }
+
 } // namespace etl
-
-//*******************************************
-/// Swap etl::expected.
-//*******************************************
-template <typename TValue, typename TError>
-ETL_CONSTEXPR14 void swap(etl::expected<TValue, TError>& lhs, etl::expected<TValue, TError>& rhs)
-{
-  lhs.swap(rhs);
-}
-
-//*******************************************
-/// Swap etl::unexpected.
-//*******************************************
-template <typename TError>
-ETL_CONSTEXPR14 void swap(etl::unexpected<TError>& lhs, etl::unexpected<TError>& rhs)
-{
-  lhs.swap(rhs);
-}
 
 #endif
