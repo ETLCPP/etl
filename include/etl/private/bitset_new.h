@@ -2519,32 +2519,30 @@ namespace etl
     temp ^= rhs;
     return temp;
   }
-} // namespace etl
 
-//***************************************************************************
-/// operator !=
-///\ingroup bitset
-//***************************************************************************
-template <size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 bool operator!=(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
-{
-  return !(lhs == rhs);
-}
+  //***************************************************************************
+  /// operator !=
+  ///\ingroup bitset
+  //***************************************************************************
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 bool operator!=(const etl::bitset<Active_Bits, TElement>& lhs, const etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  {
+    return !(lhs == rhs);
+  }
 
-//*************************************************************************
-/// swap
-//*************************************************************************
-template <size_t Active_Bits, typename TElement>
-ETL_CONSTEXPR14 void swap(etl::bitset<Active_Bits, TElement>& lhs, etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
-{
-  lhs.swap(rhs);
-}
+  //*************************************************************************
+  /// swap
+  //*************************************************************************
+  template <size_t Active_Bits, typename TElement>
+  ETL_CONSTEXPR14 void swap(etl::bitset<Active_Bits, TElement>& lhs, etl::bitset<Active_Bits, TElement>& rhs) ETL_NOEXCEPT
+  {
+    lhs.swap(rhs);
+  }
 
-//***************************************************************************
-/// bitset_ext
-//***************************************************************************
-namespace etl
-{
+  //***************************************************************************
+  /// bitset_ext
+  //***************************************************************************
+
   //***************************************************************************
   template <size_t Active_Bits = 0U, typename TElement = unsigned char>
   class bitset_ext;
