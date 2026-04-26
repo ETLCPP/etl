@@ -76,17 +76,378 @@ namespace etl
     }
   };
 
-  template <class... Args>
-  ETL_CONSTEXPR14 bool check_f(const char* fmt)
+  namespace private_format_check
   {
-    // to be implemented later
-    // return fmt[0] == 0; // actual check
+    // Type category for compile-time type/specifier compatibility checking
+    enum class type_category
+    {
+      NONE,    // monostate
+      BOOLEAN, // bool
+      CHAR,    // char
+      INTEGER, // int, unsigned, long long, unsigned long long, short, etc.
+      FLOAT,   // float, double, long double
+      STRING,  // const char*, string_view
+      POINTER  // const void*
+    };
 
-    (void)fmt;
+    // Map a type to its category. Decays and removes cv-qualifiers.
+    template <class T>
+    ETL_CONSTEXPR14 type_category get_type_category()
+    {
+      using U = typename etl::remove_cv<typename etl::remove_reference<T>::type>::type;
+
+      // Order matters: bool before integral, char before integral
+      if (etl::is_same<U, bool>::value)
+        return type_category::BOOLEAN;
+      if (etl::is_same<U, char>::value)
+        return type_category::CHAR;
+      if (etl::is_same<U, signed char>::value)
+        return type_category::CHAR;
+      if (etl::is_same<U, unsigned char>::value)
+        return type_category::CHAR;
+      if (etl::is_integral<U>::value)
+        return type_category::INTEGER;
+      if (etl::is_same<U, float>::value)
+        return type_category::FLOAT;
+      if (etl::is_same<U, double>::value)
+        return type_category::FLOAT;
+      if (etl::is_same<U, long double>::value)
+        return type_category::FLOAT;
+      if (etl::is_same<U, const char*>::value)
+        return type_category::STRING;
+      if (etl::is_same<U, char*>::value)
+        return type_category::STRING;
+      if (etl::is_same<U, etl::string_view>::value)
+        return type_category::STRING;
+      if (etl::is_base_of<etl::istring, U>::value)
+        return type_category::STRING;
+      if (etl::is_pointer<U>::value)
+        return type_category::POINTER;
+      if (etl::is_same<U, const void*>::value)
+        return type_category::POINTER;
+      if (etl::is_same<U, void*>::value)
+        return type_category::POINTER;
+      return type_category::NONE; // unknown type: custom formatter, be permissive
+    }
+
+    // Check if a format type character is valid for a given type category.
+    // '\0' means no explicit type was specified (always valid — uses default presentation).
+    ETL_CONSTEXPR14 bool ct_check_type_spec(type_category cat, char type_char)
+    {
+      if (type_char == '\0')
+      {
+        return true; // no explicit type: always OK, uses default
+      }
+
+      switch (cat)
+      {
+        case type_category::BOOLEAN:
+          // bool: s (as "true"/"false"), b, B, c, d, o, x, X (as integer 0/1)
+          return type_char == 's' || type_char == 'b' || type_char == 'B' || type_char == 'c' || type_char == 'd' || type_char == 'o'
+                 || type_char == 'x' || type_char == 'X';
+
+        case type_category::CHAR:
+          // char: c (default), b, B, d, o, x, X (as integer), s, ?
+          return type_char == 'c' || type_char == '?' || type_char == 'b' || type_char == 'B' || type_char == 'd' || type_char == 'o'
+                 || type_char == 'x' || type_char == 'X' || type_char == 's';
+
+        case type_category::INTEGER:
+          // integers: b, B, c, d, o, x, X
+          return type_char == 'b' || type_char == 'B' || type_char == 'c' || type_char == 'd' || type_char == 'o' || type_char == 'x'
+                 || type_char == 'X';
+
+        case type_category::FLOAT:
+          // floats: a, A, e, E, f, F, g, G
+          return type_char == 'a' || type_char == 'A' || type_char == 'e' || type_char == 'E' || type_char == 'f' || type_char == 'F'
+                 || type_char == 'g' || type_char == 'G';
+
+        case type_category::STRING:
+          // strings: s, ?
+          return type_char == 's' || type_char == '?';
+
+        case type_category::POINTER:
+          // pointers: p, P
+          return type_char == 'p' || type_char == 'P';
+
+        case type_category::NONE:
+        default: return true; // unknown/custom type: be permissive, let runtime handle it
+      }
+    }
+
+    ETL_CONSTEXPR14 bool ct_is_digit(char c)
+    {
+      return c >= '0' && c <= '9';
+    }
+
+    // Parse an unsigned integer from fmt starting at pos. Updates pos past the digits.
+    // Returns the parsed number, or -1 if no digits found.
+    ETL_CONSTEXPR14 int ct_parse_num(const char* fmt, int& pos)
+    {
+      if (!ct_is_digit(fmt[pos]))
+      {
+        return -1;
+      }
+      int result = 0;
+      while (ct_is_digit(fmt[pos]))
+      {
+        result = result * 10 + (fmt[pos] - '0');
+        ++pos;
+      }
+      return result;
+    }
+
+    ETL_CONSTEXPR14 bool ct_is_align(char c)
+    {
+      return c == '<' || c == '>' || c == '^';
+    }
+
+    ETL_CONSTEXPR14 bool ct_is_sign(char c)
+    {
+      return c == '+' || c == '-' || c == ' ';
+    }
+
+    ETL_CONSTEXPR14 bool ct_is_type(char c)
+    {
+      // All valid type characters from the format spec
+      return (c == 's') || (c == '?') || (c == 'b') || (c == 'B') || (c == 'c') || (c == 'd') || (c == 'o') || (c == 'x') || (c == 'X') || (c == 'a')
+             || (c == 'A') || (c == 'e') || (c == 'E') || (c == 'f') || (c == 'F') || (c == 'g') || (c == 'G') || (c == 'p') || (c == 'P');
+    }
+
+    // Validate a nested replacement field like {}, {0}, {1} inside width/precision.
+    // pos should be at the '{'. Updates pos past the closing '}'.
+    // Updates auto_count / has_manual / has_auto. Returns false on error.
+    ETL_CONSTEXPR14 bool ct_parse_nested_replacement(const char* fmt, int& pos, int n_args, int& auto_count, bool& has_auto, bool& has_manual)
+    {
+      if (fmt[pos] != '{')
+        return false;
+      ++pos; // skip '{'
+
+      int num = ct_parse_num(fmt, pos);
+      if (num >= 0)
+      {
+        // manual index
+        if (has_auto)
+          return false; // mixing
+        has_manual = true;
+        if (num >= n_args)
+          return false;
+      }
+      else
+      {
+        // automatic index
+        if (has_manual)
+          return false; // mixing
+        has_auto = true;
+        if (auto_count >= n_args)
+          return false;
+        ++auto_count;
+      }
+
+      if (fmt[pos] != '}')
+        return false;
+      ++pos; // skip '}'
+      return true;
+    }
+
+    // Skip/validate the format-spec portion after the colon:
+    //   [[fill]align][sign][#][0][width][.precision][L][type]
+    // pos is right after ':'. Returns false on invalid spec.
+    // parsed_type is set to the type character found, or '\0' if none.
+    ETL_CONSTEXPR14 bool ct_skip_format_spec(const char* fmt, int& pos, int n_args, int& auto_count, bool& has_auto, bool& has_manual, char& parsed_type)
+    {
+      parsed_type = '\0';
+
+      if (fmt[pos] == '\0' || fmt[pos] == '}')
+      {
+        return true; // empty spec is valid
+      }
+
+      // fill-and-align: either [align] or [fill][align]
+      // Look ahead: if second char is an align char, first is fill
+      if (fmt[pos + 1] != '\0' && ct_is_align(fmt[pos + 1]))
+      {
+        char fill = fmt[pos];
+        if (fill == '{' || fill == '}')
+          return false; // { and } not allowed as fill
+        pos += 2;       // skip fill + align
+      }
+      else if (ct_is_align(fmt[pos]))
+      {
+        ++pos; // skip align only
+      }
+
+      // sign
+      if (ct_is_sign(fmt[pos]))
+      {
+        ++pos;
+      }
+
+      // '#'
+      if (fmt[pos] == '#')
+      {
+        ++pos;
+      }
+
+      // '0'
+      if (fmt[pos] == '0')
+      {
+        ++pos;
+      }
+
+      // width: number or nested replacement
+      if (ct_is_digit(fmt[pos]))
+      {
+        ct_parse_num(fmt, pos);
+      }
+      else if (fmt[pos] == '{')
+      {
+        if (!ct_parse_nested_replacement(fmt, pos, n_args, auto_count, has_auto, has_manual))
+        {
+          return false;
+        }
+      }
+
+      // precision: '.' followed by number or nested replacement
+      if (fmt[pos] == '.')
+      {
+        ++pos;
+        if (ct_is_digit(fmt[pos]))
+        {
+          ct_parse_num(fmt, pos);
+        }
+        else if (fmt[pos] == '{')
+        {
+          if (!ct_parse_nested_replacement(fmt, pos, n_args, auto_count, has_auto, has_manual))
+          {
+            return false;
+          }
+        }
+        // else: '.' with no precision number/replacement — still valid (empty precision)
+      }
+
+      // locale-specific: 'L'
+      if (fmt[pos] == 'L')
+      {
+        ++pos;
+      }
+
+      // type
+      if (ct_is_type(fmt[pos]))
+      {
+        parsed_type = fmt[pos];
+        ++pos;
+      }
+
+      // After parsing the spec, we must be at '}' (the closing brace is consumed by the caller)
+      // Any remaining characters before '}' means invalid spec
+      if (fmt[pos] != '}')
+      {
+        return false;
+      }
+
+      return true;
+    }
+  } // namespace private_format_check
+
+  template <class... Args>
+  ETL_CONSTEXPR14 bool check_format(const char* fmt)
+  {
+    const int n_args     = static_cast<int>(sizeof...(Args));
+    int       pos        = 0;
+    int       auto_count = 0;
+    bool      has_auto   = false;
+    bool      has_manual = false;
+
+  #if ETL_USING_CPP20
+    // Build a constexpr array mapping arg index -> type category
+    const private_format_check::type_category arg_categories[] = {
+      private_format_check::get_type_category<Args>()...,
+      private_format_check::type_category::NONE // sentinel for zero-arg case
+    };
+  #endif
+
+    while (fmt[pos] != '\0')
+    {
+      char c = fmt[pos];
+      ++pos;
+
+      if (c == '{')
+      {
+        if (fmt[pos] == '{')
+        {
+          // escaped '{'
+          ++pos;
+          continue;
+        }
+
+        // Start of a replacement field: [arg_id][:format_spec]
+        int resolved_index = -1;
+        int arg_index      = private_format_check::ct_parse_num(fmt, pos);
+        if (arg_index >= 0)
+        {
+          // manual index
+          if (has_auto)
+            return false; // mixing auto and manual
+          has_manual = true;
+          if (arg_index >= n_args)
+            return false; // index out of range
+          resolved_index = arg_index;
+        }
+        else
+        {
+          // automatic index
+          if (has_manual)
+            return false; // mixing auto and manual
+          has_auto = true;
+          if (auto_count >= n_args)
+            return false; // too many arguments
+          resolved_index = auto_count;
+          ++auto_count;
+        }
+
+        char type_char = '\0';
+        if (fmt[pos] == ':')
+        {
+          ++pos; // skip ':'
+          if (!private_format_check::ct_skip_format_spec(fmt, pos, n_args, auto_count, has_auto, has_manual, type_char))
+          {
+            return false;
+          }
+        }
+
+  #if ETL_USING_CPP20
+        // Validate type specifier against argument type
+        if (resolved_index >= 0 && resolved_index < n_args)
+        {
+          if (!private_format_check::ct_check_type_spec(arg_categories[resolved_index], type_char))
+          {
+            return false;
+          }
+        }
+  #else
+        (void)resolved_index;
+  #endif
+
+        if (fmt[pos] != '}')
+        {
+          return false; // missing closing brace
+        }
+        ++pos; // skip '}'
+      }
+      else if (c == '}')
+      {
+        if (fmt[pos] != '}')
+        {
+          return false; // unmatched '}'
+        }
+        ++pos; // skip second '}'
+      }
+    }
+
     return true;
   }
 
-  inline void please_note_this_is_error_message_1() noexcept {}
+  inline void please_note_this_is_error_message_format_string_syntax_error() noexcept {}
 
   template <class... Args>
   struct basic_format_string
@@ -94,20 +455,15 @@ namespace etl
     inline ETL_CONSTEVAL basic_format_string(const char* fmt)
       : _sv(fmt)
     {
-      bool format_string_ok = check_f(fmt);
-
-      if (!format_string_ok)
+  #if ETL_USING_CPP20
+      // Compile-time validation: check_format runs at compile time via consteval.
+      // In pre-C++20, runtime checks in vformat_to/parse_format_spec/etc. are sufficient.
+      if (!check_format<Args...>(fmt))
       {
-        // if (etl::is_constant_evaluated()) // compile time error path
-        //{
-        //   // calling a non-constexpr function in a consteval context to
-        //   trigger a compile error please_note_this_is_error_message_1();
-        // }
-        // else // run time error path
-        //{
-        ETL_ASSERT_FAIL_AND_RETURN(ETL_ERROR(bad_format_string_exception));
-        //}
+        // Calling a non-constexpr function in a consteval context triggers a compile error.
+        please_note_this_is_error_message_format_string_syntax_error();
       }
+  #endif
     }
 
     ETL_CONSTEXPR basic_format_string(const basic_format_string& other) = default;
@@ -181,7 +537,6 @@ namespace etl
       // automatic number generation only allowed if not already in manual mode
       ETL_ASSERT(manual_mode == false, ETL_ERROR(bad_format_string_exception));
       automatic_mode = true;
-      // TODO: compile time check
       ETL_ASSERT(current < num_args, ETL_ERROR(bad_format_string_exception) /* not enough arguments for generated index */);
       return current++;
     }
