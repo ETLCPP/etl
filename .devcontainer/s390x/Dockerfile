@@ -18,9 +18,11 @@ RUN dpkg --add-architecture s390x && \
     ninja-build \
     git \
     wget \
+    ca-certificates \
     file \
     libc6:s390x \
     libstdc++6:s390x \
+    libatomic1:s390x \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user with stable UID/GID
@@ -33,6 +35,11 @@ RUN groupadd --gid ${USER_GID} ${USERNAME} && \
 
 # Set working directory
 WORKDIR /workspaces/etl
+
+# Install Bazelisk as 'bazel'
+RUN ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') && \
+    wget -qO /usr/local/bin/bazel https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-${ARCH} && \
+    chmod +x /usr/local/bin/bazel
 
 # Verify QEMU and cross-compilation setup
 RUN echo "=== Host Architecture ===" && \

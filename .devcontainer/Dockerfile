@@ -58,6 +58,11 @@ RUN set -eux; \
     && install -m 755 treefmt /usr/bin/treefmt \
     && rm treefmt.tar.gz treefmt
 
+# Install Bazelisk as 'bazel'
+RUN ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/') && \
+    wget -qO /usr/local/bin/bazel https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-${ARCH} && \
+    chmod +x /usr/local/bin/bazel
+
 RUN set -eux \
     && echo "Pip version: " \
     && pip --version \
