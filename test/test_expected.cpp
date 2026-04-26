@@ -1548,5 +1548,73 @@ namespace
 
       CHECK_EQUAL(0, count);
     }
+
+    //*************************************************************************
+    TEST(test_error_or_with_value)
+    {
+      etl::expected<int, Error> exp(42);
+
+      Error result = exp.error_or(Error("default"));
+      CHECK_EQUAL("default", result.e);
+    }
+
+    //*************************************************************************
+    TEST(test_error_or_with_error)
+    {
+      etl::expected<int, Error> exp(etl::unexpected<Error>(Error("real_error")));
+
+      Error result = exp.error_or(Error("default"));
+      CHECK_EQUAL("real_error", result.e);
+    }
+
+    //*************************************************************************
+    TEST(test_error_or_const_with_value)
+    {
+      const etl::expected<int, Error> exp(42);
+
+      Error result = exp.error_or(Error("default"));
+      CHECK_EQUAL("default", result.e);
+    }
+
+    //*************************************************************************
+    TEST(test_error_or_const_with_error)
+    {
+      const etl::expected<int, Error> exp(etl::unexpected<Error>(Error("real_error")));
+
+      Error result = exp.error_or(Error("default"));
+      CHECK_EQUAL("real_error", result.e);
+    }
+
+    //*************************************************************************
+    TEST(test_error_or_rvalue_with_value)
+    {
+      Error result = etl::expected<int, Error>(42).error_or(Error("default"));
+      CHECK_EQUAL("default", result.e);
+    }
+
+    //*************************************************************************
+    TEST(test_error_or_rvalue_with_error)
+    {
+      Error result = etl::expected<int, Error>(etl::unexpected<Error>(Error("real_error"))).error_or(Error("default"));
+      CHECK_EQUAL("real_error", result.e);
+    }
+
+    //*************************************************************************
+    TEST(test_error_or_void_value_with_value)
+    {
+      etl::expected<void, Error> exp;
+
+      Error result = exp.error_or(Error("default"));
+      CHECK_EQUAL("default", result.e);
+    }
+
+    //*************************************************************************
+    TEST(test_error_or_void_value_with_error)
+    {
+      etl::expected<void, Error> exp(etl::unexpected<Error>(Error("real_error")));
+
+      Error result = exp.error_or(Error("default"));
+      CHECK_EQUAL("real_error", result.e);
+    }
   }
 } // namespace

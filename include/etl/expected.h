@@ -605,6 +605,38 @@ namespace etl
     }
 
     //*******************************************
+    /// Get the error or a default value.
+    //*******************************************
+    template <typename G>
+    ETL_NODISCARD ETL_CONSTEXPR14 etl::enable_if_t<etl::is_convertible<G, error_type>::value, error_type> error_or(G&& default_error) const&
+    {
+      if (has_value())
+      {
+        return static_cast<error_type>(etl::forward<G>(default_error));
+      }
+      else
+      {
+        return error();
+      }
+    }
+
+    //*******************************************
+    /// Get the error or a default value.
+    //*******************************************
+    template <typename G>
+    ETL_NODISCARD ETL_CONSTEXPR14 etl::enable_if_t<etl::is_convertible<G, error_type>::value, error_type> error_or(G&& default_error) &&
+    {
+      if (has_value())
+      {
+        return static_cast<error_type>(etl::forward<G>(default_error));
+      }
+      else
+      {
+        return etl::move(error());
+      }
+    }
+
+    //*******************************************
     /// Swap with another etl::expected.
     //*******************************************
     void swap(this_type& other)
@@ -660,6 +692,22 @@ namespace etl
     const error_type& error() const
     {
       return etl::get<Error_Type>(storage);
+    }
+
+    //*******************************************
+    /// Get the error or a default value.
+    //*******************************************
+    template <typename G>
+    error_type error_or(const G& default_error) const
+    {
+      if (has_value())
+      {
+        return static_cast<error_type>(default_error);
+      }
+      else
+      {
+        return error();
+      }
     }
 #endif
 
@@ -1099,6 +1147,38 @@ namespace etl
     {
       return etl::move(etl::get<Error_Type>(storage));
     }
+
+    //*******************************************
+    /// Get the error or a default value.
+    //*******************************************
+    template <typename G>
+    ETL_NODISCARD ETL_CONSTEXPR14 etl::enable_if_t<etl::is_convertible<G, error_type>::value, error_type> error_or(G&& default_error) const&
+    {
+      if (has_value())
+      {
+        return static_cast<error_type>(etl::forward<G>(default_error));
+      }
+      else
+      {
+        return error();
+      }
+    }
+
+    //*******************************************
+    /// Get the error or a default value.
+    //*******************************************
+    template <typename G>
+    ETL_NODISCARD ETL_CONSTEXPR14 etl::enable_if_t<etl::is_convertible<G, error_type>::value, error_type> error_or(G&& default_error) &&
+    {
+      if (has_value())
+      {
+        return static_cast<error_type>(etl::forward<G>(default_error));
+      }
+      else
+      {
+        return etl::move(error());
+      }
+    }
 #else
     //*******************************************
     /// Returns the error
@@ -1107,6 +1187,22 @@ namespace etl
     const error_type& error() const
     {
       return etl::get<Error_Type>(storage);
+    }
+
+    //*******************************************
+    /// Get the error or a default value.
+    //*******************************************
+    template <typename G>
+    error_type error_or(const G& default_error) const
+    {
+      if (has_value())
+      {
+        return static_cast<error_type>(default_error);
+      }
+      else
+      {
+        return error();
+      }
     }
 #endif
 
