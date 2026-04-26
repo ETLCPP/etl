@@ -1,96 +1,152 @@
-signal
-20.44.0
+---
+title: "signal"
+---
 
-A class that implements simple signal/slot framework.
-Uses etl::delegate as the default slot type, though other types may be used.
+{{< callout type="info">}}
+  Header: `signal.h`  
+  Since: `20.44.0`  
+{{< /callout >}}
 
+A class that implements simple signal/slot framework.  
+Uses `etl::delegate` as the default slot type, though other types may be used.
+
+```cpp
 template <typename TFunction, size_t Size, typename TSlot = etl::delegate<TFunction>>
 class signal
-TFunction  The callback function signature.
-Size       The maximum numbr of slots for the signal.
-TSlot      The callback slot type. Default = etl::delegate<TFunction>
-____________________________________________________________________________________________________
-Types
+```
+`TFunction`  The callback function signature.
+`Size`       The maximum numbr of slots for the signal.
+`TSlot`      The callback slot type. Default = `etl::delegate<TFunction>`
 
-slot_type Defined as the slot type.
-size_type The size type used internally.
-span_type The span type used in the connect API.
-____________________________________________________________________________________________________
-Constructors
+## Types
+`slot_type` Defined as the slot type.
+`size_type` The size type used internally.
+`span_type` The span type used in the connect API.
 
+## Constructors
+```cpp
 template <typename... TSlots>
 ETL_CONSTEXPR14 explicit signal(TSlots&&... slots) ETL_NOEXCEPT
-Construct the signal from a variadic list of slots.
-Can be used as a constexpr constructor.
-Static asserts if any of the 
-____________________________________________________________________________________________________
-Connect
+```
+Construct the signal from a variadic list of slots.  
+Can be used as a `constexpr` constructor.  
+Static asserts if any of the slots are not `slot_type`.  
+Static asserts if the number of slots exceeds capacity.
 
+## Connect
+```cpp
 bool connect(const slot_type& slot)
-Connects the slot, if not already connected and returns true.
-If the signal is full, ETL_ASSERTs etl::signal_full and returns false.
-____________________________________________________________________________________________________
+```
+Connects the slot, if not already connected and returns `true`.  
+If the signal is full, asserts `etl::signal_full` and returns `false`.
+
+---
+
+```cpp
 bool connect(std::initializer_list<const slot_type> slots)
-Connects all of the slots and returns true.
-If the number of slots exceeds the signal's max size, asserts an etl::signal_full and returns false.
-Enabled if ETL_HAS_INITIALIZER_LIST and ETL_USING_CPP17 are defined as 1.
-____________________________________________________________________________________________________
+```
+Connects all of the slots and returns `true`.  
+If the number of slots exceeds the signal's max size, asserts an `etl::signal_full` and returns `false`.  
+Enabled if `ETL_HAS_INITIALIZER_LIST` and `ETL_USING_CPP17` are defined as `1`.
+
+---
+
+```cpp
 bool connect(const span_type slots)
-Connects all of the slots and returns true.
-If the number of slots exceeds the signal's max size, asserts an etl::signal_full and returns false.
-____________________________________________________________________________________________________
-Disconnect
+```
+Connects all of the slots and returns `true`.
+If the number of slots exceeds the signal's max size, asserts an `etl::signal_full` and returns `false`.
 
+## Disconnect
+
+```cpp
 void disconnect(const slot_type& slot) ETL_NOEXCEPT
-Disconnects slot from the signal.
-If the signal does not contain the slot. there is no error.
-____________________________________________________________________________________________________
-void disconnect(std::initializer_list<const slot_type> slots) ETL_NOEXCEPT
-Disconnects all of the slots from the signal.
-If the signal does not contain a particular slot, there is no error.
-Enabled if ETL_HAS_INITIALIZER_LIST and ETL_USING_CPP17 are defined as 1.
-____________________________________________________________________________________________________
-void disconnect(const span_type slots) ETL_NOEXCEPT
-Disconnects all of the slots from the signal.
-If the signal does not contain a particular slot, there is no error.
-____________________________________________________________________________________________________
-void disconnect_all() ETL_NOEXCEPT
-Disconnects all slots from the signal.
-____________________________________________________________________________________________________
-Status
-    
-ETL_CONSTEXPR14 bool connected(const slot_type& slot) const ETL_NOEXCEPT
-Checks if a slot is connected to the signal.
-____________________________________________________________________________________________________
-ETL_CONSTEXPR14 bool empty() const ETL_NOEXCEPT
-Return true if the signal has no slots connected.
-____________________________________________________________________________________________________
-ETL_CONSTEXPR14 bool full() const ETL_NOEXCEPT
-Return true if the signal has the maximum number of slots connected.
-____________________________________________________________________________________________________
-ETL_CONSTEXPR14 size_type max_size() const ETL_NOEXCEPT
-Returns the total number of slots that can be connected.
-____________________________________________________________________________________________________
-ETL_CONSTEXPR14 size_type size() const ETL_NOEXCEPT
-Returns the total slots currently connected.
-____________________________________________________________________________________________________
-ETL_CONSTEXPR14 size_type available() const ETL_NOEXCEPT
-Returns the total empty slots available.
-____________________________________________________________________________________________________
-Call
+```
+Disconnects slot from the signal.  
+If the signal does not contain the slot there is no error.
 
+---
+
+```cpp
+void disconnect(std::initializer_list<const slot_type> slots) ETL_NOEXCEPT
+```
+Disconnects all of the slots from the signal.  
+If the signal does not contain a particular slot, there is no error.  
+Enabled if `ETL_HAS_INITIALIZER_LIST` and `ETL_USING_CPP17` are defined as `1`.
+
+---
+
+```cpp
+void disconnect(const span_type slots) ETL_NOEXCEPT
+```
+Disconnects all of the slots from the signal.  
+If the signal does not contain a particular slot, there is no error.  
+
+```cpp
+void disconnect_all() ETL_NOEXCEPT
+```
+Disconnects all slots from the signal.
+
+## Status
+
+```cpp 
+ETL_CONSTEXPR14 bool connected(const slot_type& slot) const ETL_NOEXCEPT
+```
+Checks if a slot is connected to the signal.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 bool empty() const ETL_NOEXCEPT
+```
+Return `true` if the signal has no slots connected.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 bool full() const ETL_NOEXCEPT
+```
+Return `true` if the signal has the maximum number of slots connected.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 size_type max_size() const ETL_NOEXCEPT
+```
+Returns the total number of slots that can be connected.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 size_type size() const ETL_NOEXCEPT
+```
+Returns the total slots currently connected.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 size_type available() const ETL_NOEXCEPT
+```
+Returns the total empty slots available.
+
+## Call
+```cpp
 template <typename... TArgs>
 void operator()(TArgs&&... args) const ETL_NOEXCEPT
+```
 Function operator that calls each slot with the supplied parameters.
-____________________________________________________________________________________________________
-Errors
 
-etl::signal_full  Indicates that an attempt to add a slot to a full signal occurred.
+## Errors
 
-Inherits from etl::signal_exception
-____________________________________________________________________________________________________
-Examples
+```cpp
+etl::signal_full
+```
+Indicates that an attempt to add a slot to a full signal occurred.  
+Inherits from `etl::signal_exception`.
 
+## Examples
+
+```cpp
 constexpr size_t MaxSlots = 3;
 
 using callback_type = void(int a, int b);
@@ -99,9 +155,11 @@ using slot_type     = signal_type::slot_type;
 using span_type     = signal_type::span_type;
 
 using not_slot_type = etl::delegate<void(int)>;
-____________________________________________________________________________________________________
-Defining the slot functions
+```
 
+**Defining the slot functions**  
+
+```cpp
 void Function1(int a, int b)
 {
   std::cout << "Function1: " << a << "," << b << "\n";
@@ -116,7 +174,7 @@ void Function3(int a, int b)
 {
   std::cout << "Function3: " << a << "," << b << "\n";
 }
-
+0
 void Function4(int a, int b)
 {
   std::cout << "Function4: " << a << "," << b << "\n";
@@ -126,9 +184,11 @@ void Function5(int a)
 {
   std::cout << "Function5: " << a << "\n";
 }
-____________________________________________________________________________________________________
-Creating the slots
+```
 
+**Creating the slots**  
+
+```cpp
 constexpr slot_type MakeSlot1() noexcept
 {
 return slot_type::create<Function1>();
@@ -153,9 +213,11 @@ constexpr not_slot_type MakeSlot5() noexcept
 {
 return not_slot_type::create<Function5>();
 }
-____________________________________________________________________________________________________
-Defining the signal as constexpr
+```
 
+**Define the signals as `constexpr`**  
+
+```cpp
 // Define the signal and connect as constexpr
 constexpr signal_type({ MakeSlot1(), MakeSlot2(), MakeSlot3() });
 
@@ -166,9 +228,11 @@ constexpr signal_type({ MakeSlot1(), MakeSlot2(), MakeSlot3(), MakeSlot4() });
 // Define the signal and connect as constexpr.
 // Static assert "All slots must be slot_type"
 constexpr signal_type({ MakeSlot1(), MakeSlot2(), MakeSlot5() });
-____________________________________________________________________________________________________
-Defining the signal at runtime
+```
 
+**Defining the signal at runtime**  
+
+```cpp
 // Define the signal.
 signal_type signal;
 
@@ -183,9 +247,11 @@ signal.connect({ MakeSlot1(), MakeSlot2(), MakeSlot3() });
 // Connect using span.
 const slot_type slot_list[] = { MakeSlot1(), MakeSlot2(), MakeSlot3() };
 signal.connect(slot_list);
-____________________________________________________________________________________________________
-Checking the status
+```
 
+**Checking the status**  
+
+```cpp
 // Define the signal.
 signal_type signal;
 
@@ -243,15 +309,19 @@ signal.connected(MakeSlot2()) // Returns true
 signal.connected(MakeSlot3()) // Returns true
 
 signal.connect(MakeSlot4());  // ETL_ASSERT etl::signal_full. Returns false
-____________________________________________________________________________________________________
-Calling the signal
+```
 
+**Calling the signal**  
+
+```cpp
 signal_type signal({ MakeSlot1(), MakeSlot2(), MakeSlot3() });
 
 signal(1, 2); // Call all of the slots with the parameters 1 & 2
+```
 
-Output
+**Output**  
+```
 Function1: 1,2
 Function2: 1,2
 Function3: 1,2
-
+```
