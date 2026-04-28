@@ -490,6 +490,18 @@ SOFTWARE.
 #endif
 
 //*************************************
+// C++26
+#if defined(__has_cpp_attribute)
+  #if __has_cpp_attribute(indeterminate)
+    #define ETL_INDETERMINATE [[indeterminate]]
+  #else
+    #define ETL_INDETERMINATE
+  #endif
+#else
+  #define ETL_INDETERMINATE
+#endif
+
+//*************************************
 // Determine if the ETL can use char8_t type.
 #if ETL_NO_SMALL_CHAR_SUPPORT
   #include "private/diagnostic_cxx_20_compat_push.h"
@@ -650,6 +662,7 @@ namespace etl
     static ETL_CONSTANT bool using_cpp17                      = (ETL_USING_CPP17 == 1);
     static ETL_CONSTANT bool using_cpp20                      = (ETL_USING_CPP20 == 1);
     static ETL_CONSTANT bool using_cpp23                      = (ETL_USING_CPP23 == 1);
+    static ETL_CONSTANT bool using_cpp26                      = (ETL_USING_CPP26 == 1);
     static ETL_CONSTANT bool using_gcc_compiler               = (ETL_USING_GCC_COMPILER == 1);
     static ETL_CONSTANT bool using_microsoft_compiler         = (ETL_USING_MICROSOFT_COMPILER == 1);
     static ETL_CONSTANT bool using_arm5_compiler              = (ETL_USING_ARM5_COMPILER == 1);
@@ -697,6 +710,9 @@ namespace etl
     static ETL_CONSTANT bool has_chrono_literals_microseconds = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
     static ETL_CONSTANT bool has_chrono_literals_nanoseconds  = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
     static ETL_CONSTANT bool has_std_byteswap                 = (ETL_HAS_STD_BYTESWAP == 1);
+    static ETL_CONSTANT bool has_std_is_virtual_base_of       = (ETL_HAS_STD_IS_VIRTUAL_BASE_OF == 1);
+    static ETL_CONSTANT bool has_std_trivially_relocatable    = (ETL_HAS_STD_TRIVIALLY_RELOCATABLE == 1);
+    static ETL_CONSTANT bool has_std_atomic_min_max           = (ETL_HAS_STD_ATOMIC_MIN_MAX == 1);
     static ETL_CONSTANT bool has_noexcept_function_type       = (ETL_HAS_NOEXCEPT_FUNCTION_TYPE == 1);
 
     // Is...
