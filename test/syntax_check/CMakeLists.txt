@@ -27,6 +27,10 @@ if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 
+# Override the compile rule to use -fsyntax-only instead of -c,
+# since this project only checks syntax and doesn't produce object files.
+set(CMAKE_CXX_COMPILE_OBJECT "<CMAKE_CXX_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -fsyntax-only <SOURCE>")
+
 add_library(tests OBJECT)
 target_compile_definitions(tests PRIVATE __STDC_LIMIT_MACROS __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
 target_include_directories(tests PRIVATE "")
@@ -38,7 +42,6 @@ set_target_properties(tests PROPERTIES
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 target_compile_options(tests
 	    PRIVATE
-		-fsyntax-only
 		-pedantic-errors
 		-Werror
 		-Wextra-semi
@@ -47,7 +50,6 @@ endif ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 target_compile_options(tests
 	    PRIVATE
-		-fsyntax-only
 		-pedantic-errors
 		-Werror
 		-Wextra-semi
