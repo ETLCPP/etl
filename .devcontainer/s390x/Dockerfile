@@ -24,7 +24,7 @@ RUN dpkg --add-architecture s390x && \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user with stable UID/GID
-ARG USERNAME=devuser
+ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=1000
 
