@@ -31,14 +31,11 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_NOT_USING_CPP11 && !defined(ETL_IN_UNIT_TEST)
-  #error NOT SUPPORTED FOR C++03 OR BELOW
-#endif
-
 #if ETL_USING_CPP11
 
   #if ETL_USING_STL
     #include <tuple>
+    #include <utility>
   #endif
 
   #include "functional.h"
@@ -1183,7 +1180,9 @@ namespace etl
 
 namespace std
 {
-  #if ETL_NOT_USING_STL && !((defined(ETL_DEVELOPMENT_OS_APPLE) || (ETL_COMPILER_FULL_VERSION >= 190000)) && defined(ETL_COMPILER_CLANG))
+  #if ETL_NOT_USING_STL                                                                                                       \
+    && !((defined(ETL_DEVELOPMENT_OS_APPLE) || (ETL_COMPILER_FULL_VERSION >= 190000) && (ETL_COMPILER_FULL_VERSION < 220000)) \
+         && defined(ETL_COMPILER_CLANG))
   template <typename T>
   struct tuple_size;
 

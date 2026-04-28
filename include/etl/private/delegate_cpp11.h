@@ -172,7 +172,7 @@ namespace etl
     //*************************************************************************
     // Construct from a function pointer.
     //*************************************************************************
-    delegate(function_ptr fp) ETL_NOEXCEPT
+    explicit delegate(function_ptr fp) ETL_NOEXCEPT
     {
       assign(fp, function_ptr_stub);
     }
@@ -534,7 +534,14 @@ namespace etl
     //*************************************************************************
     delegate& operator=(function_ptr fp) ETL_NOEXCEPT
     {
-      assign(fp, function_ptr_stub);
+      if (fp == ETL_NULLPTR)
+      {
+        invocation.clear();
+      }
+      else
+      {
+        assign(fp, function_ptr_stub);
+      }
       return *this;
     }
 

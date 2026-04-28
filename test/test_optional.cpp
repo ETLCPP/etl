@@ -31,6 +31,7 @@ SOFTWARE.
 #include <cstdint>
 #include <ostream>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include "data.h"
@@ -1174,6 +1175,165 @@ namespace
       etl::optional<Issue146_NonCopyable> opt(etl::in_place_t{}, 99);
       CHECK_TRUE(opt.has_value());
       CHECK_EQUAL(99, opt->_some);
+    }
+#endif
+
+    //*************************************************************************
+    // Tests for noexcept properties of etl::optional
+    // The noexcept specs only take effect when ETL_USING_EXCEPTIONS is enabled,
+    // because ETL_NOEXCEPT_IF expands to nothing otherwise.
+    // The etl::is_nothrow_* traits only work with STL or builtins.
+    //*************************************************************************
+#if ETL_USING_CPP11 && ETL_USING_EXCEPTIONS && (defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS)))
+    struct NothrowCopyMove
+    {
+      NothrowCopyMove() noexcept {}
+      NothrowCopyMove(const NothrowCopyMove&) noexcept {}
+      NothrowCopyMove(NothrowCopyMove&&) noexcept {}
+      NothrowCopyMove& operator=(const NothrowCopyMove&) noexcept
+      {
+        return *this;
+      }
+      NothrowCopyMove& operator=(NothrowCopyMove&&) noexcept
+      {
+        return *this;
+      }
+    };
+
+    struct ThrowingCopy
+    {
+      ThrowingCopy() noexcept {}
+      ThrowingCopy(const ThrowingCopy&) {} // may throw
+      ThrowingCopy(ThrowingCopy&&) noexcept {}
+      ThrowingCopy& operator=(const ThrowingCopy&)
+      {
+        return *this;
+      } // may throw
+      ThrowingCopy& operator=(ThrowingCopy&&) noexcept
+      {
+        return *this;
+      }
+    };
+
+    struct ThrowingMove
+    {
+      ThrowingMove() noexcept {}
+      ThrowingMove(const ThrowingMove&) noexcept {}
+      ThrowingMove(ThrowingMove&&) {} // may throw
+      ThrowingMove& operator=(const ThrowingMove&) noexcept
+      {
+        return *this;
+      }
+      ThrowingMove& operator=(ThrowingMove&&)
+      {
+        return *this;
+      } // may throw
+    };
+
+    struct ThrowingBoth
+    {
+      ThrowingBoth() noexcept {}
+      ThrowingBoth(const ThrowingBoth&) {} // may throw
+      ThrowingBoth(ThrowingBoth&&) {}      // may throw
+      ThrowingBoth& operator=(const ThrowingBoth&)
+      {
+        return *this;
+      }
+      ThrowingBoth& operator=(ThrowingBoth&&)
+      {
+        return *this;
+      }
+    };
+
+    TEST(test_optional_nothrow_copy_constructible)
+    {
+      // When T is nothrow copy constructible, optional<T> should be too
+      static_assert(etl::is_nothrow_copy_constructible<etl::optional<int>>::value, "optional<int> should be nothrow copy constructible");
+      static_assert(etl::is_nothrow_copy_constructible<etl::optional<NothrowCopyMove>>::value,
+                    "optional<NothrowCopyMove> should be nothrow copy constructible");
+
+      // When T is NOT nothrow copy constructible, optional<T> should not be either
+      static_assert(!etl::is_nothrow_copy_constructible<etl::optional<ThrowingCopy>>::value,
+                    "optional<ThrowingCopy> should NOT be nothrow copy constructible");
+      static_assert(!etl::is_nothrow_copy_constructible<etl::optional<ThrowingBoth>>::value,
+                    "optional<ThrowingBoth> should NOT be nothrow copy constructible");
+
+      // ThrowingMove has nothrow copy but throwing move
+      static_assert(etl::is_nothrow_copy_constructible<etl::optional<ThrowingMove>>::value,
+                    "optional<ThrowingMove> should be nothrow copy constructible");
+
+      CHECK(true); // Placeholder for the static_asserts above
+    }
+
+    TEST(test_optional_nothrow_move_constructible)
+    {
+      // When T is nothrow move constructible, optional<T> should be too
+      static_assert(etl::is_nothrow_move_constructible<etl::optional<int>>::value, "optional<int> should be nothrow move constructible");
+      static_assert(etl::is_nothrow_move_constructible<etl::optional<NothrowCopyMove>>::value,
+                    "optional<NothrowCopyMove> should be nothrow move constructible");
+
+      // When T is NOT nothrow move constructible, optional<T> should not be either
+      static_assert(!etl::is_nothrow_move_constructible<etl::optional<ThrowingMove>>::value,
+                    "optional<ThrowingMove> should NOT be nothrow move constructible");
+      static_assert(!etl::is_nothrow_move_constructible<etl::optional<ThrowingBoth>>::value,
+                    "optional<ThrowingBoth> should NOT be nothrow move constructible");
+
+      // ThrowingCopy has nothrow move but throwing copy
+      static_assert(etl::is_nothrow_move_constructible<etl::optional<ThrowingCopy>>::value,
+                    "optional<ThrowingCopy> should be nothrow move constructible");
+
+      CHECK(true); // Placeholder for the static_asserts above
+    }
+
+    TEST(test_optional_nothrow_default_constructible)
+    {
+      // Default construction of optional should always be noexcept
+      static_assert(etl::is_nothrow_default_constructible<etl::optional<int>>::value, "optional<int> should be nothrow default constructible");
+      static_assert(etl::is_nothrow_default_constructible<etl::optional<NothrowCopyMove>>::value,
+                    "optional<NothrowCopyMove> should be nothrow default constructible");
+      static_assert(etl::is_nothrow_default_constructible<etl::optional<ThrowingCopy>>::value,
+                    "optional<ThrowingCopy> should be nothrow default constructible");
+      static_assert(etl::is_nothrow_default_constructible<etl::optional<ThrowingBoth>>::value,
+                    "optional<ThrowingBoth> should be nothrow default constructible");
+
+      CHECK(true);
+    }
+
+    TEST(test_optional_nothrow_constructible_from_value)
+    {
+      // optional<T>(U&&) should be noexcept iff T is nothrow constructible from U&&
+      static_assert(etl::is_nothrow_constructible<etl::optional<int>, int>::value, "optional<int> should be nothrow constructible from int");
+      static_assert(etl::is_nothrow_constructible<etl::optional<int>, int&&>::value, "optional<int> should be nothrow constructible from int&&");
+
+      CHECK(true);
+    }
+
+    TEST(test_optional_nothrow_copy_assignable)
+    {
+      // Copy assignment should propagate noexcept from T
+      static_assert(etl::is_nothrow_copy_assignable<etl::optional<int>>::value, "optional<int> should be nothrow copy assignable");
+      static_assert(etl::is_nothrow_copy_assignable<etl::optional<NothrowCopyMove>>::value,
+                    "optional<NothrowCopyMove> should be nothrow copy assignable");
+
+      // ThrowingCopy has a throwing copy constructor, so copy assignment should not be noexcept
+      static_assert(!etl::is_nothrow_copy_assignable<etl::optional<ThrowingCopy>>::value,
+                    "optional<ThrowingCopy> should NOT be nothrow copy assignable");
+
+      CHECK(true);
+    }
+
+    TEST(test_optional_nothrow_move_assignable)
+    {
+      // Move assignment should propagate noexcept from T
+      static_assert(etl::is_nothrow_move_assignable<etl::optional<int>>::value, "optional<int> should be nothrow move assignable");
+      static_assert(etl::is_nothrow_move_assignable<etl::optional<NothrowCopyMove>>::value,
+                    "optional<NothrowCopyMove> should be nothrow move assignable");
+
+      // ThrowingMove has a throwing move constructor, so move assignment should not be noexcept
+      static_assert(!etl::is_nothrow_move_assignable<etl::optional<ThrowingMove>>::value,
+                    "optional<ThrowingMove> should NOT be nothrow move assignable");
+
+      CHECK(true);
     }
 #endif
   }

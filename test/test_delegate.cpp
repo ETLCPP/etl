@@ -373,6 +373,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_is_valid_after_init_empty_braces)
+    {
+      etl::delegate<void(void)> d = {};
+
+      CHECK_FALSE(d.is_valid());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_is_valid_after_assign_empty_braces)
+    {
+      auto lambda = [] {
+      };
+
+      etl::delegate<void(void)> d(lambda);
+
+      CHECK_TRUE(d.is_valid());
+      d = {};
+      CHECK_FALSE(d.is_valid());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_free_void)
     {
       auto d = etl::delegate<void(void)>::create<free_void>();
