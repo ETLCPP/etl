@@ -166,7 +166,7 @@ namespace
 
       for (size_t i = 0UL; i < output1.size(); ++i)
       {
-        CHECK_EQUAL(int(output1[i]), int(histogram[i]));
+        CHECK_EQUAL(static_cast<int>(output1[i]), static_cast<int>(histogram[static_cast<int>(i)]));
       }
     }
 
@@ -203,7 +203,7 @@ namespace
 
       for (size_t i = 0UL; i < output1.size(); ++i)
       {
-        CHECK_EQUAL(int(output1[i]), int(histogram[i - 4]));
+        CHECK_EQUAL(static_cast<int>(output1[i]), static_cast<int>(histogram[static_cast<int>(i) - 4]));
       }
     }
 

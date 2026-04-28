@@ -37,10 +37,6 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
-#if ETL_NOT_USING_CPP20 && !defined(ETL_IN_UNIT_TEST)
-  #error NOT SUPPORTED FOR BELOW C++20
-#endif
-
 #if ETL_USING_CPP20
 
   #if ETL_USING_STL

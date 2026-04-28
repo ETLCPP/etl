@@ -102,8 +102,8 @@ namespace
       return *this;
     }
 
-    Copyable(Copyable&&)           = delete;
-    Copyable& operator=(Copyable&) = delete;
+    Copyable(Copyable&&)            = delete;
+    Copyable& operator=(Copyable&&) = delete;
   };
 
   //*********************************************
@@ -146,8 +146,8 @@ namespace
       return *this;
     }
 
-    NotDefaultConstructible(NotDefaultConstructible&&)           = delete;
-    NotDefaultConstructible& operator=(NotDefaultConstructible&) = delete;
+    NotDefaultConstructible(NotDefaultConstructible&&)            = delete;
+    NotDefaultConstructible& operator=(NotDefaultConstructible&&) = delete;
   };
 
   // A function to test etl::type_identity.
@@ -344,7 +344,7 @@ using etl::is_move_constructible;
 
 //*************************
 template <>
-struct etl::is_assignable<Copyable, Copyable> : public etl::true_type
+struct etl::is_assignable<Copyable, Copyable> : public etl::false_type
 {
 };
 
@@ -364,7 +364,7 @@ struct etl::is_copy_assignable<Copyable> : public etl::true_type
 };
 
 template <>
-struct etl::is_move_assignable<Copyable> : public etl::true_type
+struct etl::is_move_assignable<Copyable> : public etl::false_type
 {
 };
 
@@ -1007,6 +1007,64 @@ namespace
       CHECK((std::is_base_of<int, char>::value) == (etl::is_base_of<int, char>::value));
     }
 
+#if ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF
+    //*************************************************************************
+    TEST(test_is_virtual_base_of)
+    {
+      struct A
+      {
+      };
+      struct B : public A // Non-virtual base
+      {
+      };
+      struct C : virtual public A // Virtual base
+      {
+      };
+      struct D
+        : public B
+        , virtual public A // A is both virtual and non-virtual base
+      {
+      };
+      struct E : public C // A is indirect virtual base
+      {
+      };
+      struct F // Unrelated class
+      {
+      };
+
+      // A is not a virtual base of A (same class)
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<A, A>::value));
+
+      // A is NOT a virtual base of B (it's a non-virtual base)
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<A, B>::value));
+
+      // A IS a virtual base of C
+      CHECK_EQUAL(true, (etl::is_virtual_base_of<A, C>::value));
+
+      // A IS a virtual base of D (even though it's also a non-virtual base via B)
+      CHECK_EQUAL(true, (etl::is_virtual_base_of<A, D>::value));
+
+      // A IS a virtual base of E (indirect virtual base)
+      CHECK_EQUAL(true, (etl::is_virtual_base_of<A, E>::value));
+
+      // Unrelated classes
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<A, F>::value));
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<F, A>::value));
+
+      // Fundamental types
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<int, int>::value));
+      CHECK_EQUAL(false, (etl::is_virtual_base_of<int, char>::value));
+
+  #if ETL_USING_CPP17
+      // Test the _v helper
+      CHECK_EQUAL(false, etl::is_virtual_base_of_v<A, B>);
+      CHECK_EQUAL(true, etl::is_virtual_base_of_v<A, C>);
+      CHECK_EQUAL(true, etl::is_virtual_base_of_v<A, D>);
+      CHECK_EQUAL(true, etl::is_virtual_base_of_v<A, E>);
+  #endif
+    }
+#endif
+
     //*************************************************************************
     TEST(test_types)
     {
@@ -1491,6 +1549,155 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_is_nothrow_constructible)
+    {
+#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_nothrow_constructible<int>::value) == true);
+      CHECK((etl::is_nothrow_constructible<Copyable>::value) == false);
+      CHECK((etl::is_nothrow_constructible<Moveable>::value) == false);
+      CHECK((etl::is_nothrow_constructible<MoveableCopyable>::value) == false);
+      CHECK((etl::is_nothrow_constructible<int>::value) == (std::is_nothrow_constructible<int>::value));
+      CHECK((etl::is_nothrow_constructible<Copyable>::value) == (std::is_nothrow_constructible<Copyable>::value));
+      CHECK((etl::is_nothrow_constructible<Moveable>::value) == (std::is_nothrow_constructible<Moveable>::value));
+      CHECK((etl::is_nothrow_constructible<MoveableCopyable>::value) == (std::is_nothrow_constructible<MoveableCopyable>::value));
+  #if ETL_USING_CPP17
+      CHECK((etl::is_nothrow_constructible_v<int>) == (std::is_nothrow_constructible_v<int>));
+      CHECK((etl::is_nothrow_constructible_v<Copyable>) == (std::is_nothrow_constructible_v<Copyable>));
+      CHECK((etl::is_nothrow_constructible_v<Moveable>) == (std::is_nothrow_constructible_v<Moveable>));
+      CHECK((etl::is_nothrow_constructible_v<MoveableCopyable>) == (std::is_nothrow_constructible_v<MoveableCopyable>));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_default_constructible)
+    {
+#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_nothrow_default_constructible<int>::value) == true);
+      CHECK((etl::is_nothrow_default_constructible<Copyable>::value) == false);
+      CHECK((etl::is_nothrow_default_constructible<Moveable>::value) == false);
+      CHECK((etl::is_nothrow_default_constructible<MoveableCopyable>::value) == false);
+      CHECK((etl::is_nothrow_default_constructible<int>::value) == (std::is_nothrow_default_constructible<int>::value));
+      CHECK((etl::is_nothrow_default_constructible<Copyable>::value) == (std::is_nothrow_default_constructible<Copyable>::value));
+      CHECK((etl::is_nothrow_default_constructible<Moveable>::value) == (std::is_nothrow_default_constructible<Moveable>::value));
+      CHECK((etl::is_nothrow_default_constructible<MoveableCopyable>::value) == (std::is_nothrow_default_constructible<MoveableCopyable>::value));
+  #if ETL_USING_CPP17
+      CHECK((etl::is_nothrow_default_constructible_v<int>) == (std::is_nothrow_default_constructible_v<int>));
+      CHECK((etl::is_nothrow_default_constructible_v<Copyable>) == (std::is_nothrow_default_constructible_v<Copyable>));
+      CHECK((etl::is_nothrow_default_constructible_v<Moveable>) == (std::is_nothrow_default_constructible_v<Moveable>));
+      CHECK((etl::is_nothrow_default_constructible_v<MoveableCopyable>) == (std::is_nothrow_default_constructible_v<MoveableCopyable>));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_copy_constructible)
+    {
+#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_nothrow_copy_constructible<int>::value) == true);
+      CHECK((etl::is_nothrow_copy_constructible<Copyable>::value) == true);
+      CHECK((etl::is_nothrow_copy_constructible<Moveable>::value) == false);
+      CHECK((etl::is_nothrow_copy_constructible<MoveableCopyable>::value) == false);
+      CHECK((etl::is_nothrow_copy_constructible<int>::value) == (std::is_nothrow_copy_constructible<int>::value));
+      CHECK((etl::is_nothrow_copy_constructible<Copyable>::value) == (std::is_nothrow_copy_constructible<Copyable>::value));
+      CHECK((etl::is_nothrow_copy_constructible<Moveable>::value) == (std::is_nothrow_copy_constructible<Moveable>::value));
+      CHECK((etl::is_nothrow_copy_constructible<MoveableCopyable>::value) == (std::is_nothrow_copy_constructible<MoveableCopyable>::value));
+  #if ETL_USING_CPP17
+      CHECK((etl::is_nothrow_copy_constructible_v<int>) == (std::is_nothrow_copy_constructible_v<int>));
+      CHECK((etl::is_nothrow_copy_constructible_v<Copyable>) == (std::is_nothrow_copy_constructible_v<Copyable>));
+      CHECK((etl::is_nothrow_copy_constructible_v<Moveable>) == (std::is_nothrow_copy_constructible_v<Moveable>));
+      CHECK((etl::is_nothrow_copy_constructible_v<MoveableCopyable>) == (std::is_nothrow_copy_constructible_v<MoveableCopyable>));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_move_constructible)
+    {
+#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_nothrow_move_constructible<int>::value) == true);
+      CHECK((etl::is_nothrow_move_constructible<Copyable>::value) == false);
+      CHECK((etl::is_nothrow_move_constructible<Moveable>::value) == true);
+      CHECK((etl::is_nothrow_move_constructible<MoveableCopyable>::value) == true);
+      CHECK((etl::is_nothrow_move_constructible<int>::value) == (std::is_nothrow_move_constructible<int>::value));
+      CHECK((etl::is_nothrow_move_constructible<Copyable>::value) == (std::is_nothrow_move_constructible<Copyable>::value));
+      CHECK((etl::is_nothrow_move_constructible<Moveable>::value) == (std::is_nothrow_move_constructible<Moveable>::value));
+      CHECK((etl::is_nothrow_move_constructible<MoveableCopyable>::value) == (std::is_nothrow_move_constructible<MoveableCopyable>::value));
+  #if ETL_USING_CPP17
+      CHECK((etl::is_nothrow_move_constructible_v<int>) == (std::is_nothrow_move_constructible_v<int>));
+      CHECK((etl::is_nothrow_move_constructible_v<Copyable>) == (std::is_nothrow_move_constructible_v<Copyable>));
+      CHECK((etl::is_nothrow_move_constructible_v<Moveable>) == (std::is_nothrow_move_constructible_v<Moveable>));
+      CHECK((etl::is_nothrow_move_constructible_v<MoveableCopyable>) == (std::is_nothrow_move_constructible_v<MoveableCopyable>));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_assignable)
+    {
+#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_nothrow_assignable<int&, int>::value) == true);
+      CHECK((etl::is_nothrow_assignable<Copyable&, Copyable>::value) == false);
+      CHECK((etl::is_nothrow_assignable<Moveable&, Moveable>::value) == true);
+      CHECK((etl::is_nothrow_assignable<MoveableCopyable&, MoveableCopyable>::value) == true);
+      CHECK((etl::is_nothrow_assignable<int&, int>::value) == (std::is_nothrow_assignable<int&, int>::value));
+      CHECK((etl::is_nothrow_assignable<Copyable&, Copyable>::value) == (std::is_nothrow_assignable<Copyable&, Copyable>::value));
+      CHECK((etl::is_nothrow_assignable<Moveable&, Moveable>::value) == (std::is_nothrow_assignable<Moveable&, Moveable>::value));
+      CHECK((etl::is_nothrow_assignable<MoveableCopyable&, MoveableCopyable>::value)
+            == (std::is_nothrow_assignable<MoveableCopyable&, MoveableCopyable>::value));
+  #if ETL_USING_CPP17
+      CHECK((etl::is_nothrow_assignable_v<int&, int>) == (std::is_nothrow_assignable_v<int&, int>));
+      CHECK((etl::is_nothrow_assignable_v<Copyable&, Copyable>) == (std::is_nothrow_assignable_v<Copyable&, Copyable>));
+      CHECK((etl::is_nothrow_assignable_v<Moveable&, Moveable>) == (std::is_nothrow_assignable_v<Moveable&, Moveable>));
+      CHECK(
+        (etl::is_nothrow_assignable_v<MoveableCopyable&, MoveableCopyable>) == (std::is_nothrow_assignable_v<MoveableCopyable&, MoveableCopyable>));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_copy_assignable)
+    {
+#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_nothrow_copy_assignable<int>::value) == true);
+      CHECK((etl::is_nothrow_copy_assignable<Copyable>::value) == true);
+      CHECK((etl::is_nothrow_copy_assignable<Moveable>::value) == false);
+      CHECK((etl::is_nothrow_copy_assignable<MoveableCopyable>::value) == false);
+      CHECK((etl::is_nothrow_copy_assignable<int>::value) == (std::is_nothrow_copy_assignable<int>::value));
+      CHECK((etl::is_nothrow_copy_assignable<Copyable>::value) == (std::is_nothrow_copy_assignable<Copyable>::value));
+      CHECK((etl::is_nothrow_copy_assignable<Moveable>::value) == (std::is_nothrow_copy_assignable<Moveable>::value));
+      CHECK((etl::is_nothrow_copy_assignable<MoveableCopyable>::value) == (std::is_nothrow_copy_assignable<MoveableCopyable>::value));
+  #if ETL_USING_CPP17
+      CHECK((etl::is_nothrow_copy_assignable_v<int>) == (std::is_nothrow_copy_assignable_v<int>));
+      CHECK((etl::is_nothrow_copy_assignable_v<Copyable>) == (std::is_nothrow_copy_assignable_v<Copyable>));
+      CHECK((etl::is_nothrow_copy_assignable_v<Moveable>) == (std::is_nothrow_copy_assignable_v<Moveable>));
+      CHECK((etl::is_nothrow_copy_assignable_v<MoveableCopyable>) == (std::is_nothrow_copy_assignable_v<MoveableCopyable>));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_move_assignable)
+    {
+#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_nothrow_move_assignable<int>::value) == true);
+      CHECK((etl::is_nothrow_move_assignable<Copyable>::value) == false);
+      CHECK((etl::is_nothrow_move_assignable<Moveable>::value) == true);
+      CHECK((etl::is_nothrow_move_assignable<MoveableCopyable>::value) == true);
+      CHECK((etl::is_nothrow_move_assignable<int>::value) == (std::is_nothrow_move_assignable<int>::value));
+      CHECK((etl::is_nothrow_move_assignable<Copyable>::value) == (std::is_nothrow_move_assignable<Copyable>::value));
+      CHECK((etl::is_nothrow_move_assignable<Moveable>::value) == (std::is_nothrow_move_assignable<Moveable>::value));
+      CHECK((etl::is_nothrow_move_assignable<MoveableCopyable>::value) == (std::is_nothrow_move_assignable<MoveableCopyable>::value));
+  #if ETL_USING_CPP17
+      CHECK((etl::is_nothrow_move_assignable_v<int>) == (std::is_nothrow_move_assignable_v<int>));
+      CHECK((etl::is_nothrow_move_assignable_v<Copyable>) == (std::is_nothrow_move_assignable_v<Copyable>));
+      CHECK((etl::is_nothrow_move_assignable_v<Moveable>) == (std::is_nothrow_move_assignable_v<Moveable>));
+      CHECK((etl::is_nothrow_move_assignable_v<MoveableCopyable>) == (std::is_nothrow_move_assignable_v<MoveableCopyable>));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_is_trivially_constructible)
     {
 #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
@@ -1572,6 +1779,110 @@ namespace
     #endif
   #endif
 #endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_relocatable)
+    {
+      // Trivially relocatable types (trivially copyable and trivially destructible)
+      // Primitive types should always be detected as trivially relocatable
+      CHECK_TRUE(etl::is_trivially_relocatable<int>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<double>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<int*>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<const int*>::value);
+
+      // POD struct should be trivially relocatable when proper detection is available
+      struct TrivialStruct
+      {
+        int    x;
+        double y;
+      };
+
+      // Struct with non-trivial destructor should NOT be trivially relocatable
+      struct NonTrivialDestructor
+      {
+        ~NonTrivialDestructor() {}
+      };
+      CHECK_FALSE(etl::is_trivially_relocatable<NonTrivialDestructor>::value);
+
+      // Struct with non-trivial copy constructor should NOT be trivially relocatable
+      struct NonTrivialCopy
+      {
+        NonTrivialCopy() = default;
+        NonTrivialCopy(const NonTrivialCopy&) {}
+        NonTrivialCopy& operator=(const NonTrivialCopy&) = default;
+      };
+      CHECK_FALSE(etl::is_trivially_relocatable<NonTrivialCopy>::value);
+
+#if ETL_USING_STL || ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+      // These tests require STL or compiler builtins to correctly detect struct/array triviality
+      CHECK_TRUE(etl::is_trivially_relocatable<int[10]>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<TrivialStruct>::value);
+      CHECK_TRUE(etl::is_trivially_relocatable<TrivialStruct[5]>::value);
+#endif
+
+#if ETL_USING_CPP17
+      // Test the _v helper variable
+      CHECK_TRUE(etl::is_trivially_relocatable_v<int>);
+      CHECK_TRUE(etl::is_trivially_relocatable_v<double>);
+      CHECK_TRUE(etl::is_trivially_relocatable_v<int*>);
+  #if ETL_USING_STL || ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+      CHECK_TRUE(etl::is_trivially_relocatable_v<TrivialStruct>);
+  #endif
+      CHECK_FALSE(etl::is_trivially_relocatable_v<NonTrivialDestructor>);
+      CHECK_FALSE(etl::is_trivially_relocatable_v<NonTrivialCopy>);
+#endif
+
+      // Verify consistency: if a type is trivially_copyable AND trivially_destructible,
+      // then it should be trivially_relocatable. The reverse may not hold when compiler
+      // builtins provide more accurate detection than the fallback implementations.
+      CHECK_TRUE(!(etl::is_trivially_copyable<int>::value && etl::is_trivially_destructible<int>::value)
+                 || etl::is_trivially_relocatable<int>::value);
+      CHECK_TRUE(!(etl::is_trivially_copyable<TrivialStruct>::value && etl::is_trivially_destructible<TrivialStruct>::value)
+                 || etl::is_trivially_relocatable<TrivialStruct>::value);
+      // Non-trivially destructible types should never be trivially relocatable
+      CHECK_FALSE(etl::is_trivially_relocatable<NonTrivialDestructor>::value);
+      // Non-trivially copyable types should never be trivially relocatable
+      CHECK_FALSE(etl::is_trivially_relocatable<NonTrivialCopy>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_relocatable)
+    {
+      // Trivially relocatable types should always be nothrow relocatable
+      // Primitive types should always be detected correctly
+      CHECK_TRUE(etl::is_nothrow_relocatable<int>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<double>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<int*>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<const int*>::value);
+
+      // POD struct should be nothrow relocatable when proper detection is available
+      struct TrivialStruct
+      {
+        int    x;
+        double y;
+      };
+
+#if ETL_USING_STL || ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+      // These tests require STL or compiler builtins to correctly detect struct/array triviality
+      CHECK_TRUE(etl::is_nothrow_relocatable<int[10]>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<TrivialStruct>::value);
+      CHECK_TRUE(etl::is_nothrow_relocatable<TrivialStruct[5]>::value);
+#endif
+
+#if ETL_USING_CPP17
+      // Test the _v helper variable
+      CHECK_TRUE(etl::is_nothrow_relocatable_v<int>);
+      CHECK_TRUE(etl::is_nothrow_relocatable_v<double>);
+      CHECK_TRUE(etl::is_nothrow_relocatable_v<int*>);
+  #if ETL_USING_STL || ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+      CHECK_TRUE(etl::is_nothrow_relocatable_v<TrivialStruct>);
+  #endif
+#endif
+
+      // Verify consistency: nothrow_relocatable should be at least as permissive as trivially_relocatable
+      CHECK_TRUE(!etl::is_trivially_relocatable<int>::value || etl::is_nothrow_relocatable<int>::value);
+      CHECK_TRUE(!etl::is_trivially_relocatable<TrivialStruct>::value || etl::is_nothrow_relocatable<TrivialStruct>::value);
     }
 
     //*************************************************************************

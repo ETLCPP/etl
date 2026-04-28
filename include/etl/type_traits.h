@@ -1182,6 +1182,21 @@ namespace etl
   inline constexpr bool is_base_of_v = is_base_of<T1, T2>::value;
   #endif
 
+    //***************************************************************************
+    /// is_virtual_base_of
+    /// Determines if TBase is a virtual base class of TDerived
+  #if ETL_USING_CPP11 && ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF
+  template <typename TBase, typename TDerived>
+  struct is_virtual_base_of : etl::bool_constant<__is_virtual_base_of(TBase, TDerived)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename TBase, typename TDerived>
+  inline constexpr bool is_virtual_base_of_v = is_virtual_base_of<TBase, TDerived>::value;
+    #endif
+  #endif
+
   //***************************************************************************
   /// add_lvalue_reference
   template <typename T>
@@ -2029,6 +2044,32 @@ namespace etl
   inline constexpr bool is_base_of_v = std::is_base_of_v<TBase, TDerived>;
   #endif
 
+    //***************************************************************************
+    /// is_virtual_base_of
+    /// Determines if TBase is a virtual base class of TDerived
+    ///\ingroup type_traits
+  #if ETL_HAS_STD_IS_VIRTUAL_BASE_OF
+  template <typename TBase, typename TDerived>
+  struct is_virtual_base_of : std::is_virtual_base_of<TBase, TDerived>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename TBase, typename TDerived>
+  inline constexpr bool is_virtual_base_of_v = std::is_virtual_base_of_v<TBase, TDerived>;
+    #endif
+  #elif ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF
+  template <typename TBase, typename TDerived>
+  struct is_virtual_base_of : etl::bool_constant<__is_virtual_base_of(TBase, TDerived)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename TBase, typename TDerived>
+  inline constexpr bool is_virtual_base_of_v = is_virtual_base_of<TBase, TDerived>::value;
+    #endif
+  #endif
+
   //***************************************************************************
   /// is_class
   template <typename T>
@@ -2606,6 +2647,41 @@ namespace etl
   template <typename T>
   using is_move_assignable = std::is_move_assignable<T>;
 
+  //*********************************************
+  // is_nothrow_constructible
+  template <typename T, typename... TArgs>
+  using is_nothrow_constructible = std::is_nothrow_constructible<T, TArgs...>;
+
+  //*********************************************
+  // is_nothrow_default_constructible
+  template <typename T>
+  using is_nothrow_default_constructible = std::is_nothrow_default_constructible<T>;
+
+  //*********************************************
+  // is_nothrow_copy_constructible
+  template <typename T>
+  using is_nothrow_copy_constructible = std::is_nothrow_copy_constructible<T>;
+
+  //*********************************************
+  // is_nothrow_move_constructible
+  template <typename T>
+  using is_nothrow_move_constructible = std::is_nothrow_move_constructible<T>;
+
+  //*********************************************
+  // is_nothrow_assignable
+  template <typename T, typename U>
+  using is_nothrow_assignable = std::is_nothrow_assignable<T, U>;
+
+  //*********************************************
+  // is_nothrow_copy_assignable
+  template <typename T>
+  using is_nothrow_copy_assignable = std::is_nothrow_copy_assignable<T>;
+
+  //*********************************************
+  // is_nothrow_move_assignable
+  template <typename T>
+  using is_nothrow_move_assignable = std::is_nothrow_move_assignable<T>;
+
     //*********************************************
     // is_trivially_constructible
   #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED
@@ -2657,6 +2733,40 @@ namespace etl
   #else
   template <typename T>
   using is_trivially_copyable = etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>;
+  #endif
+
+    //*********************************************
+    // is_trivially_relocatable
+  #if ETL_HAS_STD_TRIVIALLY_RELOCATABLE && ETL_USING_STL
+  template <typename T>
+  using is_trivially_relocatable = std::is_trivially_relocatable<T>;
+  #elif ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE
+  template <typename T>
+  using is_trivially_relocatable = etl::bool_constant<__builtin_is_cpp_trivially_relocatable(T)>;
+  #elif ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+  template <typename T>
+  using is_trivially_relocatable = etl::bool_constant<__is_trivially_relocatable(T)>;
+  #else
+  template <typename T>
+  using is_trivially_relocatable = etl::bool_constant<etl::is_trivially_copyable<T>::value && etl::is_trivially_destructible<T>::value>;
+  #endif
+
+    //*********************************************
+    // is_nothrow_relocatable
+    // A type is nothrow relocatable if it is trivially relocatable, or
+    // if it has a nothrow move constructor and nothrow destructor.
+  #if ETL_HAS_STD_TRIVIALLY_RELOCATABLE && ETL_USING_STL
+  template <typename T>
+  using is_nothrow_relocatable = std::is_nothrow_relocatable<T>;
+  #elif ETL_USING_STL
+  template <typename T>
+  using is_nothrow_relocatable = etl::bool_constant< etl::is_trivially_relocatable<T>::value
+                                                     || (std::is_nothrow_move_constructible<typename etl::remove_all_extents<T>::type>::value
+                                                         && std::is_nothrow_destructible<typename etl::remove_all_extents<T>::type>::value)>;
+  #else
+  // Fallback: only trivially relocatable types are known to be nothrow relocatable
+  template <typename T>
+  using is_nothrow_relocatable = etl::is_trivially_relocatable<T>;
   #endif
 
 #elif defined(ETL_USE_TYPE_TRAITS_BUILTINS) && !defined(ETL_USER_DEFINED_TYPE_TRAITS)
@@ -2737,6 +2847,71 @@ namespace etl
 
   #if ETL_USING_CPP11
   //*********************************************
+  // is_nothrow_constructible
+  template <typename T, typename... TArgs>
+  struct is_nothrow_constructible
+  {
+    #if ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE
+    static ETL_CONSTANT bool value = __is_nothrow_constructible(T, TArgs...);
+    #else
+    static ETL_CONSTANT bool value = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value;
+    #endif
+  };
+
+  //*********************************************
+  // is_nothrow_default_constructible
+  template <typename T>
+  struct is_nothrow_default_constructible : public etl::is_nothrow_constructible<T>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_copy_constructible
+  template <typename T>
+  struct is_nothrow_copy_constructible : public etl::is_nothrow_constructible<T, typename etl::add_lvalue_reference<const T>::type>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_move_constructible
+  template <typename T>
+  struct is_nothrow_move_constructible : public etl::is_nothrow_constructible<T, typename etl::add_rvalue_reference<T>::type>
+  {
+  };
+  #endif
+
+  #if ETL_USING_CPP11
+  //*********************************************
+  // is_nothrow_assignable
+  template <typename T, typename U>
+  struct is_nothrow_assignable
+  {
+    #if ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE
+    static ETL_CONSTANT bool value = __is_nothrow_assignable(T, U);
+    #else
+    static ETL_CONSTANT bool value = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value;
+    #endif
+  };
+
+  //*********************************************
+  // is_nothrow_copy_assignable
+  template <typename T>
+  struct is_nothrow_copy_assignable
+    : public etl::is_nothrow_assignable<typename etl::add_lvalue_reference<T>::type, typename etl::add_lvalue_reference<const T>::type>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_move_assignable
+  template <typename T>
+  struct is_nothrow_move_assignable
+    : public etl::is_nothrow_assignable<typename etl::add_lvalue_reference<T>::type, typename etl::add_rvalue_reference<T>::type>
+  {
+  };
+  #endif
+
+  #if ETL_USING_CPP11
+  //*********************************************
   // is_trivially_constructible
   template <typename T, typename... TArgs>
   struct is_trivially_constructible
@@ -2810,6 +2985,31 @@ namespace etl
   struct is_trivially_copyable
   {
     static ETL_CONSTANT bool value = __is_trivially_copyable(T);
+  };
+
+  //*********************************************
+  // is_trivially_relocatable
+  template <typename T>
+  struct is_trivially_relocatable
+  {
+  #if ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE
+    static ETL_CONSTANT bool value = __builtin_is_cpp_trivially_relocatable(T);
+  #elif ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+    static ETL_CONSTANT bool value = __is_trivially_relocatable(T);
+  #else
+    static ETL_CONSTANT bool value = etl::is_trivially_copyable<T>::value && etl::is_trivially_destructible<T>::value;
+  #endif
+  };
+
+  //*********************************************
+  // is_nothrow_relocatable
+  // A type is nothrow relocatable if it is trivially relocatable, or
+  // if it has a nothrow move constructor and nothrow destructor.
+  template <typename T>
+  struct is_nothrow_relocatable
+  {
+    // In builtins mode, conservatively use trivially_relocatable as the definition
+    static ETL_CONSTANT bool value = etl::is_trivially_relocatable<T>::value;
   };
 
 #elif defined(ETL_USER_DEFINED_TYPE_TRAITS) && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
@@ -2906,6 +3106,104 @@ namespace etl
   template <typename T>
   struct is_move_assignable<T, false>;
 
+  #if ETL_USING_CPP11
+  //*********************************************
+  // is_nothrow_constructible
+  template <typename T, bool BValue, typename... TArgs>
+  struct is_nothrow_constructible_helper;
+
+  template <typename T, typename... TArgs>
+  struct is_nothrow_constructible_helper<T, true, TArgs...> : public etl::true_type
+  {
+  };
+
+  template <typename T, typename... TArgs>
+  struct is_nothrow_constructible_helper<T, false, TArgs...>;
+
+  template <typename T, typename... TArgs>
+  struct is_nothrow_constructible : public is_nothrow_constructible_helper<T, etl::is_arithmetic<T>::value || etl::is_pointer<T>::value, TArgs...>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_default_constructible
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_default_constructible;
+
+  template <typename T>
+  struct is_nothrow_default_constructible<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_nothrow_default_constructible<T, false>;
+
+  //*********************************************
+  // is_nothrow_copy_constructible
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_copy_constructible;
+
+  template <typename T>
+  struct is_nothrow_copy_constructible<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_nothrow_copy_constructible<T, false>;
+
+  //*********************************************
+  // is_nothrow_move_constructible
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_move_constructible;
+
+  template <typename T>
+  struct is_nothrow_move_constructible<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_nothrow_move_constructible<T, false>;
+
+  //*********************************************
+  // is_nothrow_assignable
+  template <typename T, typename U, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_assignable;
+
+  template <typename T, typename U>
+  struct is_nothrow_assignable<T, U, true> : public etl::true_type
+  {
+  };
+
+  template <typename T, typename U>
+  struct is_nothrow_assignable<T, U, false>;
+
+  //*********************************************
+  // is_nothrow_copy_assignable
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_copy_assignable;
+
+  template <typename T>
+  struct is_nothrow_copy_assignable<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_nothrow_copy_assignable<T, false>;
+
+  //*********************************************
+  // is_nothrow_move_assignable
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_move_assignable;
+
+  template <typename T>
+  struct is_nothrow_move_assignable<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_nothrow_move_assignable<T, false>;
+  #endif
+
   //*********************************************
   // is_trivially_constructible
   template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
@@ -2970,6 +3268,33 @@ namespace etl
 
   template <typename T>
   struct is_trivially_copyable<T, false>;
+
+  //*********************************************
+  // is_trivially_relocatable
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_trivially_relocatable;
+
+  template <typename T>
+  struct is_trivially_relocatable<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_trivially_relocatable<T, false>;
+
+  //*********************************************
+  // is_nothrow_relocatable
+  // In user-defined mode, users must specialize for non-trivially-relocatable types
+  template <typename T, bool BValue = etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_relocatable;
+
+  template <typename T>
+  struct is_nothrow_relocatable<T, true> : public etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_nothrow_relocatable<T, false>;
 
 #else
 
@@ -3099,6 +3424,57 @@ namespace etl
   };
   #endif
 
+  #if ETL_USING_CPP11
+  //*********************************************
+  // is_nothrow_constructible
+  template <typename T, typename... TArgs>
+  struct is_nothrow_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_default_constructible
+  template <typename T>
+  struct is_nothrow_default_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_copy_constructible
+  template <typename T>
+  struct is_nothrow_copy_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_move_constructible
+  template <typename T>
+  struct is_nothrow_move_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_assignable
+  template <typename T, typename U>
+  struct is_nothrow_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_copy_assignable
+  template <typename T>
+  struct is_nothrow_copy_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_move_assignable
+  template <typename T>
+  struct is_nothrow_move_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  {
+  };
+  #endif
+
   //*********************************************
   // is_trivially_constructible
   template <typename T>
@@ -3135,6 +3511,27 @@ namespace etl
   #else
   struct is_trivially_copyable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
   #endif
+  {
+  };
+
+  //*********************************************
+  // is_trivially_relocatable
+  template <typename T>
+  #if ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE
+  struct is_trivially_relocatable : public etl::bool_constant<__builtin_is_cpp_trivially_relocatable(T)>
+  #elif ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE
+  struct is_trivially_relocatable : public etl::bool_constant<__is_trivially_relocatable(T)>
+  #else
+  struct is_trivially_relocatable : public etl::bool_constant<etl::is_trivially_copyable<T>::value && etl::is_trivially_destructible<T>::value>
+  #endif
+  {
+  };
+
+  //*********************************************
+  // is_nothrow_relocatable
+  // Fallback: only trivially relocatable types are known to be nothrow relocatable
+  template <typename T>
+  struct is_nothrow_relocatable : public etl::is_trivially_relocatable<T>
   {
   };
 
@@ -3192,6 +3589,27 @@ namespace etl
   template <typename T>
   inline constexpr bool is_move_assignable_v = etl::is_move_assignable<T>::value;
 
+  template <typename T, typename... TArgs>
+  inline constexpr bool is_nothrow_constructible_v = etl::is_nothrow_constructible<T, TArgs...>::value;
+
+  template <typename T>
+  inline constexpr bool is_nothrow_default_constructible_v = etl::is_nothrow_default_constructible<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_nothrow_copy_constructible_v = etl::is_nothrow_copy_constructible<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_nothrow_move_constructible_v = etl::is_nothrow_move_constructible<T>::value;
+
+  template <typename T, typename U>
+  inline constexpr bool is_nothrow_assignable_v = etl::is_nothrow_assignable<T, U>::value;
+
+  template <typename T>
+  inline constexpr bool is_nothrow_copy_assignable_v = etl::is_nothrow_copy_assignable<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_nothrow_move_assignable_v = etl::is_nothrow_move_assignable<T>::value;
+
   template <typename T>
   inline constexpr bool is_trivially_constructible_v = etl::is_trivially_constructible<T>::value;
 
@@ -3206,6 +3624,12 @@ namespace etl
 
   template <typename T>
   inline constexpr bool is_trivially_copyable_v = etl::is_trivially_copyable<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_trivially_relocatable_v = etl::is_trivially_relocatable<T>::value;
+
+  template <typename T>
+  inline constexpr bool is_nothrow_relocatable_v = etl::is_nothrow_relocatable<T>::value;
 
 #endif
 

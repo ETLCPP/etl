@@ -36,15 +36,27 @@ RUN set -eux \
     && apt-get -y install --no-install-recommends \
         python3-full \
         python3-pip \
+        python3-cogapp \
         git \
         wget \
         cmake \
-    && rm -rf /var/lib/apt/lists/* \
-    && if pip help install | grep -q '\-\-break-system-packages'; then \
-           pip install --no-cache-dir --break-system-packages cogapp; \
-       else \
-           pip install --no-cache-dir cogapp; \
-       fi
+        clang-format \
+        clang-format-18 \
+        lcov \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN set -eux; \
+    VERSION="2.4.1"; \
+    case "$(uname -m)" in \
+        x86_64)  ARCH="amd64"; SHA256="bdaa2c0fbee03e5c2f99e605d9419386ce5d558440baac2017398faada839e04" ;; \
+        aarch64) ARCH="arm64"; SHA256="0a09e1f04a0f8a86fd4e709552613f5d82adf6bc72f0a4b5e217670894e79fbf" ;; \
+        *) echo "Unsupported architecture: $(uname -m)"; exit 1 ;; \
+    esac; \
+    wget -O treefmt.tar.gz "https://github.com/numtide/treefmt/releases/download/v${VERSION}/treefmt_${VERSION}_linux_${ARCH}.tar.gz" \
+    && echo "${SHA256} treefmt.tar.gz" | sha256sum -c \
+    && tar xzf treefmt.tar.gz treefmt \
+    && install -m 755 treefmt /usr/bin/treefmt \
+    && rm treefmt.tar.gz treefmt
 
 RUN set -eux \
     && echo "Pip version: " \

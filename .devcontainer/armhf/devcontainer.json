@@ -1,0 +1,29 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/cpp
+{
+  "name": "armhf (Debian)",
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": "."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools"
+      ],
+      "settings": {
+        "cmake.sourceDirectory": "${workspaceFolder}/test",
+        "cmake.configureArgs": [
+          "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/.devcontainer/armhf/toolchain-armhf.cmake",
+          "-DBUILD_TESTS=ON",
+          "-DNO_STL=OFF",
+          "-DETL_CXX_STANDARD=23"
+        ],
+        "cmake.buildDirectory": "${workspaceFolder}/build-armhf",
+        "cmake.generator": "Ninja"
+      }
+    }
+  },
+  "remoteUser": "root"
+}

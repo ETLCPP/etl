@@ -486,7 +486,7 @@ namespace etl
     /// alternative (index() is zero).
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
-    ETL_CONSTEXPR14 variant()
+    ETL_CONSTEXPR14 variant() ETL_NOEXCEPT_IF(etl::is_nothrow_default_constructible<type_from_index<0U> >::value)
     {
       using type = type_from_index<0U>;
 
@@ -501,7 +501,7 @@ namespace etl
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
     template <typename T, etl::enable_if_t< !etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
-    ETL_CONSTEXPR14 variant(T&& value)
+    ETL_CONSTEXPR14 variant(T&& value) ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<etl::remove_cvref_t<T>, T&&>::value))
       : operation(operation_type< etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T> >::value,
                                   etl::is_move_constructible<etl::remove_cvref_t<T> >::value>::do_operation)
       , type_id(index_of_type<T>::value)
@@ -518,6 +518,7 @@ namespace etl
   #include "diagnostic_uninitialized_push.h"
     template <typename T, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
+      ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<etl::remove_cvref_t<T>, TArgs...>::value))
       : operation(operation_type< etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T> >::value,
                                   etl::is_move_constructible<etl::remove_cvref_t<T> >::value>::do_operation)
       , type_id(index_of_type<T>::value)
@@ -534,6 +535,7 @@ namespace etl
   #include "diagnostic_uninitialized_push.h"
     template <size_t Index, typename... TArgs>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
+      ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<type_from_index<Index>, TArgs...>::value))
       : type_id(Index)
     {
       using type = type_from_index<Index>;
@@ -552,6 +554,7 @@ namespace etl
     #include "diagnostic_uninitialized_push.h"
     template <typename T, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
+      ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<etl::remove_cvref_t<T>, std::initializer_list<U>, TArgs...>::value))
       : operation(operation_type< etl::remove_cvref_t<T>, etl::is_copy_constructible<etl::remove_cvref_t<T> >::value,
                                   etl::is_move_constructible<etl::remove_cvref_t<T> >::value>::do_operation)
       , type_id(index_of_type<T>::value)
@@ -568,6 +571,7 @@ namespace etl
     #include "diagnostic_uninitialized_push.h"
     template <size_t Index, typename U, typename... TArgs >
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, std::initializer_list<U> init, TArgs&&... args)
+      ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<type_from_index<Index>, std::initializer_list<U>, TArgs...>::value))
       : type_id(Index)
     {
       using type = type_from_index<Index>;
@@ -585,7 +589,7 @@ namespace etl
     ///\param other The other variant object to copy.
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
-    ETL_CONSTEXPR14 variant(const variant& other)
+    ETL_CONSTEXPR14 variant(const variant& other) ETL_NOEXCEPT_IF((etl::conjunction<etl::is_nothrow_copy_constructible<TTypes>...>::value))
       : operation(other.operation)
       , type_id(other.type_id)
     {
@@ -605,7 +609,7 @@ namespace etl
     ///\param other The other variant object to copy.
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
-    ETL_CONSTEXPR14 variant(variant&& other)
+    ETL_CONSTEXPR14 variant(variant&& other) ETL_NOEXCEPT_IF((etl::conjunction<etl::is_nothrow_move_constructible<TTypes>...>::value))
       : operation(other.operation)
       , type_id(other.type_id)
     {
@@ -623,7 +627,7 @@ namespace etl
     //***************************************************************************
     /// Destructor.
     //***************************************************************************
-    ~variant()
+    ~variant() ETL_NOEXCEPT
     {
       if (!valueless_by_exception())
       {
@@ -638,7 +642,7 @@ namespace etl
     /// Emplace by type with variadic constructor parameters.
     //***************************************************************************
     template <typename T, typename... TArgs>
-    T& emplace(TArgs&&... args)
+    T& emplace(TArgs&&... args) ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<etl::remove_cvref_t<T>, TArgs...>::value))
     {
       static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
@@ -664,6 +668,7 @@ namespace etl
     //***************************************************************************
     template <typename T, typename U, typename... TArgs>
     T& emplace(std::initializer_list<U> il, TArgs&&... args)
+      ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<etl::remove_cvref_t<T>, std::initializer_list<U>, TArgs...>::value))
     {
       static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
 
@@ -689,6 +694,7 @@ namespace etl
     //***************************************************************************
     template <size_t Index, typename... TArgs>
     typename etl::variant_alternative_t<Index, variant<TTypes...> >& emplace(TArgs&&... args)
+      ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<type_from_index<Index>, TArgs...>::value))
     {
       static_assert(Index < sizeof...(TTypes), "Index out of range");
 
@@ -714,6 +720,7 @@ namespace etl
     //***************************************************************************
     template <size_t Index, typename U, typename... TArgs>
     typename etl::variant_alternative_t<Index, variant<TTypes...> >& emplace(std::initializer_list<U> il, TArgs&&... args)
+      ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<type_from_index<Index>, std::initializer_list<U>, TArgs...>::value))
     {
       static_assert(Index < sizeof...(TTypes), "Index out of range");
 
@@ -739,7 +746,7 @@ namespace etl
     ///\param value The value to assign.
     //***************************************************************************
     template <typename T, etl::enable_if_t< !etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
-    variant& operator=(T&& value)
+    variant& operator=(T&& value) ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<etl::remove_cvref_t<T>, T&&>::value))
     {
       using type = etl::remove_cvref_t<T>;
 
@@ -762,7 +769,7 @@ namespace etl
     /// Assignment operator for variant type.
     ///\param other The variant to assign.
     //***************************************************************************
-    variant& operator=(const variant& other)
+    variant& operator=(const variant& other) ETL_NOEXCEPT_IF((etl::conjunction<etl::is_nothrow_copy_constructible<TTypes>...>::value))
     {
       if (this != &other)
       {
@@ -791,7 +798,7 @@ namespace etl
     /// Assignment operator for variant type.
     ///\param other The variant to assign.
     //***************************************************************************
-    variant& operator=(variant&& other)
+    variant& operator=(variant&& other) ETL_NOEXCEPT_IF((etl::conjunction<etl::is_nothrow_move_constructible<TTypes>...>::value))
     {
       if (this != &other)
       {
