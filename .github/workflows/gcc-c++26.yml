@@ -1,0 +1,101 @@
+name: gcc-c++26
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, development, pull-request/* ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  build-gcc-cpp26-linux-stl:
+    name: GCC C++26 Linux - STL
+    if: false # enabled when ubuntu-26.04 is available in github
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-26.04]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        export CC=gcc
+        export CXX=g++
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./
+        gcc --version
+        make -j "$(getconf _NPROCESSORS_ONLN)"
+
+    - name: Run tests
+      run: ./test/etl_tests -v
+
+  build-gcc-cpp26-linux-no-stl:
+    name: GCC C++26 Linux - No STL
+    if: false # enabled when ubuntu-26.04 is available in github
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-26.04]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        export CC=gcc
+        export CXX=g++
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./
+        gcc --version
+        make -j "$(getconf _NPROCESSORS_ONLN)"
+
+    - name: Run tests
+      run: ./test/etl_tests -v
+
+  build-gcc-cpp26-linux-stl-force-cpp03:
+    name: GCC C++26 Linux - STL - Force C++03
+    if: false # enabled when ubuntu-26.04 is available in github
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-26.04]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        export CC=gcc
+        export CXX=g++
+        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./
+        gcc --version
+        make -j "$(getconf _NPROCESSORS_ONLN)"
+
+    - name: Run tests
+      run: ./test/etl_tests -v
+
+  build-gcc-cpp26-linux-no-stl-force-cpp03:
+    name: GCC C++26 Linux - No STL - Force C++03
+    if: false # enabled when ubuntu-26.04 is available in github
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-26.04]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: |
+        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
+        export CC=gcc
+        export CXX=g++
+        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./
+        gcc --version
+        make -j "$(getconf _NPROCESSORS_ONLN)"
+
+    - name: Run tests
+      run: ./test/etl_tests -v

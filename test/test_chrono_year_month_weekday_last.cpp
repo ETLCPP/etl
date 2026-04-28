@@ -73,7 +73,7 @@ namespace
       Chrono::year_month_weekday_last ymwdl{Chrono::year(2000), Chrono::February, Chrono::weekday_last(Chrono::Thursday)};
       Chrono::sys_days                sd = Chrono::sys_days(ymwdl);
 
-      CHECK_EQUAL(11012, sd.time_since_epoch().count());
+      CHECK_EQUAL(11011, sd.time_since_epoch().count());
     }
 
     //*************************************************************************
