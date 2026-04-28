@@ -649,6 +649,18 @@ namespace etl
   struct is_void<void> : true_type
   {
   };
+  template <>
+  struct is_void<const void> : true_type
+  {
+  };
+  template <>
+  struct is_void<volatile void> : true_type
+  {
+  };
+  template <>
+  struct is_void<const volatile void> : true_type
+  {
+  };
 
   #if ETL_USING_CPP17
   template <typename T>
@@ -3976,6 +3988,19 @@ namespace etl
   #if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_function_v = etl::is_function<T>::value;
+  #endif
+
+  //***************************************************************************
+  /// is_object
+  //***************************************************************************
+  template <typename T>
+  struct is_object : etl::bool_constant<!etl::is_function<T>::value && !etl::is_reference<T>::value && !etl::is_void<T>::value>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_object_v = etl::is_object<T>::value;
   #endif
 #endif
 

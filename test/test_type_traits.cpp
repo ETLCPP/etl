@@ -2211,5 +2211,43 @@ namespace
       CHECK_FALSE((etl::is_function<int MF::*>::value));
       CHECK_FALSE((etl::is_function<int (MF::*)(int)>::value)); // pointer, not function
     }
+
+    //*************************************************************************
+    TEST(test_is_object)
+    {
+      CHECK_TRUE((etl::is_object<int>::value));
+      CHECK_TRUE((etl::is_object<int*>::value));
+      CHECK_TRUE((etl::is_object<int[]>::value));
+      CHECK_TRUE((etl::is_object<int[3]>::value));
+      CHECK_TRUE((etl::is_object<const int>::value));
+      CHECK_TRUE((etl::is_object<volatile int>::value));
+      CHECK_TRUE((etl::is_object<MF>::value));
+
+      CHECK_FALSE((etl::is_object<void>::value));
+      CHECK_FALSE((etl::is_object<const void>::value));
+      CHECK_FALSE((etl::is_object<volatile void>::value));
+      CHECK_FALSE((etl::is_object<const volatile void>::value));
+      CHECK_FALSE((etl::is_object<int&>::value));
+      CHECK_FALSE((etl::is_object<int&&>::value));
+      CHECK_FALSE((etl::is_object<decltype(f)>::value));
+
+      CHECK_TRUE((etl::is_void<const void>::value));
+      CHECK_TRUE((etl::is_void<volatile void>::value));
+      CHECK_TRUE((etl::is_void<const volatile void>::value));
+
+#if ETL_USING_CPP17
+      CHECK_TRUE((etl::is_object_v<int>));
+      CHECK_TRUE((etl::is_object_v<int*>));
+      CHECK_TRUE((etl::is_object_v<MF>));
+
+      CHECK_FALSE((etl::is_object_v<void>));
+      CHECK_FALSE((etl::is_object_v<const void>));
+      CHECK_FALSE((etl::is_object_v<volatile void>));
+      CHECK_FALSE((etl::is_object_v<const volatile void>));
+      CHECK_FALSE((etl::is_object_v<int&>));
+      CHECK_FALSE((etl::is_object_v<int&&>));
+      CHECK_FALSE((etl::is_object_v<decltype(f)>));
+#endif
+    }
   }
 } // namespace
