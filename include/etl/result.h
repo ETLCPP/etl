@@ -38,11 +38,7 @@ SOFTWARE.
 #include "optional.h"
 #include "variant.h"
 
-#if ETL_CPP11_NOT_SUPPORTED
-  #if !defined(ETL_IN_UNIT_TEST)
-    #error NOT SUPPORTED FOR C++03 OR BELOW
-  #endif
-#else
+#if ETL_CPP11_SUPPORTED
 
 namespace etl
 {
@@ -70,7 +66,6 @@ namespace etl
     {
     }
 
-  #if ETL_CPP11_SUPPORTED
     //*******************************************
     /// Move constructor
     //*******************************************
@@ -78,7 +73,6 @@ namespace etl
       : data(etl::move(other.data))
     {
     }
-  #endif
 
     //*******************************************
     // Construct from a value
@@ -104,15 +98,13 @@ namespace etl
     {
     }
 
-      //*******************************************
-      /// Move construct from error
-      //*******************************************
-  #if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// Move construct from error
+    //*******************************************
     result(TError&& error)
       : data(etl::move(error))
     {
     }
-  #endif
 
     //*******************************************
     /// Copy assign
@@ -141,16 +133,14 @@ namespace etl
       return *this;
     }
 
-      //*******************************************
-      /// Move assign from value
-      //*******************************************
-  #if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// Move assign from value
+    //*******************************************
     result& operator=(TValue&& value)
     {
       data = etl::move(value);
       return *this;
     }
-  #endif
 
     //*******************************************
     /// Copy assign from error
@@ -161,16 +151,14 @@ namespace etl
       return *this;
     }
 
-      //*******************************************
-      /// Move assign from error
-      //*******************************************
-  #if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// Move assign from error
+    //*******************************************
     result& operator=(TError&& error)
     {
       data = etl::move(error);
       return *this;
     }
-  #endif
 
     //*******************************************
     /// <b>true</b> if result contains a value
@@ -223,16 +211,14 @@ namespace etl
       return etl::get<TError>(data);
     }
 
-      //*******************************************
-      /// Returns an rvalue reference to the error.
-      /// Undefined if the result does not contain an error.
-      //*******************************************
-  #if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// Returns an rvalue reference to the error.
+    /// Undefined if the result does not contain an error.
+    //*******************************************
     TError&& error()
     {
       return etl::move(etl::get<TError>(data));
     }
-  #endif
 
   private:
 
@@ -280,15 +266,13 @@ namespace etl
     {
     }
 
-      //*******************************************
-      /// Move construct from error
-      //*******************************************
-  #if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// Move construct from error
+    //*******************************************
     result(TError&& error)
       : data(etl::move(error))
     {
     }
-  #endif
 
     //*******************************************
     /// Copy assign from error
@@ -299,16 +283,14 @@ namespace etl
       return *this;
     }
 
-      //*******************************************
-      /// Move assign from error
-      //*******************************************
-  #if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// Move assign from error
+    //*******************************************
     result& operator=(TError&& error)
     {
       data = etl::move(error);
       return *this;
     }
-  #endif
 
     //*******************************************
     /// <b>true</b> if result contains a value
@@ -343,16 +325,14 @@ namespace etl
       return data.value();
     }
 
-      //*******************************************
-      /// Returns an rvalue reference to the error.
-      /// Undefined if the result does not contain an error.
-      //*******************************************
-  #if ETL_CPP11_SUPPORTED
+    //*******************************************
+    /// Returns an rvalue reference to the error.
+    /// Undefined if the result does not contain an error.
+    //*******************************************
     TError&& error()
     {
       return etl::move(data.value());
     }
-  #endif
 
   private:
 

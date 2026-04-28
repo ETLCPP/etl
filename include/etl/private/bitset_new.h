@@ -1078,7 +1078,7 @@ namespace etl
     /// Extract an value from multiple elements.
     //*************************************************************************
     template <typename T>
-    static ETL_CONSTEXPR14 typename etl::make_unsigned<T>::type extract_from_multiple_elements(const element_type* pbuffer, int element_index,
+    static ETL_CONSTEXPR14 typename etl::make_unsigned<T>::type extract_from_multiple_elements(const element_type* pbuffer, size_t element_index,
                                                                                         size_t active_bits_in_msb, size_t length) ETL_NOEXCEPT
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
@@ -1133,8 +1133,8 @@ namespace etl
 
       unsigned_t value(0);
 
-      const int Msb_Element_Index = (position + length - 1) >> etl::log2<Bits_Per_Element>::value;
-      const int Lsb_Element_Index = position >> etl::log2<Bits_Per_Element>::value;
+      const size_t Msb_Element_Index = (position + length - 1) >> etl::log2<Bits_Per_Element>::value;
+      const size_t Lsb_Element_Index = position >> etl::log2<Bits_Per_Element>::value;
 
       // Is the value contained within one element?
       if (Msb_Element_Index == Lsb_Element_Index)
@@ -1150,7 +1150,7 @@ namespace etl
         size_t active_bits_in_msb = (position + length) - (static_cast<size_t>(Msb_Element_Index) * Bits_Per_Element);
 
         // Start with index of the element containing the msb.
-        int element_index = Msb_Element_Index;
+        size_t element_index = Msb_Element_Index;
 
         value = extract_from_multiple_elements<T>(pbuffer, element_index, active_bits_in_msb, length);
       }
@@ -1169,7 +1169,7 @@ namespace etl
     {
       typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-      const int        Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
+      const size_t     Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
       const unsigned_t Mask          = etl::lsb_mask<unsigned_t, Length>::value;
       const unsigned_t Shift         = Position % Bits_Per_Element;
 
@@ -1186,7 +1186,7 @@ namespace etl
       extract_from_buffer(const_pointer pbuffer)
     {
       // Start with index of the element containing the msb.
-      const int Msb_Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
+      const size_t Msb_Element_Index = (Position + Length - 1) >> etl::log2<Bits_Per_Element>::value;
 
       // Get the number of active bits in the first element
       const size_t Active_Bits_In_Msb = ((Position + Length - 1) % Bits_Per_Element) + 1;
