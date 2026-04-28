@@ -42,6 +42,7 @@ SOFTWARE.
 
 namespace
 {
+#include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_forward_list)
   {
     const size_t SIZE = 10UL;
@@ -1444,4 +1445,5 @@ namespace
     }
 #endif
   }
+#include "etl/private/diagnostic_pop.h"
 } // namespace

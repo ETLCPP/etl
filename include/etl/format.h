@@ -1039,22 +1039,27 @@ namespace etl
     {
       const size_t fractional_decimals = 6; // default
 
-      T                      integral;
-      T                      fractional = modf(value, &integral);
-      bool                   sign;
-      unsigned long long int fractional_int;
-      unsigned long long int integral_int;
-      if (integral < 0.0)
+      // Detect sign using signbit to correctly handle -0.0
+      bool sign = signbit(value);
+
+      T integral;
+      T fractional = modf(value, &integral);
+
+      // Take absolute values to avoid casting negative values to unsigned
+      if (sign)
       {
-        sign           = true;
-        fractional_int = static_cast<unsigned long long int>(-fractional * pow(10., fractional_decimals));
-        integral_int   = static_cast<unsigned long long int>(-integral);
+        fractional = -fractional;
+        integral   = -integral;
       }
-      else
+
+      unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
+
+      if (fractional_int == scale)
       {
-        sign           = false;
-        fractional_int = static_cast<unsigned long long int>(fractional * pow(10., fractional_decimals));
-        integral_int   = static_cast<unsigned long long int>(integral);
+        fractional_int = 0;
+        ++integral_int;
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);
@@ -1071,9 +1076,8 @@ namespace etl
       static const size_t exponent_decimals   = 1;
       long long int       exponent_int        = 0;
 
-      bool                   sign;
-      unsigned long long int fractional_int;
-      unsigned long long int integral_int;
+      // Detect sign using signbit to correctly handle -0.0
+      bool sign = signbit(value);
 
       T integral;
       T fractional = modf(value, &integral);
@@ -1092,17 +1096,21 @@ namespace etl
         fractional = modf(value, &integral);
       }
 
-      if (integral < 0.0)
+      // Take absolute values to avoid casting negative values to unsigned
+      if (sign)
       {
-        sign           = true;
-        fractional_int = static_cast<unsigned long long int>(-fractional * pow(static_cast<T>(0x10), fractional_decimals));
-        integral_int   = static_cast<unsigned long long int>(-integral);
+        fractional = -fractional;
+        integral   = -integral;
       }
-      else
+
+      unsigned long long int scale          = int_pow<unsigned long long int>(0x10, fractional_decimals);
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
+
+      if (fractional_int == scale)
       {
-        sign           = false;
-        fractional_int = static_cast<unsigned long long int>(fractional * pow(static_cast<T>(0x10), fractional_decimals));
-        integral_int   = static_cast<unsigned long long int>(integral);
+        fractional_int = 0;
+        ++integral_int;
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);
@@ -1133,9 +1141,8 @@ namespace etl
       static const size_t exponent_decimals   = 2;
       long long int       exponent_int        = 0;
 
-      bool                   sign;
-      unsigned long long int fractional_int;
-      unsigned long long int integral_int;
+      // Detect sign using signbit to correctly handle -0.0
+      bool sign = std::signbit(value);
 
       T integral;
       T fractional = modf(value, &integral);
@@ -1154,17 +1161,21 @@ namespace etl
         fractional = modf(value, &integral);
       }
 
-      if (integral < 0.0)
+      // Take absolute values to avoid casting negative values to unsigned
+      if (sign)
       {
-        sign           = true;
-        fractional_int = static_cast<unsigned long long int>(-fractional * pow(10., fractional_decimals));
-        integral_int   = static_cast<unsigned long long int>(-integral);
+        fractional = -fractional;
+        integral   = -integral;
       }
-      else
+
+      unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
+
+      if (fractional_int == scale)
       {
-        sign           = false;
-        fractional_int = static_cast<unsigned long long int>(fractional * pow(10., fractional_decimals));
-        integral_int   = static_cast<unsigned long long int>(integral);
+        fractional_int = 0;
+        ++integral_int;
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);
@@ -1186,22 +1197,27 @@ namespace etl
     {
       const size_t fractional_decimals = 6; // default
 
-      T                      integral;
-      T                      fractional = modf(value, &integral);
-      bool                   sign;
-      unsigned long long int fractional_int;
-      unsigned long long int integral_int;
-      if (integral < 0.0)
+      // Detect sign using signbit to correctly handle -0.0
+      bool sign = std::signbit(value);
+
+      T integral;
+      T fractional = modf(value, &integral);
+
+      // Take absolute values to avoid casting negative values to unsigned
+      if (sign)
       {
-        sign           = true;
-        fractional_int = static_cast<unsigned long long int>(-fractional * pow(10., fractional_decimals));
-        integral_int   = static_cast<unsigned long long int>(-integral);
+        fractional = -fractional;
+        integral   = -integral;
       }
-      else
+
+      unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
+
+      if (fractional_int == scale)
       {
-        sign           = false;
-        fractional_int = static_cast<unsigned long long int>(fractional * pow(10., fractional_decimals));
-        integral_int   = static_cast<unsigned long long int>(integral);
+        fractional_int = 0;
+        ++integral_int;
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);

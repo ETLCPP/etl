@@ -142,6 +142,7 @@ namespace
 
 namespace
 {
+#include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_intrusive_list)
   {
     InitialDataNDC stable_sort_data;
@@ -1648,4 +1649,5 @@ namespace
       CHECK_FALSE(data0.contains(compare_node2));
     }
   }
+#include "etl/private/diagnostic_pop.h"
 } // namespace

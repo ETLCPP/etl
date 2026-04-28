@@ -130,11 +130,11 @@ namespace etl
   {
     if (a > b)
     {
-      return b + (etl::distance(b, a) / 2U);
+      return b + (etl::distance(b, a) / 2);
     }
     else
     {
-      return a + (etl::distance(a, b) / 2U);
+      return a + (etl::distance(a, b) / 2);
     }
   }
 
@@ -151,11 +151,11 @@ namespace etl
   {
     if (a > b)
     {
-      return b + (etl::distance(b, a) / 2U);
+      return b + (etl::distance(b, a) / 2);
     }
     else
     {
-      return a + (etl::distance(a, b) / 2U);
+      return a + (etl::distance(a, b) / 2);
     }
   }
 
@@ -172,7 +172,7 @@ namespace etl
                               || etl::is_same<typename etl::iterator_traits<T>::iterator_category, ETL_OR_STD::bidirectional_iterator_tag>::value)),
                          int>::type = 0)
   {
-    etl::advance(a, etl::distance(a, b) / 2U);
+    etl::advance(a, etl::distance(a, b) / 2);
     return a;
   }
 
@@ -203,6 +203,284 @@ namespace etl
     typedef typename etl::conditional<etl::is_integral<TArithmetic3>::value, double, TArithmetic3>::type typecast_t;
 
     return typecast_a(a) + (typecast_t(t) * (typecast_b(b) - typecast_a(a)));
+  }
+
+  //***************************************************************************
+  /// Saturating addition for unsigned integers.
+  /// Returns x + y, clamped to the range of T.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type add_sat(T x, T y) ETL_NOEXCEPT
+  {
+    T result = static_cast<T>(x + y);
+    // Overflow occurred if result < x
+    if (result < x)
+    {
+      return etl::numeric_limits<T>::max();
+    }
+    return result;
+  }
+
+  //***************************************************************************
+  /// Saturating addition for signed integers.
+  /// Returns x + y, clamped to the range of T.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type add_sat(T x, T y) ETL_NOEXCEPT
+  {
+    // Check for overflow: both operands have same sign and result has different sign
+    if (y > T(0))
+    {
+      // Positive overflow check
+      if (x > (etl::numeric_limits<T>::max() - y))
+      {
+        return etl::numeric_limits<T>::max();
+      }
+    }
+    else
+    {
+      // Negative overflow check
+      if (x < (etl::numeric_limits<T>::min() - y))
+      {
+        return etl::numeric_limits<T>::min();
+      }
+    }
+
+    return static_cast<T>(x + y);
+  }
+
+  //***************************************************************************
+  /// Saturating subtraction for unsigned integers.
+  /// Returns x - y, clamped to the range of T.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type sub_sat(T x, T y) ETL_NOEXCEPT
+  {
+    // Underflow occurred if y > x
+    if (y > x)
+    {
+      return T(0);
+    }
+    return static_cast<T>(x - y);
+  }
+
+  //***************************************************************************
+  /// Saturating subtraction for signed integers.
+  /// Returns x - y, clamped to the range of T.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type sub_sat(T x, T y) ETL_NOEXCEPT
+  {
+    // Check for overflow/underflow
+    if (y > T(0))
+    {
+      // Subtracting positive: check for underflow
+      if (x < (etl::numeric_limits<T>::min() + y))
+      {
+        return etl::numeric_limits<T>::min();
+      }
+    }
+    else
+    {
+      // Subtracting negative (adding): check for overflow
+      if (x > (etl::numeric_limits<T>::max() + y))
+      {
+        return etl::numeric_limits<T>::max();
+      }
+    }
+
+    return static_cast<T>(x - y);
+  }
+
+  //***************************************************************************
+  /// Saturating multiplication for unsigned integers.
+  /// Returns x * y, clamped to the range of T.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type mul_sat(T x, T y) ETL_NOEXCEPT
+  {
+    if ((x == T(0)) || (y == T(0)))
+    {
+      return T(0);
+    }
+
+    // Check for overflow: x * y > max  =>  x > max / y
+    if (x > (etl::numeric_limits<T>::max() / y))
+    {
+      return etl::numeric_limits<T>::max();
+    }
+
+    return static_cast<T>(x * y);
+  }
+
+  //***************************************************************************
+  /// Saturating multiplication for signed integers.
+  /// Returns x * y, clamped to the range of T.
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type mul_sat(T x, T y) ETL_NOEXCEPT
+  {
+    if ((x == T(0)) || (y == T(0)))
+    {
+      return T(0);
+    }
+
+    // Both positive
+    if ((x > T(0)) && (y > T(0)))
+    {
+      if (x > (etl::numeric_limits<T>::max() / y))
+      {
+        return etl::numeric_limits<T>::max();
+      }
+    }
+    // Both negative
+    else if ((x < T(0)) && (y < T(0)))
+    {
+      if (x < (etl::numeric_limits<T>::max() / y))
+      {
+        return etl::numeric_limits<T>::max();
+      }
+    }
+    // Different signs (x positive, y negative)
+    else if ((x > T(0)) && (y < T(0)))
+    {
+      if (y < (etl::numeric_limits<T>::min() / x))
+      {
+        return etl::numeric_limits<T>::min();
+      }
+    }
+    // Different signs (x negative, y positive)
+    else
+    {
+      if (x < (etl::numeric_limits<T>::min() / y))
+      {
+        return etl::numeric_limits<T>::min();
+      }
+    }
+
+    return static_cast<T>(x * y);
+  }
+
+  //***************************************************************************
+  /// Saturating division for unsigned integers.
+  /// Returns x / y. For unsigned types, no saturation is needed.
+  /// \pre y != 0 (undefined behaviour if y is zero, matching C++26).
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type div_sat(T x, T y) ETL_NOEXCEPT
+  {
+    return static_cast<T>(x / y);
+  }
+
+  //***************************************************************************
+  /// Saturating division for signed integers.
+  /// Returns x / y, clamped to the range of T.
+  /// The only case of overflow is min / -1.
+  /// \pre y != 0 (undefined behaviour if y is zero, matching C++26).
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value && etl::is_signed<T>::value, T>::type div_sat(T x, T y) ETL_NOEXCEPT
+  {
+    // The only overflow case: min / -1 would be max + 1
+    if ((x == etl::numeric_limits<T>::min()) && (y == T(-1)))
+    {
+      return etl::numeric_limits<T>::max();
+    }
+
+    return static_cast<T>(x / y);
+  }
+
+  //***************************************************************************
+  /// saturate_cast
+  /// Converts an integer value to another integer type, clamping the value
+  /// to the representable range of the destination type.
+  /// C++26 equivalent of std::saturate_cast.
+  ///
+  /// When the source value is within the range of R, returns the value as R.
+  /// When the source value is below R's minimum, returns numeric_limits<R>::min().
+  /// When the source value is above R's maximum, returns numeric_limits<R>::max().
+  //***************************************************************************
+
+  // Case 1: Both unsigned.
+  template <typename R, typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<R>::value && etl::is_integral<T>::value && etl::is_unsigned<R>::value && etl::is_unsigned<T>::value,
+                            R>::type
+    saturate_cast(T value) ETL_NOEXCEPT
+  {
+    // If sizeof(R) >= sizeof(T), all values of T fit in R.
+    // If sizeof(R) < sizeof(T), clamp to R's max. The comparison is safe
+    // because R's max fits in T when T is wider.
+    if ((sizeof(R) < sizeof(T)) && (value > static_cast<T>(etl::numeric_limits<R>::max())))
+    {
+      return etl::numeric_limits<R>::max();
+    }
+    return static_cast<R>(value);
+  }
+
+  // Case 2: Both signed.
+  template <typename R, typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<R>::value && etl::is_integral<T>::value && etl::is_signed<R>::value && etl::is_signed<T>::value, R>::type
+    saturate_cast(T value) ETL_NOEXCEPT
+  {
+    // Only need to clamp when narrowing (R is smaller than T).
+    // When sizeof(R) >= sizeof(T), all values of T fit in R.
+    if (sizeof(R) < sizeof(T))
+    {
+      if (value > static_cast<T>(etl::numeric_limits<R>::max()))
+      {
+        return etl::numeric_limits<R>::max();
+      }
+      if (value < static_cast<T>(etl::numeric_limits<R>::min()))
+      {
+        return etl::numeric_limits<R>::min();
+      }
+    }
+    return static_cast<R>(value);
+  }
+
+  // Case 3: Signed source -> Unsigned destination.
+  template <typename R, typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<R>::value && etl::is_integral<T>::value && etl::is_unsigned<R>::value && etl::is_signed<T>::value,
+                            R>::type
+    saturate_cast(T value) ETL_NOEXCEPT
+  {
+    if (value < T(0))
+    {
+      return R(0);
+    }
+
+    typedef typename etl::make_unsigned<T>::type unsigned_t;
+    unsigned_t                                   uvalue = static_cast<unsigned_t>(value);
+
+    // Compare in unsigned domain. R's max is always representable as unsigned_t
+    // when sizeof(T) > sizeof(R), and when sizeof(R) >= sizeof(T) all positive
+    // values of T fit in R.
+    if ((sizeof(R) < sizeof(T)) && (uvalue > static_cast<unsigned_t>(etl::numeric_limits<R>::max())))
+    {
+      return etl::numeric_limits<R>::max();
+    }
+    return static_cast<R>(value);
+  }
+
+  // Case 4: Unsigned source -> Signed destination.
+  template <typename R, typename T>
+  ETL_CONSTEXPR14
+    typename etl::enable_if<etl::is_integral<R>::value && etl::is_integral<T>::value && etl::is_signed<R>::value && etl::is_unsigned<T>::value,
+                            R>::type
+    saturate_cast(T value) ETL_NOEXCEPT
+  {
+    // R's max is positive, so we can safely represent it as T (unsigned) when
+    // sizeof(T) >= sizeof(R). When sizeof(T) < sizeof(R), all values of T fit.
+    typedef typename etl::make_unsigned<R>::type unsigned_r;
+
+    if (value > static_cast<T>(static_cast<unsigned_r>(etl::numeric_limits<R>::max())))
+    {
+      return etl::numeric_limits<R>::max();
+    }
+    return static_cast<R>(value);
   }
 } // namespace etl
 

@@ -479,7 +479,9 @@ namespace etl
     {
       ETL_ASSERT_CHECK_PUSH_POP(size() != CAPACITY, ETL_ERROR(vector_full));
 
+  #include "private/diagnostic_sign_conversion_push.h"
       ::new (p_end) T(etl::forward<Args>(args)...);
+  #include "private/diagnostic_pop.h"
       ++p_end;
       ETL_INCREMENT_DEBUG_COUNT;
       return back();
@@ -668,7 +670,9 @@ namespace etl
         (*position_).~T();
       }
 
+  #include "private/diagnostic_sign_conversion_push.h"
       ::new (p) T(etl::forward<Args>(args)...);
+  #include "private/diagnostic_pop.h"
 
       return position_;
     }
@@ -1014,7 +1018,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    ivector& operator=(ivector&& rhs)
+    ivector& operator=(ivector&& rhs) ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value))
     {
       if (&rhs != this)
       {
@@ -1081,7 +1085,7 @@ namespace etl
     //*********************************************************************
     /// Constructor.
     //*********************************************************************
-    ivector(T* p_buffer_, size_t MAX_SIZE)
+    ivector(T* p_buffer_, size_t MAX_SIZE) ETL_NOEXCEPT
       : vector_base(MAX_SIZE)
       , p_buffer(p_buffer_)
       , p_end(p_buffer_)
@@ -1284,7 +1288,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector()
+    vector() ETL_NOEXCEPT
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       this->initialise();
@@ -1363,7 +1367,7 @@ namespace etl
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
-    vector(vector&& other)
+    vector(vector&& other) ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value))
       : etl::ivector<T>(reinterpret_cast<T*>(&buffer), MAX_SIZE)
     {
       if (this != &other)
@@ -1384,7 +1388,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    vector& operator=(vector&& rhs)
+    vector& operator=(vector&& rhs) ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value))
     {
       if (&rhs != this)
       {
@@ -1409,7 +1413,7 @@ namespace etl
 #ifdef ETL_IVECTOR_REPAIR_ENABLE
     virtual
 #endif
-      ~vector()
+      ~vector() ETL_NOEXCEPT
     {
       this->clear();
     }
@@ -1466,7 +1470,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector_ext(void* buffer, size_t max_size)
+    vector_ext(void* buffer, size_t max_size) ETL_NOEXCEPT
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       this->initialise();
@@ -1546,7 +1550,7 @@ namespace etl
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
-    vector_ext(vector_ext&& other, void* buffer, size_t max_size)
+    vector_ext(vector_ext&& other, void* buffer, size_t max_size) ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value))
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       if (this != &other)
@@ -1567,7 +1571,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    vector_ext& operator=(vector_ext&& rhs)
+    vector_ext& operator=(vector_ext&& rhs) ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value))
     {
       if (&rhs != this)
       {
@@ -1590,7 +1594,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~vector_ext()
+    ~vector_ext() ETL_NOEXCEPT
     {
       this->clear();
     }
@@ -1625,7 +1629,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector()
+    vector() ETL_NOEXCEPT
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       this->initialise();
@@ -1701,7 +1705,7 @@ namespace etl
     //*************************************************************************
     /// Move constructor.
     //*************************************************************************
-    vector(vector&& other)
+    vector(vector&& other) ETL_NOEXCEPT
       : etl::ivector<T*>(reinterpret_cast<T**>(&buffer), MAX_SIZE)
     {
       (void)etl::ivector<T*>::operator=(etl::move(other));
@@ -1710,7 +1714,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    vector& operator=(vector&& rhs)
+    vector& operator=(vector&& rhs) ETL_NOEXCEPT
     {
       (void)etl::ivector<T*>::operator=(etl::move(rhs));
 
@@ -1765,7 +1769,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     //*************************************************************************
-    vector_ext(void* buffer, size_t max_size)
+    vector_ext(void* buffer, size_t max_size) ETL_NOEXCEPT
       : etl::ivector<T*>(reinterpret_cast<T**>(buffer), max_size)
     {
       this->initialise();
@@ -1872,7 +1876,7 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~vector_ext()
+    ~vector_ext() ETL_NOEXCEPT
     {
       this->clear();
     }
