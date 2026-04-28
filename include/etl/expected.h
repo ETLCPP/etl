@@ -827,13 +827,12 @@ namespace etl
 
     enum
     {
-      Uninitialised,
       Value_Type,
       Error_Type
     };
 
-    typedef etl::variant<etl::monostate, value_type, error_type> storage_type;
-    storage_type                                                 storage;
+    typedef etl::variant<value_type, error_type> storage_type;
+    storage_type                                 storage;
 
 #if ETL_USING_CPP11
     template < typename F, typename TExp, typename TRet, typename TValueRef, typename = typename etl::enable_if<!etl::is_void<TRet>::value>::type>
@@ -1189,7 +1188,7 @@ namespace etl
 
     enum
     {
-      Uninitialised,
+      Void_Type,
       Error_Type
     };
 

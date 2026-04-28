@@ -489,6 +489,72 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_operator_fetch_max_when_new_value_is_greater)
+    {
+      etl::atomic<int> test(10);
+
+      int old_value = test.fetch_max(20);
+
+      CHECK_EQUAL(10, old_value);
+      CHECK_EQUAL(20, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_max_when_new_value_is_less)
+    {
+      etl::atomic<int> test(30);
+
+      int old_value = test.fetch_max(20);
+
+      CHECK_EQUAL(30, old_value);
+      CHECK_EQUAL(30, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_max_when_new_value_is_equal)
+    {
+      etl::atomic<int> test(20);
+
+      int old_value = test.fetch_max(20);
+
+      CHECK_EQUAL(20, old_value);
+      CHECK_EQUAL(20, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_min_when_new_value_is_less)
+    {
+      etl::atomic<int> test(30);
+
+      int old_value = test.fetch_min(20);
+
+      CHECK_EQUAL(30, old_value);
+      CHECK_EQUAL(20, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_min_when_new_value_is_greater)
+    {
+      etl::atomic<int> test(10);
+
+      int old_value = test.fetch_min(20);
+
+      CHECK_EQUAL(10, old_value);
+      CHECK_EQUAL(10, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_min_when_new_value_is_equal)
+    {
+      etl::atomic<int> test(20);
+
+      int old_value = test.fetch_min(20);
+
+      CHECK_EQUAL(20, old_value);
+      CHECK_EQUAL(20, test.load());
+    }
+
+    //*************************************************************************
     TEST(test_atomic_integer_exchange)
     {
       std::atomic<int> compare(1);

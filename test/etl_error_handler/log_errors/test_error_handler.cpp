@@ -117,12 +117,12 @@ bool AssertFailAndReturnValue()
   return false;
 }
 
+static ErrorLog error_log;
+
 //*****************************************************************************
 int main()
 {
-  static ErrorLog error_log;
-
-  etl::error_handler::set_callback<ErrorLog, error_log, &ErrorLog::Log>();
+  etl::error_handler::set_callback<ErrorLog, &ErrorLog::Log>(error_log);
 
   Assert(false);
   Assert(true);

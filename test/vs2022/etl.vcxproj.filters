@@ -3647,7 +3647,7 @@
     <ClCompile Include="..\test_chrono_literals.cpp">
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_closure.cpp">
+    <ClCompile Include="..\test_closure_with_default_delegate.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\closure.h.t.cpp">
@@ -3704,7 +3704,7 @@
     <ClCompile Include="..\test_crc8_nrsc5.cpp">
       <Filter>Tests\CRC</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_closure_constexpr.cpp">
+    <ClCompile Include="..\test_closure_with_default_delegate_constexpr.cpp">
       <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
     <ClCompile Include="..\test_crc8_opensafety.cpp">
@@ -3799,6 +3799,9 @@
     </ClCompile>
     <ClCompile Include="..\test_print.cpp">
       <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_closure_with_inplace_function.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3978,12 +3981,6 @@
     </None>
     <None Include="..\..\.github\workflows\gcc-c++23.yml">
       <Filter>Resource Files\CI\Github</Filter>
-    </None>
-    <None Include="..\..\docs\_index.md">
-      <Filter>Documentation</Filter>
-    </None>
-    <None Include="..\..\docs\custom.css">
-      <Filter>Documentation</Filter>
     </None>
     <None Include="..\..\.github\workflows\clang-format.yaml" />
     <None Include="..\..\.github\workflows\clang-format_update.yaml" />
