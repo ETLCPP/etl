@@ -1798,6 +1798,117 @@ namespace etl
   } // namespace ranges
 #endif
 
+#if ETL_USING_CPP11
+  //*****************************************************************************
+  /// Trivially relocate a range of objects.
+  /// This function relocates objects by copying their bytes using memmove.
+  /// The source objects' lifetimes are ended without calling destructors.
+  /// Based on C++26 P2786R13.
+  /// https://en.cppreference.com/w/cpp/memory/trivially_relocate
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_trivially_relocatable<T>::value && !etl::is_const<T>::value, T*>::type trivially_relocate(T* first, T* last,
+                                                                                                                            T* result)
+  {
+    if (first == result)
+    {
+      return last;
+    }
+
+    const size_t count = static_cast<size_t>(last - first);
+
+    if (count > 0)
+    {
+      // Use memmove to handle overlapping ranges
+      ::memmove(static_cast<void*>(result), static_cast<const void*>(first), count * sizeof(T));
+    }
+
+    return result + count;
+  }
+
+  //*****************************************************************************
+  /// Relocate implementation for trivially relocatable types.
+  /// Delegates to etl::trivially_relocate.
+  /// Uses SFINAE (enable_if) so that etl::trivially_relocate is never
+  /// instantiated for non-trivially relocatable types on pre-C++17 compilers,
+  /// avoiding the ill-formed instantiation that would occur with a plain
+  /// ETL_IF_CONSTEXPR branch.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_trivially_relocatable<T>::value, T*>::type relocate_impl(T* first, T* last, T* result)
+  {
+    return etl::trivially_relocate(first, last, result);
+  }
+
+  //*****************************************************************************
+  /// Relocate implementation for non-trivially relocatable types.
+  /// Uses move construction + destroy.
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<!etl::is_trivially_relocatable<T>::value, T*>::type relocate_impl(T* first, T* last, T* result)
+  {
+    const ptrdiff_t count = last - first;
+
+    // Check if ranges overlap and handle accordingly
+    if (result < first || result >= last)
+    {
+      // No overlap or destination is after source - iterate forward
+      T* src = first;
+      T* dst = result;
+      while (src != last)
+      {
+        ::new (static_cast<void*>(dst)) T(etl::move(*src));
+        src->~T();
+        ++src;
+        ++dst;
+      }
+    }
+    else
+    {
+      // Destination overlaps with source from below - iterate backward
+      T* src = last;
+      T* dst = result + count;
+      while (src != first)
+      {
+        --src;
+        --dst;
+        ::new (static_cast<void*>(dst)) T(etl::move(*src));
+        src->~T();
+      }
+    }
+
+    return result + count;
+  }
+
+  //*****************************************************************************
+  /// Relocate a range of objects.
+  /// For trivially relocatable types, uses trivially_relocate via relocate_impl.
+  /// For other nothrow relocatable types, uses move + destroy via relocate_impl.
+  /// Delegates to SFINAE-guarded relocate_impl overloads instead of using
+  /// ETL_IF_CONSTEXPR, so that etl::trivially_relocate is never instantiated
+  /// for non-trivially relocatable types on pre-C++17 compilers.
+  /// Based on C++26 P2786R13.
+  /// https://en.cppreference.com/w/cpp/memory/relocate
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_nothrow_relocatable<T>::value && !etl::is_const<T>::value, T*>::type relocate(T* first, T* last, T* result)
+  {
+    // Handle trivial relocation case
+    if (first == result || first == last)
+    {
+      return (first == result) ? last : result;
+    }
+
+    // SFINAE on etl::is_trivially_relocatable<T> selects the correct overload
+    // so that etl::trivially_relocate is only instantiated when valid.
+    return relocate_impl(first, last, result);
+  }
+#endif
+
   //*****************************************************************************
   /// Default deleter.
   ///\tparam T The pointed to type type.
@@ -2259,47 +2370,43 @@ namespace etl
     pointer  p;
     TDeleter deleter;
   };
-} // namespace etl
 
-//*****************************************************************************
-// Global functions for unique_ptr
-//*****************************************************************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator==(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return lhs.get() == rhs.get();
-}
+  //*****************************************************************************
+  // Comparison operators for unique_ptr
+  //*****************************************************************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator==(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return lhs.get() == rhs.get();
+  }
 
-//*********************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator<(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
-}
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator<(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
+  }
 
-//*********************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator<=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return !(rhs < lhs);
-}
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator<=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return !(rhs < lhs);
+  }
 
-//*********************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator>(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return (rhs < lhs);
-}
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator>(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return (rhs < lhs);
+  }
 
-//*********************************
-template <typename T1, typename TD1, typename T2, typename TD2>
-bool operator>=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
-{
-  return !(lhs < rhs);
-}
-
-namespace etl
-{
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator>=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return !(lhs < rhs);
+  }
   //*****************************************************************************
   /// Default construct an item at address p.
   ///\ingroup memory
