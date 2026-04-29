@@ -984,18 +984,6 @@ namespace etl
       return false;
     }
 
-    inline bool parse_sequence(format_parse_context& parse_ctx, etl::string_view sequence)
-    {
-      auto fmt_it = parse_ctx.begin();
-      if (etl::equal(sequence.cbegin(), sequence.cend(), fmt_it))
-      {
-        fmt_it += sequence.size();
-        parse_ctx.advance_to(fmt_it);
-        return true;
-      }
-      return false;
-    }
-
     inline bool is_align_character(char c)
     {
       return c == '<' || c == '>' || c == '^';
@@ -2010,79 +1998,9 @@ namespace etl
     }
 
     template <typename OutputIt>
-    void format_chars(OutputIt& it, const char* arg, const format_spec_t& spec)
-    {
-      bool escaped = false;
-      if (spec.type.has_value())
-      {
-        switch (spec.type.value())
-        {
-          case 's':
-            // default output
-            break;
-          case '?':
-            // escaped string
-            escaped = true;
-            break;
-          default:
-            // invalid type for string
-            ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-        }
-      }
-      size_t limit = etl::numeric_limits<size_t>::max();
-      if (spec.precision.has_value())
-      {
-        limit = spec.precision.value();
-      }
-
-      if (escaped)
-      {
-        format_plain_char(it, '"');
-      }
-      const char_type* arg_it = arg;
-      while (*arg_it != '\0' && limit > 0)
-      {
-        if (escaped)
-        {
-          format_escaped_char(it, *arg_it);
-        }
-        else
-        {
-          format_plain_char(it, *arg_it);
-        }
-        ++arg_it;
-        --limit;
-      }
-      if (escaped)
-      {
-        format_plain_char(it, '"');
-      }
-    }
-
-    template <typename OutputIt>
     typename format_context<OutputIt>::iterator format_aligned_chars(const char* arg, format_context<OutputIt>& fmt_ctx)
     {
-      size_t prefix_size = 0;
-      size_t suffix_size = 0;
-
-      if (fmt_ctx.format_spec.width)
-      {
-        private_format::counter_iterator counter;
-        private_format::format_chars<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
-
-        if (counter.value() < fmt_ctx.format_spec.width.value())
-        {
-          size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          compute_padding(pad, fmt_ctx.format_spec.align, true, prefix_size, suffix_size);
-        }
-      }
-
-      // actual output
-      OutputIt it = fmt_ctx.out();
-      private_format::fill<OutputIt>(it, prefix_size, fmt_ctx.format_spec.fill);
-      private_format::format_chars<OutputIt>(it, arg, fmt_ctx.format_spec);
-      private_format::fill<OutputIt>(it, suffix_size, fmt_ctx.format_spec.fill);
-      return it;
+      return format_aligned_string_view<OutputIt>(etl::string_view(arg), fmt_ctx);
     }
 
     inline void check_char_spec(const format_spec_t& spec)
@@ -2144,7 +2062,8 @@ namespace etl
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
           // char type defaults to left-align, integer presentation defaults to right-align
-          bool default_start = !fmt_ctx.format_spec.type.has_value() || fmt_ctx.format_spec.type.value() == 'c' || fmt_ctx.format_spec.type.value() == '?';
+          bool default_start =
+            !fmt_ctx.format_spec.type.has_value() || fmt_ctx.format_spec.type.value() == 'c' || fmt_ctx.format_spec.type.value() == '?';
           compute_padding(pad, fmt_ctx.format_spec.align, default_start, prefix_size, suffix_size);
         }
       }
