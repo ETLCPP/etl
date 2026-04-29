@@ -1845,6 +1845,40 @@ namespace etl
       fmt_context.advance_to(tmp);
     }
 
+    // Compute prefix/suffix padding sizes for alignment.
+    // default_align_start: if true, NONE defaults to left-align (START); otherwise right-align (END).
+    inline void compute_padding(size_t pad, spec_align_t align, bool default_align_start, size_t& prefix_size, size_t& suffix_size)
+    {
+      switch (align)
+      {
+        case spec_align_t::START:
+          prefix_size = 0;
+          suffix_size = pad;
+          break;
+        case spec_align_t::CENTER:
+          prefix_size = pad / 2;
+          suffix_size = pad - prefix_size;
+          break;
+        case spec_align_t::END:
+          prefix_size = pad;
+          suffix_size = 0;
+          break;
+        case spec_align_t::NONE:
+        default:
+          if (default_align_start)
+          {
+            prefix_size = 0;
+            suffix_size = pad;
+          }
+          else
+          {
+            prefix_size = pad;
+            suffix_size = 0;
+          }
+          break;
+      }
+    }
+
     template <typename OutputIt, typename Int>
     typename format_context<OutputIt>::iterator format_aligned_int(Int arg, format_context<OutputIt>& fmt_ctx)
     {
@@ -1853,32 +1887,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_num<private_format::counter_iterator, Int>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
         }
       }
 
@@ -1899,32 +1914,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_floating<private_format::counter_iterator, Float>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
         }
       }
 
@@ -1995,32 +1991,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_string_view<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, true, prefix_size, suffix_size);
         }
       }
 
@@ -2090,32 +2067,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_chars<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, true, prefix_size, suffix_size);
         }
       }
 
@@ -2179,43 +2137,15 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_char<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::NONE: // default
-              if (!fmt_ctx.format_spec.type.has_value() || fmt_ctx.format_spec.type.value() == 'c' || fmt_ctx.format_spec.type.value() == '?')
-              {
-                prefix_size = 0;
-                suffix_size = pad;
-              }
-              else
-              {
-                prefix_size = pad;
-                suffix_size = 0;
-              }
-              break;
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          // char type defaults to left-align, integer presentation defaults to right-align
+          bool default_start = !fmt_ctx.format_spec.type.has_value() || fmt_ctx.format_spec.type.value() == 'c' || fmt_ctx.format_spec.type.value() == '?';
+          compute_padding(pad, fmt_ctx.format_spec.align, default_start, prefix_size, suffix_size);
         }
       }
 
@@ -2263,32 +2193,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_bool<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
         }
       }
 
@@ -2332,32 +2243,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_pointer<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
         }
       }
 
