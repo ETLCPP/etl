@@ -36,7 +36,6 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "memory.h"
 #include "memory_model.h"
-#include "mutex.h"
 #include "parameter_type.h"
 #include "placement_new.h"
 #include "utility.h"
