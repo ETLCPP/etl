@@ -1,0 +1,22 @@
+name: bazel-gcc-c++23-no-stl
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, development, pull-request/* ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  build-bazel-gcc-cpp23-no-stl:
+    name: Bazel GCC C++23 Linux - No STL
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: bazel build //test:etl_tests --cxxopt=-std=c++23 --copt=-DETL_NO_STL
+
+    - name: Run tests
+      run: bazel test //test:etl_tests --cxxopt=-std=c++23 --copt=-DETL_NO_STL --test_output=all
