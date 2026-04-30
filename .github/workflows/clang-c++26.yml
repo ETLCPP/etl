@@ -10,95 +10,91 @@ jobs:
 
   build-clang-cpp26-linux-stl:
     name: Clang C++26 Linux - STL
-    if: false # enabled when ubuntu-26.04 is available in github
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-26.04]
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build
-      run: |
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./
-        clang --version
-        make -j "$(getconf _NPROCESSORS_ONLN)"
+    - name: Build Docker image
+      run: docker build -t etl-ubuntu-2604 -f .devcontainer/ubuntu-26.04/Dockerfile .
 
-    - name: Run tests
-      run: ./test/etl_tests -v
+    - name: Build and run tests
+      run: |
+        docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-ubuntu-2604 bash -c "\
+          cd /workspaces/etl && \
+          export CC=clang && \
+          export CXX=clang++ && \
+          export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0 && \
+          cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./ && \
+          clang --version && \
+          make -j \$(getconf _NPROCESSORS_ONLN) && \
+          ./test/etl_tests -v"
 
   build-clang-cpp26-linux-no-stl:
     name: Clang C++26 Linux - No STL
-    if: false # enabled when ubuntu-26.04 is available in github
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-26.04]
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build
-      run: |
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./
-        clang --version
-        make -j "$(getconf _NPROCESSORS_ONLN)"
+    - name: Build Docker image
+      run: docker build -t etl-ubuntu-2604 -f .devcontainer/ubuntu-26.04/Dockerfile .
 
-    - name: Run tests
-      run: ./test/etl_tests -v
+    - name: Build and run tests
+      run: |
+        docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-ubuntu-2604 bash -c "\
+          cd /workspaces/etl && \
+          export CC=clang && \
+          export CXX=clang++ && \
+          export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0 && \
+          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./ && \
+          clang --version && \
+          make -j \$(getconf _NPROCESSORS_ONLN) && \
+          ./test/etl_tests -v"
 
   build-clang-cpp26-linux-stl-force-cpp03:
     name: Clang C++26 Linux - STL - Force C++03
-    if: false # enabled when ubuntu-26.04 is available in github
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-26.04]
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build
-      run: |
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./
-        clang --version
-        make -j "$(getconf _NPROCESSORS_ONLN)"
+    - name: Build Docker image
+      run: docker build -t etl-ubuntu-2604 -f .devcontainer/ubuntu-26.04/Dockerfile .
 
-    - name: Run tests
-      run: ./test/etl_tests -v
+    - name: Build and run tests
+      run: |
+        docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-ubuntu-2604 bash -c "\
+          cd /workspaces/etl && \
+          export CC=clang && \
+          export CXX=clang++ && \
+          export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0 && \
+          cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./ && \
+          clang --version && \
+          make -j \$(getconf _NPROCESSORS_ONLN) && \
+          ./test/etl_tests -v"
 
   build-clang-cpp26-linux-no-stl-force-cpp03:
     name: Clang C++26 Linux - No STL - Force C++03
-    if: false # enabled when ubuntu-26.04 is available in github
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-26.04]
+    runs-on: ubuntu-24.04
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build
-      run: |
-        export CC=clang
-        export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
-        cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./
-        clang --version
-        make -j "$(getconf _NPROCESSORS_ONLN)"
+    - name: Build Docker image
+      run: docker build -t etl-ubuntu-2604 -f .devcontainer/ubuntu-26.04/Dockerfile .
 
-    - name: Run tests
-      run: ./test/etl_tests -v
+    - name: Build and run tests
+      run: |
+        docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-ubuntu-2604 bash -c "\
+          cd /workspaces/etl && \
+          export CC=clang && \
+          export CXX=clang++ && \
+          export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0 && \
+          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./ && \
+          clang --version && \
+          make -j \$(getconf _NPROCESSORS_ONLN) && \
+          ./test/etl_tests -v"
 
   build-clang-cpp26-osx-stl:
     name: Clang C++26 OSX - STL
