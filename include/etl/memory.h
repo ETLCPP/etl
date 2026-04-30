@@ -42,7 +42,6 @@ SOFTWARE.
 
 #include "private/addressof.h"
 
-#include <assert.h>
 #include <string.h>
 
 #if defined(ETL_IN_UNIT_TEST) || ETL_USING_STL

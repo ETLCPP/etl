@@ -34,6 +34,4 @@ SOFTWARE.
 #include "platform.h"
 #include "iterator.h"
 
-#include <stddef.h>
-
 #endif

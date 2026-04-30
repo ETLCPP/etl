@@ -43,7 +43,6 @@ SOFTWARE.
 #include <float.h>
 #include <limits.h>
 #include <math.h>
-#include <stdint.h>
 
 #include "private/minmax_push.h"
 

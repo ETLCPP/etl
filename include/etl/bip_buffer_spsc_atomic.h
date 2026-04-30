@@ -51,7 +51,6 @@ SOFTWARE.
 #include "utility.h"
 
 #include <stddef.h>
-#include <stdint.h>
 
 #if ETL_HAS_ATOMIC
 

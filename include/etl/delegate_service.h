@@ -34,8 +34,9 @@ SOFTWARE.
 #include "platform.h"
 #include "array.h"
 #include "delegate.h"
-#include "nullptr.h"
 #include "static_assert.h"
+
+#include <stddef.h>
 
 namespace etl
 {
