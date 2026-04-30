@@ -566,6 +566,14 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR14 bool is_valid() const ETL_NOEXCEPT
     {
+      // GCC's UBSan instruments function pointer comparisons, which prevents
+      // constexpr evaluation. Use implicit bool conversion at compile time
+      // to avoid the instrumented != comparison while still checking validity.
+      if (etl::is_constant_evaluated())
+      {
+        return static_cast<bool>(invocation.stub);
+      }
+
       return invocation.stub != ETL_NULLPTR;
     }
 
