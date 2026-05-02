@@ -206,7 +206,7 @@ namespace etl
     //*******************************************
     /// Get the error.
     //*******************************************
-    ETL_CONSTEXPR14 TError&& error() const&& ETL_NOEXCEPT
+    ETL_CONSTEXPR14 const TError&& error() const&& ETL_NOEXCEPT
     {
       return etl::move(error_value);
     }
@@ -1309,7 +1309,7 @@ namespace etl
     template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TError&&>::type>::type>
     auto transform_error(F&& f) const&& -> expected<void, U>
     {
-      return transform_error_impl<F, const this_type&&, U, const TError&&>(etl::forward<F>(f), *this);
+      return transform_error_impl<F, const this_type&&, U, const TError&&>(etl::forward<F>(f), etl::move(*this));
     }
 #endif
 

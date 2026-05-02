@@ -499,19 +499,19 @@ namespace etl
   };
   #if ETL_HAS_NATIVE_CHAR8_T
   template <>
-  struct is_signed<char8_t> : true_type
+  struct is_signed<char8_t> : false_type
   {
   };
   #endif
   #if ETL_HAS_NATIVE_CHAR16_T
   template <>
-  struct is_signed<char16_t> : true_type
+  struct is_signed<char16_t> : false_type
   {
   };
   #endif
   #if ETL_HAS_NATIVE_CHAR32_T
   template <>
-  struct is_signed<char32_t> : true_type
+  struct is_signed<char32_t> : false_type
   {
   };
   #endif
@@ -569,6 +569,24 @@ namespace etl
   struct is_unsigned<unsigned long long> : true_type
   {
   };
+  #if ETL_HAS_NATIVE_CHAR8_T
+  template <>
+  struct is_unsigned<char8_t> : true_type
+  {
+  };
+  #endif
+  #if ETL_HAS_NATIVE_CHAR16_T
+  template <>
+  struct is_unsigned<char16_t> : true_type
+  {
+  };
+  #endif
+  #if ETL_HAS_NATIVE_CHAR32_T
+  template <>
+  struct is_unsigned<char32_t> : true_type
+  {
+  };
+  #endif
   template <typename T>
   struct is_unsigned<const T> : is_unsigned<T>
   {

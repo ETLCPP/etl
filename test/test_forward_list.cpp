@@ -1444,6 +1444,28 @@ namespace
       CHECK_EQUAL(ItemNDC("F"), *itr++);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_forward_list_exception_types)
+    {
+      // Verify exception class hierarchy is correct
+      CHECK(true == (std::is_base_of<etl::exception, etl::forward_list_exception>::value));
+      CHECK(true == (std::is_base_of<etl::forward_list_exception, etl::forward_list_full>::value));
+      CHECK(true == (std::is_base_of<etl::forward_list_exception, etl::forward_list_empty>::value));
+      CHECK(true == (std::is_base_of<etl::forward_list_exception, etl::forward_list_iterator>::value));
+
+#if defined(ETL_VERBOSE_ERRORS)
+      // When verbose errors are enabled, check the error text contains "forward_list"
+      etl::forward_list_full  ex_full(__FILE__, __LINE__);
+      etl::forward_list_empty ex_empty(__FILE__, __LINE__);
+
+      std::string full_msg(ex_full.what());
+      std::string empty_msg(ex_empty.what());
+
+      CHECK(full_msg.find("forward_list") != std::string::npos);
+      CHECK(empty_msg.find("forward_list") != std::string::npos);
+#endif
+    }
   }
 #include "etl/private/diagnostic_pop.h"
 } // namespace

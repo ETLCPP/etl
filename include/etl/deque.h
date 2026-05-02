@@ -606,10 +606,10 @@ namespace etl
       }
 
       //***************************************************
-      reference operator[](size_t i)
+      const_reference operator[](size_t i) const
       {
-        iterator result(*this);
-        result += i;
+        const_iterator result(*this);
+        result += static_cast<difference_type>(i);
 
         return *result;
       }

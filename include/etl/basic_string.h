@@ -1467,9 +1467,7 @@ namespace etl
     //*********************************************************************
     size_type find(const_pointer s, size_type pos, size_type n) const
     {
-      size_t sz = etl::strlen(s);
-
-      return find_impl(s, s + n, sz, pos);
+      return find_impl(s, s + n, n, pos);
     }
 
     //*********************************************************************

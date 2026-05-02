@@ -1616,5 +1616,26 @@ namespace
       Error result = exp.error_or(Error("default"));
       CHECK_EQUAL("real_error", result.e);
     }
+
+    //*************************************************************************
+    TEST(test_unexpected_error_const_rvalue_ref)
+    {
+      const etl::unexpected<Error> ue(Error("test_error"));
+
+      // Move from const rvalue — should get const Error&&
+      const Error&& ref = std::move(ue).error();
+      CHECK_EQUAL("test_error", ref.e);
+    }
+
+    //*************************************************************************
+    TEST(test_transform_error_void_const_rvalue)
+    {
+      const etl::expected<void, Error> exp(etl::unexpected<Error>(Error("original")));
+
+      auto result = std::move(exp).transform_error([](const Error& e) { return Error(e.e + "_transformed"); });
+
+      CHECK_FALSE(result.has_value());
+      CHECK_EQUAL("original_transformed", result.error().e);
+    }
   }
 } // namespace

@@ -2249,5 +2249,24 @@ namespace
       CHECK_FALSE((etl::is_object_v<decltype(f)>));
 #endif
     }
+
+    //*************************************************************************
+    TEST(test_is_signed_unsigned_char_types)
+    {
+#if ETL_HAS_NATIVE_CHAR8_T
+      CHECK_FALSE(etl::is_signed<char8_t>::value);
+      CHECK_TRUE(etl::is_unsigned<char8_t>::value);
+#endif
+
+#if ETL_HAS_NATIVE_CHAR16_T
+      CHECK_FALSE(etl::is_signed<char16_t>::value);
+      CHECK_TRUE(etl::is_unsigned<char16_t>::value);
+#endif
+
+#if ETL_HAS_NATIVE_CHAR32_T
+      CHECK_FALSE(etl::is_signed<char32_t>::value);
+      CHECK_TRUE(etl::is_unsigned<char32_t>::value);
+#endif
+    }
   }
 } // namespace
