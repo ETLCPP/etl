@@ -3639,20 +3639,6 @@ namespace etl
     template <class... Ranges>
     concat_view(Ranges&&...) -> concat_view<views::all_t<Ranges>...>;
 
-    struct concat_range_adapter_closure : public range_adapter_closure<concat_range_adapter_closure>
-    {
-      template <typename... Ranges>
-      using target_view_type = concat_view<Ranges...>;
-
-      constexpr concat_range_adapter_closure() = default;
-
-      template <typename... Ranges>
-      constexpr auto operator()(Ranges&&... r) const
-      {
-        return concat_view(views::all(etl::forward<Ranges>(r))...);
-      }
-    };
-
     namespace views
     {
       namespace private_views

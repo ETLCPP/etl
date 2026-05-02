@@ -91,26 +91,6 @@ namespace etl
   template <typename TIterator, typename TCompare>
   ETL_CONSTEXPR14 void insertion_sort(TIterator first, TIterator last, TCompare compare);
 
-  class algorithm_exception : public etl::exception
-  {
-  public:
-
-    algorithm_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-      : exception(reason_, file_name_, line_number_)
-    {
-    }
-  };
-
-  class algorithm_error : public algorithm_exception
-  {
-  public:
-
-    algorithm_error(string_type file_name_, numeric_type line_number_)
-      : algorithm_exception(ETL_ERROR_TEXT("algorithm:error", ETL_ALGORITHM_FILE_ID"A"), file_name_, line_number_)
-    {
-    }
-  };
-
 } // namespace etl
 
 //*****************************************************************************

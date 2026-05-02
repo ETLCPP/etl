@@ -2980,5 +2980,31 @@ namespace
       CHECK_EQUAL(0, relocatable_t::destructor_count);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_wipe_on_destruct)
+    {
+      struct Data : public etl::wipe_on_destruct<Data>
+      {
+        uint32_t d1;
+        uint32_t d2;
+        char     d3;
+      };
+
+      alignas(Data) unsigned char buffer[sizeof(Data)] = {0};
+
+      // Construct a Data object in the buffer with known non-zero values.
+      Data* p = new (buffer) Data();
+      p->d1   = 0x12345678UL;
+      p->d2   = 0xAABBCCDDUL;
+      p->d3   = char(0xEE);
+
+      // Destroy the object; wipe_on_destruct should zero the memory.
+      p->~Data();
+
+      // Verify the memory occupied by the object has been cleared.
+      unsigned char zeroes[sizeof(Data)] = {0};
+      CHECK(memcmp(buffer, zeroes, sizeof(Data)) == 0);
+    }
   }
 } // namespace

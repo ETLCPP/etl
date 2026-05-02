@@ -100,26 +100,6 @@ namespace etl
 
   private:
 
-    //*********************************************************************
-    /// How to compare elements and keys.
-    //*********************************************************************
-    class compare
-    {
-    public:
-
-      bool operator()(const value_type& element, key_type key) const
-      {
-        return comp(element.first, key);
-      }
-
-      bool operator()(key_type key, const value_type& element) const
-      {
-        return comp(key, element.first);
-      }
-
-      key_compare comp;
-    };
-
   public:
 
     //*********************************************************************

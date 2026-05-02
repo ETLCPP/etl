@@ -1126,17 +1126,6 @@ namespace etl
   private:
 
     //*********************************************************************
-    /// Create a new element with a default value at the back.
-    //*********************************************************************
-    void create_back()
-    {
-      etl::create_value_at(p_end);
-      ETL_INCREMENT_DEBUG_COUNT;
-
-      ++p_end;
-    }
-
-    //*********************************************************************
     /// Create a new element with a value at the back
     //*********************************************************************
     void create_back(const_reference value)

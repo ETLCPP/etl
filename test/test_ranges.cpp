@@ -3385,6 +3385,42 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_ranges_keys_view_alias)
+    {
+      std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
+
+      using range_t = etl::ranges::views::all_t<decltype(v)&>;
+      etl::ranges::keys_view<range_t> kv(etl::ranges::views::all(v));
+
+      auto it = kv.begin();
+      CHECK_EQUAL(10, *it);
+      ++it;
+      CHECK_EQUAL(20, *it);
+      ++it;
+      CHECK_EQUAL(30, *it);
+      ++it;
+      CHECK(it == kv.end());
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_values_view_alias)
+    {
+      std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
+
+      using range_t = etl::ranges::views::all_t<decltype(v)&>;
+      etl::ranges::values_view<range_t> vv(etl::ranges::views::all(v));
+
+      auto it = vv.begin();
+      CHECK_CLOSE(1.1, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(2.2, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(3.3, *it, 0.001);
+      ++it;
+      CHECK(it == vv.end());
+    }
+
+    //*************************************************************************
     TEST(test_ranges_views_keys)
     {
       std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
