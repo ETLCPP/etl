@@ -1,48 +1,63 @@
 ---
-title: "callback_timer_atomic"
+title: "callback_timer_deferred_locked"
 ---
 
 {{< callout type="info">}}
-  Header: `callback_timer_atomic.h`  
-  Since: `20.22.0`  
+  Header: `callback-timer-deferred-locked.h`  
+  Since: `20.43.0`
 {{< /callout >}}
 
 A software timer class that can manage up to 254 timers. Each one may be repeating or single shot.  
 When a timer triggers it will call the selected function. The function may be a class member or free function.  
 The timers are driven from a call to `tick(uint32_t count)`. This call would normally be made from a high priority interrupt routine. The destination function will receive the callback in the same context as the tick call.  
 The call to tick has a low overhead when a timer is not 'due'. Internally the timers are stored in 'first timeout' order so only the head of the list needs to be checked.  
+This class is different from the similar `etl::callback_timer_locked` in that it will record any timer events during the call to `tick()` so that they may be handled by `handle_deferred()`.  
 
 Each timer may have a period of up to 2<sup>32</sup>-2 ticks (4,294,967,294).  
 At 1ms per tick this would equate to just over 49 days.  
 
-The framework relies on an atomic counter type. With this mechanism, calls to tick are never disabled. If the foreground thread is within a disable/enable section when the timer interrupt/thread is activated then the tick update will be deferred until the next tick period. The timer interrupt/thread may interrogate the return value of tick() to check whether the update was deferred.  
-
-**Defines the following classes**  
+**Defines the following classes**
 ```cpp
-etl::icallback_timer_atomic<uint_least8_t MAX_TIMERS, typename TSemaphore>
-etl::callback_timer_atomic<typename TSemaphore>
+etl::icallback_timer_locked
+etl::callback_timer_deferred_locked
 ```
 
-Since: `20.25.0`  
-From this version, an atomic 'semaphore' counter type must be supplied.  
+The access to the timers is controlled by three external functions, supplied to the timer by the member function set_locks.  
 
 Uses definitions from `timer.h`.  
 
 **Important**  
 For correct operation of the timer framework, the routine that calls tick must not be pre-emptible by another routine that calls a timer function. Also, calls to the timer framework may only be made from the caller of tick and one other, lower priority, thread of execution.  
 
-## icallback_timer_atomic
-The base class for all timer controllers.
+---
+
+## icallback_timer_locked
+The base class for all timer controllers.  
 
 ### Type definitions
 ```cpp
-callback_type etl::delegate<void(void)>
+callback_type    etl::delegate<void(void)>
 ```
 The function type used for callbacks.
 
+```cpp
+try_lock_type    etl::delegate<bool(void)>
+```
+The function type used for 'try lock'.
+
+```cpp
+lock_type        etl::delegate<void(void)>
+```
+The function type used for 'lock'.
+
+```cpp
+unlock_type      etl::delegate<void(void)>
+```
+The function type used for 'unlock'.
+
 ### Member functions
 ```cpp
-etl::timer::id::type register_timer(callback_type callback,
+etl::timer::id::type register_timer(callback_type callback),
                                     uint32_t      period,                                        
                                     bool          repeating)
 ```
@@ -50,9 +65,9 @@ etl::timer::id::type register_timer(callback_type callback,
 Registers a timer calling a free or static function.
 
 **Parameters**  
-callback   A delegate to the callback function that will be called when the timer expires.  
-period     The timer period in ticks.  
-repeating  false if single shot, true if repeating.  
+`callback`  A delegate to the callback free function that will be called when the timer expires.  
+`period`    The timer period in ticks.  
+`repeating` `false` if single shot, `true` if repeating.  
 
 **Return**  
 The allocated timer id or `etl::timer::mode::NO_TIMER` if one was not available.
@@ -63,9 +78,11 @@ The allocated timer id or `etl::timer::mode::NO_TIMER` if one was not available.
 bool unregister_timer(etl::timer::id::type id)
 ```
 **Description**  
-Unregisters a timer.
-If the timer is active then it will be stopped.
-Returns `true` if a timer with the id was successfully unregistered.
+Unregisters a timer.  
+If the timer is active then it will be stopped.  
+
+**Return**  
+`true` if a timer with the id was successfully unregistered.  
 
 ---
 
@@ -98,7 +115,19 @@ bool tick(uint32_t count)
 ```
 **Description**  
 This function updates the internal tick counter (if enabled) and must pass the number of ticks that have occurred since the last call. If the count encompasses more than one period of a repeating timer then the timer will be triggered multiple times in one call to tick.  
-Returns `true` if the tick counter was updated, otherwise `false`. This may be used by the calling routine to accumulate unprocessed tick counts.
+
+**Return**  
+`true` if the tick counter was updated, otherwise `false`. This may be used by the calling routine to accumulate unprocessed tick counts.  
+Any triggered events will be recorded so that they can be deferred.  
+
+---
+
+```cpp
+void handle_deferred()
+```
+**Description**  
+Handles the work collected during the `tick()` call.  
+You can call this function after `tick()` or you can call this on another task to handle the timer events.  
 
 ---
 
@@ -108,8 +137,8 @@ bool start(etl::timer::id::type id, bool immediate = false)
 **Description**  
 Starts the timer with the specified id.  
 If the timer is already running then the timer Is restarted from the current tick count.  
-If immediate is `true` then the timer is triggered on the next call to `tick()`. Note: Single shot timers will only trigger once.  
-If the id does not correspond to a registered timer then returns `false`.
+If immediate is true then the timer is triggered on the next call to tick(). Note: Single shot timers will only trigger once.  
+If the id does not correspond to a registered timer then returns `false`.  
 
 ---
 
@@ -119,7 +148,7 @@ bool stop(etl::timer::id::type id)
 **Description**  
 Stops the timer with the specified id.  
 Does nothing if the timer is already stopped.  
-if the id does not correspond to a registered timer then returns `false`.
+If the id does not correspond to a registered timer then returns `false`.  
 
 ---
 
@@ -129,17 +158,29 @@ bool set_period(etl::timer::id::type id, uint32_t period)
 **Description**  
 Stops the timer with the specified id.  
 Sets a new timer period.  
-Returns `true` if successful.
+
+**Return**  
+`true` if successful.  
 
 ---
-
+ 
 ```cpp
 bool set_mode(etl::timer::id::type id, bool repeating)
 ```
 **Description**  
 Stops the timer with the specified id.  
 Sets a new timer mode.  
-Returns `true` if successful.
+
+**Return**  
+`true` if successful.  
+
+---
+
+```cpp
+void set_locks(try_lock_type try_lock_, lock_type lock_, lock_type unlock_)
+```
+**Description**  
+Sets the try-lock, lock and unlock delegates.
 
 ---
 
@@ -147,31 +188,47 @@ Returns `true` if successful.
 etl::timer::id::type time_to_next()
 ```
 **Description**  
-Returns the time to the next timeout.  
+Returns the time to the next timeout.
 Since: `20.38.0`
 
 ### Constants
-`MAX_TIMERS`  
-The maximum number of timer that can be handled.
+`Max_Timers`  
+The maximum number of timers that can be handled.
 
 ---
 
-## callback_timer_atomic
+## callback_timer_locked
+
+```cpp
+template <uint_least8_t Max_Timers, uint32_t Max_Handlers>
+class callback_timer_deferred_locked
+```
 
 **Template parameters**  
-`MAX_TIMERS` The number of timers to be supported. The maximum number is 254.  
-A value of 255 will result in a compile error.
+`Max_Timers` The number of timers to be supported. The maximum number is 254.  
+A value of 255 will result in a compile error. 
+
+`Max_Handlers`  
+The max number of deferred timer events.
 
 ---
 
 ```cpp
-message_timer_atomic()
+callback_timer_locked()
 ```
 **Description**  
-Default constructor.
+Default construct.  
+The lock callback delegates are not set.
+
+---
+
+```cpp
+callback_timer_locked(try_lock_type try_lock, lock_type lock, unlock_type unlock)
+```
+**Description**  
+Construct from lock callback delegates.
 
 ## Example
-
 ```cpp
 //***************************************************************************
 // Class callback via etl::function
@@ -193,9 +250,7 @@ public:
   int ticks;
 };
   
-Test test;
-
-using callback_type = etl::icallback_timer_atomic<std::atomic_int32_t>::callback_type;
+using callback_type = etl::icallback_timer_atomic::callback_type;
 
 callback_type member_callback = callback_type::create<Test, test, &Test::callback> member_callback;
 
@@ -212,19 +267,9 @@ void free_callback1()
 callback_type free_callback1 = callback_type::create<free_function_callback>();
 
 //***************************************************************************
-// Free function callback via function pointer
-//***************************************************************************
-int free_ticks2 = 0;
-
-void free_callback2()
-{
-  ++free_ticks2;
-}
-
-//***************************************************************************
 // Timer controller.
 //***************************************************************************
-etl::callback_timer_atomic<2, std::atomic_int32_t> timer_controller;
+etl::callback_timer<2> timer_controller;
 
 //***************************************************************************
 // The main loop.
@@ -241,6 +286,7 @@ int main()
 
   timer_controller.start(id1);
   timer_controller.start(id2);
+  timer_controller.start(id3);
 
   timer_controller.enable(true);
 
