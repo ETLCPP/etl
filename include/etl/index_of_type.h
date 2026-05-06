@@ -31,7 +31,8 @@ SOFTWARE.
 
 #include "platform.h"
 #include "integral_limits.h"
-#include "static_assert.h"
+
+#include <stddef.h>
 
 namespace etl
 {

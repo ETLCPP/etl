@@ -33,8 +33,6 @@ SOFTWARE.
 #include "algorithm.h"
 #include "delegate.h"
 #include "error_handler.h"
-#include "function.h"
-#include "nullptr.h"
 #include "placement_new.h"
 #include "static_assert.h"
 #include "timer.h"

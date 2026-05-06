@@ -39,7 +39,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "flags.h"
-#include "functional.h"
 #include "integral_limits.h"
 #include "iterator.h"
 #include "memory.h"

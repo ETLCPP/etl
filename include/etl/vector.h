@@ -40,7 +40,6 @@ SOFTWARE.
 #include "debug_count.h"
 #include "error_handler.h"
 #include "exception.h"
-#include "functional.h"
 #include "initializer_list.h"
 #include "iterator.h"
 #include "memory.h"

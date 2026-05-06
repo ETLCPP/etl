@@ -365,8 +365,15 @@ etl::format_to(s, "a}b");           // unescaped }
 etl::format_to(s, "{:d}", sv);      // invalid type for string_view
 ```
 
-> **Note:** On C++20 and later, compile-time format string validation through
-> `consteval` is planned but not yet fully implemented.
+> **Note:** On C++20 and later, format strings are validated at compile time
+> via `consteval`.  The checks cover syntax (balanced braces, valid format spec
+> grammar, index bounds, no mixing of automatic and manual indexing) as well as
+> type/specifier compatibility (e.g. `{:d}` is rejected for string arguments).
+> A malformed format string produces a compile error whose diagnostic mentions
+> `please_note_this_is_error_message_format_string_syntax_error`.
+>
+> On C++11–C++17, the same checks run at runtime and throw
+> `etl::bad_format_string_exception`.
 
 ## 10. Differences from `std::format`
 
@@ -378,5 +385,5 @@ etl::format_to(s, "{:d}", sv);      // invalid type for string_view
 | **Floating-point support** | Always available | Opt-in via `ETL_USING_FORMAT_FLOATING_POINT`. |
 | **User-defined formatters** | `std::formatter<T>` specialisations | Not yet supported. |
 | **Locale** | `L` flag uses `std::locale` | `L` flag is parsed but has no effect. |
-| **Compile-time validation** | Enforced via `consteval` on C++20 | Planned; currently validates at run time and throws `etl::bad_format_string_exception`. |
+| **Compile-time validation** | Enforced via `consteval` on C++20 | Enforced via `consteval` on C++20 (syntax and type/specifier compatibility); validates at run time and throws `etl::bad_format_string_exception` on C++11–C++17. |
 | **`format_to_n` return type** | `std::format_to_n_result` | Returns the underlying `OutputIt` directly. |

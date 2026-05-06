@@ -37,7 +37,6 @@ SOFTWARE.
 
 #include "type_traits.h"
 
-#include <stddef.h>
 #include <stdint.h>
 
 ///\defgroup ratio ratio

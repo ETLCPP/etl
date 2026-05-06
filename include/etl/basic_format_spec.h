@@ -34,7 +34,6 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
-#include "static_assert.h"
 #include "type_traits.h"
 #include "utility.h"
 

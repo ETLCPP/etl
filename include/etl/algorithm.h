@@ -51,7 +51,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
-#include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 
 #include "private/minmax_push.h"

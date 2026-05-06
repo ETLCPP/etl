@@ -163,11 +163,11 @@ fi
 # Set the sanitizer enable. Default OFF
 #******************************************************************************
 if [ "$4" = "s" ]; then
-  sanitize="On"
+  sanitize="ON"
 elif [ "$4" = "n" ]; then
-  sanitize="Off"
+  sanitize="OFF"
 else
-  sanitize="Off"
+  sanitize="OFF"
 fi
 
 #******************************************************************************

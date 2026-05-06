@@ -403,7 +403,9 @@ namespace
 
       CHECK_EQUAL("data1", test_format(s, "{}", sv));
       CHECK_EQUAL("data1", test_format(s, "{:s}", sv));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:d}", sv), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("data1     ", test_format(s, "{:10s}", sv));
       CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", sv));
       CHECK_EQUAL("     data1", test_format(s, "{:>10s}", sv));
@@ -432,7 +434,9 @@ namespace
 
       CHECK_EQUAL("data1", test_format(s, "{}", s_arg));
       CHECK_EQUAL("data1", test_format(s, "{:s}", s_arg));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:d}", s_arg), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("data1     ", test_format(s, "{:10s}", s_arg));
       CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", s_arg));
       CHECK_EQUAL("     data1", test_format(s, "{:>10s}", s_arg));
@@ -466,7 +470,9 @@ namespace
 
       CHECK_EQUAL("data1", test_format(s, "{}", string_t(data)));
       CHECK_EQUAL("data1", test_format(s, "{:s}", string_t(data)));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:d}", string_t(data)), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("data1     ", test_format(s, "{:10s}", string_t(data)));
       CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", string_t(data)));
       CHECK_EQUAL("     data1", test_format(s, "{:>10s}", string_t(data)));
@@ -495,7 +501,9 @@ namespace
 
       CHECK_EQUAL("data1", test_format(s, "{}", chars));
       CHECK_EQUAL("data1", test_format(s, "{:s}", chars));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:d}", chars), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("data1     ", test_format(s, "{:10s}", chars));
       CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", chars));
       CHECK_EQUAL("     data1", test_format(s, "{:>10s}", chars));
@@ -640,28 +648,28 @@ namespace
     {
       etl::string<100> s;
 
+  #if !ETL_USING_CPP20
+      // These are caught at compile time in C++20 (consteval), so only test at runtime for pre-C++20
       CHECK_THROW(test_format(s, "a{b}", 1),
                   etl::bad_format_string_exception); // bad format index spec
-      // goal: rejected at compile time on C++20, error on <= C++17
 
       CHECK_THROW(test_format(s, "a{b"),
                   etl::bad_format_string_exception); // closing brace missing
-      // goal: rejected at compile time on C++20, error on <= C++17
 
       CHECK_THROW(test_format(s, "a{b}"),
                   etl::bad_format_string_exception); // arg missing
-      // goal: rejected at compile time on C++20, error on <= C++17
 
       CHECK_THROW(test_format(s, "a}b"),
                   etl::bad_format_string_exception); // bad format: only escaped
                                                      // }} allowed
-      // goal: rejected at compile time on C++20, error on <= C++17
 
-      CHECK_EQUAL("123", test_format(s, "{:}", 123)); // valid
       CHECK_THROW(test_format(s, "{::}", 123),
                   etl::bad_format_string_exception); // bad format spec
       CHECK_THROW(test_format(s, "{1}", 123),
                   etl::bad_format_string_exception); // bad index
+  #endif
+
+      CHECK_EQUAL("123", test_format(s, "{:}", 123)); // valid
     }
 
     //*************************************************************************
@@ -720,7 +728,9 @@ namespace
       CHECK_EQUAL(" 34  ", test_format(s, "{:^5}", 34));
       CHECK_EQUAL(" -65 ", test_format(s, "{:^5}", -65));
       CHECK_EQUAL("34  ", test_format(s, "{:<4}", 34));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "a{:*5}", 34), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("a*34**", test_format(s, "a{:*^5}", 34));
       CHECK_EQUAL("a*34**", test_format(s, "a{:*^5}", static_cast<unsigned int>(34)));
       CHECK_EQUAL("a***-341234567890****", test_format(s, "a{:*^20}", static_cast<long long int>(-341234567890)));
@@ -773,7 +783,9 @@ namespace
       CHECK_EQUAL("00067", test_format(s, "{:05d}", 67));
       CHECK_EQUAL("+00067", test_format(s, "{:+05d}", 67));
       CHECK_EQUAL("+0X00EF1", test_format(s, "{:+#05X}", 0xEF1));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:+#05.5X}", 0xEF1), etl::bad_format_string_exception);
+  #endif
     }
   }
 } // namespace

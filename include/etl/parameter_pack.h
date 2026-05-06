@@ -32,7 +32,7 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
-#include <stdint.h>
+#include <stddef.h>
 
 #if ETL_CPP11_SUPPORTED
 namespace etl

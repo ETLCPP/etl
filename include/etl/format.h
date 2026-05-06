@@ -76,17 +76,409 @@ namespace etl
     }
   };
 
-  template <class... Args>
-  ETL_CONSTEXPR14 bool check_f(const char* fmt)
+  #if ETL_USING_CPP20
+  namespace private_format_check
   {
-    // to be implemented later
-    // return fmt[0] == 0; // actual check
+    // Type category for compile-time type/specifier compatibility checking
+    enum class type_category
+    {
+      NONE,    // monostate
+      BOOLEAN, // bool
+      CHAR,    // char
+      INTEGER, // int, unsigned, long long, unsigned long long, short, etc.
+      FLOAT,   // float, double, long double
+      STRING,  // const char*, string_view
+      POINTER  // const void*
+    };
 
-    (void)fmt;
+    // Map a type to its category. Decays and removes cv-qualifiers.
+    template <class T>
+    constexpr type_category get_type_category()
+    {
+      using U = typename etl::remove_cv<typename etl::remove_reference<T>::type>::type;
+
+      // Order matters: bool before integral, char before integral
+      if (etl::is_same<U, bool>::value)
+        return type_category::BOOLEAN;
+      if (etl::is_same<U, char>::value)
+        return type_category::CHAR;
+      if (etl::is_same<U, signed char>::value)
+        return type_category::CHAR;
+      if (etl::is_same<U, unsigned char>::value)
+        return type_category::CHAR;
+      if (etl::is_integral<U>::value)
+        return type_category::INTEGER;
+      if (etl::is_same<U, float>::value)
+        return type_category::FLOAT;
+      if (etl::is_same<U, double>::value)
+        return type_category::FLOAT;
+      if (etl::is_same<U, long double>::value)
+        return type_category::FLOAT;
+      if (etl::is_same<U, const char*>::value)
+        return type_category::STRING;
+      if (etl::is_same<U, char*>::value)
+        return type_category::STRING;
+      if (etl::is_same<U, etl::string_view>::value)
+        return type_category::STRING;
+      if (etl::is_base_of<etl::istring, U>::value)
+        return type_category::STRING;
+      if (etl::is_pointer<U>::value)
+        return type_category::POINTER;
+      if (etl::is_same<U, const void*>::value)
+        return type_category::POINTER;
+      if (etl::is_same<U, void*>::value)
+        return type_category::POINTER;
+      return type_category::NONE; // unknown type: custom formatter, be permissive
+    }
+
+    // Check if a format type character is valid for a given type category.
+    // '\0' means no explicit type was specified (always valid — uses default presentation).
+    inline constexpr bool ct_check_type_spec(type_category cat, char type_char)
+    {
+      if (type_char == '\0')
+      {
+        return true; // no explicit type: always OK, uses default
+      }
+
+      switch (cat)
+      {
+        case type_category::BOOLEAN:
+          // bool: s (as "true"/"false"), b, B, c, d, o, x, X (as integer 0/1)
+          return type_char == 's' || type_char == 'b' || type_char == 'B' || type_char == 'c' || type_char == 'd' || type_char == 'o'
+                 || type_char == 'x' || type_char == 'X';
+
+        case type_category::CHAR:
+          // char: c (default), b, B, d, o, x, X (as integer), s, ?
+          return type_char == 'c' || type_char == '?' || type_char == 'b' || type_char == 'B' || type_char == 'd' || type_char == 'o'
+                 || type_char == 'x' || type_char == 'X' || type_char == 's';
+
+        case type_category::INTEGER:
+          // integers: b, B, c, d, o, x, X
+          return type_char == 'b' || type_char == 'B' || type_char == 'c' || type_char == 'd' || type_char == 'o' || type_char == 'x'
+                 || type_char == 'X';
+
+        case type_category::FLOAT:
+          // floats: a, A, e, E, f, F, g, G
+          return type_char == 'a' || type_char == 'A' || type_char == 'e' || type_char == 'E' || type_char == 'f' || type_char == 'F'
+                 || type_char == 'g' || type_char == 'G';
+
+        case type_category::STRING:
+          // strings: s, ?
+          return type_char == 's' || type_char == '?';
+
+        case type_category::POINTER:
+          // pointers: p, P
+          return type_char == 'p' || type_char == 'P';
+
+        case type_category::NONE:
+        default: return true; // unknown/custom type: be permissive, let runtime handle it
+      }
+    }
+
+    inline constexpr bool ct_is_digit(char c)
+    {
+      return c >= '0' && c <= '9';
+    }
+
+    // Parse an unsigned integer from fmt starting at pos. Updates pos past the digits.
+    // Returns the parsed number, or -1 if no digits found, or -2 on overflow.
+    inline constexpr int ct_parse_num(const char* fmt, int& pos)
+    {
+      if (!ct_is_digit(fmt[pos]))
+      {
+        return -1;
+      }
+      int result = 0;
+      while (ct_is_digit(fmt[pos]))
+      {
+        int new_result = result * 10 + (fmt[pos] - '0');
+        if (new_result < result)
+        {
+          // Overflow detected
+          return -2;
+        }
+        result = new_result;
+        ++pos;
+      }
+      return result;
+    }
+
+    inline constexpr bool ct_is_align(char c)
+    {
+      return c == '<' || c == '>' || c == '^';
+    }
+
+    inline constexpr bool ct_is_sign(char c)
+    {
+      return c == '+' || c == '-' || c == ' ';
+    }
+
+    inline constexpr bool ct_is_type(char c)
+    {
+      // All valid type characters from the format spec
+      return (c == 's') || (c == '?') || (c == 'b') || (c == 'B') || (c == 'c') || (c == 'd') || (c == 'o') || (c == 'x') || (c == 'X') || (c == 'a')
+             || (c == 'A') || (c == 'e') || (c == 'E') || (c == 'f') || (c == 'F') || (c == 'g') || (c == 'G') || (c == 'p') || (c == 'P');
+    }
+
+    // Validate a nested replacement field like {}, {0}, {1} inside width/precision.
+    // pos should be at the '{'. Updates pos past the closing '}'.
+    // Updates auto_count / has_manual / has_auto. Returns false on error.
+    inline constexpr bool ct_parse_nested_replacement(const char* fmt, int& pos, int n_args, int& auto_count, bool& has_auto, bool& has_manual)
+    {
+      if (fmt[pos] != '{')
+        return false;
+      ++pos; // skip '{'
+
+      int num = ct_parse_num(fmt, pos);
+      if (num == -2)
+        return false; // overflow
+      if (num >= 0)
+      {
+        // manual index
+        if (has_auto)
+          return false; // mixing
+        has_manual = true;
+        if (num >= n_args)
+          return false;
+      }
+      else
+      {
+        // automatic index
+        if (has_manual)
+          return false; // mixing
+        has_auto = true;
+        if (auto_count >= n_args)
+          return false;
+        ++auto_count;
+      }
+
+      if (fmt[pos] != '}')
+        return false;
+      ++pos; // skip '}'
+      return true;
+    }
+
+    // Skip/validate the format-spec portion after the colon:
+    //   [[fill]align][sign][#][0][width][.precision][L][type]
+    // pos is right after ':'. Returns false on invalid spec.
+    // parsed_type is set to the type character found, or '\0' if none.
+    inline constexpr bool ct_skip_format_spec(const char* fmt, int& pos, int n_args, int& auto_count, bool& has_auto, bool& has_manual,
+                                              char& parsed_type, bool& parsed_has_precision)
+    {
+      parsed_type          = '\0';
+      parsed_has_precision = false;
+
+      if (fmt[pos] == '\0' || fmt[pos] == '}')
+      {
+        return true; // empty spec is valid
+      }
+
+      // fill-and-align: either [align] or [fill][align]
+      // Look ahead: if second char is an align char, first is fill
+      if (fmt[pos + 1] != '\0' && ct_is_align(fmt[pos + 1]))
+      {
+        char fill = fmt[pos];
+        if (fill == '{' || fill == '}')
+          return false; // { and } not allowed as fill
+        pos += 2;       // skip fill + align
+      }
+      else if (ct_is_align(fmt[pos]))
+      {
+        ++pos; // skip align only
+      }
+
+      // sign
+      if (ct_is_sign(fmt[pos]))
+      {
+        ++pos;
+      }
+
+      // '#'
+      if (fmt[pos] == '#')
+      {
+        ++pos;
+      }
+
+      // '0'
+      if (fmt[pos] == '0')
+      {
+        ++pos;
+      }
+
+      // width: number or nested replacement
+      if (ct_is_digit(fmt[pos]))
+      {
+        if (ct_parse_num(fmt, pos) == -2)
+          return false; // overflow
+      }
+      else if (fmt[pos] == '{')
+      {
+        if (!ct_parse_nested_replacement(fmt, pos, n_args, auto_count, has_auto, has_manual))
+        {
+          return false;
+        }
+      }
+
+      // precision: '.' followed by number or nested replacement
+      bool has_precision = false;
+      if (fmt[pos] == '.')
+      {
+        has_precision = true;
+        ++pos;
+        if (ct_is_digit(fmt[pos]))
+        {
+          if (ct_parse_num(fmt, pos) == -2)
+            return false; // overflow
+        }
+        else if (fmt[pos] == '{')
+        {
+          if (!ct_parse_nested_replacement(fmt, pos, n_args, auto_count, has_auto, has_manual))
+          {
+            return false;
+          }
+        }
+        // else: '.' with no precision number/replacement — still valid (empty precision)
+      }
+
+      // locale-specific: 'L'
+      if (fmt[pos] == 'L')
+      {
+        ++pos;
+      }
+
+      // type
+      if (ct_is_type(fmt[pos]))
+      {
+        parsed_type = fmt[pos];
+        ++pos;
+      }
+
+      // After parsing the spec, we must be at '}' (the closing brace is consumed by the caller)
+      // Any remaining characters before '}' means invalid spec
+      if (fmt[pos] != '}')
+      {
+        return false;
+      }
+
+      parsed_has_precision = has_precision;
+
+      return true;
+    }
+  } // namespace private_format_check
+
+  template <class... Args>
+  constexpr bool check_format(const char* fmt)
+  {
+    const int n_args     = static_cast<int>(sizeof...(Args));
+    int       pos        = 0;
+    int       auto_count = 0;
+    bool      has_auto   = false;
+    bool      has_manual = false;
+
+    // Build a constexpr array mapping arg index -> type category
+    const private_format_check::type_category arg_categories[] = {
+      private_format_check::get_type_category<Args>()...,
+      private_format_check::type_category::NONE // sentinel for zero-arg case
+    };
+
+    while (fmt[pos] != '\0')
+    {
+      char c = fmt[pos];
+      ++pos;
+
+      if (c == '{')
+      {
+        if (fmt[pos] == '{')
+        {
+          // escaped '{'
+          ++pos;
+          continue;
+        }
+
+        // Start of a replacement field: [arg_id][:format_spec]
+        int resolved_index = -1;
+        int arg_index      = private_format_check::ct_parse_num(fmt, pos);
+        if (arg_index == -2)
+          return false; // overflow in arg index
+        if (arg_index >= 0)
+        {
+          // manual index
+          if (has_auto)
+            return false; // mixing auto and manual
+          has_manual = true;
+          if (arg_index >= n_args)
+            return false; // index out of range
+          resolved_index = arg_index;
+        }
+        else
+        {
+          // automatic index
+          if (has_manual)
+            return false; // mixing auto and manual
+          has_auto = true;
+          if (auto_count >= n_args)
+            return false; // too many arguments
+          resolved_index = auto_count;
+          ++auto_count;
+        }
+
+        char type_char     = '\0';
+        bool has_precision = false;
+        if (fmt[pos] == ':')
+        {
+          ++pos; // skip ':'
+          if (!private_format_check::ct_skip_format_spec(fmt, pos, n_args, auto_count, has_auto, has_manual, type_char, has_precision))
+          {
+            return false;
+          }
+        }
+
+        // Validate type specifier against argument type
+        if (resolved_index >= 0 && resolved_index < n_args)
+        {
+          if (!private_format_check::ct_check_type_spec(arg_categories[resolved_index], type_char))
+          {
+            return false;
+          }
+
+          // Precision is not allowed for integer, boolean, or pointer types
+          if (has_precision)
+          {
+            auto cat = arg_categories[resolved_index];
+            if (cat == private_format_check::type_category::INTEGER || cat == private_format_check::type_category::BOOLEAN
+                || cat == private_format_check::type_category::POINTER)
+            {
+              return false;
+            }
+            // Precision is also invalid for char when presented as char (not as integer)
+            if (cat == private_format_check::type_category::CHAR && (type_char == '\0' || type_char == 'c' || type_char == '?'))
+            {
+              return false;
+            }
+          }
+        }
+
+        if (fmt[pos] != '}')
+        {
+          return false; // missing closing brace
+        }
+        ++pos; // skip '}'
+      }
+      else if (c == '}')
+      {
+        if (fmt[pos] != '}')
+        {
+          return false; // unmatched '}'
+        }
+        ++pos; // skip second '}'
+      }
+    }
+
     return true;
   }
 
-  inline void please_note_this_is_error_message_1() noexcept {}
+  inline void please_note_this_is_error_message_format_string_syntax_error() noexcept {}
+  #endif // ETL_USING_CPP20
 
   template <class... Args>
   struct basic_format_string
@@ -94,20 +486,15 @@ namespace etl
     inline ETL_CONSTEVAL basic_format_string(const char* fmt)
       : _sv(fmt)
     {
-      bool format_string_ok = check_f(fmt);
-
-      if (!format_string_ok)
+  #if ETL_USING_CPP20
+      // Compile-time validation: check_format runs at compile time via consteval.
+      // In pre-C++20, runtime checks in vformat_to/parse_format_spec/etc. are sufficient.
+      if (!check_format<Args...>(fmt))
       {
-        // if (etl::is_constant_evaluated()) // compile time error path
-        //{
-        //   // calling a non-constexpr function in a consteval context to
-        //   trigger a compile error please_note_this_is_error_message_1();
-        // }
-        // else // run time error path
-        //{
-        ETL_ASSERT_FAIL_AND_RETURN(ETL_ERROR(bad_format_string_exception));
-        //}
+        // Calling a non-constexpr function in a consteval context triggers a compile error.
+        please_note_this_is_error_message_format_string_syntax_error();
       }
+  #endif
     }
 
     ETL_CONSTEXPR basic_format_string(const basic_format_string& other) = default;
@@ -181,7 +568,6 @@ namespace etl
       // automatic number generation only allowed if not already in manual mode
       ETL_ASSERT(manual_mode == false, ETL_ERROR(bad_format_string_exception));
       automatic_mode = true;
-      // TODO: compile time check
       ETL_ASSERT(current < num_args, ETL_ERROR(bad_format_string_exception) /* not enough arguments for generated index */);
       return current++;
     }
@@ -594,18 +980,6 @@ namespace etl
           parse_ctx.advance_to(fmt_it);
           return true;
         }
-      }
-      return false;
-    }
-
-    inline bool parse_sequence(format_parse_context& parse_ctx, etl::string_view sequence)
-    {
-      auto fmt_it = parse_ctx.begin();
-      if (etl::equal(sequence.cbegin(), sequence.cend(), fmt_it))
-      {
-        fmt_it += sequence.size();
-        parse_ctx.advance_to(fmt_it);
-        return true;
       }
       return false;
     }
@@ -1459,6 +1833,40 @@ namespace etl
       fmt_context.advance_to(tmp);
     }
 
+    // Compute prefix/suffix padding sizes for alignment.
+    // default_align_start: if true, NONE defaults to left-align (START); otherwise right-align (END).
+    inline void compute_padding(size_t pad, spec_align_t align, bool default_align_start, size_t& prefix_size, size_t& suffix_size)
+    {
+      switch (align)
+      {
+        case spec_align_t::START:
+          prefix_size = 0;
+          suffix_size = pad;
+          break;
+        case spec_align_t::CENTER:
+          prefix_size = pad / 2;
+          suffix_size = pad - prefix_size;
+          break;
+        case spec_align_t::END:
+          prefix_size = pad;
+          suffix_size = 0;
+          break;
+        case spec_align_t::NONE:
+        default:
+          if (default_align_start)
+          {
+            prefix_size = 0;
+            suffix_size = pad;
+          }
+          else
+          {
+            prefix_size = pad;
+            suffix_size = 0;
+          }
+          break;
+      }
+    }
+
     template <typename OutputIt, typename Int>
     typename format_context<OutputIt>::iterator format_aligned_int(Int arg, format_context<OutputIt>& fmt_ctx)
     {
@@ -1467,32 +1875,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_num<private_format::counter_iterator, Int>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
         }
       }
 
@@ -1513,32 +1902,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_floating<private_format::counter_iterator, Float>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
         }
       }
 
@@ -1609,32 +1979,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_string_view<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, true, prefix_size, suffix_size);
         }
       }
 
@@ -1647,98 +1998,9 @@ namespace etl
     }
 
     template <typename OutputIt>
-    void format_chars(OutputIt& it, const char* arg, const format_spec_t& spec)
-    {
-      bool escaped = false;
-      if (spec.type.has_value())
-      {
-        switch (spec.type.value())
-        {
-          case 's':
-            // default output
-            break;
-          case '?':
-            // escaped string
-            escaped = true;
-            break;
-          default:
-            // invalid type for string
-            ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-        }
-      }
-      size_t limit = etl::numeric_limits<size_t>::max();
-      if (spec.precision.has_value())
-      {
-        limit = spec.precision.value();
-      }
-
-      if (escaped)
-      {
-        format_plain_char(it, '"');
-      }
-      const char_type* arg_it = arg;
-      while (*arg_it != '\0' && limit > 0)
-      {
-        if (escaped)
-        {
-          format_escaped_char(it, *arg_it);
-        }
-        else
-        {
-          format_plain_char(it, *arg_it);
-        }
-        ++arg_it;
-        --limit;
-      }
-      if (escaped)
-      {
-        format_plain_char(it, '"');
-      }
-    }
-
-    template <typename OutputIt>
     typename format_context<OutputIt>::iterator format_aligned_chars(const char* arg, format_context<OutputIt>& fmt_ctx)
     {
-      size_t prefix_size = 0;
-      size_t suffix_size = 0;
-
-      if (fmt_ctx.format_spec.width)
-      {
-        // calculate size
-        private_format::counter_iterator counter;
-        private_format::format_chars<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
-
-        if (counter.value() < fmt_ctx.format_spec.width.value())
-        {
-          size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
-        }
-      }
-
-      // actual output
-      OutputIt it = fmt_ctx.out();
-      private_format::fill<OutputIt>(it, prefix_size, fmt_ctx.format_spec.fill);
-      private_format::format_chars<OutputIt>(it, arg, fmt_ctx.format_spec);
-      private_format::fill<OutputIt>(it, suffix_size, fmt_ctx.format_spec.fill);
-      return it;
+      return format_aligned_string_view<OutputIt>(etl::string_view(arg), fmt_ctx);
     }
 
     inline void check_char_spec(const format_spec_t& spec)
@@ -1793,43 +2055,16 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_char<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::NONE: // default
-              if (!fmt_ctx.format_spec.type.has_value() || fmt_ctx.format_spec.type.value() == 'c' || fmt_ctx.format_spec.type.value() == '?')
-              {
-                prefix_size = 0;
-                suffix_size = pad;
-              }
-              else
-              {
-                prefix_size = pad;
-                suffix_size = 0;
-              }
-              break;
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          // char type defaults to left-align, integer presentation defaults to right-align
+          bool default_start =
+            !fmt_ctx.format_spec.type.has_value() || fmt_ctx.format_spec.type.value() == 'c' || fmt_ctx.format_spec.type.value() == '?';
+          compute_padding(pad, fmt_ctx.format_spec.align, default_start, prefix_size, suffix_size);
         }
       }
 
@@ -1877,32 +2112,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_bool<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
         }
       }
 
@@ -1946,32 +2162,13 @@ namespace etl
 
       if (fmt_ctx.format_spec.width)
       {
-        // calculate size
         private_format::counter_iterator counter;
         private_format::format_pointer<private_format::counter_iterator>(counter, arg, fmt_ctx.format_spec);
 
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          switch (fmt_ctx.format_spec.align)
-          {
-            case private_format::spec_align_t::START:
-              prefix_size = 0;
-              suffix_size = pad;
-              break;
-            case private_format::spec_align_t::CENTER:
-              prefix_size = pad / 2;
-              suffix_size = pad - prefix_size;
-              break;
-            case private_format::spec_align_t::NONE: // default
-            case private_format::spec_align_t::END:
-              prefix_size = pad;
-              suffix_size = 0;
-              break;
-            default:
-              // invalid alignment specification
-              ETL_ASSERT_FAIL(ETL_ERROR(bad_format_string_exception));
-          }
+          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
         }
       }
 

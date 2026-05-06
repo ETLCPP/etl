@@ -40,13 +40,11 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "iterator.h"
 #include "memory.h"
-#include "nullptr.h"
 #include "optional.h"
 #include "span.h"
 #include "type_traits.h"
 
-#include <limits.h>
-#include <stdint.h>
+#include <stddef.h>
 
 namespace etl
 {
