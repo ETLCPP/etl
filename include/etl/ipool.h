@@ -37,8 +37,9 @@ SOFTWARE.
 #include "iterator.h"
 #include "memory.h"
 #include "placement_new.h"
-#include "static_assert.h"
 #include "utility.h"
+
+#include <stddef.h>
 
 #define ETL_POOL_CPP03_CODE 0
 

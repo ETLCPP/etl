@@ -38,7 +38,7 @@ SOFTWARE.
 #include "memory.h"
 #include "message_router.h"
 
-#include <stdint.h>
+#include <stddef.h>
 
 namespace etl
 {

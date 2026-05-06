@@ -39,7 +39,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
-#include <assert.h>
+#include <stddef.h>
 
 //*****************************************************************************
 // Note:

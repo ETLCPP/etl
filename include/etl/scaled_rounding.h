@@ -33,7 +33,6 @@ SOFTWARE.
 
 #include "platform.h"
 #include "absolute.h"
-#include "static_assert.h"
 #include "type_traits.h"
 
 namespace etl

@@ -43,7 +43,6 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "iterator.h"
 #include "nth_type.h"
-#include "nullptr.h"
 #include "parameter_type.h"
 #include "placement_new.h"
 #include "pool.h"
