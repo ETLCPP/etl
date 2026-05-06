@@ -70,7 +70,7 @@ The Embedded Template Library (ETL) is not intended as a full replacement for th
 - Providing a set of containers with fixed or maximum sizes defined at compile-time.
 - Offering APIs that closely resemble those of the STL, enabling familiar and consistent usage.
 - Maintaining compatibility with C++98 while implementing many features introduced in later standards
-(C++11/14/17/20/23) where possible.
+(C++11/14/17/20/23/26) wherever possible.
 - Ensuring deterministic behavior, which is critical in real-time and resource-constrained environments.
 - Introducing additional components and utilities useful in embedded contexts but absent from the STL.
 - The ETL avoids dynamic memory allocation entirely; the heap is never used. All non-intrusive containers have a fixed capacity, allowing memory requirements to be fully determined at compile-time. This makes the ETL ideal for lower-resource embedded applications where predictability, performance, and memory control are essential.

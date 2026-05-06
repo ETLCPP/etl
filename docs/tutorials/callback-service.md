@@ -1,18 +1,27 @@
-callback_service
+---
+title: "callback_service"
+---
 
-The following code can be found in examples\FunctionInterruptSimulation
+{{< callout type="warning">}}
+  **Deprecated**.  
+  This documentation is for reference only.  
+  Use `etl::delegate_service` for new code.
+{{< /callout >}}
 
-This code demonstrates using the callback service for five example ARM interrupts. 
+The following code can be found in `examples\FunctionInterruptSimulation`.
 
-Timer1 interrupt is handled by an instance of class Timer. The member callback function is wrapped by the most efficient version of etl::function which all of the information it needs at compile time.
+This code demonstrates using the callback service for five example ARM interrupts.  
 
-Timer2 interrupt is handled by a global function.
+`Timer1` interrupt is handled by an instance of class `Timer`. The member callback function is wrapped by the most efficient version of `etl::function` which all of the information it needs at compile time.  
 
-Timer3 has no entry in the callback service and will therefore trigger execution of the unhandled handler.
+`Timer2` interrupt is handled by a global function.  
 
-USART1 and USART2 interrupts are handled by instances of Uart. 
+`Timer3` has no entry in the callback service and will therefore trigger execution of the unhandled handler.  
+
+`USART1` and `USART2` interrupts are handled by instances of Uart.  
 There callbacks are defined withing the class and are initialised in the Uart constructor.
 
+```cpp
 #include <iostream>
 
 #include "etl/function.h"
@@ -165,12 +174,15 @@ int main()
 
   return 0;
 }
+```
 
-____________________________________________________________________________________________________
-Output
+---
+
+**Output**  
+```
 Timer interrupt (member) : ID 42
 Timer interrupt (free)   : ID 43
 UART0                    : ID 52
 UART1                    : ID 53
 Unhandled Interrupt      : ID 44
-
+```

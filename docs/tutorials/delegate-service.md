@@ -1,18 +1,21 @@
-elegate_service
+---
+title: "delegate_service"
+---
 
-The following code can be found in examples\FunctionInterruptSimulation-Delegates
+The following code can be found in `examples\FunctionInterruptSimulation-Delegates`  
 
-This code demonstrates using the delegate service for five example ARM interrupts. 
+This code demonstrates using the delegate service for five example ARM interrupts.  
 
-Timer1 interrupt is handled by an instance of class Timer. The member callback function is wrapped by the most efficient version of etl::delegate in which all of the information it requires is known at compile time.
+`Timer1` interrupt is handled by an instance of class `Timer`. The member callback function is wrapped by the most efficient version of `etl::delegate` in which all of the information it requires is known at compile time.  
 
-Timer2 interrupt is handled by a global function.
+`Timer2` interrupt is handled by a global function.  
 
-Timer3 has no entry in the callback service and will therefore trigger execution of the unhandled handler.
+`Timer3` has no entry in the callback service and will therefore trigger execution of the unhandled handler.  
 
-USART1 and USART2 interrupts are handled by instances of Uart. 
-There callbacks are defined withing the class and are initialised in the Uart constructor.
+`USART1` and `USART2` interrupts are handled by instances of `Uart`.  
+There callbacks are defined withing the class and are initialised in the `Uart` constructor.  
 
+```cpp
 #include <iostream>
 
 #include "etl/delegate.h"
@@ -166,12 +169,15 @@ int main()
 
   return 0;
 }
+```
 
-__________________________________________________________________________________________________
-Output
+---
+
+**Output**  
+```
 Timer interrupt (member) : ID 42
 Timer interrupt (free)   : ID 43
 UART0                    : ID 52
 UART1                    : ID 53
 Unhandled Interrupt      : ID 44
-
+```

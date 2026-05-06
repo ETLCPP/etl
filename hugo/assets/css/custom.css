@@ -12,7 +12,8 @@ html:not(.dark) .highlight .chroma .cpf {
 html:not(.dark) h1 { 
   color: white !important;
   width: 100%;
-  background-color: royalblue !important;
+  background-color: coral !important;
+  border: width 0.15rem solid rgb(163, 81, 51) !important;
   padding: 0.5rem 0.5rem !important;
 }
 
@@ -119,8 +120,7 @@ html.dark h1
 { 
   color: white !important;
   width: 100%;
-  #background-color: rgb(50, 50, 50) !important;
-  background-color: #7099c7 !important;
+  background-color: rgb(177, 87, 54) !important;
   padding: 0.5rem 0.5rem !important;
 }
 
@@ -283,7 +283,7 @@ html.dark .hextra-code-block .highlight .chroma .cpf {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
-  font-size: 110% !important;
+  font-size: 1.1rem !important;
 }
 
 .err {
@@ -295,7 +295,7 @@ h1 {
   font-family: Roboto, sans-serif !important;
   font-style: i !important;
   font-weight: 500 !important;
-  font-size: 180% !important;
+  font-size: 1.9rem !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.0em !important;
   border-radius: 0.5rem !important;
@@ -305,7 +305,7 @@ h2 {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
-  font-size: 150% !important;
+  font-size: 1.5rem !important;
   margin-top: 1.0em !important;
   margin-bottom: 0.5em !important;
 }
@@ -314,18 +314,18 @@ h3 {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
-  font-size: 120% !important;
+  font-size: 1.2rem !important;
   margin-top: 0.7em !important;
   margin-bottom: 0em !important;
   padding: 0 !important;
-  display: inline-block;
+  #display: inline-block;
 }
 
 h4 {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
-  font-size: 110% !important;
+  font-size: 1.1rem !important;
   margin-top: 0.5em !important;
   margin-bottom: 0.5em !important;
   display: inline-block;
@@ -411,7 +411,7 @@ p {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
   font-weight: normal !important;
-  font-size: 110% !important;
+  font-size: 1.1rem !important;
   margin-top: 0.5em !important;
 }
 
