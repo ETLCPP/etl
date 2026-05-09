@@ -36,10 +36,9 @@ SOFTWARE.
 #include "array.h"
 #include "cyclic_value.h"
 #include "delegate.h"
-#include "static_assert.h"
 #include "type_traits.h"
 
-#include <cstring>
+#include <stddef.h>
 
 #if ETL_USING_CPP11
 

@@ -38,14 +38,12 @@ SOFTWARE.
 #include "message.h"
 #include "message_packet.h"
 #include "message_types.h"
-#include "nullptr.h"
-#include "placement_new.h"
 #include "shared_message.h"
 #include "successor.h"
 #include "type_list.h"
 #include "type_traits.h"
 
-#include <stdint.h>
+#include <stddef.h>
 
 namespace etl
 {

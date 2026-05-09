@@ -1,1 +1,2 @@
 option('use_stl', description: 'Compiling for STL', type: 'boolean', value: true)
+option('enable_sanitizer', description: 'Enable address and undefined behavior sanitizers', type: 'boolean', value: false)

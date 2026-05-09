@@ -1,0 +1,36 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "etl_tests",
+    size = "small",
+    srcs = glob(
+        [
+            "*.cpp",
+            "*.h",
+        ],
+        exclude = [
+            "maincpp03check.cpp",
+        ],
+    ),
+    copts = [
+        "-Itest",
+        "-fno-omit-frame-pointer",
+        "-fno-common",
+        "-pedantic-errors",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wfloat-equal",
+        "-Wshadow",
+        "-Wnull-dereference",
+        "-Wsign-conversion",
+        "-Wextra-semi",
+        "-Wno-maybe-uninitialized",
+        "-g",
+    ],
+    linkopts = ["-latomic"],
+    deps = [
+        "//:etl",
+        "//test/UnitTest++:unittest-cpp",
+    ],
+)

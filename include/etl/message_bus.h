@@ -36,10 +36,9 @@ SOFTWARE.
 #include "message.h"
 #include "message_router.h"
 #include "message_types.h"
-#include "nullptr.h"
 #include "vector.h"
 
-#include <stdint.h>
+#include <stddef.h>
 
 namespace etl
 {

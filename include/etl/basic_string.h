@@ -39,7 +39,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "flags.h"
-#include "functional.h"
 #include "integral_limits.h"
 #include "iterator.h"
 #include "memory.h"
@@ -89,20 +88,6 @@ namespace etl
 
     string_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
-    {
-    }
-  };
-
-  //***************************************************************************
-  ///\ingroup string
-  /// String empty exception.
-  //***************************************************************************
-  class string_empty : public etl::string_exception
-  {
-  public:
-
-    string_empty(string_type file_name_, numeric_type line_number_)
-      : string_exception(ETL_ERROR_TEXT("string:empty", ETL_BASIC_STRING_FILE_ID"A"), file_name_, line_number_)
     {
     }
   };
@@ -1481,9 +1466,7 @@ namespace etl
     //*********************************************************************
     size_type find(const_pointer s, size_type pos, size_type n) const
     {
-      size_t sz = etl::strlen(s);
-
-      return find_impl(s, s + n, sz, pos);
+      return find_impl(s, s + n, n, pos);
     }
 
     //*********************************************************************
@@ -2742,6 +2725,7 @@ namespace etl
                                iterator>::type
       copy_characters(TIterator1 from, size_t n, iterator to)
     {
+#include "etl/private/diagnostic_stringop_overflow_push.h"
       size_t count = 0;
 
       while (count != n)
@@ -2750,6 +2734,7 @@ namespace etl
         ++count;
       }
 
+#include "etl/private/diagnostic_pop.h"
       return to;
     }
 
@@ -3217,8 +3202,6 @@ namespace etl
   }
 #endif
 } // namespace etl
-
-#undef ETL_USING_WCHAR_T_H
 
 #include "private/minmax_pop.h"
 

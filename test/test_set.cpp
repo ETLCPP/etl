@@ -103,10 +103,10 @@ namespace
   //   return (lhs.k < rhs.k);
   // }
 
+#include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_set)
   {
     //*************************************************************************
-#include "etl/private/diagnostic_null_dereference_push.h"
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
     {
@@ -123,7 +123,6 @@ namespace
 
       return true;
     }
-#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     struct SetupFixture
@@ -595,8 +594,8 @@ namespace
 
       for (size_t i = 0; i < MAX_SIZE; ++i)
       {
-        data_result    = data.insert(i);
-        compare_result = compare_data.insert(i);
+        data_result    = data.insert(static_cast<int>(i));
+        compare_result = compare_data.insert(static_cast<int>(i));
 
         // Check that both return successful return results
         CHECK_EQUAL(*data_result.first, *compare_result.first);
@@ -609,8 +608,8 @@ namespace
       // not throw error
       for (size_t i = 0; i < MAX_SIZE; ++i)
       {
-        data_result    = data.insert(i);
-        compare_result = compare_data.insert(i);
+        data_result    = data.insert(static_cast<int>(i));
+        compare_result = compare_data.insert(static_cast<int>(i));
 
         // Check that both return successful return results
         CHECK_EQUAL(*data_result.first, *compare_result.first);
@@ -1443,4 +1442,5 @@ namespace
       } while (std::next_permutation(permutation.begin(), permutation.end()));
     }
   }
+#include "etl/private/diagnostic_pop.h"
 } // namespace

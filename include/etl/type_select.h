@@ -31,8 +31,10 @@ SOFTWARE.
 
 #include "platform.h"
 #include "null_type.h"
-#include "static_assert.h"
 #include "type_traits.h"
+
+#include <stddef.h>
+
 namespace etl
 {
 #if ETL_USING_CPP11 && !defined(ETL_TYPE_SELECT_FORCE_CPP03_IMPLEMENTATION)

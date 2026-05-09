@@ -36,8 +36,6 @@ SOFTWARE.
 #include "functional.h"
 #include "type_traits.h"
 
-#include <stdint.h>
-
 namespace etl
 {
   namespace private_limiter

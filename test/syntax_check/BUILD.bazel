@@ -1,0 +1,18 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "syntax_check",
+    srcs = glob(
+        ["*.t.cpp"],
+    ),
+    hdrs = ["etl_profile.h"],
+    copts = [
+        "-Itest/syntax_check",
+        "-pedantic-errors",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wextra-semi",
+    ],
+    deps = ["//:etl"],
+)
