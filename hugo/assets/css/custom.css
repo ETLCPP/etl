@@ -48,7 +48,7 @@ html:not(.dark) pre code {
 }
 
 html:not(.dark) hr {
-  background-color: darkgrey !important;
+  background-color: #eeeeee !important;
 }
 
 html:not(.dark) .hx\:font-extrabold {

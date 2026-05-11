@@ -1,10 +1,14 @@
-user_type
-A strong typedef with constants.
+---
+title: "user_type"
+---
 
-A method of declaring a strong typedef, like type_def, but with a set of constants, like enum_type.
-Unlike enum types, a user type may be set to arbitrary values.
+A strong typedef with constants.  
 
-Example
+A method of declaring a strong `typedef`, like `etl::type_def`, but with a set of constants, like `enum_type`.  
+Unlike enum types, a user type may be set to arbitrary values.  
+
+**Example**  
+```cpp
 ETL_DECLARE_USER_TYPE(CompassDirection, int)
 ETL_USER_TYPE(North, 0)
 ETL_USER_TYPE(South, 180)
@@ -21,4 +25,4 @@ direction = CompassDirection(3);     // Explicit conversion from an arbitrary va
 ++direction;                         // Modify.
 direction += CompassDirection::THIRTY_DEGREES;
 direction = value;                   // **** Compilation error ****
-
+```

@@ -1,5 +1,5 @@
 ---
-title: "Endian"
+title: "endian"
 ---
 
 {{< callout type="info">}}
@@ -23,8 +23,8 @@ If `ETL_ENDIAN_NATIVE` is not defined by the user, then the ETL selects an appro
 &emsp;&emsp;`etl::endian::big    = std::endian::big`  
 &emsp;&emsp;`etl::endian::native = std::endian::native`  
 
-else, if `__BYTE_ORDER__` is defined then
-&emsp;If `__ORDER_LITTLE_ENDIAN__` is defined then
+else if `__BYTE_ORDER__` is defined then  
+&emsp;If `__ORDER_LITTLE_ENDIAN__` is defined then  
 &emsp;&emsp;`etl::endian::little =  __ORDER_LITTLE_ENDIAN__`  
 &emsp;&emsp;`etl::endian::big    =  __ORDER_BIG_ENDIAN__`  
 &emsp;&emsp;`etl::endian::native =  __BYTE_ORDER__`  

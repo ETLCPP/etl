@@ -1,14 +1,22 @@
-type_def
-Typesafe typedefs
+---
+title: "type_def"
+---
 
-A method of declaring types that are strongly typesafe.
-Avoids the problem of inadvertently mixing different typedef'd types.
+{{< callout type="info">}}
+  Header: `type_def.h`  
+{{< /callout >}}
 
-etl::type_def is noexcept from 20.42.0
-________________________________________________________________________________________________
-The problem
-Typdefs do not give you a lot of type safety, allowing the following runtime errors to occur.
+Typesafe typedefs.  
 
+A method of declaring types that are strongly type safe.  
+Avoids the problem of inadvertently mixing different typedef'd types.  
+
+`etl::type_def` is `noexcept` since 20.42.0
+
+## The problem
+Standard typdefs do not give you a lot of type safety, allowing the following runtime errors to occur.
+
+```cpp
 typedef int event_t;
 typedef int action_t;
 
@@ -28,10 +36,12 @@ event_t  event  = 1;
 action_t action = 2;
 
 DoEvent(action, event); // Oops! Runtime error. :-(
-________________________________________________________________________________________________
-The solution
+```
+
+## The solution
 ETL typedefs are strongly typed and will not allow the errors above to be compiled.
 
+```cpp
 #include "type_def.h"
 
 ETL_TYPEDEF(int, event_t);
@@ -53,13 +63,14 @@ event_t  event  = 1; // Implicit construction from underlying type.
 action_t action = 2; // Implicit construction from underlying type.
 
 DoEvent(action, event); // Compile time error. :-)
+```
 
-
-The class defines two class types; value_type which represents the underlying type and id_type that represents the typedef unique type id.
-
+The class defines two class types; `value_type` which represents the underlying type and `id_type` that represents the typedef unique type id.
 The class defines all of the operators that the underlying type may be expected to support.
-
-Also the class defines two get() member functions that return a const or non-const reference to the internal value, for data binding purposes.
+Also the class defines two `get()` member functions that return a const or non-const reference to the internal value, for data binding purposes.  
+```cpp
 T& get()
+```
+```cpp
 const T& get() const
-
+```

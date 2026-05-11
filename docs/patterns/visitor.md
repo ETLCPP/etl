@@ -7,7 +7,9 @@ title: "visitor"
 {{< /callout >}}
 
 A set of template classes to enable the easy creation of objects using the Visitor pattern.  
+
 The purpose of these classes is to create a base classes with pure virtual functions for each supplied type.   
+
 Any derived class that tries to instantiate an object from it will then be forced to supply an overridden version for each and every function.  
 
 There are two templated classes; `visitor` and `visitable`.

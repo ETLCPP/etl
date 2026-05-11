@@ -1,28 +1,47 @@
-unaligned_type
-20.23.0
-A wrapper for fundamental types around unaligned internal storage.
-Allows big and little endian storage.
+---
+title: "unaligned_type"
+---
 
-20.40.0
-Marked as 'packed' for MSVC, GCC amd Clang.
+{{< callout type="info">}}
+  Header: `unaligned_type.h`  
+  Since: `20.23.0`  
+{{< /callout >}}
 
+A wrapper for fundamental types around unaligned internal storage.  
+Allows big and little endian storage.  
+
+Marked as `packed` for MSVC, GCC amd Clang.  
+
+```cpp
 template <typename T, int Endian>
 class unaligned_type
+```
 
-Where Endian is etl::endian::big or etl::endian::little.
-____________________________________________________________________________________________________
-For C++11 or above
+Where `Endian` is `etl::endian::big` or `etl::endian::little`.
+
+---
+
+**For C++11 or above**  
+```cpp
 template <typename T, int Endian>
 using unaligned_type_t = typename etl::unaligned_type<T, Endian>::type;
-____________________________________________________________________________________________________
-For C++17 or above
+```
+
+---
+
+**For C++17 or above**  
+```cpp
 template <typename T, int Endian>
 constexpr size_t unaligned_type_v = etl::unaligned_type<T, Endian>::Size;
-____________________________________________________________________________________________________
-The following types are predefined.
-Host order
-Only defined if ETL_ENDIANNESS_IS_CONSTEXPR
+```
 
+---
+
+The following types are predefined.  
+
+## Host order
+Only defined if `ETL_ENDIANNESS_IS_CONSTEXPR`.
+```cpp
 host_char_t
 host_schar_t
 host_uchar_t
@@ -45,9 +64,9 @@ host_uint64_t     ETL_USING_64BIT_TYPES
 host_float_t
 host_double_t
 host_long_double_t
-____________________________________________________________________________________________________
-Little Endian
-
+```
+## Little Endian
+```cpp
 le_char_t
 le_schar_t
 le_uchar_t
@@ -70,9 +89,9 @@ le_uint64_t     ETL_USING_64BIT_TYPES
 le_float_t
 le_double_t
 le_long_double_t
-____________________________________________________________________________________________________
-Big Endian
-
+```
+## Big Endian
+```cpp
 be_char_t
 be_schar_t
 be_uchar_t
@@ -95,10 +114,10 @@ be_uint64_t     ETL_USING_64BIT_TYPES
 be_float_t
 be_double_t
 be_long_double_t
-____________________________________________________________________________________________________
-Network Order
+```
+## Network Order
 Synonym for Big Endian
-
+```cpp
 using net_char_t        = be_char_t
 using net_schar_t       = be_schar_t
 using net_uchar_t       = be_uchar_t
@@ -121,120 +140,268 @@ using net_uint64_t      = be_uint64_t     ETL_USING_64BIT_TYPES
 using net_float_t       = be_float_t
 using net_double_t      = be_double_t
 using net_long_double_t = be_long_double_t
-____________________________________________________________________________________________________
-Constants
-int Endian  The endianness of the type.
-size_t Size The size, in char, of the type.
-____________________________________________________________________________________________________
-Constructors
+```
 
+## Constants
+`int Endian`  
+&emsp;The endianness of the type.  
+`size_t Size`  
+&emsp;The size, in `char`, of the type.
+
+## Constructors
+
+```cpp
 ETL_CONSTEXPR unaligned_type()
-Constructs an uninitialised unaligned_type.
-____________________________________________________________________________________________________
+```
+**Description**  
+Constructs an uninitialised `unaligned_type`.
+
+---
+
+```cpp
 unaligned_type(T value)
+```
+**Description**  
 Constructs with the supplied value.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 template <int Endian_Other>
 unaligned_type(const unaligned_type<T, Endian_Other>& other)
+```
+**Description**  
 Constructs from another unaligned_type.
 The endianness is converted, if necessary.
-____________________________________________________________________________________________________
-Member types
 
+## Member types
+```cpp
 using pointer                = char*;
 using const_pointer          = const char*;
 using iterator               = char*;
 using const_iterator         = const char*;
 using reverse_iterator       = etl::reverse_iterator<iterator>;
 using const_reverse_iterator = etl::reverse_iterator<const_iterator>;
-____________________________________________________________________________________________________
-Member functions
+```
 
+## Member functions
+```cpp
 pointer data()
+```
+**Description**  
 Pointer to the beginning of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_pointer data() const
+```
+**Description**  
 Const pointer to the beginning of the storage.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 size_t size() const
+```
+**Description**  
 Size of the storage.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 iterator begin()
+```
+**Description**  
 Iterator to the beginning of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_iterator begin() const
+```
+**Description**  
 Const iterator to the beginning of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_iterator cbegin() const
+```
+**Description**  
 Const iterator to the beginning of the storage.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 reverse_iterator rbegin()
+```
+**Description**  
 Reverse iterator to the beginning of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_reverse_iterator rbegin() const
+```
+**Description**  
 Const reverse iterator to the beginning of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_reverse_iterator crbegin() const
+```
+**Description**  
 Const reverse iterator to the beginning of the storage.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 iterator end()
+```
+**Description**  
 Iterator to the end of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_iterator end() const
+```
+**Description**  
 Const iterator to the end of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_iterator cend() const
+```
+**Description**  
 Const iterator to the end of the storage.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 reverse_iterator rend()
+```
+**Description**  
 Reverse iterator to the end of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_reverse_iterator rend() const
+```
+**Description**  
 Const reverse iterator to the end of the storage.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const_reverse_iterator crend() const
+```
+**Description**  
 Const reverse iterator to the end of the storage.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 char& operator[](int i)
+```
+**Description**  
 Index operator.
 
+---
+
+```cpp
 ETL_CONSTEXPR14 const char& operator[](int i) const
+```
+**Description**  
 Const index operator.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 unaligned_type& operator =(T value)
+```
+**Description**  
 Assignment operator.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 operator T() const
+```
+**Description**  
 Conversion operator.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 T value() const
+```
+**Description**  
 Gets the value.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 template <int Endian_Other>
 ETL_CONSTEXPR14 unaligned_type& operator =(const unaligned_type<T, Endian_Other>& other)
+```
+**Description**  
 Assignment operator from other endianness.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 bool operator ==(const unaligned_type& lhs, const unaligned_type& rhs)
-Equality operator.
-Removed 20.39.3
+```
+**Description**  
+Equality operator.  
+Removed: `20.39.3`
 
+---
+
+```cpp
 ETL_CONSTEXPR14 bool operator ==(const unaligned_type& lhs, T rhs)
-Equality operator.
-Removed 20.39.3
+```
+**Description**  
+Equality operator.  
+Removed: `20.39.3`
 
+---
+
+```cpp
 ETL_CONSTEXPR14 bool operator ==(T lhs, const unaligned_type& rhs)
-Equality operator.
-Removed 20.39.3
-____________________________________________________________________________________________________
+```
+**Description**  
+Equality operator.  
+Removed: `20.39.3`
+
+---
+
+```cpp
 ETL_CONSTEXPR14 bool operator !=(const unaligned_type& lhs, T rhs)
-Inequality operator.
-Removed 20.39.3
+```
+**Description**  
+Inequality operator.  
+Removed: `20.39.3`
 
+---
+
+```cpp
 ETL_CONSTEXPR14 bool operator !=(const unaligned_type& lhs, const unaligned_type& rhs)
-Inequality operator.
-Removed 20.39.3
+```
+**Description**  
+Inequality operator.  
+Removed: `20.39.3`
 
+---
+
+```cpp
 ETL_CONSTEXPR14 bool operator !=(T lhs, const unaligned_type& rhs)
-Inequality operator.
-Removed 20.39.3
-
+```
+**Description**  
+Inequality operator.  
+Removed: `20.39.3`
