@@ -4,12 +4,14 @@ title: "basic_string"
 
 {{< callout type="info">}}
   Header:  
+  `basic_string.h`  
   `string.h`  
   `wstring.h`  
   `u8string.h`  
   `u16string.h`  
   `u32string.h`  
   Similar to:  
+  `std::basic_string`  
   `std::string`  
   `std::wstring`  
   `std::u8string`  
@@ -17,7 +19,7 @@ title: "basic_string"
   `std::u32string`
 {{< /callout >}}
 
-Fixed capacity string classes.
+### Fixed capacity string classes.
 
 ```cpp
 etl::string<size_t Size>
@@ -27,6 +29,7 @@ etl::u16string<size_t Size>
 etl::u32string<size_t Size>
 ```
 
+### Strings with externally defined buffers.
 ```cpp
 etl::string_ext
 etl::wstring_ext
@@ -35,20 +38,20 @@ etl::u32string_ext
 ```
 
 Inherits from `etl::istring`, `etl::iwstring`, `etl::iu8string`, `etl::iu16string` or `etl::iu32string`.  
-The base classes may be used as a size independent pointer or reference type for any string instance.  
+These base classes may be used as a size independent pointer or reference type for any string instance.  
 
 Has the ability to be copied by low level functions such as `memcpy` by use of a `repair()` function.  
 See the function reference for an example of use.  
 
-Note: `cstring.h` is deprecated  
+**Note:** `cstring.h` is deprecated  
 
 ## Macros
 
-If `ETL_DISABLE_STRING_TRUNCATION_CHECKS` is defined then the string will not be checked for truncation and
-the truncation functions will not be available.  
+`ETL_DISABLE_STRING_TRUNCATION_CHECKS`  
+If defined then the string will not be checked for truncation and the truncation functions will not be available.  
 
-If `ETL_DISABLE_STRING_CLEAR_AFTER_USE` is defined then the string will not be cleared after use and the
-'secure' functions will not be available.  
+`ETL_DISABLE_STRING_CLEAR_AFTER_USE`  
+If is defined then the string will not be cleared after use and the 'secure' functions will not be available.  
 
 Defining both of these macros can reduce the overhead of an `etl::string` by up to 4 bytes.  
 

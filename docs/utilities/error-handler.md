@@ -74,8 +74,8 @@ Raises the error and calls `return value`.
 
 Note: Not all error methods will call the return, such as when using C++ exceptions.  
 The macro will call return for the following combinations:-
-- ETL_LOG_ERRORS only.
-- ETL_DEBUG not defined.
+- `ETL_LOG_ERRORS` only.
+- `ETL_DEBUG` not defined.
 
 ---
 
@@ -89,14 +89,14 @@ If `ETL_VERBOSE_ERRORS` is defined then `ETL_TEXT` uses the verbose text. By def
 
 The terse text used in the library follows a `<numeric><alpha>` pattern. For example, errors in `etl::vector` start with `"17"` and the alpha code for 'vector full' is `"A"`. The return from the `what()` member function in this case will be `"17A"`.  
 
-When ETL_LOG_ERRORS is defined, error exceptions are passed to etl::error_handler::error() before throwing the exception or calling the assert. This will do nothing until a user defined handler function is set. The user function may either be a free function or a member function.  
+When `ETL_LOG_ERRORS` is defined, error exceptions are passed to `etl::error_handler::error()` before throwing the exception or calling the assert. This will do nothing until a user defined handler function is set. The user function may either be a free function or a member function.  
 
-There is an additional switch that enables checks to be made on pushes and pops to containers, ETL_CHECK_PUSH_POP.  
+There is an additional switch that enables checks to be made on pushes and pops to containers, `ETL_CHECK_PUSH_POP`.  
 This is not enabled by default as empty/full checks will usually be made by the calling code.  
 
 ---
 
-There are versions of the assert macros that are only enabled when `ETL_IS_DEBUG_BUILD` is true:-   
+There are versions of the assert macros that are only enabled when `ETL_IS_DEBUG_BUILD` is `true`:-   
 
 ```cpp
 ETL_DEBUG_ASSERT(condition, ETL_ERROR(error_exception_class))  

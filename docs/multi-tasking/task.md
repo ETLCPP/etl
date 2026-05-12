@@ -34,7 +34,7 @@ Virtual destructor
 virtual uint32_t task_request_work() const = 0;
 ```
 The derived task must override this.  
-Should return a value that represents the amount of work to do. This may be the number of items in the task's message queue, for example.  
+Should return a value that represents the amount of work to do. For example, this may be the number of items in the task's message queue.  
 Return zero if the task requires no processing time.  
 
 ---
@@ -68,6 +68,8 @@ Enabled by default.
 bool task_is_running() const;
 ```
 Returns `true` if the task is in the 'running' state.
+
+---
 
 ```cpp
 etl::task_priority_t get_task_priority() const

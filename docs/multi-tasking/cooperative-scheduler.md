@@ -15,8 +15,8 @@ Calls a 'watchdog' callback whenever the scheduler returns.
 The scheduler makes use of `etl::task`.
 
 ## Scheduling Policies
-A number of built-in scheduling policies are available.
-Note: The tasks are stored in decreasing priority id order. i.e. Higher id = higher priority.
+A number of built-in scheduling policies are available.  
+**Note:** The tasks are stored in decreasing priority id order. i.e. Higher id = higher priority.
 
 ### Sequential Single
 ```cpp
@@ -189,18 +189,18 @@ Inherits from `etl::scheduler_exception`
 As a basic example, you will have to define the following...
 
 **Tasks**  
-For each of your tasks, derive a class from etl::task and overide the two virtual functions uint32_t task_request_work() const and void task_process_work(). task_request_work returns a value that informs the scheduler that this task has work to process. The return value should be non-zero if the task has work. This meaning of this is user defined, it could be the number of messages in the task's queue, or just a 0 = no work, 1 = have work. task_process_work allows the task to process any work that it has. How much work it processes on each call is user defined; often it will be one 'unit' of work and letting the policy determine which task gets the next opportunity to process more.  
+For each of your tasks, derive a class from etl::task and override the two virtual functions `uint32_t task_request_work()` const and `void task_process_work()`.  `task_request_work` returns a value that informs the scheduler that this task has work to process. The return value should be non-zero if the task has work. This meaning of this is user defined, it could be the number of messages in the task's queue, or just a `0` = no work, `1` = have work. `task_process_work` allows the task to process any work that it has. How much work it processes on each call is user defined; often it will be one 'unit' of work and letting the policy determine which task gets the next opportunity to process more.  
 
 **Task list**  
 An array of pointers to the tasks. Passed to the scheduler with `add_task_list`.  
-Use add_task to add additional tasks.
+Use `add_task` to add additional tasks.
 
 **The scheduler**  
 An instance of `etl::scheduler` with the required scheduling policy.  
 Initialise the task list by calling add_task_list.
 
 **Callbacks**  
-If you wish to get callbacks for 'idle' or 'watchdog' then define callback functions and call set_idle_callback and set_watchdog_callback to tell the scheduler.  
+If you wish to get callbacks for 'idle' or 'watchdog' then define callback functions and call `set_idle_callback` and `set_watchdog_callback`.  
 The callbacks may be global, static or member function, wrapped in an etl::function.
 
 **Starting the scheduler**  
