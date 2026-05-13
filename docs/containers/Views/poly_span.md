@@ -1,43 +1,66 @@
-poly_span
-20.31.0
+---
+title: "poly_span"
+---
 
-This class implements a view in to a contiguous range through a base type. 
+{{< callout >}}
+  Header: `priority_queue.h`  
+  Since: `20.31.0`
+{{< /callout >}}
 
+This class implements a view in to a contiguous range through a base type.  
+
+```cpp
 etl::poly_span<typename TBase, size_t Extent = etl::dynamic_extent>
-____________________________________________________________________________________________________
-Template deduction guides
+```
+
+## Template deduction guides
 C++17
 
+```cpp
 template <typename TIterator>
 poly_span(const TIterator begin, const TIterator end)
   ->poly_span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;
+```
 
+```cpp
 template <typename TIterator, typename TSize>
 poly_span(const TIterator begin, const TSize size)
   ->poly_span<etl::remove_pointer_t<TIterator>, etl::dynamic_extent>;
+```
 
+```cpp
 template <typename T, size_t N>
 poly_span(T(&)[N])
   -> poly_span<T, N>;
+```
 
+```cpp
 template <typename T, size_t N>
 poly_span(etl::array<T, N>&)
   -> poly_span<T, N>;
+```
 
+```cpp
 template <typename T, size_t N>
 poly_span(const etl::array<T, N>&)
   -> poly_span<const T, N>;
+```
 
+```cpp
 template <typename T, size_t N>
 poly_span(std::array<T, N>&)
   ->poly_span<T, N>;
+```
 
+```cpp
 template <typename T, size_t N>
 poly_span(const std::array<T, N>&)
   ->poly_span<const T, N>;
-____________________________________________________________________________________________________
-Member types
+```
 
+## Member types
+
+```cpp
 element_type            T
 value_type              remove_cv<T>::type
 size_type               size_t
@@ -48,129 +71,235 @@ pointer                 value_type*
 const_pointer           const value_type*
 iterator                Random access iterator
 reverse_iterator        ETL_OR_STD::reverse_iterator<iterator>
-____________________________________________________________________________________________________
-Constructors
+```
 
+## Constructors
+
+```cpp
 ETL_CONSTEXPR poly_span() ETL_NOEXCEPT
-____________________________________________________________________________________________________
+```
+
+---
+
+```cpp
 template <typename TIterator, typename TSize>
 ETL_CONSTEXPR poly_span(const TIterator begin, const TSize size) ETL_NOEXCEPT
-Static asserts if etl::iterator_traits<TIterator>::iterator_category is not random_access_iterator_tag 
-or etl::iterator_traits<TIterator>::value_type is not the same as, or not derived from TBase.
-____________________________________________________________________________________________________
+```
+Static asserts if `etl::iterator_traits<TIterator>::iterator_category` is not `random_access_iterator_tag`  
+or `etl::iterator_traits<TIterator>::value_type` is not the same as, or not derived from `TBase`.
+
+---
+
+```cpp
 template <typename TIterator>
 ETL_CONSTEXPR poly_span(const TIterator begin, const TIterator end)
-Static asserts if etl::iterator_traits<TIterator>::iterator_category is not random_access_iterator_tag 
-or etl::iterator_traits<TIterator>::value_type is not the same as, or not derived from TBase.
-____________________________________________________________________________________________________
+```
+Static asserts if `etl::iterator_traits<TIterator>::iterator_category` is not `random_access_iterator_tag`  
+or `etl::iterator_traits<TIterator>::value_type` is not the same as, or not derived from `TBase`.
+
+---
+
+```cpp
 template<typename U, size_t N>
 ETL_CONSTEXPR poly_span(U(&begin_)[N]) ETL_NOEXCEPT
-Static asserts if N is greater than Extent or etl::iterator_traits<TIterator>::value_type is not the same as,
-or not derived from TBase.
-____________________________________________________________________________________________________
+```
+Static asserts if `N` is greater than `Extent` or `etl::iterator_traits<TIterator>::value_type` is not the same as, or not derived from `TBase`.
+
+---
+
+```cpp
 template <typename U, size_t N>
 ETL_CONSTEXPR poly_span(etl::array<U, N>& a) ETL_NOEXCEPT
-Static asserts if N is greater than Extent or etl::iterator_traits<TIterator>::value_type is not the same as,
-or not derived from TBase.
-____________________________________________________________________________________________________
+```
+Static asserts if `N` is greater than `Extent` or `etl::iterator_traits<TIterator>::value_type` is not the same as, or not derived from `TBase`.
+
+---
+
+```cpp
 template <typename U, size_t N>
 ETL_CONSTEXPR poly_span(const etl::array<U, N>& a) ETL_NOEXCEPT
-Static asserts if N is greater than Extent or etl::iterator_traits<TIterator>::value_type is not the same as,
-or not derived from TBase.
-____________________________________________________________________________________________________
+```
+Static asserts if `N` is greater than `Extent` or `etl::iterator_traits<TIterator>::value_type` is not the same as, or not derived from `TBase`.
+
+---
+
+```cpp
 template <typename U, size_t N>
 ETL_CONSTEXPR poly_span(std::array<U, N>& a) ETL_NOEXCEPT
-Enabled if ETL_USING_CPP11 and ETL_USING_STL are true.
-Static asserts if N is greater than Extent or etl::iterator_traits<TIterator>::value_type is not the same as,
-or not derived from TBase.
-____________________________________________________________________________________________________
+```
+Enabled if `ETL_USING_CPP11` and `ETL_USING_STL` are `true`.  
+Static asserts if `N` is greater than `Extent` or `etl::iterator_traits<TIterator>::value_type` is not the same as, or not derived from `TBase`.
+
+---
+
+```cpp
 template <typename U, size_t N>
 ETL_CONSTEXPR poly_span(const std::array<U, N>& a) ETL_NOEXCEPT
-Enabled if ETL_USING_CPP11 and ETL_USING_STL are true.
-Static asserts if N is greater than Extent or etl::iterator_traits<TIterator>::value_type is not the same as,
-or not derived from TBase.
-____________________________________________________________________________________________________
-ETL_CONSTEXPR poly_span(const poly_span& other)
-Copy constructor.
-____________________________________________________________________________________________________
-Access
+```
+Enabled if `ETL_USING_CPP11` and `ETL_USING_STL` are `true`.  
+Static asserts if `N` is greater than `Extent` or `etl::iterator_traits<TIterator>::value_type` is not the same as, or not derived from `TBase`.
 
+---
+
+```cpp
+ETL_CONSTEXPR poly_span(const poly_span& other)
+```
+Copy constructor.
+
+## Access
+
+```cpp
 ETL_CONSTEXPR reference operator[](size_t i) const
-Returns a reference to the indexed element.
+```
+Returns a reference to the indexed element.  
 Index out of range results in undefined behaviour.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR reference front() const ETL_NOEXCEPT
+```
 Returns a reference to the first element.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR reference back() const ETL_NOEXCEPT
+```
 Returns a reference to the last element.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR pointer data() const ETL_NOEXCEPT
+```
 Returns a pointer to the first element.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_CONSTEXPR14 poly_span& operator =(const poly_span& other) ETL_NOEXCEPT
+```
 Assign from a other span
 
+---
+
+```cpp
 template <typename UBase>
 ETL_CONSTEXPR14 poly_span& operator =(const poly_span<UBase, Extent>& other) ETL_NOEXCEPT
-Assign from a other span
-____________________________________________________________________________________________________
+```
+Assign from a other span.
+
+---
+
+```cpp
 template <size_t COUNT>
 ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT> first() const
-Returns a span consisting of the first COUNT elements of the current span.
+```
+Returns a span consisting of the first `COUNT` elements of the current span.
 
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> last(size_t count) const
+```
 Returns a span consisting of the last count elements of the current span.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 template <size_t COUNT>
 ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT> last() const
-Returns a span consisting of the last COUNT elements of the current span
+```cpp
+Returns a span consisting of the last `COUNT` elements of the current span
 
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> first(size_t count) const
+```
 Returns a span consisting of the first count elements of the current span.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 template <const size_t OFFSET, size_t COUNT = etl::dynamic_extent>
 ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, COUNT != etl::dynamic_extent ? COUNT : Extent - OFFSET> subspan() const
-Returns a subspan consisting of the range starting at OFFSET for COUNT elements of the current span.
+```
+Returns a subspan consisting of the range starting at `OFFSET` for `COUNT` elements of the current span.
 
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR etl::poly_span<element_type, etl::dynamic_extent> subspan(size_t offset, size_t count = etl::dynamic_extent) const
-Returns a subspan consisting of the range starting at offset for count elements of the current span.
-____________________________________________________________________________________________________
-Iterators
+```
+Returns a subspan consisting of the range starting at `offset` for `count` elements of the current span.
 
+## Iterators
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR iterator begin() const ETL_NOEXCEPT
+```
 Returns an iterator to the beginning of the span.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR iterator end() const ETL_NOEXCEPT
+```
 Returns an iterator to the end of the span.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR iterator rbegin() const  ETL_NOEXCEPT
+```
 Returns a reverse iterator to the beginning of the span.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR iterator rend() const ETL_NOEXCEPT
+```
 Returns a reverse iterator to the end of the span.
-____________________________________________________________________________________________________
-Capacity
 
+## Capacity
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
+```
 Returns true if the size of the span is zero, otherwise false.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
+```
 Returns the size of the span.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR size_t size_bytes() const ETL_NOEXCEPT
+```
 Returns the size of the span in bytes.
-____________________________________________________________________________________________________
+
+---
+
+```cpp
 ETL_NODISCARD ETL_CONSTEXPR size_t size_of_element() const ETL_NOEXCEPT
+```
 Returns the size of the elements pointed to by the span, in bytes.
-____________________________________________________________________________________________________
-Non-member functions
 
-Hash
-There is a specialisation of etl::hash for etl::poly_span
-____________________________________________________________________________________________________
-Example
+## Non-member functions
 
+### Hash
+There is a specialisation of `etl::hash` for `etl::poly_span`.
+
+---
+
+### Example
+```cpp
 struct Base
 {
   virtual ~Base() {}
@@ -200,4 +329,4 @@ for (const Base& b : ps)
 {
   b.Print();
 }
-
+```

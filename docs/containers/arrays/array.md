@@ -16,8 +16,9 @@ Adds additional members functions, `assign`, `insert` & `erase`.
 etl::array<typename T, const size_t SIZE>
 ```
 
-See also
-[array_view]()
+See also:  
+[array_view]({{< relref "array_view" >}})  
+[multi_array]({{< relref "multi_array" >}})
 
 ## Template deduction guides
 **C++17 and above**
