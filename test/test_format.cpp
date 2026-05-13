@@ -217,6 +217,8 @@ namespace
       CHECK_EQUAL("1.234567", test_format(s, "{}", 1.234567499));
       CHECK_EQUAL("1.234568", test_format(s, "{}", 1.234567501));
       CHECK_EQUAL("1.5", test_format(s, "{}", 1.5));
+      CHECK_EQUAL("2.225074e-308", test_format(s, "{}", etl::numeric_limits<double>::min()));
+      CHECK_EQUAL("1.797693e+308", test_format(s, "{}", etl::numeric_limits<double>::max()));
     }
 
     //*************************************************************************
@@ -240,6 +242,7 @@ namespace
       CHECK_EQUAL("1.125000E+00", test_format(s, "{:E}", 1.125f));
       CHECK_EQUAL("-2.533324e-05", test_format(s, "{:e}", -0.00002533324f));
       CHECK_EQUAL("-2.500000e+11", test_format(s, "{:e}", -250000000000.0f));
+      CHECK_EQUAL("1.000000e+01", test_format(s, "{:e}", 9.9999996));
       CHECK_EQUAL("1.000000", test_format(s, "{:f}", 1.0f));
       CHECK_EQUAL("1.125000", test_format(s, "{:F}", 1.125f));
       CHECK_EQUAL("1.000000", test_format(s, "{:g}", 1.0f));
@@ -326,9 +329,9 @@ namespace
       etl::string<100> s;
 
       // 9.9999999: after normalization integral=9, fractional=0.9999999
-      // round(0.9999999 * 1e6) == 1000000 => must carry: 10.000000e+00
-      CHECK_EQUAL("10.000000e+00", test_format(s, "{:e}", 9.9999999));
-      CHECK_EQUAL("-10.000000e+00", test_format(s, "{:e}", -9.9999999));
+      // round(0.9999999 * 1e6) == 1000000 => must carry and renormalize: 1.000000e+01
+      CHECK_EQUAL("1.000000e+01", test_format(s, "{:e}", 9.9999999));
+      CHECK_EQUAL("-1.000000e+01", test_format(s, "{:e}", -9.9999999));
 
       // 1.9999999: after normalization integral=1, fractional=0.9999999
       CHECK_EQUAL("2.000000e+00", test_format(s, "{:e}", 1.9999999));
@@ -786,6 +789,144 @@ namespace
   #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:+#05.5X}", 0xEF1), etl::bad_format_string_exception);
   #endif
+    }
+
+  #if ETL_USING_FORMAT_FLOATING_POINT
+    //*************************************************************************
+    TEST(test_format_float_sign)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("+1.500000", test_format(s, "{:+f}", 1.5));
+      CHECK_EQUAL("1.500000", test_format(s, "{:-f}", 1.5));
+      CHECK_EQUAL(" 1.500000", test_format(s, "{: f}", 1.5));
+      CHECK_EQUAL("-1.500000", test_format(s, "{:+f}", -1.5));
+      CHECK_EQUAL("-1.500000", test_format(s, "{: f}", -1.5));
+      CHECK_EQUAL("+0.0", test_format(s, "{:+}", 0.0));
+      CHECK_EQUAL(" 0.0", test_format(s, "{: }", 0.0));
+    }
+
+    //*************************************************************************
+    TEST(test_format_float_width_align)
+    {
+      etl::string<100> s;
+
+      // {:f} with width
+      CHECK_EQUAL("  1.500000", test_format(s, "{:10f}", 1.5));
+      CHECK_EQUAL("1.500000  ", test_format(s, "{:<10f}", 1.5));
+      CHECK_EQUAL("  1.500000", test_format(s, "{:>10f}", 1.5));
+      CHECK_EQUAL(" 1.500000 ", test_format(s, "{:^10f}", 1.5));
+      CHECK_EQUAL("*1.500000*", test_format(s, "{:*^10f}", 1.5));
+
+      // {:f} with width and sign
+      CHECK_EQUAL(" +1.500000", test_format(s, "{:+10f}", 1.5));
+      CHECK_EQUAL(" -1.500000", test_format(s, "{:+10f}", -1.5));
+
+      // {:e} with width
+      CHECK_EQUAL("   1.500000e+00", test_format(s, "{:15e}", 1.5));
+      CHECK_EQUAL("1.500000e+00   ", test_format(s, "{:<15e}", 1.5));
+      CHECK_EQUAL("   1.500000e+00", test_format(s, "{:>15e}", 1.5));
+      CHECK_EQUAL(" 1.500000e+00  ", test_format(s, "{:^15e}", 1.5));
+    }
+
+    //*************************************************************************
+    TEST(test_format_negative_floats)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("-1.5", test_format(s, "{}", -1.5));
+      CHECK_EQUAL("-123.456", test_format(s, "{}", -123.456));
+      CHECK_EQUAL("-1.234560e+02", test_format(s, "{:e}", -123.456));
+      CHECK_EQUAL("-123.456000", test_format(s, "{:f}", -123.456));
+    }
+
+    //*************************************************************************
+    TEST(test_format_float_scientific_large_small)
+    {
+      etl::string<100> s;
+
+      // Large and small values with {:e}
+      CHECK_EQUAL("1.000000e+100", test_format(s, "{:e}", 1e100));
+      CHECK_EQUAL("1.000000e-100", test_format(s, "{:e}", 1e-100));
+      CHECK_EQUAL("-1.000000e+100", test_format(s, "{:e}", -1e100));
+      CHECK_EQUAL("-1.000000e-100", test_format(s, "{:e}", -1e-100));
+    }
+
+    //*************************************************************************
+    TEST(test_format_float_default_scientific_switch)
+    {
+      etl::string<100> s;
+
+      // Values at the boundary of fixed vs scientific in default presentation
+      CHECK_EQUAL("0.000001", test_format(s, "{}", 0.000001));
+      CHECK_EQUAL("1.000000e-07", test_format(s, "{}", 0.0000001));
+      CHECK_EQUAL("-1.000000e-07", test_format(s, "{}", -0.0000001));
+      CHECK_EQUAL("123456789012345.0", test_format(s, "{}", 123456789012345.0));
+    }
+
+    //*************************************************************************
+    TEST(test_format_positive_zero)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0.0", test_format(s, "{}", 0.0));
+      CHECK_EQUAL("0.000000e+00", test_format(s, "{:e}", 0.0));
+      CHECK_EQUAL("0.000000", test_format(s, "{:f}", 0.0));
+    }
+  #endif
+
+    //*************************************************************************
+    TEST(test_format_brace_escaping)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("{}", test_format(s, "{{}}"));
+      CHECK_EQUAL("{42}", test_format(s, "{{{}}}", 42));
+    }
+
+    //*************************************************************************
+    TEST(test_format_integer_limits)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("-2147483648", test_format(s, "{}", etl::numeric_limits<int>::min()));
+      CHECK_EQUAL("2147483647", test_format(s, "{}", etl::numeric_limits<int>::max()));
+      CHECK_EQUAL("ffffffffffffffff", test_format(s, "{:x}", static_cast<unsigned long long>(0xFFFFFFFFFFFFFFFFULL)));
+  #if ETL_USING_CPP14
+      CHECK_EQUAL("0b0", test_format(s, "{:#b}", 0));
+  #endif
+      CHECK_EQUAL("0x0", test_format(s, "{:#x}", 0));
+    }
+
+    TEST(test_format_float_zero_padding)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0000003.14", test_format(s, "{:010}", 3.14));
+      CHECK_EQUAL("001.500000", test_format(s, "{:010f}", 1.5));
+      CHECK_EQUAL("+01.500000", test_format(s, "{:+010f}", 1.5));
+      CHECK_EQUAL("-01.500000", test_format(s, "{:010f}", -1.5));
+      CHECK_EQUAL("+001.500000e+00", test_format(s, "{:+015e}", 1.5));
+      CHECK_EQUAL("-001.500000e+00", test_format(s, "{:+015e}", -1.5));
+    }
+
+    TEST(test_format_nested_replacement_width)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("        42", test_format(s, "{:{}d}", 42, 10));
+      CHECK_EQUAL("        42", test_format(s, "{0:{1}d}", 42, 10));
+      CHECK_EQUAL("hello     ", test_format(s, "{:{}}", "hello", 10));
+      CHECK_EQUAL("x         42", test_format(s, "{} {:{}d}", "x", 42, 10));
+    }
+
+    TEST(test_format_octal_alternate_zero)
+    {
+      etl::string<100> s;
+
+      CHECK_EQUAL("0", test_format(s, "{:#o}", 0));
+      CHECK_EQUAL("07", test_format(s, "{:#o}", 7));
+      CHECK_EQUAL("010", test_format(s, "{:#o}", 8));
     }
   }
 } // namespace

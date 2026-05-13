@@ -1104,7 +1104,20 @@ namespace etl
 
       format_spec = format_spec_t(); // reset format_spec to defaults
 
-      format_spec.index = parse_num(parse_ctx); // optional
+      format_spec.index = parse_num(parse_ctx); // optional explicit index
+
+      // Consume the value's auto-index before parsing the format spec body,
+      // so that nested replacement fields for width/precision get correct
+      // auto-indices. Per C++ standard, in {:{}}, the value arg is consumed
+      // first (arg 0), then the width arg (arg 1).
+      if (!format_spec.index.has_value())
+      {
+        format_spec.index = parse_ctx.next_arg_id();
+      }
+      else
+      {
+        parse_ctx.check_arg_id(*format_spec.index);
+      }
 
       bool colon = parse_char(parse_ctx, ':');
       if (colon)
@@ -1239,7 +1252,7 @@ namespace etl
     }
 
     template <typename OutputIt, typename T>
-    void format_alternate_form(OutputIt& it, const format_spec_t& spec)
+    void format_alternate_form(OutputIt& it, T value, const format_spec_t& spec)
     {
       if (spec.hash && spec.type.has_value())
       {
@@ -1247,7 +1260,13 @@ namespace etl
         {
           case 'b': format_sequence(it, "0b"); break;
           case 'B': format_sequence(it, "0B"); break;
-          case 'o': format_sequence(it, "0"); break;
+          case 'o':
+            // Per C++ standard, # for octal adds leading 0 only if not already present
+            if (value != 0)
+            {
+              format_sequence(it, "0");
+            }
+            break;
           case 'x': format_sequence(it, "0x"); break;
           case 'X':
             format_sequence(it, "0X");
@@ -1401,23 +1420,93 @@ namespace etl
     {
       size_t width = 0;
       format_sign<OutputIt, T>(it, value, spec);
-      format_alternate_form<OutputIt, T>(it, spec);
+      format_alternate_form<OutputIt, T>(it, value, spec);
       adjust_width_from_spec(spec, width);
       check_precision(spec);
       format_plain_num(it, value, spec, width);
     }
 
   #if ETL_USING_FORMAT_FLOATING_POINT
+    #if ETL_NOT_USING_FORMAT_LONG_DOUBLE_MATH
+    //***********************************
+    // Math function wrappers to handle toolchains that don't provide
+    // long double math functions (log10l, floorl, powl, modfl, roundl).
+    // When ETL_FORMAT_NO_LONG_DOUBLE_MATH is defined, long double overloads
+    // cast through double. For float and double, the standard functions are
+    // called directly via the template versions.
+    //***********************************
+    inline long double format_log10(long double value)
+    {
+      return static_cast<long double>(::log10(static_cast<double>(value)));
+    }
+    inline long double format_floor(long double value)
+    {
+      return static_cast<long double>(::floor(static_cast<double>(value)));
+    }
+    inline long double format_pow(long double base, long double exp)
+    {
+      return static_cast<long double>(::pow(static_cast<double>(base), static_cast<double>(exp)));
+    }
+    inline long double format_round(long double value)
+    {
+      return static_cast<long double>(::round(static_cast<double>(value)));
+    }
+    inline long double format_modf(long double value, long double* iptr)
+    {
+      double d_iptr;
+      double result = ::modf(static_cast<double>(value), &d_iptr);
+      *iptr         = static_cast<long double>(d_iptr);
+      return static_cast<long double>(result);
+    }
+    #endif
+
+    template <typename T>
+    T format_log10(T value)
+    {
+      return ::log10(value);
+    }
+    template <typename T>
+    T format_floor(T value)
+    {
+      return ::floor(value);
+    }
+    template <typename T>
+    T format_pow(T base, T exp)
+    {
+      return ::pow(base, exp);
+    }
+    template <typename T>
+    T format_round(T value)
+    {
+      return ::round(value);
+    }
+    template <typename T>
+    T format_modf(T value, T* iptr)
+    {
+      return ::modf(value, iptr);
+    }
+
     template <typename OutputIt, typename T>
     void format_floating_default(OutputIt& it, T value, const format_spec_t& spec)
     {
       const size_t fractional_decimals = 6; // default
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = signbit(value);
+      bool sign      = signbit(value);
+      T    abs_value = sign ? -value : value;
+
+      // Use scientific notation for values that would overflow unsigned long long
+      // or that are too small for meaningful fixed-point digits
+      if (abs_value >= static_cast<T>(1e18) || (abs_value > static_cast<T>(0) && abs_value < static_cast<T>(1e-6)))
+      {
+        format_spec_t spec_e = spec;
+        spec_e.type          = 'e';
+        format_floating_e(it, value, spec_e);
+        return;
+      }
 
       T integral;
-      T fractional = modf(value, &integral);
+      T fractional = format_modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1427,7 +1516,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1454,20 +1543,20 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = modf(value, &integral);
+      T fractional = format_modf(value, &integral);
 
       while (value >= 0x10 || value <= -0x10)
       {
         ++exponent_int;
         value /= 0x10;
-        fractional = modf(value, &integral);
+        fractional = format_modf(value, &integral);
       }
 
       while ((value > 0.0000000000001 && value < 1) || (value < -0.0000000000001 && value > -1))
       {
         --exponent_int;
         value *= 0x10;
-        fractional = modf(value, &integral);
+        fractional = format_modf(value, &integral);
       }
 
       // Take absolute values to avoid casting negative values to unsigned
@@ -1478,7 +1567,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(0x10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1516,40 +1605,48 @@ namespace etl
       long long int       exponent_int        = 0;
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = std::signbit(value);
+      bool sign = signbit(value);
+
+      T abs_value = sign ? -value : value;
+
+      if (abs_value > static_cast<T>(0))
+      {
+        exponent_int = static_cast<long long int>(format_floor(format_log10(abs_value)));
+        value        = abs_value / format_pow(static_cast<T>(10), static_cast<T>(exponent_int));
+        // Correct for floating-point rounding in log10/pow
+        if (value >= static_cast<T>(10))
+        {
+          value /= static_cast<T>(10);
+          ++exponent_int;
+        }
+        else if (value < static_cast<T>(1))
+        {
+          value *= static_cast<T>(10);
+          --exponent_int;
+        }
+      }
+      else
+      {
+        value = static_cast<T>(0);
+      }
 
       T integral;
-      T fractional = modf(value, &integral);
-
-      while (value >= 10 || value <= -10)
-      {
-        ++exponent_int;
-        value /= 10;
-        fractional = modf(value, &integral);
-      }
-
-      while ((value > 0.0000000000001 && value < 1) || (value < -0.0000000000001 && value > -1))
-      {
-        --exponent_int;
-        value *= 10;
-        fractional = modf(value, &integral);
-      }
-
-      // Take absolute values to avoid casting negative values to unsigned
-      if (sign)
-      {
-        fractional = -fractional;
-        integral   = -integral;
-      }
+      T fractional = format_modf(value, &integral);
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
       {
         fractional_int = 0;
         ++integral_int;
+
+        if (integral_int == 10)
+        {
+          integral_int = 1;
+          ++exponent_int;
+        }
       }
 
       private_format::format_sign<OutputIt, int>(it, sign ? -1 : 0, spec);
@@ -1572,10 +1669,10 @@ namespace etl
       const size_t fractional_decimals = 6; // default
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = std::signbit(value);
+      bool sign = signbit(value);
 
       T integral;
-      T fractional = modf(value, &integral);
+      T fractional = format_modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1585,7 +1682,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1833,6 +1930,64 @@ namespace etl
       fmt_context.advance_to(tmp);
     }
 
+    // Visitor to extract an integer value as size_t from a format arg (for nested replacement fields)
+    struct size_t_extractor
+    {
+      size_t value;
+
+      size_t_extractor()
+        : value(0)
+      {
+      }
+
+      void operator()(int v)
+      {
+        value = static_cast<size_t>(v);
+      }
+      void operator()(unsigned int v)
+      {
+        value = static_cast<size_t>(v);
+      }
+      void operator()(long long int v)
+      {
+        value = static_cast<size_t>(v);
+      }
+      void operator()(unsigned long long int v)
+      {
+        value = static_cast<size_t>(v);
+      }
+
+      // All other types are invalid for width/precision - ignore
+      template <typename T>
+      void operator()(T)
+      {
+      }
+    };
+
+    // Resolve nested replacement fields for width and precision in the format spec.
+    // When width_nested_replacement or precision_nested_replacement is true, the
+    // width/precision value holds the arg index, which must be resolved to the actual value.
+    template <class OutputIt>
+    void resolve_nested_replacements(format_spec_t& spec, format_args<OutputIt>& args)
+    {
+      if (spec.width_nested_replacement && spec.width.has_value())
+      {
+        format_arg<OutputIt> width_arg = args.get(spec.width.value());
+        size_t_extractor     ext;
+        width_arg.template visit<void>(ext);
+        spec.width                    = ext.value;
+        spec.width_nested_replacement = false;
+      }
+      if (spec.precision_nested_replacement && spec.precision.has_value())
+      {
+        format_arg<OutputIt> prec_arg = args.get(spec.precision.value());
+        size_t_extractor     ext;
+        prec_arg.template visit<void>(ext);
+        spec.precision                    = ext.value;
+        spec.precision_nested_replacement = false;
+      }
+    }
+
     // Compute prefix/suffix padding sizes for alignment.
     // default_align_start: if true, NONE defaults to left-align (START); otherwise right-align (END).
     inline void compute_padding(size_t pad, spec_align_t align, bool default_align_start, size_t& prefix_size, size_t& suffix_size)
@@ -1900,6 +2055,13 @@ namespace etl
       size_t prefix_size = 0;
       size_t suffix_size = 0;
 
+      // For zero-padding ({:0Nf}), use '0' as fill and right-align (padding after sign)
+      char_type fill_char = fmt_ctx.format_spec.fill;
+      if (fmt_ctx.format_spec.zero && fmt_ctx.format_spec.align == spec_align_t::NONE)
+      {
+        fill_char = '0';
+      }
+
       if (fmt_ctx.format_spec.width)
       {
         private_format::counter_iterator counter;
@@ -1908,15 +2070,61 @@ namespace etl
         if (counter.value() < fmt_ctx.format_spec.width.value())
         {
           size_t pad = fmt_ctx.format_spec.width.value() - counter.value();
-          compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
+          if (fmt_ctx.format_spec.zero && fmt_ctx.format_spec.align == spec_align_t::NONE)
+          {
+            // Zero-padding: all padding goes between sign and digits
+            prefix_size = pad;
+          }
+          else
+          {
+            compute_padding(pad, fmt_ctx.format_spec.align, false, prefix_size, suffix_size);
+          }
         }
       }
 
       // actual output
       OutputIt it = fmt_ctx.out();
-      private_format::fill<OutputIt>(it, prefix_size, fmt_ctx.format_spec.fill);
-      private_format::format_floating<OutputIt, Float>(it, arg, fmt_ctx.format_spec);
-      private_format::fill<OutputIt>(it, suffix_size, fmt_ctx.format_spec.fill);
+
+      if (fmt_ctx.format_spec.zero && fmt_ctx.format_spec.align == spec_align_t::NONE)
+      {
+        // Output sign first, then zero-fill, then the unsigned part
+        bool sign = signbit(arg);
+        if (sign || fmt_ctx.format_spec.sign != spec_sign_t::MINUS)
+        {
+          // Output the sign character
+          char_type sc = '\0';
+          if (sign)
+          {
+            sc = '-';
+          }
+          else
+          {
+            switch (fmt_ctx.format_spec.sign)
+            {
+              case spec_sign_t::PLUS: sc = '+'; break;
+              case spec_sign_t::SPACE: sc = ' '; break;
+              default: break;
+            }
+          }
+          if (sc != '\0')
+          {
+            *it = sc;
+            ++it;
+          }
+        }
+        private_format::fill<OutputIt>(it, prefix_size, '0');
+        // Format without sign (sign already emitted)
+        format_spec_t no_sign_spec = fmt_ctx.format_spec;
+        no_sign_spec.sign          = spec_sign_t::MINUS;
+        Float abs_arg              = sign ? -arg : arg;
+        private_format::format_floating<OutputIt, Float>(it, abs_arg, no_sign_spec);
+      }
+      else
+      {
+        private_format::fill<OutputIt>(it, prefix_size, fill_char);
+        private_format::format_floating<OutputIt, Float>(it, arg, fmt_ctx.format_spec);
+        private_format::fill<OutputIt>(it, suffix_size, fill_char);
+      }
       return it;
     }
   #endif
@@ -2414,16 +2622,13 @@ namespace etl
         else
         {
           private_format::parse_format_spec<OutputIt>(parse_context, fmt_context);
-          etl::optional<size_t> index = fmt_context.format_spec.index;
-          if (index.has_value())
-          {
-            parse_context.check_arg_id(*index);
-          }
-          else
-          {
-            index = parse_context.next_arg_id();
-          }
-          format_arg<OutputIt> arg = args.get(*index);
+
+          // Resolve nested replacement fields for width/precision
+          private_format::resolve_nested_replacements<OutputIt>(fmt_context.format_spec, args);
+
+          // Value index is always resolved in parse_format_spec
+          size_t               index = fmt_context.format_spec.index.value();
+          format_arg<OutputIt> arg   = args.get(index);
           arg.template visit<void>(v);
 
           ETL_ASSERT(*parse_context.begin() == '}', ETL_ERROR(bad_format_string_exception) /*"Closing brace missing"*/);
