@@ -39,7 +39,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
-#include <assert.h>
+#include <stddef.h>
 
 //*****************************************************************************
 // Note:
@@ -890,7 +890,10 @@ namespace etl
   template <typename TLink>
   typename etl::enable_if< etl::is_same<TLink, etl::bidirectional_link<TLink::ID> >::value, void>::type link_clear_range(TLink* start)
   {
-    etl::link_clear_range(*start);
+    if (start != ETL_NULLPTR)
+    {
+      etl::link_clear_range(*start);
+    }
   }
 
 #if ETL_USING_CPP17

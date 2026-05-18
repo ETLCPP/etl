@@ -34,7 +34,7 @@ SOFTWARE.
 
 namespace
 {
-  SUITE(test_closure)
+  SUITE(test_closure_with_default_delegate_constexpr)
   {
     static constexpr int f1(int a1)
     {

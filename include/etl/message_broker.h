@@ -36,8 +36,6 @@ SOFTWARE.
 #include "nullptr.h"
 #include "span.h"
 
-#include <stdint.h>
-
 namespace etl
 {
   //***************************************************************************

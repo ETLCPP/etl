@@ -36,7 +36,6 @@ SOFTWARE.
 #include "message.h"
 #include "message_router.h"
 #include "message_types.h"
-#include "nullptr.h"
 #include "vector.h"
 
 #include "private/diagnostic_unnamed_type_template_args_push.h"

@@ -35,6 +35,31 @@ SOFTWARE.
 
 #include "determine_compiler.h"
 
+// Determine C++26 support
+#if !defined(ETL_CPP26_SUPPORTED)
+  #if defined(__cplusplus)
+    #if defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_CPP26_SUPPORTED (__cplusplus >= 202400L)
+    #elif defined(ETL_COMPILER_ARM5)
+      #define ETL_CPP26_SUPPORTED 0
+    #elif defined(ETL_COMPILER_GCC)
+      #define ETL_CPP26_SUPPORTED (__cplusplus >= 202400L)
+    #else
+      #define ETL_CPP26_SUPPORTED (__cplusplus >= 202400L)
+    #endif
+  #else
+    #define ETL_CPP26_SUPPORTED 0
+  #endif
+#endif
+
+#if ETL_CPP26_SUPPORTED
+  #define ETL_CPP11_SUPPORTED 1
+  #define ETL_CPP14_SUPPORTED 1
+  #define ETL_CPP17_SUPPORTED 1
+  #define ETL_CPP20_SUPPORTED 1
+  #define ETL_CPP23_SUPPORTED 1
+#endif
+
 // Determine C++23 support
 #if !defined(ETL_CPP23_SUPPORTED)
   #if defined(__cplusplus)
@@ -162,6 +187,7 @@ SOFTWARE.
 #define ETL_CPP17_NOT_SUPPORTED (!ETL_CPP17_SUPPORTED)
 #define ETL_CPP20_NOT_SUPPORTED (!ETL_CPP20_SUPPORTED)
 #define ETL_CPP23_NOT_SUPPORTED (!ETL_CPP23_SUPPORTED)
+#define ETL_CPP26_NOT_SUPPORTED (!ETL_CPP26_SUPPORTED)
 
 // 'Using' macros
 #define ETL_USING_CPP11 (ETL_CPP11_SUPPORTED == 1)
@@ -169,12 +195,14 @@ SOFTWARE.
 #define ETL_USING_CPP17 (ETL_CPP17_SUPPORTED == 1)
 #define ETL_USING_CPP20 (ETL_CPP20_SUPPORTED == 1)
 #define ETL_USING_CPP23 (ETL_CPP23_SUPPORTED == 1)
+#define ETL_USING_CPP26 (ETL_CPP26_SUPPORTED == 1)
 
 #define ETL_NOT_USING_CPP11 (ETL_CPP11_SUPPORTED == 0)
 #define ETL_NOT_USING_CPP14 (ETL_CPP14_SUPPORTED == 0)
 #define ETL_NOT_USING_CPP17 (ETL_CPP17_SUPPORTED == 0)
 #define ETL_NOT_USING_CPP20 (ETL_CPP20_SUPPORTED == 0)
 #define ETL_NOT_USING_CPP23 (ETL_CPP23_SUPPORTED == 0)
+#define ETL_NOT_USING_CPP26 (ETL_CPP26_SUPPORTED == 0)
 
 #if !defined(ETL_NO_NULLPTR_SUPPORT)
   #define ETL_NO_NULLPTR_SUPPORT ETL_NOT_USING_CPP11
@@ -198,7 +226,9 @@ SOFTWARE.
 
 // Language standard
 #if !defined(ETL_LANGUAGE_STANDARD)
-  #if ETL_USING_CPP23
+  #if ETL_USING_CPP26
+    #define ETL_LANGUAGE_STANDARD 26
+  #elif ETL_USING_CPP23
     #define ETL_LANGUAGE_STANDARD 23
   #elif ETL_USING_CPP20
     #define ETL_LANGUAGE_STANDARD 20
@@ -227,10 +257,37 @@ SOFTWARE.
         #define ETL_HAS_STD_BYTESWAP 1
       #endif
     #endif
+
+    #if defined(__cpp_lib_is_virtual_base_of)
+      #if __cpp_lib_is_virtual_base_of != 0
+        #define ETL_HAS_STD_IS_VIRTUAL_BASE_OF 1
+      #endif
+    #endif
+
+    #if defined(__cpp_lib_trivially_relocatable)
+      #if __cpp_lib_trivially_relocatable != 0
+        #define ETL_HAS_STD_TRIVIALLY_RELOCATABLE 1
+      #endif
+    #endif
+
+    #if defined(__cpp_lib_atomic_min_max)
+      #if __cpp_lib_atomic_min_max != 0
+        #define ETL_HAS_STD_ATOMIC_MIN_MAX 1
+      #endif
+    #endif
   #endif
 #endif
 #ifndef ETL_HAS_STD_BYTESWAP
   #define ETL_HAS_STD_BYTESWAP 0
+#endif
+#ifndef ETL_HAS_STD_IS_VIRTUAL_BASE_OF
+  #define ETL_HAS_STD_IS_VIRTUAL_BASE_OF 0
+#endif
+#ifndef ETL_HAS_STD_TRIVIALLY_RELOCATABLE
+  #define ETL_HAS_STD_TRIVIALLY_RELOCATABLE 0
+#endif
+#ifndef ETL_HAS_STD_ATOMIC_MIN_MAX
+  #define ETL_HAS_STD_ATOMIC_MIN_MAX 0
 #endif
 
 #endif

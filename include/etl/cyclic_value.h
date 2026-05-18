@@ -38,10 +38,7 @@ SOFTWARE.
 #include "platform.h"
 #include "algorithm.h"
 #include "exception.h"
-#include "static_assert.h"
 #include "type_traits.h"
-
-#include <stddef.h>
 
 namespace etl
 {

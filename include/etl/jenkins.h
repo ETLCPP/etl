@@ -36,7 +36,6 @@ SOFTWARE.
 #include "frame_check_sequence.h"
 #include "ihash.h"
 #include "iterator.h"
-#include "static_assert.h"
 #include "type_traits.h"
 
 #include <stdint.h>
