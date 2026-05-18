@@ -1,50 +1,80 @@
-Parameter Pack
-Compile time mapping of index to type and type to index for a template parameter pack.
-Deprecated: Use etl::type_list
-For C++11 or above
-____________________________________________________________________________________________________
-parameter_pack
+---
+title: "parameter_pack"
+---
 
+{{< callout type="info">}}
+  Header: `parameter_pack.h`  
+  For C++11 or above
+{{< /callout >}}
+
+{{< callout type="warning">}}
+**This class is deprecated.**  
+Use `etl::type_list` as a replacement.
+{{< /callout >}}
+
+Compile time mapping of index to type and type to index for a template parameter pack.  
+
+## parameter_pack
+
+```cpp
 template <typename... TTypes>
 class parameter_pack
+```
 
-Defines
+## Constants
+```cpp
 static constexpr size_t size = sizeof...(TTypes);
+```
 
-Template alias
+## Template alias
+
+```cpp
 template <size_t Index, typename... TTypes>
 using parameter_pack_t 
     = typename etl::parameter_pack<TTypes...>::template type_from_index_t<Index>;
+```
 Type from index and type list.
 
-For C++17 or above
+**For C++17 or above**  
+```cpp
 template <typename T, typename... TTypes>
 inline constexpr size_t parameter_pack_v 
     = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
+```
 Index from type and type list.
 
-The class contains two nested templates.
-____________________________________________________________________________________________________
-index_of_type
+**The class contains two nested templates.**  
 
+## index_of_type
+
+```cpp
 template <typename T>
 class index_of_type
+```
 
-For C++17 or above
+**For C++17 or above**  
+```cpp
 template <typename T>
 static constexpr size_t index_of_type_v = index_of_type<T>::value;
+```
 
-____________________________________________________________________________________________________
-type_from_index
+## type_from_index
 
+```cpp
 template <size_t Index>
 class type_from_index
+```
 
+---
+
+```cpp
 template <size_t Index>
 using type_from_index_t = typename type_from_index<Index>::type;
-____________________________________________________________________________________________________
-Examples
+```
 
+## Examples
+
+```cpp
 using Pack = etl::parameter_pack<char, short, int>;
 
 constexpr size_t size = Pack::size; // size == 3
@@ -60,4 +90,4 @@ using type1 = typename Pack::type_from_index_t<1>; // type1 = short
 using type2 = typename Pack::type_from_index_t<2>; // type2 = int
 using type3 = typename Pack::type_from_index_t<3>; // Static assert 
                                                    // "Index out of bounds of parameter pack"
-
+```

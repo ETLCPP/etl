@@ -1,15 +1,29 @@
-parameter_type
-Allows the method of passing a parameter to be determined by the type.
+---
+title: "parameter_type"
+---
+
+{{< callout type="info">}}
+  Header: `parameter_type.h`  
+{{< /callout >}}
+
+Allows the method of passing a parameter to be determined by the type.  
 By default, if the type is fundamental or a pointer, then the parameter type is 'by value', otherwise 'by const reference'.
 
+```cpp
 template <typename T>
 struct parameter_type;
+```
 
-Defines type.
+## Defines 
+```cpp
+type
+```
 
-The template may be specialised for specific types.
+The template may be specialised for specific types.  
 
-Example
+## Example
+
+```cpp
 class MyClass
 {
 };
@@ -37,5 +51,4 @@ Do_Stuff(data);
 // Pass by value
 MyClass myClass;
 Do_Stuff(myClass);
-
-
+```

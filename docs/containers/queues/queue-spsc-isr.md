@@ -8,7 +8,7 @@ title: "queue_spsc_isr"
 
 {{< callout type="warning">}}
 **This class is deprecated.**  
-`Use queue_spsc_locked` as a replacement.
+Use `queue_spsc_locked` as a replacement.
 {{< /callout >}}
 
 **This class is deprecated. 
