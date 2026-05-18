@@ -16,7 +16,7 @@ etl::multi_array<typename T, const size_t Dx...>
 
 See also:  
 [array]({{< relref "array" >}})  
-[array_view]({{< relref "array_view" >}})  
+[array_view]({{< relref "array-view" >}})  
 
 ## Description
 

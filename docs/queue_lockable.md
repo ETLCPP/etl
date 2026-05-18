@@ -1,34 +1,37 @@
-queue_lockable
+---
+title: "queue_lockable"
+---
 
-See Locked Queues
+This class is designed to be an alternative to `etl::queue_spsc_locked`.  
+It is an abstract class and requires that the user derives their own type from it.  
 
-This class is designed to be an alternative to etl::queue_spsc_locked.
-It is an abstract class and requires that the user derives their own type from it.
+The derived class must override the two pure virtual functions `void lock() const` and `void unlock() const` to implement the required locking functionality, whether this be a mutex, ISR control or something else.  
+They must perform the requisite memory barriers to preserve the order of execution.  
 
-The derived class must override the two pure virtual functions void lock() const and void unlock() const to implement the required locking functionality, whether this be a mutex, ISR control or something else.
-They must perform the requisite memory barriers to preserve the order of execution.
+Many functions have two versions. One locks and unlocks access and is used from the foreground task. The other, with a `_from_unlocked` suffix, are called from the background task.
 
-Many functions have two versions. One locks and unlocks access and is used from the foreground task. The other, with a _from_unlocked suffix, are called from the 
-
+```cpp
 etl::queue_lockable<typename T,
                     const size_t VSize,
                     const size_t VMemory_Model = etl::memory_model::MEMORY_MODEL_LARGE>
+```
 
-Inherits from etl::iqueue_lockable<T, const size_t VMemory_Model>
-etl::iqueue_lockable may be used as a size independent pointer or reference type for any etl::queue_lockable instance of the same implementation.
+Inherits from `etl::iqueue_lockable<T, const size_t VMemory_Model>`.  
+`etl::iqueue_lockable` may be used as a size independent pointer or reference type for any `etl::queue_lockable` instance of the same implementation.  
 
 The memory model determines the type used internally for indexes and size, to allow for the most efficient implementation for the application.
 
-Maximum queue sizes:
+## Maximum queue sizes
+
+```cpp
 MEMORY_MODEL_SMALL   255
 MEMORY_MODEL_MEDIUM  65535
 MEMORY_MODEL_LARGE   2147483647
 MEMORY_MODEL_HUGE    9223372036854775807
-
+```
 See memory_model.h
 
-____________________________________________________________________________________________________
-Member types
+## Member types
 
 value_type      T
 size_type       <based on memory model>
@@ -37,43 +40,45 @@ const_pointer   const value_type*
 reference       value_type&
 const_reference const value_type&
 
-____________________________________________________________________________________________________
-Constructor
+## Constructor
 
 queue_lockable();
 
-____________________________________________________________________________________________________
-Capacity
+## Capacity
 
 bool empty() const
 bool empty_from_unlocked() const
 Returns true if the size of the queue is zero, otherwise false.
-____________________________________________________________________________________________________
+
+---
 
 bool full() const
 bool full_from_unlocked() const
 Returns true if the size of the queue is SIZE, otherwise false.
-____________________________________________________________________________________________________
+
+---
 
 size_type size() const
 size_type size_from_unlocked() const
 Returns the size of the queue.
-____________________________________________________________________________________________________
+
+---
 
 size_type available() const
 size_type available_from_unlocked() const
 Returns the remaining available capacity in the queue.
-____________________________________________________________________________________________________
+
+---
 
 size_type max_size() const
 Returns the maximum possible size of the queue.
-____________________________________________________________________________________________________
+
+---
 
 size_type capacity() const
 Returns the maximum possible size of the queue.
 
-____________________________________________________________________________________________________
-Modifiers
+## Modifiers
 
 bool push(const T& value);
 bool push(T&& value);
@@ -81,44 +86,51 @@ bool push_from_unlocked(const T& value);
 bool push_from_unlocked(T&& value);
 Pushes a value to the back of the queue. 
 Returns true if successful, otherwise false.
-____________________________________________________________________________________________________
+
+---
 
 bool pop();
 bool pop_from_unlocked();
 Pop a value from the front of the list.
 Returns true if successful, otherwise false.
-____________________________________________________________________________________________________
+
+---
 
 bool pop(T& value);
 bool pop_from_unlocked(T& value);
 Pop a value from the front of the list and place it in value.
 Returns true if successful, otherwise false.
-____________________________________________________________________________________________________
+
+---
 
 void clear();
 void clear_from_unlocked();
 Clears the queue to a size of zero.
-____________________________________________________________________________________________________
 
-C++03
+---
+
+### C++03
+```cpp
 bool emplace(const T1& value1);
 bool emplace(const T1& value1, const T2& value2);
 bool emplace(const T1& value1, const T2& value2, const T3& value3);
 bool emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4);
+```
 
-C++11
+### C++11
+```cpp
 bool emplace(Args&&… args);
-
-Constructs an item in the the queue 'in place'.
+```
+Constructs an item in the the queue 'in place'.  
 C++03: Supports up to four constructor parameters.
 
-____________________________________________________________________________________________________
-Notes
+## Notes
 
-Remember that interrupts may occur between calls to the access protected functions. For example, a call to empty() may return true, but a subsequent call to pop() may succeed if an interrupt occurred between the two and pushed a new value.
+Remember that interrupts may occur between calls to the access protected functions. For example, a call to `empty()` may return `true`, but a subsequent call to `pop()` may succeed if an interrupt occurred between the two and pushed a new value.
 
-Example
+## Example
 
+```cpp
 class InterruptControl
 {
 public:
@@ -159,4 +171,4 @@ void ISR(char c)
 {
   queue.push_from_unlocked(c);
 }
-
+```

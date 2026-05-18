@@ -10,7 +10,7 @@ Finding errors within an embedded system can be difficult due to the performance
 
 The library allows the method to be chosen at compile time.  
 
-You have a choice of:-
+You have a choice of:
 - Exceptions
 - Asserts
 - Error log

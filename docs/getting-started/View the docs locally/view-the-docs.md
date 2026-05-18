@@ -9,10 +9,11 @@ The Hugo created website is viewable locally by running the **Hugo** server.
 Run this command.
 
 ```bash
-hugo server --disableFastRender
+hugo server
 ```
 
 >Remember to keep this terminal window open, otherwise the server will terminate.  
+>
 >You may want to add this to your startup script
 
 ## View the documentation

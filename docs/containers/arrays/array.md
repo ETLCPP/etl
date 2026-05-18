@@ -17,8 +17,8 @@ etl::array<typename T, const size_t SIZE>
 ```
 
 See also:  
-[array_view]({{< relref "array_view" >}})  
-[multi_array]({{< relref "multi_array" >}})
+[array_view]({{< relref "array-view" >}})  
+[multi_array]({{< relref "multi-array" >}})
 
 ## Template deduction guides
 **C++17 and above**
