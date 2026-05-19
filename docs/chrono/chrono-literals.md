@@ -4,7 +4,7 @@ title: "Chrono literals"
 
 {{< callout type="info">}}
   Header: `chrono.h`  
-  Since: `20.41.0`  
+  From: `20.41.0`  
   Similar to: [std::literals::chrono_literals](https://en.cppreference.com/w/cpp/chrono.html#Literals)
 {{< /callout >}}
 

@@ -4,7 +4,7 @@ title: "message_bus"
 
 {{< callout type="info">}}
   Header: `message_broker.h`  
-  Since: `20.33.0`
+  From: `20.33.0`
 {{< /callout >}}
 
 Message Bus  

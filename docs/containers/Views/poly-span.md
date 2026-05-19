@@ -4,7 +4,7 @@ title: "poly_span"
 
 {{< callout >}}
   Header: `poly_span.h`  
-  Since: `20.31.0`
+  From: `20.31.0`
 {{< /callout >}}
 
 Polymorphic span.  

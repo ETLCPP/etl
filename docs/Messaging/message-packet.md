@@ -46,7 +46,7 @@ explicit message_packet(const TMessage&)
 ```
 Constructs a message packet from a `TMessage` reference.
 Emits a compile time static assert if the parameter is not one listed in the template parameter list.  
-Since: `20.22.0`
+From: `20.22.0`
 
 ---
 
@@ -56,7 +56,7 @@ explicit message_packet(TMessage&&)
 ```
 Move constructs a message packet from a `TMessage` rvalue reference.
 Emits a compile time static assert if the parameter is not one listed in the template parameter list.  
-Since: `20.22.0`
+From: `20.22.0`
 
 ---
 

@@ -34,7 +34,7 @@ const StringType& to_string(const T value,
 `value`   The value to convert to a string.  
 `str`     The string in with to place the rendered text.  
 `append`  If true then appends the text to the current string's content. Default `false`.  
-Since: `20.17.0`
+From: `20.17.0`
 
 ## Supplied format specification
 Where `StringType` is `etl::istring`, `etl::iwstring`, `etl::iu8string`, `etl::iu16string` or `etl::iu32string`.  
@@ -64,7 +64,7 @@ const StringType& to_string(const T value,
 `str`                  The string in with to place the rendered text.  
 `format`               The format specification.  
 `append`               If `true` then appends the text to the current string's content. Default `false`.  
-Since: `20.17.0`  
+From: `20.17.0`  
 
 ---
 

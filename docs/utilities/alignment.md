@@ -56,7 +56,7 @@ etl::aligned_storage_as<100, double>::type storage;
 ```
 
 ## typed_storage
-Since: `20.40.1`
+From: `20.40.1`
 
 ```cpp
 template <typename T>
@@ -148,7 +148,7 @@ const_reference operator*() const
 Const reference of type `T` and asserts `etl::typed_storage_error` if `has_value()` is `false`.
 
 ## is_aligned
-Since: `20.35.12`
+From: `20.35.12`
 
 ```cpp
 bool is_aligned(void* p, size_t alignment)
@@ -173,11 +173,11 @@ bool is_aligned(void* p)
 Check that `p` has the alignment of `T`.
 
 ## alignment_exception
-Since: `20.35.12`
+From: `20.35.12`
 Exception base for alignment
 
 ---
 
 ## alignment_error
-Since: `20.35.12`
+From: `20.35.12`
 Memory misalignment exception.

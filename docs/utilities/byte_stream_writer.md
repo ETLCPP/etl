@@ -4,13 +4,13 @@ title: "byte_stream_writer"
 
 {{< callout type="info">}}
   Header: `byte_stream_writer.h`  
-  Since: `20.17.0`  
+  From: `20.17.0`  
 {{< /callout >}}
 
 A binary streaming utility that allows boolean, integral and floating point values to be written to an array of char or unsigned char. Values may be stored in the byte stream in big or little endian format. This is specified in the constructor.
 
 If a callback delegate is set, then this will be called after each write. The stream buffer indexes will be reset after every write, allowing a small buffer to be used.  
-Since: `20.29.0`  
+From: `20.29.0`  
 
 ```cpp
 class byte_stream_writer
@@ -124,7 +124,7 @@ Write a range of integral or floating point values to the stream.
 Returns `true` if successful, otherwise `false`.
 
 ## Unchecked
-Since: `20.18.0`  
+From: `20.18.0`  
 The following functions will always write to the buffer. They do not check for free space.
 
 ```cpp
@@ -179,7 +179,7 @@ bool skip(size_t n)
 Skip `n` items of `T`, if the total space is available.  
 Returns `true` if the skip was possible.  
 Asserts `etl::byte_stream_overflow` and returns `false` if the skip size was not possible.  
-Since: `20.29.0`
+From: `20.29.0`
 
 ---
 
@@ -301,7 +301,7 @@ void set_callback(callback_type callback_)
 ```
 **Description**  
 Sets the delegate that is called after every write.  
-Since: `20.29.0`
+From: `20.29.0`
 
 ---
 

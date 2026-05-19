@@ -308,7 +308,7 @@ reference emplace_front(const T1& value1)
 ```
 **Description**  
 Emplaces a value at the front, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -328,7 +328,7 @@ reference emplace_front(const T1& value1, const T2& value2)
 ```
 **Description**  
 Emplaces a value at the front, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -350,7 +350,7 @@ reference emplace_front(const T1& value1, const T2& value2,
 ```
 **Description**  
 Emplaces a value at the front, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -361,7 +361,7 @@ reference emplace_front(const T1& value1, const T2& value2,
 ```
 **Description**  
 Emplaces a value at the front, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -413,7 +413,7 @@ reference emplace_back(const T1& value1)
 ```
 **Description**  
 Emplaces a value at the back, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -434,7 +434,7 @@ reference emplace_back(const T1& value1, const T2& value2)
 ```
 **Description**  
 Emplaces a value at the back, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -456,7 +456,7 @@ reference emplace_back(const T1& value1, const T2& value2,
 ```
 **Description**  
 Emplaces a value at the back, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -478,7 +478,7 @@ reference emplace_back(const T1& value1, const T2& value2,
 ```
 **Description**  
 Emplaces a value at the back, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -489,7 +489,7 @@ reference emplace_back(Args&& ... args)
 ```
 **Description**  
 Emplaces a value at the back, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -500,7 +500,7 @@ reference emplace_back(Args&& ... args)
 ```
 **Description**  
 Emplaces a value at the back, constructed using the supplied arguments.  
-Since: `20.35.10`  
+From: `20.35.10`  
 
 ---
 
@@ -583,7 +583,7 @@ void emplace(iterator position, const T1& value1, const T2& value2, const T3& va
 iterator emplace(const_iterator position, const T1& value1)
 ```
 **Description**  
-Since: `20.20.0`  
+From: `20.20.0`  
 
 ---
 
@@ -622,7 +622,7 @@ void emplace(const_iterator position, Args&& ... args)
 ```
 **Description**  
 Constructs an item at the insert point in the the list 'in place'.  
-Since: `20.20.0`  
+From: `20.20.0`  
 
 ---
 

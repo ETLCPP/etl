@@ -22,7 +22,7 @@ etl::imessage_timer_atomic<uint_least8_t MAX_TIMERS, typename TSemaphore>
 etl::message_timer_atomic<typename TSemaphore>
 ```
 
-Since: `20.25.0`
+From: `20.25.0`
 From this version, an atomic 'semaphore' counter type must be supplied.  
 
 Uses definitions from `timer.h`.
@@ -130,7 +130,7 @@ Returns `true` if successful.
 etl::timer::id::type time_to_next()
 ```
 Returns the time to the next timeout.  
-Since: `20.38.0`
+From: `20.38.0`
 
 ### Constants
 `MAX_TIMERS`

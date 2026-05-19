@@ -40,7 +40,7 @@ struct tuple_element<Index, ETL_OR_STD::pair<T1, T2>>
 Specialisation for pair.  
 Gets the type in the pair at `Index`.  
 Static asserts if `Index` is not `0` or `1`.  
-Since: `20.40.1`
+From: `20.40.1`
 
 ---
 
@@ -133,7 +133,7 @@ C++11
 
 ## functor
 For C++11 and above.
-Since: `20.27.0`
+From: `20.27.0`
 
 ```cpp
 template <typename TReturn, typename... TParams>
@@ -174,7 +174,7 @@ constexpr etl::functor f(Function);
 
 ## member_function_wrapper
 For C++11 and above.
-Since: `20.27.0`
+From: `20.27.0`
 
 ```cpp
 template <typename TReturn, typename... TParams>
@@ -215,7 +215,7 @@ int result = pf(1);
 
 ## functor_wrapper
 For C++11 and above.  
-Since: `20.27.0`
+From: `20.27.0`
 
 ```cpp
 template <typename TReturn, typename... TParams>
@@ -292,7 +292,7 @@ fas_t::call(1));
 
 ## member_function_as_static
 For C++17 and above.  
-Since: `20.40.0`  
+From: `20.40.0`  
 
 Wraps a member function with a static free function at compile time.  
 Creates a static member function that calls the specified member function.  
@@ -329,7 +329,7 @@ mfas_t::call(1));
 
 ## member_function_as_functor
 For C++17 and above.  
-Since: `20.40.0`  
+From: `20.40.0`  
 
 Wraps a member function with a functor at compile time.  
 Creates a functor that calls the specified member function.  
@@ -364,7 +364,7 @@ mfaf(1);
 
 ## function_as_functor
 For C++17 and above.  
-Since: `20.40.0`  
+From: `20.40.0`  
 
 Wraps a function with a functor at compile time.  
 Creates a functor that calls the specified free function.  
@@ -396,7 +396,7 @@ faf(1);
 
 ## function_ptr_as_functor
 For C++11 and above.  
-Since: `20.40.0`  
+From: `20.40.0`  
 
 Wraps a function pointer with a functor at run time.  
 Creates a functor that calls the specified free function.  
@@ -435,7 +435,7 @@ constexpr etl::function_ptr_as_functor<function_type> fpaf(fptr)
 ```
 
 ## integer_sequence
-Since: `20.14.0`
+From: `20.14.0`
 
 ```cpp
 template <typename T, T... Integers>
@@ -443,7 +443,7 @@ class integer_sequence
 ```
 
 ## index_sequence
-Since: `20.14.0`
+From: `20.14.0`
 
 ```cpp
 template <size_t... Indices>
@@ -465,7 +465,7 @@ A functor object that takes a single argument, a pair, and returns the `pair::fi
 A functor object that takes a single argument, a pair, and returns the `pair::second element`.  
 
 ## size_of_type
-Since: `20.36.0`
+From: `20.36.0`
 
 ```cpp
 template <typename T>
@@ -491,14 +491,14 @@ ETL_SIZE_OF_OBJECT_TYPE(Object, Type)
 **Description**  
 Returns the size of `Type` defined in the declared type of `Object`.
 C++11 and above.  
-Since: `20.36.0`
+From: `20.36.0`
 
 ```cpp
 ETL_SIZE_OF_CLASS_TYPE(Class, Type)
 ```
 **Description**  
 Returns the size of `Type` defined in `Class`.
-Since: `20.36.0`
+From: `20.36.0`
 
 ---
 

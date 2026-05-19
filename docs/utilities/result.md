@@ -4,7 +4,7 @@ title: "result"
 
 {{< callout type="info">}}
   Header: `result.h`  
-  Since: `20.17.0`  
+  From: `20.17.0`  
   Similar to: `std::expected`
 {{< /callout >}}
 

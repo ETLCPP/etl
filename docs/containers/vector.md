@@ -212,7 +212,7 @@ Emits an `etl::vector_full` if the vector does not have the capacity.
 void uninitialized_resize(size_t new_size)
 ```
 Resizes the vector, up to the maximum capacity, without initialising the new elements.  
-Since: `20.4.0`
+From: `20.4.0`
 
 ---
 
@@ -260,7 +260,7 @@ If the vector is full then emits an `etl::vector_full`. If asserts or exceptions
 ---
 
 **C++03**  
-Since: `20.38.0`
+From: `20.38.0`
 ```cpp
 void emplace();
 void emplace(const T1& value1)
@@ -290,7 +290,7 @@ void emplace_back(const T1& value1, const T2& value2, const T3& value3)
 void emplace_back(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
 ```
 
-Since: `20.35.10`
+From: `20.35.10`
 ```cpp
 reference emplace_back(); 20.38.0
 reference emplace_back(const T1& value1)
@@ -306,7 +306,7 @@ template <typename Args...>
 void emplace_back(Args&&... args)
 ```
 
-Since: `20.35.10`  
+From: `20.35.10`  
 ```cpp
 template <typename Args...>
 reference emplace_back(Args&&... args)
@@ -338,7 +338,7 @@ iterator insert(iterator position, T&& value)
 void insert(iterator position, size_t n, const T& value)
 ```
 
-Since: `20.20.0`
+From: `20.20.0`
 ```cpp
 template <typename TIterator>
 iterator insert(const_iterator position, TIterator begin, TIterator end)
@@ -378,7 +378,7 @@ Clears the vector to a size of zero.
 void fill(value_type value)
 ```
 Fill the current size of the buffer with `value`.
-Since: `20.24.0`
+From: `20.24.0`
 
 ---
 

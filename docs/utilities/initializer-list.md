@@ -4,7 +4,7 @@ title: "initializer_list"
 
 {{< callout type="info">}}
   Header: `initializer_list.h`  
-  Since: `20.24.0`  
+  From: `20.24.0`  
   Similar to: [initializer_list](https://en.cppreference.com/cpp/utility/initializer_list)
 {{< /callout >}}
 

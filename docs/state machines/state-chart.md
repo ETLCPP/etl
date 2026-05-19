@@ -29,7 +29,7 @@ For C++11 or above, you may pass an rvalue reference.
 istate_chart<TParameter>
 ```
 The base for all state charts.  
-Since: `20.23.0`
+From: `20.23.0`
 
 ## Types
 ```cpp
@@ -73,7 +73,7 @@ Starts the state chart.
 istate_chart<void>
 ```
 The base for all state charts.  
-Since: `20.23.0`
+From: `20.23.0`
 
 ## Types
 ```cpp

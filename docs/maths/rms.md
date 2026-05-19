@@ -4,7 +4,7 @@ title: "RMS (Root Mean Square)"
 
 {{< callout type="info">}}
   Header: `rms.h`  
-  Since: `20.9.0`  
+  From: `20.9.0`  
 {{< /callout >}}
 
 ```cpp

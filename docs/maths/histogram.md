@@ -4,7 +4,7 @@ title: "Histgram"
 
 {{< callout type="info">}}
   Header: `histogram.h`  
-  Since: `20.9.0`  
+  From: `20.9.0`  
 {{< /callout >}}
 
 ## Member types

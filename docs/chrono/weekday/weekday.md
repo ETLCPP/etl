@@ -4,7 +4,7 @@ title: "weekday"
 
 {{< callout type="info">}}
   Header: `chrono.h`  
-  Since: `20.41.0`  
+  From: `20.41.0`  
   Similar to: [std::chrono::weekday](https://en.cppreference.com/w/cpp/chrono/weekday.html)
 {{< /callout >}}
 

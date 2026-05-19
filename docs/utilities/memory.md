@@ -237,7 +237,7 @@ TObject& construct_object_at(void* p, TObject&& object)
 Construct the object at `p`.  
 In a debug build the pointer is checked for correct alignment.  
 An `etl::alignment_error` is asserted if incorrect.  
-Since: `20.35.12`
+From: `20.35.12`
 
 ---
 
@@ -248,7 +248,7 @@ TObject& construct_object_at(void* p, TArgs&&... args)
 Construct the object at `p` from arguments.  
 In a debug build the pointer is checked for correct alignment.  
 An `etl::alignment_error` is asserted if incorrect.  
-Since: `20.35.12`
+From: `20.35.12`
 
 ---
 
@@ -259,7 +259,7 @@ TObject& get_object_at(void* p)
 Get the object at `p`.  
 In a debug build the pointer is checked for correct alignment.  
 An `etl::alignment_error` is asserted if incorrect.  
-Since: `20.35.12`
+From: `20.35.12`
 
 ---
 
@@ -269,7 +269,7 @@ void destroy_object_at(void* p)
 ```
 Destroy the object at `p`.  
 In a debug build the pointer is checked for correct alignment. An etl::alignment_error is asserted if incorrect.  
-Since: `20.35.12`  
+From: `20.35.12`  
 
 ## uninitialzed_fill
 Fills uninitialised memory with N values.  
@@ -530,7 +530,7 @@ class uninitialized_buffer_of
 Creates an uninitialized memory buffer of `VN_Objects` each of type `T`.
 
 ## mem_copy
-Since: `20.26.0`
+From: `20.26.0`
 
 ```cpp
 template <typename TPointer>
@@ -559,7 +559,7 @@ Type must be trivially copyable.
 Returns a pointer to the destination.  
 
 ## mem_move
-Since: `20.26.0`  
+From: `20.26.0`  
 
 ```cpp
 template <typename TPointer>
@@ -588,7 +588,7 @@ Type must be trivially copyable.
 Returns a pointer to the destination.  
 
 ## mem_compare
-Since: `20.26.0`  
+From: `20.26.0`  
 
 ```cpp
 template <typename TPointer>
@@ -616,7 +616,7 @@ Type must be trivially copyable.
 Returns `<0`, `0`, `>0`. See documentation for `memcmp`.  
 
 ## mem_set
-Since: `20.26.0`  
+From: `20.26.0`  
 
 ```cpp
 template <typename TPointer, typename T>
@@ -645,7 +645,7 @@ Type must be trivially copyable.
 Returns a pointer to the destination.  
 
 ## mem_char
-Since: `20.26.0`  
+From: `20.26.0`  
 
 ```cpp
 template <typename TPointer, typename T>

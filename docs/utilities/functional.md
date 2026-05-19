@@ -91,7 +91,7 @@ struct less<void>
 A function object that performs a strictly less-than comparison `a < b`) between two values.  
 Transparent comparator.  
 Defines `is_transparent`.  
-Since: `20.21.0`
+From: `20.21.0`
 
 ## less_equal
 
@@ -112,7 +112,7 @@ struct less_equal<void>
 A function object that performs a strictly less-than-equal comparison `a <= b`) between two values.  
 Transparent comparator. 
 Defines `is_transparent`.
-Since: `20.21.0`
+From: `20.21.0`
 
 ## greater
 
@@ -133,7 +133,7 @@ struct greater<void>
 A function object that performs a strictly greater-than comparison `a > b`) between two values.  
 Transparent comparator.  
 Defines `is_transparent`.
-Since: `20.21.0`
+From: `20.21.0`
 
 ## greater_equal
 
@@ -154,7 +154,7 @@ struct greater_equal<void>
 A function object that performs a strictly greater-than-equal comparison `a >= b`) between two values.  
 Transparent comparator.  
 Defines `is_transparent`.
-Since: `20.21.0`
+From: `20.21.0`
 
 ## equal_to
 
@@ -175,7 +175,7 @@ struct equal_to<void>
 A function object that performs a strictly equal-to comparison `a == b`) between two values.  
 Transparent comparator.  
 Defines `is_transparent`.  
-Since: `20.21.0`
+From: `20.21.0`
 
 ## not_equal_to
 
@@ -196,7 +196,7 @@ struct not_equal_to<void>
 A function object that performs a strictly not-equal-to comparison `a !== b`) between two values.  
 Transparent comparator.  
 Defines `is_transparent`.  
-Since: `20.21.0`
+From: `20.21.0`
 
 ## mem_fn
 
@@ -206,7 +206,7 @@ template <typename TReturnType, typename TClassType, typename... TArgs>
 ```
 **Description**  
 Returns a functor that wraps a member function of `TClassType`, taking TArgs and returning `TReturnType`.  
-Since: `20.38.11`
+From: `20.38.11`
 
 ---
 
@@ -216,4 +216,4 @@ template <typename TReturnType, typename TClassType, typename... TArgs>
 ```
 **Description**  
 Returns a functor that wraps a const member function of `TClassType`, taking TArgs and returning `TReturnType`.  
-Since: `20.38.11`
+From: `20.38.11`

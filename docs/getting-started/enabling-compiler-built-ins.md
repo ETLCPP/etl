@@ -3,7 +3,7 @@ title: "Enabling compiler built-ins"
 weight: 7
 ---
 
-Since: `20.24.0`  
+From: `20.24.0`  
 
 Many of the features or options in the ETL can be enhanced by the use of compiler built-ins.  
 If built-ins are available and the STL is not used, then many copy type algorithms may be declared as `constexpr`.  

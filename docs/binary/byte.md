@@ -4,7 +4,7 @@ title: "byte"
 
 {{< callout type="info">}}
   Header: `byte.h`  
-  Since: `20.24.0`  
+  From: `20.24.0`  
   Similar to: [std::byte](https://en.cppreference.com/cpp/types/byte)
 {{< /callout >}}
 

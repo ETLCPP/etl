@@ -4,7 +4,7 @@ title: "standard_deviation"
 
 {{< callout type="info">}}
   Header: `standard_deviation.h`  
-  Since: `20.9.0`  
+  From: `20.9.0`  
 {{< /callout >}}
 
 ```cpp

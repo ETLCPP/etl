@@ -404,7 +404,7 @@ class lsb_mask;
 ```
 Defines the member constant value as a binary value of NBits `1` shift to the LSB.  
 e.g. `lsb_mask<int8_t, 3>::value == 0b00000111`  
-Since: `20.34.0`
+From: `20.34.0`
 
 ---
 
@@ -414,7 +414,7 @@ ETL_CONSTEXPR T make_lsb_mask(size_t nbits)
 ```
 Returns a binary value of nbits `1` shift to the LSB.
 e.g. `make_lsb_mask<int8_t>(3) == 0b00000111`  
-Since: `20.34.0`
+From: `20.34.0`
 
 ---
 
@@ -425,7 +425,7 @@ ETL_CONSTEXPR T make_lsb_mask()
 **Description**  
 Returns a binary value of nbits `1` shift to the LSB.  
 e.g. `make_lsb_mask<int8_t, 3>() == 0b00000111`  
-Since: `20.38.7`
+From: `20.38.7`
 
 ---
 
@@ -436,7 +436,7 @@ class msb_mask;
 **Return**  
 A binary value of nbits `1` shift to the MSB.  
 e.g. `msb_mask<int8_t, 3>::value == 0b11100000`  
-Since: `20.34.0`
+From: `20.34.0`
 
 ---
 
@@ -458,7 +458,7 @@ ETL_CONSTEXPR T make_msb_mask()
 **Description**  
 Defines the member constant value as a binary value of NBits `1` shift to the MSB.  
 e.g. `make_msb_mask<int8_t, 3>() == 0b11100000`  
-Since: `20.38.7`  
+From: `20.38.7`  
 
 ## Bit manipulation functors
 These functors are most useful where lambdas are not available.
@@ -468,7 +468,7 @@ These functors are most useful where lambdas are not available.
 template <typename T>
 struct binary_not : public etl::unary_function<T, T>;
 ```
-Since: `20.38.11`
+From: `20.38.11`
 
 ---
 
@@ -494,7 +494,7 @@ T operator(T value)
 template <typename T>
 struct binary_and : public etl::unary_function<T, T>;
 ```
-Since: `20.38.11`  
+From: `20.38.11`  
 
 ---
 
@@ -520,7 +520,7 @@ T operator(T value)
 template <typename T>
 struct binary_or : public etl::unary_function<T, T>;
 ```
-Since: `20.38.11`
+From: `20.38.11`
 
 ---
 
@@ -546,7 +546,7 @@ T operator(T value)
 template <typename T>
 struct binary_xor : public etl::unary_function<T, T>;
 ```
-Since: `20.38.11`
+From: `20.38.11`
 
 ---
 

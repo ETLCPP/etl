@@ -259,7 +259,7 @@ etl::types<MyType>::const_pointer_const const int* const
 
 ## unsigned_type
 **ETL extension**  
-Since: `20.29.0`  
+From: `20.29.0`  
 
 ```cpp
 template <typename T>
@@ -278,7 +278,7 @@ C++11
 
 ## signed_type
 **ETL extension**  
-Since: `20.29.0`  
+From: `20.29.0`  
 
 ```cpp
 template <typename T>
@@ -303,7 +303,7 @@ C++11
 template <typename... TTypes>
 struct has_duplicates
 ```
-Since: `20.39.1`
+From: `20.39.1`
 C++11 or above
 
 ### Members
@@ -325,7 +325,7 @@ constexpr bool has_duplicates_v = etl::has_duplicates<TTypes...>::value;
 template <typename T, typename... TTypes>
 struct has_duplicates_of
 ```
-Since: `20.39.1`  
+From: `20.39.1`  
 C++11 or above  
 
 ### Members
@@ -346,7 +346,7 @@ constexpr bool has_duplicates_of_v = etl::has_duplicates_of<T, TTypes...>::value
 template <typename T, typename... TTypes>
 struct count_of
 ```
-Since: `20.39.1`  
+From: `20.39.1`  
 C++11 or above
 
 ### Members
@@ -362,7 +362,7 @@ constexpr bool count_of_v = etl::count_of<T, TTypes...>::value;
 ```
 
 ## conjunction
-Since: `20.40.1`  
+From: `20.40.1`  
 
 ```cpp
 template <typename... Types>
@@ -379,7 +379,7 @@ Forms the logical conjunction (AND) of `Types...`
 C++17
 
 ## disjunction
-Since: `20.40.1`  
+From: `20.40.1`  
 
 ```cpp
 template <typename... Types>
@@ -396,7 +396,7 @@ Forms the logical disjunction (OR) of `Types...`
 C++17
 
 ## exclusive_disjunction
-Since: `20.40.1`  
+From: `20.40.1`  
 
 ```cpp
 template <typename... Types>
@@ -413,7 +413,7 @@ Forms the logical exclusive disjunction (XOR) of `Types...`
 C++17
 
 ## unwrap_reference, unwrap_ref_decay 
-Since: `20.40.1`
+From: `20.40.1`
 
 ```cpp
 template <class T>
@@ -444,7 +444,7 @@ using unwrap_ref_decay_t;
 C++11
 
 ## is_specialization
-Since: `20.41.0`  
+From: `20.41.0`  
 
 ```cpp
 template <typename T, template <typename...> class Template>

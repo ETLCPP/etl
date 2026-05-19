@@ -61,7 +61,7 @@ class visitor;
 
 ## is_visitor
 Detects whether a type is a visitor.  
-Since: `20.37.0`.
+From: `20.37.0`.
 
 ```cpp
 template <typename T>
@@ -137,7 +137,7 @@ triangle.accept(visitor); // visitor's visit(const Triangle&) is called.
 
 ---
 
-Since: `20.37.0`  
+From: `20.37.0`  
 Arguments are passed according to the template parameters.
 
 ```cpp

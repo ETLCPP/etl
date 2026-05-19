@@ -18,4 +18,4 @@ If a type cannot be handled by the built-ins then the types are wrapped by `etl:
 If there is an ETL atomic type available for your platform then `ETL_HAS_ATOMIC` will be set to `1`, otherwise
 it will be set to `0`.  
 
-Since: `20.40.0`  `etl::atomic` supports the `is_always_lock_free` property.  
+From: `20.40.0`  `etl::atomic` supports the `is_always_lock_free` property.  

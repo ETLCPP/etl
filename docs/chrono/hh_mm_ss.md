@@ -4,7 +4,7 @@ title: "hh_mm_ss"
 
 {{< callout type="info">}}
   Header: `chrono.h`  
-  Since: `20.41.0`  
+  From: `20.41.0`  
   Similar to: [std::chrono::hh_mm_ss](https://en.cppreference.com/w/cpp/chrono/hh_mm_ss.html)
 {{< /callout >}}
 

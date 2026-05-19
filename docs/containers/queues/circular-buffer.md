@@ -97,7 +97,7 @@ bool is_valid() const
 **Description**  
 Returns `true` if the buffer has been set through the constructor or `set_buffer`.  
 For circular_buffer_ext only.  
-Since: `20.32.1`
+From: `20.32.1`
 
 ## Element access
 
@@ -133,7 +133,7 @@ void fill(value_type value)
 ```
 **Description**  
 Fill the current size of the buffer with `value`.
-Since: `20.24.0`
+From: `20.24.0`
 
 ## Iterators
 
@@ -231,7 +231,7 @@ void set_buffer(void* buffer)
 **Description**  
 Sets the associated buffer.  
 For circular_buffer_ext only.  
-Since: `20.32.1`
+From: `20.32.1`
 
 ---
 

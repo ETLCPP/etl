@@ -4,7 +4,7 @@ title: "Covariance"
 
 {{< callout type="info">}}
   Header: `covariance.h`  
-  Since: `20.9.0`  
+  From: `20.9.0`  
 {{< /callout >}}
 
 ```cpp

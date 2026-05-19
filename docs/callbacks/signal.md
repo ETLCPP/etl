@@ -4,7 +4,7 @@ title: "signal"
 
 {{< callout type="info">}}
   Header: `signal.h`  
-  Since: `20.44.0`  
+  From: `20.44.0`  
 {{< /callout >}}
 
 A class that implements simple signal/slot framework.  

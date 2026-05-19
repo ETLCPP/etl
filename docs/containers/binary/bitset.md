@@ -12,7 +12,7 @@ This is the new default bitset implementation, from 20.33.0 onwards.
 For the older version, see [etl::bitset (legacy)]().
 
 A fixed capacity bitset.  
-Has a number of extensions over std::bitset. Can be considered similar to an array of bool.
+Has a number of extensions over `std::bitset`. Can be considered similar to an array of `bool`.
 
 Internally defined buffers
 ```cpp

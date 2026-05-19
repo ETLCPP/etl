@@ -4,7 +4,7 @@ title: "expected"
 
 {{< callout type="info">}}
   Header: `expected.h`  
-  Since: `20.35.13`  
+  From: `20.35.13`  
   Similar to: `std::expected`
 {{< /callout >}}
 
@@ -38,7 +38,7 @@ A constant of type `etl::unexpect_t` which is directly passed to a constructor o
 ```cpp
 inline constexpr unexpect_t unexpect;
 ```
-Since: C++17.
+From: C++17.
 
 ```cpp
 static const unexpect_t unexpect;

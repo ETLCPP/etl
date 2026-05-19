@@ -113,7 +113,7 @@ Returns a reference or const reference to the last element.
 void fill(value_type value)
 **Description**  
 Fill the current size of the buffer with `value`.
-Since: `20.24.0`
+From: `20.24.0`
 
 ## Iterators
 
@@ -296,7 +296,7 @@ iterator insert(const_iterator position, rvalue_reference value)
 **Description**  
 Inserts values in to the deque. If the deque is full then emits an `etl::deque_full exception`.  
 Undefined behaviour if asserts or exceptions are not enabled.  
-Since: `20.20.0`
+From: `20.20.0`
 
 ---
 
@@ -319,7 +319,7 @@ iterator erase(const_iterator position)
 **Description**  
 Erases values in the deque.  
 Undefined behaviour if asserts or exceptions are not enabled and begin, end or position are invalid.
-Since: `20.20.0`
+From: `20.20.0`
 
 ---
 
@@ -352,7 +352,7 @@ iterator emplace(iterator insert_position, Args&& ... args)
 ---
 
 C++03  
-Since: `20.20.0`  
+From: `20.20.0`  
 
 ```cpp
 template <typename T1>

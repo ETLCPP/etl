@@ -4,7 +4,7 @@ title: "rescale"
 
 {{< callout type="info">}}
   Header: `rescale.h`  
-  Since: `20.9.0`  
+  From: `20.9.0`  
 {{< /callout >}}
 
 Rescales an input range.

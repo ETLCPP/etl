@@ -14,7 +14,7 @@ etl::instance_count<typename T>
 ```
 This class is not thread safe.
 
-Since: `20.25.0`  
+From: `20.25.0`  
 ```cpp
 etl::instance_count<typename T, typename TCounter = uint32_t>
 ```

@@ -4,7 +4,7 @@ title: "unaligned_type"
 
 {{< callout type="info">}}
   Header: `unaligned_type.h`  
-  Since: `20.23.0`  
+  From: `20.23.0`  
 {{< /callout >}}
 
 A wrapper for fundamental types around unaligned internal storage.  

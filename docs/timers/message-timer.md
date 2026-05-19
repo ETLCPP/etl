@@ -152,7 +152,7 @@ Returns `true` if successful.
 etl::timer::id::type time_to_next()
 ```
 Returns the time to the next timeout.  
-Since: `20.38.0`
+From: `20.38.0`
 
 ### Constants
 ```cpp

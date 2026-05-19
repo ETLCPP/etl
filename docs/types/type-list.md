@@ -4,7 +4,7 @@ title: "type_list"
 
 {{< callout type="info">}}
   Header: `type_list.h`  
-  Since: `20.39.5`  
+  From: `20.39.5`  
 {{< /callout >}}
 
 Defines a tuple of types, but unlike a tuple, does not contain any values.  
@@ -79,7 +79,7 @@ type_lists_are_convertible
 ```
 Checks that types in a type_list are convertible to the type in another.  
 Defines value as `true` or `false`.  
-Since: `20.43.0`
+From: `20.43.0`
 
 ---
 
@@ -88,7 +88,7 @@ template <typename TFromList, typename TToList>
 type_lists_are_convertible_v
 ```
 C++17 and above.  
-Since: `20.43.0`
+From: `20.43.0`
 
 ## Examples
 

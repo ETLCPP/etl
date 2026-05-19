@@ -4,7 +4,7 @@ title: "Correlation"
 
 {{< callout type="info">}}
   Header: `correlation.h`  
-  Since: `20.9.0`  
+  From: `20.9.0`  
 {{< /callout >}}
 
 Calculates the correlation of two sets of data.

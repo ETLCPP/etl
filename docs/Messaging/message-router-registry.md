@@ -4,7 +4,7 @@ title: "message_router_registry"
 
 {{< callout type="info">}}
   Header: `message_router_registry`  
-  Since: `20.6.0`  
+  From: `20.6.0`  
 {{< /callout >}}
 
 A class that will act as a registry for all message router types.  

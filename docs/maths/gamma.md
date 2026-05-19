@@ -4,7 +4,7 @@ title: "Gamma"
 
 {{< callout type="info">}}
   Header: `gamma.h`  
-  Since: `20.9.0`  
+  From: `20.9.0`  
 {{< /callout >}}
 
 There are two gamma functors, `gamma_encode` and `gamma_decode`.

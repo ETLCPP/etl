@@ -12,5 +12,5 @@ Defines `ETL_NULLPTR` as either `nullptr` or `NULL`, dependent on the compiler s
 ---
 
 Defines `etl::nullptr_t`  
-Since: `20.39.0`
+From: `20.39.0`
 

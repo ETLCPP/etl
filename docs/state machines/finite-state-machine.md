@@ -35,7 +35,7 @@ A class to store FSM states.
 Static asserts if state IDs are not 0..N-1 and in order.  
 Static asserts if there are no states.  
 Static asserts if any state IDs are greater or equal to `etl::No_State_Change`.  
-Since: `20.43.0`
+From: `20.43.0`
 
 Note: This header is a generated from `fsm_generator.h`. For C++03, to handle more than the standard 16 message types then a new one must be generated.  
 

@@ -13,7 +13,7 @@ etl::bloom_filter<size_t Width, typename THash1, typename THash2, typename THash
 
 A Bloom filter that supports up to three hash functions. `Thash2` & `Thash3` are optional.
 
-The width specified is the desired width ib bits.  
+The width specified is the desired width in bits.  
 The class may use more if the underlying bitset naturally has spare capacity.
 i.e. A bloom filter with a specified capacity of 195 bits will be rounded up to 200 bits as the bitset has a block size of 8.
 

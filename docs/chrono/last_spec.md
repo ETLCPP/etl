@@ -4,7 +4,7 @@ title: "last_spec"
 
 {{< callout type="info">}}
   Header: `chrono.h`  
-  Since: `20.41.0`  
+  From: `20.41.0`  
   Similar to: [std::chrono::last_spec](https://en.cppreference.com/w/cpp/chrono/last_spec.html)
 {{< /callout >}}
 

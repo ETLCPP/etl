@@ -4,7 +4,7 @@ title: "mem_cast"
 
 {{< callout type="info">}}
   Header: `mem_cast.h`
-  Since: `20.11.0`  
+  From: `20.11.0`  
 {{< /callout >}}
 
 Helper classes that simplify the interpretation of memory blocks.  

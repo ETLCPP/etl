@@ -4,7 +4,7 @@ title: "Rounded integral division"
 
 {{< callout type="info">}}
   Header: `rounded_integral_division.h`  
-  Since: `20.9.0`
+  From: `20.9.0`
 {{< /callout >}}
 
 Rounded division algorithms for integral values.  

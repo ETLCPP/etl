@@ -4,7 +4,7 @@ title: "callback_timer_atomic"
 
 {{< callout type="info">}}
   Header: `callback_timer_atomic.h`  
-  Since: `20.22.0`  
+  From: `20.22.0`  
 {{< /callout >}}
 
 A software timer class that can manage up to 254 timers. Each one may be repeating or single shot.  
@@ -23,7 +23,7 @@ etl::icallback_timer_atomic<uint_least8_t MAX_TIMERS, typename TSemaphore>
 etl::callback_timer_atomic<typename TSemaphore>
 ```
 
-Since: `20.25.0`  
+From: `20.25.0`  
 From this version, an atomic 'semaphore' counter type must be supplied.  
 
 Uses definitions from `timer.h`.  
@@ -148,7 +148,7 @@ etl::timer::id::type time_to_next()
 ```
 **Description**  
 Returns the time to the next timeout.  
-Since: `20.38.0`
+From: `20.38.0`
 
 ### Constants
 `MAX_TIMERS`  

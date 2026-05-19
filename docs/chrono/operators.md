@@ -4,7 +4,7 @@ title: "Operators"
 
 {{< callout type="info">}}
   Header: `chrono.h`  
-  Since: `20.41.0`  
+  From: `20.41.0`  
   Similar to: [std::chrono::operator /](https://en.cppreference.com/w/cpp/chrono/operator_slash.html)
 {{< /callout >}}
 

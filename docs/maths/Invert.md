@@ -4,7 +4,7 @@ title: "Invert"
 
 {{< callout type="info">}}
   Header: `invert.h`  
-  Since: `20.9.0`  
+  From: `20.9.0`  
 {{< /callout >}}
 
 Invert an input range.

@@ -10,7 +10,7 @@ title: "span"
 This class implements a view in to a range of a C array, `etl::array`, `std::array`, `etl::vector` and `std::vector`.  
 It will support construction from any class that supports `data()` and `size()` member functions as well as plain C arrays.  
 
-Since: `20.34.0`  
+From: `20.34.0`  
 The ETL's span adds the ability to access circular iterators that will loop through the span when the beginning or end is reached.
 
 ```cpp
@@ -263,7 +263,7 @@ ETL_NODISCARD ETL_CONSTEXPR circular_iterator begin_circular() const ETL_NOEXCEP
 ```
 **Description**  
 Returns a circular iterator to the beginning of the span.  
-Since: `20.34.0`
+From: `20.34.0`
 
 ---
 
@@ -288,7 +288,7 @@ ETL_NODISCARD ETL_CONSTEXPR reverse_circular_iterator rbegin_circular() const  E
 ```
 **Description**  
 Returns a reverse circular iterator to the beginning of the span.  
-Since: `20.34.0`
+From: `20.34.0`
 
 ---
 
@@ -333,7 +333,7 @@ bool operator ==(const etl::span<T1, N1>& lhs, const etl::span<T2, N2>& rhs) ETL
 **Description**  
 Compare two spans for equality.  
 Returns true if they both point to the same range of data.  
-Since: `20.35.12`
+From: `20.35.12`
 
 ---
 
@@ -346,7 +346,7 @@ bool operator !=(const etl::span<T1, N1>& lhs, const etl::span<T2, N2>& rhs) ETL
 **Description**  
 Compare two spans for inequality.  
 Returns true if they don't both point to the same range of data.  
-Since: `20.35.12`
+From: `20.35.12`
 
 ---
 
@@ -362,7 +362,7 @@ Returns `true` if one of the following are `true`
 2. They both point to the same range of data. 
 3. The values in the two ranges are equal.  
 
-Since: `20.35.12`
+From: `20.35.12`
 
 ## Hash
 There is a specialisation of etl::hash for etl::span

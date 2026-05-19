@@ -152,7 +152,7 @@ initialize_free_space()
 ```
 **Description**  
 Initializes the free space in the string to null terminators.  
-Since: `20.3.0`
+From: `20.3.0`
 
 ---
 
@@ -161,7 +161,7 @@ trim_to_terminator()
 ```
 **Description**  
 Sets the string length to the first terminating null or the max size if the string.  
-Since: `20.3.0`
+From: `20.3.0`
 
 ---
 
@@ -170,7 +170,7 @@ data_end()
 ```
 **Description**  
 Returns a pointer to the current terminating null.  
-Since: `20.3.0`
+From: `20.3.0`
 
 **Example**  
 ```cpp
@@ -358,7 +358,7 @@ template <typename TOperation>
 void resize_and_overwrite(size_type new_size, TOperation operation)
 ```
 Resizes the string and overwrites to data using the operation.  
-Since: `20.39.5`
+From: `20.39.5`
 
 ---
 
@@ -366,7 +366,7 @@ Since: `20.39.5`
 void uninitialized_resize(size_t new_size)
 ```
 Resizes the string, up to the maximum capacity, without initialising the new elements.  
-Since: `20.4.0`
+From: `20.4.0`
 
 ---
 
@@ -431,7 +431,7 @@ iterator insert(iterator position, TIterator first, TIterator last)
 ```cpp
 iterator insert(const_iterator position, T value)
 ```
-Since: `20.20.0`
+From: `20.20.0`
 
 ---
 
@@ -456,7 +456,7 @@ etl::istring& insert(size_type position, const etl::istring& str)
 
 ```cpp
 etl::istring& insert(size_type position, const etl::string_view& view)
-Since: `20.39.5`
+From: `20.39.5`
 
 ---
 
@@ -475,7 +475,7 @@ etl::istring& insert(size_type position,
                      size_type subposition,
                      size_type sublength)
 ```
-Since: `20.39.5`
+From: `20.39.5`
 
 ---
 
@@ -521,7 +521,7 @@ iterator erase(const_iterator first, const_iterator last)
 ```
 Erases values in the string.  
 Iterators are not checked.
-Since: `20.20.0`
+From: `20.20.0`
 
 ## Assign
 ```cpp
@@ -899,7 +899,7 @@ etl::wstring<Max_Size> make_string_with_capacity(const wchar(&text) [Size])
 ---
 
 `char8_t`  
-Since: `20.38.7`  
+From: `20.38.7`  
 ```cpp
 template <const size_t Max_Size>
 etl::u8string<Max_Size> make_string(const char8_t (&text) [Max_Size])

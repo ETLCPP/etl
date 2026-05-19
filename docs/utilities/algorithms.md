@@ -1246,7 +1246,7 @@ void selection_sort(TIterator first, TIterator last)
 ```
 **Description**  
 Sorts a range using the selection sort algorithm.  
-Since: `20.7.0`
+From: `20.7.0`
 
 ---
 
@@ -1256,7 +1256,7 @@ void selection_sort(TIterator first, TIterator last, TCompare compare)
 ```
 **Description**  
 Sorts a range using the selection sort algorithm.  
-Since: `20.7.0`
+From: `20.7.0`
 
 ## sort
 

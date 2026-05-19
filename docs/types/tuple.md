@@ -4,7 +4,7 @@ title: "tuple"
 
 {{< callout type="info">}}
   Header: `tuple.h`  
-  Since: `20.41.0`  
+  From: `20.41.0`  
   Similar to: `std::tuple`
 {{< /callout >}}
 

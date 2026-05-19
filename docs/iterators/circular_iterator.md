@@ -4,7 +4,7 @@ title: "circular_iterator"
 
 {{< callout type="info">}}
   Header: `circular_iterator.h`  
-  Since: `20.34.0`  
+  From: `20.34.0`  
 {{< /callout >}}
 
 An iterator wrapper where increments and decrements will roll around the boundaries of an iterator range.  

@@ -4,7 +4,7 @@ title: "not_null"
 
 {{< callout type="info">}}
   Header: `not_null.h`  
-  Since: `20.43.0`  
+  From: `20.43.0`  
 {{< /callout >}}
 
 A container for pointers that are not allowed to be null.

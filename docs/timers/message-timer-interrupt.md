@@ -4,7 +4,7 @@ title: "message_timer_interrupt"
 
 {{< callout type="info">}}
   Header: `message_timer_interrupt.h`  
-  Since: `20.25.0`
+  From: `20.25.0`
 {{< /callout >}}
 
 A software timer class that can manage up to 254 timers. Each one may be repeating or single shot.  
@@ -145,7 +145,7 @@ etl::timer::id::type time_to_next()
 ```
 **Description**  
 Returns the time to the next timeout.  
-Since: `20.38.0`
+From: `20.38.0`
 
 ### Constants
 `MAX_TIMERS`

@@ -4,7 +4,7 @@ title: "Hierarchical Finite State Machine"
 
 {{< callout type="info">}}
   Header: `hfsm.h`  
-  Since: `20.10.0`
+  From: `20.10.0`
 {{< /callout >}}
 
 Hierarchical Finite State Machine  
