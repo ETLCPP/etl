@@ -269,31 +269,48 @@ first/last are not checked for valid range.
 
 ## Non-member functions
 **Lexicographically comparisons**
+```cpp
+operator ==
+```
+**Description**  
+`true` if the contents of the lists are equal, otherwise `false`.
 
-`operator ==`  
-**Returns**  
-`true` if the contents of the arrays are equal, otherwise `false`.  
+---
 
-`operator !=`  
-**Returns**  
-`true` if the contents of the arrays are not equal, otherwise `false`.  
+```cpp
+operator !=
+```
+**Description**  
+`true` if the contents of the lists are not equal, otherwise `false`.
 
-`operator <`  
-**Returns**    
-`true` if the contents of the lhs are lexicographically less than the  
-contents of the rhs,  otherwise `false`.  
+---
 
-`operator <=`  
-**Returns**  
-`true` if the contents of the lhs are lexicographically less than or equal to the  
-contents of the rhs, otherwise `false`.  
+```cpp
+operator <
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise `false`.
 
-`operator >`  
-**Returns**  
-`true` if the contents of the lhs are lexicographically greater than the  
-contents of the rhs,  otherwise `false`.  
+---
 
-`operator >=`  
-**Returns**  
-`true` if the contents of the lhs are lexicographically greater than or equal to the  
-contents of the rhs, otherwise `false`.  
+```cpp
+operator <=
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise `false`.
+
+---
+
+```cpp
+operator >
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise `false`.
+
+---
+
+```cpp
+operator >=
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise `false`.

@@ -286,7 +286,20 @@ The internal pointers to the external buffers are swapped.
 
 ## Non-member functions
 
-`==`  `true` if the contents of the vectors are equal, otherwise `false`.  
-`!=`  `true` if the contents of the vectors are not equal, otherwise `false`.  
+```cpp
+operator ==
+```
+**Description**  
+`true` if the contents of the lists are equal, otherwise `false`.
+
+---
+
+```cpp
+operator !=
+```
+**Description**  
+`true` if the contents of the lists are not equal, otherwise `false`.
+
+---
 
 `swap` Swaps two circular buffers. A circular buffer with internal storage copies items, while one with an external buffer will swap pointers.

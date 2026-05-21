@@ -106,7 +106,7 @@ template <typename TIterator>
 etl::forward_list<typename T, const size_t SIZE>(TIterator begin, TIterator end)
 ```
 
-Emits an `etl::forward_list_iterator` if the iterators are invalid. Emits an `etl::forward_list_full` if the list becomes full.  
+Raises an `etl::forward_list_iterator` if the iterators are invalid. Raises an `etl::forward_list_full` if the list becomes full.  
 If asserts or exceptions are disabled then undefined behaviour occurs.
 
 ## For shared pool lists
@@ -127,18 +127,18 @@ template <typename TIterator>
 etl::forward_list<typename T, const size_t SIZE>(TIterator begin, TIterator end, etl::pool& pool)
 ```
 
-Emits an `etl::forward_list_iterator` if the iterators are invalid. If asserts or exceptions are disabled then undefined behaviour occurs.  
+Raises an `etl::forward_list_iterator` if the iterators are invalid. If asserts or exceptions are disabled then undefined behaviour occurs.  
 
 ## Copy constructor
 **Implicit pool**  
 Uses the pool from other.  
 ```cpp
-etl::forward_list<typename T, const size_t SIZE>(etl::forward_list<typename T, const size_t SIZE>& other);
+etl::forward_list<typename T, const size_t SIZE>(etl::forward_list<typename T, const size_t SIZE>& other)
 ```
 
 **Explicit pool**  
 ```cpp
-etl::forward_list<typename T, const size_t SIZE>(etl::forward_list<typename T, const size_t SIZE>& other, etl::pool& pool);
+etl::forward_list<typename T, const size_t SIZE>(etl::forward_list<typename T, const size_t SIZE>& other, etl::pool& pool)
 ```
 
 ## Element access
@@ -164,224 +164,299 @@ Returns end() if the list is empty.
 
 ---
 
+```cpp
 iterator end()
 const_iterator end() const
 const_iterator cend() const
+```
 **Description**  
 Returns an iterator to the end of the forward list.
 
 ---
 
+```cpp
 iterator before_begin()
 const_iterator before_begin() const
 const_iterator cbefore_begin() const
+```
 **Description**  
 Returns an iterator to before the beginning of the forward list.
 
 ## Capacity
 
+```cpp
 bool empty() const
+```
 **Description**  
-Returns true if the size of the forward list is zero, otherwise false.
+Returns `true` if the size of the forward list is zero, otherwise `false`.
 
 ---
 
+```cpp
 bool full() const
+```
 **Description**  
-Returns true if the size of the forward list is SIZE, otherwise false.
+Returns `true` if the size of the forward list is SIZE, otherwise `false`.
 
 ---
 
+```cpp
 size_t size() const
+```
 **Description**  
 Returns the size of the forward list.
 
 ---
 
+```cpp
 size_t available() const
+```
 **Description**  
 Returns the remaining available capacity in the forward list.
 
 ---
 
+```cpp
 size_t max_size() const
+```
 **Description**  
 Returns the maximum possible size of the forward list .
 
 ## Modifiers
 
+```cpp
 template <typename TIterator>
-void assign(TIterator begin, TIterator end);
-void assign(size_t n, parameter_t value);
+void assign(TIterator begin, TIterator end)
+
+void assign(size_t n, parameter_t value)
+```
 **Description**  
 Fills the forward list with the values.  
-Emits an etl::forward_list_iterator if the iterators are invalid. Emits an etl::forward_list_full if the list becomes full. If asserts or exceptions are disabled then undefined behaviour occurs.
+Raises an `etl::forward_list_iterator` if the iterators are invalid. 
+Raises an `etl::forward_list_full` if the list becomes full. 
+If asserts or exceptions are disabled then undefined behaviour occurs.
 
 ---
 
-void push_front(parameter_t value);
+```cpp
+void push_front(parameter_t value)
+```
 **Description**  
-Pushes a value to the front of the forward list. If the forward list is full and ETL_CHECK_PUSH_POP is defined then emits an etl::forward_list_full error, otherwise undefined behaviour occurs.
+Pushes a value to the front of the forward list. If the forward list is full and ETL_CHECK_PUSH_POP is defined then raises an etl::forward_list_full error, otherwise undefined behaviour occurs.
 
 ---
 
-<=20.35.9
-C++03
+```cpp
+emplace_front
+```
+**Description**  
+Constructs an item at the front of the the list 'in place'.  
+If the forward list is full and `ETL_CHECK_PUSH_POP` is defined then raises an `etl::forward_list_full` error, otherwise undefined behaviour occurs.
+
+### C++03
+```cpp
 template <typename T1>
 void emplace_front(const T1& value1)
 
----
-
 template <typename T1, typename T2>
 void emplace_front(const T1& value1, const T2& value2)
-
----
 
 template <typename T1, typename T2, typename T3>
 void emplace_front(const T1& value1, const T2& value2,
                    const T3& value3)
 
----
-
 template <typename T1, typename T2, typename T3, typename T4>
 void emplace_front(const T1& value1, const T2& value2,
                    const T3& value3, const T4& value4)
+```
+Before: `20.35.0`
 
----
+## C++11 and above
 
-C++11 and above
+```cpp
 template <typename ... Args>
 void emplace_front(Args&& ... args)
-Constructs an item at the front of the the list 'in place'.
-Supports up to four constructor parameters.
-If the forward list is full and ETL_CHECK_PUSH_POP is defined then emits an etl::forward_list_full error, otherwise undefined behaviour occurs.
+```
+**Description**  
+Constructs an item at the front of the the list 'in place'.  
+If the forward list is full and `ETL_CHECK_PUSH_POP` is defined then raises an `etl::forward_list_full` error, otherwise undefined behaviour occurs.
 
----
-
->=20.35.10
-C++03
+### C++03
+```cpp
 template <typename T1>
 reference emplace_front(const T1& value1)
 
----
-
 template <typename T1, typename T2>
 reference emplace_front(const T1& value1, const T2& value2)
-
----
 
 template <typename T1, typename T2, typename T3>
 reference emplace_front(const T1& value1, const T2& value2,
                         const T3& value3)
 
----
-
 template <typename T1, typename T2, typename T3, typename T4>
 reference emplace_front(const T1& value1, const T2& value2,
                         const T3& value3, const T4& value4)
-
+```
+From 20.35.10
 ---
 
-C++11 and above
+### C++11 and above
+```cpp
 template <typename ... Args>
 reference emplace_front(Args&& …args)
-Constructs an item at the front of the the list 'in place'.
-Supports up to four constructor parameters.
-If the forward list is full and ETL_CHECK_PUSH_POP is defined then emits an etl::forward_list_full error, otherwise undefined behaviour occurs.
+```
 
 ---
 
-void pop_front();
-Pop a value from the front of the forward list.
-If the forward list is empty and ETL_CHECK_PUSH_POP is defined then emits an etl::forward_list_empty error, otherwise undefined behaviour occurs.
+```cpp
+void pop_front()
+```
+**Description**  
+Pop a value from the front of the forward list.  
+If the forward list is empty and `ETL_CHECK_PUSH_POP` is defined then raises an `etl::forward_list_empty` error, otherwise undefined behaviour occurs.
 
 ---
 
-<=20.19.0
+```cpp
 template <typename TIterator>
-void insert_after(iterator position, TIterator begin, TIterator end);
+void insert_after(iterator position, TIterator begin, TIterator end)
+```
+**Description**  
+Inserts the range [`begin`, `end`) into the forward list after the specified position. 
+Before: `20.20.0`
 
 ---
 
-iterator insert_after(iterator position, parameter_t value);
-void insert_after(iterator position, size_t n, parameter_t value);
+```cpp
+iterator insert_after(iterator position, parameter_t value)
+void insert_after(iterator position, size_t n, parameter_t value)
+```
+**Description**  
+Inserts `value` in to the forward list after the specified position. 
 
 ---
 
->=20.20.0
+```cpp
 template <typename TIterator>
-iterator insert_after(const_iterator position, TIterator begin, TIterator end);
+iterator insert_after(const_iterator position, TIterator begin, TIterator end)
+```
+**Description**  
+Inserts the range [`begin`, `end`) into the forward list after the specified position. 
+Since: `20.20.0`
 
 ---
 
-iterator insert_after(const_iterator position, parameter_t value);
+```cpp
+iterator insert_after(const_iterator position, parameter_t value)
+```
+**Description**  
+Inserts `value` in to the forward list after the specified position. 
 
 ---
 
-iterator insert_after(const_iterator position, size_t n, parameter_t value);
+```cpp
+iterator insert_after(const_iterator position, size_t n, parameter_t value)
+```
 Inserts values in to the forward list after the specified position.  
-If the forward list is full then emits an etl::forward_list_full error. If asserts or exceptions are disabled then undefined behaviour occurs.
+If the forward list is full then raises an `etl::forward_list_full error`.  
+If asserts or exceptions are disabled then undefined behaviour occurs.
 
 ---
 
-<=20.19.0
-iterator erase_after(iterator position);
-
----
-
-iterator erase_after(iterator position, const_iterator end);
-
----
-
->=20.20.0
-iterator erase_after(iterator position);
-
----
-
-iterator erase_after(const_iterator position);
-
----
-
-iterator erase_after(const_iterator position, const_iterator end);
+```cpp
+iterator erase_after(iterator position)
+```
 Erases elements after the specified position.  
-The second version erases up to, but not including end.
+Before: `20.20.0`
 
 ---
 
-void resize(size_t n);
+```cpp
+iterator erase_after(iterator position, const_iterator end)
+```
+**Description**  
+Erases the range (`position`, `end`)
+Before: `20.20.0`
 
 ---
 
-void resize(size_t n, parameter_t value);
-Resizes the forward list. If the new size is larger then the first assigns default constructed values, the second assigns the supplied value.  
-If n is larger than the capacity then emits an etl::forward_list_full error, if asserts or exceptions are not enabled then undefined behaviour occurs.
+```cpp
+iterator erase_after(const_iterator position)
+```
+**Description**  
+Erases elements after the specified position.
+Since: `20.20.0`
 
 ---
 
-void clear();
+```cpp
+iterator erase_after(const_iterator position, const_iterator end)
+```
+**Description**  
+Erases the range (`position`, `end`)
+Since: `20.20.0`
+
+---
+
+```cpp
+void resize(size_t n)
+```
+**Description**  
+Resizes the forward list.  
+If the new size is larger then the first assigns default constructed values.  
+If n is larger than the capacity then raises an `etl::forward_list_full error`, if asserts or exceptions are not enabled then undefined behaviour occurs.
+
+---
+
+```cpp
+void resize(size_t n, parameter_t value)
+```
+**Description**  
+Resizes the forward list.  
+If the new size is larger then the first assigns the supplied value.  
+If n is larger than the capacity then raises an `etl::forward_list_full error`, if asserts or exceptions are not enabled then undefined behaviour occurs.
+
+---
+
+```cpp
+void clear()
+```
+**Description**  
 Clears the forward list to a size of zero.
 
 ## Operations
 
-void remove(const T& value);
+```cpp
+void remove(const T& value)
+```
+**Description**  
 Removes from the container all the elements that compare equal to value.
 
 ---
 
+```cpp
 template <typename TPredicate>
-void remove_if(TPredicate predicate);
+void remove_if(TPredicate predicate)
+```
+**Description**  
 Removes from the container all the elements that satisfy predicate.
 
 ---
 
-void unique();
+```cpp
+void unique()
+```
+**Description**  
+Removes all but the first element from every group of consecutive elements.
 
 ---
 
+```cpp
 template <typename TPredicate>
-void unique(TPredicate predicate);
-The first version removes all but the first element from every group of consecutive elements.
-The second removes all but the first element from every group of consecutive elements that satisfy the binary predicate.
+void unique(TPredicate predicate)
+```
+**Description**  
+Removes all but the first element from every group of consecutive elements that satisfy the binary predicate.
 
 ---
 

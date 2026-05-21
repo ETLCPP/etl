@@ -2,6 +2,10 @@
 title: "Intrusive Links"
 ---
 
+{{< callout type="info">}}
+  Header: `intrusive_links.h`  
+{{< /callout >}}
+
 A set of link structures designed to be used within containers such as `etl::intrusive_list`.  
 They are parameterised by an id that allows them to be multiply inherited from when creating objects that must exist in more than one intrusive container.  
 

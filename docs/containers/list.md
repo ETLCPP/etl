@@ -17,8 +17,9 @@ etl::list_ext<typename T>
 Inherits from `etl::ilist<T>`.  
 `etl::ilist` may be used as a size independent pointer or reference type for any `etl::list` instance.  
 
-**Note:**  
-Does not support the member function swap.
+{{< callout type="warning">}}
+  Does not support the member function `swap`.
+{{< /callout >}}
 
 ## Shared Pools
 
@@ -291,81 +292,23 @@ If the list is full then emits an `etl::list_full error`.
 
 ---
 
-**C++03**  
+```cpp
+emplace_front
+```
+
+### C++03
+
 ```cpp
 template <typename T1>
 void emplace_front(const T1& value1)
-```
-**Description**  
-Emplaces a value at the front, constructed using the supplied arguments.  
-Before: `20.35.10`  
 
----
-
-```cpp
-template <typename T1>
-reference emplace_front(const T1& value1)
-```
-**Description**  
-Emplaces a value at the front, constructed using the supplied arguments.  
-From: `20.35.10`  
-
----
-
-```cpp
 template <typename T1, typename T2>
 void emplace_front(const T1& value1, const T2& value2)
-```
-**Description**  
-Emplaces a value at the front, constructed using the supplied arguments.  
-Before: `20.35.10`  
 
----
-
-```cpp
-template <typename T1, typename T2>
-reference emplace_front(const T1& value1, const T2& value2)
-```
-**Description**  
-Emplaces a value at the front, constructed using the supplied arguments.  
-From: `20.35.10`  
-
----
-
-```cpp
 template <typename T1, typename T2, typename T3>
 void emplace_front(const T1& value1, const T2& value2,
                    const T3& value3)
-```
-**Description**  
-Emplaces a value at the front, constructed using the supplied arguments.  
-Before: `20.35.10`  
 
----
-
-```cpp
-template <typename T1, typename T2, typename T3>
-reference emplace_front(const T1& value1, const T2& value2,
-                        const T3& value3)
-```
-**Description**  
-Emplaces a value at the front, constructed using the supplied arguments.  
-From: `20.35.10`  
-
----
-
-```cpp
-template <typename T1, typename T2, typename T3, typename T4>
-reference emplace_front(const T1& value1, const T2& value2,
-                        const T3& value3, const T4& value4)
-```
-**Description**  
-Emplaces a value at the front, constructed using the supplied arguments.  
-From: `20.35.10`  
-
----
-
-```cpp
 template <typename T1, typename T2, typename T3, typename T4>
 void emplace_front(const T1& value1, const T2& value2,
                    const T3& value3, const T4& value4)
@@ -374,9 +317,26 @@ void emplace_front(const T1& value1, const T2& value2,
 Emplaces a value at the front, constructed using the supplied arguments.  
 Before: `20.35.10`  
 
----
+```cpp
+template <typename T1>
+reference emplace_front(const T1& value1)
 
-**C++11 and above**  
+template <typename T1, typename T2>
+reference emplace_front(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+reference emplace_front(const T1& value1, const T2& value2,
+                        const T3& value3)
+
+template <typename T1, typename T2, typename T3, typename T4>
+reference emplace_front(const T1& value1, const T2& value2,
+                        const T3& value3, const T4& value4)
+```
+**Description**  
+Emplaces a value at the front, constructed using the supplied arguments.  
+Since: `20.35.10`  
+
+### C++11 and above
 ```cpp
 template <typename ... Args>
 reference emplace_front(Args&& …args)
@@ -396,93 +356,48 @@ If the list is full and `ETL_CHECK_PUSH_POP` is defined then emits an `etl::list
 
 ---
 
+```cpp
+emplace_back
+```
+**Description**  
+Emplaces a value at the back, constructed using the supplied arguments.  
+
 **C++03**  
 ```cpp
 template <typename T1>
 void emplace_back(const T1& value1)
-```
-**Description**  
-Emplaces a value at the back, constructed using the supplied arguments.  
-Before: `20.35.10`
 
----
-
-```cpp
-template <typename T1>
-reference emplace_back(const T1& value1)
-```
-**Description**  
-Emplaces a value at the back, constructed using the supplied arguments.  
-From: `20.35.10`  
-
----
-
-```cpp
 template <typename T1, typename T2>
 void emplace_back(const T1& value1, const T2& value2)
-```
-**Description**  
-Emplaces a value at the back, constructed using the supplied arguments.  
-Before: `20.35.10`
 
----
-
-
-```cpp
-template <typename T1, typename T2>
-reference emplace_back(const T1& value1, const T2& value2)
-```
-**Description**  
-Emplaces a value at the back, constructed using the supplied arguments.  
-From: `20.35.10`  
-
----
-
-```cpp
 template <typename T1, typename T2, typename T3>
 void emplace_back(const T1& value1, const T2& value2,
                   const T3& value3)
-```
-**Description**  
-Emplaces a value at the back, constructed using the supplied arguments.  
-Before: `20.35.10`
 
----
-
-```cpp
-template <typename T1, typename T2, typename T3>
-reference emplace_back(const T1& value1, const T2& value2,
-                       const T3& value3)
-```
-**Description**  
-Emplaces a value at the back, constructed using the supplied arguments.  
-From: `20.35.10`  
-
----
-
-```cpp
 template <typename T1, typename T2, typename T3, typename T4>
 void emplace_back(const T1& value1, const T2& value2,
                   const T3& value3, const T4& value4)
 ```
-**Description**  
-Emplaces a value at the back, constructed using the supplied arguments.  
 Before: `20.35.10`
 
----
-
 ```cpp
+template <typename T1>
+reference emplace_back(const T1& value1)
+
+template <typename T1, typename T2>
+reference emplace_back(const T1& value1, const T2& value2)
+
+template <typename T1, typename T2, typename T3>
+reference emplace_back(const T1& value1, const T2& value2,
+                       const T3& value3)
+
 template <typename T1, typename T2, typename T3, typename T4>
 reference emplace_back(const T1& value1, const T2& value2,
                        const T3& value3, const T4& value4)
 ```
-**Description**  
-Emplaces a value at the back, constructed using the supplied arguments.  
-From: `20.35.10`  
+Since: `20.35.10`  
 
----
-
-**C++11 and above**  
+### C++11 and above
 ```cpp
 template <typename ... Args>
 reference emplace_back(Args&& ... args)
@@ -554,68 +469,42 @@ Inserts values in to the list. If the list is full then emits an `etl::list_full
 
 ---
 
-**C++03**  
 ```cpp
-void emplace(iterator position, const T1& value1)
+emplace
 ```
 **Description**  
-Before: `20.20.0`  
+Constructs an item at the insert point in the list 'in place'.  
 
----
-
+### C++03
 ```cpp
+void emplace(iterator position, const T1& value1)
+
 void emplace(iterator position, const T1& value1, const T2& value2)
-```
 
----
-
-```cpp
 void emplace(iterator position, const T1& value1, const T2& value2, const T3& value3)
-```
 
----
-
-```cpp
 void emplace(iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
 ```
-
+Before: `20.20.0`  
 ```cpp
 iterator emplace(const_iterator position, const T1& value1)
+
+iterator emplace(const_iterator position, const T1& value1, const T2& value2)
+
+iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3)
+
+iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
 ```
 **Description**  
 From: `20.20.0`  
 
----
-
-```cpp
-iterator emplace(const_iterator position, const T1& value1, const T2& value2)
-```
-
----
-
-```cpp
-iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3)
-```
-
----
-
-```cpp
-iterator emplace(const_iterator position, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
-```
-**Description**  
-Constructs an item at the insert point in the list 'in place'.  
-Supports up to four constructor parameters.
-
----
-
-**C++11**  
+### C++11
 ```cpp
 void emplace(iterator position, Args&& ... args)
 ```
 **Description**  
+Constructs an item at the insert point in the the list 'in place'.  
 Before: `20.20.0`  
-
----
 
 ```cpp
 void emplace(const_iterator position, Args&& ... args)
@@ -785,23 +674,52 @@ Reverses the order of the list.
 
 ## Non-member functions
 
-`==`  
-&emsp;`true` if the contents of the lists are equal, otherwise `false`.  
+```cpp
+operator ==
+```
+**Description**  
+`true` if the contents of the lists are equal, otherwise `false`.
 
-`!=`  
-&emsp;`true` if the contents of the lists are not equal, otherwise `false`.  
+---
 
-`<`   
-&emsp;`true` if the contents of the lhs are lexicographically less than the contents of the rhs, otherwise `false`.  
+```cpp
+operator !=
+```
+**Description**  
+`true` if the contents of the lists are not equal, otherwise `false`.
 
-`<=`  
-&emsp;`true` if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise `false`.  
+---
 
-`>`   
-&emsp;`true` if the contents of the lhs are lexicographically greater than the contents of the rhs, otherwise `false`.  
+```cpp
+operator <
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise `false`.
 
-`>=`  
-&emsp;`true` if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise `false`.  
+---
+
+```cpp
+operator <=
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise `false`.
+
+---
+
+```cpp
+operator >
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise `false`.
+
+---
+
+```cpp
+operator >=
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise `false`.
+
 
 ## Shared pool example
 

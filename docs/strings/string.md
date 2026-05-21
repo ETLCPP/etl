@@ -952,15 +952,48 @@ auto text = etl::make_string_with_capacity<10>("Hello World");
 ```
 
 ## Comparisons
-`==`  `true` if the contents of the vectors are equal,  
-otherwise `false`.  
-`!=`  `true` if the contents of the vectors are not equal,  
-otherwise `false`.  
-`< `  `true` if the contents of the lhs are lexicographically less than the contents of the rhs,  
-otherwise `false`.  
-`<=`  `true` if the contents of the lhs are lexicographically less than or equal to the contents of the rhs,  
-otherwise `false`.  
-`> `  `true` if the contents of the lhs are lexicographically greater than the contents of the rhs,  
-otherwise `false`.  
-`>=`  `true` if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs,  
-otherwise `false`.  
+```cpp
+operator ==
+```
+**Description**  
+`true` if the contents of the lists are equal, otherwise `false`.
+
+---
+
+```cpp
+operator !=
+```
+**Description**  
+`true` if the contents of the lists are not equal, otherwise `false`.
+
+---
+
+```cpp
+operator <
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise `false`.
+
+---
+
+```cpp
+operator <=
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise `false`.
+
+---
+
+```cpp
+operator >
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise `false`.
+
+---
+
+```cpp
+operator >=
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise `false`.

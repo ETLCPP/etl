@@ -1,37 +1,37 @@
 ---
-title: "flat_set"
+title: "flat_multiset"
 ---
 
 {{< callout type="info">}}
-  Header: `flat_set.h`  
-  Similar to: `std::set`
+  Header: `flat_multiset.h`  
+  Similar to: `std::multiset`
 {{< /callout >}}
 
-A fixed capacity set based on a sorted vector.  
+A fixed capacity multiset based on a sorted vector.  
 The container is an associative lookup table with O(N) insertion and erase, and O(log N) search.  
 This container is best used for tables that are occasionally updated and spend most of their time being searched.  
 Uses `etl::less` as the default key comparison method.  
 
 ```cpp
-etl::flat_set<typename T, size_t SIZE, TKeyCompare = etl::less>
+etl::flat_multiset<typename T, size_t SIZE, TKeyCompare = etl::less>
 ```
 
 Inherits from `etl::iflat_set<T, TKeyCompare>`.
-`etl::iflat_set` may be used as a size independent pointer or reference type for any `etl::flat_set` instance.
+`etl::iflat_set` may be used as a size independent pointer or reference type for any `etl::flat_multiset` instance.
 
 ## Template deduction guides
 C++17 and above
 
 ```cpp
 template <typename... T>
-etl::flat_set(T...)
+etl::flat_multiset(T...)
 ```
 
 ### Example
 ```cpp
-etl::flat_set data{ 0, 1, 2, 3 };
+etl::flat_multiset data{ 0, 1, 2, 3 };
 ```
-Defines data as an `flat_set` of `int`, of length 4, containing the supplied data.
+Defines data as an `flat_multiset` of `int`, of length 4, containing the supplied data.
 
 ## make_flat_set
 C++11 and above
@@ -71,7 +71,7 @@ const_reverse_iterator  reverse_iterator<const_iterator>
 ## Constructors
 
 ```cpp
-etl::flat_set<Tkey, SIZE, TKeyCompare>()
+etl::flat_multiset<Tkey, SIZE, TKeyCompare>()
 ```
 **Description**  
 Default constructor.
@@ -79,7 +79,7 @@ Default constructor.
 ---
 
 ```cpp
-etl::flat_set(const flat_set& other)
+etl::flat_multiset(const flat_multiset& other)
 ```
 **Description**  
 Copy constructor.
@@ -87,7 +87,7 @@ Copy constructor.
 ---
 
 ```cpp
-etl::flat_set(flat_set&& other)
+etl::flat_multiset(flat_multiset&& other)
 ```
 **Description**  
 Move constructor.
@@ -96,7 +96,7 @@ Move constructor.
 
 ```cpp
 template <typename TIterator>
-etl::flat_set<Tkey, SIZE, TKeyCompare>(TIterator begin, TIterator end);
+etl::flat_multiset<Tkey, SIZE, TKeyCompare>(TIterator begin, TIterator end);
 ```
 **Description**  
 Construct from the range [`begin`, `end`).
@@ -205,8 +205,8 @@ Returns the remaining available capacity in the set.
 ## Modifiers
 
 ```cpp
-flat_set& operator = (const flat_set& rhs)
-flat_set& operator = (flat_set&& rhs)
+flat_multiset& operator = (const flat_multiset& rhs)
+flat_multiset& operator = (flat_multiset&& rhs)
 ```
 **Description**  
 Copies or moves the data from another flat set.
@@ -244,17 +244,14 @@ The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)
 ---
 
 **C++03**  
-The emplace functions differ from that of `std::set` due to C++03 not supporting 'perfect forwarding'.
+The emplace functions differ from that of std::set in that, due to C++03 not supporting 'perfect forwarding'.
 
 ```cpp
 template <typename T1>
 pair<iterator, bool> emplace(const key_type& key, const T1& value1)
 ```
 **Description**  
-
 Emplaces a value constructed from `key` and 1 argument into the set.
-
----
 
 ```cpp
 template <typename T1, typename T2>
@@ -263,16 +260,12 @@ pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& va
 **Description**  
 Emplaces a value constructed from `key` and 2 arguments into the set.
 
----
-
 ```cpp
 template <typename T1, typename T2, typename T3>
 pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
 ```
 **Description**  
 Emplaces a value constructed from `key` and 3 arguments into the set.
-
----
 
 ```cpp
 template <typename T1, typename T2, typename T3, typename T4>
@@ -284,7 +277,6 @@ Emplaces a value constructed from `key` and 4 arguments into the set.
 ---
 
 **C++11**  
-
 ```cpp
 template <typename ... Args>
 pair<iterator, bool> emplace(const key_type& key, Args&& ... args)
@@ -386,8 +378,6 @@ Returns an iterator to the element, or `end()` if not found.
 From: `20.21.0`  
 Since: C++11
 
----
-
 ```cpp
 template <typename K>
 const_iterator find(const K& key) const
@@ -409,8 +399,6 @@ Searches for an element with the key not less than `key`.
 Returns an iterator to the element, or `end()` if not found.  
 From: `20.21.0`  
 Since: C++11
-
----
 
 ```cpp
 template <typename K>
@@ -434,8 +422,6 @@ Returns an iterator to the element, or `end()` if not found.
 From: `20.21.0`  
 Since: C++11
 
----
-
 ```cpp
 template <typename K>
 const_iterator upper_bound(const K& key) const
@@ -457,8 +443,6 @@ Returns the range of elements with a key equal to `key`.
 The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)  
 From: `20.21.0`  
 Since: C++11
-
----
 
 ```cpp
 template <typename K>

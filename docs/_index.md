@@ -4,10 +4,6 @@ weight: 998
 type: hextra-home
 ---
 
-{{< callout type="warning">}}
-**This documentation is still under development, and very much incomplete.**
-{{< /callout >}}
-
 <div class="not-prose badges">
 
 <div>

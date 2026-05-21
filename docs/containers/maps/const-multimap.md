@@ -184,14 +184,51 @@ Checks if the container contains the key.
 ## Non-member functions
 
 **Lexicographically comparisons**
-| Operator | Description                                                                         |
-| -------- | ----------------------------------------------------------------------------------- |
-| `==`     | `true` if the contents of the maps are equal, otherwise `false`.                    |
-| `!=`     | `true` if the contents of the maps are not equal, otherwise `false`.                |
-| `<`      | `true` if the contents of the lhs is less-than the rhs, otherwise `false`.          |
-| `<=`     | `true` if the contents of the lhs is less-than-equal the rhs, otherwise `false`.    |
-| `>`      | `true` if the contents of the lhs is greater-than the rhs, otherwise `false`.       |
-| `>=`     | `true` if the contents of the lhs is greater-than-equal the rhs, otherwise `false`. |
+```cpp
+operator ==
+```
+**Description**  
+`true` if the contents of the lists are equal, otherwise `false`.
+
+---
+
+```cpp
+operator !=
+```
+**Description**  
+`true` if the contents of the lists are not equal, otherwise `false`.
+
+---
+
+```cpp
+operator <
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically less than the contents of the rhs,  otherwise `false`.
+
+---
+
+```cpp
+operator <=
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically less than or equal to the contents of the rhs, otherwise `false`.
+
+---
+
+```cpp
+operator >
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically greater than the contents of the rhs,  otherwise `false`.
+
+---
+
+```cpp
+operator >=
+```
+**Description**  
+`true` if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise `false`.
 
 ## Technical stuff
 
