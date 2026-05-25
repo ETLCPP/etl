@@ -91,25 +91,25 @@ namespace etl
     };
 
     //***********************************
-    forward_link()
+    ETL_CONSTEXPR forward_link()
       : etl_next(ETL_NULLPTR)
     {
     }
 
     //***********************************
-    forward_link(forward_link* p_next)
+    ETL_CONSTEXPR forward_link(forward_link* p_next)
       : etl_next(p_next)
     {
     }
 
     //***********************************
-    forward_link(const forward_link& other)
+    ETL_CONSTEXPR forward_link(const forward_link& other)
       : etl_next(other.etl_next)
     {
     }
 
     //***********************************
-    forward_link& operator=(const forward_link& other)
+    ETL_CONSTEXPR14 forward_link& operator=(const forward_link& other)
     {
       etl_next = other.etl_next;
 
@@ -495,28 +495,28 @@ namespace etl
     };
 
     //***********************************
-    bidirectional_link()
+    ETL_CONSTEXPR bidirectional_link()
       : etl_previous(ETL_NULLPTR)
       , etl_next(ETL_NULLPTR)
     {
     }
 
     //***********************************
-    bidirectional_link(bidirectional_link* p_previous, bidirectional_link* p_next)
+    ETL_CONSTEXPR bidirectional_link(bidirectional_link* p_previous, bidirectional_link* p_next)
       : etl_previous(p_previous)
       , etl_next(p_next)
     {
     }
 
     //***********************************
-    bidirectional_link(const bidirectional_link& other)
+    ETL_CONSTEXPR bidirectional_link(const bidirectional_link& other)
       : etl_previous(other.etl_previous)
       , etl_next(other.etl_next)
     {
     }
 
     //***********************************
-    bidirectional_link& operator=(const bidirectional_link& other)
+    ETL_CONSTEXPR14 bidirectional_link& operator=(const bidirectional_link& other)
     {
       etl_previous = other.etl_previous;
       etl_next     = other.etl_next;

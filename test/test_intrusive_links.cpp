@@ -1855,5 +1855,47 @@ namespace
       // If we get here without crashing, the test passes
       CHECK(true);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_forward_link_constexpr)
+    {
+      constexpr FLink0 link0{};
+      static_assert(link0.etl_next == nullptr, "forward_link default ctor should be constexpr");
+
+      constexpr FLink0 link1{nullptr};
+      static_assert(link1.etl_next == nullptr, "forward_link pointer ctor should be constexpr");
+
+      constexpr FLink0 link2{link1};
+      static_assert(link2.etl_next == nullptr, "forward_link copy ctor should be constexpr");
+
+      CHECK(link0.etl_next == nullptr);
+      CHECK(link1.etl_next == nullptr);
+      CHECK(link2.etl_next == nullptr);
+    }
+
+    //*************************************************************************
+    TEST(test_bidirectional_link_constexpr)
+    {
+      constexpr BLink0 link0{};
+      static_assert(link0.etl_previous == nullptr, "bidirectional_link default ctor should be constexpr (previous)");
+      static_assert(link0.etl_next == nullptr, "bidirectional_link default ctor should be constexpr (next)");
+
+      constexpr BLink0 link1{nullptr, nullptr};
+      static_assert(link1.etl_previous == nullptr, "bidirectional_link param ctor should be constexpr (previous)");
+      static_assert(link1.etl_next == nullptr, "bidirectional_link param ctor should be constexpr (next)");
+
+      constexpr BLink0 link2{link1};
+      static_assert(link2.etl_previous == nullptr, "bidirectional_link copy ctor should be constexpr (previous)");
+      static_assert(link2.etl_next == nullptr, "bidirectional_link copy ctor should be constexpr (next)");
+
+      CHECK(link0.etl_previous == nullptr);
+      CHECK(link0.etl_next == nullptr);
+      CHECK(link1.etl_previous == nullptr);
+      CHECK(link1.etl_next == nullptr);
+      CHECK(link2.etl_previous == nullptr);
+      CHECK(link2.etl_next == nullptr);
+    }
+#endif
   }
 } // namespace
