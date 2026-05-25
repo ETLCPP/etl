@@ -31,10 +31,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "integral_limits.h"
-#include "static_assert.h"
 #include "type_traits.h"
-
-#include <stdint.h>
 
 /**************************************************************************************************************************************************************************
  * See https://en.wikipedia.org/wiki/Base64

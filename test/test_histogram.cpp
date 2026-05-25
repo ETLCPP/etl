@@ -166,7 +166,7 @@ namespace
 
       for (size_t i = 0UL; i < output1.size(); ++i)
       {
-        CHECK_EQUAL(int(output1[i]), int(histogram[i]));
+        CHECK_EQUAL(static_cast<int>(output1[i]), static_cast<int>(histogram[static_cast<int>(i)]));
       }
     }
 
@@ -203,7 +203,7 @@ namespace
 
       for (size_t i = 0UL; i < output1.size(); ++i)
       {
-        CHECK_EQUAL(int(output1[i]), int(histogram[i - 4]));
+        CHECK_EQUAL(static_cast<int>(output1[i]), static_cast<int>(histogram[static_cast<int>(i) - 4]));
       }
     }
 
@@ -331,6 +331,60 @@ namespace
 
       isEqual = std::equal(output2.begin(), output2.end(), histogram.begin());
       CHECK(isEqual);
+    }
+
+    //*************************************************************************
+    TEST(test_sparse_histogram_iteration)
+    {
+      StringHistogram histogram;
+
+      // Empty histogram: begin == end
+      CHECK(histogram.begin() == histogram.end());
+      CHECK(histogram.cbegin() == histogram.cend());
+
+      // Add items
+      histogram.add(std::string("apple"));
+      histogram.add(std::string("banana"));
+      histogram.add(std::string("apple"));
+
+      // Non-empty: begin != end
+      CHECK(histogram.begin() != histogram.end());
+      CHECK(histogram.cbegin() != histogram.cend());
+
+      // Count elements by iterating
+      size_t count = 0;
+      for (auto it = histogram.begin(); it != histogram.end(); ++it)
+      {
+        ++count;
+      }
+      CHECK_EQUAL(2U, count); // "apple" and "banana"
+
+      // Same with cbegin/cend
+      count = 0;
+      for (auto it = histogram.cbegin(); it != histogram.cend(); ++it)
+      {
+        ++count;
+      }
+      CHECK_EQUAL(2U, count);
+
+      // Verify we can find the expected values
+      bool found_apple  = false;
+      bool found_banana = false;
+      for (auto it = histogram.begin(); it != histogram.end(); ++it)
+      {
+        if (it->first == "apple")
+        {
+          CHECK_EQUAL(2, it->second);
+          found_apple = true;
+        }
+        if (it->first == "banana")
+        {
+          CHECK_EQUAL(1, it->second);
+          found_banana = true;
+        }
+      }
+      CHECK(found_apple);
+      CHECK(found_banana);
     }
   }
 } // namespace

@@ -39,8 +39,6 @@ SOFTWARE.
 #include "type_list.h"
 #include "utility.h"
 
-#include <stdint.h>
-
 namespace etl
 {
 #if ETL_USING_CPP17 && !defined(ETL_MESSAGE_PACKET_FORCE_CPP03_IMPLEMENTATION)

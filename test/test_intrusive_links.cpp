@@ -1845,5 +1845,15 @@ namespace
       CHECK(c.etl_left == nullptr);
       CHECK(c.etl_right == nullptr);
     }
+
+    //*************************************************************************
+    TEST(test_link_clear_range_bidirectional_nullptr)
+    {
+      // Passing nullptr should be a no-op, not a crash
+      BData* null_ptr = nullptr;
+      etl::link_clear_range<BLink0>(null_ptr);
+      // If we get here without crashing, the test passes
+      CHECK(true);
+    }
   }
 } // namespace

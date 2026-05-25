@@ -869,7 +869,7 @@ namespace
     TEST(put_get_multiple_full_size)
     {
       char           c1 = 90;
-      char           c2 = -91;
+      char           c2 = static_cast<char>(-91);
       unsigned short s1 = 23205;
       unsigned short s2 = 42330;
       int32_t        i1 = 1520786085L;  // 0x5AA55AA5

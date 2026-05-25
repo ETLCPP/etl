@@ -203,8 +203,8 @@ namespace
       etl::string<100> s;
 
       CHECK_EQUAL("1.0", test_format(s, "{}", 1.0f));
-      CHECK_EQUAL("1.234567", test_format(s, "{}", 1.234567f));
-      CHECK_EQUAL("1.234567", test_format(s, "{}", 1.2345678f));
+      CHECK_EQUAL("1.234567", test_format(s, "{}", 1.2345674f));
+      CHECK_EQUAL("1.234568", test_format(s, "{}", 1.2345676f));
       CHECK_EQUAL("1.125", test_format(s, "{}", 1.125f));
     }
 
@@ -214,8 +214,8 @@ namespace
       etl::string<100> s;
 
       CHECK_EQUAL("1.0", test_format(s, "{}", 1.0));
-      CHECK_EQUAL("1.234564", test_format(s, "{}", 1.234564));
-      CHECK_EQUAL("1.234567", test_format(s, "{}", 1.2345678));
+      CHECK_EQUAL("1.234567", test_format(s, "{}", 1.234567499));
+      CHECK_EQUAL("1.234568", test_format(s, "{}", 1.234567501));
       CHECK_EQUAL("1.5", test_format(s, "{}", 1.5));
     }
 
@@ -227,7 +227,7 @@ namespace
       CHECK_EQUAL("1.0", test_format(s, "{}", 1.0l));
       auto& result = test_format(s, "{}", 1.234567l);
       CHECK("1.234567" == result || "1.234566" == result);
-      CHECK_EQUAL("1.234567", test_format(s, "{}", 1.2345678l));
+      CHECK_EQUAL("1.234568", test_format(s, "{}", 1.2345678l));
       CHECK_EQUAL("1.25", test_format(s, "{}", 1.25l));
     }
 
@@ -261,10 +261,93 @@ namespace
       CHECK_EQUAL("inf", test_format(s, "{:g}", INFINITY));
       CHECK_EQUAL("INF", test_format(s, "{:0.3G}", INFINITY));
       CHECK_EQUAL("0x1.8p+0", test_format(s, "{:a}", 1.5f));
-      CHECK_EQUAL("0X1.4CCCCCCCCCP+0", test_format(s, "{:A}", 1.3l));
+      CHECK_EQUAL("0X1.4CCCCCCCCDP+0", test_format(s, "{:A}", 1.3l));
       CHECK_EQUAL("0x2.49fp+4", test_format(s, "{:a}", 150000.0));
       CHECK_EQUAL("0x1.92a738p-5", test_format(s, "{:a}", 0.0000015f));
       CHECK_EQUAL("0x1.6345785d8ap+e", test_format(s, "{:a}", 100000000000000000.l));
+    }
+
+    //*************************************************************************
+    TEST(test_format_negative_zero)
+    {
+      etl::string<100> s;
+
+      // Test negative zero handling - signbit() correctly detects -0.0
+      CHECK_EQUAL("-0.0", test_format(s, "{}", -0.0));
+      CHECK_EQUAL("-0.0", test_format(s, "{}", -0.0f));
+      CHECK_EQUAL("-0.0", test_format(s, "{}", -0.0L));
+      CHECK_EQUAL("-0.000000", test_format(s, "{:f}", -0.0));
+      CHECK_EQUAL("-0.000000", test_format(s, "{:f}", -0.0f));
+      CHECK_EQUAL("-0.000000", test_format(s, "{:f}", -0.0L));
+      CHECK_EQUAL("-0.000000e+00", test_format(s, "{:e}", -0.0));
+      CHECK_EQUAL("-0.000000e+00", test_format(s, "{:e}", -0.0f));
+      CHECK_EQUAL("-0.000000e+00", test_format(s, "{:e}", -0.0L));
+      CHECK_EQUAL("-0x0.0p+0", test_format(s, "{:a}", -0.0));
+      CHECK_EQUAL("-0x0.0p+0", test_format(s, "{:a}", -0.0f));
+      CHECK_EQUAL("-0x0.0p+0", test_format(s, "{:a}", -0.0L));
+    }
+
+    //*************************************************************************
+    // Tests for fractional rounding carry:
+    // When round(fractional * scale) == scale the fractional part must wrap
+    // to 0 and the integral part must be incremented by 1.
+    //*************************************************************************
+    TEST(test_format_floating_default_rounding_carry)
+    {
+      etl::string<100> s;
+
+      // 1.9999999: fractional 0.9999999, round(0.9999999 * 1e6) == 1000000
+      // => must carry: integral 1 -> 2, fractional -> 0
+      CHECK_EQUAL("2.0", test_format(s, "{}", 1.9999999));
+      CHECK_EQUAL("-2.0", test_format(s, "{}", -1.9999999));
+
+      // 0.9999999: integral 0, fractional rounds up => becomes 1.0
+      CHECK_EQUAL("1.0", test_format(s, "{}", 0.9999999));
+
+      // 99.9999999: integral 99, fractional rounds up => becomes 100.0
+      CHECK_EQUAL("100.0", test_format(s, "{}", 99.9999999));
+    }
+
+    //*************************************************************************
+    TEST(test_format_floating_f_rounding_carry)
+    {
+      etl::string<100> s;
+
+      // Same values using {:f} which uses format_floating_f (6 fractional decimals)
+      CHECK_EQUAL("2.000000", test_format(s, "{:f}", 1.9999999));
+      CHECK_EQUAL("-2.000000", test_format(s, "{:f}", -1.9999999));
+      CHECK_EQUAL("1.000000", test_format(s, "{:f}", 0.9999999));
+      CHECK_EQUAL("100.000000", test_format(s, "{:f}", 99.9999999));
+    }
+
+    //*************************************************************************
+    TEST(test_format_floating_e_rounding_carry)
+    {
+      etl::string<100> s;
+
+      // 9.9999999: after normalization integral=9, fractional=0.9999999
+      // round(0.9999999 * 1e6) == 1000000 => must carry: 10.000000e+00
+      CHECK_EQUAL("10.000000e+00", test_format(s, "{:e}", 9.9999999));
+      CHECK_EQUAL("-10.000000e+00", test_format(s, "{:e}", -9.9999999));
+
+      // 1.9999999: after normalization integral=1, fractional=0.9999999
+      CHECK_EQUAL("2.000000e+00", test_format(s, "{:e}", 1.9999999));
+    }
+
+    //*************************************************************************
+    TEST(test_format_floating_a_rounding_carry)
+    {
+      etl::string<100> s;
+
+      // 1.5 + (1.0 - 2^-52) * 0.5 ≈ value whose hex fractional part rounds up.
+      // Use a value where hex fractional is all 0xF...F and rounds up.
+      // 2.0 - epsilon: in hex, 0x1.FFFFFFFFFFFFFp+0 (for double)
+      // After modf: integral=1, fractional ≈ 0.999...
+      // round(fractional * 16^10) should equal 16^10 => carry
+      double almost_two = 1.9999999999999998; // nextafter(2.0, 0.0) or very close
+      auto&  result     = test_format(s, "{:a}", almost_two);
+      // After carry, integral becomes 2, fractional becomes 0
+      CHECK_EQUAL("0x2.0p+0", result);
     }
   #endif
 
@@ -320,7 +403,9 @@ namespace
 
       CHECK_EQUAL("data1", test_format(s, "{}", sv));
       CHECK_EQUAL("data1", test_format(s, "{:s}", sv));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:d}", sv), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("data1     ", test_format(s, "{:10s}", sv));
       CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", sv));
       CHECK_EQUAL("     data1", test_format(s, "{:>10s}", sv));
@@ -349,7 +434,9 @@ namespace
 
       CHECK_EQUAL("data1", test_format(s, "{}", s_arg));
       CHECK_EQUAL("data1", test_format(s, "{:s}", s_arg));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:d}", s_arg), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("data1     ", test_format(s, "{:10s}", s_arg));
       CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", s_arg));
       CHECK_EQUAL("     data1", test_format(s, "{:>10s}", s_arg));
@@ -383,7 +470,9 @@ namespace
 
       CHECK_EQUAL("data1", test_format(s, "{}", string_t(data)));
       CHECK_EQUAL("data1", test_format(s, "{:s}", string_t(data)));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:d}", string_t(data)), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("data1     ", test_format(s, "{:10s}", string_t(data)));
       CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", string_t(data)));
       CHECK_EQUAL("     data1", test_format(s, "{:>10s}", string_t(data)));
@@ -412,7 +501,9 @@ namespace
 
       CHECK_EQUAL("data1", test_format(s, "{}", chars));
       CHECK_EQUAL("data1", test_format(s, "{:s}", chars));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:d}", chars), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("data1     ", test_format(s, "{:10s}", chars));
       CHECK_EQUAL("data1     ", test_format(s, "{:<10s}", chars));
       CHECK_EQUAL("     data1", test_format(s, "{:>10s}", chars));
@@ -557,28 +648,28 @@ namespace
     {
       etl::string<100> s;
 
+  #if !ETL_USING_CPP20
+      // These are caught at compile time in C++20 (consteval), so only test at runtime for pre-C++20
       CHECK_THROW(test_format(s, "a{b}", 1),
                   etl::bad_format_string_exception); // bad format index spec
-      // goal: rejected at compile time on C++20, error on <= C++17
 
       CHECK_THROW(test_format(s, "a{b"),
                   etl::bad_format_string_exception); // closing brace missing
-      // goal: rejected at compile time on C++20, error on <= C++17
 
       CHECK_THROW(test_format(s, "a{b}"),
                   etl::bad_format_string_exception); // arg missing
-      // goal: rejected at compile time on C++20, error on <= C++17
 
       CHECK_THROW(test_format(s, "a}b"),
                   etl::bad_format_string_exception); // bad format: only escaped
                                                      // }} allowed
-      // goal: rejected at compile time on C++20, error on <= C++17
 
-      CHECK_EQUAL("123", test_format(s, "{:}", 123)); // valid
       CHECK_THROW(test_format(s, "{::}", 123),
                   etl::bad_format_string_exception); // bad format spec
       CHECK_THROW(test_format(s, "{1}", 123),
                   etl::bad_format_string_exception); // bad index
+  #endif
+
+      CHECK_EQUAL("123", test_format(s, "{:}", 123)); // valid
     }
 
     //*************************************************************************
@@ -637,7 +728,9 @@ namespace
       CHECK_EQUAL(" 34  ", test_format(s, "{:^5}", 34));
       CHECK_EQUAL(" -65 ", test_format(s, "{:^5}", -65));
       CHECK_EQUAL("34  ", test_format(s, "{:<4}", 34));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "a{:*5}", 34), etl::bad_format_string_exception);
+  #endif
       CHECK_EQUAL("a*34**", test_format(s, "a{:*^5}", 34));
       CHECK_EQUAL("a*34**", test_format(s, "a{:*^5}", static_cast<unsigned int>(34)));
       CHECK_EQUAL("a***-341234567890****", test_format(s, "a{:*^20}", static_cast<long long int>(-341234567890)));
@@ -690,7 +783,9 @@ namespace
       CHECK_EQUAL("00067", test_format(s, "{:05d}", 67));
       CHECK_EQUAL("+00067", test_format(s, "{:+05d}", 67));
       CHECK_EQUAL("+0X00EF1", test_format(s, "{:+#05X}", 0xEF1));
+  #if !ETL_USING_CPP20
       CHECK_THROW(test_format(s, "{:+#05.5X}", 0xEF1), etl::bad_format_string_exception);
+  #endif
     }
   }
 } // namespace

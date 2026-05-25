@@ -35,8 +35,6 @@ SOFTWARE.
 #include "functional.h"
 #include "limits.h"
 
-#include <stdint.h>
-
 namespace etl
 {
   //***************************************************************************

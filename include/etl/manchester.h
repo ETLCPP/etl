@@ -35,6 +35,8 @@ SOFTWARE.
 #include "span.h"
 #include "static_assert.h"
 
+#if ETL_USING_CPP11
+
 ///\defgroup manchester manchester
 /// Manchester encoding and decoding
 ///\ingroup utilities
@@ -51,13 +53,13 @@ namespace etl
     struct is_encodable
     {
       static const bool value =
-#if ETL_USING_8BIT_TYPES
+  #if ETL_USING_8BIT_TYPES
         etl::is_same<TChunk, uint8_t>::value ||
-#endif
+  #endif
         etl::is_same<TChunk, uint16_t>::value
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
         || etl::is_same<TChunk, uint32_t>::value
-#endif
+  #endif
         ;
     };
 
@@ -69,13 +71,13 @@ namespace etl
     struct is_decodable
     {
       static const bool value =
-#if ETL_USING_8BIT_TYPES
+  #if ETL_USING_8BIT_TYPES
         etl::is_same<TChunk, uint16_t>::value ||
-#endif
+  #endif
         etl::is_same<TChunk, uint32_t>::value
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
         || etl::is_same<TChunk, uint64_t>::value
-#endif
+  #endif
         ;
     };
 
@@ -91,13 +93,13 @@ namespace etl
       ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester encoding type should be one of [uint8_t, uint16_t, uint32_t]");
     };
 
-#if ETL_USING_8BIT_TYPES
+  #if ETL_USING_8BIT_TYPES
     template <>
     struct encoded<uint8_t>
     {
       typedef uint16_t type;
     };
-#endif
+  #endif
 
     template <>
     struct encoded<uint16_t>
@@ -105,13 +107,13 @@ namespace etl
       typedef uint32_t type;
     };
 
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
     template <>
     struct encoded<uint32_t>
     {
       typedef uint64_t type;
     };
-#endif
+  #endif
 
     //*************************************************************************
     /// Type trait to determine the decoded type for a given encoded type.
@@ -125,13 +127,13 @@ namespace etl
       ETL_STATIC_ASSERT(sizeof(T) == 0, "Manchester decoding type should be one of [uint16_t, uint32_t, uint64_t]");
     };
 
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
     template <>
     struct decoded<uint16_t>
     {
       typedef uint8_t type;
     };
-#endif
+  #endif
 
     template <>
     struct decoded<uint32_t>
@@ -139,24 +141,24 @@ namespace etl
       typedef uint16_t type;
     };
 
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
     template <>
     struct decoded<uint64_t>
     {
       typedef uint32_t type;
     };
-#endif
+  #endif
 
     //*************************************************************************
     /// Normal Manchester encoding type (no inversion).
     //*************************************************************************
     struct manchester_type_normal
     {
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
       static const uint64_t inversion_mask = 0x0000000000000000ULL;
-#else
+  #else
       static const uint32_t inversion_mask = 0x00000000UL;
-#endif
+  #endif
     };
 
     //*************************************************************************
@@ -164,11 +166,11 @@ namespace etl
     //*************************************************************************
     struct manchester_type_inverted
     {
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
       static const uint64_t inversion_mask = 0xFFFFFFFFFFFFFFFFULL;
-#else
+  #else
       static const uint32_t inversion_mask = 0xFFFFFFFFUL;
-#endif
+  #endif
     };
 
     //*************************************************************************
@@ -247,11 +249,11 @@ namespace etl
     ETL_STATIC_ASSERT(CHAR_BIT == etl::numeric_limits<uint_least8_t>::digits,
                       "Manchester requires uint_least8_t to have the same number of bits as CHAR (CHAR_BITS)");
 
-    //*************************************************************************
-    // Encoding functions
-    //*************************************************************************
+      //*************************************************************************
+      // Encoding functions
+      //*************************************************************************
 
-#if ETL_USING_8BIT_TYPES
+  #if ETL_USING_8BIT_TYPES
     //*************************************************************************
     /// Encode a 8-bit unsigned value and return 16-bit result.
     ///\param decoded The value to encode.
@@ -273,7 +275,7 @@ namespace etl
                                       ^ (0xAAAAU ^ static_cast<unsigned int>(TManchesterType::inversion_mask)));
       return encoded;
     }
-#endif
+  #endif
 
     //*************************************************************************
     /// Encode a 16-bit unsigned value and return the 32-bit result.
@@ -297,7 +299,7 @@ namespace etl
       return encoded;
     }
 
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
     //*************************************************************************
     /// Encode a 32-bit unsigned value and return the 64-bit result.
     ///\param decoded The value to encode.
@@ -320,7 +322,7 @@ namespace etl
       encoded = (encoded | (encoded << 1U)) ^ (0xAAAAAAAAAAAAAAAAULL ^ TManchesterType::inversion_mask);
       return encoded;
     }
-#endif
+  #endif
 
     //*************************************************************************
     /// Encode a span of data with the specified chunk size.
@@ -350,11 +352,11 @@ namespace etl
       }
     }
 
-    //*************************************************************************
-    // Decoding functions
-    //*************************************************************************
+      //*************************************************************************
+      // Decoding functions
+      //*************************************************************************
 
-#if ETL_USING_8BIT_TYPES
+  #if ETL_USING_8BIT_TYPES
     //*************************************************************************
     /// Decode a 16-bit value and return the 8-bit result.
     ///\param encoded The value to decode.
@@ -373,7 +375,7 @@ namespace etl
       encoded = static_cast<TEncoded>((static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) >> 2)) & 0x0F0FU);
       return static_cast<TDecoded>(static_cast<unsigned int>(encoded) | (static_cast<unsigned int>(encoded) >> 4U));
     }
-#endif
+  #endif
 
     //*************************************************************************
     /// Decode a 32-bit value and return the 16-bit result.
@@ -394,7 +396,7 @@ namespace etl
       return static_cast<TDecoded>(encoded | (encoded >> 8U));
     }
 
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
     //*************************************************************************
     /// Decode a 64-bit value and return the 32-bit result.
     ///\param encoded The value to decode.
@@ -414,7 +416,7 @@ namespace etl
       encoded = (encoded | (encoded >> 8)) & 0x0000FFFF0000FFFFULL;
       return static_cast<TDecoded>(encoded | (encoded >> 16U));
     }
-#endif
+  #endif
 
     //*************************************************************************
     /// Decode a span of data using the specified chunk type.
@@ -499,4 +501,5 @@ namespace etl
 
 } // namespace etl
 
+#endif
 #endif

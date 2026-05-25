@@ -439,7 +439,9 @@ namespace etl
     //*************************************************************************
     void clone(const ipriority_queue& other)
     {
+#include "etl/private/diagnostic_uninitialized_push.h"
       assign(other.container.cbegin(), other.container.cend());
+#include "etl/private/diagnostic_pop.h"
     }
 
 #if ETL_USING_CPP11

@@ -117,10 +117,30 @@ namespace
     //*************************************************************************
     TEST(test_to_sys_days)
     {
-      Chrono::year_month_weekday ymwd{Chrono::year(2000), Chrono::February, Chrono::weekday_indexed(Chrono::Thursday, 1)};
-      Chrono::sys_days           sd = Chrono::sys_days(ymwd);
+      // 1st Thursday of February 2000 (Feb 3)
+      Chrono::year_month_weekday ymwd1{Chrono::year(2000), Chrono::February, Chrono::weekday_indexed(Chrono::Thursday, 1)};
+      Chrono::sys_days           sd1 = Chrono::sys_days(ymwd1);
+      CHECK_EQUAL(10990, sd1.time_since_epoch().count());
 
-      CHECK_EQUAL(10990, sd.time_since_epoch().count());
+      // 2nd Wednesday of March 2000 (Mar 8)
+      Chrono::year_month_weekday ymwd2{Chrono::year(2000), Chrono::March, Chrono::weekday_indexed(Chrono::Wednesday, 2)};
+      Chrono::sys_days           sd2 = Chrono::sys_days(ymwd2);
+      CHECK_EQUAL(11024, sd2.time_since_epoch().count());
+
+      // 1st Sunday of January 2000 (Jan 2)
+      Chrono::year_month_weekday ymwd3{Chrono::year(2000), Chrono::January, Chrono::weekday_indexed(Chrono::Sunday, 1)};
+      Chrono::sys_days           sd3 = Chrono::sys_days(ymwd3);
+      CHECK_EQUAL(10958, sd3.time_since_epoch().count());
+
+      // 3rd Friday of June 1985 (Jun 21)
+      Chrono::year_month_weekday ymwd4{Chrono::year(1985), Chrono::June, Chrono::weekday_indexed(Chrono::Friday, 3)};
+      Chrono::sys_days           sd4 = Chrono::sys_days(ymwd4);
+      CHECK_EQUAL(5650, sd4.time_since_epoch().count());
+
+      // 2nd Wednesday of March 2024 (Mar 13)
+      Chrono::year_month_weekday ymwd5{Chrono::year(2024), Chrono::March, Chrono::weekday_indexed(Chrono::Wednesday, 2)};
+      Chrono::sys_days           sd5 = Chrono::sys_days(ymwd5);
+      CHECK_EQUAL(19795, sd5.time_since_epoch().count());
     }
 
     //*************************************************************************
