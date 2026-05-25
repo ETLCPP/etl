@@ -390,9 +390,11 @@ namespace etl
     template <typename TIterator>
     typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type assign(TIterator first, TIterator last)
     {
+#if ETL_USING_CPP11
       ETL_STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type,
-                                      typename etl::remove_cv< typename etl::iterator_traits< TIterator>::value_type>::type>::value),
+                                      typename etl::remove_cv<typename etl::remove_reference<decltype(*first)>::type>::type>::value),
                         "Iterator type does not match container type");
+#endif
 
 #if ETL_IS_DEBUG_BUILD
       difference_type d = etl::distance(first, last);
@@ -895,12 +897,11 @@ namespace etl
       etl::move_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
       // Copy construct new.
-      typedef typename etl::iterator_traits<TIterator>::difference_type diff_t;
-      etl::uninitialized_copy(first + static_cast<diff_t>(copy_new_n), first + static_cast<diff_t>(copy_new_n + construct_new_n), p_end);
+      etl::uninitialized_copy(first + static_cast<ptrdiff_t>(copy_new_n), first + static_cast<ptrdiff_t>(copy_new_n + construct_new_n), p_end);
       ETL_ADD_DEBUG_COUNT(construct_new_n);
 
       // Copy new.
-      etl::copy(first, first + static_cast<diff_t>(copy_new_n), p_buffer + insert_begin);
+      etl::copy(first, first + static_cast<ptrdiff_t>(copy_new_n), p_buffer + insert_begin);
 
       p_end += count;
     }

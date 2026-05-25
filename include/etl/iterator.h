@@ -68,9 +68,22 @@ namespace etl
   //***************************************************************************
   // iterator_traits
 
-  // For anything not a fundamental type.
-  template <typename TIterator, typename = typename etl::enable_if< !etl::is_fundamental<TIterator>::value, void>::type>
+#if ETL_USING_CPP11
+
+  // Primary template: falls through to std::iterator_traits when STL is available (C++20+),
+  // otherwise empty (SFINAE-safe fallback for iterators without nested typedefs).
+  template <typename TIterator, typename = void>
   struct iterator_traits
+  #if ETL_USING_STL && ETL_USING_CPP20
+    : std::iterator_traits<TIterator>
+  #endif
+  {
+  };
+
+  // Specialization for iterators that define the standard nested typedefs.
+  template <typename TIterator>
+  struct iterator_traits<TIterator, etl::void_t< typename TIterator::iterator_category, typename TIterator::value_type,
+                                                 typename TIterator::difference_type, typename TIterator::pointer, typename TIterator::reference >>
   {
     typedef typename TIterator::iterator_category iterator_category;
     typedef typename TIterator::value_type        value_type;
@@ -78,6 +91,14 @@ namespace etl
     typedef typename TIterator::pointer           pointer;
     typedef typename TIterator::reference         reference;
   };
+
+  #if ETL_USING_STL && ETL_USING_CPP20
+  // Specialization for std::common_iterator (C++20).
+  template <typename I, typename S>
+  struct iterator_traits<std::common_iterator<I, S>, void> : std::iterator_traits<std::common_iterator<I, S>>
+  {
+  };
+  #endif
 
   // For pointers.
   template <typename T>
@@ -100,6 +121,43 @@ namespace etl
     typedef const typename etl::remove_cv<T>::type* pointer;
     typedef const T&                                reference;
   };
+
+#else // C++03
+
+  // Primary template: unconditionally extracts nested typedefs.
+  template <typename TIterator>
+  struct iterator_traits
+  {
+    typedef typename TIterator::iterator_category iterator_category;
+    typedef typename TIterator::value_type        value_type;
+    typedef typename TIterator::difference_type   difference_type;
+    typedef typename TIterator::pointer           pointer;
+    typedef typename TIterator::reference         reference;
+  };
+
+  // For pointers.
+  template <typename T>
+  struct iterator_traits<T*>
+  {
+    typedef ETL_OR_STD::random_access_iterator_tag iterator_category;
+    typedef T                                      value_type;
+    typedef ptrdiff_t                              difference_type;
+    typedef typename etl::remove_cv<T>::type*      pointer;
+    typedef T&                                     reference;
+  };
+
+  // For const pointers.
+  template <typename T>
+  struct iterator_traits<const T*>
+  {
+    typedef ETL_OR_STD::random_access_iterator_tag  iterator_category;
+    typedef T                                       value_type;
+    typedef ptrdiff_t                               difference_type;
+    typedef const typename etl::remove_cv<T>::type* pointer;
+    typedef const T&                                reference;
+  };
+
+#endif
 
   //***************************************************************************
   // advance
