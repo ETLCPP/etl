@@ -29,7 +29,7 @@
   #endif
 
 #elif defined(CORE_ARDUINO_PICO)
-  
+
   #if defined(PICO_RP2040)
     #define ARDUINO_BOARD "RP2040"
   #elif defined(PICO_RP2350)
@@ -38,7 +38,6 @@
     #define ARDUINO_BOARD "Unknown"
   #endif
 
-  
 #else // --------------- Arduino ------------------
 
   #if defined(ARDUINO_AVR_ADK)
