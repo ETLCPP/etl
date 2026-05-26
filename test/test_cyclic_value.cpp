@@ -492,5 +492,33 @@ namespace
       CHECK(data1 == compare2);
       CHECK(data2 == compare1);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_cyclic_value_constexpr_ctor)
+    {
+      constexpr etl::cyclic_value<int, 0, 9> cv;
+      static_assert(cv.get() == 0, "constexpr default ctor");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_cyclic_value_constexpr_ctor_with_range)
+    {
+      constexpr etl::cyclic_value<int> cv(0, 9);
+      static_assert(cv.first() == 0, "constexpr range ctor first");
+      static_assert(cv.last() == 9, "constexpr range ctor last");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_cyclic_value_constexpr_copy_ctor)
+    {
+      constexpr etl::cyclic_value<int, 0, 9> cv1;
+      constexpr etl::cyclic_value<int, 0, 9> cv2(cv1);
+      static_assert(cv2.get() == 0, "constexpr copy ctor");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

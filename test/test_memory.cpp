@@ -3006,5 +3006,17 @@ namespace
       unsigned char zeroes[sizeof(Data)] = {0};
       CHECK(memcmp(buffer, zeroes, sizeof(Data)) == 0);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_default_delete_constexpr_copy_ctor)
+    {
+      constexpr etl::default_delete<int> d1;
+      constexpr etl::default_delete<int> d2(d1);
+      (void)d2;
+      static_assert(sizeof(d2) > 0, "constexpr default_delete copy ctor");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

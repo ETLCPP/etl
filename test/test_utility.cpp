@@ -1093,5 +1093,29 @@ namespace
 
       CHECK_FALSE(pw1 == pw2); // This would FAIL with the old < > based comparison
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_pair_constexpr_copy_ctor)
+    {
+      constexpr etl::pair<int, int> p1(1, 2);
+      constexpr etl::pair<int, int> p2(p1);
+      static_assert(p2.first == 1, "constexpr pair copy ctor first");
+      static_assert(p2.second == 2, "constexpr pair copy ctor second");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_coordinate_2d_constexpr_ctors)
+    {
+      constexpr etl::coordinate_2d<int> c1;
+      constexpr etl::coordinate_2d<int> c2(3, 4);
+      static_assert(c1.x == 0, "constexpr default ctor x");
+      static_assert(c1.y == 0, "constexpr default ctor y");
+      static_assert(c2.x == 3, "constexpr value ctor x");
+      static_assert(c2.y == 4, "constexpr value ctor y");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

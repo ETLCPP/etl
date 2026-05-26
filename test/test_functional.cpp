@@ -591,5 +591,47 @@ namespace
       CHECK(!result_equal);
     }
 #endif
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_binder1st_constexpr)
+    {
+      struct plus_op
+      {
+        typedef int first_argument_type;
+        typedef int second_argument_type;
+        typedef int result_type;
+        ETL_CONSTEXPR int operator()(int a, int b) const
+        {
+          return a + b;
+        }
+      };
+
+      constexpr plus_op                 op;
+      constexpr etl::binder1st<plus_op> b = etl::bind1st(op, 10);
+      static_assert(b(5) == 15, "constexpr bind1st");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_binder2nd_constexpr)
+    {
+      struct plus_op
+      {
+        typedef int first_argument_type;
+        typedef int second_argument_type;
+        typedef int result_type;
+        ETL_CONSTEXPR int operator()(int a, int b) const
+        {
+          return a + b;
+        }
+      };
+
+      constexpr plus_op                 op;
+      constexpr etl::binder2nd<plus_op> b = etl::bind2nd(op, 10);
+      static_assert(b(5) == 15, "constexpr bind2nd");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

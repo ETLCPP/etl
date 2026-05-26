@@ -228,5 +228,26 @@ namespace
       CHECK(fi1 == fi2);
       CHECK(fi1 != fi3);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_fixed_iterator_constexpr_ctor)
+    {
+      static constexpr int                      data[] = {1, 2, 3};
+      constexpr etl::fixed_iterator<const int*> fi(&data[1]);
+      static_assert(*fi == 2, "constexpr ctor and deref");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_fixed_iterator_constexpr_copy_ctor)
+    {
+      static constexpr int                      data[] = {1, 2, 3};
+      constexpr etl::fixed_iterator<const int*> fi1(&data[0]);
+      constexpr etl::fixed_iterator<const int*> fi2(fi1);
+      static_assert(*fi2 == 1, "constexpr copy ctor");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

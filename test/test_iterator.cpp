@@ -1409,5 +1409,27 @@ namespace
     }
 
 #endif
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_move_iterator_constexpr_ctor)
+    {
+      static constexpr int                     data[] = {10, 20, 30};
+      constexpr etl::move_iterator<const int*> mi(&data[0]);
+      static_assert(mi.base() == &data[0], "constexpr ctor");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_move_iterator_constexpr_operators)
+    {
+      static constexpr int                     data[] = {10, 20, 30};
+      constexpr etl::move_iterator<const int*> mi1(&data[0]);
+      constexpr etl::move_iterator<const int*> mi2(&data[1]);
+      static_assert(mi1 != mi2, "constexpr operator!=");
+      static_assert(mi1 < mi2, "constexpr operator<");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace
