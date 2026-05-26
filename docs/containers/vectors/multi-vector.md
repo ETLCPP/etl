@@ -1,5 +1,6 @@
 ---
 title: "multi_vector"
+weight: 2
 ---
 
 A fixed capacity multi-dimensional vector.  

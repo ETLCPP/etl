@@ -1,5 +1,6 @@
 ---
 title: "list"
+weight: 1
 ---
 
 {{< callout >}}

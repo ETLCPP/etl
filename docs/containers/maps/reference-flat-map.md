@@ -204,10 +204,6 @@ pair<const_iterator, const_iterator> equal_range(const key_type& key) const
 **Description**  
 Returns the bounds of a range that includes all the elements in the container which have a key equivalent to `key`.
 
-C++11 or above.  
-For comparators that define `is_transparent`.  
-Since: `20.21.0`
-
 ---
 
 ```cpp

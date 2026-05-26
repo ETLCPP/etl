@@ -1,5 +1,6 @@
 ---
 title: "indirect_vector"
+weight: 3
 ---
 
 {{< callout type="info">}}
