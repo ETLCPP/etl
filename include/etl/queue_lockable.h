@@ -32,17 +32,14 @@ SOFTWARE.
 #define ETL_QUEUE_LOCKABLE_INCLUDED
 
 #include "platform.h"
-#include "function.h"
 #include "integral_limits.h"
 #include "memory.h"
 #include "memory_model.h"
-#include "mutex.h"
 #include "parameter_type.h"
 #include "placement_new.h"
 #include "utility.h"
 
 #include <stddef.h>
-#include <stdint.h>
 
 namespace etl
 {

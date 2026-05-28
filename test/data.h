@@ -201,14 +201,14 @@ public:
 
   TestDataM(TestDataM&& other) noexcept
     : value(std::move(other.value))
-    , valid(true)
+    , valid(other.valid)
   {
     other.valid = false;
   }
 
   TestDataM(const TestDataM&& other) noexcept
     : value(std::move(other.value))
-    , valid(true)
+    , valid(other.valid)
   {
     other.valid = false;
   }

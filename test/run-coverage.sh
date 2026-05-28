@@ -44,7 +44,7 @@ mkdir -p "$BUILD"
 cd "$BUILD" || exit 1
 touch total.info
 
-for CXXSTD in 11 14 17 20 23; do
+for CXXSTD in 11 14 17 20 23 26; do
   for NOSTL in OFF ON; do
     rm -rf CMakeFiles
     cmake -DEXTRA_COMPILE_OPTIONS="--coverage" \
@@ -58,7 +58,7 @@ for CXXSTD in 11 14 17 20 23; do
           -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
           -DETL_OPTIMISATION=-O0 \
           -DETL_CXX_STANDARD=$CXXSTD \
-          -DETL_ENABLE_SANITIZER=Off \
+          -DETL_ENABLE_SANITIZER=OFF \
           -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF \
           -DETL_USE_BUILTIN_MEM_FUNCTIONS=ON ..
     cmake --build .
@@ -76,6 +76,7 @@ for CXXSTD in 11 14 17 20 23; do
 done
 
 genhtml total.info --output-directory coverage --rc "genhtml_branch_coverage=1" --branch-coverage -t $COMPILER \
-        --ignore-errors inconsistent
+        --ignore-errors inconsistent \
+        --ignore-errors category
 
 cd ..
