@@ -147,7 +147,7 @@ Maximum unsigned value a particular number of bits can represent.
 template <typename TReturn, size_t NBits, typename TValue>
 ETL_CONSTEXPR14 TReturn fold_bits(TValue value)
 ```
-**Decsription**  
+**Description**  
 Fold a binary number down to a set number of bits using XOR.  
 
 **Example**  
