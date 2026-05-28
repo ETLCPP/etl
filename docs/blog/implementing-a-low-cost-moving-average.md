@@ -1,7 +1,11 @@
 ---
 title: "Implementing a moving average"
 weight: 10
+author: John Wellbelove
 ---
+
+**Author:** John Wellbelove  
+**Date:** 2019  
 
 ## Example
 Imagine we have accumulated 10 values and our window size is 10.  

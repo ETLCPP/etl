@@ -3,6 +3,9 @@ title: "Applications of dot and cross products"
 weight: 5
 ---
 
+**Author:** John Wellbelove  
+**Date:** 2019  
+
 ## The problem
 Sometimes in graphical applications there is a need to know the relative position of a point with respect to a line from a reference point.  
 

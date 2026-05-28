@@ -1,4 +1,7 @@
-# Code Generation for Pre-C++11 Support
+---
+title: "Code Generation for Pre-C++11 Support"
+weight: 5
+---
 
 ETL supports C++03 (also referred to as C++98) environments where variadic
 templates, `constexpr`, and other modern features are unavailable.  To

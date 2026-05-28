@@ -1,6 +1,6 @@
 ---
 title: Source code formatting
-weight: 1
+weight: 4
 ---
 
 This project uses **clang-format** (version 18) to enforce a consistent coding style

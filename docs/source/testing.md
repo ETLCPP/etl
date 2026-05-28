@@ -1,7 +1,9 @@
-# Testing ETL
+---
+title: "Testing the ETL"
+weight: 6
+---
 
-This document describes how to build and run the ETL test suite locally,
-inside Dev Containers, and in CI.
+This document describes how to build and run the ETL test suite locally, inside Dev Containers, and in CI.
 
 ## Table of Contents
 

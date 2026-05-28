@@ -1,4 +1,7 @@
-# Building ETL with Bazel
+---
+title: "Building ETL with Bazel"
+weight: 1
+---
 
 ETL provides first-class [Bazel](https://bazel.build/) support, both for developing ETL itself and for consuming it as a dependency in your own projects.
 

@@ -3,6 +3,9 @@ title: "Dot and cross products"
 weight: 4
 ---
 
+**Author:** John Wellbelove  
+**Date:** 2019  
+
 ## Dot Product
 The dot product of two vectors is the sum of the products of the corresponding elements.  
 The dot product of vectors `(x1, y1)` and `(x2, y2)` is `x1 * x2 + y1 * y2`.  

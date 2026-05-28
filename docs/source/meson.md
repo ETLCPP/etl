@@ -1,4 +1,7 @@
-# Building ETL with Meson
+---
+title: "Building ETL with Meson"
+weight: 2
+---
 
 ## Prerequisites
 

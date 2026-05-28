@@ -1,4 +1,7 @@
-# Docker for Development
+---
+title: "Docker for Development"
+weight: 3
+---
 
 ## Overview
 

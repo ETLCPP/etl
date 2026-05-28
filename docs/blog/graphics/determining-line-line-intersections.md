@@ -3,6 +3,9 @@ title: "Determining line-line intersections"
 weight: 2
 ---
 
+**Author:** John Wellbelove  
+**Date:** 2019  
+
 It's quite common in graphics and image processing to want to know the intersection coordinates of two lines.  
 
 The common formula for a line is the familiar `y = Mx + C`.  
