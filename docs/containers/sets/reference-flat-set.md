@@ -2,6 +2,11 @@
 title: "reference_flat_set"
 ---
 
+{{< callout type="info">}}
+  Header: `reference_flat_set.h`  
+  Similar to: `std::set`
+{{< /callout >}}
+
 A fixed capacity set based on a sorted vector.  
 The container stores references to objects, rather than the objects themselves.  
 The container is an associative lookup table with O(N) insertion and erase, and O(log N) search.  

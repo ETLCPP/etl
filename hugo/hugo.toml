@@ -68,6 +68,11 @@ title = 'Embedded Template Library'
   weight = 4
 
 [[menus.main]]
+  name = "Blog"
+  pageRef = "/docs/blog"
+  weight = 5
+
+[[menus.main]]
 name = "About"
 pageRef = "/docs/about"
 weight = 999

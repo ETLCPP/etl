@@ -1,8 +1,9 @@
 ---
 title: "Implementing a moving average"
+weight: 10
 ---
 
-## Example:
+## Example
 Imagine we have accumulated 10 values and our window size is 10.  
 
 `[ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]`  
@@ -18,7 +19,7 @@ In the case of 10,000 samples of 'double' we are looking at 10,000 additions + 
 
 So we have an algorithm that has processing and storage complexity of O(N).  
 
----
+## What other values give the same average?
 
 **So let's look at the problem again.**  
 
@@ -34,7 +35,7 @@ There are many ways of getting the same average:
 
 An average of `5.5` can be got from 10 samples of `5.5`.  
 
-So why store 10 samples? 
+## So why store 10 samples? 
 
 We can simply simulate the original sum just by multiplying the current average by the number of samples.  
 The calculation of the average for adding a new sample becomes this:  
@@ -45,7 +46,10 @@ Now we have 1 multiplication, 2 additions and 1 division.
 Our algorithm now has a complexity of O(1).
 
 We can average over as large a sample size as we like and it will always take the same amount of time and use the same amount of storage. We can also change the sample size on-the-fly if we wish.  
-There is one downside in that the average will not exactly match the original version, as the actual oldest value is not being erased from the sum. But for the performance and storage advantages it may be a perfectly suitable solution. You may find that you will need a slightly smaller sample size with the rolling mean to get similar results.  
+
+There is one downside in that the average will not exactly match the original version, as the actual oldest value is not being erased from the sum, but for the performance and storage advantages it may be a perfectly suitable solution.  
+
+You may find that you will need a slightly smaller sample size with the rolling mean to get similar results.  
 
 ---
 

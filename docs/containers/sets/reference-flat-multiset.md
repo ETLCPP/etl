@@ -1,6 +1,11 @@
 ---
-title: "reference_flat_set"
+title: "reference_flat_multiset"
 ---
+
+{{< callout type="info">}}
+  Header: `reference_flat_multiset.h`  
+  Similar to: `std::multiset`
+{{< /callout >}}
 
 A fixed capacity set based on a sorted vector.  
 The container stores references to objects, rather than the objects themselves.  

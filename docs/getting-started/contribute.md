@@ -239,5 +239,5 @@ When opening a new pull request, ensure that you include the following informati
 - Do not initiate a pull request until *all* of the units tests pass. See above for information on project files and test scripts.
 - Branches should be based on the branch `master`.  
 `development` can change quite frequently, so I will rebase the your PR against it before merging.
-- For formatting help, you can use `clang-format`, or the convenience wrapper `treefmt`. See also [Source formatting]({{% ref "source-formatting.md" %}}).
+- For formatting help, you can use `clang-format`, or the convenience wrapper `treefmt`. See also [Source formatting]({{% relref "source-formatting.md" %}}).
 - Update the relevent documentation markdown file, found in `etl/docs`.
