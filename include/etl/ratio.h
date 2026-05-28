@@ -37,7 +37,6 @@ SOFTWARE.
 
 #include "type_traits.h"
 
-#include <stddef.h>
 #include <stdint.h>
 
 ///\defgroup ratio ratio
@@ -161,12 +160,20 @@ namespace etl
 #endif
 
 //***********************************************************************
-/// Predefined ration types.
+/// Predefined ratio types.
 //***********************************************************************
 #if INT_MAX > INT32_MAX
-  typedef ratio<1, 1000000000000000000> atto;
-  typedef ratio<1, 1000000000000000>    femto;
-  typedef ratio<1, 1000000000000>       pico;
+  // 2022 SI prefix (10^-30)
+  typedef ratio<1, 1000000000000000000LL * 1000000000000LL> quecto;
+  // 2022 SI prefix (10^-27)
+  typedef ratio<1, 1000000000000000000LL * 1000000000LL> ronto;
+  // 10^-24
+  typedef ratio<1, 1000000000000000000LL * 1000000LL> yocto;
+  // 10^-21
+  typedef ratio<1, 1000000000000000000LL * 1000LL> zepto;
+  typedef ratio<1, 1000000000000000000>            atto;
+  typedef ratio<1, 1000000000000000>               femto;
+  typedef ratio<1, 1000000000000>                  pico;
 #endif
 
 #if (INT_MAX >= INT32_MAX)
@@ -192,6 +199,14 @@ namespace etl
   typedef ratio<1000000000000, 1>       tera;
   typedef ratio<1000000000000000, 1>    peta;
   typedef ratio<1000000000000000000, 1> exa;
+  // 10^21
+  typedef ratio<1000000000000000000LL * 1000LL, 1> zetta;
+  // 10^24
+  typedef ratio<1000000000000000000LL * 1000000LL, 1> yotta;
+  // 2022 SI prefix (10^27)
+  typedef ratio<1000000000000000000LL * 1000000000LL, 1> ronna;
+  // 2022 SI prefix (10^30)
+  typedef ratio<1000000000000000000LL * 1000000000000LL, 1> quetta;
 #endif
 
   /// An approximation of Pi.

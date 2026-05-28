@@ -44,7 +44,6 @@ SOFTWARE.
 #include "utility.h"
 
 #include <stddef.h>
-#include <stdint.h>
 
 #include "private/minmax_push.h"
 
@@ -463,19 +462,6 @@ namespace etl
     private:
 
       //***************************************************
-      difference_type distance(difference_type firstIndex, difference_type index_) const
-      {
-        if (index_ < firstIndex)
-        {
-          return static_cast<difference_type>(p_deque->Buffer_Size) + index_ - firstIndex;
-        }
-        else
-        {
-          return index_ - firstIndex;
-        }
-      }
-
-      //***************************************************
       iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)
         : index(index_)
         , p_deque(&the_deque)
@@ -619,10 +605,10 @@ namespace etl
       }
 
       //***************************************************
-      reference operator[](size_t i)
+      const_reference operator[](size_t i) const
       {
-        iterator result(*this);
-        result += i;
+        const_iterator result(*this);
+        result += static_cast<difference_type>(i);
 
         return *result;
       }
@@ -720,19 +706,6 @@ namespace etl
       }
 
     private:
-
-      //***************************************************
-      difference_type distance(difference_type firstIndex, difference_type index_) const
-      {
-        if (index_ < firstIndex)
-        {
-          return static_cast<difference_type>(p_deque->Buffer_Size) + index_ - firstIndex;
-        }
-        else
-        {
-          return index_ - firstIndex;
-        }
-      }
 
       //***************************************************
       const_iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)

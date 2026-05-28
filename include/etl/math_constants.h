@@ -31,6 +31,8 @@ SOFTWARE.
 
 #include "platform.h"
 
+#include "private/diagnostic_gnu_static_float_init_push.h"
+
 namespace etl
 {
   namespace private_math_constants
@@ -85,5 +87,7 @@ namespace etl
   {
   };
 } // namespace etl
+
+#include "private/diagnostic_pop.h"
 
 #endif

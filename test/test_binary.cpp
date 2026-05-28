@@ -3040,6 +3040,108 @@ namespace
 
       CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
     }
+
+    //*************************************************************************
+    TEST(test_count_leading_zeros_signed_32)
+    {
+      // int32_t(-1) = 0xFFFFFFFF → 0 leading zeros
+      CHECK_EQUAL(0, int(etl::count_leading_zeros(int32_t(-1))));
+
+      // int32_t(1) = 0x00000001 → 31 leading zeros
+      CHECK_EQUAL(31, int(etl::count_leading_zeros(int32_t(1))));
+
+      // int32_t(0) = 0x00000000 → 32 leading zeros
+      CHECK_EQUAL(32, int(etl::count_leading_zeros(int32_t(0))));
+
+      // int32_t(256) = 0x00000100 → 23 leading zeros
+      CHECK_EQUAL(23, int(etl::count_leading_zeros(int32_t(256))));
+
+      // Verify against unsigned version
+      for (int i = 0; i < 32; ++i)
+      {
+        int32_t value = int32_t(1) << i;
+        CHECK_EQUAL(int(etl::count_leading_zeros(uint32_t(value))), int(etl::count_leading_zeros(value)));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_count_leading_zeros_signed_64)
+    {
+      CHECK_EQUAL(0, int(etl::count_leading_zeros(int64_t(-1))));
+      CHECK_EQUAL(63, int(etl::count_leading_zeros(int64_t(1))));
+      CHECK_EQUAL(64, int(etl::count_leading_zeros(int64_t(0))));
+
+      for (int i = 0; i < 64; ++i)
+      {
+        int64_t value = int64_t(1) << i;
+        CHECK_EQUAL(int(etl::count_leading_zeros(uint64_t(value))), int(etl::count_leading_zeros(value)));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_count_leading_zeros_64_specific_values)
+    {
+      // Value that specifically triggers the upper-32-bit mask path
+      // Bit 35 set: 0x0000000800000000 → 28 leading zeros
+      CHECK_EQUAL(28, int(etl::count_leading_zeros(uint64_t(0x0000000800000000ULL))));
+      // Bit 31 set: 0x0000000080000000 → 32 leading zeros
+      CHECK_EQUAL(32, int(etl::count_leading_zeros(uint64_t(0x0000000080000000ULL))));
+      // All zeros in upper 32: 0x00000000FFFFFFFF → 32 leading zeros
+      CHECK_EQUAL(32, int(etl::count_leading_zeros(uint64_t(0x00000000FFFFFFFFULL))));
+      // Upper half has bit: 0x0000000100000000 → 31 leading zeros
+      CHECK_EQUAL(31, int(etl::count_leading_zeros(uint64_t(0x0000000100000000ULL))));
+    }
+
+    //*************************************************************************
+    TEST(test_count_leading_ones_32_specific_values)
+    {
+      // 0xFFFF0000 → upper 16 bits set → exactly 16 leading ones
+      CHECK_EQUAL(16, int(etl::count_leading_ones(uint32_t(0xFFFF0000UL))));
+      // 0xFFFF8000 → 17 leading ones
+      CHECK_EQUAL(17, int(etl::count_leading_ones(uint32_t(0xFFFF8000UL))));
+      // 0xFFFFF000 → 20 leading ones
+      CHECK_EQUAL(20, int(etl::count_leading_ones(uint32_t(0xFFFFF000UL))));
+      // 0xFFFFFF00 → 24 leading ones
+      CHECK_EQUAL(24, int(etl::count_leading_ones(uint32_t(0xFFFFFF00UL))));
+      // 0xFFFFFFFE → 31 leading ones
+      CHECK_EQUAL(31, int(etl::count_leading_ones(uint32_t(0xFFFFFFFEUL))));
+      // 0xFFFFFFFF → 32 leading ones
+      CHECK_EQUAL(32, int(etl::count_leading_ones(uint32_t(0xFFFFFFFFUL))));
+      // 0x80000000 → 1 leading one
+      CHECK_EQUAL(1, int(etl::count_leading_ones(uint32_t(0x80000000UL))));
+
+      // Verify against reference for boundary values
+      for (uint32_t i = 0; i < 33; ++i)
+      {
+        // Create value with exactly 'i' leading ones
+        uint32_t value = (i == 0) ? 0U : (i == 32) ? 0xFFFFFFFFUL : ~((1UL << (32U - i)) - 1UL);
+        CHECK_EQUAL(int(test_leading_ones(value)), int(etl::count_leading_ones(value)));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_count_leading_ones_64_specific_values)
+    {
+      // 0xFFFFFFFF00000000 → 32 leading ones
+      CHECK_EQUAL(32, int(etl::count_leading_ones(uint64_t(0xFFFFFFFF00000000ULL))));
+      // 0xFFFFFFFFFFFF0000 → 48 leading ones
+      CHECK_EQUAL(48, int(etl::count_leading_ones(uint64_t(0xFFFFFFFFFFFF0000ULL))));
+      // 0xFFFF000000000000 → 16 leading ones
+      CHECK_EQUAL(16, int(etl::count_leading_ones(uint64_t(0xFFFF000000000000ULL))));
+      // 0xFFFFFFFFFFFFFF00 → 56 leading ones
+      CHECK_EQUAL(56, int(etl::count_leading_ones(uint64_t(0xFFFFFFFFFFFFFF00ULL))));
+      // 0xFFFFFFFFFFFFFFFE → 63 leading ones
+      CHECK_EQUAL(63, int(etl::count_leading_ones(uint64_t(0xFFFFFFFFFFFFFFFEULL))));
+      // 0xFFFFFFFFFFFFFFFF → 64 leading ones
+      CHECK_EQUAL(64, int(etl::count_leading_ones(uint64_t(0xFFFFFFFFFFFFFFFFULL))));
+
+      // Verify against reference for boundary values
+      for (uint64_t i = 0; i < 65; ++i)
+      {
+        uint64_t value = (i == 0) ? 0ULL : (i == 64) ? 0xFFFFFFFFFFFFFFFFULL : ~((1ULL << (64ULL - i)) - 1ULL);
+        CHECK_EQUAL(int(test_leading_ones(value)), int(etl::count_leading_ones(value)));
+      }
+    }
   }
 } // namespace
 

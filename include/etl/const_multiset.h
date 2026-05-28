@@ -33,10 +33,6 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_NOT_USING_CPP11
-  #error NOT SUPPORTED FOR C++03 OR BELOW
-#endif
-
 #include "algorithm.h"
 #include "functional.h"
 #include "nth_type.h"
@@ -44,6 +40,8 @@ SOFTWARE.
 #include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
+
+#if ETL_USING_CPP11
 
 ///\defgroup const_multiset const_multiset
 ///\ingroup containers
@@ -433,13 +431,13 @@ namespace etl
     value_type element_list[Size];
   };
 
-  //*************************************************************************
-  /// Template deduction guides.
-  //*************************************************************************
-#if ETL_USING_CPP17
+    //*************************************************************************
+    /// Template deduction guides.
+    //*************************************************************************
+  #if ETL_USING_CPP17
   template <typename... TElements>
   const_multiset(TElements...) -> const_multiset<etl::nth_type_t<0, TElements...>, sizeof...(TElements)>;
-#endif
+  #endif
 
   //*********************************************************************
   /// Multiset type designed for constexpr.
@@ -488,16 +486,16 @@ namespace etl
     }
   };
 
-  //*************************************************************************
-  /// Template deduction guides.
-  //*************************************************************************
-#if ETL_USING_CPP17
+    //*************************************************************************
+    /// Template deduction guides.
+    //*************************************************************************
+  #if ETL_USING_CPP17
   template <typename TElements, size_t Size>
   const_multiset_ext(const etl::span<TElements, Size>&) -> const_multiset_ext<TElements>;
 
   template <typename TElements, size_t Size>
   const_multiset_ext(const TElements (&)[Size]) -> const_multiset_ext<TElements>;
-#endif
+  #endif
 
   //*************************************************************************
   /// Equality test.
@@ -571,4 +569,5 @@ namespace etl
   }
 } // namespace etl
 
+#endif
 #endif

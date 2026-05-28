@@ -37,6 +37,14 @@ SOFTWARE.
 #include <sstream>
 #include <vector>
 
+// Issue #1391: include <ranges> when available to verify etl::operator|
+// does not conflict with std::ranges::operator|.
+#if ETL_USING_STL && ETL_USING_CPP20 && defined(__has_include)
+  #if __has_include(<ranges>)
+    #include <ranges>
+  #endif
+#endif
+
 #if ETL_USING_CPP17
 
   // C++03 does not support move semantics as used in the ranges library
@@ -149,6 +157,7 @@ namespace std
 
 namespace
 {
+    #include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_ranges)
   {
     //*************************************************************************
@@ -3376,6 +3385,42 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_ranges_keys_view_alias)
+    {
+      std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
+
+      using range_t = etl::ranges::views::all_t<decltype(v)&>;
+      etl::ranges::keys_view<range_t> kv(etl::ranges::views::all(v));
+
+      auto it = kv.begin();
+      CHECK_EQUAL(10, *it);
+      ++it;
+      CHECK_EQUAL(20, *it);
+      ++it;
+      CHECK_EQUAL(30, *it);
+      ++it;
+      CHECK(it == kv.end());
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_values_view_alias)
+    {
+      std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
+
+      using range_t = etl::ranges::views::all_t<decltype(v)&>;
+      etl::ranges::values_view<range_t> vv(etl::ranges::views::all(v));
+
+      auto it = vv.begin();
+      CHECK_CLOSE(1.1, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(2.2, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(3.3, *it, 0.001);
+      ++it;
+      CHECK(it == vv.end());
+    }
+
+    //*************************************************************************
     TEST(test_ranges_views_keys)
     {
       std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
@@ -5732,6 +5777,7 @@ namespace
       CHECK_EQUAL(30, v_out[2]);
     }
   }
+    #include "etl/private/diagnostic_pop.h"
 } // namespace
 
   #endif

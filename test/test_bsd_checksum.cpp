@@ -50,7 +50,7 @@ namespace
 
       for (size_t i = 0UL; i < sizeof(value_type); ++i)
       {
-        uint8_t byte = static_cast<uint8_t>((static_cast<unsigned char>(value) >> (i * 8UL)) & 0xFFU);
+        uint8_t byte = static_cast<uint8_t>((static_cast<unsigned int>(value) >> (i * 8U)) & 0xFFU);
         checksum     = etl::rotate_right(checksum) + byte;
       }
     }
