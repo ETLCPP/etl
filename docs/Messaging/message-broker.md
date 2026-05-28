@@ -1,5 +1,6 @@
 ---
 title: "message_broker"
+weight: 6
 ---
 
 {{< callout type="info">}}

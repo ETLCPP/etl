@@ -11,8 +11,8 @@ If `A` & `B` are vectors, the dot product is `|A||B|cos(θ)`, where `θ` is the 
 `|A|` is the length of the vector `A`.  
 `|B|` is the length of the vector `B`.  
 
-Therefore, we can calculate `Cos(θ) = (A ⋅ B)/(|A||B|)`.  
-A dot product of `0` indicates two perpendicular lines, and that the dot product is greatest when the lines are parallel.
+Therefore, we can calculate `cos(θ) = (A ⋅ B)/(|A||B|)`.  
+A dot product of `0` indicates two perpendicular lines, and the dot product is greatest when the lines are parallel.
 
 ## Cross Product
 
@@ -20,3 +20,4 @@ The cross product of vectors `(x1, y1)` and `(x2, y2)` is `x1 * y2 - y1 * x2`
 If `A` & `B` are vectors, the cross product is `|A||B|sin(θ)`.  
 `|θ|` is the angle between the two vectors, but `θ` can be positive or negative.
 
+Therefore, we can calculate `sin(θ) = (A x B)/(|A||B|)`.  

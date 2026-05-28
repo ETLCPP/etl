@@ -1,5 +1,6 @@
 ---
 title: "shared_message"
+weight: 2
 ---
 
 {{< callout type="info">}}

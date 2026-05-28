@@ -1,5 +1,6 @@
 ---
 title: "message_bus"
+weight: 5
 ---
 
 {{< callout type="info">}}

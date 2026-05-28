@@ -1,5 +1,6 @@
 ---
 title: message_router
+weight: 3
 ---
 
 A class that will automatically route incoming messages to specific handlers based on the message types declared in the template parameter list. Messages are passed to the receive member function which will static cast it to its real type and call the matching on_receive function in the derived class. A compilation error will occur if the matching on_receive does not exist.  
@@ -15,7 +16,6 @@ etl::null_message_router
 
 Note: This C++03 portion of this header is a generated from `message_router_generator.h`. To handle more than the standard 16 message types then a new one must be generated.  
 See [Generators](./generators-tutorial)
-
 
 ## Message router ID
 Allowable router IDs run from `0` to `MAX_MESSAGE_ROUTER` (`249`) inclusive.  

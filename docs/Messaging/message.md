@@ -1,5 +1,6 @@
 ---
-title: "Messages"
+title: "message"
+weight: 1
 ---
 
 {{< callout type="info">}}

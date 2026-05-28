@@ -1,5 +1,6 @@
 ---
 title: "message_router_registry"
+weight: 4
 ---
 
 {{< callout type="info">}}
