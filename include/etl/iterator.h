@@ -502,7 +502,10 @@ namespace etl
     typedef TIterator                                              pointer;
     typedef value_type&&                                           reference;
 
-    ETL_CONSTEXPR move_iterator() {}
+    ETL_CONSTEXPR move_iterator()
+      : current()
+    {
+    }
 
     ETL_CONSTEXPR explicit move_iterator(TIterator itr)
       : current(itr)
