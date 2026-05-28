@@ -80,7 +80,8 @@ Can be initialised like a C array.
 
 ```cpp
 etl::array<int, 10> data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
----
+```
+
 ### Access
 
 ```cpp

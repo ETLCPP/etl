@@ -11,5 +11,5 @@ hugo server --disableFastRender
 ## Generate hugo for remote host
 ```bash
 hugo --cleanDestinationDir 
-hugo --baseURL "https://www.your-web-site.com"`
+hugo --baseURL "https://www.your-web-site.com"
 ```

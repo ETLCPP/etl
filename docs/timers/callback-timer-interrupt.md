@@ -83,7 +83,6 @@ Enables or disables the timer manager according to the state.
 bool is_running() const
 ```
 **Description**  
-```cpp
 Returns `true` if the timer manager is enabled.
 
 ---

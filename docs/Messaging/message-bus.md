@@ -201,7 +201,7 @@ bus1.receive(ROUTER_ID_1, messageA);
 
 // Address messageA to routers with id ROUTER_ID_3.
 bus1.receive(ROUTER_ID_3, messageA);
-```
+
 // The call order will be...
 // routerD
 ```

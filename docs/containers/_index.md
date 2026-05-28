@@ -20,7 +20,7 @@ There are intrusive versions of certain containers. These do not store copies of
 Most intrusive containers do not have a maximum fixed capacity.  
 See here for more information.  
 
-To eliminate code bloat, most container templates utilise 'hoisting' where functionality, independent of the sizeand/or type, is separated out in to base classes.  
+To eliminate code bloat, most container templates utilise 'hoisting' where functionality, independent of the size and/or type, is separated out in to base classes.
 
 For example, `vector<int, 5>` and `vector<int, 10>` will share code from `ivector<int>`.  
 `vector<int, 5>`, `vector<float, 7>` and `vector<int, 10>` will all share code from `vector_base`.  

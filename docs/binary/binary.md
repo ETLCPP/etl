@@ -98,7 +98,7 @@ Reverse the order of the bytes in a value.
 
 ```cpp
 template <typename T>
-ETL_CONSTEXPR T reverse_bytes(T value)
+ETL_CONSTEXPR14 T reverse_bytes(T value)
 ```
 
 ## gray_to_binary
@@ -118,15 +118,15 @@ Converts a binary value to the gray code equivalent.
 ## count_bits
 ```cpp
 template <typename T>
-ETL_CONSTEXPR14 T count_bits(T value)
+ETL_CONSTEXPR14 uint_least8_t count_bits(T value)
 ```
 **Return**  
-`1` if the parity of the value is odd, `0` if it is even.
+The number of set bits in `value`.
 
 ## parity
 ```cpp
 template <typename T>
-ETL_CONSTEXPR14 T parity(T value)
+ETL_CONSTEXPR14 uint_least8_t parity(T value)
 ```
 **Return**  
 `1` if the parity of the value is odd, `0` if it is even.
@@ -161,7 +161,7 @@ uint32_t result = etl::fold_bits<uint32_t, 20>(0xE8C9AACCBC3D9A8F);
 Sign extends a binary number.  
 
 ```cpp
-template <typename TReturn, const size_t NBits, typename TValue>
+template <typename TReturn, size_t NBits, typename TValue>
 ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
 ```
 **Description**  
@@ -169,7 +169,7 @@ Converts an N bit binary number, where bit N-1 is the sign bit, to a signed inte
 
 ---
 ```cpp
-template <typename TReturn, const size_t NBits, const size_t Shift, typename TValue>
+template <typename TReturn, size_t NBits, size_t Shift, typename TValue>
 ETL_CONSTEXPR14 TReturn sign_extend(TValue value)
 ```
 **Description**  
@@ -196,7 +196,7 @@ Converts an N bit binary number, where bit N-1 is the sign bit, and shift is the
 ## count_leading_zeros
 ```cpp
 template <typename T>
-ETL_CONSTEXPR14 T count_leading_zeros(T value)
+ETL_CONSTEXPR14 uint_least8_t count_leading_zeros(T value)
 ```
 **Description**  
 Counts the number of leading zeros in a binary number
@@ -204,7 +204,7 @@ Counts the number of leading zeros in a binary number
 ## count_trailing_zeros
 ```cpp
 template <typename T>
-ETL_CONSTEXPR14 T count_trailing_zeros(T value)
+ETL_CONSTEXPR14 uint_least8_t count_trailing_zeros(T value)
 ```
 **Description**  
 Counts the number of trailing zeros in a binary number
@@ -212,7 +212,7 @@ Counts the number of trailing zeros in a binary number
 ## count_leading_ones
 ```cpp
 template <typename T>
-ETL_CONSTEXPR14 T count_leading_ones(T value)
+ETL_CONSTEXPR14 uint_least8_t count_leading_ones(T value)
 ```
 **Description**  
 Counts the number of leading ones in a binary number
@@ -220,7 +220,7 @@ Counts the number of leading ones in a binary number
 ## count_trailing_ones
 ```cpp
 template <typename T>
-ETL_CONSTEXPR14 T count_trailing_ones(T value)
+ETL_CONSTEXPR14 uint_least8_t count_trailing_ones(T value)
 ```
 **Description**  
 Counts the number of trailing ones in a binary number
@@ -233,7 +233,7 @@ ETL_CONSTEXPR14 uint_least8_t first_set_bit_position(T value)
 **Description**  
 Finds the index of the first set bit from lsb.
 
-## first_clear_position
+## first_clear_bit_position
 ```cpp
 template <typename T>
 ETL_CONSTEXPR14 uint_least8_t first_clear_bit_position(T value)
@@ -265,8 +265,8 @@ etl::binary_fill<uint32_t>(uint8_t(0x12));
 ---
 
 ```cpp
-template <typename TResult, typename TValue, TValue N>
-ETL_CONSTEXPR TResult binary_fill(TValue value)
+template <typename TResult, typename TValue, TValue Value>
+ETL_CONSTEXPR TResult binary_fill()
 ```
 *Partial compile time*  
 
@@ -278,7 +278,7 @@ etl::binary_fill<uint32_t, uint8_t, 0x12>();
 ## has_zero_byte
 ```cpp
 template <typename TValue>
-ETL_CONSTEXPR14 bool has_zero_byte(const TValue value)
+ETL_CONSTEXPR14 bool has_zero_byte(TValue value)
 ```
 *Run time*  
 Checks to see if a value contains a byte of value zero.
@@ -286,6 +286,15 @@ Checks to see if a value contains a byte of value zero.
 **Example**  
 `etl::has_zero_byte(uint32_t(0x01234567)) == false`  
 `etl::has_zero_byte(uint32_t(0x01230067)) == true`
+
+---
+
+```cpp
+template <typename TValue, TValue Value>
+ETL_CONSTEXPR14 bool has_zero_byte()
+```
+Checks to see if `Value` contains a byte of value zero.
+*Compile time value*
 
 ## has_byte_n
 Checks to see if a value contains a byte of a particular value.
@@ -304,7 +313,7 @@ etl::has_byte_n(uint32_t(0x01234567), 0x45) == true
 ---
 
 ```cpp
-template <typename TValue, TValue N>
+template <typename TValue, TValue Value>
 ETL_CONSTEXPR14 bool has_byte_n(TValue value)
 ```
 *Partial compile time*  
@@ -352,11 +361,8 @@ Interleaves two values such that bits abcd and efgh will result in eafbgchd.
 
 ```cpp
 ETL_CONSTEXPR14 uint16_t binary_interleave(uint8_t  first, uint8_t  second);
-ETL_CONSTEXPR14 int16_t  binary_interleave(int8_t   first, int8_t   second);
 ETL_CONSTEXPR14 uint32_t binary_interleave(uint16_t first, uint16_t second);
-ETL_CONSTEXPR14 int32_t  binary_interleave(int16_t  first, int16_t  second);
 ETL_CONSTEXPR14 uint64_t binary_interleave(uint32_t first, uint32_t second);
-ETL_CONSTEXPR14 int64_t  binary_interleave(int32_t  first, int32_t  second);
 ```
 
 ## Odd / Even
@@ -369,7 +375,7 @@ ETL_CONSTEXPR bool is_odd(T value)
 
 ```cpp
 template <typename T>
-ETL_CONSTEXPR bool is_even(T value);
+ETL_CONSTEXPR bool is_even(T value)
 ```
 
 ## Constants
@@ -473,7 +479,7 @@ From: `20.38.11`
 ---
 
 ```cpp
-ETL_CONTEXPR 
+ETL_CONSTEXPR
 binary_not()
 ```
 **Description**  
@@ -482,9 +488,9 @@ Default constructor.
 ---
 
 ```cpp
-ETL_CONTEXPR 
+ETL_CONSTEXPR
 ETL_NODISCARD
-T operator(T value)
+T operator()(T value) const ETL_NOEXCEPT
 ```
 **Return**  
 ~value.
@@ -499,8 +505,8 @@ From: `20.38.11`
 ---
 
 ```cpp
-ETL_CONTEXPR 
-binary_and(T and_value)
+ETL_CONSTEXPR
+explicit binary_and(T and_value)
 ```
 **Description**  
 Constructor.  
@@ -508,9 +514,9 @@ Constructor.
 ---
 
 ```cpp
-ETL_CONTEXPR 
+ETL_CONSTEXPR
 ETL_NODISCARD
-T operator(T value)
+T operator()(T value) const ETL_NOEXCEPT
 ```
 **Return**  
 `value & and_value`.
@@ -525,19 +531,19 @@ From: `20.38.11`
 ---
 
 ```cpp
-ETL_CONTEXPR 
-binary_and(T or_value)
+ETL_CONSTEXPR
+explicit binary_or(T or_value)
 ```
 **Description**  
 Constructor.
 
 ---
 
-``cpp
-ETL_CONTEXPR 
+```cpp
+ETL_CONSTEXPR
 ETL_NODISCARD
-T operator(T value)
-``
+T operator()(T value) const ETL_NOEXCEPT
+```
 **Return**  
 `value | or_value`.
 
@@ -551,8 +557,8 @@ From: `20.38.11`
 ---
 
 ```cpp
-ETL_CONTEXPR 
-binary_xor(T xor_value)
+ETL_CONSTEXPR
+explicit binary_xor(T xor_value)
 ```
 **Description**  
 Constructor.
@@ -560,9 +566,9 @@ Constructor.
 ---
 
 ```cpp
-ETL_CONTEXPR 
+ETL_CONSTEXPR
 ETL_NODISCARD
-T operator(T value)
+T operator()(T value) const ETL_NOEXCEPT
 ```
 **Return**  
 value ^ xor_value.

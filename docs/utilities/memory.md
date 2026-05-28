@@ -271,7 +271,7 @@ Destroy the object at `p`.
 In a debug build the pointer is checked for correct alignment. An etl::alignment_error is asserted if incorrect.  
 From: `20.35.12`  
 
-## uninitialzed_fill
+## uninitialized_fill
 Fills uninitialised memory with N values.  
 
 ```cpp

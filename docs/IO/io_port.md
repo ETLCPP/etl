@@ -102,6 +102,7 @@ Write the value.
 ```cpp
 pointer get_address()
 const_pointer get_address() const
+```
 **Description**  
 Gets the address of the port.
 

@@ -100,7 +100,7 @@ Trims all of the characters in up to the first character in `delimiters` from bo
 
 ---
 
-...cpp
+```cpp
 void reverse(etl::istring& s)
 ```
 **Description**  
@@ -328,7 +328,7 @@ If the string is less than `n` characters long then the returned view equal the 
 
 ---
 
-```cppp
+```cpp
 etl::optional<etl::string_view> get_token(const INPUT_TYPE& s, 
                                           const char* delimiters, 
                                           const etl::optional<etl::string_view>& last_view,

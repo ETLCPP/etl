@@ -14,7 +14,7 @@ template <typename TInput>
 class invert : public etl::unary_function<TInput, TInput>
 ```
 
-``TInput```   The input data type.
+`TInput`   The input data type.
 
 ```cpp
 invert() 

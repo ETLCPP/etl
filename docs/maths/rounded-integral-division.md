@@ -141,6 +141,7 @@ template <typename T1, typename T2>
 ETL_CONSTEXPR14
 etl::common_type_t<T1, T2>
 divide_round_half_down(T1 numerator, T2 denominator) ETL_NOEXCEPT
+```
 ```cpp
 .151 / 100 ==  3
 .150 / 100 ==  2

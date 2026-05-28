@@ -13,7 +13,7 @@ A reverse engineered version of C++20's and C++23's `<bit>` header.
 
 ## bit_cast
 ```cpp
-template <typename TDestination, typename TSource>>
+template <typename TDestination, typename TSource>
 ETL_CONSTEXPR14 TDestination bit_cast(const TSource& source) ETL_NOEXCEPT
 ```
 **Description**  
@@ -38,7 +38,7 @@ Checks if `n` is a power of two, or has one bit set.
 ## bit_ceil
 ```cpp
 template <typename T>
-ETL_CONSTEXPR14 T bit_ceil(T n);
+ETL_CONSTEXPR14 T bit_ceil(T n)
 ```
 **Description**  
 Calculates the smallest power of two, that is not smaller than `n`.
@@ -49,7 +49,7 @@ template <typename T>
 ETL_CONSTEXPR14 T bit_floor(T n) ETL_NOEXCEPT
 ```
 **Description**  
-Calculates the smallest power of two, that is not greater than `n`.
+Calculates the largest power of two that is not greater than `n`.
 
 ## bit_width
 ```cpp

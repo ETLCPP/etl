@@ -15,7 +15,7 @@ template <typename T, T MASK = etl::integral_limits<T>::max>
 class flags
 ```
 `T` must be an unsigned integral type.  
-`MASK` is used to exclude unused or undefine bits from operations of the flags. By default, all bits are included.  
+`MASK` is used to exclude unused or undefined bits from operations of the flags. By default, all bits are included.
 
 Most member functions may be chained.  
 ```cpp
@@ -48,7 +48,7 @@ Constructs a flag set with elements set to pattern.
 ## Modifiers
 
 ```cpp
-ETL_CONSTEXPR14 flags<T, MASK>& operator =(flags<T, MASK> other) ETL_NOEXCEPT
+ETL_CONSTEXPR14 flags<T, MASK>& operator=(flags<T, MASK> other) ETL_NOEXCEPT
 ```
 **Description**
 Assigns from another flags object.
@@ -56,7 +56,7 @@ Assigns from another flags object.
 ---
 
 ```cpp
-ETL_CONSTEXPR14 flags<T, MASK>& operator =(value_type pattern) ETL_NOEXCEPT
+ETL_CONSTEXPR14 flags<T, MASK>& operator=(value_type pattern) ETL_NOEXCEPT
 ```
 **Description**
 Assigns from a bit pattern.

@@ -412,6 +412,8 @@ etl::hash<etl::wstring_view>
 etl::hash<etl::u8string_view>
 etl::hash<etl::u16string_view>
 etl::hash<etl::u32string_view>
+```
+
 ---
 
 **Example**  

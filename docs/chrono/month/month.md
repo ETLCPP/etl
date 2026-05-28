@@ -231,6 +231,7 @@ Subtract `etl::chrono::month` from `etl::chrono::months`.
 ETL_CONSTEXPR14 
 etl::chrono::months operator -(const etl::chrono::month& m1, 
                                const etl::chrono::month& m2) ETL_NOEXCEPT
+```
 **Description**  
 Subtract `etl::chrono::month` from `etl::chrono::month`.
 **Return**  

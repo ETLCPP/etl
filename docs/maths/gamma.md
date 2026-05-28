@@ -31,7 +31,7 @@ Constructor.
 ```cpp
 TInput operator()(TInput value) const
 ```
-**Description**  
+**Description**
 Gamma a value.
 
 ---

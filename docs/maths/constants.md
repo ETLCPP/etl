@@ -36,7 +36,7 @@ C++17 and above
 ```cpp
 template <size_t N>
 inline constexpr size_t log2_v = log2<N>::value;
-``
+```
 
 ## log10
 ```cpp
