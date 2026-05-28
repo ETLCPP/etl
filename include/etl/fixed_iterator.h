@@ -263,7 +263,7 @@ namespace etl
   /// Inequality operator. iterator == fixed_iterator.
   //*****************************************************************************
   template <typename TIterator>
-  ETL_CONSTEXPR bool operator!=(TIterator& lhs, const etl::fixed_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator!=(TIterator lhs, const etl::fixed_iterator<TIterator>& rhs)
   {
     return !(lhs == rhs);
   }
