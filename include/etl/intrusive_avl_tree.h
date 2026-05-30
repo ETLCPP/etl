@@ -72,7 +72,7 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Already exception for the intrusive_avl_tree.
+  /// Already-linked exception for the intrusive_avl_tree.
   ///\ingroup intrusive_avl_tree
   //***************************************************************************
   class intrusive_avl_tree_value_is_already_linked : public intrusive_avl_tree_exception
@@ -111,7 +111,7 @@ namespace etl
     ///
     /// Almost nothing is exposed from this type as public (or even protected) API -
     /// this is done deliberately and by design, so that:
-    /// - impose as minimal as possible of "intrusive"-ness when you inherit your nodes from this base.
+    /// - impose as little "intrusive"-ness as possible when you inherit your nodes from this base.
     /// - don't worry about possible name conflicts
     /// - hide implementation details
     struct link_type : private etl::tree_link<ID_>
@@ -153,7 +153,7 @@ namespace etl
       /// - O(log(N)) if `this` item is already linked to a tree, and so
       ///   the item has to be erased from the tree (with rebalancing).
       /// - O(1) if `this` item is not linked to any tree.
-      /// Might rotate original tree of `this` item as necessary
+      /// Might rotate the original tree of `this` item as necessary
       /// to keep the tree balanced after erasing the item.
       /// After assignment `this` item will replace `other` item
       /// in the same tree position as the `other` was, so no tree balancing is needed.
@@ -183,12 +183,12 @@ namespace etl
       /// Destructor of a tree link.
       /// Complexity: O(log(N)).
       /// Might rotate the tree as necessary to keep it balanced.
-      /// NB! The tree itself is not real owner (of memory) of its nodes (and their inherited links).
-      /// The real owner (aka the user) of a node could destruct it as he/she wishes,
-      /// with or without prior explicit erasing it from its tree. So, if the node link happens
+      /// NB! The tree itself is not the real owner (of memory) of its nodes (and their inherited links).
+      /// The real owner (aka the user) of a node could destroy it as he/she wishes,
+      /// with or without prior explicit erasure from its tree. So, if the node link happens
       /// to be still linked to a tree during its destruction, then we have to unlink it -
-      /// otherwise node's parent and its former children will keep dangling pointers to the node,
-      /// which will essentially break the tree consistency, and leading to UB.
+      /// otherwise the node's parent and its former children will keep dangling pointers to the node,
+      /// which will essentially break the tree consistency and lead to UB.
       //***************************************************************************
       ~link_type()
       {
@@ -204,8 +204,8 @@ namespace etl
 
       union
       {
-        int_fast8_t etl_bf;   ///< Stores -1, 0 or +1 balancing factor in the real nodes.
-        size_t      etl_size; ///< Stores total number on items in the tree (origin node only).
+        int_fast8_t etl_bf;   ///< Stores -1, 0, or +1 balancing factor in the real nodes.
+        size_t      etl_size; ///< Stores total number of items in the tree (origin node only).
       };
 
 #if ETL_USING_CPP11
@@ -427,7 +427,7 @@ namespace etl
     /// Complexity: O(N).
     /// Operation invalidates all existing iterators.
     ///
-    /// Note that the same "clear all" effect could be achieved by using `erase`
+    /// Note that the same "clear all" effect could be achieved by using the `erase`
     /// method for each item, but b/c of intermediate tree rebalancing
     /// complexity will be higher - O(N*log(N)).
     //*************************************************************************
@@ -451,9 +451,9 @@ namespace etl
 #endif
 
       // No need to balance b/c everything will be unlinked.
-      // Note that "post order" visitation is important -
+      // Note that "post-order" visitation is important -
       // it ensures that once a link is passed to the "visitor" functor,
-      // traversal won't use pointer to this link anymore,
+      // traversal won't use a pointer to this link anymore,
       // so we could efficiently clear the link.
       visit_post_order_impl(&origin, false, unlinker);
       origin.set_left(ETL_NULLPTR);
@@ -522,17 +522,17 @@ namespace etl
     //*************************************************************************
     /// Destructor of a tree.
     /// Complexity: O(N).
-    /// All existing nodes will stay alive,
+    /// All existing nodes will stay alive
     /// but will be completely unlinked from the tree (and from each other).
-    /// If you want more control on what happens with still linked tree nodes then
+    /// If you want more control on what happens with still linked tree nodes, then
     /// enumerate and unlink (aka "erase") them first (potentially moving to somewhere else).
-    /// If needed whole content of the tree could be O(1) effectively moved
+    /// If needed, the whole content of the tree could be O(1) effectively moved
     /// to another tree, leaving this tree as empty - use C++11 move constructor of the tree.
     //***************************************************************************
     ~intrusive_avl_tree_base()
     {
       // It's important to clear, so that none of the former (but still alive) items
-      // stay linked to this tree (neither directly at the root item,
+      // stay linked to this tree (neither directly at the root item
       // nor transitively via "parent" links from leaf items up to the origin).
       clear();
     }
@@ -922,7 +922,7 @@ namespace etl
 
     static void erase_impl(link_type* const z_link) ETL_NOEXCEPT
     {
-      // Remove only real and still linked items.
+      // Remove only real and still-linked items.
       // Tree itself uses this `link_type` for its `origin` sentinel item,
       // but you can't (and there is no need to) erase it.
       if ((ETL_NULLPTR == z_link) || z_link->is_origin() || !z_link->is_linked())
@@ -978,10 +978,10 @@ namespace etl
 
   private:
 
-    /// This is the origin link which left child points to the root link (if any) of the tree.
-    /// This link instance is internal one, and it's almost never exposed to the public
+    /// This is the origin link whose left child points to the root link (if any) of the tree.
+    /// This link instance is an internal implementation detail, and it's almost never exposed to the public
     /// API of the tree - the only exception is its natural usage for the "end" terminal iterator.
-    /// So, the end iterator contains address of this sentinel node (rather than not null pointer).
+    /// So, the end iterator contains the address of this sentinel node (rather than a non-null pointer).
     link_type origin;
 
 #if ETL_USING_CPP11
@@ -1002,7 +1002,7 @@ namespace etl
       {
       }
 
-      /// Adopts binary comparator to "unary" one.
+      /// Adapts binary comparator to a "unary" one.
       ETL_NODISCARD
       int operator()(const TValue& other) const
       {
@@ -1063,7 +1063,7 @@ namespace etl
   /// \ingroup intrusive_avl_tree
   /// An intrusive AVL tree. Stores elements derived from 'intrusive_avl_tree<ID>::link_type'.
   ///
-  /// NB! The tree itself is not real owner (of memory) of its nodes.
+  /// NB! The tree itself is not the real owner (of memory) of its nodes.
   /// The node `TValue` type contains all the necessary means (via required inheritance from `link_type`)
   /// to be able to participate in the tree as a "linked" node - hence the "intrusive" term.
   ///
@@ -1102,11 +1102,11 @@ namespace etl
     /// - see default constructor;
     /// - special cases of `find_or_insert`;
     /// - advanced traversal methods, like `get_parent` and `get_child`.
-    /// Both "end" and "valueless" conditions could be easy isolated using `has_value` or `bool operator`:
+    /// Both "end" and "valueless" conditions could be easily isolated using `has_value` or `bool operator`:
     /// - `has_value() == true` - iterator references a real node
     /// - `it == end()` - terminal sentinel
     /// - `!has_value() && it != end()` - valueless iterator
-    /// The real item (refenced by the iterator) could be modified by the user,
+    /// The real item (referenced by the iterator) could be modified by the user,
     /// but so that it doesn't affect current ordering of the tree.
     //*************************************************************************
     class iterator : public etl::iterator<ETL_OR_STD::bidirectional_iterator_tag, value_type>
@@ -1280,7 +1280,7 @@ namespace etl
     /// Iterator could also be in "valueless" state:
     /// - see default constructor;
     /// - advanced traversal methods, like `get_parent` and `get_child`.
-    /// Both "end" and "valueless" conditions could be easy isolated using `has_value` or `bool operator`:
+    /// Both "end" and "valueless" conditions could be easily isolated using `has_value` or `bool operator`:
     /// - `has_value() == true` - iterator references a real node
     /// - `it == end()` - terminal sentinel
     /// - `!has_value() && it != end()` - valueless iterator
@@ -1462,8 +1462,8 @@ namespace etl
     //*************************************************************************
     /// Constructor from range of items.
     /// Complexity: O(N*log(N)).
-    /// NB! All items in the range must be in "unlinked" state initially, otherwise "already linked" exception.
-    /// On success, all inserted items (except possible duplicated, see below comparator description) will be linked.
+    /// NB! All items in the range must be in the "unlinked" state initially; otherwise the "already linked" exception is thrown.
+    /// On success, all inserted items (except possible duplicates; see the comparator description below) will be linked.
     ///
     /// The binary comparator should accept two `const value_type&` arguments (aka `lhs` and `rhs`),
     /// and return integer result (aka `lhs - rhs` "subtraction" result):
@@ -1787,7 +1787,7 @@ namespace etl
     /// Returns iterator to the next tree node (after the erased one).
     /// If asserts or exceptions are enabled, throws etl::intrusive_avl_tree_iterator_exception
     ///   if iterator doesn't reference a real item.
-    /// Hint: use `clear` method if you need erase all items - no tree rebalancing will be involved.
+    /// Hint: use `clear` method if you need to erase all items - no tree rebalancing will be involved.
     //*************************************************************************
     iterator erase(iterator position)
     {
@@ -1815,7 +1815,7 @@ namespace etl
     /// Returns iterator to the next tree node (after the erased one).
     /// If asserts or exceptions are enabled, throws etl::intrusive_avl_tree_iterator_exception
     ///   if iterator doesn't reference a real item.
-    /// Hint: use `clear` method if you need erase all items - no tree rebalancing will be involved.
+    /// Hint: use `clear` method if you need to erase all items - no tree rebalancing will be involved.
     //*************************************************************************
     iterator erase(const_iterator position)
     {
