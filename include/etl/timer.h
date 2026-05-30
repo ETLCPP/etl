@@ -44,7 +44,7 @@ namespace etl
   typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
 #else
   #if ETL_HAS_ATOMIC
-    typedef etl::atomic_uint32_t timer_semaphore_t;
+  typedef etl::atomic_uint32_t timer_semaphore_t;
   #endif
 #endif
 
@@ -116,6 +116,6 @@ namespace etl
       typedef uint32_t type;
     };
   };
-}
+} // namespace etl
 
 #endif

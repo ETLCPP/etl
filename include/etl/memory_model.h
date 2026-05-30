@@ -32,18 +32,18 @@ SOFTWARE.
 #define ETL_MEMORY_MODEL_INCLUDED
 
 #include "platform.h"
-#include "user_type.h"
 #include "type_lookup.h"
+#include "user_type.h"
 
 #include <stdint.h>
 
 namespace etl
 {
   ETL_DECLARE_USER_TYPE(memory_model, int)
-  ETL_USER_TYPE(MEMORY_MODEL_SMALL,  0)
+  ETL_USER_TYPE(MEMORY_MODEL_SMALL, 0)
   ETL_USER_TYPE(MEMORY_MODEL_MEDIUM, 1)
-  ETL_USER_TYPE(MEMORY_MODEL_LARGE,  2)
-  ETL_USER_TYPE(MEMORY_MODEL_HUGE,   3)
+  ETL_USER_TYPE(MEMORY_MODEL_LARGE, 2)
+  ETL_USER_TYPE(MEMORY_MODEL_HUGE, 3)
   ETL_END_USER_TYPE(memory_model)
 
   template <size_t MEMORY_MODEL>
@@ -72,7 +72,6 @@ namespace etl
   {
     typedef uint_least64_t type;
   };
-}
+} // namespace etl
 
 #endif
-

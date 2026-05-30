@@ -43,7 +43,7 @@ namespace etl
   template <size_t Table_Size>
   using crc16_opensafety_a_t = etl::crc_type<etl::private_crc::crc16_opensafety_a_parameters, Table_Size>;
 #else
-  template <size_t Table_Size>    
+  template <size_t Table_Size>
   class crc16_opensafety_a_t : public etl::crc_type<etl::private_crc::crc16_opensafety_a_parameters, Table_Size>
   {
   public:
@@ -61,7 +61,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     crc16_opensafety_a_t(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -74,5 +74,5 @@ namespace etl
   typedef etl::crc16_opensafety_a_t<16U>  crc16_opensafety_a_t16;
   typedef etl::crc16_opensafety_a_t<4U>   crc16_opensafety_a_t4;
   typedef crc16_opensafety_a_t256         crc16_opensafety_a;
-}
+} // namespace etl
 #endif

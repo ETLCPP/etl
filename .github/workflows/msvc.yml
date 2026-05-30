@@ -3,7 +3,7 @@ on:
   push:
     branches: [ master, development, pull-request/* ]
   pull_request:
-    branches: [ master, pull-request/* ]
+    branches: [ master, development, pull-request/* ]
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -22,12 +22,12 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=17 ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
         
     - name: Run tests
-      run: test/Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe -v
 
   build-windows-msvc-no-stl:
     name: Windows - No STL
@@ -48,7 +48,7 @@ jobs:
         MSBuild.exe .\etl.sln
         
     - name: Run tests
-      run: test/Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe -v
 
   build-windows-msvc-stl-force-cpp03:
     name: Windows - STL - Force C++03
@@ -70,7 +70,7 @@ jobs:
         MSBuild.exe .\etl.sln
 
     - name: Run tests
-      run: test/Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe -v
         
   build-windows-msvc-no-stl-force-cpp03:
     name: Windows - No STL - Force C++03
@@ -92,5 +92,5 @@ jobs:
         MSBuild.exe .\etl.sln
 
     - name: Run tests
-      run: test/Debug/etl_tests.exe
+      run: test/Debug/etl_tests.exe -v
 

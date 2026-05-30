@@ -35,11 +35,9 @@ namespace
   //*******************************************************
   struct SuccessorBase : etl::successor<SuccessorBase>
   {
-    SuccessorBase()
-    {
-    }
+    SuccessorBase() {}
 
-    SuccessorBase(SuccessorBase& successors...)
+    SuccessorBase(SuccessorBase& successors, ...)
       : successor(successors)
     {
     }
@@ -55,7 +53,7 @@ namespace
     {
     }
 
-    SuccessorSameBase1(SuccessorBase& successors...)
+    SuccessorSameBase1(SuccessorBase& successors, ...)
       : SuccessorBase(successors)
       , value(0)
     {
@@ -391,7 +389,7 @@ namespace
       CHECK(successor4.has_successor());
       CHECK(!successor5.has_successor());
     }
-    
+
     //*************************************************************************
     TEST(test_clear_successor_chain)
     {
@@ -511,5 +509,4 @@ namespace
       CHECK(processor1b.Process() == true);
     }
   }
-}
-
+} // namespace

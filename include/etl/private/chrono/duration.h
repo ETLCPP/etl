@@ -32,9 +32,9 @@ SOFTWARE.
   #error DO NOT DIRECTLY INCLUDE THIS FILE. USE CHRONO.H
 #endif
 
+#include "../../limits.h"
 #include "../../ratio.h"
 #include "../../static_assert.h"
-#include "../../limits.h"
 #include "../../type_traits.h"
 
 #include <string.h>
@@ -47,24 +47,24 @@ namespace etl
     {
       // Helper to find the greatest common divisor
       template <intmax_t Value1, intmax_t Value2>
-      struct gcd 
+      struct gcd
       {
         static ETL_CONSTANT intmax_t value = gcd<Value2, Value1 % Value2>::value;
       };
 
       template <intmax_t Value1>
-      struct gcd<Value1, 0> 
+      struct gcd<Value1, 0>
       {
         static ETL_CONSTANT intmax_t value = Value1;
       };
 
       // Helper to find the least common multiple
       template <intmax_t Value1, intmax_t Value2>
-      struct lcm 
+      struct lcm
       {
         static ETL_CONSTANT intmax_t value = (Value1 / gcd<Value1, Value2>::value) * Value2;
       };
-    }
+    } // namespace private_chrono
 
     //***********************************************************************
     /// duration_values
@@ -109,7 +109,7 @@ namespace etl
     public:
 
       using rep    = TRep;
-      using period =  typename TPeriod::type;
+      using period = typename TPeriod::type;
 
       //***********************************************************************
       ETL_CONSTEXPR duration() ETL_NOEXCEPT
@@ -131,16 +131,16 @@ namespace etl
       }
 
       //***********************************************************************
-      template <typename TRep2, typename TPeriod2, typename etl::enable_if<etl::ratio_divide<TPeriod2, TPeriod>::den == 1, int>::type = 0>
+      template < typename TRep2, typename TPeriod2, typename etl::enable_if<etl::ratio_divide<TPeriod2, TPeriod>::den == 1, int>::type = 0>
       ETL_CONSTEXPR14 duration(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
         : value(etl::chrono::duration_cast<etl::chrono::duration<TRep, TPeriod> >(other).count())
       {
-        ETL_STATIC_ASSERT(!(etl::is_integral<TRep>::value && etl::is_floating_point<TRep2>::value), "Cannot convert duration from floating point to integral");
+        ETL_STATIC_ASSERT(!(etl::is_integral<TRep>::value && etl::is_floating_point<TRep2>::value),
+                          "Cannot convert duration from floating point to integral");
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 
-      etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> operator=(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
       {
         value = other.count();
 
@@ -149,8 +149,7 @@ namespace etl
 
       //***********************************************************************
       template <typename TRep2, typename TPeriod2>
-      ETL_CONSTEXPR14 
-      etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> operator=(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
       {
         value = etl::chrono::duration_cast<etl::chrono::duration<TRep, TPeriod> >(other).count();
 
@@ -164,47 +163,46 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 etl::common_type_t<duration> operator +() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::common_type_t<duration> operator+() const ETL_NOEXCEPT
       {
         return etl::common_type_t<duration>(*this);
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 etl::common_type_t<duration> operator -() const ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::common_type_t<duration> operator-() const ETL_NOEXCEPT
       {
         return etl::common_type_t<duration>(-value);
       }
 
       //***********************************************************************
       ETL_NODISCARD
-      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> zero()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> zero() ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::zero());
       }
 
       //***********************************************************************
       ETL_NODISCARD
-      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> min()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> min() ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::min());
       }
 
       //***********************************************************************
       ETL_NODISCARD
-      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> max()  ETL_NOEXCEPT
+      static ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> max() ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(etl::chrono::duration_values<TRep>::max());
       }
 
       //***********************************************************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> absolute() const ETL_NOEXCEPT
+      ETL_NODISCARD ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> absolute() const ETL_NOEXCEPT
       {
         return etl::chrono::duration<TRep, TPeriod>(value < 0 ? -value : value);
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration& operator ++() ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator++() ETL_NOEXCEPT
       {
         ++value;
 
@@ -212,16 +210,16 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration operator ++(int) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration operator++(int) ETL_NOEXCEPT
       {
-        duration temp(*this);      
+        duration temp(*this);
         ++value;
 
         return temp;
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration& operator --() ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator--() ETL_NOEXCEPT
       {
         --value;
 
@@ -229,7 +227,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration operator --(int) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration operator--(int) ETL_NOEXCEPT
       {
         duration temp(*this);
         --value;
@@ -238,7 +236,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration& operator +=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator+=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
       {
         value += d.count();
 
@@ -246,7 +244,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration& operator -=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator-=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
       {
         value -= d.count();
 
@@ -254,7 +252,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration& operator *=(const TRep& r) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator*=(const TRep& r) ETL_NOEXCEPT
       {
         value *= r;
 
@@ -262,7 +260,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration& operator /=(const TRep& r) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator/=(const TRep& r) ETL_NOEXCEPT
       {
         value /= r;
 
@@ -270,7 +268,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration& operator %=(const TRep& r) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator%=(const TRep& r) ETL_NOEXCEPT
       {
         value %= r;
 
@@ -278,7 +276,7 @@ namespace etl
       }
 
       //***********************************************************************
-      ETL_CONSTEXPR14 duration& operator %=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 duration& operator%=(const duration<TRep, TPeriod>& d) ETL_NOEXCEPT
       {
         value %= d.count();
 
@@ -292,16 +290,18 @@ namespace etl
       /// else returns 0
       //***********************************************************************
       template <typename TRep2, typename TPeriod2>
-      ETL_CONSTEXPR14 int compare(const duration<TRep2, TPeriod2>& other) const ETL_NOEXCEPT 
+      ETL_CONSTEXPR14 int compare(const duration<TRep2, TPeriod2>& other) const ETL_NOEXCEPT
       {
         // Determine the common type of the two durations.
-        using common_duration = typename etl::common_type<etl::chrono::duration<TRep, TPeriod>, etl::chrono::duration<TRep2, TPeriod2>>::type;
+        using common_duration = typename etl::common_type< etl::chrono::duration<TRep, TPeriod>, etl::chrono::duration<TRep2, TPeriod2>>::type;
 
         common_duration lhs_converted = etl::chrono::duration_cast<common_duration>(*this);
         common_duration rhs_converted = etl::chrono::duration_cast<common_duration>(other);
 
-        if (lhs_converted.count() < rhs_converted.count()) return -1;
-        if (lhs_converted.count() > rhs_converted.count()) return 1;
+        if (lhs_converted.count() < rhs_converted.count())
+          return -1;
+        if (lhs_converted.count() > rhs_converted.count())
+          return 1;
 
         return 0;
       }
@@ -315,13 +315,17 @@ namespace etl
     /// Duration types
     //***********************************************************************
 #if (ETL_USING_64BIT_TYPES)
+  #if (INT_MAX >= INT32_MAX)
     using nanoseconds  = etl::chrono::duration<int64_t, etl::nano>;
     using microseconds = etl::chrono::duration<int64_t, etl::micro>;
+  #endif
     using milliseconds = etl::chrono::duration<int64_t, etl::milli>;
     using seconds      = etl::chrono::duration<int64_t, etl::ratio<1U>>;
 #else
+  #if (INT_MAX >= INT32_MAX)
     using nanoseconds  = etl::chrono::duration<int32_t, etl::nano>;
     using microseconds = etl::chrono::duration<int32_t, etl::micro>;
+  #endif
     using milliseconds = etl::chrono::duration<int32_t, etl::milli>;
     using seconds      = etl::chrono::duration<int32_t, etl::ratio<1U>>;
 #endif
@@ -338,8 +342,8 @@ namespace etl
     template <typename TToDuration, typename TRep, typename TPeriod>
     ETL_CONSTEXPR14 TToDuration duration_cast(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
     {
-      using from_rep    = TRep    ;
-      using from_period = TPeriod ;
+      using from_rep    = TRep;
+      using from_period = TPeriod;
 
       using to_rep    = typename TToDuration::rep;
       using to_period = typename TToDuration::period;
@@ -351,15 +355,15 @@ namespace etl
       common_t ct_num   = static_cast<common_t>(ratio_divide_t::type::num);
       common_t ct_den   = static_cast<common_t>(ratio_divide_t::type::den);
 
-      if ETL_IF_CONSTEXPR((from_period::num == to_period::num) && (from_period::den == to_period::den))
+      if ETL_IF_CONSTEXPR ((from_period::num == to_period::num) && (from_period::den == to_period::den))
       {
         return TToDuration(static_cast<to_rep>(d.count()));
       }
-      else if ETL_IF_CONSTEXPR(ratio_divide_t::num == 1)
+      else if ETL_IF_CONSTEXPR (ratio_divide_t::num == 1)
       {
         return TToDuration(static_cast<to_rep>(ct_count / ct_den));
       }
-      else if ETL_IF_CONSTEXPR(ratio_divide_t::den == 1)
+      else if ETL_IF_CONSTEXPR (ratio_divide_t::den == 1)
       {
         return TToDuration(static_cast<to_rep>(ct_count * ct_num));
       }
@@ -368,7 +372,7 @@ namespace etl
         return TToDuration(static_cast<to_rep>((ct_count * ct_num) / ct_den));
       }
     }
-  }
+  } // namespace chrono
 
   //*************************************************************************
   /// Hash function for etl::chrono::duration
@@ -381,10 +385,10 @@ namespace etl
     {
       uint8_t buffer[sizeof(TRep) + sizeof(intmax_t) + sizeof(intmax_t)];
 
-      TRep value = d.count();
-      intmax_t num = TPeriod::num;
-      intmax_t den = TPeriod::den;
-      
+      TRep     value = d.count();
+      intmax_t num   = TPeriod::num;
+      intmax_t den   = TPeriod::den;
+
       memcpy(buffer, &value, sizeof(TRep));
       memcpy(buffer + sizeof(TRep), &num, sizeof(intmax_t));
       memcpy(buffer + sizeof(TRep) + sizeof(intmax_t), &den, sizeof(intmax_t));
@@ -402,9 +406,9 @@ namespace etl
   {
   private:
 
-    using value_type  = typename etl::common_type<TRep1, TRep2>::type ;
-    using period_type = etl::ratio<etl::chrono::private_chrono::gcd<TPeriod1::num, TPeriod2::num>::value,
-                                   etl::chrono::private_chrono::lcm<TPeriod1::den, TPeriod2::den>::value>;
+    using value_type  = typename etl::common_type<TRep1, TRep2>::type;
+    using period_type = etl::ratio< etl::chrono::private_chrono::gcd<TPeriod1::num, TPeriod2::num>::value,
+                                    etl::chrono::private_chrono::lcm<TPeriod1::den, TPeriod2::den>::value>;
 
   public:
 
@@ -415,11 +419,10 @@ namespace etl
   /// Check equality.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator ==(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator==(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     using common_t = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type;
-    
+
     common_t l = etl::chrono::duration_cast<common_t>(lhs);
     common_t r = etl::chrono::duration_cast<common_t>(rhs);
 
@@ -430,8 +433,7 @@ namespace etl
   /// Check inequality.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator !=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator!=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     return !(lhs == rhs);
   }
@@ -440,8 +442,7 @@ namespace etl
   /// Less-than.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator <(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-                                  const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator<(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     using common_t = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type;
 
@@ -455,8 +456,7 @@ namespace etl
   /// Less-than-or-equal.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator <=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator<=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     return !(rhs < lhs);
   }
@@ -465,8 +465,7 @@ namespace etl
   /// Greater-than.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator >(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-                                  const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     return rhs < lhs;
   }
@@ -475,8 +474,7 @@ namespace etl
   /// Greater-than-or-equal.
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 bool operator >=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-                                   const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 bool operator>=(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     return !(lhs < rhs);
   }
@@ -486,8 +484,8 @@ namespace etl
   //***********************************************************************
 #if ETL_USING_CPP20
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  [[nodiscard]] constexpr auto operator <=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-                                            const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  [[nodiscard]]
+  constexpr auto operator<=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     using common_t = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type;
 
@@ -502,9 +500,8 @@ namespace etl
   /// Operator +
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type 
-    operator +(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-               const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type
+    operator+(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     // Determine the common type of the two durations.
     using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
@@ -521,9 +518,8 @@ namespace etl
   /// Operator -
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type 
-    operator -(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-               const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2> >::type
+    operator-(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     // Determine the common type of the two durations.
     using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
@@ -540,10 +536,9 @@ namespace etl
   /// Operator *
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2>
-  ETL_CONSTEXPR14 
-  typename enable_if<!etl::is_specialization<TRep2, etl::chrono::duration>::value, etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>>::type
-    operator *(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-               const TRep2& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename enable_if< !etl::is_specialization<TRep2, etl::chrono::duration>::value,
+                                etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>>::type
+    operator*(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs) ETL_NOEXCEPT
   {
     using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
     using result_duration = etl::chrono::duration<common_rep, TPeriod1>;
@@ -557,8 +552,7 @@ namespace etl
   //***********************************************************************
   template <typename TRep1, typename TRep2, typename TPeriod2>
   ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod2>
-    operator *(const TRep1& lhs, 
-               const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+    operator*(const TRep1& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
     using result_duration = etl::chrono::duration<common_rep, TPeriod2>;
@@ -571,10 +565,9 @@ namespace etl
   /// Operator /
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2>
-  ETL_CONSTEXPR14 
-  typename enable_if<!etl::is_specialization<TRep2, etl::chrono::duration>::value, etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>>::type
-    operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-               const TRep2& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename enable_if< !etl::is_specialization<TRep2, etl::chrono::duration>::value,
+                                etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>>::type
+    operator/(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs) ETL_NOEXCEPT
   {
     using common_rep      = typename etl::common_type<TRep1, TRep2>::type;
     using result_duration = etl::chrono::duration<common_rep, TPeriod1>;
@@ -587,9 +580,8 @@ namespace etl
   /// Operator /
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 typename etl::common_type<TRep1, TRep2>::type
-    operator /(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-               const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::common_type<TRep1, TRep2>::type operator/(const etl::chrono::duration<TRep1, TPeriod1>& lhs,
+                                                                    const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     // Determine the common type of the two durations.
     using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
@@ -604,10 +596,8 @@ namespace etl
   /// Operator %
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2>
-  ETL_CONSTEXPR14 
-  etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>
-    operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-               const TRep2& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 etl::chrono::duration<typename etl::common_type<TRep1, TRep2>::type, TPeriod1>
+    operator%(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const TRep2& rhs) ETL_NOEXCEPT
   {
     using common_rep = typename etl::common_type<TRep1, TRep2>::type;
     using common_dur = etl::chrono::duration<common_rep, TPeriod1>;
@@ -620,10 +610,8 @@ namespace etl
   /// Operator %
   //***********************************************************************
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
-  ETL_CONSTEXPR14 
-  typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type
-    operator %(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
-               const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type
+    operator%(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
   {
     // Determine the common type of the two durations.
     using common_duration = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, etl::chrono::duration<TRep2, TPeriod2>>::type;
@@ -638,9 +626,8 @@ namespace etl
   /// Rounds down a duration to the nearest lower precision.
   //***********************************************************************
   template <typename TToDuration, typename TRep, typename TPeriod>
-  ETL_CONSTEXPR14
-  typename etl::enable_if<etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
-     floor(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
+    floor(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
   {
     TToDuration result = etl::chrono::duration_cast<TToDuration>(d);
 
@@ -656,8 +643,7 @@ namespace etl
   /// Rounds up a duration to the nearest higher precision.
   //***********************************************************************
   template <typename TToDuration, typename TRep, typename TPeriod>
-  ETL_CONSTEXPR14 
-  typename etl::enable_if<etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
     ceil(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
   {
     TToDuration result = etl::chrono::duration_cast<TToDuration>(d);
@@ -675,8 +661,7 @@ namespace etl
   /// If the duration is exactly halfway, it rounds away from zero.
   //***********************************************************************
   template <typename TToDuration, typename TRep, typename TPeriod>
-  ETL_CONSTEXPR14 
-  typename etl::enable_if<etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
+  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
     round(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
   {
     // Convert the input duration to the target duration type
@@ -686,9 +671,7 @@ namespace etl
     auto lower_diff = d - lower;
     auto upper_diff = upper - d;
 
-    if ((lower_diff < upper_diff) || 
-        ((lower_diff == upper_diff) &&
-         etl::is_even(lower.count()))) 
+    if ((lower_diff < upper_diff) || ((lower_diff == upper_diff) && etl::is_even(lower.count())))
     {
       return lower;
     }
@@ -701,12 +684,12 @@ namespace etl
   //***********************************************************************
   /// Returns the absolute value of a duration.
   //***********************************************************************
-  template<class TRep, class TPeriod, typename = etl::enable_if_t<etl::numeric_limits<TRep>::is_signed>>
+  template <class TRep, class TPeriod, typename = etl::enable_if_t<etl::numeric_limits<TRep>::is_signed>>
   ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> abs(etl::chrono::duration<TRep, TPeriod> d) ETL_NOEXCEPT
   {
     return d.count() >= 0 ? +d : -d;
   }
-}
+} // namespace etl
 
 #if ETL_HAS_CHRONO_LITERALS_DURATION
 namespace etl
@@ -718,11 +701,11 @@ namespace etl
       //***********************************************************************
       /// Literal for hours duration
       //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::hours operator ""_hours(unsigned long long h) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::hours operator ""_h(unsigned long long h) ETL_NOEXCEPT
-#endif
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::hours operator""_hours(unsigned long long h) ETL_NOEXCEPT
+  #else
+      inline ETL_CONSTEXPR14 etl::chrono::hours operator""_h(unsigned long long h) ETL_NOEXCEPT
+  #endif
       {
         return etl::chrono::hours(static_cast<etl::chrono::hours::rep>(h));
       }
@@ -730,11 +713,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point hours duration
       //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
       inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<3600>> operator""_hours(long double h) ETL_NOEXCEPT
-#else
+  #else
       inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<3600>> operator""_h(long double h) ETL_NOEXCEPT
-#endif
+  #endif
       {
         return etl::chrono::duration<double, ratio<3600>>(h);
       }
@@ -742,11 +725,11 @@ namespace etl
       //***********************************************************************
       /// Literal for minutes duration
       //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::minutes operator ""_minutes(unsigned long long m) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::minutes operator ""_min(unsigned long long m) ETL_NOEXCEPT
-#endif
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::minutes operator""_minutes(unsigned long long m) ETL_NOEXCEPT
+  #else
+      inline ETL_CONSTEXPR14 etl::chrono::minutes operator""_min(unsigned long long m) ETL_NOEXCEPT
+  #endif
       {
         return etl::chrono::minutes(static_cast<etl::chrono::minutes::rep>(m));
       }
@@ -754,11 +737,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point minutes duration
       //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<60>> operator ""_minutes(long double m) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<60>> operator ""_min(long double m) ETL_NOEXCEPT
-#endif
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<60>> operator""_minutes(long double m) ETL_NOEXCEPT
+  #else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, ratio<60>> operator""_min(long double m) ETL_NOEXCEPT
+  #endif
       {
         return etl::chrono::duration<double, ratio<60>>(m);
       }
@@ -766,11 +749,11 @@ namespace etl
       //***********************************************************************
       /// Literal for seconds duration
       //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::seconds operator ""_seconds(unsigned long long s) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::seconds operator ""_s(unsigned long long s) ETL_NOEXCEPT
-#endif
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::seconds operator""_seconds(unsigned long long s) ETL_NOEXCEPT
+  #else
+      inline ETL_CONSTEXPR14 etl::chrono::seconds operator""_s(unsigned long long s) ETL_NOEXCEPT
+  #endif
       {
         return etl::chrono::seconds(static_cast<etl::chrono::seconds::rep>(s));
       }
@@ -778,11 +761,11 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point seconds duration
       //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double> operator ""_seconds(long double s) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double> operator ""_s(long double s) ETL_NOEXCEPT
-#endif
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double> operator""_seconds(long double s) ETL_NOEXCEPT
+  #else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double> operator""_s(long double s) ETL_NOEXCEPT
+  #endif
       {
         return etl::chrono::duration<double>(s);
       }
@@ -790,11 +773,11 @@ namespace etl
       //***********************************************************************
       /// Literal for milliseconds duration
       //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::milliseconds operator ""_milliseconds(unsigned long long s) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::milliseconds operator ""_ms(unsigned long long s) ETL_NOEXCEPT
-#endif
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::milliseconds operator""_milliseconds(unsigned long long s) ETL_NOEXCEPT
+  #else
+      inline ETL_CONSTEXPR14 etl::chrono::milliseconds operator""_ms(unsigned long long s) ETL_NOEXCEPT
+  #endif
       {
         return etl::chrono::milliseconds(static_cast<etl::chrono::milliseconds::rep>(s));
       }
@@ -802,63 +785,65 @@ namespace etl
       //***********************************************************************
       /// Literal for floating point milliseconds duration
       //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double, milli> operator ""_milliseconds(long double s) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double, milli> operator ""_ms(long double s) ETL_NOEXCEPT
-#endif
+  #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, milli> operator""_milliseconds(long double s) ETL_NOEXCEPT
+  #else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, milli> operator""_ms(long double s) ETL_NOEXCEPT
+  #endif
       {
         return etl::chrono::duration<double, milli>(s);
       }
 
-      //***********************************************************************
-      /// Literal for microseconds duration
-      //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::microseconds operator ""_microseconds(unsigned long long s) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::microseconds operator ""_us(unsigned long long s) ETL_NOEXCEPT
-#endif
+  #if (INT_MAX >= INT32_MAX)
+        //***********************************************************************
+        /// Literal for microseconds duration
+        //***********************************************************************
+    #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::microseconds operator""_microseconds(unsigned long long s) ETL_NOEXCEPT
+    #else
+      inline ETL_CONSTEXPR14 etl::chrono::microseconds operator""_us(unsigned long long s) ETL_NOEXCEPT
+    #endif
       {
         return etl::chrono::microseconds(static_cast<etl::chrono::microseconds::rep>(s));
       }
 
-      //***********************************************************************
-      /// Literal for floating point microseconds duration
-      //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double, micro> operator ""_microseconds(long double s) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double, micro> operator ""_us(long double s) ETL_NOEXCEPT
-#endif
+        //***********************************************************************
+        /// Literal for floating point microseconds duration
+        //***********************************************************************
+    #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, micro> operator""_microseconds(long double s) ETL_NOEXCEPT
+    #else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, micro> operator""_us(long double s) ETL_NOEXCEPT
+    #endif
       {
         return etl::chrono::duration<double, micro>(s);
       }
 
-      //***********************************************************************
-      /// Literal for nanoseconds duration
-      //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::nanoseconds operator ""_nanoseconds(unsigned long long s) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::nanoseconds operator ""_ns(unsigned long long s) ETL_NOEXCEPT
-#endif
+        //***********************************************************************
+        /// Literal for nanoseconds duration
+        //***********************************************************************
+    #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::nanoseconds operator""_nanoseconds(unsigned long long s) ETL_NOEXCEPT
+    #else
+      inline ETL_CONSTEXPR14 etl::chrono::nanoseconds operator""_ns(unsigned long long s) ETL_NOEXCEPT
+    #endif
       {
         return etl::chrono::nanoseconds(static_cast<etl::chrono::nanoseconds::rep>(s));
       }
 
-      //***********************************************************************
-      /// Literal for floating point microseconds duration
-      //***********************************************************************
-#if ETL_USING_VERBOSE_CHRONO_LITERALS
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double, nano> operator ""_nanoseconds(long double s) ETL_NOEXCEPT
-#else
-      inline ETL_CONSTEXPR14 etl::chrono::duration<double, nano> operator ""_ns(long double s) ETL_NOEXCEPT
-#endif
+        //***********************************************************************
+        /// Literal for floating point nanoseconds duration
+        //***********************************************************************
+    #if ETL_USING_VERBOSE_CHRONO_LITERALS
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, nano> operator""_nanoseconds(long double s) ETL_NOEXCEPT
+    #else
+      inline ETL_CONSTEXPR14 etl::chrono::duration<double, nano> operator""_ns(long double s) ETL_NOEXCEPT
+    #endif
       {
         return etl::chrono::duration<double, nano>(s);
       }
-    }
-  }
-}
+  #endif
+    } // namespace chrono_literals
+  } // namespace literals
+} // namespace etl
 #endif

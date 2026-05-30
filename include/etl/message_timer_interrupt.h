@@ -30,15 +30,15 @@ SOFTWARE.
 #define ETL_MESSAGE_TIMER_INTERRUPT_INCLUDED
 
 #include "platform.h"
-#include "nullptr.h"
-#include "message_types.h"
+#include "algorithm.h"
+#include "delegate.h"
 #include "message.h"
-#include "message_router.h"
 #include "message_bus.h"
+#include "message_router.h"
+#include "message_types.h"
+#include "nullptr.h"
 #include "static_assert.h"
 #include "timer.h"
-#include "delegate.h"
-#include "algorithm.h"
 
 #include <stdint.h>
 
@@ -61,10 +61,7 @@ namespace etl
     //*******************************************
     /// Register a timer.
     //*******************************************
-    etl::timer::id::type register_timer(const etl::imessage&     message_,
-                                        etl::imessage_router&    router_,
-                                        uint32_t                 period_,
-                                        bool                     repeating_,
+    etl::timer::id::type register_timer(const etl::imessage& message_, etl::imessage_router& router_, uint32_t period_, bool repeating_,
                                         etl::message_router_id_t destination_router_id_ = etl::imessage_router::ALL_MESSAGE_ROUTERS)
     {
       etl::timer::id::type id = etl::timer::id::NO_TIMER;
@@ -331,7 +328,8 @@ namespace etl
 
     //*******************************************
     /// Get the time to the next timer event.
-    /// Returns etl::timer::interval::No_Active_Interval if there is no active timer.
+    /// Returns etl::timer::interval::No_Active_Interval if there is no active
+    /// timer.
     //*******************************************
     uint32_t time_to_next() const
     {
@@ -397,11 +395,7 @@ namespace etl
       }
 
       //*******************************************
-      timer_data(etl::timer::id::type     id_,
-                 const etl::imessage&     message_,
-                 etl::imessage_router&    irouter_,
-                 uint32_t                 period_,
-                 bool                     repeating_,
+      timer_data(etl::timer::id::type id_, const etl::imessage& message_, etl::imessage_router& irouter_, uint32_t period_, bool repeating_,
                  etl::message_router_id_t destination_router_id_ = etl::imessage_bus::ALL_MESSAGE_ROUTERS)
         : p_message(&message_)
         , p_router(&irouter_)
@@ -431,8 +425,8 @@ namespace etl
         delta = etl::timer::state::Inactive;
       }
 
-      const etl::imessage* p_message;
-      etl::imessage_router* p_router;
+      const etl::imessage*     p_message;
+      etl::imessage_router*    p_router;
       uint32_t                 period;
       uint32_t                 delta;
       etl::message_router_id_t destination_router_id;
@@ -445,13 +439,13 @@ namespace etl
 
       // Disabled.
       timer_data(const timer_data& other);
-      timer_data& operator =(const timer_data& other);
+      timer_data& operator=(const timer_data& other);
     };
 
     //*******************************************
     /// Constructor.
     //*******************************************
-    imessage_timer_interrupt(timer_data* const timer_array_, const uint_least8_t  Max_Timers_)
+    imessage_timer_interrupt(timer_data* const timer_array_, const uint_least8_t Max_Timers_)
       : timer_array(timer_array_)
       , active_list(timer_array_)
       , enabled(false)
@@ -463,9 +457,7 @@ namespace etl
     //*******************************************
     /// Destructor.
     //*******************************************
-    ~imessage_timer_interrupt()
-    {
-    }
+    ~imessage_timer_interrupt() {}
 
   private:
 
@@ -480,7 +472,6 @@ namespace etl
       timer_list(timer_data* ptimers_)
         : head(etl::timer::id::NO_TIMER)
         , tail(etl::timer::id::NO_TIMER)
-        , current(etl::timer::id::NO_TIMER)
         , ptimers(ptimers_)
       {
       }
@@ -501,10 +492,10 @@ namespace etl
         if (head == etl::timer::id::NO_TIMER)
         {
           // No entries yet.
-          head = id_;
-          tail = id_;
+          head           = id_;
+          tail           = id_;
           timer.previous = etl::timer::id::NO_TIMER;
-          timer.next = etl::timer::id::NO_TIMER;
+          timer.next     = etl::timer::id::NO_TIMER;
         }
         else
         {
@@ -525,8 +516,8 @@ namespace etl
 
               // Insert before test.
               timer.previous = test.previous;
-              test.previous = timer.id;
-              timer.next = test.id;
+              test.previous  = timer.id;
+              timer.next     = test.id;
 
               // Adjust the next delta to compensate.
               test.delta -= timer.delta;
@@ -550,9 +541,9 @@ namespace etl
           {
             // Tag on to the tail.
             ptimers[tail].next = timer.id;
-            timer.previous = tail;
-            timer.next = etl::timer::id::NO_TIMER;
-            tail = timer.id;
+            timer.previous     = tail;
+            timer.next         = etl::timer::id::NO_TIMER;
+            tail               = timer.id;
           }
         }
       }
@@ -590,8 +581,8 @@ namespace etl
         }
 
         timer.previous = etl::timer::id::NO_TIMER;
-        timer.next = etl::timer::id::NO_TIMER;
-        timer.delta = etl::timer::state::Inactive;
+        timer.next     = etl::timer::id::NO_TIMER;
+        timer.delta    = etl::timer::state::Inactive;
       }
 
       //*******************************
@@ -609,22 +600,13 @@ namespace etl
       //*******************************
       etl::timer::id::type begin()
       {
-        current = head;
-        return current;
-      }
-
-      //*******************************
-      etl::timer::id::type previous(etl::timer::id::type last)
-      {
-        current = ptimers[last].previous;
-        return current;
+        return head;
       }
 
       //*******************************
       etl::timer::id::type next(etl::timer::id::type last)
       {
-        current = ptimers[last].next;
-        return current;
+        return ptimers[last].next;
       }
 
       //*******************************
@@ -635,20 +617,18 @@ namespace etl
         while (id != etl::timer::id::NO_TIMER)
         {
           timer_data& timer = ptimers[id];
-          id = next(id);
-          timer.next = etl::timer::id::NO_TIMER;
+          id                = next(id);
+          timer.next        = etl::timer::id::NO_TIMER;
         }
 
         head = etl::timer::id::NO_TIMER;
         tail = etl::timer::id::NO_TIMER;
-        current = etl::timer::id::NO_TIMER;
       }
 
     private:
 
       etl::timer::id::type head;
       etl::timer::id::type tail;
-      etl::timer::id::type current;
 
       timer_data* const ptimers;
     };
@@ -659,7 +639,7 @@ namespace etl
     // The list of active timers.
     timer_list active_list;
 
-    bool enabled;
+    bool          enabled;
     uint_least8_t number_of_registered_timers;
 
     event_callback_type insert_callback;
@@ -694,6 +674,6 @@ namespace etl
 
     typename etl::imessage_timer_interrupt<TInterruptGuard>::timer_data timer_array[Max_Timers_];
   };
-}
+} // namespace etl
 
 #endif

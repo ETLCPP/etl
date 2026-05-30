@@ -67,7 +67,6 @@ namespace etl
       // The default implementation does nothing.
     }
   };
-}
+} // namespace etl
 
 #endif
-

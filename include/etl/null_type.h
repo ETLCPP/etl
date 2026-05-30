@@ -39,6 +39,6 @@ namespace etl
   class null_type
   {
   };
-}
+} // namespace etl
 
 #endif

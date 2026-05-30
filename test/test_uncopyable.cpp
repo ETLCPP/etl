@@ -32,7 +32,7 @@ SOFTWARE.
 
 namespace
 {
-  class UncopyableClass: public etl::uncopyable
+  class UncopyableClass : public etl::uncopyable
   {
   };
 
@@ -43,7 +43,7 @@ namespace
     {
       UncopyableClass uc;
 
-      (void) uc;
+      (void)uc;
     }
 
     //*************************************************************************
@@ -62,5 +62,5 @@ namespace
       uc3 = uc1; // compile error
     }
 #endif
-  };
-}
+  }
+} // namespace

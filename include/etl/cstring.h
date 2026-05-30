@@ -32,6 +32,6 @@ SOFTWARE.
 // This header is deprecated. Use "string.h"
 //*****************************************************************************
 
-#pragma message ("This header is deprecated. Use 'etl/string.h'")
+#pragma message("This header is deprecated. Use 'etl/string.h'")
 
 #include "string.h"

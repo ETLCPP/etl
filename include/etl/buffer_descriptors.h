@@ -32,14 +32,13 @@ SOFTWARE.
 #define ETL_BUFFER_DESCRIPTORS_INCLUDED
 
 #include "platform.h"
+#include "algorithm.h"
 #include "array.h"
+#include "cyclic_value.h"
 #include "delegate.h"
 #include "type_traits.h"
-#include "static_assert.h"
-#include "cyclic_value.h"
-#include "algorithm.h"
 
-#include <cstring>
+#include <stddef.h>
 
 #if ETL_USING_CPP11
 
@@ -89,7 +88,7 @@ namespace etl
       }
 
       //*********************************
-      descriptor& operator =(const descriptor& other)
+      descriptor& operator=(const descriptor& other)
       {
         pdesc_item = other.pdesc_item;
         return *this;
@@ -99,12 +98,13 @@ namespace etl
       pointer data() const
       {
         assert(pdesc_item != ETL_NULLPTR);
+  #include "private/diagnostic_null_dereference_push.h"
         return pdesc_item->pbuffer;
+  #include "private/diagnostic_pop.h"
       }
 
       //*********************************
-      ETL_NODISCARD
-      ETL_CONSTEXPR size_type max_size() const
+      ETL_NODISCARD ETL_CONSTEXPR size_type max_size() const
       {
         return BUFFER_SIZE;
       }
@@ -147,7 +147,7 @@ namespace etl
       //*********************************
       void allocate()
       {
-        pdesc_item->in_use = true;;
+        pdesc_item->in_use = true;
       }
 
       /// The pointer to the buffer descriptor.
@@ -282,23 +282,26 @@ namespace etl
     //*********************************
     struct descriptor_item
     {
-      pointer  pbuffer;
+      pointer            pbuffer;
       volatile flag_type in_use;
     };
 
-    callback_type callback;
-    etl::array<descriptor_item, N_BUFFERS> descriptor_items;
+    callback_type                                       callback;
+    etl::array<descriptor_item, N_BUFFERS>              descriptor_items;
     etl::cyclic_value<uint_least8_t, 0U, N_BUFFERS - 1> next;
   };
 
   template <typename TBuffer, size_t BUFFER_SIZE_, size_t N_BUFFERS_, typename TFlag>
-  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::N_BUFFERS;
+  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type
+    buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::N_BUFFERS;
 
   template <typename TBuffer, size_t BUFFER_SIZE_, size_t N_BUFFERS_, typename TFlag>
-  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::BUFFER_SIZE;
-  
+  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type
+    buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::BUFFER_SIZE;
+
   template <typename TBuffer, size_t BUFFER_SIZE_, size_t N_BUFFERS_, typename TFlag>
-  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::descriptor::MAX_SIZE;
-}
+  ETL_CONSTANT typename buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::size_type
+    buffer_descriptors<TBuffer, BUFFER_SIZE_, N_BUFFERS_, TFlag>::descriptor::MAX_SIZE;
+} // namespace etl
 #endif
 #endif

@@ -2,3 +2,6 @@ name: etl
 build:
   cmake: zephyr
   kconfig: zephyr/Kconfig
+security:
+  external-references:
+    - pkg:github/ETLCPP/etl@20.46.2

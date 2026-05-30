@@ -30,22 +30,22 @@ SOFTWARE.
 #define ETL_MESSAGE_TIMER_INCLUDED
 
 #include "platform.h"
-#include "nullptr.h"
-#include "message_types.h"
+#include "algorithm.h"
+#include "atomic.h"
+#include "delegate.h"
 #include "message.h"
-#include "message_router.h"
 #include "message_bus.h"
+#include "message_router.h"
+#include "message_types.h"
+#include "nullptr.h"
 #include "static_assert.h"
 #include "timer.h"
-#include "atomic.h"
-#include "algorithm.h"
-#include "delegate.h"
 
 #include <stdint.h>
 
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
-  #define ETL_DISABLE_TIMER_UPDATES
-  #define ETL_ENABLE_TIMER_UPDATES
+  #define ETL_DISABLE_TIMER_UPDATES ((void)0)
+  #define ETL_ENABLE_TIMER_UPDATES  ((void)0)
   #define ETL_TIMER_UPDATES_ENABLED true
 
   #undef ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK
@@ -84,34 +84,30 @@ namespace etl
   {
     //*******************************************
     message_timer_data()
-      : p_message(ETL_NULLPTR),
-        p_router(ETL_NULLPTR),
-        period(0),
-        delta(etl::timer::state::Inactive),
-        destination_router_id(etl::imessage_bus::ALL_MESSAGE_ROUTERS),
-        id(etl::timer::id::NO_TIMER),
-        previous(etl::timer::id::NO_TIMER),
-        next(etl::timer::id::NO_TIMER),
-        repeating(true)
+      : p_message(ETL_NULLPTR)
+      , p_router(ETL_NULLPTR)
+      , period(0)
+      , delta(etl::timer::state::Inactive)
+      , destination_router_id(etl::imessage_bus::ALL_MESSAGE_ROUTERS)
+      , id(etl::timer::id::NO_TIMER)
+      , previous(etl::timer::id::NO_TIMER)
+      , next(etl::timer::id::NO_TIMER)
+      , repeating(true)
     {
     }
 
     //*******************************************
-    message_timer_data(etl::timer::id::type     id_,
-                       const etl::imessage&     message_,
-                       etl::imessage_router&    irouter_,
-                       uint32_t                 period_,
-                       bool                     repeating_,
+    message_timer_data(etl::timer::id::type id_, const etl::imessage& message_, etl::imessage_router& irouter_, uint32_t period_, bool repeating_,
                        etl::message_router_id_t destination_router_id_ = etl::imessage_bus::ALL_MESSAGE_ROUTERS)
-      : p_message(&message_),
-        p_router(&irouter_),
-        period(period_),
-        delta(etl::timer::state::Inactive),
-        destination_router_id(destination_router_id_),
-        id(id_),
-        previous(etl::timer::id::NO_TIMER),
-        next(etl::timer::id::NO_TIMER),
-        repeating(repeating_)
+      : p_message(&message_)
+      , p_router(&irouter_)
+      , period(period_)
+      , delta(etl::timer::state::Inactive)
+      , destination_router_id(destination_router_id_)
+      , id(id_)
+      , previous(etl::timer::id::NO_TIMER)
+      , next(etl::timer::id::NO_TIMER)
+      , repeating(repeating_)
     {
     }
 
@@ -145,7 +141,7 @@ namespace etl
 
     // Disabled.
     message_timer_data(const message_timer_data& other);
-    message_timer_data& operator =(const message_timer_data& other);
+    message_timer_data& operator=(const message_timer_data& other);
   };
 
   namespace private_message_timer
@@ -159,10 +155,9 @@ namespace etl
 
       //*******************************
       list(etl::message_timer_data* ptimers_)
-        : head(etl::timer::id::NO_TIMER),
-          tail(etl::timer::id::NO_TIMER),
-          current(etl::timer::id::NO_TIMER),
-          ptimers(ptimers_)
+        : head(etl::timer::id::NO_TIMER)
+        , tail(etl::timer::id::NO_TIMER)
+        , ptimers(ptimers_)
       {
       }
 
@@ -182,8 +177,8 @@ namespace etl
         if (head == etl::timer::id::NO_TIMER)
         {
           // No entries yet.
-          head = id_;
-          tail = id_;
+          head           = id_;
+          tail           = id_;
           timer.previous = etl::timer::id::NO_TIMER;
           timer.next     = etl::timer::id::NO_TIMER;
         }
@@ -290,22 +285,13 @@ namespace etl
       //*******************************
       etl::timer::id::type begin()
       {
-        current = head;
-        return current;
-      }
-
-      //*******************************
-      etl::timer::id::type previous(etl::timer::id::type last)
-      {
-        current = ptimers[last].previous;
-        return current;
+        return head;
       }
 
       //*******************************
       etl::timer::id::type next(etl::timer::id::type last)
       {
-        current = ptimers[last].next;
-        return current;
+        return ptimers[last].next;
       }
 
       //*******************************
@@ -316,24 +302,22 @@ namespace etl
         while (id != etl::timer::id::NO_TIMER)
         {
           etl::message_timer_data& timer = ptimers[id];
-          id = next(id);
-          timer.next = etl::timer::id::NO_TIMER;
+          id                             = next(id);
+          timer.next                     = etl::timer::id::NO_TIMER;
         }
 
-        head    = etl::timer::id::NO_TIMER;
-        tail    = etl::timer::id::NO_TIMER;
-        current = etl::timer::id::NO_TIMER;
+        head = etl::timer::id::NO_TIMER;
+        tail = etl::timer::id::NO_TIMER;
       }
 
     private:
 
       etl::timer::id::type head;
       etl::timer::id::type tail;
-      etl::timer::id::type current;
 
       etl::message_timer_data* const ptimers;
     };
-  }
+  } // namespace private_message_timer
 
   //***************************************************************************
   /// Interface for message timer
@@ -347,10 +331,7 @@ namespace etl
     //*******************************************
     /// Register a timer.
     //*******************************************
-    etl::timer::id::type register_timer(const etl::imessage&     message_,
-                                        etl::imessage_router&    router_,
-                                        uint32_t                 period_,
-                                        bool                     repeating_,
+    etl::timer::id::type register_timer(const etl::imessage& message_, etl::imessage_router& router_, uint32_t period_, bool repeating_,
                                         etl::message_router_id_t destination_router_id_ = etl::imessage_router::ALL_MESSAGE_ROUTERS)
     {
       etl::timer::id::type id = etl::timer::id::NO_TIMER;
@@ -612,7 +593,8 @@ namespace etl
 
     //*******************************************
     /// Get the time to the next timer event.
-    /// Returns etl::timer::interval::No_Active_Interval if there is no active timer.
+    /// Returns etl::timer::interval::No_Active_Interval if there is no active
+    /// timer.
     //*******************************************
     uint32_t time_to_next() const
     {
@@ -620,7 +602,7 @@ namespace etl
 
       ETL_DISABLE_TIMER_UPDATES;
       if (!active_list.empty())
-      {        
+      {
         delta = active_list.front().delta;
       }
       ETL_ENABLE_TIMER_UPDATES;
@@ -661,24 +643,24 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    imessage_timer(message_timer_data* const timer_array_, const uint_least8_t  Max_Timers_)
-      : timer_array(timer_array_),
-        active_list(timer_array_),
-        enabled(false),
+    imessage_timer(message_timer_data* const timer_array_, const uint_least8_t Max_Timers_)
+      : timer_array(timer_array_)
+      , active_list(timer_array_)
+      , enabled(false)
+      ,
 #if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
-        process_semaphore(0),
+      process_semaphore(0)
+      ,
 #endif
-        registered_timers(0),
-        Max_Timers(Max_Timers_)
+      registered_timers(0)
+      , Max_Timers(Max_Timers_)
     {
     }
 
     //*******************************************
     /// Destructor.
     //*******************************************
-    ~imessage_timer()
-    {
-    }
+    ~imessage_timer() {}
 
   private:
 
@@ -691,16 +673,16 @@ namespace etl
     bool enabled;
 
 #if defined(ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK)
-  
-#if defined(ETL_TIMER_SEMAPHORE_TYPE)
-  typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
-#else
-  #if ETL_HAS_ATOMIC
-    typedef etl::atomic_uint16_t timer_semaphore_t;
+
+  #if defined(ETL_TIMER_SEMAPHORE_TYPE)
+    typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
   #else
-    #error No atomic type available
+    #if ETL_HAS_ATOMIC
+    typedef etl::atomic_uint16_t timer_semaphore_t;
+    #else
+      #error No atomic type available
+    #endif
   #endif
-#endif
 
     mutable etl::timer_semaphore_t process_semaphore;
 #endif
@@ -736,7 +718,7 @@ namespace etl
 
     message_timer_data timer_array[Max_Timers_];
   };
-}
+} // namespace etl
 
 #undef ETL_DISABLE_TIMER_UPDATES
 #undef ETL_ENABLE_TIMER_UPDATES

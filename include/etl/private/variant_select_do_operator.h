@@ -34,7 +34,8 @@ SOFTWARE.
 namespace private_variant
 {
   //***************************************************************************
-  // Selects a do_operator inplementation that is configured for the number of types.
+  // Selects a do_operator inplementation that is configured for the number of
+  // types.
   //***************************************************************************
   template <size_t NTypes>
   struct select_do_operator;
@@ -48,7 +49,11 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
         default: break;
       }
     }
@@ -63,8 +68,16 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
         default: break;
       }
     }
@@ -79,12 +92,24 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
-        case 2: { visitor(etl::get<2>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -96,13 +121,29 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
-        case 2: { visitor(etl::get<2>(the_variant)); break; }
-        case 3: { visitor(etl::get<3>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -114,14 +155,34 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
-        case 2: { visitor(etl::get<2>(the_variant)); break; }
-        case 3: { visitor(etl::get<3>(the_variant)); break; }
-        case 4: { visitor(etl::get<4>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -133,15 +194,39 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
-        case 2: { visitor(etl::get<2>(the_variant)); break; }
-        case 3: { visitor(etl::get<3>(the_variant)); break; }
-        case 4: { visitor(etl::get<4>(the_variant)); break; }
-        case 5: { visitor(etl::get<5>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -153,16 +238,44 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
-        case 2: { visitor(etl::get<2>(the_variant)); break; }
-        case 3: { visitor(etl::get<3>(the_variant)); break; }
-        case 4: { visitor(etl::get<4>(the_variant)); break; }
-        case 5: { visitor(etl::get<5>(the_variant)); break; }
-        case 6: { visitor(etl::get<6>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -174,17 +287,49 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
-        case 2: { visitor(etl::get<2>(the_variant)); break; }
-        case 3: { visitor(etl::get<3>(the_variant)); break; }
-        case 4: { visitor(etl::get<4>(the_variant)); break; }
-        case 5: { visitor(etl::get<5>(the_variant)); break; }
-        case 6: { visitor(etl::get<6>(the_variant)); break; }
-        case 7: { visitor(etl::get<7>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 #if !defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
   //***************************************************************************
@@ -196,18 +341,54 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
-        case 2: { visitor(etl::get<2>(the_variant)); break; }
-        case 3: { visitor(etl::get<3>(the_variant)); break; }
-        case 4: { visitor(etl::get<4>(the_variant)); break; }
-        case 5: { visitor(etl::get<5>(the_variant)); break; }
-        case 6: { visitor(etl::get<6>(the_variant)); break; }
-        case 7: { visitor(etl::get<7>(the_variant)); break; }
-        case 8: { visitor(etl::get<8>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -219,19 +400,59 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0: { visitor(etl::get<0>(the_variant)); break; }
-        case 1: { visitor(etl::get<1>(the_variant)); break; }
-        case 2: { visitor(etl::get<2>(the_variant)); break; }
-        case 3: { visitor(etl::get<3>(the_variant)); break; }
-        case 4: { visitor(etl::get<4>(the_variant)); break; }
-        case 5: { visitor(etl::get<5>(the_variant)); break; }
-        case 6: { visitor(etl::get<6>(the_variant)); break; }
-        case 7: { visitor(etl::get<7>(the_variant)); break; }
-        case 8: { visitor(etl::get<8>(the_variant)); break; }
-        case 9: { visitor(etl::get<9>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -243,20 +464,64 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -268,21 +533,69 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -294,22 +607,74 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -321,23 +686,79 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -349,24 +770,84 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -378,27 +859,91 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
-#if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
+  #if !defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
   //***************************************************************************
   template <>
   struct select_do_operator<17>
@@ -408,26 +953,94 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -439,27 +1052,99 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -471,28 +1156,104 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -504,29 +1265,109 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -538,30 +1379,114 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -573,31 +1498,119 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -609,32 +1622,124 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -646,35 +1751,131 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
-#if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
+    #if !defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
   //***************************************************************************
   template <>
   struct select_do_operator<25>
@@ -684,34 +1885,134 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
-        case 24: { visitor(etl::get<24>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
+        case 24:
+          {
+            visitor(etl::get<24>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -723,35 +2024,139 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
-        case 24: { visitor(etl::get<24>(the_variant)); break; }
-        case 25: { visitor(etl::get<25>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
+        case 24:
+          {
+            visitor(etl::get<24>(the_variant));
+            break;
+          }
+        case 25:
+          {
+            visitor(etl::get<25>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -763,36 +2168,144 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
-        case 24: { visitor(etl::get<24>(the_variant)); break; }
-        case 25: { visitor(etl::get<25>(the_variant)); break; }
-        case 26: { visitor(etl::get<26>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
+        case 24:
+          {
+            visitor(etl::get<24>(the_variant));
+            break;
+          }
+        case 25:
+          {
+            visitor(etl::get<25>(the_variant));
+            break;
+          }
+        case 26:
+          {
+            visitor(etl::get<26>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -804,37 +2317,149 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
-        case 24: { visitor(etl::get<24>(the_variant)); break; }
-        case 25: { visitor(etl::get<25>(the_variant)); break; }
-        case 26: { visitor(etl::get<26>(the_variant)); break; }
-        case 27: { visitor(etl::get<27>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
+        case 24:
+          {
+            visitor(etl::get<24>(the_variant));
+            break;
+          }
+        case 25:
+          {
+            visitor(etl::get<25>(the_variant));
+            break;
+          }
+        case 26:
+          {
+            visitor(etl::get<26>(the_variant));
+            break;
+          }
+        case 27:
+          {
+            visitor(etl::get<27>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -846,38 +2471,154 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
-        case 24: { visitor(etl::get<24>(the_variant)); break; }
-        case 25: { visitor(etl::get<25>(the_variant)); break; }
-        case 26: { visitor(etl::get<26>(the_variant)); break; }
-        case 27: { visitor(etl::get<27>(the_variant)); break; }
-        case 28: { visitor(etl::get<28>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
+        case 24:
+          {
+            visitor(etl::get<24>(the_variant));
+            break;
+          }
+        case 25:
+          {
+            visitor(etl::get<25>(the_variant));
+            break;
+          }
+        case 26:
+          {
+            visitor(etl::get<26>(the_variant));
+            break;
+          }
+        case 27:
+          {
+            visitor(etl::get<27>(the_variant));
+            break;
+          }
+        case 28:
+          {
+            visitor(etl::get<28>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -889,39 +2630,159 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
-        case 24: { visitor(etl::get<24>(the_variant)); break; }
-        case 25: { visitor(etl::get<25>(the_variant)); break; }
-        case 26: { visitor(etl::get<26>(the_variant)); break; }
-        case 27: { visitor(etl::get<27>(the_variant)); break; }
-        case 28: { visitor(etl::get<28>(the_variant)); break; }
-        case 29: { visitor(etl::get<29>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
+        case 24:
+          {
+            visitor(etl::get<24>(the_variant));
+            break;
+          }
+        case 25:
+          {
+            visitor(etl::get<25>(the_variant));
+            break;
+          }
+        case 26:
+          {
+            visitor(etl::get<26>(the_variant));
+            break;
+          }
+        case 27:
+          {
+            visitor(etl::get<27>(the_variant));
+            break;
+          }
+        case 28:
+          {
+            visitor(etl::get<28>(the_variant));
+            break;
+          }
+        case 29:
+          {
+            visitor(etl::get<29>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -933,40 +2794,164 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
-        case 24: { visitor(etl::get<24>(the_variant)); break; }
-        case 25: { visitor(etl::get<25>(the_variant)); break; }
-        case 26: { visitor(etl::get<26>(the_variant)); break; }
-        case 27: { visitor(etl::get<27>(the_variant)); break; }
-        case 28: { visitor(etl::get<28>(the_variant)); break; }
-        case 29: { visitor(etl::get<29>(the_variant)); break; }
-        case 30: { visitor(etl::get<30>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
+        case 24:
+          {
+            visitor(etl::get<24>(the_variant));
+            break;
+          }
+        case 25:
+          {
+            visitor(etl::get<25>(the_variant));
+            break;
+          }
+        case 26:
+          {
+            visitor(etl::get<26>(the_variant));
+            break;
+          }
+        case 27:
+          {
+            visitor(etl::get<27>(the_variant));
+            break;
+          }
+        case 28:
+          {
+            visitor(etl::get<28>(the_variant));
+            break;
+          }
+        case 29:
+          {
+            visitor(etl::get<29>(the_variant));
+            break;
+          }
+        case 30:
+          {
+            visitor(etl::get<30>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
 
   //***************************************************************************
@@ -978,43 +2963,171 @@ namespace private_variant
     {
       switch (the_variant.index())
       {
-        case 0:  { visitor(etl::get<0>(the_variant)); break; }
-        case 1:  { visitor(etl::get<1>(the_variant)); break; }
-        case 2:  { visitor(etl::get<2>(the_variant)); break; }
-        case 3:  { visitor(etl::get<3>(the_variant)); break; }
-        case 4:  { visitor(etl::get<4>(the_variant)); break; }
-        case 5:  { visitor(etl::get<5>(the_variant)); break; }
-        case 6:  { visitor(etl::get<6>(the_variant)); break; }
-        case 7:  { visitor(etl::get<7>(the_variant)); break; }
-        case 8:  { visitor(etl::get<8>(the_variant)); break; }
-        case 9:  { visitor(etl::get<9>(the_variant)); break; }
-        case 10: { visitor(etl::get<10>(the_variant)); break; }
-        case 11: { visitor(etl::get<11>(the_variant)); break; }
-        case 12: { visitor(etl::get<12>(the_variant)); break; }
-        case 13: { visitor(etl::get<13>(the_variant)); break; }
-        case 14: { visitor(etl::get<14>(the_variant)); break; }
-        case 15: { visitor(etl::get<15>(the_variant)); break; }
-        case 16: { visitor(etl::get<16>(the_variant)); break; }
-        case 17: { visitor(etl::get<17>(the_variant)); break; }
-        case 18: { visitor(etl::get<18>(the_variant)); break; }
-        case 19: { visitor(etl::get<19>(the_variant)); break; }
-        case 20: { visitor(etl::get<20>(the_variant)); break; }
-        case 21: { visitor(etl::get<21>(the_variant)); break; }
-        case 22: { visitor(etl::get<22>(the_variant)); break; }
-        case 23: { visitor(etl::get<23>(the_variant)); break; }
-        case 24: { visitor(etl::get<24>(the_variant)); break; }
-        case 25: { visitor(etl::get<25>(the_variant)); break; }
-        case 26: { visitor(etl::get<26>(the_variant)); break; }
-        case 27: { visitor(etl::get<27>(the_variant)); break; }
-        case 28: { visitor(etl::get<28>(the_variant)); break; }
-        case 29: { visitor(etl::get<29>(the_variant)); break; }
-        case 30: { visitor(etl::get<30>(the_variant)); break; }
-        case 31: { visitor(etl::get<31>(the_variant)); break; }
+        case 0:
+          {
+            visitor(etl::get<0>(the_variant));
+            break;
+          }
+        case 1:
+          {
+            visitor(etl::get<1>(the_variant));
+            break;
+          }
+        case 2:
+          {
+            visitor(etl::get<2>(the_variant));
+            break;
+          }
+        case 3:
+          {
+            visitor(etl::get<3>(the_variant));
+            break;
+          }
+        case 4:
+          {
+            visitor(etl::get<4>(the_variant));
+            break;
+          }
+        case 5:
+          {
+            visitor(etl::get<5>(the_variant));
+            break;
+          }
+        case 6:
+          {
+            visitor(etl::get<6>(the_variant));
+            break;
+          }
+        case 7:
+          {
+            visitor(etl::get<7>(the_variant));
+            break;
+          }
+        case 8:
+          {
+            visitor(etl::get<8>(the_variant));
+            break;
+          }
+        case 9:
+          {
+            visitor(etl::get<9>(the_variant));
+            break;
+          }
+        case 10:
+          {
+            visitor(etl::get<10>(the_variant));
+            break;
+          }
+        case 11:
+          {
+            visitor(etl::get<11>(the_variant));
+            break;
+          }
+        case 12:
+          {
+            visitor(etl::get<12>(the_variant));
+            break;
+          }
+        case 13:
+          {
+            visitor(etl::get<13>(the_variant));
+            break;
+          }
+        case 14:
+          {
+            visitor(etl::get<14>(the_variant));
+            break;
+          }
+        case 15:
+          {
+            visitor(etl::get<15>(the_variant));
+            break;
+          }
+        case 16:
+          {
+            visitor(etl::get<16>(the_variant));
+            break;
+          }
+        case 17:
+          {
+            visitor(etl::get<17>(the_variant));
+            break;
+          }
+        case 18:
+          {
+            visitor(etl::get<18>(the_variant));
+            break;
+          }
+        case 19:
+          {
+            visitor(etl::get<19>(the_variant));
+            break;
+          }
+        case 20:
+          {
+            visitor(etl::get<20>(the_variant));
+            break;
+          }
+        case 21:
+          {
+            visitor(etl::get<21>(the_variant));
+            break;
+          }
+        case 22:
+          {
+            visitor(etl::get<22>(the_variant));
+            break;
+          }
+        case 23:
+          {
+            visitor(etl::get<23>(the_variant));
+            break;
+          }
+        case 24:
+          {
+            visitor(etl::get<24>(the_variant));
+            break;
+          }
+        case 25:
+          {
+            visitor(etl::get<25>(the_variant));
+            break;
+          }
+        case 26:
+          {
+            visitor(etl::get<26>(the_variant));
+            break;
+          }
+        case 27:
+          {
+            visitor(etl::get<27>(the_variant));
+            break;
+          }
+        case 28:
+          {
+            visitor(etl::get<28>(the_variant));
+            break;
+          }
+        case 29:
+          {
+            visitor(etl::get<29>(the_variant));
+            break;
+          }
+        case 30:
+          {
+            visitor(etl::get<30>(the_variant));
+            break;
+          }
+        case 31:
+          {
+            visitor(etl::get<31>(the_variant));
+            break;
+          }
         default: break;
       }
-    };
+    }
   };
+    #endif
+  #endif
 #endif
-#endif
-#endif
-}
+} // namespace private_variant

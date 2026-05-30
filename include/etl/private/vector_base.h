@@ -29,18 +29,18 @@ SOFTWARE.
 ******************************************************************************/
 
 #if !defined(ETL_IN_VECTOR_H) && !defined(ETL_IN_PVOIDVECTOR)
-#error This header is a private element of etl::vector & etl::pvoidvector
+  #error This header is a private element of etl::vector & etl::pvoidvector
 #endif
 
 #ifndef ETL_VECTOR_BASE_INCLUDED
-#define ETL_VECTOR_BASE_INCLUDED
+  #define ETL_VECTOR_BASE_INCLUDED
 
-#include "../platform.h"
-#include "../exception.h"
-#include "../error_handler.h"
-#include "../debug_count.h"
+  #include "../platform.h"
+  #include "../debug_count.h"
+  #include "../error_handler.h"
+  #include "../exception.h"
 
-#include <stddef.h>
+  #include <stddef.h>
 
 namespace etl
 {
@@ -155,21 +155,21 @@ namespace etl
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-#if defined(ETL_POLYMORPHIC_VECTOR) || defined(ETL_POLYMORPHIC_CONTAINERS) || defined(ETL_IVECTOR_REPAIR_ENABLE)
-  public:
-    virtual ~vector_base()
-    {
-    }
-#else
-  protected:
-    ~vector_base()
-    {
-    }
-#endif
+  #if defined(ETL_POLYMORPHIC_VECTOR) || defined(ETL_POLYMORPHIC_CONTAINERS) || defined(ETL_IVECTOR_REPAIR_ENABLE)
 
-    const size_type CAPACITY; ///<The maximum number of elements in the vector.
-    ETL_DECLARE_DEBUG_COUNT;   ///< Internal debugging.
+  public:
+
+    virtual ~vector_base() {}
+  #else
+
+  protected:
+
+    ~vector_base() {}
+  #endif
+
+    const size_type CAPACITY; ///< The maximum number of elements in the vector.
+    ETL_DECLARE_DEBUG_COUNT;  ///< Internal debugging.
   };
-}
+} // namespace etl
 
 #endif

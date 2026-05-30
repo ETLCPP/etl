@@ -61,7 +61,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     crc8_j1850_zero_t(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -69,11 +69,11 @@ namespace etl
     }
   };
 #endif
-    
+
   typedef etl::crc8_j1850_zero_t<256U> crc8_j1850_zero_t256;
   typedef etl::crc8_j1850_zero_t<16U>  crc8_j1850_zero_t16;
   typedef etl::crc8_j1850_zero_t<4U>   crc8_j1850_zero_t4;
   typedef crc8_j1850_zero_t256         crc8_j1850_zero;
-}
+} // namespace etl
 
 #endif

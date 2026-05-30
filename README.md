@@ -1,22 +1,21 @@
-Embedded Template Library (ETL)
--------------------------
+# ![alt text](https://github.com/ETLCPP/etl/blob/master/images/etl64.png?raw=true) Embedded Template Library (ETL)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
 [![Release date](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)
-[![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17/20/23-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+[![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17/20/23/26-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![GitHub contributors](https://img.shields.io/github/contributors-anon/ETLCPP/etl)
 ![GitHub forks](https://img.shields.io/github/forks/ETLCPP/etl?style=flat)
 ![GitHub Repo stars](https://img.shields.io/github/stars/ETLCPP/etl?style=flat)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/msvc.yml/badge.svg?branch=master)
-[![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0/branch/master?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl/branch/master)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++17.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++20.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++23.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++26.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-syntax-checks.yml/badge.svg?branch=master)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++11.yml/badge.svg?branch=master)
@@ -24,6 +23,7 @@ Embedded Template Library (ETL)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++17.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++20.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++23.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++26.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-syntax-checks.yml/badge.svg?branch=master)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
@@ -50,8 +50,8 @@ Its design goals include:
 
 -	Offering APIs that closely resemble those of the STL, enabling familiar and consistent usage.
 
--	Maintaining compatibility with C++98 while implementing many features introduced in later standards 
-(C++11/14/17/20/23) where possible.
+-	Maintaining compatibility with C++98 while implementing many features introduced in later standards
+(C++11/14/17/20/23/26) where possible.
 
 -	Ensuring deterministic behavior, which is critical in real-time and resource-constrained environments.
 
@@ -183,6 +183,84 @@ FetchContent_MakeAvailable(etl)
 add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl::etl)
 ```
+
+## Profile definition
+
+When using ETL in a project, there is typically an `etl_profile.h` defined to
+adjust ETL to the project needs. ETL will automatically find `etl_profile.h`
+if it is available in the include path(s). If it's not available, ETL will
+work with default values.
+
+### Example
+
+```
+#ifndef __ETL_PROFILE_H__
+#define __ETL_PROFILE_H__
+
+#define ETL_TARGET_DEVICE_GENERIC
+#define ETL_TARGET_OS_NONE
+
+#define ETL_NO_STL
+
+#endif
+```
+
+## Platform specific implementation
+
+Although ETL is generally a self-contained header-only library, some interfaces need to be
+implemented in every project or platform, at least if those interfaces are actually being
+used, due to project specifics:
+
+| ETL header | Platform specific API to be implemented | Needed when using                   |
+|------------|-----------------------------------------|-------------------------------------|
+| `chrono.h` | `etl_get_high_resolution_clock()`       | `etl::high_resolution_clock::now()` |
+|            | `etl_get_system_clock()`                | `etl::system_clock::now()`          |
+|            | `etl_get_steady_clock()`                | `etl::steady_clock::now()`          |
+| `print.h`  | `etl_putchar()`                         | `etl::print()`                      |
+|            |                                         | `etl::println()`                    |
+
+### Example
+
+```
+#include <etl/chrono.h>
+#include <etl/print.h>
+
+extern "C"
+{
+
+etl::chrono::high_resolution_clock::rep etl_get_high_resolution_clock()
+{
+  return etl::chrono::high_resolution_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+etl::chrono::system_clock::rep etl_get_system_clock()
+{
+  return etl::chrono::system_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+etl::chrono::system_clock::rep etl_get_steady_clock()
+{
+  return etl::chrono::system_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+void etl_putchar(int c)
+{
+  putByteToStdout(static_cast<uint8_t>(c));
+}
+
+}
+```
+
+The following default values apply if the respective macros are not defined
+(e.g. in `etl_profile.h`):
+
+| Macro                                         | Default                    |
+|-----------------------------------------------|----------------------------|
+| `ETL_CHRONO_SYSTEM_CLOCK_DURATION`            | `etl::chrono::nanoseconds` |
+| `ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY`           | `true`                     |
+| `ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION`   | `etl::chrono::nanoseconds` |
+| `ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY`  | `true`                     |
+| `ETL_CHRONO_STEADY_CLOCK_DURATION`            | `etl::chrono::nanoseconds` |
 
 ## Arduino library
 

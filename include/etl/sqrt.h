@@ -32,22 +32,23 @@ SOFTWARE.
 #define ETL_SQRT_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
 #include "constant.h"
+#include "type_traits.h"
 
 #include <stddef.h>
 
-namespace etl 
+namespace etl
 {
   //***************************************************************************
-  /// Calculates the smallest value that, when squared, will be not greater than Value.
+  /// Calculates the smallest value that, when squared, will be not greater than
+  /// Value.
   //***************************************************************************
   template <size_t Value, size_t Root = 1>
   struct sqrt
   {
-    typedef typename etl::conditional<((Root * Root) > Value), 
-                                      etl::constant<intmax_t, Root - 1>,
-                                      etl::sqrt<Value, Root + 1> >::type type;
+    typedef
+      typename etl::conditional< ((Root * Root) > Value), etl::constant<intmax_t, static_cast<intmax_t>(Root - 1)>, etl::sqrt<Value, Root + 1> >::type
+        type;
 
 #if ETL_USING_CPP11
     static constexpr size_t value = type::value;
@@ -69,6 +70,6 @@ namespace etl
   template <size_t Value, size_t Root = 1>
   inline constexpr size_t sqrt_v = sqrt<Value, Root>::value;
 #endif
-}
+} // namespace etl
 
 #endif

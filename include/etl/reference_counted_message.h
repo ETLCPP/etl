@@ -30,12 +30,12 @@ SOFTWARE.
 #define ETL_REFERENCE_COUNTED_MESSAGE_INCLUDED
 
 #include "platform.h"
-#include "message.h"
 #include "atomic.h"
+#include "ireference_counted_message_pool.h"
+#include "message.h"
 #include "reference_counted_object.h"
 #include "static_assert.h"
 #include "type_traits.h"
-#include "ireference_counted_message_pool.h"
 
 #include <stdint.h>
 
@@ -49,11 +49,16 @@ namespace etl
   public:
 
     virtual ~ireference_counted_message() {}
-    ETL_NODISCARD virtual etl::imessage& get_message() = 0;                                 ///< Get a reference to the message.
-    ETL_NODISCARD virtual const etl::imessage& get_message() const = 0;                     ///< Get a const reference to the message.
-    ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() = 0;             ///< Get a reference to the reference counter.
-    ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const = 0; ///< Get a const reference to the reference counter.
-    virtual void release() = 0;                                                             ///< Release back to the owner.
+    ETL_NODISCARD
+    virtual etl::imessage&           get_message()           = 0;             ///< Get a reference to the message.
+    ETL_NODISCARD
+    virtual const etl::imessage&     get_message() const     = 0;             ///< Get a const reference to the message.
+    ETL_NODISCARD
+    virtual etl::ireference_counter& get_reference_counter() = 0;             ///< Get a reference to the
+                                                                              ///< reference counter.
+    ETL_NODISCARD
+    virtual const etl::ireference_counter& get_reference_counter() const = 0; ///< Get a const reference to the reference counter.
+    virtual void                           release()                     = 0; ///< Release back to the owner.
   };
 
   //***************************************************************************
@@ -98,7 +103,8 @@ namespace etl
     /// Get a reference to the message.
     /// \return A reference to the message.
     //***************************************************************************
-    ETL_NODISCARD virtual TMessage& get_message() ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual TMessage& get_message() ETL_OVERRIDE
     {
       return rc_object.get_object();
     }
@@ -107,7 +113,8 @@ namespace etl
     /// Get a const reference to the message.
     /// \return A const reference to the message.
     //***************************************************************************
-    ETL_NODISCARD virtual const TMessage& get_message() const ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual const TMessage& get_message() const ETL_OVERRIDE
     {
       return rc_object.get_object();
     }
@@ -116,7 +123,8 @@ namespace etl
     /// Get a reference to the reference counter.
     /// \return A reference to the reference counter.
     //***************************************************************************
-    ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
     {
       return rc_object.get_reference_counter();
     }
@@ -125,7 +133,8 @@ namespace etl
     /// Get a const reference to the reference counter.
     /// \return A const reference to the reference counter.
     //***************************************************************************
-    ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
     {
       return rc_object.get_reference_counter();
     }
@@ -142,7 +151,7 @@ namespace etl
   private:
 
     etl::reference_counted_object<TMessage, TCounter> rc_object; ///< The reference counted object.
-    etl::ireference_counted_message_pool& owner;                 ///< The pool that owns this object.
+    etl::ireference_counted_message_pool&             owner;     ///< The pool that owns this object.
   };
 
   //***************************************************************************
@@ -156,7 +165,7 @@ namespace etl
     ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "Not a message type");
 
     typedef TMessage message_type;
-    typedef void counter_type;
+    typedef void     counter_type;
 
     //***************************************************************************
     /// Constructor
@@ -171,7 +180,8 @@ namespace etl
     /// Get a reference to the message.
     /// \return A reference to the message.
     //***************************************************************************
-    ETL_NODISCARD virtual TMessage& get_message() ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual TMessage& get_message() ETL_OVERRIDE
     {
       return rc_object.get_object();
     }
@@ -180,7 +190,8 @@ namespace etl
     /// Get a const reference to the message.
     /// \return A const reference to the message.
     //***************************************************************************
-    ETL_NODISCARD virtual const TMessage& get_message() const ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual const TMessage& get_message() const ETL_OVERRIDE
     {
       return rc_object.get_object();
     }
@@ -189,7 +200,8 @@ namespace etl
     /// Get a reference to the reference counter.
     /// \return A reference to the reference counter.
     //***************************************************************************
-    ETL_NODISCARD virtual etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual etl::ireference_counter& get_reference_counter() ETL_OVERRIDE
     {
       return rc_object.get_reference_counter();
     }
@@ -198,7 +210,8 @@ namespace etl
     /// Get a const reference to the reference counter.
     /// \return A const reference to the reference counter.
     //***************************************************************************
-    ETL_NODISCARD virtual const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
+    ETL_NODISCARD
+    virtual const etl::ireference_counter& get_reference_counter() const ETL_OVERRIDE
     {
       return rc_object.get_reference_counter();
     }
@@ -225,6 +238,6 @@ namespace etl
   template <typename TMessage>
   using atomic_counted_message = etl::reference_counted_message<TMessage, etl::atomic_int32_t>;
 #endif
-}
+} // namespace etl
 
 #endif

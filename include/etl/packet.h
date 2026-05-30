@@ -32,10 +32,10 @@ SOFTWARE.
 #define ETL_PACKET_INCLUDED
 
 #include "platform.h"
-#include "static_assert.h"
 #include "alignment.h"
-#include "utility.h"
 #include "placement_new.h"
+#include "static_assert.h"
+#include "utility.h"
 
 //*****************************************************************************
 ///\defgroup packet packet
@@ -59,7 +59,8 @@ namespace etl
 
 #if ETL_USING_CPP11
     //***************************************************************************
-    /// Constructor that static asserts any types that do not conform to the max size and alignment.
+    /// Constructor that static asserts any types that do not conform to the max
+    /// size and alignment.
     //***************************************************************************
     template <typename T>
     explicit packet(T&& value)
@@ -74,7 +75,8 @@ namespace etl
     }
 #else
     //***************************************************************************
-    /// Constructor that static asserts any types that do not conform to the max size and alignment.
+    /// Constructor that static asserts any types that do not conform to the max
+    /// size and alignment.
     //***************************************************************************
     template <typename T>
     explicit packet(const T& value)
@@ -101,7 +103,7 @@ namespace etl
     ///\param value The value to assign.
     //***************************************************************************
     template <typename T>
-    packet& operator =(T&& value)
+    packet& operator=(T&& value)
     {
       typedef typename etl::types<T>::type type;
 
@@ -120,7 +122,7 @@ namespace etl
     ///\param value The value to assign.
     //***************************************************************************
     template <typename T>
-    packet& operator =(const T& value)
+    packet& operator=(const T& value)
     {
       ETL_STATIC_ASSERT((etl::is_base_of<TBase, T>::value), "Unsupported type");
       ETL_STATIC_ASSERT(sizeof(T) <= SIZE, "Unsupported size");
@@ -152,7 +154,7 @@ namespace etl
   private:
 
     packet(const packet& other);
-    packet& operator =(const packet& other);
+    packet& operator=(const packet& other);
 
     //***************************************************************************
     /// The internal storage.
@@ -160,6 +162,6 @@ namespace etl
     //***************************************************************************
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;
   };
-}
+} // namespace etl
 
 #endif

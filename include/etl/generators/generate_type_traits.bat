@@ -1,1 +1,1 @@
-python3 -m cogapp -d -e -o../type_traits.h -DIsOneOf=16 type_traits_generator.h
+python3 -m cogapp -d -e -o../private/type_traits_cpp03.h -DIsOneOf=16 type_traits_cpp03_generator.h

@@ -46,6 +46,6 @@ namespace etl
   {
   };
 #endif
-}
+} // namespace etl
 
 #endif

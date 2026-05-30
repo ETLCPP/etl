@@ -30,5 +30,7 @@ SOFTWARE.
 #define ETL_UNIT_TEST_FRAMEWORK_INCLUDED
 
 #include "UnitTest++/UnitTest++.h"
+#include "etl/private/diagnostic_null_dereference_push.h"
+#include "etl/private/diagnostic_pop.h"
 
 #endif

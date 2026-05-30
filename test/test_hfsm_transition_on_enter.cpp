@@ -31,6 +31,7 @@ SOFTWARE.
 #include "etl/hfsm.h"
 #include "etl/string.h"
 #include <array>
+#include <memory>
 
 //                             entry && mode=RxEventDeviation
 //                 ┌─────────────────────────────────────────────────────┐
@@ -38,18 +39,18 @@ SOFTWARE.
 // *      ┌────────▼─────────────┐      ToS6Event                        │
 // │      │                      │     ┌────────────────────┐            │
 // │      │   s3                 │     │                    │            │
-// │      │  ┌─────────────────┐ │     │           ┌────────┼────────────┴──────────────┐
-// │      │  │ s2*             │ │     │           │  s4    │                           │
-// │      │  │ ┌────┐   ┌────┐ │ │     │           │   ┌────┴─────────────────────────┐ │
-// │      │  │ │ s1*│   │ s6 ◄─┼─┼─────┘           │   │ s5*                          │ │
-// │      │  │ │    │   │    │ │ │ entry && mode=  │   ├──────────────────────────────┤ │
-// │      │  │ │    │   │    │ │ │  StartDeviation │   │ToS6Event && RxEventDuringTr./│ │
-// └──────┼──► │    │   │    │ ├─┼─────────────────┼───►    receive(ToS5Event)**      │ │
-//        │  │ │    │   │    │ │ │                 │   └─▲────────────────────────────┘ │
-//        │  │ └┬───┘   └────┘ │ │                 │     │                              │
-//        │  │  │              │ │                 └─────┼──▲───────────────────────────┘
-//        │  └──┼──────────────┘ │                       │  │
-//        │     │                │                       │  │
+// │      │  ┌─────────────────┐ │     │ ┌────────┼────────────┴──────────────┐
+// │      │  │ s2*             │ │     │           │  s4    │ │ │      │  │
+// ┌────┐   ┌────┐ │ │     │           │   ┌────┴─────────────────────────┐ │ │
+// │  │ │ s1*│   │ s6 ◄─┼─┼─────┘           │   │ s5*                          │
+// │ │      │  │ │    │   │    │ │ │ entry && mode=  │
+// ├──────────────────────────────┤ │ │      │  │ │    │   │    │ │ │
+// StartDeviation │   │ToS6Event && RxEventDuringTr./│ │ └──────┼──► │    │   │
+// │ ├─┼─────────────────┼───►    receive(ToS5Event)**      │ │
+//        │  │ │    │   │    │ │ │                 │
+//        └─▲────────────────────────────┘ │ │  │ └┬───┘   └────┘ │ │ │     │ │
+//        │  │  │              │ │ └─────┼──▲───────────────────────────┘ │
+//        └──┼──────────────┘ │                       │  │ │     │ │ │  │
 //        └─────┼─┬──────────────┘                       │  │
 //              │ │                  ToS5Event           │  │
 //              │ └──────────────────────────────────────┘  │
@@ -82,6 +83,7 @@ namespace
   class EntryTestSM : public etl::hfsm
   {
   public:
+
     EntryTestSM();
 
     etl::string<30> test_data;
@@ -107,17 +109,18 @@ namespace
     };
 
   private:
+
     std::unique_ptr<StateList> m_state_list;
   };
 
   class S1 : public etl::fsm_state<EntryTestSM, S1, EntryTestSM::S1>
   {
   public:
+
     etl::fsm_state_id_t on_enter_state() override
     {
       get_fsm_context().test_data += "E1";
-      return (get_fsm_context().runMode == EntryTestSM::StartDeviationDefaultChild)
-               ? static_cast<uint8_t>(EntryTestSM::S4) : No_State_Change;
+      return (get_fsm_context().runMode == EntryTestSM::StartDeviationDefaultChild) ? static_cast<uint8_t>(EntryTestSM::S4) : No_State_Change;
     }
 
     static etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
@@ -134,11 +137,11 @@ namespace
   class S2 : public etl::fsm_state<EntryTestSM, S2, EntryTestSM::S2>
   {
   public:
+
     etl::fsm_state_id_t on_enter_state() override
     {
       get_fsm_context().test_data += "E2";
-      return (get_fsm_context().runMode == EntryTestSM::StartDeviation)
-               ? static_cast<uint8_t>(EntryTestSM::S5) : No_State_Change;
+      return (get_fsm_context().runMode == EntryTestSM::StartDeviation) ? static_cast<uint8_t>(EntryTestSM::S5) : No_State_Change;
     }
 
     static etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
@@ -155,9 +158,10 @@ namespace
   class S3 : public etl::fsm_state<EntryTestSM, S3, EntryTestSM::S3, ToS5Event>
   {
   public:
+
     etl::fsm_state_id_t on_enter_state() override
     {
-      if(get_fsm_context().runMode == EntryTestSM::RxEventDuringTransition)
+      if (get_fsm_context().runMode == EntryTestSM::RxEventDuringTransition)
       {
         get_fsm_context().receive(ToS5Event{});
       }
@@ -184,11 +188,11 @@ namespace
   class S4 : public etl::fsm_state<EntryTestSM, S4, EntryTestSM::S4>
   {
   public:
+
     etl::fsm_state_id_t on_enter_state() override
     {
       get_fsm_context().test_data += "E4";
-      return (get_fsm_context().runMode == EntryTestSM::RxEventDeviation)
-               ? static_cast<uint8_t>(EntryTestSM::S3) : No_State_Change;
+      return (get_fsm_context().runMode == EntryTestSM::RxEventDeviation) ? static_cast<uint8_t>(EntryTestSM::S3) : No_State_Change;
     }
 
     static etl::fsm_state_id_t on_event_unknown(const etl::imessage&)
@@ -205,6 +209,7 @@ namespace
   class S5 : public etl::fsm_state<EntryTestSM, S5, EntryTestSM::S5, ToS6Event>
   {
   public:
+
     etl::fsm_state_id_t on_enter_state() override
     {
       get_fsm_context().test_data += "E5";
@@ -234,6 +239,7 @@ namespace
   class S6 : public etl::fsm_state<EntryTestSM, S6, EntryTestSM::S6>
   {
   public:
+
     etl::fsm_state_id_t on_enter_state() override
     {
       get_fsm_context().test_data += "E6";
@@ -254,6 +260,7 @@ namespace
   class StateList
   {
   public:
+
     StateList()
     {
       m_s3.add_child_state(m_s2);
@@ -263,10 +270,10 @@ namespace
       m_s4.add_child_state(m_s5);
     }
 
-    std::array<etl::ifsm_state*, static_cast<uint8_t>(EntryTestSM::Number_Of_States)> stateList = {
-      &m_s2, &m_s3, &m_s1, &m_s4, &m_s5, &m_s6};
+    std::array<etl::ifsm_state*, static_cast<uint8_t>(EntryTestSM::Number_Of_States)> stateList = {&m_s2, &m_s3, &m_s1, &m_s4, &m_s5, &m_s6};
 
   private:
+
     // The states.
     S1 m_s1;
     S2 m_s2;
@@ -277,7 +284,8 @@ namespace
   };
 
   EntryTestSM::EntryTestSM()
-    : hfsm(0), m_state_list(new StateList{})
+    : hfsm(0)
+    , m_state_list(new StateList{})
   {
     set_states(m_state_list->stateList.data(), m_state_list->stateList.size());
   }
@@ -358,6 +366,25 @@ namespace
       sm.reset(true);
       CHECK_EQUAL("X1X2X3", sm.test_data.c_str());
     }
+
+    //*************************************************************************
+    TEST(reentrant_receives)
+    {
+      EntryTestSM sm;
+      sm.start(false);
+      sm.receive(ToS5Event{});
+      sm.test_data.clear();
+      sm.runMode = EntryTestSM::RxEventDuringTransition;
+      CHECK_THROW(sm.receive(ToS6Event{}), etl::fsm_reentrant_transition_forbidden);
+    }
+
+    //*************************************************************************
+    TEST(reentrant_receives_on_start)
+    {
+      EntryTestSM sm;
+      sm.runMode = EntryTestSM::RxEventDuringTransition;
+      CHECK_THROW(sm.start(true), etl::fsm_reentrant_transition_forbidden);
+    }
   }
 
-}  // namespace
+} // namespace

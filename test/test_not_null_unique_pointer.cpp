@@ -26,8 +26,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include "unit_test_framework.h"
 #include "etl/not_null.h"
+#include "unit_test_framework.h"
 
 namespace
 {
@@ -47,7 +47,7 @@ namespace
     TEST(test_construct_from_non_null_unique_ptr)
     {
       using up_t = etl::unique_ptr<int>;
-      up_t up(new int{ 123 });
+      up_t                up(new int{123});
       etl::not_null<up_t> nn(etl::move(up));
 
       CHECK_EQUAL(123, *nn);
@@ -58,7 +58,7 @@ namespace
     TEST(test_assign_from_unique_ptr)
     {
       using up_t = etl::unique_ptr<int>;
-      up_t up1(new int{ 123 });
+      up_t                up1(new int{123});
       etl::not_null<up_t> nn1(etl::move(up1));
 
       using up_t = etl::unique_ptr<int>;
@@ -74,7 +74,7 @@ namespace
     TEST(test_implicit_conversion)
     {
       using up_t = etl::unique_ptr<S>;
-      up_t up1(new S{ 123 });
+      up_t                up1(new S{123});
       etl::not_null<up_t> nn1(etl::move(up1));
 
       S s = *nn1;
@@ -85,10 +85,10 @@ namespace
     //*************************************************************************
     TEST(test_arrow_operator)
     {
-      S s{ 123 };
+      S s{123};
 
       using up_t = etl::unique_ptr<S>;
-      up_t up1(new S{ 123 });
+      up_t                up1(new S{123});
       etl::not_null<up_t> nn1(etl::move(up1));
 
       CHECK_EQUAL(s.x, nn1->x);
@@ -98,10 +98,10 @@ namespace
     //*************************************************************************
     TEST(test_dereference_operator)
     {
-      S s{ 123 };
+      S s{123};
 
       using up_t = etl::unique_ptr<S>;
-      up_t up1(new S{ 123 });
+      up_t                up1(new S{123});
       etl::not_null<up_t> nn1(etl::move(up1));
 
       CHECK_EQUAL(s.x, (*nn1).x);
@@ -117,4 +117,4 @@ namespace
       CHECK_THROW(etl::not_null<up_t> nn1(etl::move(up1)), etl::not_null_contains_null);
     }
   }
-}
+} // namespace

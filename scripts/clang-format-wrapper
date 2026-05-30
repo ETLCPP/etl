@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+from shutil import which
+import re
+import subprocess
+import sys
+
+
+def get_correct_clang_format():
+    path = which("clang-format-18")
+    if path:
+        return path
+
+    if which("clang-format") is None:
+        raise Exception("no clang-format found")
+
+    result = subprocess.run(
+        ["clang-format", "--version"], capture_output=True, text=True, check=True
+    )
+    match = re.search(r"\b(\d+\.\d+\.\d+)\b", result.stdout)
+    if not match:
+        raise Exception(
+            f"could not determine clang-format version from: {result.stdout.strip()}"
+        )
+    version = match.group(1)
+    if version.split(".")[0] != "18":
+        raise Exception(f"clang-format version 18 required. Found {version}")
+
+    return "clang-format"
+
+
+def main():
+    clang_format = get_correct_clang_format()
+    try:
+        completed = subprocess.run([clang_format] + sys.argv[1:])
+    except FileNotFoundError:
+        print(f"error: clang-format not found at '{clang_format}'", file=sys.stderr)
+        sys.exit(1)
+    except PermissionError:
+        print(f"error: permission denied when running '{clang_format}'", file=sys.stderr)
+        sys.exit(1)
+    except OSError as exc:
+        print(f"error: failed to run '{clang_format}': {exc}", file=sys.stderr)
+        sys.exit(1)
+    sys.exit(completed.returncode)
+
+
+if __name__ == "__main__":
+    main()

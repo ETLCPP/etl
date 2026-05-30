@@ -31,12 +31,8 @@ SOFTWARE.
 #ifndef ETL_DETERMINE_DEVELOPMENT_OS_INCLUDED
 #define ETL_DETERMINE_DEVELOPMENT_OS_INCLUDED
 
-#if !defined(ETL_DEVELOPMENT_OS_WINDOWS) && \
-    !defined(ETL_DEVELOPMENT_OS_LINUX) && \
-    !defined(ETL_DEVELOPMENT_OS_UNIX) && \
-    !defined(ETL_DEVELOPMENT_OS_APPLE) && \
-    !defined(ETL_DEVELOPMENT_OS_BSD) && \
-    !defined(ETL_DEVELOPMENT_OS_GENERIC)
+#if !defined(ETL_DEVELOPMENT_OS_WINDOWS) && !defined(ETL_DEVELOPMENT_OS_LINUX) && !defined(ETL_DEVELOPMENT_OS_UNIX) \
+  && !defined(ETL_DEVELOPMENT_OS_APPLE) && !defined(ETL_DEVELOPMENT_OS_BSD) && !defined(ETL_DEVELOPMENT_OS_GENERIC)
 
   #if !defined(ETL_DEVELOPMENT_OS_DETECTED) && !defined(ETL_DEVELOPMENT_OS_WINDOWS)
     #if defined(WIN32) || defined(WIN64)
@@ -66,12 +62,12 @@ SOFTWARE.
     #endif
   #endif
 
-#if !defined(ETL_DEVELOPMENT_OS_DETECTED) && !defined(ETL_DEVELOPMENT_OS_BSD)
-  #if defined(BSD)
-    #define ETL_DEVELOPMENT_OS_BSD
-    #define ETL_DEVELOPMENT_OS_DETECTED
+  #if !defined(ETL_DEVELOPMENT_OS_DETECTED) && !defined(ETL_DEVELOPMENT_OS_BSD)
+    #if defined(BSD)
+      #define ETL_DEVELOPMENT_OS_BSD
+      #define ETL_DEVELOPMENT_OS_DETECTED
+    #endif
   #endif
-#endif
 
   #if !defined(ETL_DEVELOPMENT_OS_DETECTED)
     #define ETL_DEVELOPMENT_OS_GENERIC

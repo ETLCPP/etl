@@ -206,8 +206,8 @@ namespace UnitTest
      {
        UnitTest::MemoryOutStream stream;
        stream << std::hex << std::uppercase << std::setfill('0') 
-              << "Expected 0x" << std::setw(2 * sizeof(Expected)) << (expected & ~(typename std::make_unsigned<Expected>::type(0))) 
-              << " but was 0x" << std::setw(2 * sizeof(Actual))   << (actual   & ~(typename std::make_unsigned<Actual>::type(0)));
+              << "Expected 0x" << std::setw(2 * sizeof(Expected)) << (static_cast<typename std::make_unsigned<Expected>::type>(expected) & ~(typename std::make_unsigned<Expected>::type(0)))
+              << " but was 0x" << std::setw(2 * sizeof(Actual))   << (static_cast<typename std::make_unsigned<Actual>::type>(actual)     & ~(typename std::make_unsigned<Actual>::type(0)));
 
        results.OnTestFailure(details, stream.GetText());
      }

@@ -64,17 +64,18 @@ namespace etl
       xSemaphoreGive(access);
     }
 
-   private:
+  private:
+
     // Non-copyable
     mutex(const mutex&) ETL_DELETE;
     mutex& operator=(const mutex&) ETL_DELETE;
 
     // Memory to hold the mutex
     StaticSemaphore_t mutex_allocation;
-  
+
     // The mutex handle itself
     SemaphoreHandle_t access;
   };
-}
+} // namespace etl
 
 #endif

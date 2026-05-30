@@ -68,6 +68,6 @@ namespace etl
   template <size_t Value>
   inline constexpr size_t factorial_v = factorial<Value>::value;
 #endif
-}
+} // namespace etl
 
 #endif

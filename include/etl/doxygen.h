@@ -27,8 +27,8 @@ SOFTWARE.
 ******************************************************************************/
 
 ///\defgroup etl Embedded Template Library.
-https://github.com/ETLCPP/etl
-http://www.etlcpp.com
+/// https://github.com/ETLCPP/etl
+/// http://www.etlcpp.com
 
 ///\defgroup containers Containers
 ///\ingroup etl
@@ -50,6 +50,6 @@ http://www.etlcpp.com
 ///\ingroup maths
 
 ///\ingroup etl
-namespace etl {}
-
-
+namespace etl
+{
+}

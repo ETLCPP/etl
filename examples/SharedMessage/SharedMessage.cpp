@@ -2,18 +2,18 @@
 // Shared message example
 //*****************************************************************************
 
-#include "etl/shared_message.h"
-#include "etl/message.h"
-#include "etl/reference_counted_message_pool.h"
-#include "etl/message_router.h"
-#include "etl/message_bus.h"
 #include "etl/fixed_sized_memory_block_allocator.h"
+#include "etl/message.h"
+#include "etl/message_bus.h"
+#include "etl/message_router.h"
 #include "etl/queue.h"
+#include "etl/reference_counted_message_pool.h"
+#include "etl/shared_message.h"
 
-#include <iostream>
 #include <atomic>
-#include <string>
+#include <iostream>
 #include <mutex>
+#include <string>
 
 constexpr etl::message_router_id_t RouterId1 = 1U;
 constexpr etl::message_router_id_t RouterId2 = 2U;
@@ -26,9 +26,8 @@ struct Message1 : public etl::message<1>
   Message1(std::string s_)
     : s(s_)
   {
-    
   }
-  
+
   std::string s;
 };
 
@@ -40,10 +39,10 @@ struct Message2 : public etl::message<2>
   Message2(std::string s_)
     : s(s_)
   {
-    
   }
-  
+
   std::string s;
+
   char data[100];
 };
 
@@ -55,7 +54,6 @@ struct Message3 : public etl::message<3>
   Message3(std::string s_)
     : s(s_)
   {
-
   }
 
   std::string s;
@@ -199,7 +197,7 @@ struct Bus : public etl::message_bus<2U>
 //*****************************************************************************
 MessageRouter1 router1;
 MessageRouter2 router2;
-Bus bus;
+Bus            bus;
 
 //*****************************************************************************
 // The thread safe message pool. Uses atomic uint32_t for counting.
@@ -230,8 +228,8 @@ private:
 };
 
 //*****************************************************************************
-// The memory block allocator that supplies the pool with memory 
-// to store reference counted messages in. 
+// The memory block allocator that supplies the pool with memory
+// to store reference counted messages in.
 
 // The reference counted message parameters type for the messages we will use.
 using message_parameters_small = MessagePool::pool_message_parameters<Message1, Message3>;
@@ -243,10 +241,12 @@ constexpr size_t max_alignment_small = message_parameters_small::max_alignment;
 constexpr size_t max_size_large      = message_parameters_large::max_size;
 constexpr size_t max_alignment_large = message_parameters_large::max_alignment;
 
-// A fixed memory block allocator for 4 items, using the parameters from the smaller messages.
+// A fixed memory block allocator for 4 items, using the parameters from the
+// smaller messages.
 etl::fixed_sized_memory_block_allocator<max_size_small, max_alignment_small, 4U> memory_allocator;
 
-// A fixed memory block allocator for 4 items, using the parameters from the larger message.
+// A fixed memory block allocator for 4 items, using the parameters from the
+// larger message.
 etl::fixed_sized_memory_block_allocator<max_size_large, max_alignment_large, 4U> memory_allocator_successor;
 
 //*****************************************************************************
@@ -256,8 +256,8 @@ etl::fixed_sized_memory_block_allocator<max_size_large, max_alignment_large, 4U>
 MessagePool message_pool(memory_allocator);
 
 //*****************************************************************************
-// A statically allocated reference counted message that is never allocated or released by a pool.
-// Contains a copy of Message3("Three").
+// A statically allocated reference counted message that is never allocated or
+// released by a pool. Contains a copy of Message3("Three").
 //*****************************************************************************
 etl::persistent_message<Message3> pm3(Message3("Three"));
 
@@ -269,10 +269,15 @@ int main()
 
   Message1 m1("One");
   Message2 m2("Two");
-  
-  etl::shared_message sm1(message_pool, m1); // Created a shared message by allocating a reference counted message from message_pool containing a copy of m1.
-  etl::shared_message sm2(message_pool, m2); // Created a shared message by allocating a reference counted message from message_pool containing a copy of m2.
-  etl::shared_message sm3(pm3);              // Created a shared message from a statically allocated persistent message.
+
+  etl::shared_message sm1(message_pool,
+                          m1); // Created a shared message by allocating a reference counted message
+                               // from message_pool containing a copy of m1.
+  etl::shared_message sm2(message_pool,
+                          m2);  // Created a shared message by allocating a reference counted message
+                                // from message_pool containing a copy of m2.
+  etl::shared_message sm3(pm3); // Created a shared message from a statically
+                                // allocated persistent message.
 
   bus.subscribe(router1); // Subscribe router1 to the bus.
   bus.subscribe(router2); // Subscribe router2 to the bus.

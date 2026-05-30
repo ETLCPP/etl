@@ -31,6 +31,8 @@ SOFTWARE.
 
 #include "platform.h"
 
+#include "private/diagnostic_gnu_static_float_init_push.h"
+
 namespace etl
 {
   namespace private_math_constants
@@ -64,26 +66,28 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT double math_helper<T>::e_reciprocal;
-    
+
     template <typename T>
     ETL_CONSTANT double math_helper<T>::e_squared;
-    
+
     template <typename T>
     ETL_CONSTANT double math_helper<T>::root2;
-    
+
     template <typename T>
     ETL_CONSTANT double math_helper<T>::root2_reciprocal;
-    
+
     template <typename T>
     ETL_CONSTANT double math_helper<T>::euler;
-    
+
     template <typename T>
     ETL_CONSTANT double math_helper<T>::golden_ratio;
-  }
+  } // namespace private_math_constants
 
   struct math : public private_math_constants::math_helper<>
   {
   };
-}
+} // namespace etl
+
+#include "private/diagnostic_pop.h"
 
 #endif

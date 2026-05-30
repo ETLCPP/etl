@@ -41,18 +41,33 @@ namespace etl
   class nullptr_t
   {
   public:
+
     template <class T>
-    inline operator T*() const { return 0; }
+    inline operator T*() const
+    {
+      return 0;
+    }
 
     template <class C, class T>
-    inline operator T C::* () const { return 0; }
-    
-    inline bool operator==(nullptr_t) const { return true; }
-    inline bool operator!=(nullptr_t) const { return false; }
+    inline operator T C::*() const
+    {
+      return 0;
+    }
+
+    inline bool operator==(nullptr_t) const
+    {
+      return true;
+    }
+    inline bool operator!=(nullptr_t) const
+    {
+      return false;
+    }
+
   private:
+
     void operator&() const ETL_DELETE; // cannot take the address of ETL_NULLPTR
   };
-  
+
   static const nullptr_t _nullptr = nullptr_t();
 
   #define ETL_NULLPTR (etl::_nullptr)
@@ -61,7 +76,6 @@ namespace etl
   typedef decltype(nullptr) nullptr_t;
   #define ETL_NULLPTR nullptr
 #endif
-}
+} // namespace etl
 
 #endif
-
