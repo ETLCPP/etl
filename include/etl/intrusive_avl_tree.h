@@ -512,7 +512,7 @@ namespace etl
     {
       if (this != &other)
       {
-        intrusive_avl_tree_base tmp(std::move(other));
+        intrusive_avl_tree_base tmp(etl::move(other));
         swap(tmp);
       }
       return *this;
