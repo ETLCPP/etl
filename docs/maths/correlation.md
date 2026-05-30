@@ -34,7 +34,7 @@ Default constructor.
 template <typename TIterator>
 correlation(TIterator first1, TIterator last1, TIterator first2)
 ```
-**Decsription**  
+**Description**  
 Construct from two iterator ranges.
 
 ```cpp
@@ -71,7 +71,7 @@ Add a range of values.
 ```cpp
 double get_covariance() const
 ```
-**Decsription**  
+**Description**  
 Returns the calculated covariance for the data.
 
 ---

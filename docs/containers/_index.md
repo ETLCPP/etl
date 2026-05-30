@@ -4,7 +4,7 @@ weight: 100
 ---
 
 ## Containers
-The library defines a set of containers that have been specially tailored for embedded systems.They have a maximum capacity fixed at compile time and make no calls to `malloc`/`free` or `new`/`delete`. They are completely deterministic.  
+The library defines a set of containers that have been specially tailored for embedded systems. They have a maximum capacity fixed at compile time and make no calls to `malloc`/`free` or `new`/`delete`. They are completely deterministic.  
 
 Most container types have been designed to mimic, as far as possible, those found in the STL. Some do not have direct STL equivalents.
 

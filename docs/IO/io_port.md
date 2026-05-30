@@ -275,7 +275,7 @@ Get an iterator to this port.
 const_iterator iter() const
 const_iterator citer() const
 ```
-**Decsription**  
+**Description**  
 Get a `const_iterator` to this port.
 
 ---

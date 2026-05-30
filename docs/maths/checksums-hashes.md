@@ -359,7 +359,7 @@ Creates a hash from the supplied range.
 ```cpp
 void reset();
 ```
-**Decsription**
+**Description**
 Resets the hash to the initial condition.
 
 ---

@@ -39,7 +39,7 @@ Gamma a value.
 ```cpp
 gamma_decode(double gamma, TInput maximum)
 ```
-**Decsription**  
+**Description**  
 Constructor.
 
 ---

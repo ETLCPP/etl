@@ -198,7 +198,7 @@ Converts an N bit binary number, where bit N-1 is the sign bit, and shift is the
 template <typename T>
 ETL_CONSTEXPR14 T count_leading_zeros(T value)
 ```
-**Decsription**  
+**Description**  
 Counts the number of leading zeros in a binary number
 
 ## count_trailing_zeros

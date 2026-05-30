@@ -83,7 +83,7 @@ const_iterator          Constant random access iterator
 template <typename... TElements>
 ETL_CONSTEXPR14 explicit const_multiset(TElements&&... elements) ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Construct a `const_multiset` from a variadic list of elements.  
 Static asserts if the elements are not of type `value_type`.  
 Static asserts if the number of elements is greater than the capacity of the `const_multiset`.
@@ -93,7 +93,7 @@ Static asserts if the number of elements is greater than the capacity of the `co
 ```cpp
 ETL_CONSTEXPR14 const_multiset_ext() ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Default construct a `const_multiset`.
 
 ---
@@ -102,7 +102,7 @@ Default construct a `const_multiset`.
 template <size_type Size>
 ETL_CONSTEXPR14 explicit const_multiset_ext(const etl::span<const value_type, Size>& sp) ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Construct a `const_multiset` from a variadic list of elements.
 
 ---
@@ -111,7 +111,7 @@ Construct a `const_multiset` from a variadic list of elements.
 template <size_type Size>
 ETL_CONSTEXPR14 explicit const_multiset_ext(const value_type (&begin_)[Size]) ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Construct a `const_multiset` from an array.
 
 ## Iterators
@@ -120,7 +120,7 @@ Construct a `const_multiset` from an array.
 const_iterator begin() const ETL_NOEXCEPT
 const_iterator cbegin() const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Returns an iterator to the beginning of the set.
 
 ---
@@ -129,7 +129,7 @@ Returns an iterator to the beginning of the set.
 const_iterator end() const ETL_NOEXCEPT
 const_iterator cend() const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Returns an iterator to the end of the set.
 
 ## Capacity
@@ -137,7 +137,7 @@ Returns an iterator to the end of the set.
 ```cpp
 ETL_CONSTEXPR14 bool empty() const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Returns `true` if the size of the set is zero, otherwise `false`.
 
 ---
@@ -145,7 +145,7 @@ Returns `true` if the size of the set is zero, otherwise `false`.
 ```cpp
 ETL_CONSTEXPR14 bool full() const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Returns `true` if the size of the lookup is size, otherwise `false`.
 
 ---
@@ -153,7 +153,7 @@ Returns `true` if the size of the lookup is size, otherwise `false`.
 ```cpp
 ETL_CONSTEXPR14 size_t size() const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Returns the size of the lookup.
 
 ---
@@ -161,7 +161,7 @@ Returns the size of the lookup.
 ```cpp
 ETL_CONSTEXPR14 size_t max_size() const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Returns the maximum possible size of the set.
 
 ## Status
@@ -177,7 +177,7 @@ The elements must be sorted and contain no duplicates.
 ```cpp
 ETL_CONSTEXPR14 const_iterator find(const key_type& key) const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Find the `key` in the container.  
 
 **Return**  
@@ -188,7 +188,7 @@ A `const_iterator` to the element, or `end()` if it could not be found.
 ```cpp
 ETL_CONSTEXPR14 const_iterator lower_bound(const key_type& key) const ETL_NOEXCEPT
 ```
-**Decsription**   
+**Description**   
 Searches for the first element after the `key`.  
 
 **Return**  
@@ -199,7 +199,7 @@ A `const_iterator` to the element, or `end()` if it could not be found.
 ```cpp
 ETL_CONSTEXPR14 const_iterator upper_bound(const key_type& key) const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Searches for the first element with the `key`.  
 
 **Return**  
@@ -210,7 +210,7 @@ A `const_iterator` to the element, or `end()` if it could not be found.
 ```cpp
 ETL_CONSTEXPR14 pair<const_iterator, const_iterator> equal_range(const key_type& key) const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)  
 
 **Return**  
@@ -221,7 +221,7 @@ Returns a range containing all elements equivalent to `key`.
 ```cpp
 ETL_CONSTEXPR14 bool contains(const key_type& k) const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Check if the container contains the key.  
 
 **Return**  
@@ -233,7 +233,7 @@ Check if the container contains the key.
 template <typename K>
 ETL_CONSTEXPR14 const_iterator find(const K& key) const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Find the `key` in the container.  
 
 **Return**  
@@ -245,7 +245,7 @@ A `const_iterator` to the element, or `end()` if it could not be found.
 template <typename K>
 ETL_CONSTEXPR14 const_iterator lower_bound(const K& key) const ETL_NOEXCEPT
 ```
-**Decsription**   
+**Description**   
 Searches for the first element after the `key`.  
 
 **Return**  
@@ -257,7 +257,7 @@ A `const_iterator` to the element, or `end()` if it could not be found.
 template <typename K>
 ETL_CONSTEXPR14 const_iterator upper_bound(const K& key) const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Searches for the first element with the `key`.  
 
 **Return**  
@@ -269,7 +269,7 @@ A `const_iterator` to the element, or `end()` if it could not be found.
 template <typename K>
 ETL_CONSTEXPR14 pair<const_iterator, const_iterator> equal_range(const K& key) const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)  
 
 **Return**  
@@ -281,7 +281,7 @@ Returns a range containing all elements equivalent to `key`.
 template <typename K>
 ETL_CONSTEXPR14 bool contains(const K& k) const ETL_NOEXCEPT
 ```
-**Decsription**  
+**Description**  
 Check if the container contains the key.  
 
 **Return**  
