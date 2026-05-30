@@ -1,5 +1,5 @@
 ---
-title: "Correlation"
+title: "correlation"
 ---
 
 {{< callout type="info">}}

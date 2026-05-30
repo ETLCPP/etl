@@ -1,5 +1,5 @@
 ---
-title: "Covariance"
+title: "covariance"
 ---
 
 {{< callout type="info">}}

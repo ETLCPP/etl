@@ -1,5 +1,5 @@
 ---
-title: "Gamma"
+title: "gamma"
 ---
 
 {{< callout type="info">}}

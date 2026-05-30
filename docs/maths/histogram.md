@@ -1,5 +1,5 @@
 ---
-title: "Histgram"
+title: "histogram"
 ---
 
 {{< callout type="info">}}

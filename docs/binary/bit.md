@@ -1,5 +1,5 @@
 ---
-title: "Bit"
+title: "bit"
 ---
 
 {{< callout type="info">}}
