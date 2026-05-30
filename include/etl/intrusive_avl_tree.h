@@ -821,7 +821,7 @@ namespace etl
       while (first != last)
       {
         link_type& link  = *first++;
-        auto&      value = static_cast<TValue&>(link);
+        TValue&    value = static_cast<TValue&>(link);
 #if ETL_USING_CPP11
         find_or_insert_impl<TValue>(                                                         //
           [&value, &binary_comp](const TValue& other) { return binary_comp(value, other); }, //
@@ -840,8 +840,8 @@ namespace etl
       TLink* curr = root;
       while (ETL_NULLPTR != curr)
       {
-        auto* const result = static_cast<TValue*>(curr);
-        const int   cmp    = comp(*result);
+        TValue* const result = static_cast<TValue*>(curr);
+        const int     cmp    = comp(*result);
         if (0 == cmp)
         {
           // Found!
@@ -864,8 +864,8 @@ namespace etl
       link_type* parent   = &origin;
       while (ETL_NULLPTR != curr)
       {
-        auto* const result = static_cast<TValue*>(curr);
-        const int   cmp    = comp(*result);
+        TValue* const result = static_cast<TValue*>(curr);
+        const int     cmp    = comp(*result);
         if (0 == cmp)
         {
           // Found! Tree was not modified.
@@ -905,8 +905,8 @@ namespace etl
       TLink*  next   = root;
       while (ETL_NULLPTR != next)
       {
-        auto* const next_value = static_cast<TValue*>(next);
-        const int   cmp        = comp(*next_value);
+        TValue* const next_value = static_cast<TValue*>(next);
+        const int     cmp        = comp(*next_value);
         if ((cmp > 0) || (IsUpper && (cmp == 0)))
         {
           next = next->get_right();
@@ -1213,7 +1213,7 @@ namespace etl
         return !(lhs == rhs);
       }
 
-      explicit operator bool() const ETL_NOEXCEPT
+      ETL_EXPLICIT operator bool() const ETL_NOEXCEPT
       {
         return has_value();
       }
@@ -1262,7 +1262,7 @@ namespace etl
 
     private:
 
-      explicit iterator(link_type* value)
+      ETL_EXPLICIT iterator(link_type* value)
         : p_value(value)
       {
       }
@@ -1393,7 +1393,7 @@ namespace etl
         return !(lhs == rhs);
       }
 
-      explicit operator bool() const ETL_NOEXCEPT
+      ETL_EXPLICIT operator bool() const ETL_NOEXCEPT
       {
         return has_value();
       }
@@ -1442,7 +1442,7 @@ namespace etl
 
     private:
 
-      explicit const_iterator(const link_type* value)
+      ETL_EXPLICIT const_iterator(const link_type* value)
         : p_value(value)
       {
       }
@@ -1498,7 +1498,7 @@ namespace etl
     /// Destructor.
     /// Complexity: O(N).
     //*************************************************************************
-    ~intrusive_avl_tree() = default;
+    ~intrusive_avl_tree() {}
 
 #if ETL_USING_CPP11
     //*************************************************************************
@@ -1984,7 +1984,7 @@ namespace etl
     struct CastingVisitor
     {
       Visitor& visitor;
-      explicit CastingVisitor(Visitor& visitor)
+      ETL_EXPLICIT CastingVisitor(Visitor& visitor)
         : visitor(visitor)
       {
       }
