@@ -127,7 +127,7 @@ namespace etl
     /// Constructor
     /// \param initial_value The initial value for the average.
     //*************************************************************************
-    pseudo_moving_average(const T initial_value)
+    ETL_CONSTEXPR pseudo_moving_average(const T initial_value)
       : average(initial_value * SCALE)
     {
     }
@@ -208,7 +208,7 @@ namespace etl
     /// Constructor
     /// \param initial_value The initial value for the average.
     //*************************************************************************
-    pseudo_moving_average(const T initial_value, const size_t sample_size)
+    ETL_CONSTEXPR pseudo_moving_average(const T initial_value, const size_t sample_size)
       : average(initial_value * SCALE)
       , samples(sample_t(sample_size))
     {
@@ -292,7 +292,7 @@ namespace etl
     /// Constructor
     /// \param initial_value The initial value for the average.
     //*************************************************************************
-    pseudo_moving_average(const T initial_value)
+    ETL_CONSTEXPR pseudo_moving_average(const T initial_value)
       : reciprocal_samples_plus_1(T(1.0) / T(SAMPLE_SIZE_ + 1U))
       , average(initial_value)
     {
@@ -363,7 +363,7 @@ namespace etl
     /// Constructor
     /// \param initial_value The initial value for the average.
     //*************************************************************************
-    pseudo_moving_average(const T initial_value, const size_t sample_size)
+    ETL_CONSTEXPR pseudo_moving_average(const T initial_value, const size_t sample_size)
       : reciprocal_samples_plus_1(T(1.0) / T(sample_size + 1U))
       , average(initial_value)
     {

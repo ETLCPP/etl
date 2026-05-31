@@ -502,90 +502,93 @@ namespace etl
     typedef TIterator                                              pointer;
     typedef value_type&&                                           reference;
 
-    move_iterator() {}
+    ETL_CONSTEXPR move_iterator()
+      : current()
+    {
+    }
 
-    explicit move_iterator(TIterator itr)
+    ETL_CONSTEXPR explicit move_iterator(TIterator itr)
       : current(itr)
     {
     }
 
     template <typename U>
-    move_iterator(const move_iterator<U>& itr)
+    ETL_CONSTEXPR move_iterator(const move_iterator<U>& itr)
       : current(itr.base())
     {
     }
 
     template <typename U>
-    move_iterator& operator=(const move_iterator<U>& itr)
+    ETL_CONSTEXPR14 move_iterator& operator=(const move_iterator<U>& itr)
     {
       current = itr.current;
       return *this;
     }
 
-    iterator_type base() const
+    ETL_CONSTEXPR iterator_type base() const
     {
       return current;
     }
 
-    pointer operator->() const
+    ETL_CONSTEXPR pointer operator->() const
     {
       return current;
     }
 
-    reference operator*() const
+    ETL_CONSTEXPR reference operator*() const
     {
       return etl::move(*current);
     }
 
-    move_iterator& operator++()
+    ETL_CONSTEXPR14 move_iterator& operator++()
     {
       ++current;
       return *this;
     }
 
-    move_iterator& operator--()
+    ETL_CONSTEXPR14 move_iterator& operator--()
     {
       --current;
       return *this;
     }
 
-    move_iterator operator++(int)
+    ETL_CONSTEXPR14 move_iterator operator++(int)
     {
       move_iterator temp = *this;
       ++current;
       return temp;
     }
 
-    move_iterator operator--(int)
+    ETL_CONSTEXPR14 move_iterator operator--(int)
     {
       move_iterator temp = *this;
       --current;
       return temp;
     }
 
-    move_iterator operator+(difference_type n) const
+    ETL_CONSTEXPR move_iterator operator+(difference_type n) const
     {
       return move_iterator(current + n);
     }
 
-    move_iterator operator-(difference_type n) const
+    ETL_CONSTEXPR move_iterator operator-(difference_type n) const
     {
       return move_iterator(current - n);
     }
 
-    move_iterator operator+=(difference_type n)
+    ETL_CONSTEXPR14 move_iterator& operator+=(difference_type n)
     {
       current += n;
       return *this;
     }
 
-    move_iterator operator-=(difference_type n)
+    ETL_CONSTEXPR14 move_iterator& operator-=(difference_type n)
     {
       current -= n;
       return *this;
     }
 
-    reference operator[](difference_type n) const
+    ETL_CONSTEXPR reference operator[](difference_type n) const
     {
       return etl::move(current[n]);
     }
@@ -596,55 +599,55 @@ namespace etl
   };
 
   template <typename TIterator>
-  bool operator==(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator==(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
   {
     return lhs.base() == rhs.base();
   }
 
   template <typename TIterator>
-  bool operator!=(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator!=(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
   {
     return !(lhs == rhs);
   }
 
   template <typename TIterator>
-  bool operator<(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator<(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
   {
     return lhs.base() < rhs.base();
   }
 
   template <typename TIterator>
-  bool operator<=(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator<=(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
   {
     return !(rhs < lhs);
   }
 
   template <typename TIterator>
-  bool operator>(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator>(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
   {
     return (rhs < lhs);
   }
 
   template <typename TIterator>
-  bool operator>=(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator>=(const etl::move_iterator<TIterator>& lhs, const etl::move_iterator<TIterator>& rhs)
   {
     return !(lhs < rhs);
   }
 
   template <typename TIterator>
-  move_iterator<TIterator> operator+(typename move_iterator<TIterator>::difference_type n, const move_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR move_iterator<TIterator> operator+(typename move_iterator<TIterator>::difference_type n, const move_iterator<TIterator>& rhs)
   {
     return rhs + n;
   }
 
   template <typename TIterator1, typename TIterator2 >
-  auto operator-(const move_iterator<TIterator1>& lhs, const move_iterator<TIterator2>& rhs) -> decltype(lhs.base() - rhs.base())
+  ETL_CONSTEXPR auto operator-(const move_iterator<TIterator1>& lhs, const move_iterator<TIterator2>& rhs) -> decltype(lhs.base() - rhs.base())
   {
     return lhs.base() - rhs.base();
   }
 
   template <typename TIterator>
-  etl::move_iterator<TIterator> make_move_iterator(TIterator itr)
+  ETL_CONSTEXPR etl::move_iterator<TIterator> make_move_iterator(TIterator itr)
   {
     return etl::move_iterator<TIterator>(itr);
   }

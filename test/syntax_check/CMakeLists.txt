@@ -247,6 +247,7 @@ target_sources(tests PRIVATE
 		inplace_function.h.t.cpp
 		instance_count.h.t.cpp
 		integral_limits.h.t.cpp
+		intrusive_avl_tree.h.t.cpp
 		intrusive_forward_list.h.t.cpp
 		intrusive_links.h.t.cpp
 		intrusive_list.h.t.cpp

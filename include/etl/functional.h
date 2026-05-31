@@ -363,25 +363,25 @@ namespace etl
 
   public:
 
-    binder1st(const TFunction& f, const typename TFunction::first_argument_type& v)
+    ETL_CONSTEXPR binder1st(const TFunction& f, const typename TFunction::first_argument_type& v)
       : operation(f)
       , value(v)
     {
     }
 
-    typename TFunction::result_type operator()(typename TFunction::second_argument_type& x) const
+    ETL_CONSTEXPR typename TFunction::result_type operator()(typename TFunction::second_argument_type& x) const
     {
       return operation(value, x);
     }
 
-    typename TFunction::result_type operator()(const typename TFunction::second_argument_type& x) const
+    ETL_CONSTEXPR typename TFunction::result_type operator()(const typename TFunction::second_argument_type& x) const
     {
       return operation(value, x);
     }
   };
 
   template <typename F, typename T>
-  binder1st<F> bind1st(const F& f, const T& x)
+  ETL_CONSTEXPR binder1st<F> bind1st(const F& f, const T& x)
   {
     return binder1st<F>(f, x);
   }
@@ -397,25 +397,25 @@ namespace etl
 
   public:
 
-    binder2nd(const TFunction& f, const typename TFunction::second_argument_type& v)
+    ETL_CONSTEXPR binder2nd(const TFunction& f, const typename TFunction::second_argument_type& v)
       : operation(f)
       , value(v)
     {
     }
 
-    typename TFunction::result_type operator()(typename TFunction::first_argument_type& x) const
+    ETL_CONSTEXPR typename TFunction::result_type operator()(typename TFunction::first_argument_type& x) const
     {
       return operation(x, value);
     }
 
-    typename TFunction::result_type operator()(const typename TFunction::first_argument_type& x) const
+    ETL_CONSTEXPR typename TFunction::result_type operator()(const typename TFunction::first_argument_type& x) const
     {
       return operation(x, value);
     }
   };
 
   template <typename F, typename T>
-  binder2nd<F> bind2nd(const F& f, const T& x)
+  ETL_CONSTEXPR binder2nd<F> bind2nd(const F& f, const T& x)
   {
     return binder2nd<F>(f, x);
   }

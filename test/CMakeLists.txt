@@ -206,6 +206,7 @@ add_executable(etl_tests
 	test_inplace_function.cpp
 	test_instance_count.cpp
 	test_integral_limits.cpp
+	test_intrusive_avl_tree.cpp
 	test_intrusive_forward_list.cpp
 	test_intrusive_links.cpp
 	test_intrusive_list.cpp

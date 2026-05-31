@@ -1916,7 +1916,7 @@ namespace etl
 
     //*********************************
     template <typename U>
-    default_delete(const default_delete<U>&) ETL_NOEXCEPT
+    ETL_CONSTEXPR default_delete(const default_delete<U>&) ETL_NOEXCEPT
     {
     }
 
@@ -1943,7 +1943,7 @@ namespace etl
 
     //*********************************
     template <typename U>
-    default_delete(const default_delete<U>&) ETL_NOEXCEPT
+    ETL_CONSTEXPR default_delete(const default_delete<U>&) ETL_NOEXCEPT
     {
     }
 
