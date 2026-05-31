@@ -108,7 +108,7 @@ namespace etl
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
-    ETL_CONSTEXPR14 typename etl::iterator_traits<TIterator>::value_type operator*()
+    ETL_CONSTEXPR14 typename etl::iterator_traits<TIterator>::reference operator*()
     {
       return *it;
     }
@@ -116,7 +116,7 @@ namespace etl
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
-    ETL_CONSTEXPR const typename etl::iterator_traits<TIterator>::value_type operator*() const
+    ETL_CONSTEXPR typename etl::iterator_traits<TIterator>::reference operator*() const
     {
       return *it;
     }
