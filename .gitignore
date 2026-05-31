@@ -419,3 +419,4 @@ hugo/resources
 hugo/.hugo_build.lock
 docs/*.html
 test/build-coverage
+test/vs2022/Build
