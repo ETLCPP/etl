@@ -576,13 +576,13 @@ namespace etl
       return move_iterator(current - n);
     }
 
-    ETL_CONSTEXPR14 move_iterator operator+=(difference_type n)
+    ETL_CONSTEXPR14 move_iterator& operator+=(difference_type n)
     {
       current += n;
       return *this;
     }
 
-    ETL_CONSTEXPR14 move_iterator operator-=(difference_type n)
+    ETL_CONSTEXPR14 move_iterator& operator-=(difference_type n)
     {
       current -= n;
       return *this;
