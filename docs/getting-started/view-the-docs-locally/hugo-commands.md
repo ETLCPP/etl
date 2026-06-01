@@ -15,6 +15,7 @@ Run either of these two commands.
 hugo server
 ```
 This is quicker, as Hugo will only regenerate files it detects have changed.  
+
 If you have moved files then the left-hand menu may not always regenerate correctly. If this occurs then run the following command.
 
 ---
