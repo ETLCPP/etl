@@ -2,6 +2,10 @@
 title: "bresenham_line"
 ---
 
+{{< callout type="info">}}
+  Headers: `bresenham_line.h`
+{{< /callout >}}
+
 A 'pseudo' container that generates coordinates on a line between two points using the [Bresenham line algorithm](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm).  
 The class has an STL-like API and is a forward iterator type container.  
 

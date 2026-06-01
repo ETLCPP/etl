@@ -49,6 +49,9 @@ type: hextra-home
 
 </div>
 
+## Version
+This documents version **{{< version >}}**.
+
 ## Motivation
 
 C++ is a powerful language for embedded systems development, with templates offering a great deal of flexibility and type safety. While the C++ Standard Library provides a wealth of well-tested functionality, it’s often not well suited to environments with strict deterministic behavior and limited resources.  
