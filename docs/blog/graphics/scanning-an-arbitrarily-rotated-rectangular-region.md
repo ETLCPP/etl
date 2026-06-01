@@ -3,6 +3,9 @@ title: "Scanning an arbitrarily rotated rectangular region"
 weight: 3
 ---
 
+**Author:** John Wellbelove  
+**Date:** 2019  
+
 Quite often in image processing we need to scan a rectangular region in an image. The region is usually aligned to capture a specific feature in the image.  
 You may be presented with a skewed image, necessitating that the region should also be skewed.  
 
