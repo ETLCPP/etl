@@ -3,4 +3,4 @@ title: "Pseudo containers"
 weight: 100
 ---
 
-Data and data generators tha have a container-like interface.
+Data and data generators that have a container-like interface.

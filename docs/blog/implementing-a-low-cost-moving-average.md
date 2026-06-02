@@ -66,5 +66,5 @@ This may produce a *negative* interim value, which may be a problem if you are u
 
 ---
 
-The ETL has an implementation of this algorithm.
-[pseudo_moving_average](../maths/pseudo_moving_average.md)
+The ETL has an implementation of this algorithm.  
+[pseudo_moving_average]({{% relref "../maths/pseudo_moving_average.md" %}})
