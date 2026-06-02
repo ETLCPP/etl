@@ -39,6 +39,7 @@ SOFTWARE.
 
 #include "data.h"
 
+#include "etl/char_traits.h"
 #include "etl/checksum.h"
 #include "etl/hash.h"
 #include "etl/unordered_set.h"

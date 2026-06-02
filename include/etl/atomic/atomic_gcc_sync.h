@@ -118,12 +118,12 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(T())
     {
     }
 
-    atomic(T v)
+    ETL_CONSTEXPR atomic(T v)
       : value(v)
     {
     }
@@ -410,7 +410,7 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0U)
     {
     }
@@ -656,12 +656,12 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0U)
     {
     }
 
-    atomic(bool v)
+    ETL_CONSTEXPR atomic(bool v)
       : value(char(v))
     {
     }
@@ -997,12 +997,12 @@ namespace etl
 
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0)
     {
     }
 
-    atomic(T v)
+    ETL_CONSTEXPR atomic(T v)
       : value(v)
     {
     }
@@ -1401,7 +1401,7 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0U)
     {
     }
@@ -1711,12 +1711,12 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0U)
     {
     }
 
-    atomic(bool v)
+    ETL_CONSTEXPR atomic(bool v)
       : value(char(v))
     {
     }

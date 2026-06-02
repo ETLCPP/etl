@@ -43,6 +43,7 @@ SOFTWARE.
 
 #include "data.h"
 
+#include "etl/char_traits.h"
 #include "etl/hash.h"
 #include "etl/unordered_map.h"
 

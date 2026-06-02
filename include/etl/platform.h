@@ -567,14 +567,14 @@ typedef uint_least32_t char32_t;
   #define ETL_HAS_ATOMIC                  0
   #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0
 #else
-  #if ((ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) \
-       || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
+  #if ((ETL_USING_CPP11 && ETL_USING_STL) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) \
+       || defined(ETL_COMPILER_CLANG))
     #define ETL_HAS_ATOMIC 1
   #else
     #define ETL_HAS_ATOMIC 0
   #endif
-  #if ((ETL_USING_CPP17 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) \
-       || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
+  #if ((ETL_USING_CPP17 && ETL_USING_STL) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) \
+       || defined(ETL_COMPILER_CLANG))
     #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 1
   #else
     #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0

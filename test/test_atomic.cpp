@@ -891,5 +891,37 @@ namespace
       CHECK_EQUAL(0, atomic_value.load());
     }
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_atomic_trivial_constexpr_default_constructor)
+    {
+      // Verify that default constructors are usable in constexpr context
+      constexpr etl::atomic<int>  a_int{};
+      constexpr etl::atomic<char> a_char{};
+      constexpr etl::atomic<bool> a_bool{};
+
+      (void)a_int;
+      (void)a_char;
+      (void)a_bool;
+
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_trivial_constexpr_value_constructor)
+    {
+      // Verify that value constructors are usable in constexpr context
+      constexpr etl::atomic<int>  a_int{42};
+      constexpr etl::atomic<char> a_char{'A'};
+      constexpr etl::atomic<bool> a_bool{true};
+
+      (void)a_int;
+      (void)a_char;
+      (void)a_bool;
+
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

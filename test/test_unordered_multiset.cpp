@@ -40,6 +40,7 @@ SOFTWARE.
 
 #include "data.h"
 
+#include "etl/char_traits.h"
 #include "etl/checksum.h"
 #include "etl/unordered_multiset.h"
 
