@@ -2,6 +2,7 @@ baseURL = 'http://localhost/'
 #baseURL = 'https://www.etlcpp.com/hugo/'
 languageCode = 'en-gb'
 title = 'Embedded Template Library'
+includeFiles = [".htaccess"]
 
 [markup]
   [markup.highlight]
