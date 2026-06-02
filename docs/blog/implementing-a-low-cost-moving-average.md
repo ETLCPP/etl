@@ -63,3 +63,8 @@ The multiplication may be elided by re-arranging the formula.
 `Old_Average + ((New_Sample - Old_Average) / (Sample_Size + 1))`  
 
 This may produce a *negative* interim value, which may be a problem if you are using scaled unsigned integral types for the average value.
+
+---
+
+The ETL has an implementation of this algorithm.
+[pseudo_moving_average](../maths/pseudo_moving_average.md)
