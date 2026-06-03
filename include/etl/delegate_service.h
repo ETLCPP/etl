@@ -117,6 +117,14 @@ namespace etl
       lookup.fill(default_delegate);
     }
 
+    delegate_service(const delegate_service&) ETL_DELETE;
+    delegate_service& operator=(const delegate_service&) ETL_DELETE;
+
+#if ETL_USING_CPP11
+    delegate_service(delegate_service&&) ETL_DELETE;
+    delegate_service& operator=(delegate_service&&) ETL_DELETE;
+#endif
+
     //*************************************************************************
     /// Registers a delegate for the specified id.
     /// Compile time assert if the id is out of range.
