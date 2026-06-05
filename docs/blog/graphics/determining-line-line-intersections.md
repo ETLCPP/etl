@@ -62,7 +62,7 @@ If `determinant` is zero, then the lines are parallel.
 
 The intersection point is calculated like this:  
 
-Given two lines described by the points `(x1, y1)`, `(x2, y2)`, and `(x3, y3)`, `(x3, y3)`.  
+Given two lines described by the points `(x1, y1)`, `(x2, y2)`, and `(x3, y3)`, `(x4, y4)`.  
 
 ![LineCross1](images/LineCross1.png)
 
