@@ -248,7 +248,7 @@ namespace etl
       left_justified_ = false;
       boolalpha_      = false;
       show_base_      = false;
-      scientific      = false;
+      scientific_     = false;
       fill_           = typename TString::value_type(' ');
     }
 
@@ -597,7 +597,7 @@ namespace etl
     {
       return (lhs.base_ == rhs.base_) && (lhs.width_ == rhs.width_) && (lhs.precision_ == rhs.precision_) && (lhs.upper_case_ == rhs.upper_case_)
              && (lhs.left_justified_ == rhs.left_justified_) && (lhs.boolalpha_ == rhs.boolalpha_) && (lhs.show_base_ == rhs.show_base_)
-             && (lhs.fill_ == rhs.fill_);
+             && (lhs.fill_ == rhs.fill_) && (lhs.scientific_ == rhs.scientific_);
     }
 
     //***************************************************************************

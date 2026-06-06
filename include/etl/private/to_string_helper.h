@@ -422,8 +422,7 @@ namespace etl
     template <typename T, typename TIString>
     void add_floating_point(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append)
     {
-      typedef typename TIString::iterator   iterator;
-      typedef typename TIString::value_type type;
+      typedef typename TIString::iterator  iterator;
 
       if (!append)
       {
