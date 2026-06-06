@@ -249,7 +249,7 @@ namespace etl
       boolalpha_      = false;
       show_base_      = false;
       scientific      = false;
-      fill_ = typename TString::value_type(' ');
+      fill_           = typename TString::value_type(' ');
     }
 
     //***************************************************************************

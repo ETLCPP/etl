@@ -603,7 +603,7 @@ namespace
         CHECK(etl::u8string<64>(STR("  -1.79769e+308")) == s2);
       }
 
-#if ETL_USING_64BIT_TYPES
+  #if ETL_USING_64BIT_TYPES
       using workspace_t = etl::private_to_string::workspace_t;
 
       // Maximum workspace_t value is 9223372036854775807.
@@ -627,7 +627,7 @@ namespace
       etl::u8string<64> s6;
       etl::to_string(std::numeric_limits<uworkspace_t>::min(), s6, Format().precision(5).width(21).right());
       CHECK(etl::u8string<64>(STR("                    0")) == s6);
-#endif
+  #endif
     }
   }
 } // namespace

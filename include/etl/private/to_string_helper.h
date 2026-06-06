@@ -300,9 +300,8 @@ namespace etl
       typedef typename TIString::value_type type;
 
       const uint32_t requested_precision = format.get_precision();
-      const uint32_t precision = (requested_precision == 0U)
-        ? max_precision
-        : (requested_precision > max_precision ? max_precision : requested_precision);
+      const uint32_t precision =
+        (requested_precision == 0U) ? max_precision : (requested_precision > max_precision ? max_precision : requested_precision);
 
       etl::basic_format_spec<TIString> mantissa_integral_format = format;
       mantissa_integral_format.decimal().width(0U).precision(0U);
@@ -314,7 +313,7 @@ namespace etl
 
       // Find exponent by iterative scaling
       int32_t exponent = 0;
-      T scaled = abs_value;
+      T       scaled   = abs_value;
 
       if (scaled >= T(1))
       {
@@ -362,7 +361,8 @@ namespace etl
         }
       }
 
-      etl::private_to_string::add_integral_and_fractional(integral, fractional, str, mantissa_integral_format, mantissa_fractional_format, etl::is_negative(value));
+      etl::private_to_string::add_integral_and_fractional(integral, fractional, str, mantissa_integral_format, mantissa_fractional_format,
+                                                          etl::is_negative(value));
 
       // Append the exponent.
       str.push_back(format.is_upper_case() ? type('E') : type('e'));
