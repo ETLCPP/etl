@@ -218,7 +218,7 @@ namespace etl
     /// Helper function for floating point nan and inf.
     //***************************************************************************
     template <typename TIString>
-    void add_nan_inf(const bool not_a_number, const bool infinity, TIString& str, const etl::basic_format_spec<TIString>& format)
+    void add_nan_inf(const bool not_a_number, const bool infinity, const bool is_negative, TIString& str, const etl::basic_format_spec<TIString>& format)
     {
       typedef typename TIString::value_type type;
 
@@ -240,6 +240,11 @@ namespace etl
       }
       else if (infinity)
       {
+        if (is_negative)
+        {
+          str.push_back(type('-'));
+        }
+
         if (format.is_upper_case())
         {
           str.insert(str.end(), ETL_OR_STD11::begin(inf_upper), ETL_OR_STD11::end(inf_upper));
@@ -433,7 +438,7 @@ namespace etl
 
       if (isnan(value) || isinf(value))
       {
-        etl::private_to_string::add_nan_inf(isnan(value), isinf(value), str, format);
+        etl::private_to_string::add_nan_inf(isnan(value), isinf(value), etl::is_negative(value), str, format);
       }
       else
       {

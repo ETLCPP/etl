@@ -28,7 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <format>
+#include <strstream>
 #include <iomanip>
 #include <ostream>
 
@@ -713,6 +713,37 @@ namespace
       etl::to_string(std::numeric_limits<uworkspace_t>::min(), s6, Format().precision(5).width(21).right());
       CHECK(etl::string<64>(STR("                    0")) == s6);
 #endif
+    }
+
+    //*************************************************************************
+    TEST(test_issue_1436_case_support_for_nan_inf_in_to_string)
+    {
+      if (std::numeric_limits<double>::is_iec559)
+      {
+        etl::string<64> s1;
+        etl::to_string(std::numeric_limits<double>::quiet_NaN(), s1, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::string<64>(STR("            nan")) == s1);
+
+        etl::string<64> s2;
+        etl::to_string(std::numeric_limits<double>::infinity(), s2, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::string<64>(STR("            inf")) == s2);
+
+        etl::string<64> s3;
+        etl::to_string(-std::numeric_limits<double>::infinity(), s3, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::string<64>(STR("           -inf")) == s3);
+
+        etl::string<64> s4;
+        etl::to_string(std::numeric_limits<double>::quiet_NaN(), s4, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::string<64>(STR("            NAN")) == s4);
+
+        etl::string<64> s5;
+        etl::to_string(std::numeric_limits<double>::infinity(), s5, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::string<64>(STR("            INF")) == s5);
+
+        etl::string<64> s6;
+        etl::to_string(-std::numeric_limits<double>::infinity(), s6, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::string<64>(STR("           -INF")) == s6);
+      }
     }
   }
 } // namespace
