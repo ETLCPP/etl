@@ -677,6 +677,9 @@ namespace
         etl::to_string(1000.0, s0, Format().precision(5).width(15).right().scientific(true));
         CHECK(etl::string<64>(STR("     1.00000e+3")) == s0);
 
+        etl::to_string(1000.0, s0, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::string<64>(STR("     1.00000E+3")) == s0);
+
         // Maximum double value is 1.7976931348623157e+308, which rounds to 1.79769e+308 with 5 digits of precision.
         etl::string<64> s1;
         etl::to_string(std::numeric_limits<double>::max(), s1, Format().precision(5).width(15).right());

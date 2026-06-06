@@ -656,6 +656,9 @@ namespace
         etl::to_string(1000.0, s0, Format().precision(5).width(15).right().scientific(true));
         CHECK(etl::wstring<64>(STR("     1.00000e+3")) == s0);
 
+        etl::to_string(1000.0, s0, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::wstring<64>(STR("     1.00000E+3")) == s0);
+
         // Maximum double value is 1.7976931348623157e+308, which rounds to 1.79769e+308 with 5 digits of precision.
         etl::wstring<64> s1;
         etl::to_string(std::numeric_limits<double>::max(), s1, Format().precision(5).width(15).right());
@@ -692,6 +695,37 @@ namespace
       etl::to_string(std::numeric_limits<uworkspace_t>::min(), s6, Format().precision(5).width(21).right());
       CHECK(etl::wstring<64>(STR("                    0")) == s6);
 #endif
+    }
+
+    //*************************************************************************
+    TEST(test_issue_1436_case_support_for_nan_inf_in_to_string)
+    {
+      if (std::numeric_limits<double>::is_iec559)
+      {
+        etl::wstring<64> s1;
+        etl::to_string(std::numeric_limits<double>::quiet_NaN(), s1, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::wstring<64>(STR("            nan")) == s1);
+
+        etl::wstring<64> s2;
+        etl::to_string(std::numeric_limits<double>::infinity(), s2, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::wstring<64>(STR("            inf")) == s2);
+
+        etl::wstring<64> s3;
+        etl::to_string(-std::numeric_limits<double>::infinity(), s3, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::wstring<64>(STR("           -inf")) == s3);
+
+        etl::wstring<64> s4;
+        etl::to_string(std::numeric_limits<double>::quiet_NaN(), s4, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::wstring<64>(STR("            NAN")) == s4);
+
+        etl::wstring<64> s5;
+        etl::to_string(std::numeric_limits<double>::infinity(), s5, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::wstring<64>(STR("            INF")) == s5);
+
+        etl::wstring<64> s6;
+        etl::to_string(-std::numeric_limits<double>::infinity(), s6, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::wstring<64>(STR("           -INF")) == s6);
+      }
     }
   }
 } // namespace
