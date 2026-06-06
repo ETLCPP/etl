@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include <ostream>
+#include <limits>
 
 #include "etl/format_spec.h"
 #include "etl/to_u32string.h"
