@@ -218,7 +218,8 @@ namespace etl
     /// Helper function for floating point nan and inf.
     //***************************************************************************
     template <typename TIString>
-    void add_nan_inf(const bool not_a_number, const bool infinity, const bool is_negative, TIString& str, const etl::basic_format_spec<TIString>& format)
+    void add_nan_inf(const bool not_a_number, const bool infinity, const bool is_negative, TIString& str,
+                     const etl::basic_format_spec<TIString>& format)
     {
       typedef typename TIString::value_type type;
 
@@ -427,7 +428,7 @@ namespace etl
     template <typename T, typename TIString>
     void add_floating_point(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append)
     {
-      typedef typename TIString::iterator  iterator;
+      typedef typename TIString::iterator iterator;
 
       if (!append)
       {
