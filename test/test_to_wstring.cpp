@@ -31,6 +31,7 @@ SOFTWARE.
 #include <iomanip>
 #include <ostream>
 #include <sstream>
+#include <limits>
 
 #include "etl/format_spec.h"
 #include "etl/to_wstring.h"

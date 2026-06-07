@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include <iomanip>
+#include <limits>
 #include <ostream>
 #include <sstream>
 

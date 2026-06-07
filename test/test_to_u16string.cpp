@@ -28,6 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <limits>
+
 #include "etl/format_spec.h"
 #include "etl/to_u16string.h"
 #include "etl/u16string.h"
