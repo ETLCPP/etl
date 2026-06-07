@@ -29,9 +29,9 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include <iomanip>
+#include <limits>
 #include <ostream>
 #include <sstream>
-#include <limits>
 
 #include "etl/format_spec.h"
 #include "etl/to_wstring.h"
