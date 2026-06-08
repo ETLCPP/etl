@@ -10,7 +10,7 @@ This page documents version `20.0.0` and above.
 
 A finite state machine driven by the reception of events (messages) . The incoming messages will be automatically routed to specific handlers based on the message list defined in the template parameters. Optional on_entry and on_exit handlers are available.  
 
-This FSM is slightly more involved to set up than the traditional simple table driven method, but provides great flexibility in implementation. It may also be faster due to the fact that all messages are routed with either O(1) or O(N) rather than scanning a lookup table and calling indirectly through function pointers.  
+This FSM is slightly more involved to set up than the traditional simple table driven method, but provides great flexibility in implementation. It may also be faster due to the fact that all messages are routed with either O(1) or O(logN). O(1) is selected if the event IDs are contiguous.  
 
 The `on_event` functions are not virtual. The template class uses [CRTP](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern) to directly call the derived class's functions.  
 

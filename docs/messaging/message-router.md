@@ -3,7 +3,7 @@ title: message_router
 weight: 3
 ---
 
-A class that will automatically route incoming messages to specific handlers based on the message types declared in the template parameter list. Messages are passed to the receive member function which will static cast it to its real type and call the matching on_receive function in the derived class. A compilation error will occur if the matching on_receive does not exist.  
+A class that will automatically route incoming messages to specific handlers based on the message types declared in the template parameter list. Messages are passed to the receive member function which will static cast it to its real type and call the matching `on_receive` function in the derived class. A compilation error will occur if the matching `on_receive` does not exist.  
 
 The `on_receive` functions are not virtual. The template base class uses `CRTP` to directly call the derived class's functions.  
 
@@ -26,25 +26,25 @@ Note: A message router 'group' is deemed to be a set of routers with identical I
 The default router id is `etl::imessage_router::MESSAGE_ROUTER`.
 
 ### Scenario 1
-You never send a message to a router using it's ID.  
-You never use the ID to uniquely identify a router.  
-You do not require the router ID to act as a priority level when subscribing to a message bus.  
-You do not require that messages can be sent to a group.  
+- You never send a message to a router using it's ID.  
+- You never use the ID to uniquely identify a router.  
+- You do not require the router ID to act as a priority level when subscribing to a message bus.  
+- You do not require that messages can be sent to a group.  
 
 All message router IDs can be identical.  
 
 ### Scenario 2
-You never use the ID to uniquely identify a router.  
-You may use the router ID to send to a particular router group.  
-You require the router ID to act as a priority level when subscribing to a message bus.  
+- You never use the ID to uniquely identify a router.  
+- You may use the router ID to send to a particular router group.  
+- You require the router ID to act as a priority level when subscribing to a message bus.  
 
 Router IDs will be assigned in groups. i.e. Some routers may share IDs.  
 
 ### Scenario 3
-You use the ID to uniquely identify a router.  
-You use the router ID to send to a particular router.  
-You require the router ID to act as a priority level when subscribing to a message bus.  
-You require all priority levels to be unique.  
+- You use the ID to uniquely identify a router.  
+- You use the router ID to send to a particular router.  
+- You require the router ID to act as a priority level when subscribing to a message bus.  
+- You require all priority levels to be unique.  
 
 All router IDs are unique  
 
@@ -117,7 +117,7 @@ Returns the router id.
 ```cpp
 virtual bool is_null_router() const = 0;
 ```
-Returns `true` if the router is a null message router, otherwise `false`.
+Returns `true` if the router is a null message router, otherwise `false`.  
 **Deprecated. **
 
 ---
@@ -154,7 +154,7 @@ MAX_MESSAGE_ROUTER
 
 ## message_router
 User defined message routers are derived from this class.  
-Derived from `## imessage_router`.
+Derived from `imessage_router`.
 
 ---
 
@@ -168,11 +168,12 @@ template <typename TDerived,
 class message_router
 ```
 **Template parameters**  
-`TDerived` The derived class.
-`T1`       The first message type.
-`T2...`    The additional message types.
-The maximum number of types can be set by running the generator for this file. 
-The default is 16.This may be changed by running a modified version of generate_message_router.bat.
+`TDerived` The derived class.  
+`T1`       The first message type.  
+`T2...`    The additional message types.  
+
+The maximum number of types can be set by running the generator for this file.  
+The default is 16.This may be changed by running a modified version of generate_message_router.bat.  
 See [Generators](../tutorials/generators-tutorial)
 
 ---
@@ -191,12 +192,10 @@ This definition will automatically be selected if the compiler supports C++17 or
 To use the older C++03 compatible definition, define `ETL_MESSAGE_ROUTER_FORCE_CPP03` as a project setting or in the optional `etl_profile.h`.
 
 **Since: 20.47.0**  
-This definition will automatically be selected if the compiler supports C++11 or above. It uses either an O(1) or O(N) mechanism to resolve `on_receive()` calls.  
+This definition will automatically be selected if the compiler supports C++11 or above. It uses either an O(1) or O(logN) mechanism to resolve `on_receive()` calls.  
 To use the older C++03 compatible definition, define `ETL_MESSAGE_ROUTER_FORCE_CPP03` as a project setting or in the optional `etl_profile.h`.
 
----
-
-The derived class must define the following member functions.  
+### The derived class must define the following member functions.  
 
 ```cpp
 void on_receive(const Type& msg);
