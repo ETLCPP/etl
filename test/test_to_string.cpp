@@ -28,11 +28,9 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <sstream>
 #include <iomanip>
 #include <limits>
 #include <ostream>
-#include <limits>
 #include <sstream>
 
 #include "etl/format_spec.h"
