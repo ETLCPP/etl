@@ -306,7 +306,7 @@ namespace etl
       typedef typename TIString::value_type type;
 
       const uint32_t requested_precision = format.get_precision();
-      const uint32_t precision = (requested_precision > max_precision) ? max_precision : requested_precision;
+      const uint32_t precision           = (requested_precision > max_precision) ? max_precision : requested_precision;
 
       etl::basic_format_spec<TIString> mantissa_integral_format = format;
       mantissa_integral_format.decimal().width(0U).precision(0U);
