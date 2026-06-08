@@ -228,5 +228,42 @@ namespace
       CHECK(fi1 == fi2);
       CHECK(fi1 != fi3);
     }
+
+    //*************************************************************************
+    TEST(test_dereference_write_through)
+    {
+      int                       value = 42;
+      etl::fixed_iterator<int*> fi(&value);
+
+      // Writing through the dereferenced iterator should modify the underlying value.
+      *fi = 99;
+      CHECK_EQUAL(99, value);
+
+      // Increment does nothing, so writing again still targets the same location.
+      ++fi;
+      *fi = 123;
+      CHECK_EQUAL(123, value);
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_fixed_iterator_constexpr_ctor)
+    {
+      static constexpr int                      data[] = {1, 2, 3};
+      constexpr etl::fixed_iterator<const int*> fi(&data[1]);
+      static_assert(*fi == 2, "constexpr ctor and deref");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_fixed_iterator_constexpr_copy_ctor)
+    {
+      static constexpr int                      data[] = {1, 2, 3};
+      constexpr etl::fixed_iterator<const int*> fi1(&data[0]);
+      constexpr etl::fixed_iterator<const int*> fi2(fi1);
+      static_assert(*fi2 == 1, "constexpr copy ctor");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

@@ -479,7 +479,7 @@ namespace etl
     //*********************************
     const_iterator end() const
     {
-      return accumulator.begin();
+      return accumulator.end();
     }
 
     //*********************************
@@ -487,7 +487,7 @@ namespace etl
     //*********************************
     const_iterator cend() const
     {
-      return accumulator.cbegin();
+      return accumulator.cend();
     }
 
     //*********************************

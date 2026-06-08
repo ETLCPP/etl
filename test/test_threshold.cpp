@@ -115,5 +115,16 @@ namespace
       bool isEqual = std::equal(output2.begin(), output2.end(), result2b.begin(), Compare());
       CHECK(isEqual);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_threshold_constexpr)
+    {
+      constexpr etl::threshold<int> th(50, 1, 0);
+      static_assert(th(40) == 1, "constexpr threshold below");
+      static_assert(th(60) == 0, "constexpr threshold above");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

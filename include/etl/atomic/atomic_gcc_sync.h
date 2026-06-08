@@ -341,6 +341,68 @@ namespace etl
       return __atomic_fetch_xor(&value, v, order);
     }
 
+    // Fetch max
+    T fetch_max(T v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      T old = load(order);
+
+      while (v > old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    T fetch_max(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      T old = load(order);
+
+      while (v > old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    // Fetch min
+    T fetch_min(T v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      T old = load(order);
+
+      while (v < old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    T fetch_min(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      T old = load(order);
+
+      while (v < old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
     // Exchange
     T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
@@ -1232,6 +1294,72 @@ namespace etl
     {
       (void)order;
       return __sync_fetch_and_xor(&value, v);
+    }
+
+    // Fetch max
+    T fetch_max(T v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      (void)order;
+      T old = load(order);
+
+      while (v > old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    T fetch_max(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      (void)order;
+      T old = load(order);
+
+      while (v > old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    // Fetch min
+    T fetch_min(T v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      (void)order;
+      T old = load(order);
+
+      while (v < old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    T fetch_min(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      (void)order;
+      T old = load(order);
+
+      while (v < old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
     }
 
     // Exchange

@@ -32,10 +32,10 @@ SOFTWARE.
 #include "platform.h"
 #include "integral_limits.h"
 #include "null_type.h"
-#include "static_assert.h"
 #include "type_traits.h"
 
-#include <limits.h>
+#include <stddef.h>
+
 namespace etl
 {
   //***************************************************************************

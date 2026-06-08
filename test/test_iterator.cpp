@@ -551,6 +551,28 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_move_iterator_compound_assignment_returns_reference)
+    {
+      int data[] = {10, 20, 30, 40, 50};
+
+      etl::move_iterator<int*> mitr(&data[0]);
+
+      // operator+= must return a reference to *this
+      etl::move_iterator<int*>& ref_plus = (mitr += 2);
+      CHECK_EQUAL(&mitr, &ref_plus);
+      CHECK_EQUAL(30, *mitr);
+
+      // operator-= must return a reference to *this
+      etl::move_iterator<int*>& ref_minus = (mitr -= 1);
+      CHECK_EQUAL(&mitr, &ref_minus);
+      CHECK_EQUAL(20, *mitr);
+
+      // Chaining should work
+      (mitr += 1) += 1;
+      CHECK_EQUAL(40, *mitr);
+    }
+
+    //*************************************************************************
     TEST(test_move_iterator_subtraction)
     {
       Item list[] = {Item("1"), Item("2"), Item("3")};
@@ -1408,6 +1430,28 @@ namespace
       static_assert(etl::is_range_v<decltype(i)> == false, "Expected non range");
     }
 
+#endif
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_move_iterator_constexpr_ctor)
+    {
+      static constexpr int                     data[] = {10, 20, 30};
+      constexpr etl::move_iterator<const int*> mi(&data[0]);
+      static_assert(mi.base() == &data[0], "constexpr ctor");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_move_iterator_constexpr_operators)
+    {
+      static constexpr int                     data[] = {10, 20, 30};
+      constexpr etl::move_iterator<const int*> mi1(&data[0]);
+      constexpr etl::move_iterator<const int*> mi2(&data[1]);
+      static_assert(mi1 != mi2, "constexpr operator!=");
+      static_assert(mi1 < mi2, "constexpr operator<");
+      CHECK(true);
+    }
 #endif
   }
 } // namespace

@@ -637,4 +637,105 @@ namespace
     CHECK_EQUAL(expected_string, ss.str());
   }
 #endif
+
+  //***************************************************************************
+  TEST(test_copy_constructor)
+  {
+    const auto free_slot   = make_free_slot();
+    const auto static_slot = make_static_slot();
+
+    const signal_type original{free_slot, static_slot};
+
+    // Copy construct
+    signal_type copy(original);
+
+    // Both should invoke the same slots independently
+    std::stringstream ss_original;
+    original(ss_original);
+    CHECK_EQUAL(std::string("freestatic"), ss_original.str());
+
+    std::stringstream ss_copy;
+    copy(ss_copy);
+    CHECK_EQUAL(std::string("freestatic"), ss_copy.str());
+
+    // Modifying the copy should not affect the original
+    const auto lambda_slot = make_lambda_slot();
+    copy.connect(lambda_slot);
+
+    CHECK_EQUAL(2U, original.size());
+    CHECK_EQUAL(3U, copy.size());
+  }
+
+  //***************************************************************************
+  TEST(test_copy_assignment)
+  {
+    const auto free_slot   = make_free_slot();
+    const auto static_slot = make_static_slot();
+
+    const signal_type original{free_slot, static_slot};
+    signal_type       assigned{make_lambda_slot()};
+
+    // Copy assign
+    assigned = original;
+
+    // Both should invoke the same slots independently
+    std::stringstream ss_original;
+    original(ss_original);
+    CHECK_EQUAL(std::string("freestatic"), ss_original.str());
+
+    std::stringstream ss_assigned;
+    assigned(ss_assigned);
+    CHECK_EQUAL(std::string("freestatic"), ss_assigned.str());
+
+    // Modifying the assigned signal should not affect the original
+    assigned.disconnect(free_slot);
+
+    CHECK_EQUAL(2U, original.size());
+    CHECK_EQUAL(1U, assigned.size());
+  }
+
+  //***************************************************************************
+  TEST(test_move_constructor)
+  {
+    const auto free_slot   = make_free_slot();
+    const auto static_slot = make_static_slot();
+
+    signal_type original{free_slot, static_slot};
+
+    // Move construct
+    signal_type moved(etl::move(original));
+
+    // Moved-to signal should have the slots
+    std::stringstream ss_moved;
+    moved(ss_moved);
+    CHECK_EQUAL(std::string("freestatic"), ss_moved.str());
+    CHECK_EQUAL(2U, moved.size());
+
+    // Moved-from signal should be empty
+    CHECK(original.empty());
+    CHECK_EQUAL(0U, original.size());
+  }
+
+  //***************************************************************************
+  TEST(test_move_assignment)
+  {
+    const auto free_slot   = make_free_slot();
+    const auto static_slot = make_static_slot();
+
+    signal_type original{free_slot, static_slot};
+    signal_type assigned{make_lambda_slot()};
+
+    // Move assign
+    assigned = etl::move(original);
+
+    // Moved-to signal should have the original's slots
+    std::stringstream ss_assigned;
+    assigned(ss_assigned);
+    CHECK_EQUAL(std::string("freestatic"), ss_assigned.str());
+    CHECK_EQUAL(2U, assigned.size());
+
+    // Moved-from signal should be empty
+    CHECK(original.empty());
+    CHECK_EQUAL(0U, original.size());
+  }
 } // namespace

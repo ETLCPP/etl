@@ -35,10 +35,6 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_NOT_USING_CPP11 && !defined(ETL_IN_UNIT_TEST)
-  #error NOT SUPPORTED FOR C++03 OR BELOW
-#endif
-
 #if ETL_USING_CPP11
 
   #include "algorithm.h"
@@ -95,7 +91,8 @@ namespace etl
   ///
   ///\tparam TFunction: Callback signature.
   ///\tparam Size:      Maximum number of slots that can be connected to the
-  /// signal. \tparam TSlot:     Function-object type or container type that can
+  ///                   signal.
+  ///\tparam TSlot:     Function-object type or container type that can
   /// be invoked. Default etl::delegate<TFunction>.
   //***************************************************************************
   template <typename TFunction, size_t Size, typename TSlot = etl::delegate<TFunction>>
@@ -119,6 +116,66 @@ namespace etl
     {
       static_assert((etl::are_all_same<slot_type, etl::decay_t<TSlots>...>::value), "All slots must be slot_type");
       static_assert(sizeof...(slots) <= Size, "Number of slots exceeds capacity");
+    }
+
+    //*************************************************************************
+    ///\brief Copy constructor.
+    ///
+    ///\param other: The signal to copy from.
+    //*************************************************************************
+    signal(const signal& other) ETL_NOEXCEPT
+      : slot_list{}
+      , slot_list_end{slot_list + other.size()}
+    {
+      etl::copy(other.begin(), other.end(), slot_list);
+    }
+
+    //*************************************************************************
+    ///\brief Copy assignment operator.
+    ///
+    ///\param other: The signal to copy from.
+    ///\return A reference to this signal.
+    //*************************************************************************
+    signal& operator=(const signal& other) ETL_NOEXCEPT
+    {
+      if (this != &other)
+      {
+        etl::copy(other.begin(), other.end(), slot_list);
+        slot_list_end = slot_list + other.size();
+      }
+      return *this;
+    }
+
+    //*************************************************************************
+    ///\brief Move constructor.
+    /// The moved-from signal is left empty.
+    ///
+    ///\param other: The signal to move from.
+    //*************************************************************************
+    signal(signal&& other) ETL_NOEXCEPT
+      : slot_list{}
+      , slot_list_end{slot_list + other.size()}
+    {
+      etl::move(other.begin(), other.end(), slot_list);
+      other.slot_list_end = other.slot_list;
+    }
+
+    //*************************************************************************
+    ///\brief Move assignment operator.
+    /// The moved-from signal is left empty.
+    ///
+    ///\param other: The signal to move from.
+    ///\return A reference to this signal.
+    //*************************************************************************
+    signal& operator=(signal&& other) ETL_NOEXCEPT
+    {
+      if (this != &other)
+      {
+        etl::move(other.begin(), other.end(), slot_list);
+        slot_list_end       = slot_list + other.size();
+        other.slot_list_end = other.slot_list;
+      }
+      return *this;
     }
 
     //*************************************************************************

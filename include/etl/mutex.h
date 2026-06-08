@@ -40,7 +40,7 @@ SOFTWARE.
 #elif defined(ETL_TARGET_OS_THREADX)
   #include "mutex/mutex_threadx.h"
   #define ETL_HAS_MUTEX 1
-#elif ETL_USING_STL && ETL_USING_CPP11
+#elif ETL_USING_STL && ETL_USING_CPP11 && ETL_USING_STD_MUTEX
   #include "mutex/mutex_std.h"
   #define ETL_HAS_MUTEX 1
 #elif defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_ARM8)

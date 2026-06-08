@@ -1,0 +1,500 @@
+---
+title: "flat_map"
+---
+
+{{< callout type="info">}}
+  Header: `flat_map.h`  
+  Similar to: `std::map`
+{{< /callout >}}
+
+A fixed capacity map based on a sorted vector.  
+The container is an associative lookup table with O(N) insertion and erase, and O(log N) search.  
+This container is best used for tables that are occasionally updated and spend most of their time being searched.  
+Uses `etl::less` as the default key comparison method.  
+
+```cpp
+etl::flat_map<typename TKey, typename TMapped, size_t SIZE, TKeyCompare = etl::less>
+```
+
+Inherits from `etl::iflat_map<TKey, TMapped, TKeyCompare>`.
+`etl::iflat_map` may be used as a size independent pointer or reference type for any `etl::flat_map` instance.
+
+## Template deduction guides
+C++17 and above
+
+```cpp
+template <typename... TPairs>
+etl::flat_map(TPairs...)
+```
+
+### Example
+```cpp
+etl::flat_map data{ etl::pair{0, 1}, etl::pair{2, 3}, etl::pair{4, 5}, etl::pair{6, 7} };
+```
+Defines data as an `flat_map` of `int`/`int` pairs, of length 4, containing the supplied data.
+
+## make_flat_map
+C++11 and above
+```cpp
+template <typename TKey, 
+          typename TMapped, 
+          typename TKeyCompare = etl::less<TKey>, 
+          typename... TPairs>
+constexpr auto make_flat_map(TValues&&... values)
+```
+
+### Example
+```cpp
+auto data = etl::make_flat_map<int, int>(etl::pair{0, 1}, etl::pair{2, 3}, 
+                                         etl::pair{4, 5}, etl::pair{6, 7});
+```
+
+## Member types
+
+```cpp
+key_type                TKey
+mapped_type             TMapped
+value_type              pair<const key_type, mapped_type> 
+                        The type is either std::pair (default) or etl::pair (ETL_NO_STL)
+size_type               std::size_t
+difference_type         std::ptrdiff_t
+reference               T&
+const_reference         const T&
+rvalue_reference        T&&
+pointer                 T*
+const_pointer           const T*
+iterator                Random access iterator
+const_iterator          Constant random access iterator
+reverse_iterator        reverse_iterator<iterator>
+const_reverse_iterator  reverse_iterator<const_iterator>
+```
+
+## Static Constants
+
+`MAX_SIZE`  The maximum size of the flat map.
+
+## Constructors
+
+```cpp
+etl::flat_map<Tkey, TMapped, SIZE, TKeyCompare>()
+```
+**Description**  
+Default constructor.
+
+---
+
+```cpp
+etl::flat_map(const flat_map& other)
+```
+**Description**  
+Copy constructor.
+
+---
+
+```cpp
+etl::flat_map(flat_map&& other)
+```
+**Description**  
+Move constructor.
+
+---
+
+```cpp
+template <typename TIterator>
+etl::flat_map<Tkey, TMapped, SIZE, TKeyCompare>(TIterator begin, TIterator end);
+```
+**Description**  
+Construct from the range [`begin`, `end`).
+
+## Element access
+
+```cpp
+TMapped& at(const_key_reference key)
+const TMapped& at(const_key_reference key) const
+```
+**Description**  
+Returns a reference or const reference to the indexed element.  
+Emits an `etl::flat_map_out_of_range` if the key is not in the table.  
+If asserts or exceptions are not enabled then undefined behaviour occurs.
+
+---
+
+```cpp
+TMapped& operator[](const_key_reference key)
+const TMapped& operator[](const_key_reference key) const
+```
+**Description**  
+Returns a reference or const reference to the indexed element.  
+If the key is not in the table then a new entry is created.
+
+## Iterators
+
+```cpp
+iterator begin()
+const_iterator begin() const
+const_iterator cbegin() const
+```
+**Description**  
+Returns an iterator to the beginning of the map.
+
+---
+
+```cpp
+iterator end()
+const_iterator end() const
+const_iterator cend() const
+```
+**Description**  
+Returns an iterator to the end of the map.
+
+---
+
+```cpp
+iterator rbegin()
+const_iterator rbegin() const
+const_iterator crbegin() const
+```
+**Description**  
+Returns a reverse iterator to the beginning of the map.
+
+---
+
+```cpp
+iterator rend()
+const_iterator rend() const
+const_iterator crend() const
+```
+**Description**  
+Returns a reverse iterator to the end of the map.
+
+## Capacity
+
+```cpp
+bool empty() const
+```
+**Description**  
+Returns `true` if the size of the map is zero, otherwise `false`.
+
+---
+
+```cpp
+bool full() const
+```
+**Description**  
+Returns `true` if the size of the lookup is `SIZE`, otherwise `false`.
+
+---
+
+```cpp
+size_t size() const
+```
+**Description**  
+Returns the size of the lookup.
+
+---
+
+```cpp
+size_t max_size() const
+```
+**Description**  
+Returns the maximum possible size of the map.
+
+---
+
+```cpp
+size_t available() const
+```
+**Description**  
+Returns the remaining available capacity in the map.
+
+## Modifiers
+
+```cpp
+flat_map& operator = (const flat_map& rhs)
+flat_map& operator = (flat_map&& rhs)
+```
+**Description**  
+Copies or moves the data from another flat map.
+
+---
+
+```cpp
+pair<iterator, bool> insert(const value_type& value)
+pair<iterator, bool> insert(value_type&& value)
+iterator insert(iterator position, const value_type& value)
+iterator insert(iterator position, value_type&& value)
+```
+**Description**  
+Inserts a value into the map.
+
+```cpp
+template <typename TIterator>
+void insert(TIterator first, TIterator last)
+```
+**Description**  
+Inserts values in to the map.  
+If the map is full then emits an `etl::flat_map_full`. If asserts or exceptions are not enabled then undefined behaviour occurs.  
+The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)
+
+---
+
+```cpp
+pair<iterator, bool> emplace((const value_type& value))
+pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
+```
+**Description**  
+Inserts key/value pairs into the map by constructing directly into storage.  
+The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)
+
+---
+
+**C++03**  
+The emplace functions differ from that of std::map in that, due to C++03 not supporting 'perfect forwarding', the values for constructing mapped types must be listed as parameters and not nested in a 'mapped' value parameter.  
+The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)
+
+```cpp
+template <typename T1>
+pair<iterator, bool> emplace(const key_type& key, const T1& value1)
+```
+**Description**  
+Emplaces a value constructed from `key` and 1 argument into the map.
+
+```cpp
+template <typename T1, typename T2>
+pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+```
+**Description**  
+Emplaces a value constructed from `key` and 2 arguments into the map.
+
+```cpp
+template <typename T1, typename T2, typename T3>
+pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+```
+**Description**  
+Emplaces a value constructed from `key` and 3 arguments into the map.
+
+```cpp
+template <typename T1, typename T2, typename T3, typename T4>
+pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+```
+**Description**  
+Emplaces a value constructed from `key` and 4 arguments into the map.
+
+---
+
+**C++11**  
+```cpp
+template <typename ... Args>
+pair<iterator, bool> emplace(const key_type& key, Args&& ... args)
+```
+**Description**  
+Emplaces a value constructed from the `key` and arguments into the map.
+
+---
+
+```cpp
+size_t erase(key_value_parameter_t key)
+void erase(iterator i_element)
+void erase(iterator first, iterator last)
+```
+**Description**  
+Erase elements from the map.
+
+---
+
+```cpp
+iterator erase(const_iterator i_element)
+iterator erase(const_iteratorfirst, const_iteratorlast)
+```
+**Description**  
+Erase elements from the map.
+From: `20.20.0`
+
+---
+
+```cpp
+template <typename K>
+size_t erase(K&& key)
+```
+**Description**  
+Erases values in the map.  
+Returns an iterator to the next element in the map.  
+Iterator parameters are not checked for validity.  
+From: `20.21.0`
+
+---
+
+```cpp
+void clear();
+```
+**Description**  
+Clears the map to a size of zero.
+
+## Search
+
+```cpp
+iterator find(key_value_parameter_t key)
+const_iterator find(key_value_parameter_t key) const
+```
+**Description**  
+Searches for an element with the key `key`.  
+Returns an iterator to the element, or `end()` if not found.
+
+```cpp
+iterator lower_bound(key_value_parameter_t key)
+const_iterator lower_bound(key_value_parameter_t key) const
+```
+**Description**  
+Searches for an element with the key not less than `key`.  
+Returns an iterator to the element, or `end()` if not found.
+
+```cpp
+iterator upper_bound(key_value_parameter_t key)
+const_iterator upper_bound(key_value_parameter_t key) const
+```
+**Description**  
+Searches for an element with the key greater than `key`.  
+Returns an iterator to the element, or `end()` if not found.
+
+```cpp
+pair<iterator, iterator> equal_range(key_value_parameter_t key)
+pair<const_iterator, const_iterator> equal_range(key_value_parameter_t key) const
+```
+**Description**  
+Returns the range of elements with a key equal to `key`.
+The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)
+
+---
+
+**For comparators that define is_transparent.**  
+
+```cpp
+template <typename K>
+iterator find(const K& key)
+```
+**Description**  
+Searches for an element with the key `key`.  
+Returns an iterator to the element, or `end()` if not found.
+From: `20.21.0`  
+Since: C++11
+
+```cpp
+template <typename K>
+const_iterator find(const K& key) const
+```
+**Description**  
+Searches for an element with the key `key`.  
+Returns an iterator to the element, or `end()` if not found.
+From: `20.21.0`  
+Since: C++11
+
+---
+
+```cpp
+template <typename K>
+iterator lower_bound(const K& key)
+```
+**Description**  
+Searches for an element with the key not less than `key`.  
+Returns an iterator to the element, or `end()` if not found.  
+From: `20.21.0`  
+Since: C++11
+
+```cpp
+template <typename K>
+const_iterator lower_bound(const K& key) const
+```
+**Description**  
+Searches for an element with the key not less than `key`.  
+Returns an iterator to the element, or `end()` if not found.  
+From: `20.21.0`  
+Since: C++11
+
+---
+
+```cpp
+template <typename K>
+iterator upper_bound(const K& key)
+```
+**Description**  
+Searches for an element with the key greater than `key`.  
+Returns an iterator to the element, or `end()` if not found.
+From: `20.21.0`  
+Since: C++11
+
+```cpp
+template <typename K>
+const_iterator upper_bound(const K& key) const
+```
+**Description**  
+Searches for an element with the key greater than `key`.  
+Returns an iterator to the element, or `end()` if not found.
+From: `20.21.0`  
+Since: C++11
+
+---
+
+```cpp
+template <typename K>
+pair<iterator, iterator> equal_range(const K& key)
+```
+**Description**  
+Returns the range of elements with a key equal to `key`.
+The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)  
+From: `20.21.0`  
+Since: C++11
+
+```cpp
+template <typename K>
+pair<const_iterator, const_iterator> equal_range(const K& key) const
+```
+**Description**  
+Returns the range of elements with a key equal to `key`.
+The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)  
+From: `20.21.0`  
+Since: C++11
+
+---
+
+```cpp
+bool contains(key_value_parameter_t  key) const
+```
+Check if the container contains the key.  
+From: `20.21.0`
+
+
+---
+
+```cpp
+template <typename K>
+bool contains(const K& k) const
+```
+Check if the container contains the key.  
+For comparators that define `is_transparent`.
+From: `20.21.0`  
+Since: C++11  
+
+## Non-member functions
+
+**Lexicographically comparisons**  
+
+```cpp
+operator ==
+```
+`true` if the contents of the maps are equal, otherwise `false`.
+
+---
+
+```cpp
+operator !=  
+```
+`true` if the contents of the maps are not equal, otherwise `false`.
+
+## Technical stuff
+
+Flat maps are usually implemented internally as a sorted vector of key/value pairs. Whilst this makes searching fast, it can have a detrimental effect when items are inserted into a container that stores complex, non-trivial keys or values.  
+As inserting requires that all of the items to the right of the insert position must be shifted this can become an expensive operation for larger containers.  
+
+To improve insertion performance ETL flat maps are implemented as vectors of pointers to key/value pairs, sorted by key value. An insertion will involve a copy of a range of pointers; an operation that can be  very fast.  
+
+The downside is that access to an item via an iterator will involve one indirection and the overhead of the container will be one pointer per item. A normal flat map implementation does not have this overhead.

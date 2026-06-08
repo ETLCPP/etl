@@ -1742,7 +1742,7 @@ namespace etl
     {
       count = 1U;
 
-      if ((value & 0xFFFFFFFFF0000000ULL) == 0U)
+      if ((value & 0xFFFFFFFF00000000ULL) == 0U)
       {
         value <<= 32U;
         count += 32U;
@@ -1795,7 +1795,7 @@ namespace etl
   {
     typedef typename etl::make_unsigned<T>::type unsigned_t;
 
-    return static_cast<T>(count_trailing_ones(static_cast<unsigned_t>(value)));
+    return static_cast<T>(count_leading_zeros(static_cast<unsigned_t>(value)));
   }
 
 #if ETL_USING_8BIT_TYPES
@@ -1927,8 +1927,8 @@ namespace etl
 
       if ((value & 0xFFFF0000UL) == 0xFFFF0000UL)
       {
-        value <<= 8U;
-        count += 8U;
+        value <<= 16U;
+        count += 16U;
       }
 
       if ((value & 0xFF000000UL) == 0xFF000000UL)
@@ -1988,14 +1988,14 @@ namespace etl
 
       if ((value & 0xFFFFFFFF00000000ULL) == 0xFFFFFFFF00000000ULL)
       {
-        value <<= 8U;
-        count += 8U;
+        value <<= 32U;
+        count += 32U;
       }
 
       if ((value & 0xFFFF000000000000ULL) == 0xFFFF000000000000ULL)
       {
-        value <<= 8U;
-        count += 8U;
+        value <<= 16U;
+        count += 16U;
       }
 
       if ((value & 0xFF00000000000000ULL) == 0xFF00000000000000ULL)

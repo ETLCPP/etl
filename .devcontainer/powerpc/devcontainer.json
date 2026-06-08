@@ -1,0 +1,29 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/cpp
+{
+  "name": "powerpc (Debian)",
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": "."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools"
+      ],
+      "settings": {
+        "cmake.sourceDirectory": "${workspaceFolder}/test",
+        "cmake.configureArgs": [
+          "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/.devcontainer/powerpc/toolchain-powerpc.cmake",
+          "-DBUILD_TESTS=ON",
+          "-DNO_STL=ON",
+          "-DETL_CXX_STANDARD=23"
+        ],
+        "cmake.buildDirectory": "${workspaceFolder}/build-powerpc",
+        "cmake.generator": "Ninja"
+      }
+    }
+  },
+  "remoteUser": "root"
+}

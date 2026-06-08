@@ -116,15 +116,15 @@ namespace etl
   };
 
   //***************************************************************************
-  /// Unsorted exception for the list.
-  ///\ingroup list
+  /// Unsorted exception for the forward_list.
+  ///\ingroup forward_list
   //***************************************************************************
   class forward_list_no_pool : public forward_list_exception
   {
   public:
 
     forward_list_no_pool(string_type file_name_, numeric_type line_number_)
-      : forward_list_exception(ETL_ERROR_TEXT("list:no pool", ETL_FORWARD_LIST_FILE_ID"D"), file_name_, line_number_)
+      : forward_list_exception(ETL_ERROR_TEXT("forward_list:no pool", ETL_FORWARD_LIST_FILE_ID"D"), file_name_, line_number_)
     {
     }
   };

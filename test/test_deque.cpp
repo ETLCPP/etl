@@ -2272,6 +2272,29 @@ namespace
 
       CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
     }
+
+    //*************************************************************************
+    TEST(test_const_iterator_subscript)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      const DataNDC& cdata = data;
+
+      // Access via const_iterator operator[]
+      DataNDC::const_iterator cit = cdata.begin();
+
+      // Verify operator[] returns values matching sequential access
+      for (size_t i = 0; i < cdata.size(); ++i)
+      {
+        CHECK(cit[i] == cdata[i]);
+      }
+
+      // Verify const_iterator operator[] returns const_reference
+      // (This is a compile-time check - if the fix is reverted,
+      //  the type would be non-const reference which is incorrect for const_iterator)
+      const NDC& ref = cit[0];
+      CHECK(ref == cdata[0]);
+    }
   }
 } // namespace
 
