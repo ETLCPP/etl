@@ -1267,6 +1267,86 @@ namespace etl
       }
     }
 
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+    //*********************************************************************
+    /// Emplaces a value to the set.
+    //*********************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> emplace(Args&&... args)
+    {
+      if (full())
+      {
+        // A duplicate key does not require a free node, so emplacing it is not
+        // a capacity failure. Construct a temporary to obtain its key and only
+        // emit set_full if the key is not already present. This keeps emplace
+        // consistent with insert when the set is full.
+        value_type temp_value(etl::forward<Args>(args)...);
+        iterator   position = find(temp_value);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(set_full));
+          return ETL_OR_STD::make_pair(end(), false);
+        }
+
+        return ETL_OR_STD::make_pair(position, false);
+      }
+
+      // Construct the value
+      Data_Node* p_node = allocate_data_node();
+      ::new ((void*)&p_node->value) value_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
+      Node* inserted_node = insert_node(root_node, *p_node);
+      bool  inserted      = inserted_node == p_node;
+
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
+    }
+#else
+    //*********************************************************************
+    /// Emplaces a value to the set.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> emplace(const_reference value)
+    {
+      return insert(value);
+    }
+
+    //*********************************************************************
+    /// Emplaces a value to the set.
+    //*********************************************************************
+    template <typename T1>
+    ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1)
+    {
+      if (full())
+      {
+        // A duplicate key does not require a free node, so emplacing it is not
+        // a capacity failure. Construct a temporary to obtain its key and only
+        // emit set_full if the key is not already present. This keeps emplace
+        // consistent with insert when the set is full.
+        value_type temp_value(value1);
+        iterator   position = find(temp_value);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(set_full));
+          return ETL_OR_STD::make_pair(end(), false);
+        }
+
+        return ETL_OR_STD::make_pair(position, false);
+      }
+
+      Data_Node* p_node = allocate_data_node();
+      ::new ((void*)&p_node->value) value_type(value1);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      Node* inserted_node = insert_node(root_node, *p_node);
+      bool  inserted      = inserted_node == p_node;
+
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
+    }
+#endif
+
     //*********************************************************************
     /// Returns an iterator pointing to the first element in the container
     /// whose key is not considered to go before the key provided or end()

@@ -566,6 +566,20 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      DataM data;
+
+      data.emplace(std::string("1"), ItemM(1));
+      data.emplace(std::string("2"), ItemM(2));
+      data.emplace(std::string("3"), ItemM(3));
+
+      CHECK_EQUAL(3U, data.size());
+      CHECK(2 == data.find("2")->second.value);
+      CHECK(3 == data.find("3")->second.value);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_moved_value)
     {
       DataM data;

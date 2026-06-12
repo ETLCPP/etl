@@ -564,6 +564,18 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Emplaces a value to the reference_flat_map.
+    /// As the reference_flat_map stores references to externally owned
+    /// objects, the value is not constructed in place but inserted by
+    /// reference.
+    ///\param value    The value to emplace.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> emplace(reference value)
+    {
+      return insert(value);
+    }
+
+    //*********************************************************************
     /// Inserts a value to the reference_flat_map.
     /// If asserts or exceptions are enabled, emits flat_map_full if the
     /// reference_flat_map is already full.

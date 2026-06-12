@@ -603,6 +603,35 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      Compare_Data compare_data;
+      Data         data;
+
+      data.emplace(0);
+      compare_data.insert(0);
+
+      data.emplace(1);
+      compare_data.insert(1);
+
+      data.emplace(0);
+      compare_data.insert(0);
+
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(3U, data.size());
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_excess)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.emplace(99), etl::multiset_full);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_moved_value)
     {
       DataM data;

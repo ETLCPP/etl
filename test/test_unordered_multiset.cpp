@@ -564,6 +564,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      DataM data;
+
+      auto result1 = data.emplace(ItemM(1));
+      auto result2 = data.emplace(ItemM(2));
+      auto result3 = data.emplace(ItemM(1));
+
+      CHECK(result1 != data.end());
+      CHECK(result2 != data.end());
+      CHECK(result3 != data.end());
+      CHECK_EQUAL(3U, data.size());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_moved_value)
     {
       DataM data;
