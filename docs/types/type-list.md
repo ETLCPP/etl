@@ -10,7 +10,7 @@ title: "type_list"
 
 ## type_list
 ```cpp
-template <typename... Typelists>>
+template <typename... Typelists>
 struct type_list
 ```
 **Description**  
@@ -217,7 +217,7 @@ template <typename TTypeList, size_t... Indices>
 struct type_list_select
 ```
 **Description**  
-Selects types from a given `type_list`, according to a list if indices. 
+Selects types from a given `type_list`, according to a list of indices. 
 Defines `type` as the modified `type_list`. 
 
 ---
@@ -227,17 +227,17 @@ template <typename TTypeList, size_t... Indices>
 type_list_select_t
 ```
 **Description**  
-Selects types from a given `type_list`, according to a list if indices. 
+Selects types from a given `type_list`, according to a list of indices. 
 Defined as the modified `type_list`. 
 
 ## type_list_select_from_indexes
 ```cpp
-template <typename TTypeList, size_t... Indices
+template <typename TTypeList, size_t... Indices>
 type_list_select_from_indexes
 ```
 **Description**  
 `type_list_select_from_indexes` is an alias of `type_list_select` to be more consistent with the naming of other type_list metafunctions.  
-Selects types from a given `type_list`, according to a list if indices. 
+Selects types from a given `type_list`, according to a list of indices. 
 Defines `type` as the modified `type_list`. 
 
 ## type_list_select_from_index_sequence
@@ -596,7 +596,7 @@ constexpr bool type_list_none_of_v
 **Description**  
 Checks that no types in a `type_list` satisfy a unary predicate.  
 Predicate must be: `template <typename T> struct Pred : etl::bool_constant<...> {};`  
-Defined` as `true` or `false`.  
+Defined as `true` or `false`.  
 From: `C++17`
 
 ## type_lists_are_convertible
@@ -738,19 +738,19 @@ template <typename T, typename... TypeLists>
 struct type_list_in_no_lists
 ```
 **Description**  
-Checks if a type `T` is present in at least one of the provided `type_lists`.   
-Inherits from  `etl::true_type` if `T` is in any list, otherwise `etl::false_type`.  
+Checks if a type `T` is present none of the provided `type_lists`.   
+Inherits from  `etl::true_type` if `T` is in no list, otherwise `etl::false_type`.  
 Since: `20.48.0`
 
 ---
 
 ```cpp
 template <typename T, typename... TypeLists>
-constexpr bool type_list_in_no_list_v
+constexpr bool type_list_in_no_lists_v
 ```
 **Description**  
-Checks if a type `T` is present in at least one of the provided `type_lists`.   
-Defined as `true` if `T` is in any list, otherwise `false`.    
+Checks if a type `T` is present in none of the provided `type_lists`.   
+Defined as `true` if `T` is in no list, otherwise `false`.    
 Since: `20.48.0`  
 From: `C++17`
 
