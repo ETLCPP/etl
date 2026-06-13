@@ -880,14 +880,14 @@ namespace etl
       TDistance parent = (value_index - 1) / 2;
 
 #include "etl/private/diagnostic_array_bounds_push.h"
-      while ((value_index > top_index) && compare(first[parent], value))
+      while ((value_index > top_index) && compare(*(first + parent), value))
       {
-        first[value_index] = ETL_MOVE(first[parent]);
-        value_index        = parent;
-        parent             = (value_index - 1) / 2;
+        *(first + value_index) = ETL_MOVE(*(first + parent));
+        value_index            = parent;
+        parent                 = (value_index - 1) / 2;
       }
 
-      first[value_index] = ETL_MOVE(value);
+      *(first + value_index) = ETL_MOVE(value);
 #include "etl/private/diagnostic_pop.h"
     }
 
@@ -900,20 +900,20 @@ namespace etl
 
       while (child2nd < length)
       {
-        if (compare(first[child2nd], first[child2nd - 1]))
+        if (compare(*(first + child2nd), *(first + (child2nd - 1))))
         {
           --child2nd;
         }
 
-        first[value_index] = ETL_MOVE(first[child2nd]);
-        value_index        = child2nd;
-        child2nd           = 2 * (child2nd + 1);
+        *(first + value_index) = ETL_MOVE(*(first + child2nd));
+        value_index            = child2nd;
+        child2nd               = 2 * (child2nd + 1);
       }
 
       if (child2nd == length)
       {
-        first[value_index] = ETL_MOVE(first[child2nd - 1]);
-        value_index        = child2nd - 1;
+        *(first + value_index) = ETL_MOVE(*(first + (child2nd - 1)));
+        value_index            = child2nd - 1;
       }
 
       push_heap(first, value_index, top_index, ETL_MOVE(value), compare);
@@ -927,7 +927,7 @@ namespace etl
 
       for (TDistance child = 1; child < n; ++child)
       {
-        if (compare(first[parent], first[child]))
+        if (compare(*(first + parent), *(first + child)))
         {
           return false;
         }
@@ -949,8 +949,8 @@ namespace etl
     typedef typename etl::iterator_traits<TIterator>::value_type      value_t;
     typedef typename etl::iterator_traits<TIterator>::difference_type distance_t;
 
-    value_t value = ETL_MOVE(last[-1]);
-    last[-1]      = ETL_MOVE(first[0]);
+    value_t value = ETL_MOVE(*(last - 1));
+    *(last - 1)   = ETL_MOVE(*first);
 
     private_heap::adjust_heap(first, distance_t(0), distance_t(last - first - 1), ETL_MOVE(value), compare);
   }

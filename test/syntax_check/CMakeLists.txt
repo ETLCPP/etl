@@ -243,6 +243,7 @@ target_sources(tests PRIVATE
 		imemory_block_allocator.h.t.cpp
 		index_of_type.h.t.cpp
 		indirect_vector.h.t.cpp
+		infinite_loop.h.t.cpp
 		initializer_list.h.t.cpp
 		inplace_function.h.t.cpp
 		instance_count.h.t.cpp

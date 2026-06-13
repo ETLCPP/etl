@@ -101,7 +101,7 @@ namespace
 
       priority_queue_t* ppriority_queue = new etl::priority_queue<int, 4>;
 
-      etl::ipriority_queue<int, priority_queue_t::container_type, priority_queue_t::compare_type>* pipriority_queue = ppriority_queue;
+      etl::ipriority_queue<int>* pipriority_queue = ppriority_queue;
 
       pipriority_queue->push(1);
       pipriority_queue->push(2);
@@ -577,8 +577,8 @@ namespace
 
       etl::priority_queue<int, SIZE> priority_queue2;
 
-      etl::ipriority_queue<int, etl::vector<int, SIZE>>& ipriority_queue1 = priority_queue1;
-      etl::ipriority_queue<int, etl::vector<int, SIZE>>& ipriority_queue2 = priority_queue2;
+      etl::ipriority_queue<int>& ipriority_queue1 = priority_queue1;
+      etl::ipriority_queue<int>& ipriority_queue2 = priority_queue2;
 
       ipriority_queue2 = ipriority_queue1;
 
@@ -621,9 +621,9 @@ namespace
     //*************************************************************************
     TEST(test_interface)
     {
-      typedef etl::priority_queue<int, SIZE>                                                       priority_queue_t;
-      priority_queue_t                                                                             priority_queue;
-      etl::ipriority_queue<int, priority_queue_t::container_type, priority_queue_t::compare_type>& ipriority_queue = priority_queue;
+      typedef etl::priority_queue<int, SIZE> priority_queue_t;
+      priority_queue_t                       priority_queue;
+      etl::ipriority_queue<int>&             ipriority_queue = priority_queue;
 
       std::priority_queue<int> compare_priority_queue;
 
@@ -654,8 +654,8 @@ namespace
 
       etl::priority_queue<int, SIZE, etl::vector<int, SIZE>, std::less<int> > priority_queue2;
 
-      etl::ipriority_queue<int, etl::vector<int, SIZE>, std::less<int>>& ipriority_queue1 = priority_queue1;
-      etl::ipriority_queue<int, etl::vector<int, SIZE>, std::less<int>>& ipriority_queue2 = priority_queue2;
+      etl::ipriority_queue<int, etl::ivector<int>, std::less<int> >& ipriority_queue1 = priority_queue1;
+      etl::ipriority_queue<int, etl::ivector<int>, std::less<int> >& ipriority_queue2 = priority_queue2;
 
       ipriority_queue2 = ipriority_queue1;
 
@@ -666,6 +666,60 @@ namespace
         CHECK_EQUAL(priority_queue1.top(), priority_queue2.top());
         priority_queue1.pop();
         priority_queue2.pop();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_deque_container)
+    {
+      etl::priority_queue<int, SIZE, etl::deque<int, SIZE> > priority_queue;
+
+      CHECK_EQUAL(priority_queue.size(), 0UL);
+      CHECK_EQUAL(priority_queue.available(), SIZE);
+      CHECK_EQUAL(priority_queue.max_size(), SIZE);
+
+      priority_queue.push(3);
+      priority_queue.push(1);
+      priority_queue.push(4);
+      priority_queue.push(2);
+
+      CHECK_EQUAL(4UL, priority_queue.size());
+      CHECK(priority_queue.full());
+      CHECK_EQUAL(4, priority_queue.top());
+
+      priority_queue.pop();
+      CHECK_EQUAL(3, priority_queue.top());
+
+      priority_queue.pop();
+      CHECK_EQUAL(2, priority_queue.top());
+
+      priority_queue.pop();
+      CHECK_EQUAL(1, priority_queue.top());
+
+      priority_queue.pop();
+      CHECK(priority_queue.empty());
+
+      // Test via ipriority_queue interface
+      etl::priority_queue<int, SIZE, etl::deque<int, SIZE> > pq1;
+      pq1.push(10);
+      pq1.push(30);
+      pq1.push(20);
+
+      etl::ipriority_queue<int, etl::ideque<int> >& ipq = pq1;
+      CHECK_EQUAL(3UL, ipq.size());
+      CHECK_EQUAL(30, ipq.top());
+
+      etl::priority_queue<int, SIZE, etl::deque<int, SIZE> > pq2;
+      etl::ipriority_queue<int, etl::ideque<int> >&          ipq2 = pq2;
+      ipq2                                                        = ipq;
+
+      CHECK_EQUAL(pq1.size(), pq2.size());
+
+      while (!pq1.empty())
+      {
+        CHECK_EQUAL(pq1.top(), pq2.top());
+        pq1.pop();
+        pq2.pop();
       }
     }
   }
