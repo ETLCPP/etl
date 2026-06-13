@@ -147,7 +147,7 @@ namespace
 
       using index_sequence = etl::index_sequence<0, 2>;
 
-      CHECK_TRUE((std::is_same < etl::type_list_select_from_index_sequence<t1, index_sequence> ::type, t2> ::value));
+      CHECK_TRUE((std::is_same< etl::type_list_select_from_index_sequence<t1, index_sequence>::type, t2>::value));
       CHECK_TRUE((std::is_same<etl::type_list_select_from_index_sequence_t<t1, index_sequence>, t2>::value));
     }
 
@@ -167,11 +167,11 @@ namespace
     TEST(test_type_list_cat)
     {
       typedef etl::type_list<char, uint16_t, int, uint32_t> t1;
-      typedef etl::type_list<uint8_t, uint16_t, int>   t2;
-      typedef etl::type_list<>                    t3;
+      typedef etl::type_list<uint8_t, uint16_t, int>        t2;
+      typedef etl::type_list<>                              t3;
 
       typedef etl::type_list<char, uint16_t, int, uint32_t, uint8_t, uint16_t, int> t_cat1;
-      typedef etl::type_list<char, int, uint32_t, uint8_t, bool>     t_cat2;
+      typedef etl::type_list<char, int, uint32_t, uint8_t, bool>                    t_cat2;
 
       CHECK_TRUE((std::is_same<etl::type_list_cat<t1, t2>::type, t_cat1>::value));
       CHECK_TRUE((std::is_same<etl::type_list_cat<t1, t2, t3>::type, t_cat1>::value));
@@ -921,7 +921,7 @@ namespace
       using list3 = etl::type_list<A, B, E, D, E, F>;
       using list4 = etl::type_list<>;
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       constexpr bool type_list_in_all_lists0 = etl::type_list_in_all_lists_v<A>;
       constexpr bool type_list_in_all_lists1 = etl::type_list_in_all_lists_v<A, list1>;
       constexpr bool type_list_in_all_lists2 = etl::type_list_in_all_lists_v<A, list2>;
@@ -929,7 +929,7 @@ namespace
       constexpr bool type_list_in_all_lists4 = etl::type_list_in_all_lists_v<A, list4>;
       constexpr bool type_list_in_all_lists5 = etl::type_list_in_all_lists_v<A, list1, list2, list3>;
       constexpr bool type_list_in_all_lists6 = etl::type_list_in_all_lists_v<A, list1, list2, list3, list4>;
-#else
+  #else
       constexpr bool type_list_in_all_lists0 = etl::type_list_in_all_lists<A>::value;
       constexpr bool type_list_in_all_lists1 = etl::type_list_in_all_lists<A, list1>::value;
       constexpr bool type_list_in_all_lists2 = etl::type_list_in_all_lists<A, list2>::value;
@@ -937,7 +937,7 @@ namespace
       constexpr bool type_list_in_all_lists4 = etl::type_list_in_all_lists<A, list4>::value;
       constexpr bool type_list_in_all_lists5 = etl::type_list_in_all_lists<A, list1, list2, list3>::value;
       constexpr bool type_list_in_all_lists6 = etl::type_list_in_all_lists<A, list1, list2, list3, list4>::value;
-#endif
+  #endif
 
       CHECK_FALSE(type_list_in_all_lists0);
       CHECK_TRUE(type_list_in_all_lists1);
@@ -956,7 +956,7 @@ namespace
       using list3 = etl::type_list<A, B, E, D, E, F>;
       using list4 = etl::type_list<>;
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       constexpr bool type_list_in_any_list0 = etl::type_list_in_any_list_v<A>;
       constexpr bool type_list_in_any_list1 = etl::type_list_in_any_list_v<A, list1>;
       constexpr bool type_list_in_any_list2 = etl::type_list_in_any_list_v<A, list2>;
@@ -964,7 +964,7 @@ namespace
       constexpr bool type_list_in_any_list4 = etl::type_list_in_any_list_v<A, list4>;
       constexpr bool type_list_in_any_list5 = etl::type_list_in_any_list_v<A, list1, list2, list3>;
       constexpr bool type_list_in_any_list6 = etl::type_list_in_any_list_v<A, list1, list2, list3, list4>;
-#else
+  #else
       constexpr bool type_list_in_any_list0 = etl::type_list_in_any_list<A>::value;
       constexpr bool type_list_in_any_list1 = etl::type_list_in_any_list<A, list1>::value;
       constexpr bool type_list_in_any_list2 = etl::type_list_in_any_list<A, list2>::value;
@@ -972,7 +972,7 @@ namespace
       constexpr bool type_list_in_any_list4 = etl::type_list_in_any_list<A, list4>::value;
       constexpr bool type_list_in_any_list5 = etl::type_list_in_any_list<A, list1, list2, list3>::value;
       constexpr bool type_list_in_any_list6 = etl::type_list_in_any_list<A, list1, list2, list3, list4>::value;
-#endif
+  #endif
 
       CHECK_FALSE(type_list_in_any_list0);
       CHECK_TRUE(type_list_in_any_list1);
@@ -991,7 +991,7 @@ namespace
       using list3 = etl::type_list<A, B, E, D, E, F>;
       using list4 = etl::type_list<>;
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       constexpr bool type_list_in_no_lists0 = etl::type_list_in_no_lists_v<A>;
       constexpr bool type_list_in_no_lists1 = etl::type_list_in_no_lists_v<A, list1>;
       constexpr bool type_list_in_no_lists2 = etl::type_list_in_no_lists_v<A, list2>;
@@ -999,7 +999,7 @@ namespace
       constexpr bool type_list_in_no_lists4 = etl::type_list_in_no_lists_v<A, list4>;
       constexpr bool type_list_in_no_lists5 = etl::type_list_in_no_lists_v<A, list1, list2, list3>;
       constexpr bool type_list_in_no_lists6 = etl::type_list_in_no_lists_v<A, list1, list2, list3, list4>;
-#else
+  #else
       constexpr bool type_list_in_no_lists0 = etl::type_list_in_no_lists<A>::value;
       constexpr bool type_list_in_no_lists1 = etl::type_list_in_no_lists<A, list1>::value;
       constexpr bool type_list_in_no_lists2 = etl::type_list_in_no_lists<A, list2>::value;
@@ -1007,7 +1007,7 @@ namespace
       constexpr bool type_list_in_no_lists4 = etl::type_list_in_no_lists<A, list4>::value;
       constexpr bool type_list_in_no_lists5 = etl::type_list_in_no_lists<A, list1, list2, list3>::value;
       constexpr bool type_list_in_no_lists6 = etl::type_list_in_no_lists<A, list1, list2, list3, list4>::value;
-#endif
+  #endif
 
       CHECK_TRUE(type_list_in_no_lists0);
       CHECK_FALSE(type_list_in_no_lists1);

@@ -971,27 +971,26 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename T, typename... TypeLists>
   inline constexpr bool type_list_in_all_lists_v = type_list_in_all_lists<T, TypeLists...>::value;
-#endif
+  #endif
 
   //*****************************************************************************
   /// Checks if a type T is present in at least one of the provided type_lists.
   /// Returns etl::true_type if T is in any list, otherwise etl::false_type.
   //*****************************************************************************
   template <typename T, typename... TypeLists>
-  struct type_list_in_any_list
-    : etl::false_type
+  struct type_list_in_any_list : etl::false_type
   {
   };
 
   // Recursive case: Check the first list using your helper.
   template <typename T, typename FirstList, typename... RestLists>
   struct type_list_in_any_list<T, FirstList, RestLists...>
-    : etl::conditional<type_list_contains<FirstList, T>::value,
-                       etl::true_type,
-                       type_list_in_any_list<T, RestLists...>>::type {};
+    : etl::conditional<type_list_contains<FirstList, T>::value, etl::true_type, type_list_in_any_list<T, RestLists...>>::type
+  {
+  };
 
   // Specialisation if no lists provided.
   template <typename T>
@@ -999,10 +998,10 @@ namespace etl
   {
   };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename T, typename... TypeLists>
   inline constexpr bool type_list_in_any_list_v = type_list_in_any_list<T, TypeLists...>::value;
-#endif
+  #endif
 
   //*****************************************************************************
   /// Checks if a type T is present in none provided type_lists.
@@ -1011,10 +1010,10 @@ namespace etl
   template <typename T, typename... Lists>
   using type_list_in_no_lists = etl::bool_constant<!type_list_in_any_list<T, Lists...>::value>;
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename T, typename... Lists>
   inline constexpr bool type_list_in_no_lists_v = type_list_in_no_lists<T, Lists...>::value;
-#endif
+  #endif
 
   //*****************************************************************************
   namespace private_type_list
@@ -1039,9 +1038,7 @@ namespace etl
       static constexpr bool head_is_not_in_other_lists = etl::type_list_in_no_lists<Head, TOtherLists...>::value;
 
       // Append Head to the result if it's NOT in any of the other lists.
-      using accumulated = etl::conditional_t<head_is_not_in_other_lists,
-                                             etl::type_list_push_back_t<TAccumulatedResult, Head>,
-                                             TAccumulatedResult>;
+      using accumulated = etl::conditional_t<head_is_not_in_other_lists, etl::type_list_push_back_t<TAccumulatedResult, Head>, TAccumulatedResult>;
 
     public:
 
@@ -1132,9 +1129,7 @@ namespace etl
       static constexpr bool head_is_in_all_lists = etl::type_list_in_all_lists<Head, TOtherLists...>::value;
 
       // Append Head to the result if it's in all lists AND not already added.
-      using accumulated = etl::conditional_t<head_is_in_all_lists,
-                                             etl::type_list_push_back_t<TAccumulatedResult, Head>,
-                                             TAccumulatedResult>;
+      using accumulated = etl::conditional_t<head_is_in_all_lists, etl::type_list_push_back_t<TAccumulatedResult, Head>, TAccumulatedResult>;
 
     public:
 
@@ -1215,4 +1210,3 @@ namespace etl
 #endif
 
 #endif
-
