@@ -992,12 +992,6 @@ namespace etl
   {
   };
 
-  //// Specialisation if no lists provided.
-  //template <typename T>
-  //struct type_list_in_any_list<T> : etl::false_type
-  //{
-  //};
-
   #if ETL_USING_CPP17
   template <typename T, typename... TypeLists>
   inline constexpr bool type_list_in_any_list_v = type_list_in_any_list<T, TypeLists...>::value;
