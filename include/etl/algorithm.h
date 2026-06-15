@@ -98,6 +98,22 @@ namespace etl
 //*****************************************************************************
 namespace etl
 {
+  struct stable_partition_exception : etl::exception
+  {
+    stable_partition_exception(string_type reason_, string_type file_, numeric_type line_)
+      : etl::exception(reason_, file_, line_)
+    {
+    }
+  };
+
+  struct stable_partition_buffer_too_small : stable_partition_exception
+  {
+    stable_partition_buffer_too_small(string_type file_, numeric_type line_)
+      : stable_partition_exception(ETL_ERROR_TEXT("stable_partiton:buffer too small", ETL_ALGORITHM_FILE_ID"A"), file_, line_)
+    {
+    }
+  };
+
   namespace private_algorithm
   {
     template <bool use_swap>
@@ -3529,6 +3545,81 @@ namespace etl
     }
 
     return first;
+  }
+
+  //***************************************************************************
+  /// stable_partition
+  /// O(NlogN) time.
+  /// In-place.
+  //***************************************************************************
+  template <typename TIterator, typename TPredicate>
+  ETL_CONSTEXPR14 TIterator stable_partition(TIterator first, TIterator last, TPredicate predicate)
+  {
+    typename etl::iterator_traits<TIterator>::difference_type n = etl::distance(first, last);
+
+    if (n <= 1)
+    {
+      // Empty or single-element range: trivially partitioned either way.
+      return last;
+    }
+
+    TIterator mid = first;
+    etl::advance(mid, n / 2);
+
+    etl::stable_partition(first, mid, predicate);
+    etl::stable_partition(mid, last, predicate);
+
+    TIterator left_partition_start  = etl::find_if_not(first, last, predicate);
+    TIterator right_partition_start = etl::find_if(left_partition_start, last, predicate);
+    TIterator right_partition_end   = etl::find_if_not(right_partition_start, last, predicate);
+
+    return etl::rotate(left_partition_start, right_partition_start, right_partition_end);
+  }
+
+  //***************************************************************************
+  /// stable_partition
+  /// O(N) time.
+  /// O(N) extra space.
+  //***************************************************************************
+  template <typename TIterator, typename TPredicate>
+  ETL_CONSTEXPR14 TIterator stable_partition(TIterator first, TIterator last, TIterator buffer_first, TIterator buffer_last, TPredicate predicate)
+  {
+    typename etl::iterator_traits<TIterator>::difference_type n = etl::distance(first, last);
+
+    if (n <= 1)
+    {
+      // Empty or single-element range.
+      return first;
+    }
+
+    ETL_ASSERT((etl::distance(first, last) <= etl::distance(buffer_first, buffer_last)), ETL_ERROR(stable_partition_buffer_too_small));
+
+    TIterator input_first = first;
+    TIterator buffer_true = buffer_first;
+
+    // Find where the partition point will be in the buffer.
+    size_t true_count = std::count_if(first, last, predicate);
+    TIterator buffer_false = buffer_first + true_count;
+
+    // Move them to the correct places in the temporary buffer.
+    while (first != last)
+    {
+      if (predicate(*first))
+      {
+        *buffer_true++ = etl::move(*first);
+      }
+      else
+      {
+        *buffer_false++ = etl::move(*first);
+      }
+
+      ++first;
+    }
+
+    // Move them back to the original range.
+    etl::move(buffer_first, buffer_last, input_first);
+
+    return input_first + true_count;
   }
 
   //*********************************************************
