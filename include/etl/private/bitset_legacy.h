@@ -1523,16 +1523,16 @@ namespace etl
   {
     return !(lhs == rhs);
   }
-} // namespace etl
 
-//*************************************************************************
-/// swap
-//*************************************************************************
-template <size_t MaxN>
-void swap(etl::bitset<MaxN>& lhs, etl::bitset<MaxN>& rhs)
-{
-  lhs.swap(rhs);
-}
+  //*************************************************************************
+  /// swap
+  //*************************************************************************
+  template <size_t MaxN>
+  void swap(etl::bitset<MaxN>& lhs, etl::bitset<MaxN>& rhs)
+  {
+    lhs.swap(rhs);
+  }
+} // namespace etl
 
 #include "minmax_pop.h"
 

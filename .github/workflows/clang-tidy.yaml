@@ -1,0 +1,29 @@
+name: clang-tidy
+
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, development, pull-request/* ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  clang-tidy:
+    name: clang-tidy
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends clang clang-tidy
+          clang --version
+          clang-tidy --version
+          run-clang-tidy --version || true
+
+      - name: Run clang-tidy
+        run: |
+          test/run-clang-tidy.sh

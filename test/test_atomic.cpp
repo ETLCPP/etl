@@ -489,6 +489,72 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_atomic_operator_fetch_max_when_new_value_is_greater)
+    {
+      etl::atomic<int> test(10);
+
+      int old_value = test.fetch_max(20);
+
+      CHECK_EQUAL(10, old_value);
+      CHECK_EQUAL(20, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_max_when_new_value_is_less)
+    {
+      etl::atomic<int> test(30);
+
+      int old_value = test.fetch_max(20);
+
+      CHECK_EQUAL(30, old_value);
+      CHECK_EQUAL(30, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_max_when_new_value_is_equal)
+    {
+      etl::atomic<int> test(20);
+
+      int old_value = test.fetch_max(20);
+
+      CHECK_EQUAL(20, old_value);
+      CHECK_EQUAL(20, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_min_when_new_value_is_less)
+    {
+      etl::atomic<int> test(30);
+
+      int old_value = test.fetch_min(20);
+
+      CHECK_EQUAL(30, old_value);
+      CHECK_EQUAL(20, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_min_when_new_value_is_greater)
+    {
+      etl::atomic<int> test(10);
+
+      int old_value = test.fetch_min(20);
+
+      CHECK_EQUAL(10, old_value);
+      CHECK_EQUAL(10, test.load());
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_operator_fetch_min_when_new_value_is_equal)
+    {
+      etl::atomic<int> test(20);
+
+      int old_value = test.fetch_min(20);
+
+      CHECK_EQUAL(20, old_value);
+      CHECK_EQUAL(20, test.load());
+    }
+
+    //*************************************************************************
     TEST(test_atomic_integer_exchange)
     {
       std::atomic<int> compare(1);
@@ -889,6 +955,38 @@ namespace
       t2.join();
 
       CHECK_EQUAL(0, atomic_value.load());
+    }
+#endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_atomic_trivial_constexpr_default_constructor)
+    {
+      // Verify that default constructors are usable in constexpr context
+      constexpr etl::atomic<int>  a_int{};
+      constexpr etl::atomic<char> a_char{};
+      constexpr etl::atomic<bool> a_bool{};
+
+      (void)a_int;
+      (void)a_char;
+      (void)a_bool;
+
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_atomic_trivial_constexpr_value_constructor)
+    {
+      // Verify that value constructors are usable in constexpr context
+      constexpr etl::atomic<int>  a_int{42};
+      constexpr etl::atomic<char> a_char{'A'};
+      constexpr etl::atomic<bool> a_bool{true};
+
+      (void)a_int;
+      (void)a_char;
+      (void)a_bool;
+
+      CHECK(true);
     }
 #endif
   }

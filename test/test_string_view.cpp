@@ -877,7 +877,7 @@ namespace
       CHECK(2U == view.rfind(s2, 5));
       CHECK(View::npos == view.rfind(s4));
 
-      CHECK(1U == view.rfind(s3, 5, 2));
+      CHECK(5U == view.rfind(s3, 5, 2));
       CHECK(View::npos == view.rfind(s4, 0, 11));
     }
 
@@ -1183,5 +1183,40 @@ namespace
       CHECK_TRUE(u32view == u32sstream_view);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_rfind_boundary_positions)
+    {
+      etl::string_view sv("abcabc");
+
+      // rfind "abc" with position=3: should find the second "abc" at position 3
+      size_t pos = sv.rfind(etl::string_view("abc"), 3);
+      CHECK_EQUAL(3U, pos);
+
+      // rfind "abc" with position=2: should find only the first "abc" at position 0
+      pos = sv.rfind(etl::string_view("abc"), 2);
+      CHECK_EQUAL(0U, pos);
+
+      // rfind "abc" with position=0: should find at position 0
+      pos = sv.rfind(etl::string_view("abc"), 0);
+      CHECK_EQUAL(0U, pos);
+
+      // rfind with npos (search entire string)
+      pos = sv.rfind(etl::string_view("abc"));
+      CHECK_EQUAL(3U, pos);
+
+      // rfind something not found
+      pos = sv.rfind(etl::string_view("xyz"));
+      CHECK_EQUAL(etl::string_view::npos, pos);
+
+      // Compare with std::string to verify exact behavior
+      std::string std_sv("abcabc");
+      for (size_t p = 0; p <= std_sv.size(); ++p)
+      {
+        size_t std_pos = std_sv.rfind("abc", p);
+        size_t etl_pos = sv.rfind(etl::string_view("abc"), p);
+        CHECK_EQUAL(std_pos, etl_pos);
+      }
+    }
   }
 } // namespace

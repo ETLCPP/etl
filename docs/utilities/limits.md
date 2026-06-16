@@ -1,0 +1,7 @@
+---
+title: "limits"
+---
+
+An emulation of <limits> under the `etl` namespace.
+
+See https://en.cppreference.com/w/cpp/types/numeric_limits

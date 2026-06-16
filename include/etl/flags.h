@@ -39,8 +39,6 @@ SOFTWARE.
 #include "type_traits.h"
 
 #include <stddef.h>
-#include <stdint.h>
-#include <string.h>
 
 namespace etl
 {

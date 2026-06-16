@@ -18,6 +18,22 @@
     #define ARDUINO_BOARD "Teensy 3.5"
   #elif defined(__MK66FX1M0__)
     #define ARDUINO_BOARD "Teensy 3.6"
+  #elif defined(ARDUINO_TEENSY40)
+    #define ARDUINO_BOARD "Teensy 4.0"
+  #elif defined(ARDUINO_TEENSY41)
+    #define ARDUINO_BOARD "Teensy 4.1"
+  #elif defined(ARDUINO_TEENSY_MICROMOD)
+    #define ARDUINO_BOARD "Teensy MicroMod"
+  #else
+    #define ARDUINO_BOARD "Unknown"
+  #endif
+
+#elif defined(CORE_ARDUINO_PICO)
+
+  #if defined(PICO_RP2040)
+    #define ARDUINO_BOARD "RP2040"
+  #elif defined(PICO_RP2350)
+    #define ARDUINO_BOARD "RP2350"
   #else
     #define ARDUINO_BOARD "Unknown"
   #endif

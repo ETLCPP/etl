@@ -32,7 +32,7 @@ SOFTWARE.
 #include "etl/visitor.h"
 #include "etl/private/variant_variadic.h"
 
-#if ETL_USING_CPP14
+#if ETL_USING_CPP11
 
   #include <algorithm>
   #include <array>
@@ -504,7 +504,7 @@ namespace
 
       test_variant_t variant_etl;
 
-      CHECK_TRUE((std::is_same< test_variant_t::type_list, etl::type_list<DefaultConstructible, int, std::string>>::value));
+      CHECK_TRUE((std::is_same<test_variant_t::type_list, etl::type_list<DefaultConstructible, int, std::string>>::value));
 
       CHECK_TRUE(etl::holds_alternative<DefaultConstructible>(variant_etl));
       CHECK_FALSE(etl::holds_alternative<int>(variant_etl));
@@ -1904,6 +1904,7 @@ namespace
       CHECK_EQUAL(32, res);
     }
 
+  #if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_variant_multiple_visit_auto_return)
     {
@@ -1942,6 +1943,7 @@ namespace
       etl::visit<void>(f, variant1);
       CHECK_EQUAL(false, variant_was_signed);
     }
+  #endif // ETL_USING_CPP14
 
   #if ETL_USING_CPP17
     //*************************************************************************
@@ -2243,8 +2245,296 @@ namespace
       CHECK(etl::holds_alternative<int>(v1));
       CHECK(etl::get_if<int>(&v1) != nullptr);
     }
+
+    //*************************************************************************
+    // Tests for noexcept properties of etl::variant
+    // The noexcept specs only take effect when ETL_USING_EXCEPTIONS is enabled,
+    // because ETL_NOEXCEPT_IF expands to nothing otherwise.
+    // The etl::is_nothrow_* traits only work with STL or builtins.
+    //*************************************************************************
+  #if ETL_USING_EXCEPTIONS && (defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS)))
+
+    struct VariantNothrowType
+    {
+      VariantNothrowType() noexcept {}
+      VariantNothrowType(const VariantNothrowType&) noexcept {}
+      VariantNothrowType(VariantNothrowType&&) noexcept {}
+      VariantNothrowType& operator=(const VariantNothrowType&) noexcept
+      {
+        return *this;
+      }
+      VariantNothrowType& operator=(VariantNothrowType&&) noexcept
+      {
+        return *this;
+      }
+    };
+
+    struct VariantThrowingCopy
+    {
+      VariantThrowingCopy() noexcept {}
+      VariantThrowingCopy(const VariantThrowingCopy&) {} // may throw
+      VariantThrowingCopy(VariantThrowingCopy&&) noexcept {}
+      VariantThrowingCopy& operator=(const VariantThrowingCopy&)
+      {
+        return *this;
+      }
+      VariantThrowingCopy& operator=(VariantThrowingCopy&&) noexcept
+      {
+        return *this;
+      }
+    };
+
+    struct VariantThrowingMove
+    {
+      VariantThrowingMove() noexcept {}
+      VariantThrowingMove(const VariantThrowingMove&) noexcept {}
+      VariantThrowingMove(VariantThrowingMove&&) {} // may throw
+      VariantThrowingMove& operator=(const VariantThrowingMove&) noexcept
+      {
+        return *this;
+      }
+      VariantThrowingMove& operator=(VariantThrowingMove&&)
+      {
+        return *this;
+      }
+    };
+
+    TEST(test_variant_nothrow_copy_constructible)
+    {
+      // variant<Ts...> is nothrow copy constructible only if all Ts are
+      using AllNothrow = etl::variant<int, double, VariantNothrowType>;
+      static_assert(etl::is_nothrow_copy_constructible<AllNothrow>::value, "variant<int, double, NothrowType> should be nothrow copy constructible");
+
+      using HasThrowingCopy = etl::variant<int, VariantThrowingCopy>;
+      static_assert(!etl::is_nothrow_copy_constructible<HasThrowingCopy>::value,
+                    "variant<int, ThrowingCopy> should NOT be nothrow copy constructible");
+
+      using HasThrowingMove = etl::variant<int, VariantThrowingMove>;
+      static_assert(etl::is_nothrow_copy_constructible<HasThrowingMove>::value,
+                    "variant<int, ThrowingMove> should be nothrow copy constructible (copy is nothrow)");
+
+      CHECK(true);
+    }
+
+    TEST(test_variant_nothrow_move_constructible)
+    {
+      // variant<Ts...> is nothrow move constructible only if all Ts are
+      using AllNothrow = etl::variant<int, double, VariantNothrowType>;
+      static_assert(etl::is_nothrow_move_constructible<AllNothrow>::value, "variant<int, double, NothrowType> should be nothrow move constructible");
+
+      using HasThrowingMove = etl::variant<int, VariantThrowingMove>;
+      static_assert(!etl::is_nothrow_move_constructible<HasThrowingMove>::value,
+                    "variant<int, ThrowingMove> should NOT be nothrow move constructible");
+
+      using HasThrowingCopy = etl::variant<int, VariantThrowingCopy>;
+      static_assert(etl::is_nothrow_move_constructible<HasThrowingCopy>::value,
+                    "variant<int, ThrowingCopy> should be nothrow move constructible (move is nothrow)");
+
+      CHECK(true);
+    }
+
+    TEST(test_variant_nothrow_default_constructible)
+    {
+      // variant default-constructs the first alternative
+      using NothrowFirst = etl::variant<int, VariantThrowingCopy>;
+      static_assert(etl::is_nothrow_default_constructible<NothrowFirst>::value,
+                    "variant<int, ...> should be nothrow default constructible (int is nothrow)");
+
+      using ThrowingFirst = etl::variant<VariantThrowingCopy, int>;
+      // VariantThrowingCopy has noexcept default ctor, so this should be nothrow
+      static_assert(etl::is_nothrow_default_constructible<ThrowingFirst>::value,
+                    "variant<ThrowingCopy, int> should be nothrow default constructible (ThrowingCopy has noexcept default ctor)");
+
+      CHECK(true);
+    }
+
+    TEST(test_variant_nothrow_copy_assignable)
+    {
+      using AllNothrow = etl::variant<int, double, VariantNothrowType>;
+      static_assert(etl::is_nothrow_copy_assignable<AllNothrow>::value, "variant<int, double, NothrowType> should be nothrow copy assignable");
+
+      using HasThrowingCopy = etl::variant<int, VariantThrowingCopy>;
+      static_assert(!etl::is_nothrow_copy_assignable<HasThrowingCopy>::value, "variant<int, ThrowingCopy> should NOT be nothrow copy assignable");
+
+      CHECK(true);
+    }
+
+    TEST(test_variant_nothrow_move_assignable)
+    {
+      using AllNothrow = etl::variant<int, double, VariantNothrowType>;
+      static_assert(etl::is_nothrow_move_assignable<AllNothrow>::value, "variant<int, double, NothrowType> should be nothrow move assignable");
+
+      using HasThrowingMove = etl::variant<int, VariantThrowingMove>;
+      static_assert(!etl::is_nothrow_move_assignable<HasThrowingMove>::value, "variant<int, ThrowingMove> should NOT be nothrow move assignable");
+
+      CHECK(true);
+    }
+  #endif
   }
 } // namespace
+
+  //*************************************************************************
+  // Tests for constexpr / ROM-placeable variant (trivially destructible types)
+  //*************************************************************************
+  #if ETL_USING_CPP17
+
+namespace
+{
+  // Verify that variant of trivially destructible types is itself trivially destructible.
+  static_assert(std::is_trivially_destructible<etl::variant<int, float, char>>::value, "variant<int, float, char> should be trivially destructible");
+
+  // Verify that variant of non-trivially destructible types is NOT trivially destructible.
+  static_assert(!std::is_trivially_destructible<etl::variant<int, std::string>>::value,
+                "variant<int, std::string> should NOT be trivially destructible");
+
+  // constexpr default construction
+  constexpr etl::variant<int, float, char> cv_default{};
+  static_assert(cv_default.index() == 0, "Default constructed variant should have index 0");
+
+  // constexpr construction from value
+  constexpr etl::variant<int, float, char> cv_int{42};
+  static_assert(cv_int.index() == 0, "variant holding int should have index 0");
+  static_assert(etl::get<int>(cv_int) == 42, "get<int> should return 42");
+  static_assert(etl::get<0>(cv_int) == 42, "get<0> should return 42");
+
+  constexpr etl::variant<int, float, char> cv_float{3.0f};
+  static_assert(cv_float.index() == 1, "variant holding float should have index 1");
+
+  constexpr etl::variant<int, float, char> cv_char{'A'};
+  static_assert(cv_char.index() == 2, "variant holding char should have index 2");
+  static_assert(etl::get<char>(cv_char) == 'A', "get<char> should return 'A'");
+  static_assert(etl::get<2>(cv_char) == 'A', "get<2> should return 'A'");
+
+  // constexpr construction with in_place_type
+  constexpr etl::variant<int, float, char> cv_ipt{etl::in_place_type_t<float>{}, 2.0f};
+  static_assert(cv_ipt.index() == 1, "in_place_type_t<float> should set index 1");
+
+  // constexpr construction with in_place_index
+  constexpr etl::variant<int, float, char> cv_ipi{etl::in_place_index_t<2>{}, 'Z'};
+  static_assert(cv_ipi.index() == 2, "in_place_index_t<2> should set index 2");
+  static_assert(etl::get<2>(cv_ipi) == 'Z', "get<2> should return 'Z'");
+
+  // constexpr holds_alternative
+  static_assert(etl::holds_alternative<int>(cv_int), "cv_int should hold int");
+  static_assert(!etl::holds_alternative<float>(cv_int), "cv_int should not hold float");
+  static_assert(etl::holds_alternative<float>(cv_float), "cv_float should hold float");
+
+  // constexpr get_if
+  static_assert(etl::get_if<int>(&cv_int) != nullptr, "get_if<int> should not be nullptr");
+  static_assert(*etl::get_if<int>(&cv_int) == 42, "get_if<int> should point to 42");
+  static_assert(etl::get_if<float>(&cv_int) == nullptr, "get_if<float> on int variant should be nullptr");
+
+  // Verify the constexpr variant can be used in ROM-like context
+  // (static constexpr / const at namespace scope should be placed in .rodata)
+  static constexpr etl::variant<int, float, char> rom_variant{100};
+  static_assert(etl::get<int>(rom_variant) == 100, "ROM variant should hold 100");
+} // namespace
+
+SUITE(test_variant_constexpr)
+{
+  TEST(test_constexpr_default_construction)
+  {
+    constexpr etl::variant<int, float, char> v{};
+    CHECK_EQUAL(0U, v.index());
+  }
+
+  TEST(test_constexpr_value_construction)
+  {
+    constexpr etl::variant<int, float, char> v{42};
+    CHECK_EQUAL(0U, v.index());
+    CHECK_EQUAL(42, etl::get<int>(v));
+  }
+
+  TEST(test_constexpr_in_place_type)
+  {
+    constexpr etl::variant<int, float, char> v{etl::in_place_type_t<float>{}, 1.5f};
+    CHECK_EQUAL(1U, v.index());
+    CHECK_CLOSE(1.5f, etl::get<float>(v), 0.001f);
+  }
+
+  TEST(test_constexpr_in_place_index)
+  {
+    constexpr etl::variant<int, float, char> v{etl::in_place_index_t<2>{}, 'X'};
+    CHECK_EQUAL(2U, v.index());
+    CHECK_EQUAL('X', etl::get<char>(v));
+  }
+
+  TEST(test_constexpr_get_by_type)
+  {
+    constexpr etl::variant<int, float, char> v{99};
+    constexpr int                            value = etl::get<int>(v);
+    CHECK_EQUAL(99, value);
+  }
+
+  TEST(test_constexpr_get_by_index)
+  {
+    constexpr etl::variant<int, float, char> v{3.14f};
+    constexpr float                          value = etl::get<1>(v);
+    CHECK_CLOSE(3.14f, value, 0.001f);
+  }
+
+  TEST(test_constexpr_holds_alternative)
+  {
+    constexpr etl::variant<int, float, char> v{'B'};
+    CHECK(etl::holds_alternative<char>(v));
+    CHECK(!etl::holds_alternative<int>(v));
+    CHECK(!etl::holds_alternative<float>(v));
+  }
+
+  TEST(test_constexpr_get_if)
+  {
+    constexpr etl::variant<int, float, char> v{42};
+    CHECK(etl::get_if<int>(&v) != nullptr);
+    CHECK_EQUAL(42, *etl::get_if<int>(&v));
+    CHECK(etl::get_if<float>(&v) == nullptr);
+  }
+
+  TEST(test_trivially_destructible_trait)
+  {
+    using trivial_variant      = etl::variant<int, float, char>;
+    using trivial_variant_1    = etl::variant<int>;
+    using trivial_variant_3    = etl::variant<int, double, long>;
+    using nontrivial_variant   = etl::variant<int, std::string>;
+    using nontrivial_variant_1 = etl::variant<std::string>;
+
+    CHECK(std::is_trivially_destructible<trivial_variant>::value);
+    CHECK(std::is_trivially_destructible<trivial_variant_1>::value);
+    CHECK(std::is_trivially_destructible<trivial_variant_3>::value);
+    CHECK(!std::is_trivially_destructible<nontrivial_variant>::value);
+    CHECK(!std::is_trivially_destructible<nontrivial_variant_1>::value);
+  }
+
+  TEST(test_constexpr_rom_placement)
+  {
+    // This test verifies that a constexpr variant can be stored in ROM
+    // (static constexpr at function scope)
+    static constexpr etl::variant<int, float, char> v1{42};
+    static constexpr etl::variant<int, float, char> v2{3.14f};
+    static constexpr etl::variant<int, float, char> v3{'Z'};
+
+    CHECK_EQUAL(42, etl::get<int>(v1));
+    CHECK_CLOSE(3.14f, etl::get<float>(v2), 0.001f);
+    CHECK_EQUAL('Z', etl::get<char>(v3));
+  }
+
+  TEST(test_runtime_trivially_destructible_variant)
+  {
+    // Ensure trivially destructible variants still work at runtime too
+    etl::variant<int, float, char> v{10};
+    CHECK_EQUAL(10, etl::get<int>(v));
+
+    v = 2.5f;
+    CHECK_CLOSE(2.5f, etl::get<float>(v), 0.001f);
+
+    v = 'Q';
+    CHECK_EQUAL('Q', etl::get<char>(v));
+
+    v.emplace<0>(77);
+    CHECK_EQUAL(77, etl::get<0>(v));
+  }
+}
+
+  #endif // ETL_USING_CPP17
 
   #include "etl/private/diagnostic_pop.h"
 

@@ -41,6 +41,7 @@ SOFTWARE.
 
 #include "data.h"
 
+#include "etl/char_traits.h"
 #include "etl/unordered_multimap.h"
 
 namespace etl

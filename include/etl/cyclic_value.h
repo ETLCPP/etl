@@ -38,10 +38,7 @@ SOFTWARE.
 #include "platform.h"
 #include "algorithm.h"
 #include "exception.h"
-#include "static_assert.h"
 #include "type_traits.h"
-
-#include <stddef.h>
 
 namespace etl
 {
@@ -68,7 +65,7 @@ namespace etl
     /// Default constructor.
     /// The initial value is set to the first value.
     //*************************************************************************
-    cyclic_value()
+    ETL_CONSTEXPR cyclic_value()
       : value(First)
     {
     }
@@ -78,7 +75,7 @@ namespace etl
     /// Set to an initial value.
     /// Clamped to the range.
     //*************************************************************************
-    explicit cyclic_value(T initial)
+    ETL_CONSTEXPR14 explicit cyclic_value(T initial)
     {
       set(initial);
     }
@@ -86,7 +83,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    cyclic_value(const cyclic_value<T, First, Last>& other)
+    ETL_CONSTEXPR cyclic_value(const cyclic_value<T, First, Last>& other)
       : value(other.value)
     {
     }
@@ -94,7 +91,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    cyclic_value& operator=(const cyclic_value<T, First, Last>& other)
+    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value<T, First, Last>& other)
     {
       value = other.value;
 
@@ -106,7 +103,7 @@ namespace etl
     /// Truncates to the First/Last range.
     ///\param value The value.
     //*************************************************************************
-    void set(T value_)
+    ETL_CONSTEXPR14 void set(T value_)
     {
       value = etl::clamp(value_, First, Last);
     }
@@ -114,7 +111,7 @@ namespace etl
     //*************************************************************************
     /// Resets the value to the first in the range.
     //*************************************************************************
-    void to_first()
+    ETL_CONSTEXPR14 void to_first()
     {
       value = First;
     }
@@ -122,7 +119,7 @@ namespace etl
     //*************************************************************************
     /// Resets the value to the last in the range.
     //*************************************************************************
-    void to_last()
+    ETL_CONSTEXPR14 void to_last()
     {
       value = Last;
     }
@@ -131,7 +128,7 @@ namespace etl
     /// Advances to value by a number of steps.
     ///\param n The number of steps to advance.
     //*************************************************************************
-    void advance(int n)
+    ETL_CONSTEXPR14 void advance(int n)
     {
       if (n > 0)
       {
@@ -153,7 +150,7 @@ namespace etl
     /// Conversion operator.
     /// \return The value of the underlying type.
     //*************************************************************************
-    operator T()
+    ETL_CONSTEXPR14 operator T()
     {
       return value;
     }
@@ -162,7 +159,7 @@ namespace etl
     /// Const conversion operator.
     /// \return The value of the underlying type.
     //*************************************************************************
-    operator const T() const
+    ETL_CONSTEXPR operator const T() const
     {
       return value;
     }
@@ -170,7 +167,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    cyclic_value& operator++()
+    ETL_CONSTEXPR14 cyclic_value& operator++()
     {
       if (value >= Last) ETL_UNLIKELY
       {
@@ -187,7 +184,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    cyclic_value operator++(int)
+    ETL_CONSTEXPR14 cyclic_value operator++(int)
     {
       cyclic_value temp(*this);
 
@@ -199,7 +196,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    cyclic_value& operator--()
+    ETL_CONSTEXPR14 cyclic_value& operator--()
     {
       if (value <= First) ETL_UNLIKELY
       {
@@ -216,7 +213,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    cyclic_value operator--(int)
+    ETL_CONSTEXPR14 cyclic_value operator--(int)
     {
       cyclic_value temp(*this);
 
@@ -228,7 +225,7 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    cyclic_value& operator=(T t)
+    ETL_CONSTEXPR14 cyclic_value& operator=(T t)
     {
       set(t);
       return *this;
@@ -238,7 +235,7 @@ namespace etl
     /// = operator.
     //*************************************************************************
     template <const T FIRST2, const T LAST2>
-    cyclic_value& operator=(const cyclic_value<T, FIRST2, LAST2>& other)
+    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value<T, FIRST2, LAST2>& other)
     {
       set(other.get());
       return *this;
@@ -247,7 +244,7 @@ namespace etl
     //*************************************************************************
     /// Gets the value.
     //*************************************************************************
-    T get() const
+    ETL_CONSTEXPR T get() const
     {
       return value;
     }
@@ -289,7 +286,7 @@ namespace etl
     //*************************************************************************
     /// Operator ==.
     //*************************************************************************
-    friend bool operator==(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
+    friend ETL_CONSTEXPR bool operator==(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
     {
       return lhs.value == rhs.value;
     }
@@ -297,7 +294,7 @@ namespace etl
     //*************************************************************************
     /// Operator !=.
     //*************************************************************************
-    friend bool operator!=(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
+    friend ETL_CONSTEXPR bool operator!=(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
     {
       return !(lhs == rhs);
     }
@@ -325,7 +322,7 @@ namespace etl
     /// Sets 'first' and 'last' to the template parameter values.
     /// The initial value is set to the first value.
     //*************************************************************************
-    cyclic_value()
+    ETL_CONSTEXPR cyclic_value()
       : value(First)
       , first_value(First)
       , last_value(Last)
@@ -338,7 +335,7 @@ namespace etl
     ///\param first The first value in the range.
     ///\param last  The last value in the range.
     //*************************************************************************
-    cyclic_value(T first_, T last_)
+    ETL_CONSTEXPR cyclic_value(T first_, T last_)
       : value(first_)
       , first_value(first_)
       , last_value(last_)
@@ -352,7 +349,7 @@ namespace etl
     ///\param first The first value in the range.
     ///\param last  The last value in the range.
     //*************************************************************************
-    cyclic_value(T first_, T last_, T initial)
+    ETL_CONSTEXPR14 cyclic_value(T first_, T last_, T initial)
       : first_value(first_)
       , last_value(last_)
     {
@@ -362,7 +359,7 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    cyclic_value(const cyclic_value& other)
+    ETL_CONSTEXPR cyclic_value(const cyclic_value& other)
       : value(other.value)
       , first_value(other.first_value)
       , last_value(other.last_value)
@@ -375,7 +372,7 @@ namespace etl
     ///\param first The first value in the range.
     ///\param last  The last value in the range.
     //*************************************************************************
-    void set(T first_, T last_)
+    ETL_CONSTEXPR14 void set(T first_, T last_)
     {
       first_value = first_;
       last_value  = last_;
@@ -386,7 +383,7 @@ namespace etl
     /// Sets the value.
     ///\param value The value.
     //*************************************************************************
-    void set(T value_)
+    ETL_CONSTEXPR14 void set(T value_)
     {
       value = etl::clamp(value_, first_value, last_value);
     }
@@ -394,7 +391,7 @@ namespace etl
     //*************************************************************************
     /// Resets the value to the first in the range.
     //*************************************************************************
-    void to_first()
+    ETL_CONSTEXPR14 void to_first()
     {
       value = first_value;
     }
@@ -402,7 +399,7 @@ namespace etl
     //*************************************************************************
     /// Resets the value to the last in the range.
     //*************************************************************************
-    void to_last()
+    ETL_CONSTEXPR14 void to_last()
     {
       value = last_value;
     }
@@ -411,7 +408,7 @@ namespace etl
     /// Advances to value by a number of steps.
     ///\param n The number of steps to advance.
     //*************************************************************************
-    void advance(int n)
+    ETL_CONSTEXPR14 void advance(int n)
     {
       if (n > 0)
       {
@@ -433,7 +430,7 @@ namespace etl
     /// Conversion operator.
     /// \return The value of the underlying type.
     //*************************************************************************
-    operator T()
+    ETL_CONSTEXPR14 operator T()
     {
       return value;
     }
@@ -442,7 +439,7 @@ namespace etl
     /// Const conversion operator.
     /// \return The value of the underlying type.
     //*************************************************************************
-    operator const T() const
+    ETL_CONSTEXPR operator const T() const
     {
       return value;
     }
@@ -450,7 +447,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    cyclic_value& operator++()
+    ETL_CONSTEXPR14 cyclic_value& operator++()
     {
       if (value >= last_value)
       {
@@ -467,7 +464,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    cyclic_value operator++(int)
+    ETL_CONSTEXPR14 cyclic_value operator++(int)
     {
       cyclic_value temp(*this);
 
@@ -479,7 +476,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    cyclic_value& operator--()
+    ETL_CONSTEXPR14 cyclic_value& operator--()
     {
       if (value <= first_value)
       {
@@ -496,7 +493,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    cyclic_value operator--(int)
+    ETL_CONSTEXPR14 cyclic_value operator--(int)
     {
       cyclic_value temp(*this);
 
@@ -508,7 +505,7 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    cyclic_value& operator=(T t)
+    ETL_CONSTEXPR14 cyclic_value& operator=(T t)
     {
       set(t);
       return *this;
@@ -517,7 +514,7 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    cyclic_value& operator=(const cyclic_value& other)
+    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value& other)
     {
       value       = other.value;
       first_value = other.first_value;
@@ -528,7 +525,7 @@ namespace etl
     //*************************************************************************
     /// Gets the value.
     //*************************************************************************
-    T get() const
+    ETL_CONSTEXPR T get() const
     {
       return value;
     }
@@ -536,7 +533,7 @@ namespace etl
     //*************************************************************************
     /// Gets the first value.
     //*************************************************************************
-    T first() const
+    ETL_CONSTEXPR T first() const
     {
       return first_value;
     }
@@ -544,7 +541,7 @@ namespace etl
     //*************************************************************************
     /// Gets the last value.
     //*************************************************************************
-    T last() const
+    ETL_CONSTEXPR T last() const
     {
       return last_value;
     }
@@ -572,7 +569,7 @@ namespace etl
     //*************************************************************************
     /// Operator ==.
     //*************************************************************************
-    friend bool operator==(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
+    friend ETL_CONSTEXPR bool operator==(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
     {
       return (lhs.value == rhs.value) && (lhs.first_value == rhs.first_value) && (lhs.last_value == rhs.last_value);
     }
@@ -580,7 +577,7 @@ namespace etl
     //*************************************************************************
     /// Operator !=.
     //*************************************************************************
-    friend bool operator!=(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
+    friend ETL_CONSTEXPR bool operator!=(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs)
     {
       return !(lhs == rhs);
     }

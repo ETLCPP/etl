@@ -33,10 +33,10 @@ SOFTWARE.
 
 #include "platform.h"
 #include "iterator.h"
-#include "static_assert.h"
 #include "type_traits.h"
 #include "utility.h"
 
+#include <stddef.h>
 #include <stdint.h>
 
 namespace etl

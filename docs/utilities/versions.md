@@ -1,0 +1,34 @@
+---
+title: "Versions"
+---
+
+{{< callout type="info">}}
+  Header: `version.h`  
+  Since: `TBC`  
+{{< /callout >}}
+
+As set of macros that allow the version of the ETL to be determined.
+
+## Definitions
+```cpp
+ETL_VERSION
+ETL_VERSION_W
+ETL_VERSION_U16
+ETL_VERSION_U32
+ETL_VERSION_MAJOR
+ETL_VERSION_MINOR
+ETL_VERSION_PATCH
+ETL_VERSION_VALUE
+```
+
+## Example values
+```cpp
+#define ETL_VERSION       "10.21.2"
+#define ETL_VERSION_W     L"10.21.2"
+#define ETL_VERSION_U16   u"10.21.2"
+#define ETL_VERSION_U32   U"10.21.2"
+#define ETL_VERSION_MAJOR 10
+#define ETL_VERSION_MINOR 21
+#define ETL_VERSION_PATCH 2
+#define ETL_VERSION_VALUE 102102
+```

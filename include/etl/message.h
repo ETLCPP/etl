@@ -36,8 +36,6 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 
-#include <stdint.h>
-
 namespace etl
 {
   //***************************************************************************

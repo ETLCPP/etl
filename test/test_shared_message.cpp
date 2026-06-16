@@ -36,6 +36,8 @@ SOFTWARE.
 #include "etl/reference_counted_message_pool.h"
 #include "etl/shared_message.h"
 
+#if ETL_HAS_ATOMIC
+
 namespace
 {
   constexpr etl::message_id_t MessageId1 = 1U;
@@ -216,9 +218,9 @@ namespace
 
       etl::atomic_counted_message_pool message_pool(memory_allocator);
 
-#include "etl/private/diagnostic_pessimizing_move_push.h"
+  #include "etl/private/diagnostic_pessimizing_move_push.h"
       etl::shared_message sm(std::move(etl::shared_message(message_pool, Message1())));
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
     }
@@ -228,9 +230,9 @@ namespace
     {
       message_1_instantiations = 0;
 
-#include "etl/private/diagnostic_pessimizing_move_push.h"
+  #include "etl/private/diagnostic_pessimizing_move_push.h"
       etl::shared_message sm(std::move(common_message_pool.create_message<Message1>()));
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
       CHECK_EQUAL(1, message_1_instantiations);
@@ -239,9 +241,9 @@ namespace
     //*************************************************************************
     TEST(test_move_constructor_with_parametrized_constructed_message)
     {
-#include "etl/private/diagnostic_pessimizing_move_push.h"
+  #include "etl/private/diagnostic_pessimizing_move_push.h"
       etl::shared_message sm(std::move(etl::shared_message(common_message_pool, Message1(1))));
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
     }
@@ -251,9 +253,9 @@ namespace
     {
       message_1_instantiations = 0;
 
-#include "etl/private/diagnostic_pessimizing_move_push.h"
+  #include "etl/private/diagnostic_pessimizing_move_push.h"
       etl::shared_message sm(std::move(common_message_pool.create_message<Message1>(1)));
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
 
       CHECK_EQUAL(1, sm.get_reference_count());
       CHECK_EQUAL(1, message_1_instantiations);
@@ -298,9 +300,9 @@ namespace
       etl::atomic_counted_message_pool message_pool(memory_allocator);
 
       etl::shared_message sm2 = etl::shared_message(message_pool, Message1(2));
-#include "etl/private/diagnostic_pessimizing_move_push.h"
+  #include "etl/private/diagnostic_pessimizing_move_push.h"
       sm2 = std::move(etl::shared_message(message_pool, Message1(3)));
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
       CHECK_EQUAL(1, sm2.get_reference_count());
       CHECK(sm2.is_valid());
     }
@@ -374,3 +376,5 @@ namespace
     }
   }
 } // namespace
+
+#endif // ETL_HAS_ATOMIC

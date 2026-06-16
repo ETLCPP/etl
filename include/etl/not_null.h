@@ -35,7 +35,6 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "memory.h"
-#include "static_assert.h"
 #include "type_traits.h"
 
 namespace etl

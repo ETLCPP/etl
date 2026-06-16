@@ -36,8 +36,6 @@ SOFTWARE.
 #include "exception.h"
 #include "utility.h"
 
-#include <stdint.h>
-
 ///\defgroup ihash Common data for all hash type classes.
 ///\ingroup hash
 

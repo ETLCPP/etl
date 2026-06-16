@@ -1,0 +1,104 @@
+---
+title: "ETL Traits"
+---
+
+{{< callout type="info">}}
+  Header: `various`  
+  Since: `TBC`  
+{{< /callout >}}
+
+A set of traits that reflect the platform settings. It gives a C++ style interface to the library macros.
+The traits are accessed under the etl::traits namespace.
+All traits are constexpr for C++11 and above, const for C++03 and below.
+
+## Traits
+
+| Trait                                    | Type            | Defined by | Macro   |
+| ---------------------------------------- | --------------- | ---------- | --------|
+| using_stl                                | bool            | platform.h | ETL_USING_STL |
+| using_stlport                            | bool            | platform.h | ETL_USING_STLPORT |
+| using_cpp11                              | bool            | platform.h | ETL_USING_CPP11 |
+| using_cpp14                              | bool            | platform.h | ETL_USING_CPP14 |
+| using_cpp17                              | bool            | platform.h | ETL_USING_CPP17 |
+| using_cpp20                              | bool            | platform.h | ETL_USING_CPP20 |
+| using_cpp23                              | bool            | platform.h | ETL_USING_CPP23 |
+| cplusplus                                | long            | builtin    | __cplusplus |
+| language_standard                        | int             | platform.h | ETL_LANGUAGE_STANDARD |
+| using_exceptions                         | bool            | platform.h | ETL_USING_EXCEPTIONS |
+| using_gcc_compiler                       | bool            | platform.h | ETL_USING_GCC_COMPILER |
+| using_microsoft_compiler                 | bool            | platform.h | ETL_USING_MICROSOFT_COMPILER |
+| using_arm5_compiler                      | bool            | platform.h | ETL_USING_ARM5_COMPILER |
+| using_arm6_compiler                      | bool            | platform.h | ETL_USING_ARM6_COMPILER |
+| using_arm7_compiler                      | bool            | platform.h | ETL_USING_ARM7_COMPILER |
+| using_clang_compiler                     | bool            | platform.h | ETL_USING_CLANG_COMPILER |
+| using_green_hills_compiler               | bool            | platform.h | ETL_USING_GREEN_HILLS_COMPILER |
+| using_iar_compiler                       | bool            | platform.h | ETL_USING_IAR_COMPILER |
+| using_intel_compiler                     | bool            | platform.h | ETL_USING_INTEL_COMPILER |
+| using_texas_instruments_compiler         | bool            | platform.h | ETL_USING_TEXAS_INSTRUMENTS_COMPILER |
+| using_builtin_is_assignable              | bool            | platform.h | ETL_USING_BUILTIN_IS_ASSIGNABLE |
+| using_builtin_is_constructible           | bool            | platform.h | ETL_USING_BUILTIN_IS_CONSTRUCTIBLE |
+| using_builtin_is_trivially_constructible | bool            | platform.h | ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE |
+| using_builtin_is_trivially_destructible  | bool            | platform.h | ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE |
+| using_builtin_is_trivially_copyable      | bool            | platform.h | ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE |
+| using_builtin_underlying_type            | bool            | platform.h | ETL_USING_BUILTIN_UNDERLYING_TYPE |
+| using_builtin_memcpy                     | bool            | platform.h | ETL_USING_BUILTIN_MEMCPY |
+| using_builtin_memmove                    | bool            | platform.h | ETL_USING_BUILTIN_MEMMOVE |
+| using_builtin_memset                     | bool            | platform.h | ETL_USING_BUILTIN_MEMSET |                   
+| using_builtin_memcmp                     | bool            | platform.h | ETL_USING_BUILTIN_MEMCMP |
+| using_builtin_memchr                     | bool            | platform.h | ETL_USING_BUILTIN_MEMCHR |
+| using_generic_compiler                   | bool            | platform.h | ETL_USING_GENERIC_COMPILER |
+| has_8bit_types                           | bool            | platform.h | ETL_USING_8BIT_TYPES |
+| has_64bit_types                          | bool            | platform.h | ETL_USING_64BIT_TYPES |
+| has_atomic                               | bool            | platform.h | ETL_HAS_ATOMIC |
+| has_mutex                                | bool            | mutex.h    | ETL_HAS_MUTEX |
+| has_nullptr                              | bool            | platform.h | ETL_HAS_NULLPTR |
+| has_char8_t                              | bool            | platform.h | ETL_HAS_CHAR8_T |
+| has_native_char8_t                       | bool            | platform.h | ETL_HAS_NATIVE_CHAR8_T |
+| has_native_char16_t                      | bool            | platform.h | ETL_HAS_NATIVE_CHAR16_T |
+| has_native_char32_t                      | bool            | platform.h | ETL_HAS_NATIVE_CHAR32_T |
+| has_string_truncation_checks             | bool            | platform.h | ETL_HAS_STRING_TRUNCATION_CHECKS |
+| has_error_on_string_truncation           | bool            | platform.h | ETL_HAS_ERROR_ON_STRING_TRUNCATION |
+| has_string_clear_after_use               | bool            | platform.h | ETL_HAS_STRING_CLEAR_AFTER_USE |
+| has_istring_repair                       | bool            | platform.h | ETL_HAS_ISTRING_REPAIR |
+| has_ivector_repair                       | bool            | platform.h | ETL_HAS_IVECTOR_REPAIR |
+| has_mutable_array_view                   | bool            | platform.h | ETL_HAS_MUTABLE_ARRAY_VIEW |
+| has_ideque_repair                        | bool            | platform.h | ETL_HAS_IDEQUE_REPAIR |
+| has_initializer_list                     | bool            | platform.h | ETL_HAS_INITIALIZER_LIST |
+| is_debug_build                           | bool            | platform.h | ETL_IS_DEBUG_BUILD |
+| version                                  | long            | version.h  | ETL_VERSION_VALUE |
+| version_major                            | long            | version.h  | ETL_VERSION_MAJOR |
+| version_minor                            | long            | version.h  | ETL_VERSION_MINOR |
+| version_patch                            | long            | version.h  | ETL_VERSION_PATCH |
+| version_string                           | const char*     | version.h  | ETL_VERSION |
+| version_wstring                          | const wchar_t * | version.h  | ETL_VERSION_W |
+| version_u8string                         | const char8_t*  | version.h  | ETL_VERSION_U8 if `has_native_char8_t` |
+| version_u16string                        | const char16_t* | version.h  | ETL_VERSION_U16 |
+| version_u32string                        | const char32_t* | version.h  | ETL_VERSION_U32 |
+
+## Examples
+
+```cpp
+if constexpr(etl::traits::is_debug_build)
+{
+  std::cerr << etl::traits::version_string;
+}
+```
+
+---
+
+```cpp
+template <bool Has_Atomic = etl::traits::has_atomic>
+class Controller;
+
+template<>
+class Controller<false>
+{
+  etl::mutex lock;
+};
+
+template<>
+class Controller<true>
+{
+  etl::atomic_int lock;
+};
+```

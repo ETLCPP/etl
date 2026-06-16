@@ -52,7 +52,7 @@ namespace etl
     //***************************************************************************
     /// Default constructor.
     //***************************************************************************
-    fixed_iterator()
+    ETL_CONSTEXPR fixed_iterator()
       : it(TIterator())
     {
     }
@@ -60,7 +60,7 @@ namespace etl
     //***************************************************************************
     /// Construct from iterator.
     //***************************************************************************
-    fixed_iterator(TIterator it_)
+    ETL_CONSTEXPR fixed_iterator(TIterator it_)
       : it(it_)
     {
     }
@@ -68,7 +68,7 @@ namespace etl
     //***************************************************************************
     /// Copy constructor
     //***************************************************************************
-    fixed_iterator(const fixed_iterator& other)
+    ETL_CONSTEXPR fixed_iterator(const fixed_iterator& other)
       : it(other.it)
     {
     }
@@ -76,7 +76,7 @@ namespace etl
     //***************************************************************************
     /// Increment (Does nothing).
     //***************************************************************************
-    fixed_iterator& operator++()
+    ETL_CONSTEXPR14 fixed_iterator& operator++()
     {
       return *this;
     }
@@ -84,7 +84,7 @@ namespace etl
     //***************************************************************************
     /// Increment (Does nothing).
     //***************************************************************************
-    fixed_iterator operator++(int)
+    ETL_CONSTEXPR14 fixed_iterator operator++(int)
     {
       return *this;
     }
@@ -92,7 +92,7 @@ namespace etl
     //***************************************************************************
     /// Decrement (Does nothing).
     //***************************************************************************
-    fixed_iterator& operator--()
+    ETL_CONSTEXPR14 fixed_iterator& operator--()
     {
       return *this;
     }
@@ -100,7 +100,7 @@ namespace etl
     //***************************************************************************
     /// Decrement (Does nothing).
     //***************************************************************************
-    fixed_iterator operator--(int)
+    ETL_CONSTEXPR14 fixed_iterator operator--(int)
     {
       return *this;
     }
@@ -108,7 +108,7 @@ namespace etl
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
-    typename etl::iterator_traits<TIterator>::value_type operator*()
+    ETL_CONSTEXPR14 typename etl::iterator_traits<TIterator>::reference operator*()
     {
       return *it;
     }
@@ -116,7 +116,7 @@ namespace etl
     //***************************************************************************
     /// Dereference operator.
     //***************************************************************************
-    const typename etl::iterator_traits<TIterator>::value_type operator*() const
+    ETL_CONSTEXPR typename etl::iterator_traits<TIterator>::reference operator*() const
     {
       return *it;
     }
@@ -124,7 +124,7 @@ namespace etl
     //***************************************************************************
     /// -> operator.
     //***************************************************************************
-    TIterator operator->()
+    ETL_CONSTEXPR14 TIterator operator->()
     {
       return it;
     }
@@ -132,7 +132,7 @@ namespace etl
     //***************************************************************************
     /// -> operator.
     //***************************************************************************
-    const TIterator operator->() const
+    ETL_CONSTEXPR const TIterator operator->() const
     {
       return it;
     }
@@ -140,7 +140,7 @@ namespace etl
     //***************************************************************************
     /// Conversion operator.
     //***************************************************************************
-    operator TIterator() const
+    ETL_CONSTEXPR operator TIterator() const
     {
       return it;
     }
@@ -148,7 +148,7 @@ namespace etl
     //***************************************************************************
     /// += operator.
     //***************************************************************************
-    fixed_iterator& operator+=(typename etl::iterator_traits<TIterator>::difference_type /*offset*/)
+    ETL_CONSTEXPR14 fixed_iterator& operator+=(typename etl::iterator_traits<TIterator>::difference_type /*offset*/)
     {
       return *this;
     }
@@ -156,7 +156,7 @@ namespace etl
     //***************************************************************************
     /// -= operator.
     //***************************************************************************
-    fixed_iterator& operator-=(typename etl::iterator_traits<TIterator>::difference_type /*offset*/)
+    ETL_CONSTEXPR14 fixed_iterator& operator-=(typename etl::iterator_traits<TIterator>::difference_type /*offset*/)
     {
       return *this;
     }
@@ -164,7 +164,7 @@ namespace etl
     //***************************************************************************
     /// Assignment from iterator.
     //***************************************************************************
-    fixed_iterator& operator=(TIterator new_it)
+    ETL_CONSTEXPR14 fixed_iterator& operator=(TIterator new_it)
     {
       it = new_it;
       return *this;
@@ -173,7 +173,7 @@ namespace etl
     //***************************************************************************
     /// Assignment from fixed_iterator.
     //***************************************************************************
-    fixed_iterator& operator=(fixed_iterator other)
+    ETL_CONSTEXPR14 fixed_iterator& operator=(fixed_iterator other)
     {
       it = other.it;
       return *this;
@@ -188,7 +188,8 @@ namespace etl
   /// + difference operator.
   //*****************************************************************************
   template <typename TIterator>
-  etl::fixed_iterator<TIterator>& operator+(etl::fixed_iterator<TIterator>& lhs, typename etl::iterator_traits<TIterator>::difference_type /*rhs*/)
+  ETL_CONSTEXPR14 etl::fixed_iterator<TIterator>& operator+(etl::fixed_iterator<TIterator>& lhs,
+                                                      typename etl::iterator_traits<TIterator>::difference_type /*rhs*/)
   {
     return lhs;
   }
@@ -197,7 +198,8 @@ namespace etl
   /// - difference operator.
   //*****************************************************************************
   template <typename TIterator>
-  etl::fixed_iterator<TIterator>& operator-(etl::fixed_iterator<TIterator>& lhs, typename etl::iterator_traits<TIterator>::difference_type /*rhs*/)
+  ETL_CONSTEXPR14 etl::fixed_iterator<TIterator>& operator-(etl::fixed_iterator<TIterator>& lhs,
+                                                      typename etl::iterator_traits<TIterator>::difference_type /*rhs*/)
   {
     return lhs;
   }
@@ -206,8 +208,8 @@ namespace etl
   /// - fixed_iterator operator.
   //*****************************************************************************
   template <typename TIterator>
-  typename etl::iterator_traits<TIterator>::difference_type operator-(const etl::fixed_iterator<TIterator>& lhs,
-                                                                      const etl::fixed_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR typename etl::iterator_traits<TIterator>::difference_type operator-(const etl::fixed_iterator<TIterator>& lhs,
+                                                                                const etl::fixed_iterator<TIterator>& rhs)
   {
     return TIterator(lhs) - TIterator(rhs);
   }
@@ -216,7 +218,7 @@ namespace etl
   /// Equality operator. fixed_iterator == fixed_iterator.
   //*****************************************************************************
   template <typename TIterator>
-  bool operator==(const etl::fixed_iterator<TIterator>& lhs, const etl::fixed_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator==(const etl::fixed_iterator<TIterator>& lhs, const etl::fixed_iterator<TIterator>& rhs)
   {
     return TIterator(lhs) == TIterator(rhs);
   }
@@ -225,7 +227,7 @@ namespace etl
   /// Equality operator. fixed_iterator == iterator.
   //*****************************************************************************
   template <typename TIterator>
-  bool operator==(const etl::fixed_iterator<TIterator>& lhs, TIterator rhs)
+  ETL_CONSTEXPR bool operator==(const etl::fixed_iterator<TIterator>& lhs, TIterator rhs)
   {
     return TIterator(lhs) == rhs;
   }
@@ -234,7 +236,7 @@ namespace etl
   /// Equality operator. iterator == fixed_iterator.
   //*****************************************************************************
   template <typename TIterator>
-  bool operator==(TIterator lhs, const etl::fixed_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator==(TIterator lhs, const etl::fixed_iterator<TIterator>& rhs)
   {
     return lhs == TIterator(rhs);
   }
@@ -243,7 +245,7 @@ namespace etl
   /// Inequality operator. fixed_iterator == fixed_iterator.
   //*****************************************************************************
   template <typename TIterator>
-  bool operator!=(const etl::fixed_iterator<TIterator>& lhs, const etl::fixed_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator!=(const etl::fixed_iterator<TIterator>& lhs, const etl::fixed_iterator<TIterator>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -252,7 +254,7 @@ namespace etl
   /// Inequality operator. fixed_iterator == iterator.
   //*****************************************************************************
   template <typename TIterator>
-  bool operator!=(const etl::fixed_iterator<TIterator>& lhs, TIterator rhs)
+  ETL_CONSTEXPR bool operator!=(const etl::fixed_iterator<TIterator>& lhs, TIterator rhs)
   {
     return !(lhs == rhs);
   }
@@ -261,7 +263,7 @@ namespace etl
   /// Inequality operator. iterator == fixed_iterator.
   //*****************************************************************************
   template <typename TIterator>
-  bool operator!=(TIterator& lhs, const etl::fixed_iterator<TIterator>& rhs)
+  ETL_CONSTEXPR bool operator!=(TIterator lhs, const etl::fixed_iterator<TIterator>& rhs)
   {
     return !(lhs == rhs);
   }

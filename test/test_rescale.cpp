@@ -84,5 +84,15 @@ namespace
       bool isEqual = std::equal(output2.begin(), output2.end(), result2.begin(), Compare());
       CHECK(isEqual);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_rescale_constexpr)
+    {
+      constexpr etl::rescale<int, int> rs(0, 100, 0, 1000);
+      static_assert(rs(50) == 500, "constexpr rescale");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace
