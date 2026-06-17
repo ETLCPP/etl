@@ -886,6 +886,22 @@ bool none_of(TIterator begin, TIterator end, TUnaryPredicate predicate)
 **Description**  
 Checks if `predicate` returns `true` for no elements in the range [`begin`, `end`).
 
+## next_permutation
+```cpp
+template <typename TIterator, typename TCompare>
+ETL_CONSTEXPR14 bool next_permutation(TIterator first, TIterator last, TCompare compare)
+```
+**Description**  
+Creates the range [`first`, `last`) into the next permutation.  
+`compare` should return `true` if its first argument is logically less that its second.
+
+**Complexity**  
+O(N)  
+At most N/2 swaps.
+
+**Return**  
+`true` if there is a next permutation.
+
 ## is_permutation
 
 ```cpp
@@ -946,8 +962,11 @@ ETL_CONSTEXPR14 TIterator partition(TIterator first, TIterator last, TPredicate 
 ```
 **Description**  
 Reorders elements in a range based on a predicate.  
-It moves all elements that satisfy the predicate to the front, and those that do not to the back.
+It moves all elements that satisfy the predicate to the front, and those that do not to the back.  
 Does not guarantee to keep the original relative order.  
+
+**Complexity**  
+O(N)  
 
 **Return**  
 An iterator to the start of the group that do not satisfy the predicate.
@@ -963,9 +982,11 @@ ETL_CONSTEXPR14 TIterator stable_partition(TIterator first,
 ```
 **Description**  
 Reorders elements in a range based on a predicate.  
-It moves all elements that satisfy the predicate to the front, and those that do not to the back.
+It moves all elements that satisfy the predicate to the front, and those that do not to the back.  
 Keeps the original relative order.  
 In-place  
+
+**Complexity**  
 O(NlogN) time.  
 O(1) space.
 
@@ -983,10 +1004,12 @@ ETL_CONSTEXPR14 TIterator stable_partition(TIterator first,
 ```
 **Description**  
 Reorders elements in a range based on a predicate.  
-It moves all elements that satisfy the predicate to the front, and those that do not to the back.
+It moves all elements that satisfy the predicate to the front, and those that do not to the back.  
 Keeps the original relative order.  
 
 Requires a user supplied buffer that must be at least the same size as the range [`first`, `last`).  
+
+**Complexity**  
 O(N) time.  
 O(N) space.  
 
@@ -1035,6 +1058,9 @@ The elements that satisfy `predicate` are copied to the range beginning at `dest
 The rest of the elements are copied to the range beginning at `destination_false`.  
 This partition is stable.
 
+**Complexity**  
+O(N)  
+
 ## partition_move
 
 ```cpp
@@ -1050,9 +1076,12 @@ pair<TDestinationTrue, TDestinationFalse> partition_move(TSource           begin
 ```
 **Description**  
 Moves the elements from the range [`begin`, `end`) to two different ranges depending on the value returned by the `predicate`.  
-The elements that satisfy `predicate` are copied to the range beginning at `destination_true`.  
+The elements that satisfy `predicate` are moved to the range beginning at `destination_true`.  
 The rest of the elements are moved to the range beginning at `destination_false`.  
 This partition is stable.
+
+**Complexity**  
+O(N)  
 
 ## partition_transform
 **ETL extension**  

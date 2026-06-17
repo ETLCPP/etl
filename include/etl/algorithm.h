@@ -3627,8 +3627,8 @@ namespace etl
     TIterator buffer_true = buffer_first;
 
     // Find where the partition point will be in the buffer.
-    typename etl::iterator_traits<TIterator>::difference_type true_count = etl::count_if(first, last, predicate);
-    TIterator buffer_false = buffer_first + true_count;
+    typename etl::iterator_traits<TIterator>::difference_type true_count   = etl::count_if(first, last, predicate);
+    TIterator                                                 buffer_false = buffer_first + true_count;
 
     // Move them to the correct places in the temporary buffer.
     while (first != last)

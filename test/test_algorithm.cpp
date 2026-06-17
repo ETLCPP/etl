@@ -2853,18 +2853,25 @@ namespace
       int data4[] = {0, 0, 0, 0, 0, 0, 0, 0};
       int data5[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
-      std::partition_copy(std::begin(data1), std::end(data1), std::begin(data2), std::begin(data3),
-                          std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      etl::partition_copy(std::begin(data1), std::end(data1), std::begin(data4), std::begin(data5),
-                          std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      bool complete = false;
 
-      bool are_equal;
+      while (!complete)
+      {
+        std::partition_copy(std::begin(data1), std::end(data1), std::begin(data2), std::begin(data3),
+                            std::bind(std::greater<int>(), std::placeholders::_1, 4));
+        etl::partition_copy(std::begin(data1), std::end(data1), std::begin(data4), std::begin(data5),
+                            std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
-      are_equal = std::equal(std::begin(data2), std::end(data2), std::begin(data4));
-      CHECK(are_equal);
+        bool are_equal;
 
-      are_equal = std::equal(std::begin(data3), std::end(data3), std::begin(data5));
-      CHECK(are_equal);
+        are_equal = std::equal(std::begin(data2), std::end(data2), std::begin(data4));
+        CHECK(are_equal);
+
+        are_equal = std::equal(std::begin(data3), std::end(data3), std::begin(data5));
+        CHECK(are_equal);
+
+        complete = !std::next_permutation(std::begin(data1), std::end(data1));
+      }
     }
 
     //*************************************************************************
@@ -2883,20 +2890,28 @@ namespace
       TestDataM<int> etl_false[] = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
                                     TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
 
-      auto boundary = std::stable_partition(std::begin(std_input), std::end(std_input), std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      std::move(std::begin(std_input), boundary, std::begin(std_true));
-      std::move(boundary, std::end(std_input), std::begin(std_false));
+      bool complete = false;
 
-      etl::partition_move(std::begin(etl_input), std::end(etl_input), std::begin(etl_true), std::begin(etl_false),
-                          std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      while (!complete)
+      {
+        auto boundary = std::stable_partition(std::begin(std_input), std::end(std_input), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+        std::move(std::begin(std_input), boundary, std::begin(std_true));
+        std::move(boundary, std::end(std_input), std::begin(std_false));
 
-      bool are_equal;
+        etl::partition_move(std::begin(etl_input), std::end(etl_input), std::begin(etl_true), std::begin(etl_false),
+                            std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
-      are_equal = std::equal(std::begin(std_true), std::end(std_true), std::begin(etl_true));
-      CHECK(are_equal);
+        bool are_equal;
 
-      are_equal = std::equal(std::begin(std_false), std::end(std_false), std::begin(etl_false));
-      CHECK(are_equal);
+        are_equal = std::equal(std::begin(std_true), std::end(std_true), std::begin(etl_true));
+        CHECK(are_equal);
+
+        are_equal = std::equal(std::begin(std_false), std::end(std_false), std::begin(etl_false));
+        CHECK(are_equal);
+
+        complete = !std::next_permutation(std::begin(std_input), std::end(std_input));
+        std::next_permutation(std::begin(etl_input), std::end(etl_input));
+      }
     }
 
     //*************************************************************************
