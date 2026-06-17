@@ -2902,7 +2902,7 @@ namespace
       while (!complete)
       {
         // Rebuild the input arrays.
-        for (size_t i = 0; i < etl::size(indexes); ++i)
+        for (size_t i = 0; i < ETL_OR_STD::size(indexes); ++i)
         {
           std_input[i].value = indexes[i];
           etl_input[i].value = indexes[i];
