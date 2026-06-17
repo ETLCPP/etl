@@ -109,7 +109,7 @@ namespace etl
   struct stable_partition_buffer_too_small : stable_partition_exception
   {
     stable_partition_buffer_too_small(string_type file_, numeric_type line_)
-      : stable_partition_exception(ETL_ERROR_TEXT("stable_partiton:buffer too small", ETL_ALGORITHM_FILE_ID"A"), file_, line_)
+      : stable_partition_exception(ETL_ERROR_TEXT("stable_partition:buffer too small", ETL_ALGORITHM_FILE_ID"A"), file_, line_)
     {
     }
   };
@@ -2135,7 +2135,6 @@ namespace etl
   //***************************************************************************
   /// Moves the elements from the range (begin, end) to two different ranges
   /// depending on the value returned by the predicate.<br>
-  ///< a href="http://en.cppreference.com/w/cpp/algorithm/partition_move"></a>
   ///\ingroup algorithm
   //***************************************************************************
   template <typename TSource, typename TDestinationTrue, typename TDestinationFalse, typename TUnaryPredicate>
@@ -3589,7 +3588,7 @@ namespace etl
     if (n <= 1)
     {
       // Empty or single-element range: trivially partitioned either way.
-      return last;
+      return first;
     }
 
     TIterator mid = first;
@@ -3646,7 +3645,9 @@ namespace etl
     }
 
     // Move them back to the original range.
-    etl::move(buffer_first, buffer_last, input_first);
+    TIterator buffer_end = buffer_first;
+    etl::advance(buffer_end, n);
+    etl::move(buffer_first, buffer_end, input_first);
 
     etl::advance(input_first, true_count);
 

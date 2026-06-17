@@ -987,8 +987,9 @@ Keeps the original relative order.
 In-place  
 
 **Complexity**  
+Recursive function.
 O(NlogN) time.  
-O(1) space.
+O(NlogN) space.
 
 **Return**  
 An iterator to the start of the group that do not satisfy the predicate.
@@ -1010,6 +1011,7 @@ Keeps the original relative order.
 Requires a user supplied buffer that must be at least the same size as the range [`first`, `last`).  
 
 **Complexity**  
+Non-recursive function.
 O(N) time.  
 O(N) space.  
 
