@@ -2133,6 +2133,35 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Moves the elements from the range (begin, end) to two different ranges
+  /// depending on the value returned by the predicate.<br>
+  ///< a href="http://en.cppreference.com/w/cpp/algorithm/partition_move"></a>
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TSource, typename TDestinationTrue, typename TDestinationFalse, typename TUnaryPredicate>
+  ETL_CONSTEXPR14 ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse> partition_move(TSource begin, TSource end, TDestinationTrue destination_true,
+                                                                                 TDestinationFalse destination_false, TUnaryPredicate predicate)
+  {
+    while (begin != end)
+    {
+      if (predicate(*begin))
+      {
+        *destination_true = etl::move(*begin);
+        ++destination_true;
+      }
+      else
+      {
+        *destination_false = etl::move(*begin);
+        ++destination_false;
+      }
+
+      ++begin;
+    }
+
+    return ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
+  }
+
+  //***************************************************************************
   /// copy_if
   ///\ingroup algorithm
   ///< a href="http://en.cppreference.com/w/cpp/algorithm/copy"></a>
@@ -3074,7 +3103,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Transforms the elements from the range (begin, end) to two different
+  /// Transforms and copies the elements from the range (begin, end) to two different
   /// ranges depending on the value returned by the predicate.<br>
   ///\ingroup algorithm
   //***************************************************************************
@@ -3104,7 +3133,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Transforms the elements from the ranges (begin1, end1) & (begin2)
+  /// Transforms and copies the elements from the ranges (begin1, end1) & (begin2)
   /// to two different ranges depending on the value returned by the predicate.
   ///\ingroup algorithm
   //***************************************************************************
@@ -3586,19 +3615,19 @@ namespace etl
   {
     typename etl::iterator_traits<TIterator>::difference_type n = etl::distance(first, last);
 
+    ETL_ASSERT((n <= etl::distance(buffer_first, buffer_last)), ETL_ERROR(stable_partition_buffer_too_small));
+
     if (n <= 1)
     {
       // Empty or single-element range.
       return first;
     }
 
-    ETL_ASSERT((etl::distance(first, last) <= etl::distance(buffer_first, buffer_last)), ETL_ERROR(stable_partition_buffer_too_small));
-
     TIterator input_first = first;
     TIterator buffer_true = buffer_first;
 
     // Find where the partition point will be in the buffer.
-    size_t true_count = std::count_if(first, last, predicate);
+    typename etl::iterator_traits<TIterator>::difference_type true_count = etl::count_if(first, last, predicate);
     TIterator buffer_false = buffer_first + true_count;
 
     // Move them to the correct places in the temporary buffer.
@@ -3619,7 +3648,9 @@ namespace etl
     // Move them back to the original range.
     etl::move(buffer_first, buffer_last, input_first);
 
-    return input_first + true_count;
+    etl::advance(input_first, true_count);
+
+    return input_first;
   }
 
   //*********************************************************

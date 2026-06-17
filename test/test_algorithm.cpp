@@ -2868,6 +2868,38 @@ namespace
     }
 
     //*************************************************************************
+    TEST(partition_move)
+    {
+      TestDataM<int> std_input[] = {TestDataM<int>(1), TestDataM<int>(2), TestDataM<int>(3), TestDataM<int>(4),
+                                    TestDataM<int>(5), TestDataM<int>(6), TestDataM<int>(7), TestDataM<int>(8)};
+      TestDataM<int> etl_input[] = {TestDataM<int>(1), TestDataM<int>(2), TestDataM<int>(3), TestDataM<int>(4),
+                                    TestDataM<int>(5), TestDataM<int>(6), TestDataM<int>(7), TestDataM<int>(8)};
+      TestDataM<int> std_true[]  = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      TestDataM<int> std_false[] = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      TestDataM<int> etl_true[]  = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      TestDataM<int> etl_false[] = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+
+      auto boundary = std::stable_partition(std::begin(std_input), std::end(std_input), std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      std::move(std::begin(std_input), boundary, std::begin(std_true));
+      std::move(boundary, std::end(std_input), std::begin(std_false));
+
+      etl::partition_move(std::begin(etl_input), std::end(etl_input), std::begin(etl_true), std::begin(etl_false),
+                          std::bind(std::greater<int>(), std::placeholders::_1, 4));
+
+      bool are_equal;
+
+      are_equal = std::equal(std::begin(std_true), std::end(std_true), std::begin(etl_true));
+      CHECK(are_equal);
+
+      are_equal = std::equal(std::begin(std_false), std::end(std_false), std::begin(etl_false));
+      CHECK(are_equal);
+    }
+
+    //*************************************************************************
     TEST(find_if_not)
     {
       int data1[] = {1, 2, 3, 5, 6, 7, 8};
@@ -4334,7 +4366,8 @@ namespace
     TEST(stable_partition_in_place_bidirectional_iterator_container_for_move_only_elements)
     {
       // 40,320 permutations.
-      std::array<TestDataM<int>, 8> initial_data = {TestDataM<int>(0), TestDataM<int>(1), TestDataM<int>(2), TestDataM<int>(3), TestDataM<int>(4), TestDataM<int>(5), TestDataM<int>(6), TestDataM<int>(7)};
+      std::array<TestDataM<int>, 8> initial_data = {TestDataM<int>(0), TestDataM<int>(1), TestDataM<int>(2), TestDataM<int>(3),
+                                                    TestDataM<int>(4), TestDataM<int>(5), TestDataM<int>(6), TestDataM<int>(7)};
 
       std::array<TestDataM<int>, 8> std_data = std::move(initial_data);
       std::array<TestDataM<int>, 8> etl_data = std::move(initial_data);
@@ -4414,9 +4447,11 @@ namespace
     TEST(stable_partition_external_buffer_bidirectional_iterator_container_for_move_only_elements)
     {
       // 40,320 permutations.
-      std::array<TestDataM<int>, 8> initial_data = {TestDataM<int>(0), TestDataM<int>(1), TestDataM<int>(2), TestDataM<int>(3), TestDataM<int>(4), TestDataM<int>(5), TestDataM<int>(6), TestDataM<int>(7)};
+      std::array<TestDataM<int>, 8> initial_data = {TestDataM<int>(0), TestDataM<int>(1), TestDataM<int>(2), TestDataM<int>(3),
+                                                    TestDataM<int>(4), TestDataM<int>(5), TestDataM<int>(6), TestDataM<int>(7)};
 
-      std::array<TestDataM<int>, 8> buffer = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      std::array<TestDataM<int>, 8> buffer = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                              TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
 
       std::array<TestDataM<int>, 8> std_data = std::move(initial_data);
       std::array<TestDataM<int>, 8> etl_data = std::move(initial_data);
@@ -4426,7 +4461,8 @@ namespace
       while (!complete)
       {
         auto std_pivot = std::stable_partition(std_data.begin(), std_data.end(), [](const TestDataM<int>& t) { return etl::is_even(t.value); });
-        auto etl_pivot = etl::stable_partition(etl_data.begin(), etl_data.end(), buffer.begin(), buffer.end(), [](const TestDataM<int>& t) { return etl::is_even(t.value); });
+        auto etl_pivot = etl::stable_partition(etl_data.begin(), etl_data.end(), buffer.begin(), buffer.end(),
+                                               [](const TestDataM<int>& t) { return etl::is_even(t.value); });
 
         auto std_distance = std::distance(std_data.begin(), std_pivot);
         auto etl_distance = std::distance(etl_data.begin(), etl_pivot);
@@ -4457,7 +4493,9 @@ namespace
       int buffer[7];
       int etl_data[8];
 
-      CHECK_THROW((etl::stable_partition(std::begin(etl_data), std::end(etl_data), std::begin(buffer), std::end(buffer), [](int i) { return etl::is_even(i); })), etl::stable_partition_buffer_too_small);
+      CHECK_THROW((etl::stable_partition(std::begin(etl_data), std::end(etl_data), std::begin(buffer), std::end(buffer),
+                                         [](int i) { return etl::is_even(i); })),
+                  etl::stable_partition_buffer_too_small);
     }
 
     //*************************************************************************

@@ -940,6 +940,61 @@ bool is_permutation(TIterator1       begin1,
 Returns `true` if there exists a permutation of the elements in the range [`begin1`, `end1`) that makes that range equal to the second range.  
 Uses `predicate` to checks elements in the range.
 
+## partition
+```cpp
+ETL_CONSTEXPR14 TIterator partition(TIterator first, TIterator last, TPredicate predicate)
+```
+**Description**  
+Reorders elements in a range based on a predicate.  
+It moves all elements that satisfy the predicate to the front, and those that do not to the back.
+Does not guarantee to keep the original relative order.  
+
+**Return**  
+An iterator to the start of the group that do not satisfy the predicate.
+
+## stable_partition
+
+### In-place
+```cpp
+template <typename TIterator, typename TPredicate>
+ETL_CONSTEXPR14 TIterator stable_partition(TIterator first, 
+                                           TIterator last, 
+                                           TPredicate predicate)
+```
+**Description**  
+Reorders elements in a range based on a predicate.  
+It moves all elements that satisfy the predicate to the front, and those that do not to the back.
+Keeps the original relative order.  
+In-place  
+O(NlogN) time.  
+O(1) space.
+
+**Return**  
+An iterator to the start of the group that do not satisfy the predicate.
+
+### External buffer
+```cpp
+template <typename TIterator, typename TPredicate>
+ETL_CONSTEXPR14 TIterator stable_partition(TIterator first, 
+                                           TIterator last, 
+                                           TIterator buffer_first, 
+                                           TIterator buffer_last, 
+                                           TPredicate predicate)
+```
+**Description**  
+Reorders elements in a range based on a predicate.  
+It moves all elements that satisfy the predicate to the front, and those that do not to the back.
+Keeps the original relative order.  
+
+Requires a user supplied buffer that must be at least the same size as the range [`first`, `last`).  
+O(N) time.  
+O(N) space.  
+
+Raises an `etl::stable_partition_buffer_too_small` is the buffer is not large enough to accommodate the range [`first`, `last`).
+
+**Return**  
+An iterator to the start of the group that do not satisfy the predicate.
+
 ## is_partitioned
 
 ```cpp
@@ -977,7 +1032,27 @@ pair<TDestinationTrue, TDestinationFalse> partition_copy(TSource           begin
 **Description**  
 Copies the elements from the range [`begin`, `end`) to two different ranges depending on the value returned by the `predicate`.  
 The elements that satisfy `predicate` are copied to the range beginning at `destination_true`.  
-The rest of the elements are copied to the range beginning at `destination_false`.
+The rest of the elements are copied to the range beginning at `destination_false`.  
+This partition is stable.
+
+## partition_move
+
+```cpp
+template <typename TSource, 
+          typename TDestinationTrue, 
+          typename TDestinationFalse, 
+          typename TUnaryPredicate>
+pair<TDestinationTrue, TDestinationFalse> partition_move(TSource           begin,
+                                                         TSource           end, 
+                                                         TDestinationTrue  destination_true,
+                                                         TDestinationFalse destination_false,
+                                                         TUnaryPredicate   predicate)
+```
+**Description**  
+Moves the elements from the range [`begin`, `end`) to two different ranges depending on the value returned by the `predicate`.  
+The elements that satisfy `predicate` are copied to the range beginning at `destination_true`.  
+The rest of the elements are moved to the range beginning at `destination_false`.  
+This partition is stable.
 
 ## partition_transform
 **ETL extension**  
@@ -1000,9 +1075,10 @@ pair<TDestinationTrue, TDestinationFalse>
                       TUnaryPredicate     predicate)
 ```
 **Description**  
-Transforms data from the source to one of two destinations.  
-If `predicate` returns `true` then the source data if modified by `function_true` and stored in `destination_true`.  
-If `predicate` returns `false` then the source data if modified by `function_false` and stored in `destination_false`.  
+Transforms and copies data from the source to one of two destinations.  
+If `predicate` returns `true` then the source data is modified by `function_true` and stored in `destination_true`.  
+If `predicate` returns `false` then the source data is modified by `function_false` and stored in `destination_false`.  
+This partition is stable.
 
 ---
 
@@ -1026,9 +1102,10 @@ pair<TDestinationTrue, TDestinationFalse>
                       TBinaryPredicate     predicate)
 ```
 **Description**  
-Transforms data from the source to one of two destinations.  
-If `predicate` returns `true` then the source data if modified by `function_true` and stored in `destination_true`.  
-If `predicate` returns `false` then the source data if modified by `function_false` and stored in `destination_false`.  
+Transforms and copies data from the source to one of two destinations.  
+If `predicate` returns `true` then the source data is modified by `function_true` and stored in `destination_true`.  
+If `predicate` returns `false` then the source data is modified by `function_false` and stored in `destination_false`.  
+This partition is stable.
 
 ## rotate
 
@@ -1107,7 +1184,7 @@ TOutputIterator transform_if(TInputIterator  i_begin,
 ```
 **Description**  
 Transforms data from the source based on a predicate.  
-If `predicate` returns `true` then the source data if modified by function and stored in the output range.  
+If `predicate` returns `true` then the source data is modified by `function` and stored in the output range.  
 If `predicate` returns `false` then the source data is ignored.  
 
 ---
@@ -1128,7 +1205,7 @@ TOutputIterator transform_if(TInputIterator1  i_begin1,
 ```
 **Description**  
 Transforms data from the source based on a predicate.  
-If `predicate` returns `true` then the source data if modified by function and stored in the output range.  
+If `predicate` returns `true` then the source data is modified by `function` and stored in the output range.  
 If `predicate` returns `false` then the source data is ignored.  
 
 ## transform_n_if
@@ -1149,7 +1226,7 @@ TOutputIterator transform_if(TInputIterator  i_begin,
 ```
 **Description**  
 Transforms data from the source based on a predicate for `n` items.  
-If `predicate` returns `true` then the source data if modified by function and stored in the output range.  
+If `predicate` returns `true` then the source data is modified by `function` and stored in the output range.  
 If `predicate` returns `false` then the source data is ignored.
 
 ---
@@ -1171,7 +1248,7 @@ TOutputIterator transform_if(TInputIterator1  i_begin1,
 ```
 **Description**  
 Transforms data from the source based on a predicate for `n` items.  
-If `predicate` returns `true` then the source data if modified by function and stored in the output range.  
+If `predicate` returns `true` then the source data is modified by `function` and stored in the output range.  
 If `predicate` returns `false` then the source data is ignored.
 
 ## shell_sort
