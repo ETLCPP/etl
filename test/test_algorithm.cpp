@@ -2877,7 +2877,7 @@ namespace
     //*************************************************************************
     TEST(partition_move)
     {
-      int indexes[] = {1, 2, 3, 4, 5, 6, 7, 8};
+      std::array<int, 8> indexes = {1, 2, 3, 4, 5, 6, 7, 8};
 
       TestDataM<int> std_input[] = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
                                     TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
@@ -2902,7 +2902,7 @@ namespace
       while (!complete)
       {
         // Rebuild the input arrays.
-        for (size_t i = 0; i < ETL_OR_STD::size(indexes); ++i)
+        for (size_t i = 0; i < indexes.size(); ++i)
         {
           std_input[i].value = indexes[i];
           etl_input[i].value = indexes[i];
