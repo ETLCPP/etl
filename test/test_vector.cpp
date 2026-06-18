@@ -1683,5 +1683,22 @@ namespace
       CHECK(etl_data2.size() == swap_other_data.size());
       CHECK(etl_data2.max_size() == other_size);
     }
+
+    //*************************************************************************
+    // TEST_FIXTURE(SetupFixture, test_issue_1464_etl_vector_insert_allows_inserting_an_incompatible_type)
+    //{
+    //  // Uncomment the code below to trigger the compile time error
+
+    //  struct SomeStruct
+    //  {
+    //    int foo;
+    //  };
+
+    //  etl::vector<SomeStruct, 4> myStructs{{1}, {2}, {3}, {4}};
+
+    //  etl::vector<SomeStruct *, 4> structPointers;
+    //  structPointers.insert(structPointers.end(), myStructs.begin(), myStructs.end());
+    //  structPointers.assign(myStructs.begin(), myStructs.end());
+    //}
   }
 } // namespace
