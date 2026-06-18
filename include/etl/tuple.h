@@ -1180,7 +1180,11 @@ namespace etl
 
 namespace std
 {
-  #if ETL_NOT_USING_STL                                                                                                       \
+  // libc++ already declares std::tuple_size / std::tuple_element in its inline
+  // namespace (std::__1), so re-declaring them here would make the name
+  // ambiguous. Detect libc++ via _LIBCPP_VERSION and skip the forward
+  // declarations in that case, even when not using the STL.
+  #if ETL_NOT_USING_STL && !defined(_LIBCPP_VERSION)                                                                          \
     && !((defined(ETL_DEVELOPMENT_OS_APPLE) || (ETL_COMPILER_FULL_VERSION >= 190000) && (ETL_COMPILER_FULL_VERSION < 210000)) \
          && defined(ETL_COMPILER_CLANG))
   template <typename T>
