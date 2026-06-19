@@ -320,10 +320,9 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    typename etl::enable_if<
-      etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
-      && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
-      void>::type
+    typename etl::enable_if< etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
+                               && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
+                             void>::type
       assign(TIterator first, TIterator last)
     {
       base_t::assign(first, last);
@@ -445,10 +444,9 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <typename TIterator>
-    typename etl::enable_if<
-      etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
-      && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
-      void>::type
+    typename etl::enable_if< etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
+                               && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
+                             void>::type
       insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
@@ -831,10 +829,9 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    typename etl::enable_if<
-      etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
-      && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
-      void>::type
+    typename etl::enable_if< etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
+                               && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
+                             void>::type
       assign(TIterator first, TIterator last)
     {
       base_t::assign(first, last);
@@ -914,10 +911,9 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <typename TIterator>
-    typename etl::enable_if<
-      etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
-      && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
-      void>::type
+    typename etl::enable_if< etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
+                               && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
+                             void>::type
       insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
