@@ -322,8 +322,7 @@ namespace etl
     template <typename TIterator>
     typename etl::enable_if<
       etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
-        && etl::is_same<typename etl::remove_cv<typename etl::remove_pointer<typename etl::iterator_traits<TIterator>::value_type>::type>::type,
-                        T>::value,
+      && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
       void>::type
       assign(TIterator first, TIterator last)
     {
@@ -448,8 +447,7 @@ namespace etl
     template <typename TIterator>
     typename etl::enable_if<
       etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
-        && etl::is_same<typename etl::remove_cv<typename etl::remove_pointer<typename etl::iterator_traits<TIterator>::value_type>::type>::type,
-                        T>::value,
+      && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
       void>::type
       insert(const_iterator position, TIterator first, TIterator last)
     {
@@ -835,8 +833,7 @@ namespace etl
     template <typename TIterator>
     typename etl::enable_if<
       etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
-        && etl::is_same<typename etl::remove_cv<typename etl::remove_pointer<typename etl::iterator_traits<TIterator>::value_type>::type>::type,
-                        T>::value,
+      && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
       void>::type
       assign(TIterator first, TIterator last)
     {
@@ -919,13 +916,10 @@ namespace etl
     template <typename TIterator>
     typename etl::enable_if<
       etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
-        && etl::is_same<typename etl::remove_cv<typename etl::remove_pointer<typename etl::iterator_traits<TIterator>::value_type>::type>::type,
-                        T>::value,
+      && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value,
       void>::type
       insert(const_iterator position, TIterator first, TIterator last)
     {
-      ETL_STATIC_ASSERT(etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value, "TIterator must dereference to a pointer type");
-
       base_t::insert(base_t::iterator(position), first, last);
     }
 
