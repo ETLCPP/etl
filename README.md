@@ -165,12 +165,12 @@ add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl::etl)
 ```
 
+Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html).
 
-Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html),
-replacing `<targetVersion>` with the version to install based on a git tag:
+By Git, replacing `<targetVersion>` with the version to install based on a git tag:
 
-```sh
-Include(FetchContent)
+```cmake
+include(FetchContent)
 
 FetchContent_Declare(
   etl
@@ -183,6 +183,25 @@ FetchContent_MakeAvailable(etl)
 add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl::etl)
 ```
+
+Or by URL, fetching a release tarball directly, again replacing `<targetVersion>` with the desired version:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(
+  etl
+  URL https://github.com/ETLCPP/etl/archive/refs/tags/<targetVersion>.tar.gz
+)
+
+FetchContent_MakeAvailable(etl)
+
+add_executable(foo main.cpp)
+target_link_libraries(foo PRIVATE etl::etl)
+```
+
+A tarball fetched this way has no `.git` directory of its own. ETL detects this and falls back to
+reading its version from `version.txt` instead of `git describe`, so no extra configuration is needed.
 
 ## Profile definition
 
