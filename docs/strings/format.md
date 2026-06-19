@@ -302,6 +302,89 @@ Requires `ETL_USING_FORMAT_FLOATING_POINT`.
 
 `nan`, `inf` (lowercase for `e`/`f`/`g`/`a`, uppercase for `E`/`F`/`G`/`A`).
 
+## Formatting User-Defined Types
+
+Custom types can be made formattable by providing a specialisation of
+`etl::formatter<T>`, mirroring the `std::formatter<T>` mechanism.  Once a
+specialisation is in scope, values of that type can be passed to `format_to`,
+`format_to_n`, `formatted_size`, `print`, and `println` exactly like the
+built-in types.
+
+### The `etl::formatter` primary template
+
+```cpp
+template <class T, class CharT = char>
+struct formatter;
+```
+
+The primary template is empty.  A type `T` becomes formattable when you provide
+a specialisation (in namespace `etl`) that defines two member functions:
+
+| Member | Signature | Purpose |
+|---|---|---|
+| `parse` | `format_parse_context::iterator parse(format_parse_context& parse_ctx)` | Parses the format-spec portion of the replacement field (the characters after `:`, up to the closing `}`). Returns an iterator to the first unconsumed character, which must be the closing `}`. Return `parse_ctx.begin()` to consume nothing. |
+| `format` | `template <class OutputIt> format_context<OutputIt>::iterator format(const T& value, format_context<OutputIt>& fmt_ctx)` | Writes the formatted representation of `value` through `fmt_ctx.out()` and returns the iterator past the last character written. |
+
+### Context types
+
+| Type | Description |
+|---|---|
+| `etl::format_parse_context` | Alias for `etl::basic_format_parse_context<char>`. Provides `begin()`, `end()`, and `advance_to()` over the format-spec characters. Its `iterator` is `etl::string_view::const_iterator`. |
+| `etl::format_context<OutputIt>` | Alias for `etl::basic_format_context<OutputIt, char>`. Provides `out()` (the current output iterator) and `advance_to()`. Its `iterator` is `OutputIt`. |
+
+### Example
+
+```cpp
+// A simple user-defined type.
+struct coordinate
+{
+  int x;
+  int y;
+};
+
+// Specialise etl::formatter for it.  Here format() simply delegates to
+// etl::format_to, writing the two members as "(x, y)".
+namespace etl
+{
+  template <>
+  struct formatter<coordinate>
+  {
+    format_parse_context::iterator parse(format_parse_context& parse_ctx)
+    {
+      return parse_ctx.begin();
+    }
+
+    template <class OutputIt>
+    typename format_context<OutputIt>::iterator format(const coordinate& c, format_context<OutputIt>& fmt_ctx)
+    {
+      return etl::format_to(fmt_ctx.out(), "({}, {})", c.x, c.y);
+    }
+  };
+}
+```
+
+With the specialisation in scope, `coordinate` behaves like any other argument:
+
+```cpp
+etl::string<100> s;
+coordinate c{3, 7};
+
+etl::format_to(s, "{}", c);                // "(3, 7)"
+etl::format_to(s, "point={}", c);         // "point=(3, 7)"
+etl::format_to(s, "{0} and {0}", c);      // "(3, 7) and (3, 7)"
+etl::format_to(s, "{} {} {}", 'a', c, 5); // "a (3, 7) 5"
+etl::formatted_size("{}", c);             // 6
+```
+
+### How it works
+
+When an argument type provides an `etl::formatter<T>` specialisation, ETL stores
+the value type-erased inside `basic_format_arg::handle` rather than in one of the
+built-in alternatives.  During formatting the handle invokes the formatter's
+`parse` and `format` members.  Detection is automatic: a type is treated as a
+custom type when `etl::formatter<T>` exposes a callable `parse()` member, so no
+opt-in trait or registration is required.
+
 ## Escape Sequences and Literal Braces
 
 ### Literal braces
@@ -378,7 +461,7 @@ etl::format_to(s, "{:d}", sv);      // invalid type for string_view
 | **`etl::istring&` overload** | Not available | `format_to(etl::istring&, ...)` automatically resizes the string. |
 | **`print` / `println` output** | Writes to `FILE*` / `stdout` | Writes character-by-character via user-defined `etl_putchar(int)`. |
 | **Floating-point support** | Always available | Opt-in via `ETL_USING_FORMAT_FLOATING_POINT`. |
-| **User-defined formatters** | `std::formatter<T>` specialisations | Not yet supported. |
+| **User-defined formatters** | `std::formatter<T>` specialisations | Supported via `etl::formatter<T>` specialisations (see [Formatting User-Defined Types](#formatting-user-defined-types)). |
 | **Locale** | `L` flag uses `std::locale` | `L` flag is parsed but has no effect. |
 | **Compile-time validation** | Enforced via `consteval` on C++20 | Planned; currently validates at run time and throws `etl::bad_format_string_exception`. |
 | **`format_to_n` return type** | `std::format_to_n_result` | Returns the underlying `OutputIt` directly. |

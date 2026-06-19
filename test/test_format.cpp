@@ -36,6 +36,38 @@ SOFTWARE.
 
 namespace
 {
+  // A simple user-defined type with two members, used to demonstrate the
+  // formatting of custom types through an etl::formatter specialisation.
+  struct coordinate
+  {
+    int x;
+    int y;
+  };
+} // namespace
+
+// Custom formatter specialisation for the user-defined 'coordinate' type.
+// Like a std::formatter, it provides parse() and format(); here format()
+// simply delegates to etl::format_to, writing the two members as "(x, y)".
+namespace etl
+{
+  template <>
+  struct formatter<coordinate>
+  {
+    format_parse_context::iterator parse(format_parse_context& parse_ctx)
+    {
+      return parse_ctx.begin();
+    }
+
+    template <class OutputIt>
+    typename format_context<OutputIt>::iterator format(const coordinate& c, format_context<OutputIt>& fmt_ctx)
+    {
+      return etl::format_to(fmt_ctx.out(), "({}, {})", c.x, c.y);
+    }
+  };
+} // namespace etl
+
+namespace
+{
   using iterator = etl::back_insert_iterator<etl::istring>;
 
   template <class... Args>
@@ -927,6 +959,36 @@ namespace
       CHECK_EQUAL("0", test_format(s, "{:#o}", 0));
       CHECK_EQUAL("07", test_format(s, "{:#o}", 7));
       CHECK_EQUAL("010", test_format(s, "{:#o}", 8));
+    }
+
+    //*************************************************************************
+    TEST(test_format_custom_type)
+    {
+      etl::string<100> s;
+
+      coordinate c{3, 7};
+
+      // Default presentation of a custom type.
+      CHECK_EQUAL("(3, 7)", test_format(s, "{}", c));
+
+      // Surrounded by literal text.
+      CHECK_EQUAL("point=(3, 7)", test_format(s, "point={}", c));
+
+      // Manual argument index, referenced more than once.
+      CHECK_EQUAL("(3, 7) and (3, 7)", test_format(s, "{0} and {0}", c));
+
+      // Mixed in with built-in argument types.
+      CHECK_EQUAL("a (3, 7) 5", test_format(s, "{} {} {}", 'a', c, 5));
+
+      // Negative member values.
+      coordinate n{-1, 42};
+      CHECK_EQUAL("(-1, 42)", test_format(s, "{}", n));
+
+      // A temporary custom-type argument.
+      CHECK_EQUAL("(8, 9)", test_format(s, "{}", coordinate{8, 9}));
+
+      // formatted_size also works with custom types.
+      CHECK_EQUAL(6, etl::formatted_size("{}", c));
     }
   }
 } // namespace

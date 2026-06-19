@@ -513,21 +513,6 @@ namespace etl
   template <class... Args>
   using format_string = basic_format_string<type_identity_t<Args>...>;
 
-  // Supported types to format
-  //
-  // This is the limited number of types as defined in std::basic_format_arg
-  // https://en.cppreference.com/w/cpp/utility/format/basic_format_arg.html
-  //
-  // Further types to be supported are added via converting constructors in
-  // etl::basic_format_arg
-  using supported_format_types = etl::variant< etl::monostate, bool, char, int, unsigned int, long long int, unsigned long long int,
-  #if ETL_USING_FORMAT_FLOATING_POINT
-                                               float, double, long double,
-  #endif
-                                               const char*, etl::string_view, const void*
-                                               // basic_format_arg::handle,
-                                               >;
-
   template <class CharT>
   class basic_format_parse_context
   {
@@ -595,24 +580,88 @@ namespace etl
 
   using format_parse_context = basic_format_parse_context<char>;
 
+  // Forward declaration of the formatter primary template (defined later). This
+  // lets basic_format_arg detect user-provided formatter specialisations for
+  // custom types and route them through basic_format_arg::handle.
+  template <class T, class CharT = char>
+  struct formatter;
+
+  // Forward declaration of the format context (defined later) so that
+  // is_formattable can probe for a usable formatter<T>::format() member, which
+  // is templated on the output iterator type.
+  template <class OutputIt, class CharT>
+  class basic_format_context;
+
+  namespace private_format
+  {
+    // Detects whether etl::formatter<T> exposes a usable parse() member.
+    template <typename T, typename = void>
+    struct has_formatter_parse : etl::false_type
+    {
+    };
+
+    template <typename T>
+    struct has_formatter_parse<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().parse(etl::declval<format_parse_context&>()))> >
+      : etl::true_type
+    {
+    };
+
+    // Detects whether etl::formatter<T> exposes a usable format() member.
+    // format() is templated on the output iterator, so it is probed with a
+    // representative char* output iterator context.
+    template <typename T, typename = void>
+    struct has_formatter_format : etl::false_type
+    {
+    };
+
+    template <typename T>
+    struct has_formatter_format<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().format(
+                                     etl::declval<const T&>(), etl::declval<etl::basic_format_context<char*, char>&>()))> > : etl::true_type
+    {
+    };
+
+    // The primary formatter template is empty, so a type is only formattable
+    // when a (user-)provided specialisation supplies both a usable parse() and
+    // a usable format() member - mirroring the std::formattable requirements.
+    template <typename T>
+    struct is_formattable : etl::bool_constant<has_formatter_parse<T>::value && has_formatter_format<T>::value>
+    {
+    };
+  } // namespace private_format
+
   template <class Context>
   class basic_format_arg
   {
   public:
 
+    // Type-erased wrapper that allows user-defined types to be formatted via an
+    // etl::formatter<T> specialisation, mirroring std::basic_format_arg::handle.
     class handle
     {
     public:
 
-      void format(etl::basic_format_parse_context<char>& /* parse_ctx */, Context& /*format_ctx*/)
+      template <typename T>
+      explicit handle(const T& value)
+        : obj(static_cast<const void*>(etl::addressof(value)))
+        , func(&format_custom_type<T>)
       {
-        // typename Context::template formatter_type<TD> f;
-        // parse_ctx.advance_to(f.parse(parse_ctx));
-        // format_ctx.advance_to(f.format(const_cast<TQ&>(static_cast<const
-        // TD&>(ref)), format_ctx));
+      }
+
+      void format(etl::basic_format_parse_context<char>& parse_ctx, Context& format_ctx) const
+      {
+        func(parse_ctx, format_ctx, obj);
       }
 
     private:
+
+      template <typename T>
+      static void format_custom_type(etl::basic_format_parse_context<char>& parse_ctx, Context& format_ctx, const void* ptr)
+      {
+        const T&          value = *static_cast<const T*>(ptr);
+        etl::formatter<T> f;
+        parse_ctx.advance_to(f.parse(parse_ctx));
+        format_ctx.advance_to(f.format(value, format_ctx));
+      }
 
       const void* obj;
       typedef void (*function_type)(etl::basic_format_parse_context<char>&, Context&, const void*);
@@ -725,6 +774,15 @@ namespace etl
     {
     }
 
+    // Converting constructor for user-defined types that provide an
+    // etl::formatter<T> specialisation. The value is stored type-erased in a
+    // handle, matching the std::basic_format_arg behaviour for custom types.
+    template <typename T, typename = etl::enable_if_t<private_format::is_formattable<T>::value> >
+    basic_format_arg(const T& v)
+      : data(handle(v))
+    {
+    }
+
     basic_format_arg& operator=(const basic_format_arg& other)
     {
       data = other.data;
@@ -744,7 +802,21 @@ namespace etl
 
   private:
 
-    supported_format_types data;
+    // Storage for the argument value.
+    //
+    // This is the limited number of types as defined in std::basic_format_arg
+    // https://en.cppreference.com/w/cpp/utility/format/basic_format_arg.html
+    //
+    // Further types to be supported are mapped onto these via the converting
+    // constructors above. User-defined types are stored type-erased in the
+    // special handle member, which formats them through their etl::formatter
+    // specialisation.
+    etl::variant< etl::monostate, bool, char, int, unsigned int, long long int, unsigned long long int,
+  #if ETL_USING_FORMAT_FLOATING_POINT
+                  float, double, long double,
+  #endif
+                  const char*, etl::string_view, const void*, handle >
+      data;
   };
 
   template <class Context, class... Args>
@@ -1157,7 +1229,7 @@ namespace etl
     }
   } // namespace private_format
 
-  template <class T, class CharT = char>
+  template <class T, class CharT>
   struct formatter
   {
     using char_type = CharT;
@@ -1906,7 +1978,7 @@ namespace etl
       {
       }
 
-      // for all types in supported_format_types
+      // for all the built-in alternatives stored in basic_format_arg
       template <typename T>
       void operator()(T value)
       {
@@ -1915,6 +1987,12 @@ namespace etl
         parse_ctx.advance_to(it);
         OutputIt fit = f.format(value, fmt_ctx);
         fmt_ctx.advance_to(fit);
+      }
+
+      // for user-defined types routed through basic_format_arg::handle
+      void operator()(typename basic_format_arg<format_context<OutputIt> >::handle h)
+      {
+        h.format(parse_ctx, fmt_ctx);
       }
 
       format_parse_context&     parse_ctx;
