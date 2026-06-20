@@ -1692,7 +1692,7 @@ namespace
 
     template <typename TContainer, typename TIterator>
     struct is_assign_callable<TContainer, TIterator,
-                              std::void_t<decltype(std::declval<TContainer&>().assign(std::declval<TIterator>(), std::declval<TIterator>()))>>
+                              etl::void_t<decltype(std::declval<TContainer&>().assign(std::declval<TIterator>(), std::declval<TIterator>()))>>
       : std::true_type
     {
     };
@@ -1705,7 +1705,7 @@ namespace
     template <typename TContainer, typename TIterator1, typename TIterator2>
     struct is_insert_callable<
       TContainer, TIterator1, TIterator2,
-      std::void_t<decltype(std::declval<TContainer&>().insert(std::declval<TIterator1>(), std::declval<TIterator2>(), std::declval<TIterator2>()))>>
+      etl::void_t<decltype(std::declval<TContainer&>().insert(std::declval<TIterator1>(), std::declval<TIterator2>(), std::declval<TIterator2>()))>>
       : std::true_type
     {
     };
