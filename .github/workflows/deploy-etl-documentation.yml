@@ -40,6 +40,6 @@ jobs:
           username: ${{ secrets.DOCS_SSH_USER }}
           key: ${{ secrets.DOCS_DEPLOY_KEY }}
           port: ${{ secrets.DOCS_SSH_PORT }}
-          source: "./hugo/public/*"
-          target: ${{ secrets.DOCS_DEST_DIR }}
-          strip_components: 2 # Strips './hugo/public' so only the compiled HTML/assets are uploaded directly into target
+          source: "hugo/public/**" # Matches everything recursively inside public/
+          target: ${{ secrets.DOCS_DEST_DIR }} # /kunden/homepages/28/d358975829/htdocs/etl
+          strip_components: 2 # Strips 'hugo/' and 'public/' prefixes from the uploaded path
