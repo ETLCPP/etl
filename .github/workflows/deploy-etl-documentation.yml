@@ -34,11 +34,11 @@ jobs:
 
       # Securely upload the files via SFTP
       - name: SFTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
           server: ${{ secrets.SFTP_SERVER }}
           username: ${{ secrets.SFTP_USERNAME }}
-          ssh-key: ${{ secrets.SFTP_SSH_KEY }}
+          ssh_private_key: ${{ secrets.SFTP_SSH_KEY }}
           port: 22
-          local-dir: ./public/
-          server-dir: ./
+          local_path: ./hugo/public/*
+          remote_path: ./
