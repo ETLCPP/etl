@@ -43,3 +43,4 @@ jobs:
           source: "hugo/public/**" # Matches everything recursively inside public/
           target: ${{ secrets.DOCS_DEST_DIR }} # /kunden/homepages/28/d358975829/htdocs/etl
           strip_components: 2 # Strips 'hugo/' and 'public/' prefixes from the uploaded path
+          
