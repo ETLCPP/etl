@@ -35,9 +35,13 @@ jobs:
       - name: Sanitize SSH key
         id: clean_key
         run: |
-          echo "key<<EOF" >> $GITHUB_OUTPUT
-          printf '%s' "$RAW_KEY" | tr -d '\r' >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Create a random delimiter to prevent any accidental collisions
+          EOF=$(dd if=/dev/urandom bs=15 count=1 2>/dev/null | base64)
+          
+          echo "key<<$EOF" >> $GITHUB_OUTPUT
+          echo "$RAW_KEY" | tr -d '\r' >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT # Ensures a trailing newline for SSH compliance
+          echo "$EOF" >> $GITHUB_OUTPUT
         env:
           RAW_KEY: ${{ secrets.DOCS_DEPLOY_KEY }}
 
