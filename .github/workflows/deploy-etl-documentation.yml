@@ -32,6 +32,11 @@ jobs:
       - name: Build Hugo Site
         run: hugo --cleanDestinationDir --minify --baseURL "https://www.etlcpp.com/hugo/"
 
+      - name: Verify key hash
+        run: printf '%s' "$KEY" | sha256sum
+        env:
+          KEY: ${{ secrets.DOCS_BDEPLOY_KEY }}
+
       # Securely upload the files via SFTP
       - name: SFTP Deploy
         uses: wlixcc/SFTP-Deploy-Action@v1.2.6
