@@ -1,0 +1,44 @@
+name: Deploy documentation via SFTP
+
+on:
+  push:
+    branches:
+      - sftp-documentation-on-push-to-master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./hugo
+
+    steps:
+      # Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      # Install and set up Hugo
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      # Build the static site
+      - name: Build Hugo Site
+        run: hugo --cleanDestinationDir --minify --baseURL "https://www.etlcpp.com/hugo/"
+
+      # Securely upload the files via SFTP
+      - name: SFTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SFTP_SERVER }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          ssh-key: ${{ secrets.SFTP_SSH_KEY }}
+          port: 22
+          local-dir: ./public/
+          server-dir: ./
