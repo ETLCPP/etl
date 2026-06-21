@@ -32,10 +32,14 @@ jobs:
       - name: Build Hugo Site
         run: hugo --cleanDestinationDir --minify --baseURL "https://www.etlcpp.com/hugo/"
 
-      - name: Verify key hash
-        run: printf '%s' "$KEY" | sha256sum
+      - name: Sanitize SSH key
+        id: clean_key
+        run: |
+          echo "key<<EOF" >> $GITHUB_OUTPUT
+          printf '%s' "$RAW_KEY" | tr -d '\r' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         env:
-          KEY: ${{ secrets.DOCS_BDEPLOY_KEY }}
+          RAW_KEY: ${{ secrets.DOCS_DEPLOY_KEY }}
 
       # Securely upload the files via SFTP
       - name: SFTP Deploy
@@ -47,4 +51,3 @@ jobs:
           port: ${{ secrets.DOCS_SSH_PORT }}
           local_path: ./hugo/public/*
           remote_path: ${{ secrets.DOCS_DEST_DIR }}
-          
