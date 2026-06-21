@@ -47,3 +47,4 @@ jobs:
           port: ${{ secrets.DOCS_SSH_PORT }}
           local_path: ./hugo/public/*
           remote_path: ${{ secrets.DOCS_DEST_DIR }}
+          
