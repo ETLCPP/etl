@@ -33,7 +33,7 @@ jobs:
 
       # Upload the files via rsync.
       - name: Deploy via rsync
-        uses: burnett01/rsync-deployments@7.0.2
+        uses: burnett01/rsync-deployments@8.0.5
         with:
           switches: -avzr --delete
           path: hugo/public/
