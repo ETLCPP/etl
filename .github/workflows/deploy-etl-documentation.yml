@@ -36,9 +36,9 @@ jobs:
       - name: SFTP Deploy
         uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
-          server: ${{ secrets.SFTP_SERVER }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          ssh_private_key: ${{ secrets.SFTP_SSH_KEY }}
-          port: 22
+          server: ${{ secrets.DOCS_SSH_SERVER }}
+          username: ${{ secrets.DOCS_SSH_USER }}
+          ssh_private_key: ${{ secrets.DOCS_DEPLOY_KEY }}
+          port: ${{ secrets.DOCS_SSH_PORT }}
           local_path: ./hugo/public/*
-          remote_path: ./
+          remote_path: ${{ secrets.DOCS_DEST_DIR }}
