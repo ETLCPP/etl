@@ -3,7 +3,7 @@ name: Deploy documentation via SFTP
 on:
   push:
     branches:
-      - feature/sftp-documentation-on-push-to-master
+      - master
 
 jobs:
   deploy:
