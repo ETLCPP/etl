@@ -32,7 +32,7 @@ jobs:
       - name: Build Hugo Site
         run: hugo --cleanDestinationDir --minify --baseURL "https://www.etlcpp.com/"
 
-      # Securely upload the files via SCP/SFTP
+      # Securely upload the files via SFTP
       - name: SFTP Deploy
         uses: appleboy/scp-action@v0.1.7
         with:
