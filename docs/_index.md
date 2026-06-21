@@ -2,6 +2,7 @@
 title: "Embedded Template Library"
 weight: 998
 type: hextra-home
+publishDate: 2023-10-19T00:40:04-07:00
 ---
 
 <div class="not-prose badges">
