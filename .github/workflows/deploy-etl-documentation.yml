@@ -2,8 +2,7 @@ name: Deploy documentation via SFTP
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master, feature/sftp-documentation-on-push-to-master ]
 
 jobs:
   deploy:
@@ -32,15 +31,14 @@ jobs:
       - name: Build Hugo Site
         run: hugo --cleanDestinationDir --minify --baseURL "https://www.etlcpp.com/"
 
-      # Securely upload the files via SFTP
-      - name: SFTP Deploy
-        uses: appleboy/scp-action@v0.1.7
+      # Upload the files via rsync.
+      - name: Deploy via rsync
+        uses: burnett01/rsync-deployments@7.0.2
         with:
-          host: ${{ secrets.DOCS_SSH_SERVER }}
-          username: ${{ secrets.DOCS_SSH_USER }}
-          key: ${{ secrets.DOCS_DEPLOY_KEY }}
-          port: ${{ secrets.DOCS_SSH_PORT }}
-          source: "hugo/public/**" # Matches everything recursively inside public/
-          target: ${{ secrets.DOCS_DEST_DIR }} # /kunden/homepages/28/d358975829/htdocs/etl
-          strip_components: 2 # Strips 'hugo/' and 'public/' prefixes from the uploaded path
-          
+          switches: -avzr --delete
+          path: hugo/public/
+          remote_path: ${{ secrets.DOCS_DEST_DIR }}
+          remote_host: ${{ secrets.DOCS_SSH_SERVER }}
+          remote_port: ${{ secrets.DOCS_SSH_PORT }}
+          remote_user: ${{ secrets.DOCS_SSH_USER }}
+          remote_key: ${{ secrets.DOCS_DEPLOY_KEY }}
