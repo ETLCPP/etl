@@ -30,7 +30,7 @@ jobs:
 
       # Build the static site
       - name: Build Hugo Site
-        run: hugo --cleanDestinationDir --minify --baseURL "https://www.etlcpp.com/hugo/"
+        run: hugo --cleanDestinationDir --minify --baseURL "https://www.etlcpp.com/"
 
       # Securely upload the files via SCP/SFTP
       - name: SFTP Deploy
