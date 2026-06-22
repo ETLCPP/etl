@@ -43,7 +43,7 @@ constexpr auto make_flat_map(TValues&&... values)
 
 ### Example
 ```cpp
-auto data = etl::make_map<int. int>(etl::pair{0, 1}, etl::pair{2, 3}, 
+auto data = etl::make_multimap<int, int>(etl::pair{0, 1}, etl::pair{2, 3},
                                     etl::pair{4, 5}, etl::pair{6, 7});
 ```
 

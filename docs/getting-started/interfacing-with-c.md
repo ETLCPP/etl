@@ -11,6 +11,7 @@ This is a C function that copies `count` characters , starting from `a`, to a bu
 size_t CFunctionCopyToBuffer(char* start, size_t count)
 {
   size_t i = 0;
+  char* p = start;
   while (i < count)
   {
     *p++ = 'a' + i;

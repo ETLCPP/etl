@@ -247,7 +247,7 @@ namespace etl
     short s   = stream.read_unchecked<short , 11U>();
     int32_t i = stream.read_unchecked<int32_t, 25U>();
 
-    return CustomType { c.value(), s.value(), i.value() };
+    return CustomType { c, s, i };
   }
 }
 
@@ -257,6 +257,6 @@ etl::bit_stream_reader bit_stream(storage.data(), storage.size());
 // Read unchecked values from the stream.
 char c            = etl::read_unchecked<char>(bit_stream, 6U);
 unsigned short s  = etl::read_unchecked<unsigned short>(bit_stream, 13U);
-CustomType custom = etl::read_unchecked<Custom>(bit_stream);
+CustomType custom = etl::read_unchecked<CustomType>(bit_stream);
 int32_t i         = etl::read_unchecked<>(bit_stream, 23U);
 ```

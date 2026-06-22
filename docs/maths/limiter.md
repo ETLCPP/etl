@@ -10,8 +10,8 @@ title: "limiter"
 Limits an input range.
 
 ```cpp
-template <typename TInput, typename TCompare = etl::less<TInput> >
-class limit : public etl::unary_function<TInput, TInput>
+template <typename TInput, typename TLimit = etl::private_limiter::limit<TInput> >
+class limiter : public etl::unary_function<TInput, TInput>
 ```
 
 `TInput`   The input data type.
