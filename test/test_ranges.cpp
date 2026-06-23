@@ -2510,6 +2510,33 @@ namespace
       CHECK_EQUAL(result, v_expected);
     }
 
+    TEST(test_ranges_join_with_view_yields_range_then_join_with)
+    {
+      // join_with must support inner ranges whose iterators yield prvalues
+      // (e.g. repeat_view produced by a type-changing transform), and its declared
+      // reference type must stay consistent with what operator* actually yields.
+      etl::array<int, 3> samples = {10, 20, 30};
+      etl::array<int, 8> dst     = {0, 0, 0, 0, 0, 0, 0, 0};
+
+      auto stereo = samples
+                  | etl::views::transform([](int s) { return etl::views::repeat(s, 2); })
+                  | etl::views::join_with(0);
+
+      using iterator_type      = decltype(stereo.begin());
+      using declared_reference = typename iterator_type::reference;
+      using actual_deref       = decltype(*etl::declval<iterator_type&>());
+      static_assert(etl::is_same<declared_reference, actual_deref>::value,
+                    "join_with_iterator::reference must match operator*");
+
+      etl::copy(stereo.begin(), stereo.end(), dst.begin());
+
+      etl::array<int, 8> expected = {10, 10, 0, 20, 20, 0, 30, 30};
+      for (size_t i = 0; i < dst.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], dst[i]);
+      }
+    }
+
     //*************************************************************************
     // split_view and views::split tests
     //*************************************************************************

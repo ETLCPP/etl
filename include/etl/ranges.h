@@ -2463,9 +2463,13 @@ namespace etl
       using inner_trait    = typename etl::ranges::private_ranges::iterator_trait<InnerRange>;
       using inner_iterator = typename inner_trait::iterator;
 
-      using value_type = typename inner_trait::value_type;
+      // join_with returns elements by value, so the reference type is the value type
+      // (a prvalue). Derive from the inner iterator's actual dereference so that inner
+      // ranges whose iterators yield prvalues (e.g. repeat_view) are supported and the
+      // declared reference stays consistent with operator*.
+      using value_type = etl::remove_cvref_t<decltype(*etl::declval<const inner_iterator&>())>;
       using pointer    = typename inner_trait::pointer;
-      using reference  = typename inner_trait::reference;
+      using reference  = value_type;
 
       using pattern_trait          = typename etl::ranges::private_ranges::iterator_trait<Pattern>;
       using pattern_iterator       = typename pattern_trait::iterator;
