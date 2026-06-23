@@ -197,7 +197,7 @@ Use `add_task` to add additional tasks.
 
 **The scheduler**  
 An instance of `etl::scheduler` with the required scheduling policy.  
-Initialise the task list by calling add_task_list.
+Initialise the task list by calling 'add_task_list'.
 
 **Callbacks**  
 If you wish to get callbacks for 'idle' or 'watchdog' then define callback functions and call `set_idle_callback` and `set_watchdog_callback`.  
