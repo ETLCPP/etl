@@ -84,8 +84,8 @@ reference               value_type&
 const_reference         const value_type&
 pointer                 value_type*
 const_pointer           const value_type*
-iterator                Bi-directional iterator
-const_iterator          Constant bi-directional iterator
+iterator                Forward iterator
+const_iterator          Constant forward iterator
 ```
 
 ## Constructors

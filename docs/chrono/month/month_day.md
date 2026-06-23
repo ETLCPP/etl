@@ -130,7 +130,7 @@ Less-than-equal operator.
 
 ```cpp
 ETL_CONSTEXPR14 
-bool operator <(const etl::chrono::month_day& lhs, 
+bool operator >(const etl::chrono::month_day& lhs,
                 const etl::chrono::month_day& rhs) 
 ETL_NOEXCEPT
 ```
@@ -141,7 +141,7 @@ Greater-than operator.
 
 ```cpp
 ETL_CONSTEXPR14 
-bool operator <=(const etl::chrono::month_day& lhs, 
+bool operator >=(const etl::chrono::month_day& lhs,
                  const etl::chrono::month_day& rhs) 
 ETL_NOEXCEPT
 ```

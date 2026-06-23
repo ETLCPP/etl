@@ -146,7 +146,7 @@ Rounds up a duration to the nearest higher precision.
 
 ---
 
-```cp
+```cpp
 template <typename TToDuration, typename TClock, typename TDuration>
 ETL_NODISCARD
 ETL_CONSTEXPR14 

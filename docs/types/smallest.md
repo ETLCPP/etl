@@ -50,12 +50,12 @@ template <typename T1, typename T2, typename T3>
 struct Test
 {
   // Defines smallest_t as the smallest type of T1, T2 and T3.
-  typedef typename etl::smallest_type<T1, T2, T3>::type largest_t;
+  typedef typename etl::smallest_type<T1, T2, T3>::type smallest_t;
 
   enum
   {
-    // Defines size as the size of the largest type.
-    size = etl::largest_type<T1, T2, T3>::size;
+    // Defines size as the size of the smallest type.
+    size = etl::smallest_type<T1, T2, T3>::size;
   }
 };
 ```

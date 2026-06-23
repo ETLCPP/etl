@@ -39,7 +39,7 @@ Clears the filter of all entries.
 void add(parameter_t key)
 ```
 **Description**  
-Adds a key to the filter, where parameter_t is derived from the first hash argument type.
+Adds a key to the filter, where `parameter_t` is derived from the first hash argument type.
 
 ---
 
@@ -47,7 +47,7 @@ Adds a key to the filter, where parameter_t is derived from the first hash argum
 bool exists(parameter_t key) const
 ```
 **Description**  
-Checks to see if a key may exist in the filter, where parameter_t is derived from the first hash argument type.
+Checks to see if a key may exist in the filter, where `parameter_t` is derived from the first hash argument type.
 
 ---
 
@@ -61,7 +61,7 @@ Equal to `100 * count() / width()`
 ---
 
 ```cpp
-bool count() const
+size_t count() const
 ```
 **Description**  
 Returns the number of elements in use in the filter.
@@ -69,7 +69,7 @@ Returns the number of elements in use in the filter.
 ---
 
 ```cpp
-bool width() const
+size_t width() const
 ```
 **Description**  
 Returns the width of the filter.  

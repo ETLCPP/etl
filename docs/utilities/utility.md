@@ -161,7 +161,7 @@ Calls the wrapped function with the forwarded parameters.
 ### Example
 
 ```cpp
-void int Function(int i)
+int Function(int i)
 {
   return i;
 }

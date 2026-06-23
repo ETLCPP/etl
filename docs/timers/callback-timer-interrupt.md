@@ -19,8 +19,8 @@ The framework relies on a supplied interrupt enable/disable guard type. With thi
 
 **Defines the following classes**  
 ```cpp
-etl::icallback_timer_atomic<uint_least8_t MAX_TIMERS, typename TInterruptGuard>
-etl::callback_timer_atomic<typename TInterruptGuard>
+etl::icallback_timer_interrupt<uint_least8_t MAX_TIMERS, typename TInterruptGuard>
+etl::callback_timer_interrupt<typename TInterruptGuard>
 ```
 
 Uses definitions from `timer.h`.
@@ -215,9 +215,9 @@ struct InterruptGuard
   int state;
 };
 
-using callback_type = etl::icallback_timer_atomic<InterruptGuard>::callback_type;
+using callback_type = etl::icallback_timer_interrupt<InterruptGuard>::callback_type;
 
-callback_type member_callback = callback_type::create<Test, test, &Test::callback> member_callback;
+callback_type member_callback = callback_type::create<Test, test, &Test::callback>();
 
 //***************************************************************************
 // Free function callback via etl::function
@@ -226,10 +226,10 @@ int free_ticks1 = 0;
 
 void free_callback1()
 {
-  ++free_ticks;
+  ++free_ticks1;
 }
 
-callback_type free_callback1 = callback_type::create<free_function_callback>();
+callback_type free_function_callback = callback_type::create<free_callback1>();
 
 //***************************************************************************
 // Free function callback via function pointer
@@ -244,7 +244,7 @@ void free_callback2()
 //***************************************************************************
 // Timer controller.
 //***************************************************************************
-etl::callback_timer_atomic<2, InterruptGuard> timer_controller;
+etl::callback_timer_interrupt<2, InterruptGuard> timer_controller;
 
 //***************************************************************************
 // The main loop.

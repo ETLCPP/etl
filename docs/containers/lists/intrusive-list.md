@@ -52,7 +52,7 @@ Creates the list from the range [`begin`, `end`) of node links.
 
 ```cpp
 template <typename... TLinks>
-intrusive_list(TLink& first, TLinks&... links))
+intrusive_list(TLink& first, TLinks&... links)
 ```
 **Description**  
 Creates the list from node link references.
@@ -94,26 +94,6 @@ const_iterator cend() const
 ```
 **Description**  
 Returns an iterator to the end of the list.
-
----
-
-```cpp
-iterator rbegin()
-const_iterator rbegin() const
-const_iterator crbegin() const
-```
-**Description**  
-Returns a reverse iterator to the beginning of the list.
-
----
-
-```cpp
-iterator rend()
-const_iterator rend() const
-const_iterator crend() const
-```
-**Description**  
-Returns a reverse iterator to the end of the list.
 
 ## Capacity
 

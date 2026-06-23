@@ -46,10 +46,12 @@ Copy constructor.
 
 ## Tests
 
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 bool ok() const 
 ETL_NOEXCEPT
+```
 **Return**  
 `true` if the weekday_indexed is valid
 

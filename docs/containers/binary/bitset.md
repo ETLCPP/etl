@@ -71,7 +71,7 @@ bool any = bst.any(0x3F);    // Check the lower 6 bits.
 |`span_type`      | A mutable span type.                                                                         |
 |`const_span_type`| A non-mutable span type.                                                                     |
 |`element_type`   | The type used as the internal storage for a bitset. By default, this is unsigned char.       |
-|`buffer_type`    | The type used as the to define the external buffer. Defined in etl::bitset_ext only. 20.34.0 |
+|`buffer_type`    | The type used as the to define the external buffer. Defined in `etl::bitset_ext` only. `20.34.0` |
 
 ## Constants
 
@@ -86,11 +86,11 @@ etl::bitset<>::npos
 template <size_t Size, typename TElement>
 etl::bitset<Size, TElement>::npos
 ```
-`Number_Of_Elements`
-`Bits_Per_Element`
-`Allocated_Bits`
-`All_Set_Element`
-`All_Clear_Element`
+`Number_Of_Elements`  
+`Bits_Per_Element`  
+`Allocated_Bits`  
+`All_Set_Element`  
+`All_Clear_Element`  
 
 From: 20.38.11  
 `Storage_Model` `etl::bitset_storage_model::Single` or `etl::bitset_storage_model::Multi`
@@ -121,8 +121,8 @@ etl::bitset_ext(const char16_t* str, element_type* pbuffer);
 etl::bitset_ext(const char32_t* str, element_type* pbuffer);
 ```
 **Description**  
-The bitset is either default constructed, initialised with a numeric value, or a text string of zeros and ones.
-A pointer to the external must b supplied that is large enough to hold the bitset.
+The bitset is either default constructed, initialised with a numeric value, or a text string of zeros and ones.  
+A pointer to an external must be supplied that is large enough to hold the bitset.  
 The buffer may be defined as follows:-
 ```cpp
 using Bitset = etl::bitset_ext<32>;
@@ -142,8 +142,8 @@ etl::bitset_ext(const char16_t* str, buffer_type& buffer);
 etl::bitset_ext(const char32_t* str, buffer_type& buffer);
 ```
 **Description**  
-The bitset is either default constructed, initialised with a numeric value, or a text string of zeros and ones.
-A n external must b supplied that is large enough to hold the bitset.
+The bitset is either default constructed, initialised with a numeric value, or a text string of zeros and ones.  
+An external buffer must be supplied that is large enough to hold the bitset.  
 The buffer may be defined as follows:-
 ```cpp
 using Bitset = etl::bitset_ext<32>;
@@ -166,9 +166,9 @@ Set all bits.
 etl::bitset& set(element_type value);
 ```
 **Description**  
-20.34.0
-Set the bits to value.
-Valid when the bitset width matches the element type width.
+Set the bits to `value`.  
+Valid when the bitset width matches the element type width.  
+From: `20.34.0`
 
 ---
 
@@ -224,7 +224,7 @@ template <typename T>
 T value() const
 ```
 **Description**  
-Returns the value corresponding to the bitset.
+Returns the value corresponding to the bitset.  
 `T` specifies the integral type to convert to.
 
 ---
@@ -234,8 +234,8 @@ unsigned long to_ulong() const
 unsigned long long to_ullong() const
 ```
 **Description**  
-Functions for compatibility with the STL.
-Calls value<unsigned long>() or value<unsigned long long>().
+Functions for compatibility with the STL.  
+Calls value<unsigned long>() or value<unsigned long long>().  
 
 If the type is too small to contain the bitset size, a compile time error will result.
 
@@ -246,7 +246,7 @@ template <typename TString>
 TString to_string(typename TString::value_type zero = typename TString::value_type('0'),
                   typename TString::value_type one  = typename TString::value_type('1')) const
 ```
-Returns the value as a string of `0` and `1` characters.
+Returns the value as a string of `0` and `1` characters.  
 If the string type is not large enough to contain the digits then an `etl::bitset_string_too_small` is emitted.
 
 ---
@@ -290,9 +290,9 @@ template <typename T, size_t Position, size_t Length>
 T extract() const
 ```
 **Description**  
-Extract an integral value from an arbitrary position and length.
+Extract an integral value from an arbitrary position and length.  
 Compile time position and length.  
-20.38.11  
+From: `20.38.11`  
 For C++98/03
 
 ## Bit access
@@ -301,7 +301,7 @@ For C++98/03
 bool operator[](size_t position) const
 ```
 **Description**  
-Returns the boolean state of the indexed bit.
+Returns the boolean state of the indexed bit.  
 position is not checked for validity.
 
 ---
@@ -326,7 +326,7 @@ Returns the number of bits supported by this bitset.
 bool test(size_t position) const
 ```
 **Description**  
-Returns the boolean state of the indexed bit.
+Returns the boolean state of the indexed bit.  
 position is not checked for validity.
 
 ---
@@ -341,10 +341,10 @@ Returns true if any of the bits are set, otherwise false.
 bool any(element_type mask) const
 ```
 **Description**  
-Only enabled for bitsets that fit within one element.
-Returns true if any of the bits are set, after the mask has been applied, otherwise false.
+Only enabled for bitsets that fit within one element.  
+Returns `true` if any of the bits are set, after the mask has been applied, otherwise `false`.  
 Valid when the bitset width matches the element type width.
-20.34.0
+From: `20.34.0`
 
 ---
 
@@ -358,10 +358,10 @@ Returns true if none of the bits are set, otherwise false.
 bool none(element_type mask) const
 ```
 **Description**  
-Only enabled for bitsets that fit within one element.
-Returns true if none of the bits are set, after the mask has been applied, otherwise false.
-Valid when the bitset width matches the element type width.
-20.34.0
+Only enabled for bitsets that fit within one element.  
+Returns `true` if none of the bits are set, after the mask has been applied, otherwise `false`.  
+Valid when the bitset width matches the element type width.  
+From: `20.34.0`
 
 ---
 
@@ -369,16 +369,16 @@ Valid when the bitset width matches the element type width.
 bool all() const
 ```
 **Description**  
-Returns true if al of the bits are set, otherwise false.
+Returns `true` if al of the bits are set, otherwise `false`.
 
 ```cpp
 bool all(element_type mask) const
 ```
 **Description**  
-Only enabled for bitsets that fit within one element.
-Returns true if al of the bits are set, after the mask has been applied, otherwise false.
-Valid when the bitset width matches the element type width.
-20.34.0
+Only enabled for bitsets that fit within one element.  
+Returns `true` if al of the bits are set, after the mask has been applied, otherwise `false`.  
+Valid when the bitset width matches the element type width.  
+From: `20.34.0`
 
 ---
 
@@ -386,7 +386,7 @@ Valid when the bitset width matches the element type width.
 size_t find_first(bool state) const
 ```
 **Description**  
-Returns the position of the first bit in the specified state. If not found then returns bitset<>::npos.
+Returns the position of the first bit in the specified state. If not found then returns `bitset<>::npos`.
 
 ---
 
@@ -394,8 +394,8 @@ Returns the position of the first bit in the specified state. If not found then 
 size_t find_next(bool state, size_t position) const
 ```
 **Description**  
-Returns the position of the next bit in the specified state, starting from position. If not found then returns bitset<>::npos.
-position is not checked for validity.
+Returns the position of the next bit in the specified state, starting from position. If not found then returns `bitset<>::npos`.  
+`position` is not checked for validity.
 
 ## Bit operations
 

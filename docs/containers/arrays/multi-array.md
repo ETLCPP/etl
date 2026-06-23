@@ -22,7 +22,7 @@ See also:
 ## Description
 
 The `etl::multi_array` class is defined as a recursive variadic template.  
-It defines a multi-dimensional array class based on nested etl::array definitions.
+It defines a multi-dimensional array class based on nested `etl::array` definitions.
 
 ## Example
 

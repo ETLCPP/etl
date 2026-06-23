@@ -6,7 +6,9 @@ title: "singleton"
   Header: `singleton.h`  
 {{< /callout >}}
 
-Allows creation of a singleton, with deterministic construction and destruction.  
+Allows creation of a singleton, with deterministic construction and destruction.
+
+Non-intrusive to the class to apply to.
 
 ```cpp
 etl::singleton<typename T>

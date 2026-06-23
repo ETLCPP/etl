@@ -19,8 +19,8 @@ The framework relies on a supplied interrupt enable/disable guard type. With thi
 
 **Defines the following classes**  
 ```cpp
-etl::imessage_timer_atomic<uint_least8_t MAX_TIMERS, typename TInterruptGuard>
-etl::message_timer_atomic<typename TInterruptGuard>
+etl::imessage_timer_interrupt<uint_least8_t MAX_TIMERS, typename TInterruptGuard>
+etl::message_timer_interrupt<typename TInterruptGuard>
 ```
 
 The `TInterruptGuard` type must disable and save the interrupt state on construction, and restore on destruction.  
@@ -257,7 +257,7 @@ class Bus1 : public etl::message_bus<1>
 Router1 router1;
 Bus1    bus1;
 
-etl::message_timer_atomic<3, InterruptGuard> timer_controller;
+etl::message_timer_interrupt<3, InterruptGuard> timer_controller;
 
 //***************************************************************************
 // The main loop.

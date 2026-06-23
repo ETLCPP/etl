@@ -109,8 +109,8 @@ Returns the maximum possible size of the queue.
 ```cpp
 bool push(const T& value)
 bool push(T&& value)
-bool push_from_locked(const T& value)
-bool push_from_locked(T&& value)
+bool push_from_unlocked(const T& value)
+bool push_from_unlocked(T&& value)
 ```
 **Description**  
 Pushes a value to the back of the queue.  
