@@ -28,10 +28,10 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/algorithm.h"
+#include "etl/array.h"
 #include "etl/ranges.h"
 #include "etl/vector.h"
-#include "etl/array.h"
-#include "etl/algorithm.h"
 
 #include <array>
 #include <ios>
@@ -1570,7 +1570,10 @@ namespace
     {
       // transform_view must be type-changing: the element type is the result of the
       // transform function, not the underlying range's element type.
-      auto to_double = [](int i) -> double { return i * 1.5; };
+      auto to_double = [](int i) -> double
+      {
+        return i * 1.5;
+      };
 
       etl::vector<int, 4> v_in{1, 2, 3, 4};
 
@@ -1599,9 +1602,7 @@ namespace
       etl::array<int, 4> samples = {10, 20, 30, 40};
       etl::array<int, 8> dst     = {0, 0, 0, 0, 0, 0, 0, 0};
 
-      auto stereo = samples
-                  | etl::views::transform([](int s) { return etl::views::repeat(s, 2); })
-                  | etl::views::join;
+      auto stereo = samples | etl::views::transform([](int s) { return etl::views::repeat(s, 2); }) | etl::views::join;
 
       etl::copy(stereo.begin(), stereo.end(), dst.begin());
 
@@ -2518,15 +2519,12 @@ namespace
       etl::array<int, 3> samples = {10, 20, 30};
       etl::array<int, 8> dst     = {0, 0, 0, 0, 0, 0, 0, 0};
 
-      auto stereo = samples
-                  | etl::views::transform([](int s) { return etl::views::repeat(s, 2); })
-                  | etl::views::join_with(0);
+      auto stereo = samples | etl::views::transform([](int s) { return etl::views::repeat(s, 2); }) | etl::views::join_with(0);
 
       using iterator_type      = decltype(stereo.begin());
       using declared_reference = typename iterator_type::reference;
       using actual_deref       = decltype(*etl::declval<iterator_type&>());
-      static_assert(etl::is_same<declared_reference, actual_deref>::value,
-                    "join_with_iterator::reference must match operator*");
+      static_assert(etl::is_same<declared_reference, actual_deref>::value, "join_with_iterator::reference must match operator*");
 
       etl::copy(stereo.begin(), stereo.end(), dst.begin());
 
@@ -3782,7 +3780,7 @@ namespace
     {
       // elements must yield a mutable reference to the selected tuple element
       // when the underlying range is non-const, matching std::ranges::elements_view.
-      std::vector<std::pair<int, double>> v = {{1, 1.1}, {2, 2.2}};
+      std::vector<std::pair<int, double>> v  = {{1, 1.1}, {2, 2.2}};
       auto                                ev = v | etl::views::keys;
 
       using element_ref = decltype(*ev.begin());
@@ -5056,7 +5054,7 @@ namespace
       std::vector<int> v  = {1, 2, 3, 4};
       auto             cv = etl::ranges::chunk_view(v, 2);
 
-      auto first_chunk = *cv.begin();
+      auto first_chunk  = *cv.begin();
       using element_ref = decltype(*first_chunk.begin());
 
       static_assert(etl::is_same<element_ref, int&>::value, "chunk element should be a non-const reference");
@@ -5108,7 +5106,7 @@ namespace
     TEST(test_ranges_chunk_view_modify_elements_etl_vector)
     {
       // Non-const access also works with ETL containers.
-      etl::vector<int, 10> v = {1, 2, 3, 4, 5, 6};
+      etl::vector<int, 10> v  = {1, 2, 3, 4, 5, 6};
       auto                 cv = etl::ranges::chunk_view(v, 2);
 
       for (auto chunk : cv)

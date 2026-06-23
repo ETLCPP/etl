@@ -2462,16 +2462,12 @@ namespace etl
       {
         using value_type = etl::common_type_t<etl::remove_cvref_t<InnerRef>, etl::remove_cvref_t<PatternRef>>;
 
-        static constexpr bool same_underlying =
-          etl::is_same<etl::remove_cvref_t<InnerRef>, etl::remove_cvref_t<PatternRef>>::value;
-        static constexpr bool both_lvalue =
-          etl::is_lvalue_reference<InnerRef>::value && etl::is_lvalue_reference<PatternRef>::value;
+        static constexpr bool same_underlying = etl::is_same<etl::remove_cvref_t<InnerRef>, etl::remove_cvref_t<PatternRef>>::value;
+        static constexpr bool both_lvalue     = etl::is_lvalue_reference<InnerRef>::value && etl::is_lvalue_reference<PatternRef>::value;
         static constexpr bool any_const =
           etl::is_const<etl::remove_reference_t<InnerRef>>::value || etl::is_const<etl::remove_reference_t<PatternRef>>::value;
 
-        using type = etl::conditional_t<same_underlying && both_lvalue,
-                                        etl::conditional_t<any_const, const value_type&, value_type&>,
-                                        value_type>;
+        using type = etl::conditional_t<same_underlying && both_lvalue, etl::conditional_t<any_const, const value_type&, value_type&>, value_type>;
       };
     } // namespace private_ranges
 
@@ -2606,13 +2602,13 @@ namespace etl
         }
       }
 
-      iterator               _it;
-      iterator               _it_end;
-      inner_iterator         _inner_it;
-      inner_iterator         _inner_it_end;
-      const Pattern&         _pattern;
-      pattern_iterator       _pattern_it;
-      pattern_iterator       _pattern_it_end;
+      iterator         _it;
+      iterator         _it_end;
+      inner_iterator   _inner_it;
+      inner_iterator   _inner_it_end;
+      const Pattern&   _pattern;
+      pattern_iterator _pattern_it;
+      pattern_iterator _pattern_it_end;
     };
 
     template <class Range, class Pattern>
@@ -5149,9 +5145,9 @@ namespace etl
 
       value_type operator*() const
       {
-        difference_type      remaining = etl::distance(_it, _it_end);
-        difference_type      step      = (_chunk_size < remaining) ? _chunk_size : remaining;
-        inner_iterator       chunk_end = _it;
+        difference_type remaining = etl::distance(_it, _it_end);
+        difference_type step      = (_chunk_size < remaining) ? _chunk_size : remaining;
+        inner_iterator  chunk_end = _it;
         etl::advance(chunk_end, step);
         return value_type(_it, chunk_end);
       }
