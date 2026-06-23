@@ -771,10 +771,13 @@ namespace etl
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::get<Index> - Index out of range");
 
     // Get the type at this index.
-    using tuple_type = etl::nth_base_t<Index, tuple<TTypes...>>&&;
+    using tuple_type   = etl::nth_base_t<Index, tuple<TTypes...>>&&;
+    using element_type = etl::tuple_element_t<Index, etl::tuple<TTypes...>>;
 
-    // Cast the tuple to the selected type and get the value.
-    return etl::move(static_cast<tuple_type>(t).get_value());
+    // Forward the element. A reference member must not be turned into an
+    // rvalue, so cast to element_type&& (which collapses to a reference type
+    // when element_type is itself a reference).
+    return static_cast<element_type&&>(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -788,10 +791,13 @@ namespace etl
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::get<Index> - Index out of range");
 
     // Get the type at this index.
-    using tuple_type = const etl::nth_base_t<Index, etl::tuple<TTypes...>>&&;
+    using tuple_type   = const etl::nth_base_t<Index, etl::tuple<TTypes...>>&&;
+    using element_type = etl::tuple_element_t<Index, etl::tuple<TTypes...>>;
 
-    // Cast the tuple to the selected type and get the value.
-    return etl::move(static_cast<tuple_type>(t).get_value());
+    // Forward the element. A reference member must not be turned into an
+    // rvalue, so cast to const element_type&& (which collapses to a reference
+    // type when element_type is itself a reference).
+    return static_cast<const element_type&&>(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -844,8 +850,10 @@ namespace etl
     // Get the tuple base type that contains a T
     using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>&&;
 
-    // Cast the tuple to the selected type and get the value.
-    return etl::move(static_cast<tuple_type>(t).get_value());
+    // Forward the element. A reference type T must not be turned into an
+    // rvalue, so cast to T&& (which collapses to a reference when T is a
+    // reference type).
+    return static_cast<T&&>(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -862,8 +870,10 @@ namespace etl
     // Get the tuple base type that contains a T
     using tuple_type = const etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>&&;
 
-    // Cast the tuple to the selected type and get the value.
-    return etl::move(static_cast<tuple_type>(t).get_value());
+    // Forward the element. A reference type T must not be turned into an
+    // rvalue, so cast to const T&& (which collapses to a reference when T is a
+    // reference type).
+    return static_cast<const T&&>(static_cast<tuple_type>(t).get_value());
   }
 
   #if ETL_USING_CPP17
