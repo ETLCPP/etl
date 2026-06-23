@@ -2446,6 +2446,35 @@ namespace etl
       inline constexpr private_views::join join;
     } // namespace views
 
+    namespace private_ranges
+    {
+      //*********************************************************************
+      /// Computes the element reference type for join_with, following
+      /// [range.join.with.iterator]: common_reference of the inner range's and
+      /// the pattern's reference types. etl::common_reference_t is only available
+      /// in C++20, so for the common case (inner and pattern share an underlying
+      /// value type) this yields the const-combined lvalue reference - preserving
+      /// writability when neither side is const - and degrades to a prvalue value
+      /// type when either side yields a prvalue or the underlying types differ.
+      //*********************************************************************
+      template <typename InnerRef, typename PatternRef>
+      struct join_with_reference
+      {
+        using value_type = etl::common_type_t<etl::remove_cvref_t<InnerRef>, etl::remove_cvref_t<PatternRef>>;
+
+        static constexpr bool same_underlying =
+          etl::is_same<etl::remove_cvref_t<InnerRef>, etl::remove_cvref_t<PatternRef>>::value;
+        static constexpr bool both_lvalue =
+          etl::is_lvalue_reference<InnerRef>::value && etl::is_lvalue_reference<PatternRef>::value;
+        static constexpr bool any_const =
+          etl::is_const<etl::remove_reference_t<InnerRef>>::value || etl::is_const<etl::remove_reference_t<PatternRef>>::value;
+
+        using type = etl::conditional_t<same_underlying && both_lvalue,
+                                        etl::conditional_t<any_const, const value_type&, value_type&>,
+                                        value_type>;
+      };
+    } // namespace private_ranges
+
     template <class Range, class Pattern>
     class join_with_iterator
     {
@@ -2463,17 +2492,21 @@ namespace etl
       using inner_trait    = typename etl::ranges::private_ranges::iterator_trait<InnerRange>;
       using inner_iterator = typename inner_trait::iterator;
 
-      // join_with returns elements by value, so the reference type is the value type
-      // (a prvalue). Derive from the inner iterator's actual dereference so that inner
-      // ranges whose iterators yield prvalues (e.g. repeat_view) are supported and the
-      // declared reference stays consistent with operator*.
-      using value_type = etl::remove_cvref_t<decltype(*etl::declval<const inner_iterator&>())>;
-      using pointer    = typename inner_trait::pointer;
-      using reference  = value_type;
+      // Deduce the pattern iterator from iterating the (const) pattern view directly,
+      // so reference-backed patterns (e.g. ref_view) stay mutable while value-backed
+      // patterns (e.g. single_view) are read as const.
+      using pattern_iterator = decltype(ETL_OR_STD::begin(etl::declval<const Pattern&>()));
 
-      using pattern_trait          = typename etl::ranges::private_ranges::iterator_trait<Pattern>;
-      using pattern_iterator       = typename pattern_trait::iterator;
-      using pattern_const_iterator = typename pattern_trait::const_iterator;
+      // Element type follows [range.join.with.iterator]: the common type / common
+      // reference of the inner range's and the pattern's elements. This keeps the
+      // declared reference consistent with operator* and supports inner ranges whose
+      // iterators yield prvalues (e.g. repeat_view).
+      using inner_reference   = decltype(*etl::declval<const inner_iterator&>());
+      using pattern_reference = decltype(*etl::declval<const pattern_iterator&>());
+
+      using value_type = etl::common_type_t<etl::remove_cvref_t<inner_reference>, etl::remove_cvref_t<pattern_reference>>;
+      using reference  = typename etl::ranges::private_ranges::join_with_reference<inner_reference, pattern_reference>::type;
+      using pointer    = typename inner_trait::pointer;
 
       join_with_iterator(iterator it, iterator it_end, const Pattern& pattern)
         : _it(it)
@@ -2481,8 +2514,8 @@ namespace etl
         , _inner_it(it != it_end ? ETL_OR_STD::begin(*it) : inner_iterator{})
         , _inner_it_end(it != it_end ? ETL_OR_STD::end(*it) : inner_iterator{})
         , _pattern(pattern)
-        , _pattern_it(pattern.cend())
-        , _pattern_it_end(pattern.cend())
+        , _pattern_it(ETL_OR_STD::end(pattern))
+        , _pattern_it_end(ETL_OR_STD::end(pattern))
       {
         adjust_iterator();
       }
@@ -2537,7 +2570,7 @@ namespace etl
         return *this;
       }
 
-      value_type operator*() const
+      reference operator*() const
       {
         if (_pattern_it != _pattern_it_end)
         {
@@ -2565,8 +2598,8 @@ namespace etl
           ++_it;
           if (_it != _it_end)
           {
-            _pattern_it     = ETL_OR_STD::cbegin(_pattern);
-            _pattern_it_end = ETL_OR_STD::cend(_pattern);
+            _pattern_it     = ETL_OR_STD::begin(_pattern);
+            _pattern_it_end = ETL_OR_STD::end(_pattern);
             _inner_it       = ETL_OR_STD::begin(*_it);
             _inner_it_end   = ETL_OR_STD::end(*_it);
           }
@@ -2578,8 +2611,8 @@ namespace etl
       inner_iterator         _inner_it;
       inner_iterator         _inner_it_end;
       const Pattern&         _pattern;
-      pattern_const_iterator _pattern_it;
-      pattern_const_iterator _pattern_it_end;
+      pattern_iterator       _pattern_it;
+      pattern_iterator       _pattern_it_end;
     };
 
     template <class Range, class Pattern>

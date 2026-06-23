@@ -2537,6 +2537,77 @@ namespace
       }
     }
 
+    TEST(test_ranges_join_with_writable_reference)
+    {
+      // For a mutable range pattern, join_with must yield mutable references and be
+      // writable, matching std::ranges::join_with_view (reference is the common
+      // reference of the inner range's and the pattern's references: int&).
+      etl::vector<etl::vector<int, 3>, 2> v{{1, 2, 3}, {4, 5, 6}};
+      etl::vector<int, 2>                 pattern{0};
+
+      auto jv = etl::views::join_with(v, pattern);
+
+      using element_ref = decltype(*jv.begin());
+      static_assert(etl::is_same<element_ref, int&>::value, "join_with element should be a non-const reference for a mutable range pattern");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "join_with element should be mutable");
+
+      // Sequence: 1, 2, 3, [0], 4, 5, 6
+      auto it = jv.begin();
+      *it     = 99; // first inner element -> v[0][0]
+      CHECK_EQUAL(99, v[0][0]);
+
+      ++it; // 2
+      ++it; // 3
+      ++it; // pattern separator
+      *it = 77;
+      CHECK_EQUAL(77, pattern[0]);
+    }
+
+    TEST(test_ranges_join_with_single_value_reference_is_const)
+    {
+      // A single-value pattern is backed by a value (single_view) and is therefore
+      // read as const, so the common reference degrades to const int&. (This is a
+      // minor deviation from std::ranges, where a single-element pattern is writable.)
+      etl::vector<etl::vector<int, 3>, 2> v{{1, 2, 3}, {4, 5, 6}};
+
+      auto jv = etl::views::join_with(v, 0);
+
+      using element_ref = decltype(*jv.begin());
+      static_assert(etl::is_same<element_ref, const int&>::value, "single-value join_with pattern should be read as const");
+
+      etl::vector<int, 10> out;
+      for (auto x : jv)
+      {
+        out.push_back(x);
+      }
+
+      etl::vector<int, 10> expected{1, 2, 3, 0, 4, 5, 6};
+      CHECK_EQUAL(expected, out);
+    }
+
+    TEST(test_ranges_join_with_common_value_type)
+    {
+      // When the inner range and the pattern have different (but common-convertible)
+      // element types, the element type is their common type, per
+      // [range.join.with.iterator].
+      etl::vector<etl::vector<int, 3>, 2> v{{1, 2, 3}, {4, 5, 6}};
+      etl::vector<char, 1>                pattern{char(0)};
+
+      auto jv = etl::views::join_with(v, pattern);
+
+      using element_type = etl::remove_cvref_t<decltype(*jv.begin())>;
+      static_assert(etl::is_same<int, element_type>::value, "join_with element type should be the common type of inner and pattern");
+
+      etl::vector<int, 10> out;
+      for (auto x : jv)
+      {
+        out.push_back(x);
+      }
+
+      etl::vector<int, 10> expected{1, 2, 3, 0, 4, 5, 6};
+      CHECK_EQUAL(expected, out);
+    }
+
     //*************************************************************************
     // split_view and views::split tests
     //*************************************************************************
