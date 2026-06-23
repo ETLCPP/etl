@@ -233,17 +233,17 @@ ETL_CONSTEXPR14 bool operator !=(TIterator& lhs,
 std::list<int> data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
 // The start position to loop from.
-std::list<int>::const_iterator> start = data.begin();
+std::list<int>::const_iterator start = data.begin();
 std::advance(start, 2);
 
 // Create circular iterators.
-etl::circular_iterator<std::list<int>::const_iterator>> cli(data.begin(), data.end(), start);
-etl::circular_iterator<std::list<int>::const_reverse_iterator>> clri(data.rbegin(), data.rend);
+etl::circular_iterator<std::list<int>::const_iterator> cli(data.begin(), data.end(), start);
+etl::circular_iterator<std::list<int>::const_reverse_iterator> clri(data.rbegin(), data.rend());
 
 // Loop 10 times, taking every third value, starting from the third element for the forward iterator and from the end for the reverse iterator.
-for (int = 0; i < 10; ++i)
+for (int i = 0; i < 10; ++i)
 {
-    std::cout << "(" << *cli << "," << *clrl << ")";
+    std::cout << "(" << *cli << "," << *clri << ")";
     std::advance(cli, 3);
     std::advance(clri, 3);
 }

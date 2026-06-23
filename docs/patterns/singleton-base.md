@@ -6,14 +6,16 @@ title: "singleton_base"
   Header: `singleton_base.h`  
 {{< /callout >}}
 
-Allows creation of a singleton base class.  
+Allows creation of a singleton base class.
+
+The class to apply to needs to derive from it. I.e. ``singleton_base`` is intrusive.
 
 ```cpp
 etl::singleton_base<typename T>
 ```
 `T` The type to use as a singleton.  
 
-The class derived derived from this must call the constructor with the instance of itself.  
+The class derived from this must call the constructor with the instance of itself.
 Multiple calls to the constructor will result in an `etl::singleton_base_already_created` assertion.  
 
 Before the constructor Is called, the singleton is in the invalid state.  
@@ -40,11 +42,14 @@ Returns `true` if the instance is has been attached, otherwise `false`.
 ```cpp
 class MyType : public etl::singleton_base<MyType>
 {
- MyType()
-   : etl::singleton_base<MyType>(*this)
+public:
+  MyType()
+    : etl::singleton_base<MyType>(*this)
   {
   }
 };
+
+MyType my_instance;              // Construct the singleton instance.
 
 bool is_valid;
 is_valid = MyType::is_valid();   // true

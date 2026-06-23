@@ -245,7 +245,7 @@ int free_ticks1 = 0;
 
 void free_callback1()
 {
-  ++free_ticks;
+  ++free_ticks1;
 }
 
 etl::function_fv<free_callback1> free_function_callback;

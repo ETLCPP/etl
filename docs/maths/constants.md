@@ -89,8 +89,8 @@ power_of_2_round_up<9> -> 16
 
 C++17 and above  
 ```cpp
-template <size_t N, size_t POWER>
-inline constexpr size_t power_of_2_round_up_v = power_of_2_round_up<N, POWER>::value;
+template <size_t N>
+inline constexpr size_t power_of_2_round_up_v = power_of_2_round_up<N>::value;
 ```
 
 ## power_of_2_round_down
@@ -111,8 +111,8 @@ power_of_2_round_down<9> -> 8
 
 C++17 and above  
 ```cpp
-template <size_t N, size_t POWER>
-inline constexpr size_t power_of_2_round_down_v = power_of_2_round_down<N, POWER>::value;
+template <size_t N>
+inline constexpr size_t power_of_2_round_down_v = power_of_2_round_down<N>::value;
 ```
 
 ## is_power_of_2
@@ -127,8 +127,8 @@ Defines the member value to true if N is a power of 2, otherwise false.
 
 C++17 and above  
 ```cpp
-template <size_t N, size_t POWER>
-inline constexpr size_t is_power_of_2_v = is_power_of_2<N, POWER>::value;
+template <size_t N>
+inline constexpr size_t is_power_of_2_v = is_power_of_2<N>::value;
 ```
 
 ## sqrt
@@ -144,7 +144,7 @@ Defines the member value as the largest integer that, when squared, is at less t
 C++17 and above  
 ```cpp
 template <size_t N, size_t I = 1>
-inline constexpr size_t sqrt_v = sqrt<N, POWER>::value;
+inline constexpr size_t sqrt_v = sqrt<N, I>::value;
 ```
 
 ## factorial

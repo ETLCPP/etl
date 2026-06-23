@@ -263,7 +263,7 @@ class Bus1 : public etl::message_bus<1>
 Router1 router1;
 Bus1    bus1;
 
-etl::message_timer_atomic<3> timer_controller;
+etl::message_timer_locked<3> timer_controller;
 
 //***************************************************************************
 // The main loop.

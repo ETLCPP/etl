@@ -228,9 +228,9 @@ public:
   int ticks;
 };
   
-using callback_type = etl::icallback_timer_atomic::callback_type;
+using callback_type = etl::icallback_timer_locked::callback_type;
 
-callback_type member_callback = callback_type::create<Test, test, &Test::callback> member_callback;
+callback_type member_callback = callback_type::create<Test, test, &Test::callback>();
 
 //***************************************************************************
 // Free function callback via etl::function
@@ -239,15 +239,15 @@ int free_ticks1 = 0;
 
 void free_callback1()
 {
-  ++free_ticks;
+  ++free_ticks1;
 }
 
-callback_type free_callback1 = callback_type::create<free_function_callback>();
+callback_type free_function_callback = callback_type::create<free_callback1>();
 
 //***************************************************************************
 // Timer controller.
 //***************************************************************************
-etl::callback_timer<2> timer_controller;
+etl::callback_timer_locked<2> timer_controller;
 
 //***************************************************************************
 // The main loop.
@@ -264,7 +264,6 @@ int main()
 
   timer_controller.start(id1);
   timer_controller.start(id2);
-  timer_controller.start(id3);
 
   timer_controller.enable(true);
 

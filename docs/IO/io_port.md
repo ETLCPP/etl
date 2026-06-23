@@ -404,8 +404,8 @@ port.control ^= 0x0080;
 uint16_t status = port.status;
 
 // Copy data from a buffer to the Tx data port.
-std::copy(txBuffer.begin(), txBuffer.end(), serial_port.txdata.iter());
+std::copy(txBuffer.begin(), txBuffer.end(), port.txdata.iter());
 
 // Copy data from the Rx data port to a buffer.
-std::copy_n(serial_port.rxdata, serial_port.status, std::back_inserter(rxBuffer)); 
+std::copy_n(port.rxdata.iter(), status, std::back_inserter(rxBuffer));
 ```

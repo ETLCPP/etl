@@ -61,7 +61,7 @@ Equal to `100 * count() / width()`
 ---
 
 ```cpp
-bool count() const
+size_t count() const
 ```
 **Description**  
 Returns the number of elements in use in the filter.
@@ -69,7 +69,7 @@ Returns the number of elements in use in the filter.
 ---
 
 ```cpp
-bool width() const
+size_t width() const
 ```
 **Description**  
 Returns the width of the filter.  

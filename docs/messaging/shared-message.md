@@ -32,7 +32,7 @@ etl::ireference_counted_message* allocate(const TMessage& message)
 ---
 
 ```cpp
-explicit shared_message(etl::ireference_coutnted_message& message)
+explicit shared_message(etl::ireference_counted_message& message)
 ```
 Construct from a reference counted message.
 

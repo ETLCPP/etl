@@ -302,8 +302,8 @@ Bus bus;
 // to store reference counted messages in. 
 
 // The reference counted message parameters type for the messages we will use.
-using message_parameters_small = MessagePool::pool_message_parameters<Message1                                                       
-                                                                     Message3>;
+using message_parameters_small = MessagePool::pool_message_parameters<Message1,
+                                                                      Message3>;
 
 using message_parameters_large = MessagePool::pool_message_parameters<Message2>;
 

@@ -47,7 +47,7 @@ constexpr auto make_reference_flat_map(TValues&&... values)
 ```
 
 ### Example
-auto data = etl::make_reference_flat_map<int. int>(etl::pair{0, 1}, etl::pair{2, 3}, 
+auto data = etl::make_reference_flat_map<int, int>(etl::pair{0, 1}, etl::pair{2, 3},
                                                    etl::pair{4, 5}, etl::pair{6, 7});
 
 ## Member types

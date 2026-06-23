@@ -28,7 +28,7 @@ class Triangle;
 // Pure virtual 'visit' functions will be defined for the Square,
 // Circle, and Triangle types.
 //*****************************************************************
-class Shape_Visitor : public etl:visitor<Square, Circle, Triangle>
+class Shape_Visitor : public etl::visitor<Square, Circle, Triangle>
 {
 };
 ```

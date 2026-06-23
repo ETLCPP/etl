@@ -75,7 +75,7 @@ etl::fixed_iterator<char*> uart_read(UART_READ);
 etl::fixed_iterator<char*> uart_write(UART_WRITE);
 
 // Read 20 characters from the port.
-std::copy_n(uart_read, 20, std::back_inserter<char>(buffer));
+std::copy_n(uart_read, 20, std::back_inserter(buffer));
 
 // Write the buffer of characters to the port.
 std::copy(buffer.begin(), buffer.end(), uart_write);

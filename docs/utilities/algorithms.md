@@ -43,9 +43,9 @@ Swaps the elements pointed to by two iterators.
 ## swap_ranges
 
 ```cpp
-template <typename T1terator1, typename TIterator2>
-TIterator2 swap_ranges(T1terator1 first1,
-                       T1terator1 last1,
+template <typename TIterator1, typename TIterator2>
+TIterator2 swap_ranges(TIterator1 first1,
+                       TIterator1 last1,
                        TIterator2 first2)
 ```
 **Description**  
@@ -116,10 +116,10 @@ A safer version that will stop copying when either `n` items have been  copied o
 
 ```cpp
 template <typename TInputIterator, typename TSize1, typename TOutputIterator, typename TSize2>
-TOutputIterator copy_n_s(TIterator i_begin,
+TOutputIterator copy_n_s(TInputIterator i_begin,
                          TSize1 n1,
                          TOutputIterator o_begin,
-                         TSize1 n2,)
+                         TSize2 n2)
 ```
 **Description**  
 A safer version that will stop copying when either n1 or n2 items have been  copied.
