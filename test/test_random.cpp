@@ -42,42 +42,6 @@ namespace
   SUITE(test_random)
   {
     //*************************************************************************
-    TEST(test_random_xorshift_sequence)
-    {
-      std::vector<uint32_t> out1(10000);
-      etl::random_xorshift  r;
-
-      struct generator
-      {
-        generator(etl::random& r_)
-          : r(r_)
-        {
-        }
-
-        uint32_t operator()()
-        {
-          return r();
-        }
-
-        etl::random& r;
-      };
-
-      std::generate(out1.begin(), out1.end(), generator(r));
-
-      std::ofstream file("random_xorshift.csv");
-
-      if (!file.fail())
-      {
-        for (size_t i = 0UL; i < out1.size(); ++i)
-        {
-          file << out1[i] << "\n";
-        }
-      }
-
-      file.close();
-    }
-
-    //*************************************************************************
     TEST(test_random_xorshift_range)
     {
       etl::random_xorshift r;
@@ -92,42 +56,6 @@ namespace
         CHECK(n >= low);
         CHECK(n <= high);
       }
-    }
-
-    //*************************************************************************
-    TEST(test_random_lcg_sequence)
-    {
-      std::vector<uint32_t> out1(10000);
-      etl::random_lcg       r;
-
-      struct generator
-      {
-        generator(etl::random& r_)
-          : r(r_)
-        {
-        }
-
-        uint32_t operator()()
-        {
-          return r();
-        }
-
-        etl::random& r;
-      };
-
-      std::generate(out1.begin(), out1.end(), generator(r));
-
-      std::ofstream file("random_lcg.csv");
-
-      if (!file.fail())
-      {
-        for (size_t i = 0UL; i < out1.size(); ++i)
-        {
-          file << out1[i] << "\n";
-        }
-      }
-
-      file.close();
     }
 
     //*************************************************************************
@@ -148,42 +76,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_random_clcg_sequence)
-    {
-      std::vector<uint32_t> out1(10000);
-      etl::random_clcg      r;
-
-      struct generator
-      {
-        generator(etl::random& r_)
-          : r(r_)
-        {
-        }
-
-        uint32_t operator()()
-        {
-          return r();
-        }
-
-        etl::random& r;
-      };
-
-      std::generate(out1.begin(), out1.end(), generator(r));
-
-      std::ofstream file("random_clcg.csv");
-
-      if (!file.fail())
-      {
-        for (size_t i = 0UL; i < out1.size(); ++i)
-        {
-          file << out1[i] << "\n";
-        }
-      }
-
-      file.close();
-    }
-
-    //*************************************************************************
     TEST(test_random_clcg_range)
     {
       etl::random_clcg r;
@@ -198,42 +90,6 @@ namespace
         CHECK(n >= low);
         CHECK(n <= high);
       }
-    }
-
-    //*************************************************************************
-    TEST(test_random_lsfr_sequence)
-    {
-      std::vector<uint32_t> out1(10000);
-      etl::random_lsfr      r;
-
-      struct generator
-      {
-        generator(etl::random& r_)
-          : r(r_)
-        {
-        }
-
-        uint32_t operator()()
-        {
-          return r();
-        }
-
-        etl::random& r;
-      };
-
-      std::generate(out1.begin(), out1.end(), generator(r));
-
-      std::ofstream file("random_lsfr.csv");
-
-      if (!file.fail())
-      {
-        for (size_t i = 0UL; i < out1.size(); ++i)
-        {
-          file << out1[i] << "\n";
-        }
-      }
-
-      file.close();
     }
 
     //*************************************************************************
@@ -254,42 +110,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_random_mwc_sequence)
-    {
-      std::vector<uint32_t> out1(10000);
-      etl::random_mwc       r;
-
-      struct generator
-      {
-        generator(etl::random& r_)
-          : r(r_)
-        {
-        }
-
-        uint32_t operator()()
-        {
-          return r();
-        }
-
-        etl::random& r;
-      };
-
-      std::generate(out1.begin(), out1.end(), generator(r));
-
-      std::ofstream file("random_mwc.csv");
-
-      if (!file.fail())
-      {
-        for (size_t i = 0UL; i < out1.size(); ++i)
-        {
-          file << out1[i] << "\n";
-        }
-      }
-
-      file.close();
-    }
-
-    //*************************************************************************
     TEST(test_random_mwc_range)
     {
       etl::random_mwc r;
@@ -307,42 +127,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_random_pcg_sequence)
-    {
-      std::vector<uint32_t> out1(10000);
-      etl::random_pcg       r;
-
-      struct generator
-      {
-        generator(etl::random& r_)
-          : r(r_)
-        {
-        }
-
-        uint32_t operator()()
-        {
-          return r();
-        }
-
-        etl::random& r;
-      };
-
-      std::generate(out1.begin(), out1.end(), generator(r));
-
-      std::ofstream file("random_pcg.csv");
-
-      if (!file.fail())
-      {
-        for (size_t i = 0UL; i < out1.size(); ++i)
-        {
-          file << out1[i] << "\n";
-        }
-      }
-
-      file.close();
-    }
-
-    //*************************************************************************
     TEST(test_random_pcg_range)
     {
       etl::random_pcg r;
@@ -357,42 +141,6 @@ namespace
         CHECK(n >= low);
         CHECK(n <= high);
       }
-    }
-
-    //*************************************************************************
-    TEST(test_random_hash_sequence)
-    {
-      std::vector<uint32_t>        out1(10000);
-      etl::random_hash<etl::crc32> r;
-
-      struct generator
-      {
-        generator(etl::random& r_)
-          : r(r_)
-        {
-        }
-
-        uint32_t operator()()
-        {
-          return r();
-        }
-
-        etl::random& r;
-      };
-
-      std::generate(out1.begin(), out1.end(), generator(r));
-
-      std::ofstream file("random_hash.csv");
-
-      if (!file.fail())
-      {
-        for (size_t i = 0UL; i < out1.size(); ++i)
-        {
-          file << out1[i] << "\n";
-        }
-      }
-
-      file.close();
     }
 
     //*************************************************************************
