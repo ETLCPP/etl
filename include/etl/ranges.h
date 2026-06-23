@@ -907,7 +907,11 @@ namespace etl
 
     private:
 
-      Range _r;
+      // 'mutable' so that the const begin()/end() observe a non-const '_r' and
+      // therefore call the non-const ETL_OR_STD::begin/end overloads, yielding
+      // the (mutable) 'iterator' rather than a 'const_iterator' that cannot be
+      // converted back to 'iterator'.
+      mutable Range _r;
     };
 
     template <class Range>

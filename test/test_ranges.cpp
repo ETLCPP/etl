@@ -4859,6 +4859,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_ranges_chunk_view_rvalue_range_owning_view)
+    {
+      // Chunking an rvalue range stores it in an owning_view (by value).
+      // The owning_view's const begin()/end() must still yield the mutable
+      // 'iterator' rather than a 'const_iterator', otherwise instantiation fails.
+      auto cv = etl::ranges::views::chunk(std::vector<int>{1, 2, 3, 4, 5, 6, 7}, 3);
+
+      std::vector<std::vector<int>> expected{{1, 2, 3}, {4, 5, 6}, {7}};
+      size_t                        idx = 0;
+      for (auto chunk : cv)
+      {
+        std::vector<int> actual(chunk.begin(), chunk.end());
+        CHECK_EQUAL(expected[idx], actual);
+        ++idx;
+      }
+      CHECK_EQUAL(expected.size(), idx);
+    }
+
+    //*************************************************************************
     TEST(test_ranges_chunk_view_remainder)
     {
       // Range size not evenly divisible by chunk size
