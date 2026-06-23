@@ -30,6 +30,8 @@ SOFTWARE.
 
 #include "etl/ranges.h"
 #include "etl/vector.h"
+#include "etl/array.h"
+#include "etl/algorithm.h"
 
 #include <array>
 #include <ios>
@@ -1562,6 +1564,52 @@ namespace
       CHECK_CLOSE(9.0, *it, 0.001);
       ++it;
       CHECK(it == tv.end());
+    }
+
+    TEST(test_ranges_transform_view_element_type_is_function_result)
+    {
+      // transform_view must be type-changing: the element type is the result of the
+      // transform function, not the underlying range's element type.
+      auto to_double = [](int i) -> double { return i * 1.5; };
+
+      etl::vector<int, 4> v_in{1, 2, 3, 4};
+
+      auto tv = v_in | etl::views::transform(to_double);
+
+      using element_type = etl::remove_cvref_t<decltype(*tv.begin())>;
+      static_assert(etl::is_same<double, element_type>::value, "transform element should be the function result type");
+
+      // Fractional results must survive (they would be truncated to int by the old behaviour).
+      etl::vector<double, 4> v_out;
+      for (auto x : tv)
+      {
+        v_out.push_back(x);
+      }
+
+      CHECK_CLOSE(1.5, v_out[0], 0.001);
+      CHECK_CLOSE(3.0, v_out[1], 0.001);
+      CHECK_CLOSE(4.5, v_out[2], 0.001);
+      CHECK_CLOSE(6.0, v_out[3], 0.001);
+    }
+
+    TEST(test_ranges_transform_view_yields_range_then_join)
+    {
+      // A transform that returns a range, joined together, only compiles when the
+      // transform element type is the range returned by the function.
+      etl::array<int, 4> samples = {10, 20, 30, 40};
+      etl::array<int, 8> dst     = {0, 0, 0, 0, 0, 0, 0, 0};
+
+      auto stereo = samples
+                  | etl::views::transform([](int s) { return etl::views::repeat(s, 2); })
+                  | etl::views::join;
+
+      etl::copy(stereo.begin(), stereo.end(), dst.begin());
+
+      etl::array<int, 8> expected = {10, 10, 20, 20, 30, 30, 40, 40};
+      for (size_t i = 0; i < dst.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], dst[i]);
+      }
     }
 
     TEST(test_ranges_transform_view_iterator_increment)

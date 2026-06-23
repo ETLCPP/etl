@@ -585,6 +585,12 @@ namespace etl
 
       using iterator_category = ETL_OR_STD::random_access_iterator_tag;
 
+      constexpr repeat_iterator()
+        : _value{}
+        , _i{}
+      {
+      }
+
       constexpr explicit repeat_iterator(T value, B i = etl::numeric_limits<B>::max())
         : _value{value}
         , _i{i}
@@ -1234,10 +1240,14 @@ namespace etl
 
       using iterator        = typename trait::iterator;
       using const_iterator  = typename trait::const_iterator;
-      using value_type      = typename trait::value_type;
       using difference_type = typename trait::difference_type;
-      using pointer         = typename trait::pointer;
-      using reference       = typename trait::reference;
+
+      // transform_view is type-changing: the element type is the result of applying
+      // the transform function to the underlying element, not the underlying range's
+      // element type (as specified for std::ranges::transform_view).
+      using reference  = decltype(etl::declval<const Fun&>()(*etl::declval<const_iterator&>()));
+      using value_type = etl::remove_cvref_t<reference>;
+      using pointer    = void;
 
       using iterator_category = ETL_OR_STD::forward_iterator_tag;
 
@@ -1273,9 +1283,9 @@ namespace etl
         return *this;
       }
 
-      value_type operator*()
+      reference operator*()
       {
-        return static_cast<value_type>(_f(*_it));
+        return _f(*_it);
       }
 
       bool operator==(const transform_iterator& other) const
@@ -2272,9 +2282,12 @@ namespace etl
       using inner_trait    = typename etl::ranges::private_ranges::iterator_trait<InnerRange>;
       using inner_iterator = typename inner_trait::iterator;
 
-      using value_type = typename inner_trait::value_type;
+      // Derive the reference type from the inner iterator's actual dereference, so that
+      // inner ranges whose iterators yield prvalues (e.g. repeat_view) are supported,
+      // matching std::ranges::join_view (reference = range_reference_t<InnerRange>).
+      using reference  = decltype(*etl::declval<const inner_iterator&>());
+      using value_type = etl::remove_cvref_t<reference>;
       using pointer    = typename inner_trait::pointer;
-      using reference  = typename inner_trait::reference;
 
       join_iterator(iterator it, iterator it_end)
         : _it(it)
