@@ -1592,7 +1592,7 @@ namespace
       }
 
       // emplace #2 (initializer_list)
-#if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
+  #if !defined(ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
       {
         etl::optional<NothrowAtAll> nothrowAtAll{};
         static_assert(noexcept(nothrowAtAll.emplace({1, 2, 3})), "optional<NothrowAtAll>::emplace({1, 2, 3}) should be nothrow");
@@ -1600,7 +1600,7 @@ namespace
         etl::optional<ThrowingAll> throwingAll{};
         static_assert(!noexcept(throwingAll.emplace({1, 2, 3})), "optional<ThrowingAll>::emplace({1, 2, 3}) should NOT be nothrow");
       }
-#endif
+  #endif
     }
 #endif
   }
