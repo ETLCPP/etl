@@ -32,13 +32,9 @@ SOFTWARE.
 #include "platform.h"
 #include "type_traits.h"
 
-#include <stdint.h>
+#include <stddef.h>
 
-#if ETL_CPP11_NOT_SUPPORTED
-  #if !defined(ETL_IN_UNIT_TEST)
-    #error NOT SUPPORTED FOR C++03 OR BELOW
-  #endif
-#else
+#if ETL_CPP11_SUPPORTED
 namespace etl
 {
   //***************************************************************************
@@ -81,44 +77,45 @@ namespace etl
       static constexpr size_t value = index_of_type_helper<T, TTypes...>::value - 1;
     };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     template <typename T>
     static constexpr size_t index_of_type_v = index_of_type<T>::value;
-#endif
+  #endif
 
     //***************************************************************************
     /// type_from_index
     //***************************************************************************
-    template <size_t I>
+    template <size_t Index>
     class type_from_index
     {
     private:
 
       //***********************************
-      template <size_t II, size_t N, typename T1, typename... TRest>
+      template <size_t Desired_Index, size_t Current_Index, typename T1, typename... TRest>
       struct type_from_index_helper
       {
-        using type = typename etl::conditional<II == N, T1, typename type_from_index_helper<II, N + 1, TRest...>::type>::type;
+        using type = typename etl::conditional< Desired_Index == Current_Index, T1,
+                                                typename type_from_index_helper<Desired_Index, Current_Index + 1, TRest...>::type>::type;
       };
 
       //***********************************
-      template <size_t II, size_t N, typename T1>
-      struct type_from_index_helper<II, N, T1>
+      template <size_t Desired_Index, size_t Current_Index, typename T1>
+      struct type_from_index_helper<Desired_Index, Current_Index, T1>
       {
         using type = T1;
       };
 
     public:
 
-      static_assert(I < sizeof...(TTypes), "Index out of bounds of parameter pack");
+      static_assert(Index < sizeof...(TTypes), "Index out of bounds of parameter pack");
 
       /// Template alias
-      using type = typename type_from_index_helper<I, 0, TTypes...>::type;
+      using type = typename type_from_index_helper<Index, 0, TTypes...>::type;
     };
 
     //***********************************
-    template <size_t I>
-    using type_from_index_t = typename type_from_index<I>::type;
+    template <size_t Index>
+    using type_from_index_t = typename type_from_index<Index>::type;
   };
 
   //***********************************
@@ -129,22 +126,22 @@ namespace etl
   template <typename... TTypes>
   constexpr size_t parameter_pack<TTypes...>::size;
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
   template <typename T, typename... TTypes>
   inline constexpr size_t parameter_pack_v = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
-#endif
+  #endif
 
-#if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER
+  #if ETL_USING_CPP17 && !ETL_USING_GCC_COMPILER && !ETL_USING_CLANG_COMPILER
   //***********************************
   template <typename... TTypes>
   template <typename T>
   constexpr size_t parameter_pack<TTypes...>::template index_of_type<T>::value;
-#else
+  #else
   //***********************************
   template <typename... TTypes>
   template <typename T>
   constexpr size_t parameter_pack<TTypes...>::index_of_type<T>::value;
-#endif
-}
+  #endif
+} // namespace etl
 #endif
 #endif

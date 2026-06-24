@@ -47,13 +47,12 @@ namespace etl
     //*****************************************************************************
     /// Default constructor.
     //*****************************************************************************
-    imemory_block_allocator()
-    {
-    }
+    imemory_block_allocator() {}
 
     //*****************************************************************************
     /// Try to allocate a memory block of the required size.
-    /// If this allocator cannot, then pass the request on the the successor, if configured.
+    /// If this allocator cannot, then pass the request on the the successor, if
+    /// configured.
     //*****************************************************************************
     void* allocate(size_t required_size, size_t required_alignment)
     {
@@ -76,7 +75,8 @@ namespace etl
 
     //*****************************************************************************
     /// Try to release a memory block of the required size.
-    /// If this allocator cannot, then pass the request on the the successor, if configured.
+    /// If this allocator cannot, then pass the request on the the successor, if
+    /// configured.
     //*****************************************************************************
     bool release(const void* const p)
     {
@@ -98,7 +98,8 @@ namespace etl
 
     //*****************************************************************************
     /// Check if the memory block is owned by this allocator.
-    /// If this allocator does not own it, then pass the request on the the successor, if configured.
+    /// If this allocator does not own it, then pass the request on the the
+    /// successor, if configured.
     //*****************************************************************************
     bool is_owner_of(const void* const p) const
     {
@@ -121,15 +122,15 @@ namespace etl
   protected:
 
     virtual void* allocate_block(size_t required_size, size_t required_alignment) = 0;
-    virtual bool release_block(const void* const) = 0;
-    virtual bool is_owner_of_block(const void* const) const = 0;
+    virtual bool  release_block(const void* const)                                = 0;
+    virtual bool  is_owner_of_block(const void* const) const                      = 0;
 
   private:
 
     // No copying allowed.
     imemory_block_allocator(const etl::imemory_block_allocator&) ETL_DELETE;
-    imemory_block_allocator& operator =(const imemory_block_allocator&) ETL_DELETE;
+    imemory_block_allocator& operator=(const imemory_block_allocator&) ETL_DELETE;
   };
-}
+} // namespace etl
 
 #endif

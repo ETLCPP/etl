@@ -36,8 +36,18 @@ SOFTWARE.
 
 namespace etl
 {
-  #define ETL_TYPEDEF(T, name) class name##_tag; typedef etl::type_def<name##_tag, T> name
-  #define ETL_USING(name, T)   class name##_tag; typedef etl::type_def<name##_tag, T> name
+#define ETL_TYPEDEF(T, name) \
+  class name##_tag;          \
+  typedef etl::type_def<name##_tag, T> name
+#define ETL_USING(name, T) \
+  class name##_tag;        \
+  typedef etl::type_def<name##_tag, T> name
+
+#if ETL_USING_CPP11
+  #define ETL_TYPE_DEF_RETURN(T, TValue, TReturn) typename etl::enable_if<etl::is_convertible<T, TValue>::value, TReturn>::type
+#else
+  #define ETL_TYPE_DEF_RETURN(T, TValue, ReturnType) ReturnType
+#endif
 
   //*************************************************************************
   /// A template type to define strong typedefs.
@@ -63,19 +73,19 @@ namespace etl
     typedef TIdType id_type;
 
     //*********************************************************************
-    ETL_CONSTEXPR type_def()
+    ETL_CONSTEXPR type_def() ETL_NOEXCEPT
       : value(TValue())
     {
     }
 
     //*********************************************************************
 #if ETL_USING_CPP11
-    template <typename T, typename = typename etl::enable_if<etl::is_convertible<T, TValue>::value, void>::type>
+    template <typename T, typename = typename etl::enable_if< etl::is_convertible<T, TValue>::value, void>::type>
 #else
     template <typename T>
 #endif
-    ETL_CONSTEXPR type_def(T value_)
-      : value(value_)
+    ETL_CONSTEXPR type_def(T value_) ETL_NOEXCEPT
+      : value(static_cast<TValue>(value_))
     {
     }
 
@@ -85,58 +95,51 @@ namespace etl
 #endif
 
     //*********************************************************************
-    ETL_CONSTEXPR operator TValue() const
+    ETL_CONSTEXPR operator TValue() const ETL_NOEXCEPT
     {
       return value;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator ++()
+    ETL_CONSTEXPR14 type_def& operator++() ETL_NOEXCEPT
     {
       ++value;
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def operator ++(int)
+    ETL_CONSTEXPR14 type_def operator++(int) ETL_NOEXCEPT
     {
       type_def temp(*this);
-      type_def::operator ++();
+      type_def::operator++();
       return temp;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator --()
+    ETL_CONSTEXPR14 type_def& operator--() ETL_NOEXCEPT
     {
       --value;
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def operator --(int)
+    ETL_CONSTEXPR14 type_def operator--(int) ETL_NOEXCEPT
     {
       type_def temp(*this);
-      type_def::operator --();
+      type_def::operator--();
       return temp;
     }
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
-#else
-      type_def&
-#endif
-      operator +=(T rhs)
+    ETL_CONSTEXPR14 ETL_TYPE_DEF_RETURN(T, TValue, type_def&) operator+=(T rhs)ETL_NOEXCEPT
     {
-      value += rhs;
+      value += static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 
-    type_def& operator +=(const type_def& rhs)
+    ETL_CONSTEXPR14 type_def& operator+=(const type_def& rhs) ETL_NOEXCEPT
     {
       value += rhs.value;
       return *this;
@@ -144,20 +147,14 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
-#else
-      type_def&
-#endif
-      operator -=(T rhs)
+    ETL_CONSTEXPR14 ETL_TYPE_DEF_RETURN(T, TValue, type_def&) operator-=(T rhs)ETL_NOEXCEPT
     {
-      value -= rhs;
+      value -= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator -=(const type_def& rhs)
+    ETL_CONSTEXPR14 type_def& operator-=(const type_def& rhs) ETL_NOEXCEPT
     {
       value -= rhs.value;
       return *this;
@@ -165,20 +162,14 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
-#else
-      type_def&
-#endif
-      operator *=(T rhs)
+    ETL_CONSTEXPR14 ETL_TYPE_DEF_RETURN(T, TValue, type_def&) operator*=(T rhs)ETL_NOEXCEPT
     {
-      value *= rhs;
+      value *= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator *=(const type_def& rhs)
+    ETL_CONSTEXPR14 type_def& operator*=(const type_def& rhs) ETL_NOEXCEPT
     {
       value *= rhs.value;
       return *this;
@@ -186,20 +177,14 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
-#else
-      type_def&
-#endif
-      operator /=(T rhs)
+    ETL_CONSTEXPR14 ETL_TYPE_DEF_RETURN(T, TValue, type_def&) operator/=(T rhs)ETL_NOEXCEPT
     {
-      value /= rhs;
+      value /= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator /=(const type_def& rhs)
+    ETL_CONSTEXPR14 type_def& operator/=(const type_def& rhs) ETL_NOEXCEPT
     {
       value /= rhs.value;
       return *this;
@@ -207,20 +192,14 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
-#else
-      type_def&
-#endif
-      operator %=(T rhs)
+    ETL_CONSTEXPR14 ETL_TYPE_DEF_RETURN(T, TValue, type_def&) operator%=(T rhs)ETL_NOEXCEPT
     {
-      value %= rhs;
+      value %= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator %=(const type_def& rhs)
+    ETL_CONSTEXPR14 type_def& operator%=(const type_def& rhs) ETL_NOEXCEPT
     {
       value %= rhs.value;
       return *this;
@@ -228,20 +207,14 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
-#else
-      type_def&
-#endif
-      operator &=(T rhs)
+    ETL_CONSTEXPR14 ETL_TYPE_DEF_RETURN(T, TValue, type_def&) operator&=(T rhs)ETL_NOEXCEPT
     {
-      value &= rhs;
+      value &= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator &=(const type_def& rhs)
+    ETL_CONSTEXPR14 type_def& operator&=(const type_def& rhs) ETL_NOEXCEPT
     {
       value &= rhs.value;
       return *this;
@@ -249,20 +222,14 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
-#else
-      type_def&
-#endif
-      operator |=(T rhs)
+    ETL_CONSTEXPR14 ETL_TYPE_DEF_RETURN(T, TValue, type_def&) operator|=(T rhs)ETL_NOEXCEPT
     {
-      value |= rhs;
+      value |= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator |=(const type_def& rhs)
+    ETL_CONSTEXPR14 type_def& operator|=(const type_def& rhs) ETL_NOEXCEPT
     {
       value |= rhs.value;
       return *this;
@@ -270,52 +237,48 @@ namespace etl
 
     //*********************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def&>::type
-#else
-      type_def&
-#endif
-      operator ^=(T rhs)
+    ETL_CONSTEXPR14 ETL_TYPE_DEF_RETURN(T, TValue, type_def&) operator^=(T rhs)ETL_NOEXCEPT
     {
-      value ^= rhs;
+      value ^= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator ^=(const type_def& rhs)
+    ETL_CONSTEXPR14 type_def& operator^=(const type_def& rhs) ETL_NOEXCEPT
     {
       value ^= rhs.value;
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator <<=(int rhs)
+    template <typename T>
+    ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type operator<<=(T rhs) ETL_NOEXCEPT
     {
-      value <<= rhs;
+      value <<= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR14 type_def& operator >>=(int rhs)
+    template <typename T>
+    ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, type_def&>::type operator>>=(T rhs) ETL_NOEXCEPT
     {
-      value >>= rhs;
+      value >>= static_cast<TValue>(rhs);
       return *this;
     }
 
     //*********************************************************************
 #if ETL_USING_CPP11
-    ETL_CONSTEXPR14 type_def& operator =(const type_def& rhs) = default;
+    ETL_CONSTEXPR14 type_def& operator=(const type_def& rhs) = default;
 #endif
 
     //*********************************************************************
-    TValue& get()
+    TValue& get() ETL_NOEXCEPT
     {
       return value;
     }
 
     //*********************************************************************
-    ETL_CONSTEXPR const TValue& get() const
+    ETL_CONSTEXPR const TValue& get() const ETL_NOEXCEPT
     {
       return value;
     }
@@ -324,26 +287,20 @@ namespace etl
     // + operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator +(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator+(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value + rhs);
+      return type_def(lhs.value + static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR type_def operator +(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator+(T lhs, const type_def& rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs + rhs.value);
+      return type_def(static_cast<TValue>(lhs) + rhs.value);
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator +(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator+(const type_def& lhs, const type_def& rhs)
     {
       return type_def(lhs.value + rhs.value);
     }
@@ -352,32 +309,20 @@ namespace etl
     // - operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator -(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator-(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value - rhs);
+      return type_def(lhs.value - static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator -(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator-(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs - rhs.value);
+      return type_def(static_cast<TValue>(lhs) - rhs.value);
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator -(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator-(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value - rhs.value);
     }
@@ -386,32 +331,20 @@ namespace etl
     // * operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator *(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator*(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value * rhs);
+      return type_def(lhs.value * static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator *(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator*(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs * rhs.value);
+      return type_def(static_cast<TValue>(lhs) * rhs.value);
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator *(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator*(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value * rhs.value);
     }
@@ -420,66 +353,42 @@ namespace etl
     // / operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator /(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator/(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value / rhs);
+      return type_def(lhs.value / static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator /(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator/(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs / rhs.value);
+      return type_def(static_cast<TValue>(lhs) / rhs.value);
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator /(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator/(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value / rhs.value);
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator %(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator%(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value % rhs);
+      return type_def(lhs.value % static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     // % operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator %(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator%(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs % rhs.value);
+      return type_def(static_cast<TValue>(lhs) % rhs.value);
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator %(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator%(const type_def& lhs, const type_def& rhs)
     {
       return type_def(lhs.value % rhs.value);
     }
@@ -488,32 +397,20 @@ namespace etl
     // & operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR 
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator &(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator&(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value & rhs);
+      return type_def(lhs.value & static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator &(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator&(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs & rhs.value);
+      return type_def(static_cast<TValue>(lhs) & rhs.value);
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator &(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator&(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value & rhs.value);
     }
@@ -522,32 +419,20 @@ namespace etl
     // | operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator |(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator|(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value | rhs);
+      return type_def(lhs.value | static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator |(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator|(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs | rhs.value);
+      return type_def(static_cast<TValue>(lhs) | rhs.value);
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator |(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator|(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value | rhs.value);
     }
@@ -556,32 +441,20 @@ namespace etl
     // ^ operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator ^(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator^(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value ^ rhs);
+      return type_def(lhs.value ^ static_cast<TValue>(rhs));
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, type_def>::type
-#else
-      type_def
-#endif
-      operator ^(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, type_def) operator^(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs ^ rhs.value);
+      return type_def(static_cast<TValue>(lhs) ^ rhs.value);
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator ^(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR type_def operator^(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return type_def(lhs.value ^ rhs.value);
     }
@@ -589,49 +462,55 @@ namespace etl
     //*********************************************************************
     // << operator
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator <<(const type_def& lhs, int rhs)
+    template <typename T>
+    friend ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, type_def>::type operator<<(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value << rhs);
+      return type_def(lhs.value << static_cast<TValue>(rhs));
+    }
+
+    //*********************************************************************
+    template <typename T>
+    friend ETL_CONSTEXPR typename etl::enable_if< (etl::is_integral<T>::value && etl::is_integral<TValue>::value), T>::type
+      operator<<(T lhs, const type_def& rhs) ETL_NOEXCEPT
+    {
+      return lhs << rhs.value;
     }
 
     //*********************************************************************
     // >> operator
     //*********************************************************************
-    friend ETL_CONSTEXPR type_def operator >>(const type_def& lhs, int rhs)
+    template <typename T>
+    friend ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, type_def>::type operator>>(const type_def& lhs, T rhs) ETL_NOEXCEPT
     {
-      return type_def(lhs.value >> rhs);
+      return type_def(lhs.value >> static_cast<TValue>(rhs));
+    }
+
+    //*********************************************************************
+    template <typename T>
+    friend ETL_CONSTEXPR typename etl::enable_if< (etl::is_integral<T>::value && etl::is_integral<TValue>::value), T>::type
+      operator>>(T lhs, const type_def& rhs) ETL_NOEXCEPT
+    {
+      return lhs >> rhs.value;
     }
 
     //*********************************************************************
     // < operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator <(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator<(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
       return lhs.value < rhs;
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator <(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator<(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
       return lhs < rhs.value;
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR bool operator <(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR bool operator<(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return lhs.value < rhs.value;
     }
@@ -640,32 +519,20 @@ namespace etl
     // <= operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator <=(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator<=(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
       return lhs.value <= rhs;
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator <=(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator<=(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
       return lhs <= rhs.value;
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR bool operator <=(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR bool operator<=(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return lhs.value <= rhs.value;
     }
@@ -674,32 +541,20 @@ namespace etl
     // > operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator >(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator>(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
       return lhs.value > rhs;
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator >(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator>(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
       return lhs > rhs.value;
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR bool operator >(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR bool operator>(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return lhs.value > rhs.value;
     }
@@ -708,32 +563,20 @@ namespace etl
     // >= operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator >=(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator>=(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
       return lhs.value >= rhs;
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator >=(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator>=(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
       return lhs >= rhs.value;
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR bool operator >=(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR bool operator>=(const type_def& lhs, const type_def& rhs)
     {
       return lhs.value >= rhs.value;
     }
@@ -742,32 +585,20 @@ namespace etl
     // == operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator ==(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator==(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
       return lhs.value == rhs;
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator ==(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator==(T lhs, const type_def & rhs)
     {
       return lhs == rhs.value;
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR bool operator ==(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR bool operator==(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return lhs.value == rhs.value;
     }
@@ -776,40 +607,30 @@ namespace etl
     // != operator
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator !=(const type_def& lhs, T rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator!=(const type_def & lhs, T rhs) ETL_NOEXCEPT
     {
       return lhs.value != rhs;
     }
 
     //*********************************************************************
     template <typename T>
-    friend ETL_CONSTEXPR
-#if ETL_USING_CPP11
-      typename etl::enable_if<etl::is_convertible<T, TValue>::value, bool>::type
-#else
-      bool
-#endif
-      operator !=(T lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR ETL_TYPE_DEF_RETURN(T, TValue, bool) operator!=(T lhs, const type_def & rhs) ETL_NOEXCEPT
     {
       return lhs != rhs.value;
     }
 
     //*********************************************************************
-    friend ETL_CONSTEXPR bool operator !=(const type_def& lhs, const type_def& rhs)
+    friend ETL_CONSTEXPR bool operator!=(const type_def& lhs, const type_def& rhs) ETL_NOEXCEPT
     {
       return lhs.value != rhs.value;
     }
 
   private:
 
-      TValue value;
+    TValue value;
   };
-}
+} // namespace etl
+
+#undef ETL_TYPE_DEF_RETURN
 
 #endif

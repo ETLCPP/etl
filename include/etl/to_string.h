@@ -34,9 +34,9 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
-#include "type_traits.h"
-#include "string.h"
 #include "format_spec.h"
+#include "string.h"
+#include "type_traits.h"
 #include "private/to_string_helper.h"
 
 namespace etl
@@ -94,8 +94,8 @@ namespace etl
   /// etl::istring
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_same<T, etl::istring>::value, const etl::istring&>::type
-    to_string(const T& value, etl::istring& str, bool append = false)
+  typename etl::enable_if<etl::is_same<T, etl::istring>::value, const etl::istring&>::type to_string(const T& value, etl::istring& str,
+                                                                                                     bool append = false)
   {
     etl::format_spec format;
 
@@ -122,8 +122,8 @@ namespace etl
   /// etl::string_view
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_same<T, etl::string_view>::value, const etl::istring&>::type
-    to_string(T value, etl::istring& str, bool append = false)
+  typename etl::enable_if<etl::is_same<T, etl::string_view>::value, const etl::istring&>::type to_string(T value, etl::istring& str,
+                                                                                                         bool append = false)
   {
     etl::format_spec format;
 
@@ -144,6 +144,6 @@ namespace etl
 
     return str;
   }
-}
+} // namespace etl
 
 #endif

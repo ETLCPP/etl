@@ -54,6 +54,7 @@ add_executable(etl_tests
 	test_callback_service.cpp
 	test_callback_timer.cpp
 	test_callback_timer_atomic.cpp
+	test_callback_timer_deferred_locked.cpp
 	test_callback_timer_interrupt.cpp
 	test_callback_timer_locked.cpp
 	test_char_traits.cpp
@@ -82,8 +83,28 @@ add_executable(etl_tests
 	test_circular_buffer.cpp
 	test_circular_buffer_external_buffer.cpp
 	test_circular_iterator.cpp
+	test_closure_with_default_delegate.cpp
+	test_closure_with_default_delegate_constexpr.cpp
+	test_closure_with_inplace_function.cpp
 	test_compare.cpp
+	test_concepts.cpp
 	test_constant.cpp
+	test_const_map.cpp
+	test_const_map_constexpr.cpp
+	test_const_map_ext.cpp
+	test_const_map_ext_constexpr.cpp
+	test_const_multimap.cpp
+	test_const_multimap_constexpr.cpp
+	test_const_multimap_ext.cpp
+	test_const_multimap_ext_constexpr.cpp
+	test_const_multiset.cpp
+	test_const_multiset_constexpr.cpp
+	test_const_multiset_ext.cpp
+	test_const_multiset_ext_constexpr.cpp
+	test_const_set.cpp
+	test_const_set_constexpr.cpp
+	test_const_set_ext.cpp
+	test_const_set_ext_constexpr.cpp
 	test_container.cpp
 	test_correlation.cpp
 	test_covariance.cpp
@@ -106,6 +127,8 @@ add_executable(etl_tests
 	test_crc16_maxim.cpp
 	test_crc16_mcrf4xx.cpp
 	test_crc16_modbus.cpp
+	test_crc16_opensafety_a.cpp
+	test_crc16_opensafety_b.cpp
 	test_crc16_profibus.cpp
 	test_crc16_riello.cpp
 	test_crc16_t10dif.cpp
@@ -124,6 +147,7 @@ add_executable(etl_tests
 	test_crc32_q.cpp
 	test_crc32_xfer.cpp
 	test_crc64_ecma.cpp
+	test_crc64_iso.cpp
 	test_crc8_ccitt.cpp
 	test_crc8_cdma2000.cpp
 	test_crc8_darc.cpp
@@ -134,12 +158,15 @@ add_executable(etl_tests
 	test_crc8_j1850.cpp
 	test_crc8_j1850_zero.cpp
 	test_crc8_maxim.cpp
+	test_crc8_nrsc5.cpp
+	test_crc8_opensafety.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
 	test_delegate_cpp03.cpp
+	test_delegate_observable.cpp
 	test_delegate_service.cpp
 	test_delegate_service_compile_time.cpp
 	test_delegate_service_cpp03.cpp
@@ -147,6 +174,7 @@ add_executable(etl_tests
 	test_endian.cpp
 	test_enum_type.cpp
 	test_error_handler.cpp
+	test_etl_assert.cpp
 	test_etl_traits.cpp
 	test_exception.cpp
 	test_expected.cpp
@@ -158,6 +186,7 @@ add_executable(etl_tests
 	test_flat_multiset.cpp
 	test_flat_set.cpp
 	test_fnv_1.cpp
+	test_format.cpp
 	test_format_spec.cpp
 	test_forward_list.cpp
 	test_forward_list_shared_pool.cpp
@@ -169,19 +198,24 @@ add_executable(etl_tests
 	test_hash.cpp
 	test_hfsm.cpp
 	test_hfsm_recurse_to_inner_state_on_start.cpp
+	test_hfsm_transition_on_enter.cpp
 	test_histogram.cpp
 	test_index_of_type.cpp
 	test_indirect_vector.cpp
 	test_indirect_vector_external_buffer.cpp
+	test_inplace_function.cpp
 	test_instance_count.cpp
 	test_integral_limits.cpp
+	test_intrusive_avl_tree.cpp
 	test_intrusive_forward_list.cpp
 	test_intrusive_links.cpp
 	test_intrusive_list.cpp
 	test_intrusive_queue.cpp
 	test_intrusive_stack.cpp
 	test_invert.cpp
+	test_invoke.cpp
 	test_io_port.cpp
+	test_is_invocable.cpp
 	test_iterator.cpp
 	test_jenkins.cpp
 	test_largest.cpp
@@ -191,6 +225,7 @@ add_executable(etl_tests
 	test_list_shared_pool.cpp
 	test_macros.cpp
 	test_make_string.cpp
+	test_manchester.cpp
 	test_map.cpp
 	test_math.cpp
 	test_math_functions.cpp
@@ -215,6 +250,9 @@ add_executable(etl_tests
 	test_multi_span.cpp
 	test_multi_vector.cpp
 	test_murmur3.cpp
+	test_not_null_pointer.cpp
+	test_not_null_pointer_constexpr.cpp
+	test_not_null_unique_pointer.cpp
 	test_nth_type.cpp
 	test_numeric.cpp
 	test_observer.cpp
@@ -230,6 +268,7 @@ add_executable(etl_tests
 	test_pool.cpp
 	test_pool_external_buffer.cpp
 	test_priority_queue.cpp
+	test_print.cpp
 	test_pseudo_moving_average.cpp
 	test_quantize.cpp
 	test_queue.cpp
@@ -245,6 +284,7 @@ add_executable(etl_tests
 	test_queue_spsc_locked.cpp
 	test_queue_spsc_locked_small.cpp
 	test_random.cpp
+	test_ranges.cpp
 	test_ratio.cpp
 	test_reference_flat_map.cpp
 	test_reference_flat_multimap.cpp
@@ -253,9 +293,11 @@ add_executable(etl_tests
 	test_rescale.cpp
 	test_result.cpp
 	test_rms.cpp
+	test_rounded_integral_division.cpp
 	test_scaled_rounding.cpp
 	test_set.cpp
 	test_shared_message.cpp
+	test_signal.cpp
 	test_singleton.cpp
 	test_singleton_base.cpp
 	test_smallest.cpp
@@ -341,6 +383,11 @@ target_compile_definitions(etl_tests PRIVATE -DETL_DEBUG)
 
 option(ETL_NO_STL "No STL" OFF)
 
+set(EXTRA_COMPILE_OPTIONS "" CACHE STRING "Additional compiler options")
+set(EXTRA_LINK_OPTIONS "" CACHE STRING "Additional linker options")
+set(EXTRA_LINK_LIBS "" CACHE STRING "Additional libraries to link")
+set(EXTRA_TESTING_FLAGS "" CACHE STRING "Additional testing flags for ctest")
+
 if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
     set_property(TARGET etl_tests PROPERTY CXX_STANDARD 98)
@@ -359,9 +406,27 @@ elseif (ETL_CXX_STANDARD MATCHES "17")
 elseif (ETL_CXX_STANDARD MATCHES "20")
 	message(STATUS "Compiling for C++20")
 	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 20)
+elseif (ETL_CXX_STANDARD MATCHES "23")
+	if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.20")
+		message(STATUS "Compiling for C++23")
+		set_property(TARGET etl_tests PROPERTY CXX_STANDARD 23)
+	else()
+		message(STATUS "CMake version ${CMAKE_VERSION} does not support C++23, falling back to C++20")
+		set_property(TARGET etl_tests PROPERTY CXX_STANDARD 20)
+	endif()
+elseif (ETL_CXX_STANDARD MATCHES "26")
+	if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.25")
+		message(STATUS "Compiling for C++26")
+		set_property(TARGET etl_tests PROPERTY CXX_STANDARD 26)
+	elseif (CMAKE_VERSION VERSION_GREATER_EQUAL "3.20")
+		message(STATUS "CMake version ${CMAKE_VERSION} does not support C++26, falling back to C++23")
+		set_property(TARGET etl_tests PROPERTY CXX_STANDARD 23)
+	else()
+		message(FATAL_ERROR "CMake version ${CMAKE_VERSION} is too old to support C++23 or C++26. Please upgrade to CMake 3.20 or later.")
+	endif()
 else()
-	message(STATUS "Compiling for C++23")
-	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 23)
+	message(STATUS "Compiling for C++17")
+	set_property(TARGET etl_tests PROPERTY CXX_STANDARD 17)
 endif()
 
 if (NO_STL OR ETL_NO_STL)
@@ -387,7 +452,7 @@ if (ETL_MESSAGES_ARE_NOT_VIRTUAL)
 endif()
 
 if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
-	message(STATUS "Compiling for C++03 tests")
+	message(STATUS "Compiling for forced C++03 tests")
 	target_compile_definitions(etl_tests PRIVATE -DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 
@@ -427,14 +492,19 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+			-pedantic-errors
 			-Wall
 			-Wextra
 			-Werror
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wsign-conversion
+			-Wextra-semi
 			-g
+			${EXTRA_COMPILE_OPTIONS}
 			)
+	target_link_options(etl_tests PRIVATE ${EXTRA_LINK_OPTIONS})
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -442,14 +512,21 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+			-pedantic-errors
 			-Wall
 			-Wextra
 			-Werror
 			-Wfloat-equal
 			-Wshadow
 			-Wnull-dereference
+			-Wsign-conversion
+			-Wextra-semi
+			-Wextra-semi-stmt
+			-Wc++11-extra-semi
 			-g
+			${EXTRA_COMPILE_OPTIONS}
 			)
+	target_link_options(etl_tests PRIVATE ${EXTRA_LINK_OPTIONS})
 endif ()
 
 if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
@@ -465,7 +542,7 @@ if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Cla
 			target_link_options(etl_tests
 				PRIVATE
 				-fsanitize=address,undefined,bounds
-				)	
+				)
 		endif()
 	endif ()
 endif ()
@@ -475,13 +552,13 @@ target_include_directories(etl_tests
 		${PROJECT_SOURCE_DIR}/../include)
 
 add_subdirectory(UnitTest++)
-target_link_libraries(etl_tests PRIVATE UnitTestpp)
+target_link_libraries(etl_tests PRIVATE UnitTestpp ${EXTRA_LINK_LIBS})
 
+enable_testing()
 # Enable the 'make test' CMake target using the executable defined above
-add_test(etl_unit_tests etl_tests)
+add_test(NAME etl_unit_tests COMMAND etl_tests ${EXTRA_TESTING_FLAGS})
 
 # Since ctest will only show you the results of the single executable
 # define a target that will output all of the failing or passing tests
 # as they appear from UnitTest++
 add_custom_target(test_verbose COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
-

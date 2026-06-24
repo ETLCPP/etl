@@ -196,26 +196,11 @@
     <Filter Include="Tests\Syntax Checks">
       <UniqueIdentifier>{8a3300fa-c2cd-44dd-8582-692f97ec4dc0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tests\Syntax Checks\C++03">
-      <UniqueIdentifier>{ca522a34-8cf0-4f64-8ca1-33f52f65a9a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Syntax Checks\C++11">
-      <UniqueIdentifier>{ba2bf848-6023-4906-a0d4-14a4c8fba0e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Syntax Checks\C++14">
-      <UniqueIdentifier>{527f4d9a-8968-4352-8cdf-f6ccc391dcf9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Syntax Checks\C++17">
-      <UniqueIdentifier>{57b110fa-b3d8-4cc4-9619-ca510a29c213}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tests\Syntax Checks\Logs">
       <UniqueIdentifier>{5b76fd56-eb83-489f-b9a6-798c07c5fa76}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tests\Syntax Checks\Source">
       <UniqueIdentifier>{a05ae045-3218-4ca2-9f25-08cc977898df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Tests\Syntax Checks\C++20">
-      <UniqueIdentifier>{3336d15c-7c22-4df0-a6b2-1eb605099a1a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tests\Messaging">
       <UniqueIdentifier>{c75cedd3-8b6c-4662-b965-aecbe7fd5d1c}</UniqueIdentifier>
@@ -237,6 +222,9 @@
     </Filter>
     <Filter Include="Tests\Error Handler\Assert Function">
       <UniqueIdentifier>{f51cb264-5376-47db-89d9-a515e1ac4af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Documentation">
+      <UniqueIdentifier>{5b809d95-b37c-4011-af5e-b5ea6dcb354e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -382,6 +370,9 @@
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\flat_multiset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\intrusive_avl_tree.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\intrusive_forward_list.h">
@@ -755,27 +746,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\profiles\clang_generic_no_stl.h">
       <Filter>ETL\Profiles</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\largest_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\smallest_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\type_lookup_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\type_select_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\type_traits_generator.h">
-      <Filter>ETL\Utilities\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\fsm_generator.h">
-      <Filter>ETL\Frameworks\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\variant_pool_generator.h">
-      <Filter>ETL\Containers\Generators</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\parameter_pack.h">
       <Filter>ETL\Utilities</Filter>
@@ -1293,12 +1263,6 @@
     <ClInclude Include="..\..\include\etl\shared_message.h">
       <Filter>ETL\Messaging</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
-      <Filter>ETL\Messaging\Generators</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\generators\message_router_generator.h">
-      <Filter>ETL\Messaging\Generators</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\poly_span.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -1358,21 +1322,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\diagnostic_deprecated_push.h">
       <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++03\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++03</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++11\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++11</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++14\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++14</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++17\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++17</Filter>
-    </ClInclude>
-    <ClInclude Include="..\syntax_check\c++20\etl_profile.h">
-      <Filter>Tests\Syntax Checks\C++20</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\diagnostic_stringop_overread_push.h">
       <Filter>ETL\Private</Filter>
@@ -1452,12 +1401,6 @@
     <ClInclude Include="..\etl_error_handler\assert_function\etl_profile.h">
       <Filter>Tests\Error Handler\Assert Function</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\singleton_base.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\function_traits.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\type_list.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -1511,6 +1454,120 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\private\chrono\clocks.h">
       <Filter>ETL\Private\chrono</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_map.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\closure.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_set.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_multiset.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_nrsc5.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc8_opensafety.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_opensafety_a.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc16_opensafety_b.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\const_multimap.h">
+      <Filter>ETL\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\delegate_observable.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\rounded_integral_division.h">
+      <Filter>ETL\Maths</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback_timer_deferred_locked.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\not_null.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\singleton_base.h">
+      <Filter>ETL\Patterns</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\signal.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\function_traits.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\crc64_iso.h">
+      <Filter>ETL\Maths\CRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\callback.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\concepts.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\invoke.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\inplace_function.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_packet_generator.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\print.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\ranges_mini_variant.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\ranges.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_cpp03_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_friend_decl_cpp03_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\fsm_fwd_decl_cpp03_generator.h">
+      <Filter>ETL\Frameworks\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\variant_pool_cpp03_generator.h">
+      <Filter>ETL\Containers\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_alignment_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\largest_type_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\smallest_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_lookup_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_select_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\type_traits_cpp03_generator.h">
+      <Filter>ETL\Utilities\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_packet_cpp03_generator.h">
+      <Filter>ETL\Messaging\Generators</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\generators\message_router_cpp03_generator.h">
+      <Filter>ETL\Messaging\Generators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1809,6 +1866,9 @@
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_indirect_vector_external_buffer.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_avl_tree.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_intrusive_forward_list.cpp">
@@ -2353,6 +2413,9 @@
     </ClCompile>
     <ClCompile Include="..\test_random.cpp">
       <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_ranges.cpp">
+      <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_error_handler.cpp">
       <Filter>Tests\Errors</Filter>
@@ -2958,6 +3021,9 @@
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\integral_limits.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\intrusive_avl_tree.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\intrusive_forward_list.h.t.cpp">
@@ -3593,6 +3659,162 @@
     <ClCompile Include="..\test_chrono_literals.cpp">
       <Filter>Tests\Chrono</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_closure_with_default_delegate.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\closure.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_map.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_map_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multimap_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multimap.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_map_ext.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_map_ext_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multimap_ext.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multimap_ext_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_set.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_set_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_set_ext.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_set_ext_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multiset.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multiset_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multiset_ext.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_const_multiset_ext_constexpr.cpp">
+      <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_nrsc5.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_closure_with_default_delegate_constexpr.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc8_opensafety.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_opensafety_a.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc16_opensafety_b.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\callback_timer_deferred_locked.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_callback_timer_deferred_locked.cpp">
+      <Filter>Tests\Callback Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_crc64_iso.cpp">
+      <Filter>Tests\CRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_delegate_observable.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_rounded_integral_division.cpp">
+      <Filter>Tests\Maths</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_not_null_pointer.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_not_null_unique_pointer.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\not_null.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_not_null_pointer_constexpr.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc8_opensafety.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc16_opensafety_a.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\crc16_opensafety_b.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\delegate_observable.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\signal.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etl_assert.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\signal.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_etl_assert.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_signal.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_hfsm_transition_on_enter.cpp">
+      <Filter>Tests\State Machines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_signal.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\format.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_format.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\concepts.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_concepts.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_invoke.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_is_invocable.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_inplace_function.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_print.cpp">
+      <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_closure_with_inplace_function.cpp">
+      <Filter>Tests\Callbacks &amp; Delegates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">
@@ -3751,6 +3973,32 @@
     <None Include="..\..\CONTRIBUTING.md">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\scripts\convert_headers_to_use_guards.bat">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\scripts\convert_headers_to_use_once.bat">
+      <Filter>Tests\Scripts</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\platformio-update.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.coderabbit.yaml">
+      <Filter>Resource Files\CI</Filter>
+    </None>
+    <None Include="..\..\..\etl-arduino\.github\workflows\platformio-update.yml">
+      <Filter>ETL\Arduino</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-c++23.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\gcc-c++23.yml">
+      <Filter>Resource Files\CI\Github</Filter>
+    </None>
+    <None Include="..\..\.github\workflows\clang-format.yaml" />
+    <None Include="..\..\.github\workflows\clang-format_update.yaml" />
+    <None Include="..\run-coverage.sh">
+      <Filter>Tests\Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\support\Release notes.txt">
@@ -3780,21 +4028,6 @@
     <Text Include="..\etl_error_handler\log_errors_and_exceptions\CMakeLists.txt">
       <Filter>Tests\Error Handler\Exceptions_And_Log_Errors</Filter>
     </Text>
-    <Text Include="..\syntax_check\c++03\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++03</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++11\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++11</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++14\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++14</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++17\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++17</Filter>
-    </Text>
-    <Text Include="..\syntax_check\c++20\CMakeLists.txt">
-      <Filter>Tests\Syntax Checks\C++20</Filter>
-    </Text>
     <Text Include="..\syntax_check\log.txt">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </Text>
@@ -3803,6 +4036,9 @@
     </Text>
     <Text Include="..\syntax_check\CMakeLists.txt">
       <Filter>Tests\Syntax Checks</Filter>
+    </Text>
+    <Text Include="..\..\Converting header guards.txt">
+      <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
@@ -3824,10 +4060,5 @@
     <Image Include="..\..\favicon.ico">
       <Filter>Resource Files\Images</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="io_port.natvis">
-      <Filter>Resource Files</Filter>
-    </Natvis>
   </ItemGroup>
 </Project>

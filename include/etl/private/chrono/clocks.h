@@ -33,7 +33,11 @@ SOFTWARE.
 #endif
 
 #if !defined(ETL_CHRONO_SYSTEM_CLOCK_DURATION)
-  #define ETL_CHRONO_SYSTEM_CLOCK_DURATION etl::chrono::nanoseconds
+  #if (INT_MAX >= INT32_MAX)
+    #define ETL_CHRONO_SYSTEM_CLOCK_DURATION etl::chrono::nanoseconds
+  #else
+    #define ETL_CHRONO_SYSTEM_CLOCK_DURATION etl::chrono::milliseconds
+  #endif
 #endif
 
 #if !defined(ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY)
@@ -41,7 +45,11 @@ SOFTWARE.
 #endif
 
 #if !defined(ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION)
-  #define ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION etl::chrono::nanoseconds
+  #if (INT_MAX >= INT32_MAX)
+    #define ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION etl::chrono::nanoseconds
+  #else
+    #define ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION etl::chrono::milliseconds
+  #endif
 #endif
 
 #if !defined(ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY)
@@ -49,7 +57,11 @@ SOFTWARE.
 #endif
 
 #if !defined(ETL_CHRONO_STEADY_CLOCK_DURATION)
-#define ETL_CHRONO_STEADY_CLOCK_DURATION etl::chrono::nanoseconds
+  #if (INT_MAX >= INT32_MAX)
+    #define ETL_CHRONO_STEADY_CLOCK_DURATION etl::chrono::nanoseconds
+  #else
+    #define ETL_CHRONO_STEADY_CLOCK_DURATION etl::chrono::milliseconds
+  #endif
 #endif
 
 extern "C" ETL_CHRONO_SYSTEM_CLOCK_DURATION::rep          etl_get_system_clock();
@@ -70,12 +82,12 @@ namespace etl
 
       template <bool b>
       ETL_CONSTANT bool is_steady_trait<b>::is_steady;
-    }
+    } // namespace private_chrono
 
     //*************************************************************************
     /// The system clock time
     //*************************************************************************
-    class system_clock : public private_chrono::is_steady_trait<ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY>
+    class system_clock : public private_chrono::is_steady_trait< ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY>
     {
     public:
 
@@ -114,7 +126,7 @@ namespace etl
     //*************************************************************************
     /// The high resolution clock time
     //*************************************************************************
-    class high_resolution_clock : public private_chrono::is_steady_trait<ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY>
+    class high_resolution_clock : public private_chrono::is_steady_trait< ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY>
     {
     public:
 
@@ -153,7 +165,7 @@ namespace etl
     /// System time
     //***************************************************************************
     template <typename Duration>
-    using sys_time = etl::chrono::time_point<etl::chrono::system_clock, Duration> ;
+    using sys_time = etl::chrono::time_point<etl::chrono::system_clock, Duration>;
 
     using sys_seconds = sys_time<etl::chrono::seconds>;
     using sys_days    = sys_time<etl::chrono::days>;
@@ -161,7 +173,7 @@ namespace etl
     //***************************************************************************
     /// Local time
     //***************************************************************************
-    struct local_t 
+    struct local_t
     {
     };
 
@@ -188,5 +200,5 @@ namespace etl
       // Construct and return the time_point for the ToClock
       return etl::chrono::time_point<TToClock, typename TToClock::duration>(to_duration);
     }
-  }
-}
+  } // namespace chrono
+} // namespace etl

@@ -68,13 +68,13 @@ namespace etl
     {
       typedef double calc_t;
     };
-  }
+  } // namespace private_rms
 
   //***************************************************************************
   /// Standard Deviation.
   //***************************************************************************
   template <typename TInput, typename TCalc = TInput>
-  class rms 
+  class rms
     : public private_rms::rms_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
@@ -131,7 +131,7 @@ namespace etl
     /// operator ()
     /// Add a pair of values.
     //*********************************
-    void operator ()(TInput value)
+    void operator()(TInput value)
     {
       add(value);
     }
@@ -141,7 +141,7 @@ namespace etl
     /// Add a range.
     //*********************************
     template <typename TIterator>
-    void operator ()(TIterator first, TIterator last)
+    void operator()(TIterator first, TIterator last)
     {
       add(first, last);
     }
@@ -157,7 +157,7 @@ namespace etl
 
         if (counter != 0)
         {
-          double n = double(counter);
+          double n               = double(counter);
           double mean_of_squares = sum_of_squares / n;
 
           if (mean_of_squares > 0)
@@ -200,12 +200,12 @@ namespace etl
     }
 
   private:
-  
-    calc_t   sum_of_squares;
-    uint32_t counter;
+
+    calc_t         sum_of_squares;
+    uint32_t       counter;
     mutable double rms_value;
     mutable bool   recalculate;
   };
-}
+} // namespace etl
 
 #endif

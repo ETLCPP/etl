@@ -27,21 +27,21 @@ SOFTWARE.
 ******************************************************************************/
 
 #include "unit_test_framework.h"
-#include <vector>
 #include <ostream>
+#include <vector>
 
 #include "etl/fixed_iterator.h"
 
 template <typename TIterator>
-std::ostream& operator << (std::ostream& os, const etl::fixed_iterator<TIterator>& fi)
+std::ostream& operator<<(std::ostream& os, const etl::fixed_iterator<TIterator>& fi)
 {
   os << TIterator(fi);
 
   return os;
 }
 
-namespace 
-{		
+namespace
+{
   SUITE(test_fixed_iterator)
   {
     //*************************************************************************
@@ -86,7 +86,7 @@ namespace
     //*************************************************************************
     TEST(test_increment)
     {
-      int compare[] = { 1, 2, 3, 4 };
+      int compare[] = {1, 2, 3, 4};
 
       etl::fixed_iterator<const int*> fi = &compare[1];
 
@@ -105,14 +105,14 @@ namespace
       {
         int a;
         int b;
-      } object = { 1, 2 };
+      } object = {1, 2};
 
       etl::fixed_iterator<Object*> fi(&object);
 
       CHECK_EQUAL(object.a, fi->a);
       CHECK_EQUAL(object.b, fi->b);
 
-      *fi = { 3, 4 };
+      *fi = {3, 4};
 
       CHECK_EQUAL(object.a, fi->a);
       CHECK_EQUAL(object.b, fi->b);
@@ -131,7 +131,7 @@ namespace
     //*************************************************************************
     TEST(test_operator_plus_equals)
     {
-      int compare[] = { 1, 2, 3, 4 };
+      int compare[] = {1, 2, 3, 4};
 
       etl::fixed_iterator<const int*> fi = &compare[1];
 
@@ -145,7 +145,7 @@ namespace
     //*************************************************************************
     TEST(test_operator_plus)
     {
-      int compare[] = { 1, 2, 3, 4 };
+      int compare[] = {1, 2, 3, 4};
 
       etl::fixed_iterator<const int*> fi = &compare[1];
 
@@ -159,7 +159,7 @@ namespace
     //*************************************************************************
     TEST(test_decrement)
     {
-      int compare[] = { 1, 2, 3, 4 };
+      int compare[] = {1, 2, 3, 4};
 
       etl::fixed_iterator<const int*> fi = &compare[1];
 
@@ -174,7 +174,7 @@ namespace
     //*************************************************************************
     TEST(test_operator_minus_equals)
     {
-      int compare[] = { 1, 2, 3, 4 };
+      int compare[] = {1, 2, 3, 4};
 
       etl::fixed_iterator<const int*> fi = &compare[1];
 
@@ -188,7 +188,7 @@ namespace
     //*************************************************************************
     TEST(test_operator_minus)
     {
-      int compare[] = { 1, 2, 3, 4 };
+      int compare[] = {1, 2, 3, 4};
 
       etl::fixed_iterator<const int*> fi = &compare[1];
 
@@ -206,7 +206,7 @@ namespace
       int b{};
 
       etl::fixed_iterator<int*> fi = &a;
-      fi = &b;
+      fi                           = &b;
 
       CHECK_EQUAL(&b, fi);
 
@@ -228,5 +228,42 @@ namespace
       CHECK(fi1 == fi2);
       CHECK(fi1 != fi3);
     }
-  };
-}
+
+    //*************************************************************************
+    TEST(test_dereference_write_through)
+    {
+      int                       value = 42;
+      etl::fixed_iterator<int*> fi(&value);
+
+      // Writing through the dereferenced iterator should modify the underlying value.
+      *fi = 99;
+      CHECK_EQUAL(99, value);
+
+      // Increment does nothing, so writing again still targets the same location.
+      ++fi;
+      *fi = 123;
+      CHECK_EQUAL(123, value);
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_fixed_iterator_constexpr_ctor)
+    {
+      static constexpr int                      data[] = {1, 2, 3};
+      constexpr etl::fixed_iterator<const int*> fi(&data[1]);
+      static_assert(*fi == 2, "constexpr ctor and deref");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_fixed_iterator_constexpr_copy_ctor)
+    {
+      static constexpr int                      data[] = {1, 2, 3};
+      constexpr etl::fixed_iterator<const int*> fi1(&data[0]);
+      constexpr etl::fixed_iterator<const int*> fi2(fi1);
+      static_assert(*fi2 == 1, "constexpr copy ctor");
+      CHECK(true);
+    }
+#endif
+  }
+} // namespace

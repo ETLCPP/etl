@@ -5,7 +5,8 @@
 	"build": {
 		"dockerfile": "../Dockerfile",
 		"args": {
-			"BASE_IMAGE_NAME": "gcc:15"
+			"BASE_IMAGE_NAME": "gcc:15",
+			"DEBIAN_SNAPSHOT": "none"
 		},
 		"context": "../context"
 	}

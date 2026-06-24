@@ -48,12 +48,12 @@ namespace etl
     uncopyable& operator=(uncopyable const&) = delete;
 
   protected:
-    
+
     uncopyable()  = default;
     ~uncopyable() = default;
   };
 
 #endif
-}
+} // namespace etl
 
 #endif

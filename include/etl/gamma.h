@@ -36,7 +36,6 @@ SOFTWARE.
 #include "type_traits.h"
 
 #include <math.h>
-#include <stdint.h>
 
 namespace etl
 {
@@ -54,16 +53,20 @@ namespace etl
     gamma_encode(double gamma_, TInput maximum_)
       : one_over_gamma(1.0 / gamma_)
       , maximum(maximum_)
-    {      
+    {
     }
 
     //*********************************
     /// operator ()
     /// Get the gamma.
     //*********************************
-    TInput operator ()(TInput value) const
+    TInput operator()(TInput value) const
     {
-      return TInput(TInput(maximum * pow(double(value) / maximum, one_over_gamma)));
+      // Calculate intermediate result because rounding + optimization
+      // lead to wrong values when returning directly (test on i386)
+      const double result = maximum * pow(double(value) / maximum, one_over_gamma);
+
+      return TInput(result);
     }
 
   private:
@@ -86,16 +89,19 @@ namespace etl
     gamma_decode(double gamma_, TInput maximum_)
       : gamma(gamma_)
       , maximum(maximum_)
-    {      
+    {
     }
 
     //*********************************
     /// operator ()
     /// Get the gamma.
     //*********************************
-    TInput operator ()(TInput value) const
+    TInput operator()(TInput value) const
     {
-      return TInput(TInput(maximum * pow(double(value) / maximum, gamma)));
+      // Calculate intermediate result because rounding + optimization
+      // lead to wrong values when returning directly (test on i386)
+      const double result = maximum * pow(double(value) / maximum, gamma);
+      return TInput(result);
     }
 
   private:
@@ -103,6 +109,6 @@ namespace etl
     const double gamma;
     const double maximum;
   };
-}
+} // namespace etl
 
 #endif

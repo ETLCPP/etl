@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2025 John Wellbelove
 
@@ -34,8 +34,8 @@ SOFTWARE.
 
 #include "etl/chrono.h"
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 // Set to 0 to reference against std::chrono
 #define ETL_USING_ETL_CHRONO 1
@@ -69,13 +69,13 @@ namespace
       Chrono::year_month_weekday ymwd{Chrono::year(2000), Chrono::January, Chrono::weekday_indexed(Chrono::Thursday, 1)};
 
       CHECK_TRUE(ymwd.ok()); // Valid year_month_weekday
-      CHECK_EQUAL(2000,                          (int)ymwd.year());
-      CHECK_EQUAL((unsigned)Chrono::January,     (unsigned)ymwd.month());
+      CHECK_EQUAL(2000, (int)ymwd.year());
+      CHECK_EQUAL((unsigned)Chrono::January, (unsigned)ymwd.month());
       CHECK_EQUAL(Chrono::Thursday.c_encoding(), ymwd.weekday().c_encoding());
-      CHECK_EQUAL(1,                             ymwd.index());
+      CHECK_EQUAL(1, ymwd.index());
       CHECK_TRUE(ymwd.weekday_indexed().ok());
       CHECK_EQUAL(Chrono::Thursday.c_encoding(), ymwd.weekday_indexed().weekday().c_encoding());
-      CHECK_EQUAL(1,                             ymwd.weekday_indexed().index());
+      CHECK_EQUAL(1, ymwd.weekday_indexed().index());
     }
 
     //*************************************************************************
@@ -117,19 +117,39 @@ namespace
     //*************************************************************************
     TEST(test_to_sys_days)
     {
-      Chrono::year_month_weekday ymwd{Chrono::year(2000), Chrono::February, Chrono::weekday_indexed(Chrono::Thursday, 1)};
-      Chrono::sys_days sd = Chrono::sys_days(ymwd);
+      // 1st Thursday of February 2000 (Feb 3)
+      Chrono::year_month_weekday ymwd1{Chrono::year(2000), Chrono::February, Chrono::weekday_indexed(Chrono::Thursday, 1)};
+      Chrono::sys_days           sd1 = Chrono::sys_days(ymwd1);
+      CHECK_EQUAL(10990, sd1.time_since_epoch().count());
 
-      CHECK_EQUAL(10990, sd.time_since_epoch().count());
+      // 2nd Wednesday of March 2000 (Mar 8)
+      Chrono::year_month_weekday ymwd2{Chrono::year(2000), Chrono::March, Chrono::weekday_indexed(Chrono::Wednesday, 2)};
+      Chrono::sys_days           sd2 = Chrono::sys_days(ymwd2);
+      CHECK_EQUAL(11024, sd2.time_since_epoch().count());
+
+      // 1st Sunday of January 2000 (Jan 2)
+      Chrono::year_month_weekday ymwd3{Chrono::year(2000), Chrono::January, Chrono::weekday_indexed(Chrono::Sunday, 1)};
+      Chrono::sys_days           sd3 = Chrono::sys_days(ymwd3);
+      CHECK_EQUAL(10958, sd3.time_since_epoch().count());
+
+      // 3rd Friday of June 1985 (Jun 21)
+      Chrono::year_month_weekday ymwd4{Chrono::year(1985), Chrono::June, Chrono::weekday_indexed(Chrono::Friday, 3)};
+      Chrono::sys_days           sd4 = Chrono::sys_days(ymwd4);
+      CHECK_EQUAL(5650, sd4.time_since_epoch().count());
+
+      // 2nd Wednesday of March 2024 (Mar 13)
+      Chrono::year_month_weekday ymwd5{Chrono::year(2024), Chrono::March, Chrono::weekday_indexed(Chrono::Wednesday, 2)};
+      Chrono::sys_days           sd5 = Chrono::sys_days(ymwd5);
+      CHECK_EQUAL(19795, sd5.time_since_epoch().count());
     }
 
     //*************************************************************************
     TEST(test_year_month_weekday_equality_operator)
     {
-      Chrono::year_month_weekday ym1{Chrono::year(2000), Chrono::January,  Chrono::weekday_indexed(Chrono::Thursday, 1)};
-      Chrono::year_month_weekday ym2{Chrono::year(2001), Chrono::January,  Chrono::weekday_indexed(Chrono::Thursday, 1)};
+      Chrono::year_month_weekday ym1{Chrono::year(2000), Chrono::January, Chrono::weekday_indexed(Chrono::Thursday, 1)};
+      Chrono::year_month_weekday ym2{Chrono::year(2001), Chrono::January, Chrono::weekday_indexed(Chrono::Thursday, 1)};
       Chrono::year_month_weekday ym3{Chrono::year(2000), Chrono::February, Chrono::weekday_indexed(Chrono::Thursday, 1)};
-      Chrono::year_month_weekday ym4{Chrono::year(2000), Chrono::January,  Chrono::weekday_indexed(Chrono::Friday, 2)};
+      Chrono::year_month_weekday ym4{Chrono::year(2000), Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2)};
 
       CHECK_TRUE(ym1 == ym1);  // Same year/month/day
       CHECK_FALSE(ym1 == ym2); // Different year
@@ -140,15 +160,15 @@ namespace
     //*************************************************************************
     TEST(test_year_month_weekday_not_equality_operator)
     {
-      Chrono::year_month_weekday ym1{Chrono::year(2000), Chrono::January,  Chrono::weekday_indexed(Chrono::Thursday, 1)};
-      Chrono::year_month_weekday ym2{Chrono::year(2001), Chrono::January,  Chrono::weekday_indexed(Chrono::Thursday, 1)};
+      Chrono::year_month_weekday ym1{Chrono::year(2000), Chrono::January, Chrono::weekday_indexed(Chrono::Thursday, 1)};
+      Chrono::year_month_weekday ym2{Chrono::year(2001), Chrono::January, Chrono::weekday_indexed(Chrono::Thursday, 1)};
       Chrono::year_month_weekday ym3{Chrono::year(2000), Chrono::February, Chrono::weekday_indexed(Chrono::Thursday, 1)};
-      Chrono::year_month_weekday ym4{Chrono::year(2000), Chrono::January,  Chrono::weekday_indexed(Chrono::Friday, 2)};
+      Chrono::year_month_weekday ym4{Chrono::year(2000), Chrono::January, Chrono::weekday_indexed(Chrono::Friday, 2)};
 
       CHECK_FALSE(ym1 != ym1); // Same year/month/day
       CHECK_TRUE(ym1 != ym2);  // Different year
       CHECK_TRUE(ym1 != ym3);  // Different month
       CHECK_TRUE(ym1 != ym4);  // Different day
     }
-  };
-}
+  }
+} // namespace

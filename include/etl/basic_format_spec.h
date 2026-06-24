@@ -35,7 +35,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "static_assert.h"
+#include "utility.h"
 
 namespace etl
 {
@@ -130,7 +130,7 @@ namespace etl
     struct right_spec
     {
     };
-  }
+  } // namespace private_basic_format_spec
 
   //***************************************************************************
   // Stream formatting manipulators.
@@ -206,7 +206,7 @@ namespace etl
     //***************************************************************************
     /// Default constructor.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec()
+    ETL_CONSTEXPR basic_format_spec() ETL_NOEXCEPT
       : base_(10U)
       , width_(0U)
       , precision_(0U)
@@ -215,20 +215,15 @@ namespace etl
       , boolalpha_(false)
       , show_base_(false)
       , fill_(typename TString::value_type(' '))
+      , scientific_(false)
     {
     }
 
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
-    ETL_CONSTEXPR basic_format_spec(uint_least8_t base__,
-                                    uint_least8_t width__,
-                                    uint_least8_t precision__,
-                                    bool upper_case__,
-                                    bool left_justified__,
-                                    bool boolalpha__,
-                                    bool show_base__,
-                                    typename TString::value_type fill__)
+    ETL_CONSTEXPR basic_format_spec(uint_least8_t base__, uint_least8_t width__, uint_least8_t precision__, bool upper_case__, bool left_justified__,
+                                bool boolalpha__, bool show_base__, typename TString::value_type fill__, bool scientific__ = false) ETL_NOEXCEPT
       : base_(base__)
       , width_(width__)
       , precision_(precision__)
@@ -237,13 +232,14 @@ namespace etl
       , boolalpha_(boolalpha__)
       , show_base_(show_base__)
       , fill_(fill__)
+      , scientific_(scientific__)
     {
     }
 
     //***************************************************************************
     /// Clears the format spec back to default.
     //***************************************************************************
-    ETL_CONSTEXPR14 void clear()
+    ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
     {
       base_           = 10U;
       width_          = 0U;
@@ -252,6 +248,7 @@ namespace etl
       left_justified_ = false;
       boolalpha_      = false;
       show_base_      = false;
+      scientific_     = false;
       fill_           = typename TString::value_type(' ');
     }
 
@@ -259,56 +256,93 @@ namespace etl
     /// Sets the base.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& base(uint32_t b)
+    ETL_CONSTEXPR14 basic_format_spec& base(uint32_t b) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       base_ = static_cast<uint_least8_t>(b);
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& base(uint32_t b) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      base_ = static_cast<uint_least8_t>(b);
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Sets the base to binary.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& binary()
+    ETL_CONSTEXPR14 basic_format_spec& binary() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      base(2);
-      return *this;
+      return base(2);
     }
+
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& binary() ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      return etl::move(base(2));
+    }
+#endif
 
     //***************************************************************************
     /// Sets the base to octal.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& octal()
+    ETL_CONSTEXPR14 basic_format_spec& octal() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      base(8);
-      return *this;
+      return base(8);
     }
+
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& octal() ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      return etl::move(base(8));
+    }
+#endif
 
     //***************************************************************************
     /// Sets the base to decimal.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& decimal()
+    ETL_CONSTEXPR14 basic_format_spec& decimal() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      base(10);
-      return *this;
+      return base(10);
     }
+
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& decimal() ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      return etl::move(base(10));
+    }
+#endif
 
     //***************************************************************************
     /// Sets the base to hex.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& hex()
+    ETL_CONSTEXPR14 basic_format_spec& hex() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      base(16);
-      return *this;
+      return base(16);
     }
+
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& hex() ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      return etl::move(base(16));
+    }
+#endif
 
     //***************************************************************************
     /// Gets the base.
     //***************************************************************************
-    ETL_CONSTEXPR uint32_t get_base() const
+    ETL_CONSTEXPR uint32_t get_base() const ETL_NOEXCEPT
     {
       return base_;
     }
@@ -317,16 +351,25 @@ namespace etl
     /// Sets the show base flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& show_base(bool b)
+    ETL_CONSTEXPR14 basic_format_spec& show_base(bool b) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       show_base_ = b;
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& show_base(bool b) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      show_base_ = b;
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Gets the show base flag.
     //***************************************************************************
-    ETL_CONSTEXPR bool is_show_base() const
+    ETL_CONSTEXPR bool is_show_base() const ETL_NOEXCEPT
     {
       return show_base_;
     }
@@ -335,16 +378,25 @@ namespace etl
     /// Sets the width.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& width(uint32_t w)
+    ETL_CONSTEXPR14 basic_format_spec& width(uint32_t w) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       width_ = static_cast<uint_least8_t>(w);
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& width(uint32_t w) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      width_ = static_cast<uint_least8_t>(w);
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Gets the width.
     //***************************************************************************
-    ETL_CONSTEXPR uint32_t get_width() const
+    ETL_CONSTEXPR uint32_t get_width() const ETL_NOEXCEPT
     {
       return width_;
     }
@@ -353,16 +405,25 @@ namespace etl
     /// Sets the precision.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& precision(uint32_t p)
+    ETL_CONSTEXPR14 basic_format_spec& precision(uint32_t p) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       precision_ = static_cast<uint_least8_t>(p);
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& precision(uint32_t p) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      precision_ = static_cast<uint_least8_t>(p);
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Gets the precision.
     //***************************************************************************
-    ETL_CONSTEXPR uint32_t get_precision() const
+    ETL_CONSTEXPR uint32_t get_precision() const ETL_NOEXCEPT
     {
       return precision_;
     }
@@ -371,16 +432,25 @@ namespace etl
     /// Sets the upper case flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& upper_case(bool u)
+    ETL_CONSTEXPR14 basic_format_spec& upper_case(bool u) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       upper_case_ = u;
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& upper_case(bool u) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      upper_case_ = u;
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Gets the upper case flag.
     //***************************************************************************
-    ETL_CONSTEXPR bool is_upper_case() const
+    ETL_CONSTEXPR bool is_upper_case() const ETL_NOEXCEPT
     {
       return upper_case_;
     }
@@ -389,16 +459,25 @@ namespace etl
     /// Sets the fill character.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& fill(typename TString::value_type c)
+    ETL_CONSTEXPR14 basic_format_spec& fill(typename TString::value_type c) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       fill_ = c;
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& fill(typename TString::value_type c) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      fill_ = c;
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Gets the fill character.
     //***************************************************************************
-    ETL_CONSTEXPR typename TString::value_type get_fill() const
+    ETL_CONSTEXPR typename TString::value_type get_fill() const ETL_NOEXCEPT
     {
       return fill_;
     }
@@ -407,16 +486,25 @@ namespace etl
     /// Sets the left justify flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& left()
+    ETL_CONSTEXPR14 basic_format_spec& left() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       left_justified_ = true;
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& left() ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      left_justified_ = true;
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Gets the left justify flag.
     //***************************************************************************
-    ETL_CONSTEXPR bool is_left() const
+    ETL_CONSTEXPR bool is_left() const ETL_NOEXCEPT
     {
       return left_justified_;
     }
@@ -425,16 +513,25 @@ namespace etl
     /// Sets the right justify flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& right()
+    ETL_CONSTEXPR14 basic_format_spec& right() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       left_justified_ = false;
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& right() ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      left_justified_ = false;
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Gets the right justify flag.
     //***************************************************************************
-    ETL_CONSTEXPR bool is_right() const
+    ETL_CONSTEXPR bool is_right() const ETL_NOEXCEPT
     {
       return !left_justified_;
     }
@@ -443,54 +540,86 @@ namespace etl
     /// Sets the bool alpha flag.
     /// \return A reference to the basic_format_spec.
     //***************************************************************************
-    ETL_CONSTEXPR14 basic_format_spec& boolalpha(bool b)
+    ETL_CONSTEXPR14 basic_format_spec& boolalpha(bool b) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       boolalpha_ = b;
       return *this;
     }
 
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& boolalpha(bool b) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      boolalpha_ = b;
+      return etl::move(*this);
+    }
+#endif
+
     //***************************************************************************
     /// Gets the boolalpha flag.
     //***************************************************************************
-    ETL_CONSTEXPR bool is_boolalpha() const
+    ETL_CONSTEXPR bool is_boolalpha() const ETL_NOEXCEPT
     {
       return boolalpha_;
     }
 
     //***************************************************************************
+    /// Sets the scientific flag.
+    /// \return A reference to the basic_format_spec.
+    //***************************************************************************
+    ETL_CONSTEXPR14 basic_format_spec& scientific(bool b) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      scientific_ = b;
+      return *this;
+    }
+
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& scientific(bool b) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      scientific_ = b;
+      return etl::move(*this);
+    }
+#endif
+
+    //***************************************************************************
+    /// Gets the scientific flag.
+    //***************************************************************************
+    ETL_CONSTEXPR bool is_scientific() const ETL_NOEXCEPT
+    {
+      return scientific_;
+    }
+
+    //***************************************************************************
     /// Equality operator.
     //***************************************************************************
-    ETL_CONSTEXPR friend bool operator ==(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    ETL_CONSTEXPR friend bool operator==(const basic_format_spec& lhs, const basic_format_spec& rhs)
     {
-      return (lhs.base_ == rhs.base_) &&
-             (lhs.width_ == rhs.width_) &&
-             (lhs.precision_ == rhs.precision_) &&
-             (lhs.upper_case_ == rhs.upper_case_) &&
-             (lhs.left_justified_ == rhs.left_justified_) &&
-             (lhs.boolalpha_ == rhs.boolalpha_) &&
-             (lhs.show_base_ == rhs.show_base_) &&
-             (lhs.fill_ == rhs.fill_);
+      return (lhs.base_ == rhs.base_) && (lhs.width_ == rhs.width_) && (lhs.precision_ == rhs.precision_) && (lhs.upper_case_ == rhs.upper_case_)
+             && (lhs.left_justified_ == rhs.left_justified_) && (lhs.boolalpha_ == rhs.boolalpha_) && (lhs.show_base_ == rhs.show_base_)
+             && (lhs.fill_ == rhs.fill_) && (lhs.scientific_ == rhs.scientific_);
     }
 
     //***************************************************************************
     /// Inequality operator.
     //***************************************************************************
-    ETL_CONSTEXPR friend bool operator !=(const basic_format_spec& lhs, const basic_format_spec& rhs)
+    ETL_CONSTEXPR friend bool operator!=(const basic_format_spec& lhs, const basic_format_spec& rhs)
     {
       return !(lhs == rhs);
     }
 
   private:
 
-    uint_least8_t base_;
-    uint_least8_t width_;
-    uint_least8_t precision_;
-    bool upper_case_;
-    bool left_justified_;
-    bool boolalpha_;
-    bool show_base_;
+    uint_least8_t                base_;
+    uint_least8_t                width_;
+    uint_least8_t                precision_;
+    bool                         upper_case_;
+    bool                         left_justified_;
+    bool                         boolalpha_;
+    bool                         show_base_;
     typename TString::value_type fill_;
+    bool                         scientific_;
   };
-}
+} // namespace etl
 
 #endif

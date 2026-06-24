@@ -61,7 +61,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     crc16_riello_t(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -74,5 +74,5 @@ namespace etl
   typedef etl::crc16_riello_t<16U>  crc16_riello_t16;
   typedef etl::crc16_riello_t<4U>   crc16_riello_t4;
   typedef crc16_riello_t256         crc16_riello;
-}
+} // namespace etl
 #endif

@@ -179,7 +179,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     checksum(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -208,7 +208,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     bsd_checksum(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -237,7 +237,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     xor_checksum(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -266,7 +266,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     xor_rotate_checksum(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -295,13 +295,13 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     parity_checksum(TIterator begin, const TIterator end)
     {
       this->reset();
       this->add(begin, end);
     }
   };
-}
+} // namespace etl
 
 #endif

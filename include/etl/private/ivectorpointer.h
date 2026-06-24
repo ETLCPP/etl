@@ -32,7 +32,7 @@ SOFTWARE.
 #define ETL_IVECTOR_POINTER_INCLUDED
 
 #ifndef ETL_IN_VECTOR_H
-#error  This header is a private element of etl::ivector
+  #error This header is a private element of etl::ivector
 #endif
 
 #include "pvoidvector.h"
@@ -41,7 +41,8 @@ namespace etl
 {
   //***************************************************************************
   /// The base class for specifically sized vectors.
-  /// Can be used as a reference type for all vectors containing a specific pointer type.
+  /// Can be used as a reference type for all vectors containing a specific
+  /// pointer type.
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
@@ -49,16 +50,16 @@ namespace etl
   {
   public:
 
-    typedef T*                                    value_type;
-    typedef value_type&                           reference;
-    typedef const value_type&                     const_reference;
-    typedef value_type*                           pointer;
-    typedef const value_type*                     const_pointer;
-    typedef value_type*                           iterator;
-    typedef const value_type*                     const_iterator;
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef size_t                                size_type;
+    typedef T*                                                       value_type;
+    typedef value_type&                                              reference;
+    typedef const value_type&                                        const_reference;
+    typedef value_type*                                              pointer;
+    typedef const value_type*                                        const_pointer;
+    typedef value_type*                                              iterator;
+    typedef const value_type*                                        const_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>                   reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator>             const_reverse_iterator;
+    typedef size_t                                                   size_type;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
@@ -68,6 +69,13 @@ namespace etl
   private:
 
     typedef pvoidvector base_t;
+
+    template <typename TIterator>
+    struct is_compatible_iterator
+      : etl::integral_constant<bool, etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
+                                       && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value>
+    {
+    };
 
   public:
 
@@ -195,7 +203,8 @@ namespace etl
     /// If asserts or exceptions are enabled and the new size is larger than the
     /// maximum then a vector_full is thrown.
     ///\param new_size The new size.
-    ///\param value   The value to fill new elements with. Default = default constructed value.
+    ///\param value   The value to fill new elements with. Default = default
+    /// constructed value.
     //*********************************************************************
     void resize(size_t new_size, value_type value)
     {
@@ -216,7 +225,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference operator [](size_t i)
+    reference operator[](size_t i)
     {
       return reference(base_t::operator[](i));
     }
@@ -226,14 +235,15 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator [](size_t i) const
+    const_reference operator[](size_t i) const
     {
       return const_reference(base_t::operator[](i));
     }
 
     //*********************************************************************
     /// Returns a reference to the value at index 'i'
-    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds
+    /// if the index is out of range.
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
@@ -244,7 +254,8 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'i'
-    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds
+    /// if the index is out of range.
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
@@ -309,20 +320,22 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
-    /// If asserts or exceptions are enabled, emits vector_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector
+    /// does not have enough free space. If asserts or exceptions are enabled,
+    /// emits vector_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    typename etl::enable_if< is_compatible_iterator<TIterator>::value, void>::type assign(TIterator first, TIterator last)
     {
       base_t::assign(first, last);
     }
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector
+    /// does not have enough free space.
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
@@ -341,7 +354,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value at the end of the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is
+    /// already full.
     ///\param value The value to add.
     //*********************************************************************
     void push_back(parameter_t value)
@@ -351,7 +365,8 @@ namespace etl
 
     //*********************************************************************
     /// Constructs a value at the end of the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is
+    /// already full.
     ///\param value The value to add.
     //*********************************************************************
     reference emplace_back()
@@ -363,7 +378,8 @@ namespace etl
 
     //*********************************************************************
     /// Constructs a value at the end of the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is
+    /// already full.
     ///\param value The value to add.
     //*********************************************************************
     reference emplace_back(parameter_t value)
@@ -384,7 +400,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is
+    /// already full.
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -411,7 +428,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts 'n' values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector
+    /// does not have enough free space.
     ///\param position The position to insert before.
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
@@ -423,13 +441,14 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector
+    /// does not have enough free space.
     ///\param position The position to insert before.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
-    template <class TIterator>
-    void insert(const_iterator position, TIterator first, TIterator last)
+    template <typename TIterator>
+    typename etl::enable_if< is_compatible_iterator<TIterator>::value, void>::type insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
     }
@@ -437,7 +456,8 @@ namespace etl
     //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
-    ///\return An iterator pointing to the element that followed the erased element.
+    ///\return An iterator pointing to the element that followed the erased
+    /// element.
     //*********************************************************************
     iterator erase(iterator i_element)
     {
@@ -447,7 +467,8 @@ namespace etl
     //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
-    ///\return An iterator pointing to the element that followed the erased element.
+    ///\return An iterator pointing to the element that followed the erased
+    /// element.
     //*********************************************************************
     iterator erase(const_iterator i_element)
     {
@@ -456,23 +477,50 @@ namespace etl
 
     //*********************************************************************
     /// Erases a range of elements.
-    /// The range includes all the elements between first and last, including the
-    /// element pointed by first, but not the one pointed by last.
+    /// The range includes all the elements between first and last, including
+    /// the element pointed by first, but not the one pointed by last.
     ///\param first Iterator to the first element.
     ///\param last  Iterator to the last element.
-    ///\return An iterator pointing to the element that followed the erased element.
+    ///\return An iterator pointing to the element that followed the erased
+    /// element.
     //*********************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
       return iterator(base_t::erase(base_t::const_iterator(first), base_t::const_iterator(last)));
     }
 
+    //*********************************************************************
+    /// Swap contents with another vector.  Performs operation on each
+    /// individual element.
+    ///\param other The other vector to swap with.
+    //*********************************************************************
+    void swap(ivector<T*>& other)
+    {
+      if (this == &other)
+      {
+        return;
+      }
+
+      ETL_ASSERT_OR_RETURN(this->max_size() >= other.size() && other.max_size() >= this->size(), ETL_ERROR(vector_full));
+
+      ivector<T*>& smaller = other.size() > this->size() ? *this : other;
+      ivector<T*>& larger  = other.size() > this->size() ? other : *this;
+
+      etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
+
+      typename ivector<T*>::iterator larger_itr = etl::next(larger.begin(), static_cast<ptrdiff_t>(smaller.size()));
+
+      etl::move(larger_itr, larger.end(), etl::back_inserter(smaller));
+
+      larger.erase(larger_itr, larger.end());
+    }
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ivector& operator = (const ivector& rhs)
+    ivector& operator=(const ivector& rhs)
     {
-      base_t::operator = (rhs);
+      base_t::operator=(rhs);
 
       return *this;
     }
@@ -481,9 +529,9 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    ivector& operator = (ivector&& rhs)
+    ivector& operator=(ivector&& rhs)
     {
-      (void)base_t::operator = (etl::move(rhs));
+      (void)base_t::operator=(etl::move(rhs));
 
       return *this;
     }
@@ -512,16 +560,16 @@ namespace etl
   {
   public:
 
-    typedef const T*                              value_type;
-    typedef value_type&                           reference;
-    typedef const value_type&                     const_reference;
-    typedef value_type*                           pointer;
-    typedef const value_type*                     const_pointer;
-    typedef value_type*                           iterator;
-    typedef const value_type*                     const_iterator;
-    typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
-    typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
-    typedef size_t                                size_type;
+    typedef const T*                                                 value_type;
+    typedef value_type&                                              reference;
+    typedef const value_type&                                        const_reference;
+    typedef value_type*                                              pointer;
+    typedef const value_type*                                        const_pointer;
+    typedef value_type*                                              iterator;
+    typedef const value_type*                                        const_iterator;
+    typedef ETL_OR_STD::reverse_iterator<iterator>                   reverse_iterator;
+    typedef ETL_OR_STD::reverse_iterator<const_iterator>             const_reverse_iterator;
+    typedef size_t                                                   size_type;
     typedef typename etl::iterator_traits<iterator>::difference_type difference_type;
 
   protected:
@@ -531,6 +579,13 @@ namespace etl
   private:
 
     typedef pvoidvector base_t;
+
+    template <typename TIterator>
+    struct is_compatible_iterator
+      : etl::integral_constant<bool, etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
+                                       && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value>
+    {
+    };
 
   public:
 
@@ -658,7 +713,8 @@ namespace etl
     /// If asserts or exceptions are enabled and the new size is larger than the
     /// maximum then a vector_full is thrown.
     ///\param new_size The new size.
-    ///\param value   The value to fill new elements with. Default = default constructed value.
+    ///\param value   The value to fill new elements with. Default = default
+    /// constructed value.
     //*********************************************************************
     void resize(size_t new_size, value_type value)
     {
@@ -679,7 +735,7 @@ namespace etl
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
-    reference operator [](size_t i)
+    reference operator[](size_t i)
     {
       return reference(base_t::operator[](i));
     }
@@ -689,14 +745,15 @@ namespace etl
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
-    const_reference operator [](size_t i) const
+    const_reference operator[](size_t i) const
     {
       return const_reference(base_t::operator[](i));
     }
 
     //*********************************************************************
     /// Returns a reference to the value at index 'i'
-    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds
+    /// if the index is out of range.
     ///\param i The index.
     ///\return A reference to the value at index 'i'
     //*********************************************************************
@@ -707,7 +764,8 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'i'
-    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds if the index is out of range.
+    /// If asserts or exceptions are enabled, emits an etl::vector_out_of_bounds
+    /// if the index is out of range.
     ///\param i The index.
     ///\return A const reference to the value at index 'i'
     //*********************************************************************
@@ -772,20 +830,22 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
-    /// If asserts or exceptions are enabled, emits vector_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector
+    /// does not have enough free space. If asserts or exceptions are enabled,
+    /// emits vector_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    typename etl::enable_if< is_compatible_iterator<TIterator>::value, void>::type assign(TIterator first, TIterator last)
     {
       base_t::assign(first, last);
     }
 
     //*********************************************************************
     /// Assigns values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector
+    /// does not have enough free space.
     ///\param n     The number of elements to add.
     ///\param value The value to insert for each element.
     //*********************************************************************
@@ -804,7 +864,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value at the end of the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is
+    /// already full.
     ///\param value The value to add.
     //*********************************************************************
     void push_back(parameter_t value)
@@ -823,7 +884,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector is already full.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector is
+    /// already full.
     ///\param position The position to insert before.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -834,7 +896,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts 'n' values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector
+    /// does not have enough free space.
     ///\param position The position to insert before.
     ///\param n        The number of elements to add.
     ///\param value    The value to insert.
@@ -846,13 +909,14 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the vector.
-    /// If asserts or exceptions are enabled, emits vector_full if the vector does not have enough free space.
+    /// If asserts or exceptions are enabled, emits vector_full if the vector
+    /// does not have enough free space.
     ///\param position The position to insert before.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
-    template <class TIterator>
-    void insert(const_iterator position, TIterator first, TIterator last)
+    template <typename TIterator>
+    typename etl::enable_if< is_compatible_iterator<TIterator>::value, void>::type insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
     }
@@ -860,7 +924,8 @@ namespace etl
     //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
-    ///\return An iterator pointing to the element that followed the erased element.
+    ///\return An iterator pointing to the element that followed the erased
+    /// element.
     //*********************************************************************
     iterator erase(iterator i_element)
     {
@@ -870,7 +935,8 @@ namespace etl
     //*********************************************************************
     /// Erases an element.
     ///\param i_element Iterator to the element.
-    ///\return An iterator pointing to the element that followed the erased element.
+    ///\return An iterator pointing to the element that followed the erased
+    /// element.
     //*********************************************************************
     iterator erase(const_iterator i_element)
     {
@@ -879,23 +945,50 @@ namespace etl
 
     //*********************************************************************
     /// Erases a range of elements.
-    /// The range includes all the elements between first and last, including the
-    /// element pointed by first, but not the one pointed by last.
+    /// The range includes all the elements between first and last, including
+    /// the element pointed by first, but not the one pointed by last.
     ///\param first Iterator to the first element.
     ///\param last  Iterator to the last element.
-    ///\return An iterator pointing to the element that followed the erased element.
+    ///\return An iterator pointing to the element that followed the erased
+    /// element.
     //*********************************************************************
     iterator erase(const_iterator first, const_iterator last)
     {
       return iterator(base_t::erase(base_t::iterator(first), base_t::iterator(last)));
     }
 
+    //*********************************************************************
+    /// Swap contents with another vector.  Performs operation on each
+    /// individual element.
+    ///\param other The other vector to swap with.
+    //*********************************************************************
+    void swap(ivector<const T*>& other)
+    {
+      if (this == &other)
+      {
+        return;
+      }
+
+      ETL_ASSERT_OR_RETURN(this->max_size() >= other.size() && other.max_size() >= this->size(), ETL_ERROR(vector_full));
+
+      ivector<const T*>& smaller = other.size() > this->size() ? *this : other;
+      ivector<const T*>& larger  = other.size() > this->size() ? other : *this;
+
+      etl::swap_ranges(smaller.begin(), smaller.end(), larger.begin());
+
+      typename ivector<const T*>::iterator larger_itr = etl::next(larger.begin(), static_cast<ptrdiff_t>(smaller.size()));
+
+      etl::move(larger_itr, larger.end(), etl::back_inserter(smaller));
+
+      larger.erase(larger_itr, larger.end());
+    }
+
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ivector& operator = (const ivector& rhs)
+    ivector& operator=(const ivector& rhs)
     {
-      base_t::operator = (rhs);
+      base_t::operator=(rhs);
 
       return *this;
     }
@@ -904,9 +997,9 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    ivector& operator = (ivector&& rhs)
+    ivector& operator=(ivector&& rhs)
     {
-      (void)base_t::operator = (etl::move(rhs));
+      (void)base_t::operator=(etl::move(rhs));
 
       return *this;
     }
@@ -938,7 +1031,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator ==(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator==(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_equal(lhs, rhs);
   }
@@ -951,7 +1044,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator !=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator!=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_not_equal(lhs, rhs);
   }
@@ -960,11 +1053,11 @@ namespace etl
   /// Less than operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically less than the second, otherwise <b>false</b>
-  ///\ingroup vector
+  ///\return <b>true</b> if the first vector is lexicographically less than the
+  /// second, otherwise <b>false</b> \ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator <(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator<(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_less_than(lhs, rhs);
   }
@@ -973,11 +1066,11 @@ namespace etl
   /// Greater than operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically greater than the second, otherwise <b>false</b>
-  ///\ingroup vector
+  ///\return <b>true</b> if the first vector is lexicographically greater than
+  /// the second, otherwise <b>false</b> \ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator >(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator>(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_greater_than(lhs, rhs);
   }
@@ -986,11 +1079,12 @@ namespace etl
   /// Less than or equal operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically less than or equal to the second, otherwise <b>false</b>
-  ///\ingroup vector
+  ///\return <b>true</b> if the first vector is lexicographically less than or
+  /// equal to the second, otherwise
+  ///< b>false</b> \ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator <=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator<=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_less_than_equal(lhs, rhs);
   }
@@ -999,11 +1093,12 @@ namespace etl
   /// Greater than or equal operator.
   ///\param lhs Reference to the first vector.
   ///\param rhs Reference to the second vector.
-  ///\return <b>true</b> if the first vector is lexicographically greater than or equal to the second, otherwise <b>false</b>
-  ///\ingroup vector
+  ///\return <b>true</b> if the first vector is lexicographically greater than
+  /// or equal to the second, otherwise
+  ///< b>false</b> \ingroup vector
   //***************************************************************************
   template <typename T>
-  bool operator >=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
+  bool operator>=(const etl::ivector<T*>& lhs, const etl::ivector<T*>& rhs)
   {
     return pvoidvector_greater_than_equal(lhs, rhs);
   }
@@ -1013,33 +1108,33 @@ namespace etl
   //***************************************************************************
   inline bool pvoidvector_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator ==(lhs, rhs);
+    return operator==(lhs, rhs);
   }
 
   inline bool pvoidvector_not_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator !=(lhs, rhs);
+    return operator!=(lhs, rhs);
   }
 
   inline bool pvoidvector_less_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator <(lhs, rhs);
+    return operator<(lhs, rhs);
   }
 
   inline bool pvoidvector_greater_than(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator >(lhs, rhs);
+    return operator>(lhs, rhs);
   }
 
   inline bool pvoidvector_less_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator <=(lhs, rhs);
+    return operator<=(lhs, rhs);
   }
 
   inline bool pvoidvector_greater_than_equal(const etl::pvoidvector& lhs, const etl::pvoidvector& rhs)
   {
-    return operator >=(lhs, rhs);
+    return operator>=(lhs, rhs);
   }
-}
+} // namespace etl
 
 #endif

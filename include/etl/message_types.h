@@ -43,6 +43,6 @@ namespace etl
 #endif
 
   typedef uint_least8_t message_router_id_t;
-}
+} // namespace etl
 
 #endif

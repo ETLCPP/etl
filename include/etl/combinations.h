@@ -32,8 +32,8 @@ SOFTWARE.
 #define ETL_COMBINATIONS_INCLUDED
 
 #include "platform.h"
-#include "permutations.h"
 #include "factorial.h"
+#include "permutations.h"
 
 ///\defgroup combinations combinations
 /// combinations<N, K> : Calculates K combinations from N.
@@ -45,19 +45,19 @@ namespace etl
   ///\ingroup combinations
   /// Calculates combinations.
   //***************************************************************************
-  template <size_t NV, size_t KV>
+  template <size_t Value, size_t KV>
   struct combinations
   {
-    static ETL_CONSTANT size_t value = etl::permutations<NV, KV>::value / etl::factorial<KV>::value;
+    static ETL_CONSTANT size_t value = etl::permutations<Value, KV>::value / etl::factorial<KV>::value;
   };
 
-  template <size_t NV, size_t KV>
-  ETL_CONSTANT size_t combinations<NV, KV>::value;
+  template <size_t Value, size_t KV>
+  ETL_CONSTANT size_t combinations<Value, KV>::value;
 
 #if ETL_USING_CPP17
-  template <size_t NV, size_t KV>
-  inline constexpr size_t combinations_v = combinations<NV, KV>::value;
+  template <size_t Value, size_t KV>
+  inline constexpr size_t combinations_v = combinations<Value, KV>::value;
 #endif
-}
+} // namespace etl
 
 #endif

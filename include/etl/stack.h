@@ -33,18 +33,17 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "utility.h"
-#include "iterator.h"
 #include "alignment.h"
 #include "array.h"
-#include "exception.h"
-#include "error_handler.h"
 #include "debug_count.h"
-#include "type_traits.h"
+#include "error_handler.h"
+#include "exception.h"
+#include "iterator.h"
 #include "placement_new.h"
+#include "type_traits.h"
+#include "utility.h"
 
 #include <stddef.h>
-#include <stdint.h>
 
 //*****************************************************************************
 ///\defgroup stack stack
@@ -100,7 +99,8 @@ namespace etl
   //***************************************************************************
   ///\ingroup stack
   /// A fixed capacity stack written in the STL style.
-  /// \warning This stack cannot be used for concurrent access from multiple threads.
+  /// \warning This stack cannot be used for concurrent access from multiple
+  /// threads.
   //***************************************************************************
   class stack_base
   {
@@ -157,18 +157,16 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     stack_base(size_type max_size_)
-      : top_index(0),
-        current_size(0),
-        CAPACITY(max_size_)
+      : top_index(0)
+      , current_size(0)
+      , CAPACITY(max_size_)
     {
     }
 
     //*************************************************************************
     /// Destructor.
     //*************************************************************************
-    ~stack_base()
-    {
-    }
+    ~stack_base() {}
 
     //*************************************************************************
     /// Increments the indexes value to record a stack addition.
@@ -194,68 +192,71 @@ namespace etl
     //*************************************************************************
     void index_clear()
     {
-      top_index = 0;
+      top_index    = 0;
       current_size = 0;
       ETL_RESET_DEBUG_COUNT;
     }
 
-    size_type top_index;      ///< The index of the top of the stack.
-    size_type current_size;   ///< The number of items in the stack.
-    const size_type CAPACITY; ///< The maximum number of items in the stack.
-    ETL_DECLARE_DEBUG_COUNT;  ///< For internal debugging purposes.
+    size_type       top_index;    ///< The index of the top of the stack.
+    size_type       current_size; ///< The number of items in the stack.
+    const size_type CAPACITY;     ///< The maximum number of items in the stack.
+    ETL_DECLARE_DEBUG_COUNT;      ///< For internal debugging purposes.
   };
 
   //***************************************************************************
   ///\ingroup stack
   ///\brief This is the base for all stacks that contain a particular type.
-  ///\details Normally a reference to this type will be taken from a derived stack.
-  ///\code
+  ///\details Normally a reference to this type will be taken from a derived
+  /// stack. \code
   /// etl::stack<int, 10> myStack;
   /// etl::istack<int>& iStack = myStack;
   ///\endcode
-  /// \warning This stack cannot be used for concurrent access from multiple threads.
-  /// \tparam T The type of value that the stack holds.
+  /// \warning This stack cannot be used for concurrent access from multiple
+  /// threads. \tparam T The type of value that the stack holds.
   //***************************************************************************
   template <typename T>
   class istack : public etl::stack_base
   {
   public:
 
-    typedef T                     value_type;      ///< The type stored in the stack.
-    typedef T&                    reference;       ///< A reference to the type used in the stack.
-    typedef const T&              const_reference; ///< A const reference to the type used in the stack.
+    typedef T        value_type;      ///< The type stored in the stack.
+    typedef T&       reference;       ///< A reference to the type used in the stack.
+    typedef const T& const_reference; ///< A const reference to the type used in the stack.
 #if ETL_USING_CPP11
-    typedef T&&                   rvalue_reference;///< An rvalue reference to the type used in the stack.
+    typedef T&& rvalue_reference; ///< An rvalue reference to the type used in the stack.
 #endif
-    typedef T*                    pointer;         ///< A pointer to the type used in the stack.
-    typedef const T*              const_pointer;   ///< A const pointer to the type used in the stack.
-    typedef stack_base::size_type size_type;       ///< The type used for determining the size of the stack.
+    typedef T*                    pointer;       ///< A pointer to the type used in the stack.
+    typedef const T*              const_pointer; ///< A const pointer to the type used in the stack.
+    typedef stack_base::size_type size_type;     ///< The type used for determining the size of the stack.
 
   private:
 
-    typedef typename etl::stack_base              base_t;
+    typedef typename etl::stack_base base_t;
 
   public:
 
     //*************************************************************************
-    /// Gets a reference to the value at the top of the stack.<br>
-    /// \return A reference to the value at the top of the stack.
+    /// Gets a reference to the value at the top of the stack.
+    /// If asserts or exceptions are enabled, throws an etl::stack_empty if the
+    /// stack is empty. \return A reference to the value at the top of the
+    /// stack.
     //*************************************************************************
     reference top()
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(stack_empty));
       return p_buffer[top_index];
     }
 
     //*************************************************************************
     /// Adds a value to the stack.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the
+    /// stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
     void push(const_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(stack_full));
+
       base_t::add_in();
       ::new (&p_buffer[top_index]) T(value);
     }
@@ -263,14 +264,14 @@ namespace etl
 #if ETL_USING_CPP11
     //*************************************************************************
     /// Adds a value to the stack.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the
+    /// stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
     void push(rvalue_reference value)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!full(), ETL_ERROR(stack_full));
+
       base_t::add_in();
       ::new (&p_buffer[top_index]) T(etl::move(value));
     }
@@ -279,15 +280,15 @@ namespace etl
 #if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
     //*************************************************************************
     /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the
+    /// stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
-    template <typename ... Args>
-    reference emplace(Args && ... args)
+    template <typename... Args>
+    reference emplace(Args&&... args)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(stack_full));
+
       base_t::add_in();
       ::new (&p_buffer[top_index]) T(etl::forward<Args>(args)...);
 
@@ -296,14 +297,14 @@ namespace etl
 #else
     //*************************************************************************
     /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the
+    /// stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
     reference emplace()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(stack_full));
+
       base_t::add_in();
       ::new (&p_buffer[top_index]) T();
 
@@ -312,15 +313,15 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the
+    /// stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
     template <typename T1>
     reference emplace(const T1& value1)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(stack_full));
+
       base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1);
 
@@ -329,15 +330,15 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the
+    /// stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
     template <typename T1, typename T2>
     reference emplace(const T1& value1, const T2& value2)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(stack_full));
+
       base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1, value2);
 
@@ -346,15 +347,15 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the
+    /// stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
     template <typename T1, typename T2, typename T3>
     reference emplace(const T1& value1, const T2& value2, const T3& value3)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(stack_full));
+
       base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1, value2, value3);
 
@@ -363,15 +364,15 @@ namespace etl
 
     //*************************************************************************
     /// Constructs a value in the stack place'.
-    /// If asserts or exceptions are enabled, throws an etl::stack_full if the stack is already full.
+    /// If asserts or exceptions are enabled, throws an etl::stack_full if the
+    /// stack is already full.
     ///\param value The value to push to the stack.
     //*************************************************************************
     template <typename T1, typename T2, typename T3, typename T4>
     reference emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT(!full(), ETL_ERROR(stack_full));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP(!full(), ETL_ERROR(stack_full));
+
       base_t::add_in();
       ::new (&p_buffer[top_index]) T(value1, value2, value3, value4);
 
@@ -380,11 +381,14 @@ namespace etl
 #endif
 
     //*************************************************************************
-    /// Gets a const reference to the value at the top of the stack.<br>
-    /// \return A const reference to the value at the top of the stack.
+    /// Gets a const reference to the value at the top of the stack.
+    /// If asserts or exceptions are enabled, throws an etl::stack_empty if the
+    /// stack is empty. \return A const reference to the value at the top of the
+    /// stack.
     //*************************************************************************
     const_reference top() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(stack_empty));
       return p_buffer[top_index];
     }
 
@@ -393,7 +397,7 @@ namespace etl
     //*************************************************************************
     void clear()
     {
-      if ETL_IF_CONSTEXPR(etl::is_trivially_destructible<T>::value)
+      if ETL_IF_CONSTEXPR (etl::is_trivially_destructible<T>::value)
       {
         base_t::index_clear();
       }
@@ -412,15 +416,15 @@ namespace etl
     //*************************************************************************
     void pop()
     {
-#if defined(ETL_CHECK_PUSH_POP)
-      ETL_ASSERT_OR_RETURN(!empty(), ETL_ERROR(stack_empty));
-#endif
+      ETL_ASSERT_CHECK_PUSH_POP_OR_RETURN(!empty(), ETL_ERROR(stack_empty));
+
       p_buffer[top_index].~T();
       base_t::del_out();
     }
 
     //*************************************************************************
-    /// Removes the oldest item from the top of the stack and puts it in the destination.
+    /// Removes the oldest item from the top of the stack and puts it in the
+    /// destination.
     //*************************************************************************
     void pop_into(reference destination)
     {
@@ -451,7 +455,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    istack& operator = (const istack& rhs)
+    istack& operator=(const istack& rhs)
     {
       if (&rhs != this)
       {
@@ -466,7 +470,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    istack& operator = (istack&& rhs)
+    istack& operator=(istack&& rhs)
     {
       if (&rhs != this)
       {
@@ -515,8 +519,8 @@ namespace etl
     /// The constructor that is called from derived classes.
     //*************************************************************************
     istack(T* p_buffer_, size_type max_size_)
-      : stack_base(max_size_),
-        p_buffer(p_buffer_)
+      : stack_base(max_size_)
+      , p_buffer(p_buffer_)
     {
     }
 
@@ -531,15 +535,15 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_STACK) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
-    virtual ~istack()
-    {
-    }
+
+    virtual ~istack() {}
 #else
+
   protected:
-    ~istack()
-    {
-    }
+
+    ~istack() {}
 #endif
   };
 
@@ -554,7 +558,8 @@ namespace etl
   class stack : public etl::istack<T>
   {
   public:
-    typedef typename etl::aligned_storage<sizeof(T), etl::alignment_of<T>::value>::type container_type;
+
+    typedef typename etl::aligned_storage< sizeof(T), etl::alignment_of<T>::value>::type container_type;
 
     static ETL_CONSTANT size_t MAX_SIZE = SIZE;
 
@@ -597,7 +602,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    stack& operator = (const stack& rhs)
+    stack& operator=(const stack& rhs)
     {
       if (&rhs != this)
       {
@@ -611,7 +616,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    stack& operator = (stack&& rhs)
+    stack& operator=(stack&& rhs)
     {
       if (&rhs != this)
       {
@@ -630,6 +635,6 @@ namespace etl
 
   template <typename T, const size_t SIZE>
   ETL_CONSTANT size_t stack<T, SIZE>::MAX_SIZE;
-}
+} // namespace etl
 
 #endif

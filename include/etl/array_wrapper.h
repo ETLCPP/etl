@@ -32,12 +32,12 @@ SOFTWARE.
 #define ETL_ARRAY_WRAPPER_INCLUDED
 
 #include "platform.h"
-#include "iterator.h"
+#include "algorithm.h"
 #include "error_handler.h"
 #include "exception.h"
 #include "hash.h"
+#include "iterator.h"
 #include "parameter_type.h"
-#include "algorithm.h"
 
 ///\defgroup array array
 /// A wrapper for arrays
@@ -75,19 +75,19 @@ namespace etl
   //***************************************************************************
   /// Array wrapper.
   //***************************************************************************
-  template <typename T, size_t SIZE_, T(&ARRAY_)[SIZE_]>
+  template <typename T, size_t SIZE_, T (&ARRAY_)[SIZE_]>
   class array_wrapper
   {
   public:
 
-    typedef T                                     value_type;
-    typedef size_t                                size_type;
-    typedef T&                                    reference;
-    typedef const T&                              const_reference;
-    typedef T*                                    pointer;
-    typedef const T*                              const_pointer;
-    typedef T*                                    iterator;
-    typedef const T*                              const_iterator;
+    typedef T                                            value_type;
+    typedef size_t                                       size_type;
+    typedef T&                                           reference;
+    typedef const T&                                     const_reference;
+    typedef T*                                           pointer;
+    typedef const T*                                     const_pointer;
+    typedef T*                                           iterator;
+    typedef const T*                                     const_iterator;
     typedef ETL_OR_STD::reverse_iterator<iterator>       reverse_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -141,7 +141,7 @@ namespace etl
     //*************************************************************************
     /// Returns a pointer to the first element of the internal storage.
     //*************************************************************************
-    pointer data()
+    pointer data() ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -149,7 +149,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const pointer to the first element of the internal storage.
     //*************************************************************************
-    ETL_CONSTEXPR const_pointer data() const
+    ETL_CONSTEXPR const_pointer data() const ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -157,7 +157,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the beginning of the array.
     //*************************************************************************
-    iterator begin()
+    iterator begin() ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -165,7 +165,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator begin() const
+    ETL_CONSTEXPR const_iterator begin() const ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -173,7 +173,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator cbegin() const
+    ETL_CONSTEXPR const_iterator cbegin() const ETL_NOEXCEPT
     {
       return &ARRAY_[BEGIN];
     }
@@ -181,7 +181,7 @@ namespace etl
     //*************************************************************************
     /// Returns an iterator to the end of the array.
     //*************************************************************************
-    iterator end()
+    iterator end() ETL_NOEXCEPT
     {
       return &ARRAY_[END];
     }
@@ -189,7 +189,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator end() const
+    ETL_CONSTEXPR const_iterator end() const ETL_NOEXCEPT
     {
       return &ARRAY_[END];
     }
@@ -197,7 +197,7 @@ namespace etl
     //*************************************************************************
     // Returns a const iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator cend() const
+    ETL_CONSTEXPR const_iterator cend() const ETL_NOEXCEPT
     {
       return &ARRAY_[END];
     }
@@ -205,7 +205,7 @@ namespace etl
     //*************************************************************************
     // Returns an reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    reverse_iterator rbegin()
+    reverse_iterator rbegin() ETL_NOEXCEPT
     {
       return reverse_iterator(&ARRAY_[END]);
     }
@@ -213,7 +213,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator rbegin() const
+    ETL_CONSTEXPR const_reverse_iterator rbegin() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(&ARRAY_[END]);
     }
@@ -221,7 +221,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator crbegin() const
+    ETL_CONSTEXPR const_reverse_iterator crbegin() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(&ARRAY_[END]);
     }
@@ -229,7 +229,7 @@ namespace etl
     //*************************************************************************
     /// Returns a reverse iterator to the end of the array.
     //*************************************************************************
-    reverse_iterator rend()
+    reverse_iterator rend() ETL_NOEXCEPT
     {
       return reverse_iterator(&ARRAY_[BEGIN]);
     }
@@ -237,7 +237,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator rend() const
+    ETL_CONSTEXPR const_reverse_iterator rend() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(&ARRAY_[BEGIN]);
     }
@@ -245,7 +245,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator crend() const
+    ETL_CONSTEXPR const_reverse_iterator crend() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(&ARRAY_[BEGIN]);
     }
@@ -253,7 +253,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size() const
+    ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
       return SIZE;
     }
@@ -261,25 +261,36 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum possible size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const
+    ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
     {
       return MAX_SIZE;
     }
 
     //*************************************************************************
     /// Returns a reference to the indexed value.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::array_wrapper_bounds if the index is out of bounds.
     //*************************************************************************
-    reference operator[](size_t i)
+    reference operator[](size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(etl::array_wrapper_bounds));
       return ARRAY_[i];
     }
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
+    /// If asserts or exceptions are enabled, throws an
+    /// etl::array_wrapper_bounds if the index is out of bounds.
     //*************************************************************************
-    ETL_CONSTEXPR const_reference operator[](size_t i) const
+    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
+      // Throwing from c++11 constexpr requires special syntax
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_INDEX_OPERATOR
+      return i < SIZE ? ARRAY_[i] : throw(ETL_ERROR(etl::array_wrapper_bounds));
+#else
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < SIZE, ETL_ERROR(etl::array_wrapper_bounds));
       return ARRAY_[i];
+#endif
     }
 
     //*************************************************************************
@@ -311,9 +322,8 @@ namespace etl
     //*************************************************************************
     /// Swaps the contents of arrays.
     //*************************************************************************
-    template <typename U, U(&ARRAYOTHER)[SIZE_]>
-    typename etl::enable_if<etl::is_same<T, U>::value, void>::type
-     swap(etl::array_wrapper<U, SIZE_, ARRAYOTHER>& other)
+    template <typename U, U (&ARRAYOTHER)[SIZE_]>
+    typename etl::enable_if<etl::is_same<T, U>::value, void>::type swap(etl::array_wrapper<U, SIZE_, ARRAYOTHER>& other)
     {
       using ETL_OR_STD::swap; // Allow ADL
 
@@ -327,9 +337,8 @@ namespace etl
   //*************************************************************************
   /// Equality for array wrappers.
   //*************************************************************************
-  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
-  bool operator == (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
-                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL (&ARRAYL)[SIZEL], TR (&ARRAYR)[SIZER]>
+  bool operator==(const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs, const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
     return (SIZEL == SIZER) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -337,9 +346,8 @@ namespace etl
   //*************************************************************************
   /// Inequality for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
-  bool operator != (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
-                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL (&ARRAYL)[SIZEL], TR (&ARRAYR)[SIZER]>
+  bool operator!=(const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs, const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -347,9 +355,8 @@ namespace etl
   //*************************************************************************
   /// Less-than for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
-  bool operator < (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
-                   const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL (&ARRAYL)[SIZEL], TR (&ARRAYR)[SIZER]>
+  bool operator<(const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs, const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
     return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
@@ -357,9 +364,8 @@ namespace etl
   //*************************************************************************
   /// Greater-than for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
-  bool operator > (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
-                   const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL (&ARRAYL)[SIZEL], TR (&ARRAYR)[SIZER]>
+  bool operator>(const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs, const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
     return rhs < lhs;
   }
@@ -367,9 +373,8 @@ namespace etl
   //*************************************************************************
   /// Less-than-equal for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
-  bool operator <= (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
-                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL (&ARRAYL)[SIZEL], TR (&ARRAYR)[SIZER]>
+  bool operator<=(const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs, const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -377,9 +382,8 @@ namespace etl
   //*************************************************************************
   /// Greater-than-equal for array wrapper.
   //*************************************************************************
-  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL(&ARRAYL)[SIZEL], TR(&ARRAYR)[SIZER]>
-  bool operator >= (const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs,
-                    const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
+  template <typename TL, typename TR, size_t SIZEL, size_t SIZER, TL (&ARRAYL)[SIZEL], TR (&ARRAYR)[SIZER]>
+  bool operator>=(const etl::array_wrapper<TL, SIZEL, ARRAYL>& lhs, const etl::array_wrapper<TR, SIZER, ARRAYR>& rhs)
   {
     return !(lhs < rhs);
   }
@@ -388,7 +392,7 @@ namespace etl
   /// Hash function.
   //*************************************************************************
 #if ETL_USING_8BIT_TYPES
-  template <typename T, size_t SIZE, T(&ARRAY)[SIZE]>
+  template <typename T, size_t SIZE, T (&ARRAY)[SIZE]>
   struct hash<etl::array_wrapper<T, SIZE, ARRAY> >
   {
     size_t operator()(const etl::array_wrapper<T, SIZE, ARRAY>& aw) const
@@ -400,19 +404,17 @@ namespace etl
     }
   };
 #endif
-}
+} // namespace etl
 
 //*************************************************************************
 /// Swap.
 //*************************************************************************
-template <typename T, size_t SIZE, T(&ARRAYL)[SIZE], T(&ARRAYR)[SIZE]>
-void swap(etl::array_wrapper<T, SIZE, ARRAYL>& lhs,
-          etl::array_wrapper<T, SIZE, ARRAYR>& rhs)
+template <typename T, size_t SIZE, T (&ARRAYL)[SIZE], T (&ARRAYR)[SIZE]>
+void swap(etl::array_wrapper<T, SIZE, ARRAYL>& lhs, etl::array_wrapper<T, SIZE, ARRAYR>& rhs)
 {
   lhs.swap(rhs);
 }
 
-#define ETL_ARRAY_WRAPPER(arraytype, arrayobject)  etl::array_wrapper<arraytype, ETL_ARRAY_SIZE(arrayobject), arrayobject>
+#define ETL_ARRAY_WRAPPER(arraytype, arrayobject) etl::array_wrapper<arraytype, ETL_ARRAY_SIZE(arrayobject), arrayobject>
 
 #endif
-

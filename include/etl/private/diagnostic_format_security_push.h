@@ -33,13 +33,12 @@ SOFTWARE.
  * This file is intended to evaluated multiple times by design.
  */
 
-#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__) && \
-      (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
-  #pragma GCC diagnostic push 
+#if defined(__GNUC__) && !defined(__clang__) && !defined(__llvm__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+  #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wformat-security"
 #endif
 
 #if defined(__clang__) || defined(__llvm__)
-  #pragma clang diagnostic push 
+  #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wformat-security"
 #endif

@@ -31,10 +31,10 @@ SOFTWARE.
 #include "etl/alignment.h"
 #include "etl/type_traits.h"
 
+#include <ostream>
+#include <string>
 #include <type_traits>
 #include <utility>
-#include <string>
-#include <ostream>
 
 #if defined(ETL_COMPILER_MICROSOFT)
   #pragma warning(disable : 4996)
@@ -44,25 +44,39 @@ SOFTWARE.
   #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
-void f(int)
-{
-}
+void f(int) {}
 
+// Demonstrator class for etl::typed_storage tests
 struct A_t
 {
   A_t(uint32_t v_x, uint8_t v_y)
-   : x(v_x)
-   , y(v_y)
+    : x(v_x)
+    , y(v_y)
   {
   }
 
-  bool operator==(A_t& other)
+  // Just for test purpose. In production code, etl::typed_storage
+  // actually supports the use case of destructors being optimized
+  // away since they are not necessary for global objects that are
+  // never destroyed
+  ~A_t()
+  {
+    x = 0;
+    y = 0;
+  }
+
+  // etl::typed_storage helps implementing the use case of becoming
+  // independent of the destructor. By deleting the assignment operator,
+  // we make sure that the destructor is not linked
+  A_t& operator=(const A_t&) = delete;
+
+  bool operator==(const A_t& other) const
   {
     return other.x == x && other.y == y;
   }
 
   uint32_t x;
-  uint8_t y;
+  uint8_t  y;
 };
 
 namespace
@@ -75,8 +89,8 @@ namespace
       size_t alignment;
       size_t expected;
 
-      typedef etl::aligned_storage<sizeof(uint16_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
-      static storage32_t data32[10];
+      typedef etl::aligned_storage< sizeof(uint16_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
+      static storage32_t                                                                        data32[10];
 
       alignment = etl::alignment_of<storage32_t>::value;
       expected  = std::alignment_of<uint32_t>::value;
@@ -95,29 +109,29 @@ namespace
     //*************************************************************************
     TEST(test_aligned_storage_conversion_operators)
     {
-      typedef etl::aligned_storage<sizeof(uint32_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
-      static storage32_t data;
+      typedef etl::aligned_storage< sizeof(uint32_t), etl::alignment_of<uint32_t>::value>::type storage32_t;
+      static storage32_t                                                                        data;
 
       void* pdata = &data.data;
 
-      uint32_t& ref        = data;
+      uint32_t&       ref  = data;
       const uint32_t& cref = data;
-      CHECK(&ref  == pdata);
+      CHECK(&ref == pdata);
       CHECK(&cref == pdata);
 
-      uint32_t* ptr        = data;
+      uint32_t*       ptr  = data;
       const uint32_t* cptr = data;
-      CHECK(ptr  == pdata);
+      CHECK(ptr == pdata);
       CHECK(cptr == pdata);
 
-      uint32_t& ref2        = data.get_reference<uint32_t>();
+      uint32_t&       ref2  = data.get_reference<uint32_t>();
       const uint32_t& cref2 = data.get_reference<const uint32_t>();
-      CHECK(&ref2  == pdata);
+      CHECK(&ref2 == pdata);
       CHECK(&cref2 == pdata);
-      
-      uint32_t* ptr2        = data.get_address<uint32_t>();
+
+      uint32_t*       ptr2  = data.get_address<uint32_t>();
       const uint32_t* cptr2 = data.get_address<const uint32_t>();
-      CHECK(ptr2  == pdata);
+      CHECK(ptr2 == pdata);
       CHECK(cptr2 == pdata);
     }
 
@@ -128,10 +142,10 @@ namespace
       size_t expected;
 
       typedef etl::aligned_storage_as<sizeof(uint16_t), uint32_t>::type storage32_t;
-      static storage32_t data32[10];
+      static storage32_t                                                data32[10];
 
       alignment = etl::alignment_of<storage32_t>::value;
-      expected = std::alignment_of<uint32_t>::value;
+      expected  = std::alignment_of<uint32_t>::value;
 
       CHECK_EQUAL(expected, alignment);
 
@@ -181,10 +195,10 @@ namespace
     //*************************************************************************
     TEST(test_type_with_alignment)
     {
-      CHECK_EQUAL(1,  alignof(etl::type_with_alignment_t<1>));
-      CHECK_EQUAL(2,  alignof(etl::type_with_alignment_t<2>));
-      CHECK_EQUAL(4,  alignof(etl::type_with_alignment_t<4>));
-      CHECK_EQUAL(8,  alignof(etl::type_with_alignment_t<8>));
+      CHECK_EQUAL(1, alignof(etl::type_with_alignment_t<1>));
+      CHECK_EQUAL(2, alignof(etl::type_with_alignment_t<2>));
+      CHECK_EQUAL(4, alignof(etl::type_with_alignment_t<4>));
+      CHECK_EQUAL(8, alignof(etl::type_with_alignment_t<8>));
       CHECK_EQUAL(16, alignof(etl::type_with_alignment_t<16>));
       CHECK_EQUAL(32, alignof(etl::type_with_alignment_t<32>));
       CHECK_EQUAL(64, alignof(etl::type_with_alignment_t<64>));
@@ -194,24 +208,79 @@ namespace
     TEST(test_typed_storage)
     {
       etl::typed_storage<A_t> a;
+      CHECK_FALSE(a.has_value());
 
-      CHECK_EQUAL(false, a.has_value());
+      // Construct in place.
+      etl::typed_storage<A_t> b(789U, 10U);
+      CHECK_TRUE(b.has_value());
+      CHECK_EQUAL(b->x, 789);
+      CHECK_EQUAL(b->y, 10);
 
-      auto& b = a.create(123, 4);
+      // Create in place.
+      auto& ref = a.create(123U, 4U);
+      CHECK_TRUE(a.has_value());
 
-      CHECK_EQUAL(true, a.has_value());
+      CHECK_EQUAL(a->x, 123U);
+      CHECK_EQUAL(a->y, 4U);
 
-      CHECK_EQUAL(a->x, 123);
-      CHECK_EQUAL(a->y, 4);
+      CHECK_EQUAL(ref.x, 123U);
+      CHECK_EQUAL(ref.y, 4U);
 
-      CHECK_EQUAL(b.x, 123);
-      CHECK_EQUAL(b.y, 4);
+      CHECK_TRUE(*a == ref);
 
-      CHECK_TRUE(*a == b);
-
-      CHECK_EQUAL(true, a.has_value());
+      // Destroy
+      CHECK_TRUE(a.has_value());
       a.destroy();
-      CHECK_EQUAL(false, a.has_value());
+      CHECK_FALSE(a.has_value());
     }
-  };
-}
+
+    //*************************************************************************
+    TEST(test_typed_storage_ext)
+    {
+      alignas(A_t) char buffer1[sizeof(A_t)] = {0};
+      alignas(A_t) char buffer2[sizeof(A_t)] = {0};
+
+      // Construct.
+      etl::typed_storage_ext<A_t> a(buffer1);
+      CHECK_FALSE(a.has_value());
+
+      // Construct in place.
+      etl::typed_storage_ext<A_t> b(buffer2, 789U, 10U);
+      CHECK_TRUE(b.has_value());
+      CHECK_EQUAL(b->x, 789);
+      CHECK_EQUAL(b->y, 10);
+
+      // Create in place.
+      auto& ref = a.create(123U, 4U);
+      CHECK_EQUAL(ref.x, 123U);
+      CHECK_EQUAL(ref.y, 4U);
+
+      CHECK_TRUE(a.has_value());
+      CHECK_EQUAL(a->x, 123U);
+      CHECK_EQUAL(a->y, 4U);
+      CHECK_TRUE(*a == ref);
+
+      // Swap
+      etl::swap(a, b);
+      CHECK_TRUE(a.has_value());
+      CHECK_EQUAL(a->x, 789);
+      CHECK_EQUAL(a->y, 10);
+
+      CHECK_TRUE(b.has_value());
+      CHECK_EQUAL(b->x, 123);
+      CHECK_EQUAL(b->y, 4);
+
+      // Move contruct
+      etl::typed_storage_ext<A_t> c(etl::move(a));
+      CHECK_FALSE(a.has_value());
+      CHECK_TRUE(c.has_value());
+      CHECK_EQUAL(c->x, 789);
+      CHECK_EQUAL(c->y, 10);
+
+      // Destroy
+      CHECK_TRUE(c.has_value());
+      c.destroy();
+      CHECK_FALSE(c.has_value());
+    }
+  }
+} // namespace

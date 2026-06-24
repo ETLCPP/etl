@@ -31,9 +31,9 @@ SOFTWARE.
 // Experiment with the different scheduling policies.
 //*****************************************************************************
 
+#include "etl/function.h"
 #include "etl/scheduler.h"
 #include "etl/task.h"
-#include "etl/function.h"
 
 #include <iostream>
 #include <string>
@@ -50,13 +50,13 @@ public:
     : task(1)
     , work(3)
   {
-
   }
 
   //*************************************
   uint32_t task_request_work() const
   {
-    return work; // How much work do we still have to do? This could be a message queue length.
+    return work; // How much work do we still have to do? This could be a
+                 // message queue length.
   }
 
   //*************************************
@@ -83,13 +83,13 @@ public:
     : task(2)
     , work(4)
   {
-
   }
 
   //*************************************
   uint32_t task_request_work() const
   {
-    return work; // How much work do we still have to do? This could be a message queue length.
+    return work; // How much work do we still have to do? This could be a
+                 // message queue length.
   }
 
   //*************************************
@@ -115,7 +115,6 @@ public:
   Idle(etl::ischeduler& scheduler_)
     : scheduler(scheduler_)
   {
-
   }
 
   //*************************************
@@ -181,4 +180,3 @@ int main()
 
   return 0;
 }
-

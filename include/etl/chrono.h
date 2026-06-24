@@ -35,19 +35,14 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_NOT_USING_CPP11 && !defined(ETL_IN_UNIT_TEST)
-  #error NOT SUPPORTED FOR C++03 OR BELOW
-#endif
-
 #if ETL_USING_CPP11
 
-#include "type_traits.h"
-#include "integral_limits.h"
-#include "string_view.h"
-#include "hash.h"
+  #include "hash.h"
+  #include "integral_limits.h"
+  #include "type_traits.h"
 
-#include <stdint.h>
-#include <time.h>
+  #include <stdint.h>
+  #include <time.h>
 
 namespace etl
 {
@@ -58,16 +53,18 @@ namespace etl
     {
     };
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
     template <typename TRep>
     constexpr bool treat_as_floating_point_v = treat_as_floating_point<TRep>::value;
-#endif
-  }
+  #endif
+  } // namespace chrono
 
   // Use the same type as defined in time.h.
   using time_t = ::time_t;
-}
+} // namespace etl
 
+  // clang-format off
+// Keeping the order is important here
 #include "private/chrono/last_spec.h"
 #include "private/chrono/duration.h"
 #include "private/chrono/time_point.h"
@@ -84,14 +81,15 @@ namespace etl
 #include "private/chrono/hh_mm_ss.h"
 #include "private/chrono/operators.h"
 #include "private/chrono/time_zone.h"
+// clang-format on
 
 namespace etl
 {
-  namespace chrono 
+  namespace chrono
   {
     using namespace literals::chrono_literals;
   }
-}
+} // namespace etl
 
 #endif
 

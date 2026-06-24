@@ -37,7 +37,10 @@ SOFTWARE.
 #elif defined(ETL_TARGET_OS_FREERTOS)
   #include "mutex/mutex_freertos.h"
   #define ETL_HAS_MUTEX 1
-#elif ETL_USING_STL && ETL_USING_CPP11
+#elif defined(ETL_TARGET_OS_THREADX)
+  #include "mutex/mutex_threadx.h"
+  #define ETL_HAS_MUTEX 1
+#elif ETL_USING_STL && ETL_USING_CPP11 && ETL_USING_STD_MUTEX
   #include "mutex/mutex_std.h"
   #define ETL_HAS_MUTEX 1
 #elif defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_ARM7) || defined(ETL_COMPILER_ARM8)
@@ -62,7 +65,7 @@ namespace etl
 
   //***************************************************************************
   /// lock_guard
-  /// A mutex wrapper that provides an RAII mechanism for owning a mutex for 
+  /// A mutex wrapper that provides an RAII mechanism for owning a mutex for
   /// the duration of a scoped block.
   //***************************************************************************
   template <typename TMutex>
@@ -98,6 +101,6 @@ namespace etl
     mutex_type& m;
   };
 
-}
+} // namespace etl
 
 #endif

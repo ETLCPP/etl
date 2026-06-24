@@ -1,0 +1,26 @@
+# Bazel settings for ETL
+build --enable_bzlmod
+build --cxxopt=-std=c++17
+
+# Cross-compilation: build flags + QEMU (mirrors .devcontainer/run-tests.sh)
+# Each config sets CC + tool env vars so Bazel's auto-configured toolchain
+# finds the full cross-tool suite, and --run_under for QEMU execution.
+build:armhf    --repo_env=CC=arm-linux-gnueabihf-gcc --repo_env=AR=arm-linux-gnueabihf-ar --repo_env=LD=arm-linux-gnueabihf-ld --repo_env=NM=arm-linux-gnueabihf-nm --repo_env=STRIP=arm-linux-gnueabihf-strip --repo_env=OBJDUMP=arm-linux-gnueabihf-objdump
+build:armhf    --cxxopt=-std=c++23 --copt=-DETL_NO_STL --copt=-O0
+test:armhf     --run_under=/usr/bin/qemu-arm-static
+
+build:i386     --repo_env=CC=i686-linux-gnu-gcc --repo_env=AR=i686-linux-gnu-ar --repo_env=LD=i686-linux-gnu-ld --repo_env=NM=i686-linux-gnu-nm --repo_env=STRIP=i686-linux-gnu-strip --repo_env=OBJDUMP=i686-linux-gnu-objdump
+build:i386     --cxxopt=-std=c++23 --copt=-DETL_NO_STL --copt=-O0
+test:i386      --run_under=/usr/bin/qemu-i386-static
+
+build:powerpc  --repo_env=CC=powerpc-linux-gnu-gcc --repo_env=AR=powerpc-linux-gnu-ar --repo_env=LD=powerpc-linux-gnu-ld --repo_env=NM=powerpc-linux-gnu-nm --repo_env=STRIP=powerpc-linux-gnu-strip --repo_env=OBJDUMP=powerpc-linux-gnu-objdump
+build:powerpc  --cxxopt=-std=c++23 --copt=-DETL_NO_STL --copt=-O0
+test:powerpc   --run_under=/usr/bin/qemu-ppc
+
+build:riscv64  --repo_env=CC=riscv64-linux-gnu-gcc --repo_env=AR=riscv64-linux-gnu-ar --repo_env=LD=riscv64-linux-gnu-ld --repo_env=NM=riscv64-linux-gnu-nm --repo_env=STRIP=riscv64-linux-gnu-strip --repo_env=OBJDUMP=riscv64-linux-gnu-objdump
+build:riscv64  --cxxopt=-std=c++23 --copt=-DETL_NO_STL --copt=-O0
+test:riscv64   --run_under=/usr/bin/qemu-riscv64-static
+
+build:s390x    --repo_env=CC=s390x-linux-gnu-gcc --repo_env=AR=s390x-linux-gnu-ar --repo_env=LD=s390x-linux-gnu-ld --repo_env=NM=s390x-linux-gnu-nm --repo_env=STRIP=s390x-linux-gnu-strip --repo_env=OBJDUMP=s390x-linux-gnu-objdump
+build:s390x    --cxxopt=-std=c++23 --copt=-DETL_NO_STL --copt=-O0
+test:s390x     --run_under=/usr/bin/qemu-s390x-static

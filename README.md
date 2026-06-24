@@ -1,22 +1,21 @@
-Embedded Template Library (ETL)
--------------------------
+# ![alt text](https://github.com/ETLCPP/etl/blob/master/images/etl64.png?raw=true) Embedded Template Library (ETL)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jwellbelove/etl)
 [![Release date](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)](https://img.shields.io/github/release-date/jwellbelove/etl?color=%231182c3)
-[![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17/20-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+[![Standard](https://img.shields.io/badge/c%2B%2B-98/03/11/14/17/20/23/26-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![GitHub contributors](https://img.shields.io/github/contributors-anon/ETLCPP/etl)
 ![GitHub forks](https://img.shields.io/github/forks/ETLCPP/etl?style=flat)
 ![GitHub Repo stars](https://img.shields.io/github/stars/ETLCPP/etl?style=flat)
 
-![CI](https://github.com/ETLCPP/etl/workflows/msvc/badge.svg?branch=master)
-[![Build status](https://ci.appveyor.com/api/projects/status/b7jgecv7unqjw4u0/branch/master?svg=true)](https://ci.appveyor.com/project/jwellbelove/etl/branch/master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/msvc.yml/badge.svg?branch=master)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++14.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++17.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++20.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++23.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++26.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-syntax-checks.yml/badge.svg?branch=master)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++11.yml/badge.svg?branch=master)
@@ -24,57 +23,98 @@ Embedded Template Library (ETL)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++17.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++20.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++23.yml/badge.svg?branch=master)
+![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-c++26.yml/badge.svg?branch=master)
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/clang-syntax-checks.yml/badge.svg?branch=master)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946)](https://www.codacy.com/manual/jwellbelove/etl?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ETLCPP/etl&amp;utm_campaign=Badge_Grade)
 
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://www.etlcpp.com/sponsor.html)
 
-[Project documentation](https://www.etlcpp.com/)
+[**Project documentation**](https://www.etlcpp.com/)
 
 ## Motivation
 
-C++ is a great language to use for embedded applications and templates are a powerful aspect. The standard library can offer a great deal of well tested functionality,  but there are some parts of the standard library that do not fit well with deterministic behaviour and limited resource requirements. These limitations usually preclude the use of dynamically allocated memory and containers with open ended sizes.
+C++ is a powerful language for embedded systems development, with templates offering a great deal of flexibility and type safety. While the C++ Standard Library provides a wealth of well-tested functionality, it’s often not well suited to environments with strict deterministic behavior and limited resources.
 
-What is needed is a template library where the user can declare the size, or maximum size of any object upfront. Most embedded compilers do not currently support the standard beyond C++ 03, therefore excluding the programmer from using the enhanced features of the later library.
+In many embedded applications, dynamic memory allocation is discouraged or outright prohibited, making standard STL containers and many other components impractical or unusable.
 
-This is what the ETL attempts to achieve.
+What’s needed is a template library specifically designed for embedded systems — one that allows developers to define fixed or maximum sizes for containers and other objects at compile time. Additionally, since many embedded toolchains still lack full support for standards beyond C++03, it's valuable to have access to a library that backports select features from later versions of the C++ Standard Library.
 
-## Summary
+## About the ETL
 
-The ETL is not designed to completely replace the STL, but complement it.
-Its design objective covers three areas.
+The Embedded Template Library (ETL) is not intended as a full replacement for the C++ Standard Template Library (STL), but rather as a complementary solution tailored specifically for embedded systems.
 
-- Create a set of containers where the size or maximum size is determined at compile time. These containers are direct equivalents of those supplied in the STL.
-- Be compatible with C++ 03 but implement as many of the C++ 11/14/17/20/23 additions as possible.
-- Add other useful components that are not present in the standard library.
+Its design goals include:
 
-The embedded template library has been designed for lower resource embedded applications.
-It contains a set of containers, algorithms and utilities, some of which emulate parts of the STL.
-There is no dynamic memory allocation. The library makes no use of the heap. All of the containers have a fixed capacity allowing all memory allocation to be determined at compile time.
-The library is intended for any compiler that supports C++98/03/11/14/17/20/23.
+-	Providing a set of containers with fixed or maximum sizes defined at compile-time.
 
-## Main features
+-	Offering APIs that closely resemble those of the STL, enabling familiar and consistent usage.
 
-- Cross platform. This library is not specific to any processor type.
-- No dynamic memory allocation
-- No RTTI required
-- Very little use of virtual functions. They are used only when they are absolutely necessary for the required functionality
-- A set of fixed capacity containers. (array, bitset, deque, forward_list, list, queue,  stack, vector, map, set, etc.)
-- As the storage for all of the container types is allocated as a contiguous block, they are extremely cache friendly
-- Templated compile time constants
-- Templated design pattern base classes (Visitor, Observer)
-- Reverse engineered C++ 0x11 features (type traits, algorithms, containers etc.)
-- Type-safe enumerations
-- Type-safe typedefs
-- 8, 16, 32 & 64 bit CRC calculations
-- Checksums & hash functions
-- Variants (a type that can store many types in a type-safe interface)
-- Choice of asserts, exceptions, error handler or no checks on errors
-- Unit tested (currently over 9400 tests), using VS2022, GCC 12, Clang 14.
-- Many utilities for template support.
-- Easy to read and documented source.
-- Free support via email, GitHub and Slack
+-	Maintaining compatibility with C++98 while implementing many features introduced in later standards
+(C++11/14/17/20/23/26) where possible.
+
+-	Ensuring deterministic behavior, which is critical in real-time and resource-constrained environments.
+
+-	Introducing additional components and utilities useful in embedded contexts but absent from the STL.
+
+The ETL avoids dynamic memory allocation entirely; the heap is never used. All non-intrusive containers have a fixed capacity, allowing memory requirements to be fully determined at compile-time. This makes the ETL ideal for lower-resource embedded applications where predictability, performance, and memory control are essential.
+
+The library is compatible with any compiler that supports C++03 or later.
+
+Help on integrating the ETL with your project may be found here.
+
+
+## Key features of the ETL
+
+-	Actively Maintained: Developed and maintained on GitHub since 2014.
+
+-	Open Source: MIT licensed.
+
+-	No STL Dependency: Designed to operate independently of the C++ Standard Template Library.
+
+-	No Dynamic Memory Allocation: All storage is allocated either at compile-time or on the stack; heap usage is entirely avoided.
+
+-	RTTI and Virtual Functions: No runtime type information (RTTI) is required. Virtual functions are used sparingly and only when strictly necessary.
+
+-	Header-Only Library: All functionality is provided via header files; No separate compilation needed.
+
+-	Fixed-Capacity Containers: Offers STL-like containers with fixed or maximum capacity, plus additional non-standard container types.
+
+-	Cache Efficiency: Containers use contiguous memory layouts for optimal cache performance.
+
+-	Compact Codebase: Shared base classes (based on type) help reduce overall container code size.
+
+-	Compile-Time Features:
+    -	Templated compile-time constants
+    -	Template-based design pattern base classes (e.g., Visitor, Observer)
+    -	Type-safe smart enumerations
+    -	Type-safe typedefs and constants
+
+-	Embedded System Frameworks:
+    -	Message routing
+    -	Finite state machines
+    -	Task scheduling
+
+-	C++11 Backports: Implements many C++11 features (type traits, algorithms, containers) for use in C++03 environments.
+
+-	Utilities:
+    -	CRC calculations (8, 16, 32 & 64-bit)
+    -	Checksums and hash functions
+    -	Variants (type-safe unions)
+    -	Extensive template support utilities
+
+-	Robust Error Handling: Configurable error checking using asserts, exceptions, error handlers, or no checks; user’s choice.
+
+-	Thoroughly Tested:
+    -	Over 10,000 unit tests
+    -	Tested with Visual Studio 2022, GCC 12, and Clang 14
+    -	Continuous integration via GitHub Actions.
+
+-	Readable and Well-Documented: Clean, maintainable source code with clear documentation.
+
+-	Support: Free email support available. A Slack group is available. Paid support on request.
+
+-	Archived: A snapshot of the ETL is preserved in the Arctic Code Vault for long-term digital preservation.
 
 Any help porting the library to work under different platforms and compilers would be gratefully received.
 I am especially interested in people who are using Keil, IAR, Green Hills, TI Code Composer etc, bare metal or RTOS, and DSPs.
@@ -125,12 +165,12 @@ add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl::etl)
 ```
 
+Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html).
 
-Alternatively you can use [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html),
-replacing `<targetVersion>` with the version to install based on a git tag:
+By Git, replacing `<targetVersion>` with the version to install based on a git tag:
 
-```sh
-Include(FetchContent)
+```cmake
+include(FetchContent)
 
 FetchContent_Declare(
   etl
@@ -143,6 +183,103 @@ FetchContent_MakeAvailable(etl)
 add_executable(foo main.cpp)
 target_link_libraries(foo PRIVATE etl::etl)
 ```
+
+Or by URL, fetching a release tarball directly, again replacing `<targetVersion>` with the desired version:
+
+```cmake
+include(FetchContent)
+
+FetchContent_Declare(
+  etl
+  URL https://github.com/ETLCPP/etl/archive/refs/tags/<targetVersion>.tar.gz
+)
+
+FetchContent_MakeAvailable(etl)
+
+add_executable(foo main.cpp)
+target_link_libraries(foo PRIVATE etl::etl)
+```
+
+A tarball fetched this way has no `.git` directory of its own. ETL detects this and falls back to
+reading its version from `version.txt` instead of `git describe`, so no extra configuration is needed.
+
+## Profile definition
+
+When using ETL in a project, there is typically an `etl_profile.h` defined to
+adjust ETL to the project needs. ETL will automatically find `etl_profile.h`
+if it is available in the include path(s). If it's not available, ETL will
+work with default values.
+
+### Example
+
+```
+#ifndef __ETL_PROFILE_H__
+#define __ETL_PROFILE_H__
+
+#define ETL_TARGET_DEVICE_GENERIC
+#define ETL_TARGET_OS_NONE
+
+#define ETL_NO_STL
+
+#endif
+```
+
+## Platform specific implementation
+
+Although ETL is generally a self-contained header-only library, some interfaces need to be
+implemented in every project or platform, at least if those interfaces are actually being
+used, due to project specifics:
+
+| ETL header | Platform specific API to be implemented | Needed when using                   |
+|------------|-----------------------------------------|-------------------------------------|
+| `chrono.h` | `etl_get_high_resolution_clock()`       | `etl::high_resolution_clock::now()` |
+|            | `etl_get_system_clock()`                | `etl::system_clock::now()`          |
+|            | `etl_get_steady_clock()`                | `etl::steady_clock::now()`          |
+| `print.h`  | `etl_putchar()`                         | `etl::print()`                      |
+|            |                                         | `etl::println()`                    |
+
+### Example
+
+```
+#include <etl/chrono.h>
+#include <etl/print.h>
+
+extern "C"
+{
+
+etl::chrono::high_resolution_clock::rep etl_get_high_resolution_clock()
+{
+  return etl::chrono::high_resolution_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+etl::chrono::system_clock::rep etl_get_system_clock()
+{
+  return etl::chrono::system_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+etl::chrono::system_clock::rep etl_get_steady_clock()
+{
+  return etl::chrono::system_clock::rep(static_cast<int64_t>(getSystemTimeNs()));
+}
+
+void etl_putchar(int c)
+{
+  putByteToStdout(static_cast<uint8_t>(c));
+}
+
+}
+```
+
+The following default values apply if the respective macros are not defined
+(e.g. in `etl_profile.h`):
+
+| Macro                                         | Default                    |
+|-----------------------------------------------|----------------------------|
+| `ETL_CHRONO_SYSTEM_CLOCK_DURATION`            | `etl::chrono::nanoseconds` |
+| `ETL_CHRONO_SYSTEM_CLOCK_IS_STEADY`           | `true`                     |
+| `ETL_CHRONO_HIGH_RESOLUTION_CLOCK_DURATION`   | `etl::chrono::nanoseconds` |
+| `ETL_CHRONO_HIGH_RESOLUTION_CLOCK_IS_STEADY`  | `true`                     |
+| `ETL_CHRONO_STEADY_CLOCK_DURATION`            | `etl::chrono::nanoseconds` |
 
 ## Arduino library
 

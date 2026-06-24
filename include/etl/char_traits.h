@@ -45,9 +45,11 @@ SOFTWARE.
 
 namespace etl
 {
-  template<typename T> struct char_traits_types;
+  template <typename T>
+  struct char_traits_types;
 
-  template<> struct char_traits_types<char>
+  template <>
+  struct char_traits_types<char>
   {
     typedef char      char_type;
     typedef int       int_type;
@@ -56,7 +58,8 @@ namespace etl
     typedef char      state_type;
   };
 
-  template<> struct char_traits_types<signed char>
+  template <>
+  struct char_traits_types<signed char>
   {
     typedef signed char char_type;
     typedef int         int_type;
@@ -65,7 +68,8 @@ namespace etl
     typedef signed char state_type;
   };
 
-  template<> struct char_traits_types<unsigned char>
+  template <>
+  struct char_traits_types<unsigned char>
   {
     typedef unsigned char char_type;
     typedef int           int_type;
@@ -74,7 +78,8 @@ namespace etl
     typedef unsigned char state_type;
   };
 
-  template<> struct char_traits_types<wchar_t>
+  template <>
+  struct char_traits_types<wchar_t>
   {
     typedef wchar_t        char_type;
     typedef uint_least16_t int_type;
@@ -84,17 +89,19 @@ namespace etl
   };
 
 #if ETL_USING_CPP20
-  template<> struct char_traits_types<char8_t>
+  template <>
+  struct char_traits_types<char8_t>
   {
-    typedef char8_t       char_type;
-    typedef unsigned int  int_type;
-    typedef long long     off_type;
-    typedef size_t        pos_type;
-    typedef char          state_type;
+    typedef char8_t      char_type;
+    typedef unsigned int int_type;
+    typedef long long    off_type;
+    typedef size_t       pos_type;
+    typedef char         state_type;
   };
 #endif
 
-  template<> struct char_traits_types<char16_t>
+  template <>
+  struct char_traits_types<char16_t>
   {
     typedef char16_t       char_type;
     typedef uint_least16_t int_type;
@@ -103,7 +110,8 @@ namespace etl
     typedef char           state_type;
   };
 
-  template<> struct char_traits_types<char32_t>
+  template <>
+  struct char_traits_types<char32_t>
   {
     typedef char32_t       char_type;
     typedef uint_least32_t int_type;
@@ -115,7 +123,7 @@ namespace etl
   //***************************************************************************
   /// Character traits for any character type.
   //***************************************************************************
-  template<typename T>
+  template <typename T>
   struct char_traits : public char_traits_types<T>
   {
     typedef typename char_traits_types<T>::char_type  char_type;
@@ -125,19 +133,19 @@ namespace etl
     typedef typename char_traits_types<T>::state_type state_type;
 
     //*************************************************************************
-    static ETL_CONSTEXPR bool eq(char_type a, char_type b)
+    static ETL_CONSTEXPR bool eq(char_type a, char_type b) ETL_NOEXCEPT
     {
       return a == b;
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR bool lt(char_type a, char_type b)
+    static ETL_CONSTEXPR bool lt(char_type a, char_type b) ETL_NOEXCEPT
     {
       return a < b;
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 size_t length(const char_type* begin)
+    static ETL_CONSTEXPR14 size_t length(const char_type* begin) ETL_NOEXCEPT
     {
       if (begin == ETL_NULLPTR)
       {
@@ -155,7 +163,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 size_t length(const char_type* str, size_t max_length)
+    static ETL_CONSTEXPR14 size_t length(const char_type* str, size_t max_length) ETL_NOEXCEPT
     {
       size_t count = 0UL;
 
@@ -171,13 +179,13 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 void assign(char_type& r, const char_type& c)
+    static ETL_CONSTEXPR14 void assign(char_type& r, const char_type& c) ETL_NOEXCEPT
     {
       r = c;
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 char_type* assign(char_type* p, size_t n, char_type c)
+    static ETL_CONSTEXPR14 char_type* assign(char_type* p, size_t n, char_type c) ETL_NOEXCEPT
     {
       if (p != ETL_NULLPTR)
       {
@@ -188,7 +196,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 char_type* move(char_type* dst, const char_type* src, size_t count)
+    static ETL_CONSTEXPR14 char_type* move(char_type* dst, const char_type* src, size_t count) ETL_NOEXCEPT
     {
       if ((dst < src) || (dst > (src + count)))
       {
@@ -196,16 +204,14 @@ namespace etl
       }
       else
       {
-        etl::copy_n(ETL_OR_STD::reverse_iterator<const char_type*>(src + count),
-                    count,
-                    ETL_OR_STD::reverse_iterator<char_type*>(dst + count));
+        etl::copy_n(ETL_OR_STD::reverse_iterator<const char_type*>(src + count), count, ETL_OR_STD::reverse_iterator<char_type*>(dst + count));
       }
 
       return dst;
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 char_type* copy(char_type* dst, const char_type* src, size_t count)
+    static ETL_CONSTEXPR14 char_type* copy(char_type* dst, const char_type* src, size_t count) ETL_NOEXCEPT
     {
       etl::copy_n(src, count, dst);
 
@@ -213,7 +219,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 int compare(const char_type* s1, const char_type* s2, size_t count)
+    static ETL_CONSTEXPR14 int compare(const char_type* s1, const char_type* s2, size_t count) ETL_NOEXCEPT
     {
       for (size_t i = 0UL; i < count; ++i)
       {
@@ -234,7 +240,7 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR14 const char_type* find(const char_type* p, size_t count, const char_type& ch)
+    static ETL_CONSTEXPR14 const char_type* find(const char_type* p, size_t count, const char_type& ch) ETL_NOEXCEPT
     {
       for (size_t i = 0UL; i < count; ++i)
       {
@@ -250,31 +256,31 @@ namespace etl
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR char_type to_char_type(int_type c)
+    static ETL_CONSTEXPR char_type to_char_type(int_type c) ETL_NOEXCEPT
     {
       return static_cast<char_type>(c);
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR int_type to_int_type(char_type c)
+    static ETL_CONSTEXPR int_type to_int_type(char_type c) ETL_NOEXCEPT
     {
       return static_cast<int_type>(c);
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR bool eq_int_type(int_type c1, int_type c2)
+    static ETL_CONSTEXPR bool eq_int_type(int_type c1, int_type c2) ETL_NOEXCEPT
     {
       return (c1 == c2);
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR int_type eof()
+    static ETL_CONSTEXPR int_type eof() ETL_NOEXCEPT
     {
-      return -1;
+      return static_cast<int_type>(-1);
     }
 
     //*************************************************************************
-    static ETL_CONSTEXPR int_type not_eof(int_type e)
+    static ETL_CONSTEXPR int_type not_eof(int_type e) ETL_NOEXCEPT
     {
       return (e == eof()) ? eof() - 1 : e;
     }
@@ -284,7 +290,7 @@ namespace etl
   /// Alternative strlen for all character types.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 size_t strlen(const T* t)
+  ETL_CONSTEXPR14 size_t strlen(const T* t) ETL_NOEXCEPT
   {
     return etl::char_traits<T>::length(t);
   }
@@ -293,7 +299,7 @@ namespace etl
   /// Alternative strlen for all character types, with maximum length.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 size_t strlen(const T* t, size_t max_length)
+  ETL_CONSTEXPR14 size_t strlen(const T* t, size_t max_length) ETL_NOEXCEPT
   {
     return etl::char_traits<T>::length(t, max_length);
   }
@@ -302,7 +308,7 @@ namespace etl
   /// Alternative strcmp for all character types.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 int strcmp(const T* t1, const T* t2)
+  ETL_CONSTEXPR14 int strcmp(const T* t1, const T* t2) ETL_NOEXCEPT
   {
     while ((*t1 != 0) || (*t2 != 0))
     {
@@ -310,7 +316,7 @@ namespace etl
       {
         return 1;
       }
-      
+
       if (*t1 < *t2)
       {
         return -1;
@@ -327,7 +333,7 @@ namespace etl
   /// Alternative strncmp for all character types.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 int strncmp(const T* t1, const T* t2, size_t n)
+  ETL_CONSTEXPR14 int strncmp(const T* t1, const T* t2, size_t n) ETL_NOEXCEPT
   {
     while (((*t1 != 0) || (*t2 != 0)) && (n != 0))
     {
@@ -343,7 +349,7 @@ namespace etl
       ++t1;
       ++t2;
       --n;
-    } 
+    }
 
     return 0;
   }
@@ -352,7 +358,7 @@ namespace etl
   /// Alternative strcpy for all character types.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 T* strcpy(T* dst, const T* src)
+  ETL_CONSTEXPR14 T* strcpy(T* dst, const T* src) ETL_NOEXCEPT
   {
     T* result = dst;
 
@@ -370,7 +376,7 @@ namespace etl
   /// Alternative strncpy for all character types.
   //***************************************************************************
   template <typename T>
-  ETL_CONSTEXPR14 T* strncpy(T* dst, const T* src, size_t n)
+  ETL_CONSTEXPR14 T* strncpy(T* dst, const T* src, size_t n) ETL_NOEXCEPT
   {
     T* result = dst;
 
@@ -384,6 +390,6 @@ namespace etl
 
     return result;
   }
-}
+} // namespace etl
 
 #endif

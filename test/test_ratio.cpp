@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Documentation: 
+Documentation:
 
 Copyright(c) 2024 John Wellbelove
 
@@ -225,6 +225,5 @@ namespace
       CHECK((etl::ratio_greater_equal_v<r1, r2>));
 #endif
     }
-  };
-
-}
+  }
+} // namespace

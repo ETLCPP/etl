@@ -45,12 +45,12 @@ namespace etl
     template <typename TAccumulator, TAccumulator Polynomial_, TAccumulator Initial_, TAccumulator Xor_Out_, bool Reflect_>
     struct crc_parameters
     {
-      typedef TAccumulator accumulator_type;
+      typedef TAccumulator     accumulator_type;
       static ETL_CONSTANT TAccumulator Polynomial       = Polynomial_;
       static ETL_CONSTANT TAccumulator Initial          = Initial_;
       static ETL_CONSTANT TAccumulator Xor_Out          = Xor_Out_;
       static ETL_CONSTANT bool         Reflect          = Reflect_;
-      static ETL_CONSTANT size_t       Accumulator_Bits = etl::integral_limits<accumulator_type>::bits; 
+      static ETL_CONSTANT size_t       Accumulator_Bits = etl::integral_limits<accumulator_type>::bits;
     };
 
     template <typename TAccumulator, TAccumulator Polynomial_, TAccumulator Initial_, TAccumulator Xor_Out_, bool Reflect_>
@@ -81,6 +81,8 @@ namespace etl
     typedef crc_parameters<uint8_t, 0x9BU, 0x00U, 0x00U, true>  crc8_wcdma_parameters;
     typedef crc_parameters<uint8_t, 0x1DU, 0xFFU, 0xFFU, false> crc8_j1850_parameters;
     typedef crc_parameters<uint8_t, 0x1DU, 0x00U, 0x00U, false> crc8_j1850_zero_parameters;
+    typedef crc_parameters<uint8_t, 0x31U, 0xFFU, 0x00U, false> crc8_nrsc5_parameters;
+    typedef crc_parameters<uint8_t, 0x2FU, 0x00U, 0x00U, false> crc8_opensafety_parameters;
 
     // 16 bit.
     typedef crc_parameters<uint16_t, 0x8005U, 0x0000U, 0x0000U, true>  crc16_parameters;
@@ -109,6 +111,8 @@ namespace etl
     typedef crc_parameters<uint16_t, 0x1021U, 0xC6C6U, 0x0000U, true>  crc16_a_parameters;
     typedef crc_parameters<uint16_t, 0x8005U, 0x0000U, 0x0000U, true>  crc16_arc_parameters;
     typedef crc_parameters<uint16_t, 0x5935U, 0xFFFFU, 0x0000U, false> crc16_m17_parameters;
+    typedef crc_parameters<uint16_t, 0x5935U, 0x0000U, 0x0000U, false> crc16_opensafety_a_parameters;
+    typedef crc_parameters<uint16_t, 0x755BU, 0x0000U, 0x0000U, false> crc16_opensafety_b_parameters;
 
     // 32 bit.
     typedef crc_parameters<uint32_t, 0x04C11DB7UL, 0xFFFFFFFFUL, 0xFFFFFFFFUL, true>  crc32_parameters;
@@ -123,7 +127,8 @@ namespace etl
 
     // 64 bit.
     typedef crc_parameters<uint64_t, 0x42F0E1EBA9EA3693ULL, 0x0000000000000000ULL, 0x0000000000000000ULL, false> crc64_ecma_parameters;
-  }
-}
+    typedef crc_parameters<uint64_t, 0x000000000000001BULL, 0xFFFFFFFFFFFFFFFFULL, 0xFFFFFFFFFFFFFFFFULL, true>  crc64_iso_parameters;
+  } // namespace private_crc
+} // namespace etl
 
 #endif

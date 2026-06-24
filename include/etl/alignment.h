@@ -32,10 +32,10 @@ SOFTWARE.
 #define ETL_ALIGNMENT_INCLUDED
 
 #include "platform.h"
-#include "type_traits.h"
-#include "static_assert.h"
 #include "error_handler.h"
 #include "exception.h"
+#include "static_assert.h"
+#include "type_traits.h"
 #include "utility.h"
 
 #include <stdint.h>
@@ -124,28 +124,28 @@ namespace etl
 
     // Matching alignment.
     template <size_t Alignment, typename T1, typename... TRest>
-    class type_with_alignment_matcher<true, Alignment, T1, TRest...> 
+    class type_with_alignment_matcher<true, Alignment, T1, TRest...>
     {
     public:
-    
+
       typedef T1 type;
     };
 
     // Non-matching alignment
     template <size_t Alignment, typename T1, typename T2, typename... TRest>
-    class type_with_alignment_matcher <false, Alignment, T1, T2, TRest...> 
+    class type_with_alignment_matcher<false, Alignment, T1, T2, TRest...>
     {
     public:
-    
-      typedef typename type_with_alignment_matcher < Alignment <= etl::alignment_of<T2>::value , Alignment, T2, TRest... > ::type type;
+
+      typedef typename type_with_alignment_matcher< Alignment <= etl::alignment_of<T2>::value, Alignment, T2, TRest... >::type type;
     };
 
     // Non-matching alignment, none left.
     template <size_t Alignment, typename T1>
-    class type_with_alignment_matcher <false, Alignment, T1> 
+    class type_with_alignment_matcher<false, Alignment, T1>
     {
     public:
-    
+
       typedef char type;
     };
 
@@ -153,23 +153,23 @@ namespace etl
     // Helper.
     //***************************************************************************
     template <size_t Alignment, typename T1, typename... T>
-    class type_with_alignment_helper 
+    class type_with_alignment_helper
     {
     public:
-    
+
       typedef typename type_with_alignment_matcher<Alignment <= etl::alignment_of<T1>::value, Alignment, T1, T...>::type type;
     };
 #else
     //***************************************************************************
     // Matcher.
     //***************************************************************************
-    template <bool Is_Match, const size_t Alignment, typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void, 
-                                                     typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
+    template <bool Is_Match, const size_t Alignment, typename T1 = void, typename T2 = void, typename T3 = void, typename T4 = void,
+              typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
     class type_with_alignment_matcher;
 
     // Matching alignment.
     template <size_t Alignment, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
-    class type_with_alignment_matcher <true, Alignment, T1, T2, T3, T4, T5, T6, T7, T8>
+    class type_with_alignment_matcher<true, Alignment, T1, T2, T3, T4, T5, T6, T7, T8>
     {
     public:
 
@@ -178,16 +178,17 @@ namespace etl
 
     // Non-matching alignment.
     template <size_t Alignment, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
-    class type_with_alignment_matcher <false, Alignment, T1, T2, T3, T4, T5, T6, T7, T8>
+    class type_with_alignment_matcher<false, Alignment, T1, T2, T3, T4, T5, T6, T7, T8>
     {
     public:
 
-      typedef typename type_with_alignment_matcher<Alignment <= etl::alignment_of<T2>::value, Alignment, T2, T3, T4, T5, T6, T7, T8, void>::type type;
+      typedef
+        typename type_with_alignment_matcher< Alignment <= etl::alignment_of<T2>::value, Alignment, T2, T3, T4, T5, T6, T7, T8, void>::type type;
     };
 
     // Non-matching alignment, none left.
     template <size_t Alignment>
-    class type_with_alignment_matcher <false, Alignment, void, void, void, void, void, void, void, void>
+    class type_with_alignment_matcher<false, Alignment, void, void, void, void, void, void, void, void>
     {
     public:
 
@@ -197,16 +198,16 @@ namespace etl
     //***************************************************************************
     // Helper.
     //***************************************************************************
-    template <size_t Alignment, typename T1,        typename T2 = void, typename T3 = void, typename T4 = void,
-                                typename T5 = void, typename T6 = void, typename T7 = void, typename T8 = void>
+    template <size_t Alignment, typename T1, typename T2 = void, typename T3 = void, typename T4 = void, typename T5 = void, typename T6 = void,
+              typename T7 = void, typename T8 = void>
     class type_with_alignment_helper
     {
     public:
 
-      typedef typename type_with_alignment_matcher<Alignment <= etl::alignment_of<T1>::value, Alignment, T1, T2, T3, T4, T5, T6, T7, T8>::type type;
+      typedef typename type_with_alignment_matcher< Alignment <= etl::alignment_of<T1>::value, Alignment, T1, T2, T3, T4, T5, T6, T7, T8>::type type;
     };
 #endif
-  }
+  } // namespace private_alignment
 
   //***************************************************************************
   /// Gets a type that has the same as the specified alignment.
@@ -218,12 +219,17 @@ namespace etl
   public:
 
 #if ETL_USING_CPP11
-    typedef struct { alignas(Alignment) char dummy; } type;
+    typedef struct
+    {
+      alignas(Alignment) char dummy;
+    } type;
 #else
   #if ETL_NOT_USING_64BIT_TYPES
-      typedef typename private_alignment::type_with_alignment_helper<Alignment, int_least8_t, int_least16_t, int32_t, float, double, void*>::type type;
+    typedef typename private_alignment::type_with_alignment_helper< Alignment, int_least8_t, int_least16_t, int32_t, float, double, void*>::type type;
   #else
-      typedef typename private_alignment::type_with_alignment_helper<Alignment, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type type;
+    typedef
+      typename private_alignment::type_with_alignment_helper< Alignment, int_least8_t, int_least16_t, int32_t, int64_t, float, double, void*>::type
+        type;
   #endif
 #endif
 
@@ -245,42 +251,37 @@ namespace etl
   {
     struct type
     {
-      //type() 
-      //  : data()
-      //{
-      //}
-
       /// Convert to T reference.
       template <typename T>
-      operator T& ()
+      operator T&()
       {
-        ETL_STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+        ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         T* t = *this;
         return *t;
       }
 
       /// Convert to const T reference.
       template <typename T>
-      operator const T& () const
+      operator const T&() const
       {
-        ETL_STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+        ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         const T* t = *this;
         return *t;
       }
 
       /// Convert to T pointer.
       template <typename T>
-      operator T* ()
+      operator T*()
       {
-        ETL_STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+        ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<T*>(data);
       }
 
       /// Convert to const T pointer.
       template <typename T>
-      operator const T* () const
+      operator const T*() const
       {
-        ETL_STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+        ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<const T*>(data);
       }
 
@@ -288,7 +289,7 @@ namespace etl
       template <typename T>
       T& get_reference()
       {
-        ETL_STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+        ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         T* t = *this;
         return *t;
       }
@@ -297,7 +298,7 @@ namespace etl
       template <typename T>
       const T& get_reference() const
       {
-        ETL_STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+        ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         const T* t = *this;
         return *t;
       }
@@ -306,7 +307,7 @@ namespace etl
       template <typename T>
       T* get_address()
       {
-        ETL_STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+        ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<T*>(data);
       }
 
@@ -314,7 +315,7 @@ namespace etl
       template <typename T>
       const T* get_address() const
       {
-        ETL_STATIC_ASSERT((etl::is_same<T*, void*>:: value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
+        ETL_STATIC_ASSERT((etl::is_same<T*, void*>::value || ((Alignment % etl::alignment_of<T>::value) == 0)), "Incompatible alignment");
         return reinterpret_cast<const T*>(data);
       }
 
@@ -323,8 +324,9 @@ namespace etl
 #else
       union
       {
-        char data[Length];
-        typename etl::type_with_alignment<Alignment>::type etl_alignment_type; // A POD type that has the same alignment as Alignment.
+        char                                               data[Length];
+        typename etl::type_with_alignment<Alignment>::type etl_alignment_type; // A POD type that has the same alignment
+                                                                               // as Alignment.
       };
 #endif
     };
@@ -368,147 +370,496 @@ namespace etl
     typedef T*       pointer;
     typedef const T* const_pointer;
 
-    // Constructor
-    typed_storage()
+    //***************************************************************************
+    // Default constructor
+    //***************************************************************************
+    ETL_CONSTEXPR typed_storage() ETL_NOEXCEPT
       : valid(false)
     {
     }
 
+#if ETL_USING_CPP11
     //***************************************************************************
-    /// Default destructor which will NOT call the destructor of the object which
-    /// was created by calling create().
+    /// Constructs the instance of T forwarding the given \p args to its
+    /// constructor.
     //***************************************************************************
-    ~typed_storage() = default;
+    template <typename... TArgs>
+    typed_storage(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+      : valid(false)
+    {
+      create(etl::forward<TArgs>(args)...);
+    }
+#else
+    //***************************************************************************
+    /// Constructs the instance of T with type T1
+    //***************************************************************************
+    template <typename T1>
+    typed_storage(const T1& t1)
+      : valid(false)
+    {
+      create(t1);
+    }
 
     //***************************************************************************
-    /// Calls the destructor of the wrapped object and asserts if has_value() is false.
+    /// Constructs the instance of T with types T1, T2
     //***************************************************************************
-    void destroy()
+    template <typename T1, typename T2>
+    typed_storage(const T1& t1, const T2& t2)
+      : valid(false)
     {
-      ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
-      data.template get_reference<T>().~T();
-      valid = false;
+      create(t1, t2);
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2, T3
+    //***************************************************************************
+    template <typename T1, typename T2, typename T3>
+    typed_storage(const T1& t1, const T2& t2, const T3& t3)
+      : valid(false)
+    {
+      create(t1, t2, t3);
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2, T3, T4
+    //***************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    typed_storage(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
+      : valid(false)
+    {
+      create(t1, t2, t3, t4);
+    }
+#endif
+
+    //***************************************************************************
+    /// Default destructor which will NOT call the destructor of the object
+    /// which was created by calling create().
+    //***************************************************************************
+    ~typed_storage() ETL_NOEXCEPT
+    {
+      // Intentionally empty.
     }
 
     //***************************************************************************
     /// \returns <b>true</b> if object has been constructed using create().
     /// \returns <b>false</b> otherwise.
     //***************************************************************************
-    bool has_value() const
+    bool has_value() const ETL_NOEXCEPT
     {
       return valid;
     }
 
 #if ETL_USING_CPP11
     //***************************************************************************
-    /// Constructs the instance of T forwarding the given \p args to its constructor and
-    /// asserts if has_value() is false.
-    ///
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// Constructs the instance of T forwarding the given \p args to its
+    /// constructor. \returns the instance of T which has been constructed in
+    /// the internal byte array.
     //***************************************************************************
-    template<typename... Args>
-    reference create(Args&&... args)
+    template <typename... TArgs>
+    reference create(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (data.template get_address<char>()) value_type(etl::forward<Args>(args)...);
+      pointer p = ::new (&storage.value) value_type(etl::forward<TArgs>(args)...);
+      valid     = true;
+      return *p;
     }
 #else
     //***************************************************************************
     /// Constructs the instance of T with type T1
-    /// asserts if has_value() is false.
-    ///
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the internal
+    /// byte array.
     //***************************************************************************
-    template<typename T1>
+    template <typename T1>
     reference create(const T1& t1)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (data.template get_address<char>()) value_type(t1);
+      pointer p = ::new (&storage.value) value_type(t1);
+      valid     = true;
+      return *p;
     }
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2
-    /// asserts if has_value() is false.
-    ///
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the internal
+    /// byte array.
     //***************************************************************************
-    template<typename T1, typename T2>
+    template <typename T1, typename T2>
     reference create(const T1& t1, const T2& t2)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (data.template get_address<char>()) value_type(t1, t2);
+      pointer p = ::new (&storage.value) value_type(t1, t2);
+      valid     = true;
+      return *p;
     }
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3
-    /// asserts if has_value() is false.
-    ///
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the internal
+    /// byte array.
     //***************************************************************************
-    template<typename T1, typename T2, typename T3>
+    template <typename T1, typename T2, typename T3>
     reference create(const T1& t1, const T2& t2, const T3& t3)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (data.template get_address<char>()) value_type(t1, t2, t3);
+      pointer p = ::new (&storage.value) value_type(t1, t2, t3);
+      valid     = true;
+      return *p;
     }
 
     //***************************************************************************
     /// Constructs the instance of T with types T1, T2, T3, T4
-    /// asserts if has_value() is false.
-    ///
-    /// \returns the instance of T which has been constructed in the internal byte array.
+    /// \returns the instance of T which has been constructed in the internal
+    /// byte array.
     //***************************************************************************
-    template<typename T1, typename T2, typename T3, typename T4>
+    template <typename T1, typename T2, typename T3, typename T4>
     reference create(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
-      valid = true;
-      return *::new (data.template get_address<char>()) value_type(t1, t2, t3, t4);
+      pointer p = ::new (&storage.value) value_type(t1, t2, t3, t4);
+      valid     = true;
+      return *p;
     }
 #endif
 
     //***************************************************************************
+    /// Calls the destructor of the stored object, if created.
+    //***************************************************************************
+    void destroy() ETL_NOEXCEPT
+    {
+      if (has_value())
+      {
+        storage.value.~T();
+        valid = false;
+      }
+    }
+
+    //***************************************************************************
     /// \returns a pointer of type T and asserts if has_value() is false.
     //***************************************************************************
-    pointer operator->()
+    pointer operator->() ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
-      return data.template get_address<value_type>();
+
+      return &storage.value;
     }
 
     //***************************************************************************
     /// \returns a const pointer of type T and asserts if has_value() is false.
     //***************************************************************************
-    const_pointer operator->() const
+    const_pointer operator->() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
-      return operator->();
+      ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
+
+      return &storage.value;
     }
 
     //***************************************************************************
     /// \returns reference of type T and asserts if has_value() is false.
     //***************************************************************************
-    reference operator*()
+    reference operator*() ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       return *operator->();
     }
 
     //***************************************************************************
-    /// \returns const reference of type T and asserts if has_value() is false.
+    /// \returns const_reference of type T and asserts if has_value() is false.
     //***************************************************************************
-    const_reference operator*() const
+    const_reference operator*() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
     {
       return *operator->();
     }
 
   private:
 
-    typename aligned_storage_as<sizeof(value_type), value_type>::type data;
+    typed_storage(etl::typed_storage<T>&) ETL_DELETE;
+    typed_storage& operator=(etl::typed_storage<T>&) ETL_DELETE;
+
+    struct dummy_t
+    {
+    };
+
+    //*******************************
+    union union_type
+    {
+      ETL_CONSTEXPR union_type() ETL_NOEXCEPT
+        : dummy()
+      {
+      }
+
+      ~union_type() ETL_NOEXCEPT {}
+
+      dummy_t    dummy;
+      value_type value;
+    } storage;
+
     bool valid;
   };
-}
+
+  //***************************************************************************
+  /// Wrapper class wraps a supplied memory area and lets the user create an
+  /// instance of T in this memory at runtime. This class also erases the
+  /// destructor call of T, i.e. if typed_storage goes out of scope, the
+  /// destructor if the wrapped type will not be called. This can be done
+  /// explicitly by calling destroy().
+  /// \tparam T    Type of element stored in this instance of typed_storage.
+  //***************************************************************************
+  template <typename T>
+  class typed_storage_ext
+  {
+  public:
+
+    typedef T        value_type;
+    typedef T&       reference;
+    typedef const T& const_reference;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
+
+    template <typename U>
+    friend ETL_CONSTEXPR14 void swap(typed_storage_ext<U>& lhs, typed_storage_ext<U>& rhs) ETL_NOEXCEPT;
+
+    //***************************************************************************
+    /// Constructor.
+    //***************************************************************************
+    typed_storage_ext(void* pbuffer_) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+      : pbuffer(reinterpret_cast<T*>(pbuffer_))
+      , valid(false)
+    {
+      ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
+    }
+
+#if ETL_USING_CPP11
+    //***************************************************************************
+    /// Constructs the instance of T forwarding the given \p args to its
+    /// constructor.
+    //***************************************************************************
+    template <typename... TArgs>
+    typed_storage_ext(void* pbuffer_, TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+      : pbuffer(reinterpret_cast<T*>(pbuffer_))
+      , valid(false)
+    {
+      ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
+      create(etl::forward<TArgs>(args)...);
+    }
+
+    //***************************************************************************
+    /// Move constructor.
+    /// Transfers ownership of the buffer from \p other to this.
+    //***************************************************************************
+    typed_storage_ext(typed_storage_ext<T>&& other) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+      : pbuffer(other.pbuffer)
+      , valid(other.valid)
+    {
+      other.pbuffer = ETL_NULLPTR;
+      other.valid   = false;
+    }
+#else
+    //***************************************************************************
+    /// Constructs the instance of T with type T1
+    //***************************************************************************
+    template <typename T1>
+    typed_storage_ext(void* pbuffer_, const T1& t1)
+      : pbuffer(reinterpret_cast<T*>(pbuffer_))
+      , valid(false)
+    {
+      ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
+      create(t1);
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2
+    //***************************************************************************
+    template <typename T1, typename T2>
+    typed_storage_ext(void* pbuffer_, const T1& t1, const T2& t2)
+      : pbuffer(reinterpret_cast<T*>(pbuffer_))
+      , valid(false)
+    {
+      ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
+      create(t1, t2);
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2, T3
+    //***************************************************************************
+    template <typename T1, typename T2, typename T3>
+    typed_storage_ext(void* pbuffer_, const T1& t1, const T2& t2, const T3& t3)
+      : pbuffer(reinterpret_cast<T*>(pbuffer_))
+      , valid(false)
+    {
+      ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
+      create(t1, t2, t3);
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2, T3, T4
+    //***************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    typed_storage_ext(void* pbuffer_, const T1& t1, const T2& t2, const T3& t3, const T4& t4)
+      : pbuffer(reinterpret_cast<T*>(pbuffer_))
+      , valid(false)
+    {
+      ETL_ASSERT(etl::is_aligned(pbuffer_, etl::alignment_of<T>::value), ETL_ERROR(etl::alignment_error));
+      create(t1, t2, t3, t4);
+    }
+#endif
+
+    //***************************************************************************
+    /// Default destructor which will NOT call the destructor of the object
+    /// which was created by calling create().
+    //***************************************************************************
+    ~typed_storage_ext() ETL_NOEXCEPT
+    {
+      // Intentionally empty.
+    }
+
+    //***************************************************************************
+    /// \returns <b>true</b> if object has been constructed using create().
+    /// \returns <b>false</b> otherwise.
+    //***************************************************************************
+    bool has_value() const ETL_NOEXCEPT
+    {
+      return valid;
+    }
+
+#if ETL_USING_CPP11
+    //***************************************************************************
+    /// Constructs the instance of T forwarding the given \p args to its
+    /// constructor. \returns the instance of T which has been constructed in
+    /// the external buffer.
+    //***************************************************************************
+    template <typename... TArgs>
+    reference create(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(etl::forward<TArgs>(args)...);
+      valid     = true;
+      return *p;
+    }
+#else
+    //***************************************************************************
+    /// Constructs the instance of T with type T1
+    /// \returns the instance of T which has been constructed in the external
+    /// buffer.
+    //***************************************************************************
+    template <typename T1>
+    reference create(const T1& t1)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(t1);
+      valid     = true;
+      return *p;
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2
+    /// \returns the instance of T which has been constructed in the external
+    /// buffer.
+    //***************************************************************************
+    template <typename T1, typename T2>
+    reference create(const T1& t1, const T2& t2)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(t1, t2);
+      valid     = true;
+      return *p;
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2, T3
+    /// \returns the instance of T which has been constructed in the external
+    /// buffer.
+    //***************************************************************************
+    template <typename T1, typename T2, typename T3>
+    reference create(const T1& t1, const T2& t2, const T3& t3)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(t1, t2, t3);
+      valid     = true;
+      return *p;
+    }
+
+    //***************************************************************************
+    /// Constructs the instance of T with types T1, T2, T3, T4
+    /// \returns the instance of T which has been constructed in the external
+    /// buffer.
+    //***************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    reference create(const T1& t1, const T2& t2, const T3& t3, const T4& t4)
+    {
+      ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
+      pointer p = ::new (pbuffer) value_type(t1, t2, t3, t4);
+      valid     = true;
+      return *p;
+    }
+#endif
+
+    //***************************************************************************
+    /// Calls the destructor of the stored object, if created.
+    //***************************************************************************
+    void destroy() ETL_NOEXCEPT
+    {
+      if (has_value())
+      {
+        pbuffer->~T();
+        valid = false;
+      }
+    }
+
+    //***************************************************************************
+    /// \returns a pointer of type T and asserts if has_value() is false.
+    //***************************************************************************
+    pointer operator->() ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    {
+      ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
+
+      return pbuffer;
+    }
+
+    //***************************************************************************
+    /// \returns a const pointer of type T and asserts if has_value() is false.
+    //***************************************************************************
+    const_pointer operator->() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    {
+      ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
+
+      return pbuffer;
+    }
+
+    //***************************************************************************
+    /// \returns reference of type T and asserts if has_value() is false.
+    //***************************************************************************
+    reference operator*() ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    {
+      return *operator->();
+    }
+
+    //***************************************************************************
+    /// \returns const_reference of type T and asserts if has_value() is false.
+    //***************************************************************************
+    const_reference operator*() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    {
+      return *operator->();
+    }
+
+  private:
+
+    typed_storage_ext(etl::typed_storage_ext<T>&) ETL_DELETE;
+    typed_storage_ext& operator=(etl::typed_storage_ext<T>&) ETL_DELETE;
+
+    pointer pbuffer;
+    bool    valid;
+  };
+
+  //***************************************************************************
+  /// Swap two etl::typed_storage_ext
+  //***************************************************************************
+  template <typename T>
+  ETL_CONSTEXPR14 void swap(etl::typed_storage_ext<T>& lhs, etl::typed_storage_ext<T>& rhs) ETL_NOEXCEPT
+  {
+    using ETL_OR_STD::swap;
+
+    swap(lhs.pbuffer, rhs.pbuffer);
+    swap(lhs.valid, rhs.valid);
+  }
+} // namespace etl
 
 #endif

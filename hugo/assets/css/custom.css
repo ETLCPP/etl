@@ -1,0 +1,423 @@
+/* Definitions for light mode */
+html:not(.dark) .highlight .chroma .c1
+{
+  color: forestgreen !important;
+}
+
+html:not(.dark) .highlight .chroma .cp,
+html:not(.dark) .highlight .chroma .cpf {
+  color: mediumslateblue !important;
+}
+
+html:not(.dark) h1 { 
+  color: white !important;
+  width: 100%;
+  background-color: coral !important;
+  border: width 0.15rem solid rgb(163, 81, 51) !important;
+  padding: 0.5rem 0.5rem !important;
+}
+
+html:not(.dark) h2 { 
+  color: royalblue !important;
+  border-bottom: 3px solid black !important; 
+}
+
+html:not(.dark) h3, 
+html:not(.dark) h4 
+{ 
+  color: darkgoldenrod !important;
+  border-bottom: 2px solid darkgrey !important; 
+}
+
+html:not(.dark) p { 
+  color: black !important; 
+}
+
+html:not(.dark) dl,
+html:not(.dark) dl dt code,
+html:not(.dark) dl dd {
+  color: black !important;
+  background-color: #eeeeee !important;
+}
+
+html:not(.dark) code,
+html:not(.dark) pre,
+html:not(.dark) pre code {
+  color: black !important;
+  background-color: #eeeeee !important;
+}
+
+html:not(.dark) hr {
+  background-color: #eeeeee !important;
+}
+
+html:not(.dark) .hx\:font-extrabold {
+  font-family: Roboto, sans-serif !important;
+  font-size: 1.6rem !important;
+  color: royalblue !important;
+}
+
+/* inactive */
+html:not(.dark) .hx\:text-gray-500 {
+  color: black !important;
+}
+
+/* active */
+html:not(.dark) .hextra-sidebar-active-item {
+  color: black !important;
+}
+
+html:not(.dark) .content p.label-text {
+  color: darkgoldenrod !important;
+}
+
+/* Regular item hover */
+html:not(.dark) .hextra-sidebar-item a:hover,
+html:not(.dark) .hextra-sidebar-item a:hover span {
+  background-color: rgb(250, 195, 175) !important;
+  color: black !important;
+}
+
+/* Active item default + hover - must come AFTER regular hover */
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a span,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover span {
+  background-color: coral !important;
+  color: white !important;
+}
+
+
+/* Definitions for dark mode */
+html.dark .highlight .chroma .c1
+{
+  color: lightgreen !important;
+}
+
+html.dark .highlight .chroma .cp,
+html.dark.highlight .chroma .cpf {
+  color: lightsteelblue !important;
+}
+
+html.dark body {
+  background-color: #1e1e1e !important;
+}
+
+html.dark main {
+  background-color: #252525 !important;
+}
+
+html.dark .hx\:dark\:shadow-\[0_-12px_16px_\#111\] {
+  box-shadow: 0 -12px 16px #1e1e1e !important;
+}
+
+html.dark .hx\:dark\:bg-dark {
+  background-color: #1e1e1e !important;
+  border-color: grey !important;
+}
+
+html.dark h1 
+{ 
+  color: white !important;
+  width: 100%;
+  background-color: rgb(177, 87, 54) !important;
+  padding: 0.5rem 0.5rem !important;
+}
+
+html.dark h2 { 
+  color: #7099c7 !important; 
+  border-bottom: 2px solid #c0c0c0 !important; 
+}
+
+html.dark h3, 
+html.dark h4 { 
+  color: lightgreen !important;
+  border-bottom: 2px solid #505050 !important; 
+}
+
+html.dark p { 
+  color: #c0c0c0 !important; 
+}
+
+html.dark p strong {
+  color: #c4c3a6;
+}
+
+html.dark dl,
+html.dark dl dt code,
+html.dark dl dd {
+  color: #c0c0c0 !important;
+  background-color: #444444 !important;
+}
+
+html.dark code, 
+html.dark pre,
+html.dark pre code {
+  color: #c0c0c0 !important;
+  background-color: #444444 !important;
+}
+
+html.dark hr {
+  background-color: #505050 !important;
+}
+
+html.dark .hx\:font-extrabold {
+  font-family: Roboto, sans-serif !important;
+  font-size: 1.6rem !important;
+  color: #7099c7 !important;
+}
+
+/* inactive */
+html.dark .hx\:text-gray-500 {
+  color: #c0c0c0 !important;
+}
+
+/* active */
+html.dark .hextra-sidebar-active-item {
+  color: #c0c0c0 !important;
+}
+
+html.dark .hextra-code-block .highlight .chroma span.p {
+  color: #c0c0c0;
+}
+
+html.dark .content p.label-text {
+  color: salmon !important;
+}
+
+/* Regular item hover */
+html.dark .hextra-sidebar-item a:hover,
+html.dark .hextra-sidebar-item a:hover span {
+  background-color: rgb(250, 195, 175) !important;
+  color: black !important;
+}
+
+/* Active item default + hover - must come AFTER regular hover */
+html.dark .hextra-sidebar-item[data-active="true"] a,
+html.dark .hextra-sidebar-item[data-active="true"] a span,
+html.dark .hextra-sidebar-item[data-active="true"] a:hover,
+html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
+  background-color: rgb(177, 87, 54) !important;
+  color: #e0e0e0 !important;
+}
+
+/* Common definitions */
+
+@font-face {
+  font-family: Roboto;
+  src: url('/fonts/roboto-v51-latin-regular.woff2') format('woff2');
+  font-weight:500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('/fonts/roboto-mono-v31-latin-500.woff2') format('woff2');
+  font-weight: nornal;
+  font-style: normal;
+}
+
+.highlight .chroma .k,
+.highlight .chroma .kc,
+.highlight .chroma .kd,
+.highlight .chroma .kn,
+.highlight .chroma .kp,
+.highlight .chroma .kr, 
+.highlight .chroma .kt, 
+.highlight .chroma .nc,
+.highlight .chroma .nf,
+.highlight .chroma .o,
+.highlight .chroma .cp,
+.highlight .chroma .cpf {
+  font-weight: normal !important;
+  font-style: normal !important;
+}
+
+.hx\:mb-0 {
+  display: block;
+  width: 100%;
+}
+
+.hextra-code-block {
+  margin-top: 0.5rem !important;
+
+}
+
+/* .highlight .chroma .c1
+{
+  color: forestgreen !important;
+}
+
+.highlight .chroma .cp,
+.highlight .chroma .cpf {
+  color: mediumslateblue !important;
+} */
+
+html.dark .hextra-code-block .highlight .chroma .cs,
+html.dark .hextra-code-block .highlight .chroma .cp,
+html.dark .hextra-code-block .highlight .chroma .cpf {
+  font-weight: normal;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+.badges p {
+  display: contents;
+  margin: 0;
+}
+
+.badges div {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.content ul li {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1.1rem !important;
+}
+
+.err {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+h1 {
+  font-family: Roboto, sans-serif !important;
+  font-style: i !important;
+  font-weight: 500 !important;
+  font-size: 1.9rem !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.0em !important;
+  border-radius: 0.5rem !important;
+}
+
+h2 {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1.5rem !important;
+  margin-top: 1.0em !important;
+  margin-bottom: 0.5em !important;
+}
+
+h3 {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1.2rem !important;
+  margin-top: 0.7em !important;
+  margin-bottom: 0em !important;
+  padding: 0 !important;
+  #display: inline-block;
+}
+
+h4 {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1.1rem !important;
+  margin-top: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  display: inline-block;
+}
+
+dl {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+dl dt code {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+dl dd {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+ol {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+ol li {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+ol li code {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+code {
+  font-family: 'Roboto Mono', monospace !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-size: 0.9rem !important;
+  border: none !important;
+}
+
+pre code {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 0.9rem !important;
+  margin-left: 0 !important;
+  border: none !important;
+}
+
+pre {
+  font-family: 'Roboto Mono', monospace !important;
+  font-size: 0.9rem !important;
+  margin-top: 0em !important;
+  margin-bottom: 0em !important;
+  padding-left: 0.5em !important;
+  padding-right: 0.5em !important;
+  border: none !important;
+}
+
+hr {
+    height: 2px !important;
+    border: none !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+}
+
+p {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1.1rem !important;
+  margin-top: 0.5em !important;
+}
+
+tr td code{
+  font-family: 'Roboto Mono', monospace !important;
+  font-size: 0.8rem !important;
+}
+
+

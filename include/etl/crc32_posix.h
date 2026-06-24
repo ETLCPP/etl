@@ -61,7 +61,7 @@ namespace etl
     /// \param begin Start of the range.
     /// \param end   End of the range.
     //*************************************************************************
-    template<typename TIterator>
+    template <typename TIterator>
     crc32_posix_t(TIterator begin, const TIterator end)
     {
       this->reset();
@@ -74,5 +74,5 @@ namespace etl
   typedef etl::crc32_posix_t<16U>  crc32_posix_t16;
   typedef etl::crc32_posix_t<4U>   crc32_posix_t4;
   typedef crc32_posix_t256         crc32_posix;
-}
+} // namespace etl
 #endif

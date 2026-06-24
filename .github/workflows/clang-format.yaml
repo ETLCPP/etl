@@ -1,0 +1,43 @@
+name: clang-format
+
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, development, pull-request/* ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  clang-format:
+    name: clang-format
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install clang-format and git
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends git clang-format
+          clang-format --version
+
+      - name: Run clang-format on added/changed files
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BEFORE="origin/${{ github.base_ref }}"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            BEFORE="${{ github.event.before }}"
+          else
+            echo "Unsupported event: ${{ github.event_name }}"
+            echo "This is likely a bug in the workflow configuration. Please report it to the maintainers."
+            exit 1
+          fi
+
+          git diff --name-only -z --diff-filter=AMCR "$BEFORE"..HEAD -- \
+            '*.c' '*.cc' '*.cxx' '*.cpp' \
+            '*.h' '*.hh' '*.hpp' '*.hxx' \
+            '*.ipp' '*.inl' \
+            ':(exclude)include/etl/generators/*' \
+            ':(exclude)include/etl/private/*_cpp03.h' \
+            | xargs -0 --no-run-if-empty clang-format --Werror -n --style=file

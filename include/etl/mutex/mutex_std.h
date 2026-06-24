@@ -40,6 +40,6 @@ namespace etl
   ///\brief This mutex class is implemented using std::mutex.
   //***************************************************************************
   using mutex = std::mutex;
-}
+} // namespace etl
 
 #endif

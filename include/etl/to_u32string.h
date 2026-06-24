@@ -35,8 +35,8 @@ SOFTWARE.
 
 #include "platform.h"
 #include "type_traits.h"
-#include "u32string.h"
 #include "u32format_spec.h"
+#include "u32string.h"
 #include "private/to_string_helper.h"
 
 namespace etl
@@ -94,8 +94,8 @@ namespace etl
   /// etl::iu32string
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_same<T, etl::iu32string>::value, const etl::iu32string&>::type
-    to_string(const T& value, etl::iu32string& str, bool append = false)
+  typename etl::enable_if<etl::is_same<T, etl::iu32string>::value, const etl::iu32string&>::type to_string(const T& value, etl::iu32string& str,
+                                                                                                           bool append = false)
   {
     etl::u32format_spec format;
 
@@ -122,8 +122,8 @@ namespace etl
   /// etl::u32string_view
   //***************************************************************************
   template <typename T>
-  typename etl::enable_if<etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type
-    to_string(T value, etl::iu32string& str, bool append = false)
+  typename etl::enable_if<etl::is_same<T, etl::u32string_view>::value, const etl::iu32string&>::type to_string(T value, etl::iu32string& str,
+                                                                                                               bool append = false)
   {
     etl::u32format_spec format;
 
@@ -144,6 +144,6 @@ namespace etl
 
     return str;
   }
-}
+} // namespace etl
 
 #endif

@@ -32,22 +32,22 @@ SOFTWARE.
 #define ETL_STRING_VIEW_INCLUDED
 
 #include "platform.h"
-#include "memory.h"
-#include "iterator.h"
+#include "algorithm.h"
+#include "basic_string.h"
+#include "char_traits.h"
 #include "error_handler.h"
 #include "exception.h"
-#include "char_traits.h"
-#include "integral_limits.h"
 #include "hash.h"
-#include "basic_string.h"
-#include "algorithm.h"
+#include "integral_limits.h"
+#include "iterator.h"
+#include "memory.h"
 #include "private/minmax_push.h"
 
 #if ETL_USING_STL && ETL_USING_CPP17
   #include <string_view>
 #endif
 
-#if ETL_USING_STL
+#if ETL_USING_STD_OSTREAM
   #include <ostream>
 #endif
 
@@ -69,7 +69,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup stack
+  ///\ingroup string
   /// The exception thrown when the index is out of bounds.
   //***************************************************************************
   class string_view_bounds : public string_view_exception
@@ -83,7 +83,7 @@ namespace etl
   };
 
   //***************************************************************************
-  ///\ingroup stack
+  ///\ingroup string
   /// The exception thrown when the view is uninitialised.
   //***************************************************************************
   class string_view_uninitialised : public string_view_exception
@@ -97,6 +97,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// The exception thrown when the view is empty.
+  //***************************************************************************
+  class string_view_empty : public string_view_exception
+  {
+  public:
+
+    string_view_empty(string_type file_name_, numeric_type line_number_)
+      : string_view_exception(ETL_ERROR_TEXT("basic_string_view:empty", ETL_STRING_VIEW_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// String view.
   //***************************************************************************
   template <typename T, typename TTraits = etl::char_traits<T> >
@@ -104,15 +117,15 @@ namespace etl
   {
   public:
 
-    typedef T        value_type;
-    typedef TTraits  traits_type;
-    typedef size_t   size_type;
-    typedef T&       reference;
-    typedef const T& const_reference;
-    typedef T*       pointer;
-    typedef const T* const_pointer;
-    typedef const T* iterator;
-    typedef const T* const_iterator;
+    typedef T                                            value_type;
+    typedef TTraits                                      traits_type;
+    typedef size_t                                       size_type;
+    typedef T&                                           reference;
+    typedef const T&                                     const_reference;
+    typedef T*                                           pointer;
+    typedef const T*                                     const_pointer;
+    typedef const T*                                     iterator;
+    typedef const T*                                     const_iterator;
     typedef ETL_OR_STD::reverse_iterator<const_iterator> const_reverse_iterator;
 
     enum
@@ -132,7 +145,7 @@ namespace etl
     //*************************************************************************
     /// Construct from string.
     //*************************************************************************
-    ETL_CONSTEXPR basic_string_view(const etl::ibasic_string<T>& str)
+    ETL_CONSTEXPR basic_string_view(const etl::ibasic_string<T>& str) ETL_NOEXCEPT
       : mbegin(str.begin())
       , mend(str.end())
     {
@@ -141,7 +154,7 @@ namespace etl
     //*************************************************************************
     /// Construct from T*.
     //*************************************************************************
-    ETL_CONSTEXPR14  ETL_EXPLICIT_STRING_FROM_CHAR basic_string_view(const T* begin_)
+    ETL_CONSTEXPR14 ETL_EXPLICIT_STRING_FROM_CHAR basic_string_view(const T* begin_) ETL_NOEXCEPT
       : mbegin(begin_)
       , mend(begin_ + TTraits::length(begin_))
     {
@@ -150,7 +163,7 @@ namespace etl
     //*************************************************************************
     /// Construct from pointer range.
     //*************************************************************************
-    ETL_CONSTEXPR basic_string_view(const T* begin_, const T* end_)
+    ETL_CONSTEXPR basic_string_view(const T* begin_, const T* end_) ETL_NOEXCEPT
       : mbegin(begin_)
       , mend(end_)
     {
@@ -159,7 +172,7 @@ namespace etl
     //*************************************************************************
     /// Construct from pointer/size.
     //*************************************************************************
-    ETL_CONSTEXPR basic_string_view(const T* begin_, size_t size_)
+    ETL_CONSTEXPR basic_string_view(const T* begin_, size_t size_) ETL_NOEXCEPT
       : mbegin(begin_)
       , mend(begin_ + size_)
     {
@@ -176,24 +189,38 @@ namespace etl
 
     //*************************************************************************
     /// Returns a const reference to the first element.
+    /// If asserts or exceptions are enabled, throws an etl::string_view_empty
+    /// if the view is empty.
     //*************************************************************************
     ETL_CONSTEXPR const_reference front() const
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return !empty() ? *mbegin : throw(ETL_ERROR(string_view_empty));
+#else
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(string_view_empty));
       return *mbegin;
+#endif
     }
 
     //*************************************************************************
     /// Returns a const reference to the last element.
+    /// If asserts or exceptions are enabled, throws an etl::string_view_empty
+    /// if the view is empty.
     //*************************************************************************
     ETL_CONSTEXPR const_reference back() const
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_EXTRA
+      return !empty() ? *(mend - 1) : throw(ETL_ERROR(string_view_empty));
+#else
+      ETL_ASSERT_CHECK_EXTRA(!empty(), ETL_ERROR(string_view_empty));
       return *(mend - 1);
+#endif
     }
 
     //*************************************************************************
     /// Returns a const pointer to the first element of the internal storage.
     //*************************************************************************
-    ETL_CONSTEXPR const_pointer data() const
+    ETL_CONSTEXPR const_pointer data() const ETL_NOEXCEPT
     {
       return mbegin;
     }
@@ -201,7 +228,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator begin() const
+    ETL_CONSTEXPR const_iterator begin() const ETL_NOEXCEPT
     {
       return mbegin;
     }
@@ -209,7 +236,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator cbegin() const
+    ETL_CONSTEXPR const_iterator cbegin() const ETL_NOEXCEPT
     {
       return mbegin;
     }
@@ -217,7 +244,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator end() const
+    ETL_CONSTEXPR const_iterator end() const ETL_NOEXCEPT
     {
       return mend;
     }
@@ -225,7 +252,7 @@ namespace etl
     //*************************************************************************
     // Returns a const iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_iterator cend() const
+    ETL_CONSTEXPR const_iterator cend() const ETL_NOEXCEPT
     {
       return mend;
     }
@@ -233,7 +260,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator rbegin() const
+    ETL_CONSTEXPR const_reverse_iterator rbegin() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(mend);
     }
@@ -241,7 +268,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the reverse beginning of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator crbegin() const
+    ETL_CONSTEXPR const_reverse_iterator crbegin() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(mend);
     }
@@ -249,7 +276,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator rend() const
+    ETL_CONSTEXPR const_reverse_iterator rend() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(mbegin);
     }
@@ -257,7 +284,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reverse iterator to the end of the array.
     //*************************************************************************
-    ETL_CONSTEXPR const_reverse_iterator crend() const
+    ETL_CONSTEXPR const_reverse_iterator crend() const ETL_NOEXCEPT
     {
       return const_reverse_iterator(mbegin);
     }
@@ -269,7 +296,7 @@ namespace etl
     //*************************************************************************
     /// Returns <b>true</b> if the array size is zero.
     //*************************************************************************
-    ETL_CONSTEXPR bool empty() const
+    ETL_CONSTEXPR bool empty() const ETL_NOEXCEPT
     {
       return (mbegin == mend);
     }
@@ -277,7 +304,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t size() const
+    ETL_CONSTEXPR size_t size() const ETL_NOEXCEPT
     {
       return static_cast<size_t>(mend - mbegin);
     }
@@ -285,7 +312,7 @@ namespace etl
     //*************************************************************************
     /// Returns the size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t length() const
+    ETL_CONSTEXPR size_t length() const ETL_NOEXCEPT
     {
       return size();
     }
@@ -293,7 +320,7 @@ namespace etl
     //*************************************************************************
     /// Returns the maximum possible size of the array.
     //*************************************************************************
-    ETL_CONSTEXPR size_t max_size() const
+    ETL_CONSTEXPR size_t max_size() const ETL_NOEXCEPT
     {
       return size();
     }
@@ -301,7 +328,7 @@ namespace etl
     //*************************************************************************
     /// Assign from a view.
     //*************************************************************************
-    ETL_CONSTEXPR14 etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view<T, TTraits>& other)
+    ETL_CONSTEXPR14 etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view<T, TTraits>& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
       mend   = other.mend;
@@ -311,7 +338,7 @@ namespace etl
     //*************************************************************************
     /// Assign from iterators
     //*************************************************************************
-    ETL_CONSTEXPR14 void assign(const_pointer begin_, const_pointer end_)
+    ETL_CONSTEXPR14 void assign(const_pointer begin_, const_pointer end_) ETL_NOEXCEPT
     {
       mbegin = begin_;
       mend   = end_;
@@ -320,7 +347,7 @@ namespace etl
     //*************************************************************************
     /// Assign from iterator and size.
     //*************************************************************************
-    ETL_CONSTEXPR14 void assign(const_pointer begin_, size_t size_)
+    ETL_CONSTEXPR14 void assign(const_pointer begin_, size_t size_) ETL_NOEXCEPT
     {
       mbegin = begin_;
       mend   = begin_ + size_;
@@ -328,10 +355,17 @@ namespace etl
 
     //*************************************************************************
     /// Returns a const reference to the indexed value.
+    /// If asserts or exceptions are enabled, throws an etl::string_view_bounds
+    /// if the index is out of bounds.
     //*************************************************************************
-    ETL_CONSTEXPR const_reference operator[](size_t i) const
+    ETL_CONSTEXPR const_reference operator[](size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
+#if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_INDEX_OPERATOR
+      return i < size() ? mbegin[i] : throw(ETL_ERROR(string_view_bounds));
+#else
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(string_view_bounds));
       return mbegin[i];
+#endif
     }
 
     //*************************************************************************
@@ -358,7 +392,7 @@ namespace etl
     //*************************************************************************
     /// Copies characters
     //*************************************************************************
-    ETL_CONSTEXPR14 size_type copy(T* destination, size_type count, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type copy(T* destination, size_type count, size_type position = 0) const ETL_NOEXCEPT
     {
       size_t n = 0UL;
 
@@ -375,7 +409,7 @@ namespace etl
     //*************************************************************************
     /// Returns a substring
     //*************************************************************************
-    ETL_CONSTEXPR14 basic_string_view substr(size_type position = 0, size_type count = npos) const
+    ETL_CONSTEXPR14 basic_string_view substr(size_type position = 0, size_type count = npos) const ETL_NOEXCEPT
     {
       basic_string_view view = basic_string_view();
 
@@ -392,7 +426,7 @@ namespace etl
     //*************************************************************************
     /// Shrinks the view by moving its start forward.
     //*************************************************************************
-    ETL_CONSTEXPR14 void remove_prefix(size_type n)
+    ETL_CONSTEXPR14 void remove_prefix(size_type n) ETL_NOEXCEPT
     {
       mbegin += n;
     }
@@ -400,7 +434,7 @@ namespace etl
     //*************************************************************************
     /// Shrinks the view by moving its end backward.
     //*************************************************************************
-    ETL_CONSTEXPR14 void remove_suffix(size_type n)
+    ETL_CONSTEXPR14 void remove_suffix(size_type n) ETL_NOEXCEPT
     {
       mend -= n;
     }
@@ -408,24 +442,23 @@ namespace etl
     //*************************************************************************
     /// Compares two views
     //*************************************************************************
-    ETL_CONSTEXPR14 int compare(basic_string_view<T, TTraits> view) const
+    ETL_CONSTEXPR14 int compare(basic_string_view<T, TTraits> view) const ETL_NOEXCEPT
     {
       return (*this == view) ? 0 : ((*this > view) ? 1 : -1);
     }
 
-    ETL_CONSTEXPR14 int compare(size_type position, size_type count, basic_string_view view) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type count, basic_string_view view) const ETL_NOEXCEPT
     {
       return substr(position, count).compare(view);
     }
 
-    ETL_CONSTEXPR14 int compare(size_type position1, size_type count1,
-                                basic_string_view view,
-                                size_type position2, size_type count2) const
+    ETL_CONSTEXPR14 int compare(size_type position1, size_type count1, basic_string_view view, size_type position2, size_type count2) const
+      ETL_NOEXCEPT
     {
       return substr(position1, count1).compare(view.substr(position2, count2));
     }
 
-    ETL_CONSTEXPR14 int compare(const T* text) const
+    ETL_CONSTEXPR14 int compare(const T* text) const ETL_NOEXCEPT
     {
       const T* view_itr = mbegin;
       const T* text_itr = text;
@@ -458,12 +491,12 @@ namespace etl
       }
     }
 
-    ETL_CONSTEXPR14 int compare(size_type position, size_type count, const T* text) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type count, const T* text) const ETL_NOEXCEPT
     {
       return substr(position, count).compare(text);
     }
 
-    ETL_CONSTEXPR14 int compare(size_type position, size_type count1, const T* text, size_type count2) const
+    ETL_CONSTEXPR14 int compare(size_type position, size_type count1, const T* text, size_type count2) const ETL_NOEXCEPT
     {
       return substr(position, count1).compare(etl::basic_string_view<T, TTraits>(text, count2));
     }
@@ -471,32 +504,29 @@ namespace etl
     //*************************************************************************
     /// Checks if the string view starts with the given prefix
     //*************************************************************************
-    ETL_CONSTEXPR14 bool starts_with(etl::basic_string_view<T, TTraits> view) const
+    ETL_CONSTEXPR14 bool starts_with(etl::basic_string_view<T, TTraits> view) const ETL_NOEXCEPT
     {
-      return (size() >= view.size()) &&
-             (compare(0, view.size(), view) == 0);
+      return (size() >= view.size()) && (compare(0, view.size(), view) == 0);
     }
 
-    ETL_CONSTEXPR14 bool starts_with(T c) const
+    ETL_CONSTEXPR14 bool starts_with(T c) const ETL_NOEXCEPT
     {
       return !empty() && (front() == c);
     }
 
-    ETL_CONSTEXPR14 bool starts_with(const T* text) const
+    ETL_CONSTEXPR14 bool starts_with(const T* text) const ETL_NOEXCEPT
     {
       size_t lengthtext = TTraits::length(text);
 
-      return (size() >= lengthtext) &&
-             (compare(0, lengthtext, text) == 0);
+      return (size() >= lengthtext) && (compare(0, lengthtext, text) == 0);
     }
 
     //*************************************************************************
     /// Checks if the string view ends with the given suffix
     //*************************************************************************
-    ETL_CONSTEXPR14 bool ends_with(etl::basic_string_view<T, TTraits> view) const
+    ETL_CONSTEXPR14 bool ends_with(etl::basic_string_view<T, TTraits> view) const ETL_NOEXCEPT
     {
-      return (size() >= view.size()) &&
-             (compare(size() - view.size(), npos, view) == 0);
+      return (size() >= view.size()) && (compare(size() - view.size(), npos, view) == 0);
     }
 
     ETL_CONSTEXPR14 bool ends_with(T c) const
@@ -509,14 +539,13 @@ namespace etl
       size_t lengthtext = TTraits::length(text);
       size_t lengthview = size();
 
-      return (lengthview >= lengthtext) &&
-             (compare(lengthview - lengthtext, lengthtext, text) == 0);
+      return (lengthview >= lengthtext) && (compare(lengthview - lengthtext, lengthtext, text) == 0);
     }
 
     //*************************************************************************
     /// Find characters in the view
     //*************************************************************************
-    ETL_CONSTEXPR14 size_type find(etl::basic_string_view<T, TTraits> view, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find(etl::basic_string_view<T, TTraits> view, size_type position = 0) const ETL_NOEXCEPT
     {
       if ((size() < view.size()))
       {
@@ -531,21 +560,21 @@ namespace etl
       }
       else
       {
-        return etl::distance(begin(), iposition);
+        return static_cast<size_type>(etl::distance(begin(), iposition));
       }
     }
 
-    ETL_CONSTEXPR14 size_type find(T c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find(T c, size_type position = 0) const ETL_NOEXCEPT
     {
       return find(etl::basic_string_view<T, TTraits>(&c, 1), position);
     }
 
-    ETL_CONSTEXPR14 size_type find(const T* text, size_type position, size_type count) const
+    ETL_CONSTEXPR14 size_type find(const T* text, size_type position, size_type count) const ETL_NOEXCEPT
     {
       return find(etl::basic_string_view<T, TTraits>(text, count), position);
     }
 
-    ETL_CONSTEXPR14 size_type find(const T* text, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find(const T* text, size_type position = 0) const ETL_NOEXCEPT
     {
       return find(etl::basic_string_view<T, TTraits>(text), position);
     }
@@ -553,19 +582,16 @@ namespace etl
     //*************************************************************************
     /// Find the last occurrence of a substring
     //*************************************************************************
-    ETL_CONSTEXPR14 size_type rfind(etl::basic_string_view<T, TTraits> view, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(etl::basic_string_view<T, TTraits> view, size_type position = npos) const ETL_NOEXCEPT
     {
       if ((size() < view.size()))
       {
         return npos;
       }
 
-      position = etl::min(position, size());
+      position = etl::min(position, size() - view.size());
 
-      const_iterator iposition = etl::find_end(begin(),
-        begin() + position,
-        view.begin(),
-        view.end());
+      const_iterator iposition = etl::find_end(begin(), begin() + position + view.size(), view.begin(), view.end());
 
       if (iposition == end())
       {
@@ -573,21 +599,21 @@ namespace etl
       }
       else
       {
-        return etl::distance(begin(), iposition);
+        return static_cast<size_type>(etl::distance(begin(), iposition));
       }
     }
 
-    ETL_CONSTEXPR14 size_type rfind(T c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(T c, size_type position = npos) const ETL_NOEXCEPT
     {
       return rfind(etl::basic_string_view<T, TTraits>(&c, 1), position);
     }
 
-    ETL_CONSTEXPR14 size_type rfind(const T* text, size_type position, size_type count) const
+    ETL_CONSTEXPR14 size_type rfind(const T* text, size_type position, size_type count) const ETL_NOEXCEPT
     {
       return rfind(etl::basic_string_view<T, TTraits>(text, count), position);
     }
 
-    ETL_CONSTEXPR14 size_type rfind(const T* text, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type rfind(const T* text, size_type position = npos) const ETL_NOEXCEPT
     {
       return rfind(etl::basic_string_view<T, TTraits>(text), position);
     }
@@ -595,7 +621,7 @@ namespace etl
     //*************************************************************************
     ///  Find first occurrence of characters
     //*************************************************************************
-    ETL_CONSTEXPR14 size_type find_first_of(etl::basic_string_view<T, TTraits> view, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(etl::basic_string_view<T, TTraits> view, size_type position = 0) const ETL_NOEXCEPT
     {
       const size_t lengthtext = size();
 
@@ -618,17 +644,17 @@ namespace etl
       return npos;
     }
 
-    ETL_CONSTEXPR14 size_type find_first_of(T c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(T c, size_type position = 0) const ETL_NOEXCEPT
     {
       return find_first_of(etl::basic_string_view<T, TTraits>(&c, 1), position);
     }
 
-    ETL_CONSTEXPR14 size_type find_first_of(const T* text, size_type position, size_type count) const
+    ETL_CONSTEXPR14 size_type find_first_of(const T* text, size_type position, size_type count) const ETL_NOEXCEPT
     {
       return find_first_of(etl::basic_string_view<T, TTraits>(text, count), position);
     }
 
-    ETL_CONSTEXPR14 size_type find_first_of(const T* text, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_of(const T* text, size_type position = 0) const ETL_NOEXCEPT
     {
       return find_first_of(etl::basic_string_view<T, TTraits>(text), position);
     }
@@ -636,7 +662,7 @@ namespace etl
     //*************************************************************************
     /// Find last occurrence of characters
     //*************************************************************************
-    ETL_CONSTEXPR14 size_type find_last_of(etl::basic_string_view<T, TTraits> view, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(etl::basic_string_view<T, TTraits> view, size_type position = npos) const ETL_NOEXCEPT
     {
       if (empty())
       {
@@ -645,7 +671,7 @@ namespace etl
 
       position = etl::min(position, size() - 1);
 
-      const_reverse_iterator it = rbegin() + size() - position - 1;
+      const_reverse_iterator it = rbegin() + static_cast<ptrdiff_t>(size() - position - 1);
 
       while (it != rend())
       {
@@ -666,17 +692,17 @@ namespace etl
       return npos;
     }
 
-    ETL_CONSTEXPR14 size_type find_last_of(T c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(T c, size_type position = npos) const ETL_NOEXCEPT
     {
       return find_last_of(etl::basic_string_view<T, TTraits>(&c, 1), position);
     }
 
-    ETL_CONSTEXPR14 size_type find_last_of(const T* text, size_type position, size_type count) const
+    ETL_CONSTEXPR14 size_type find_last_of(const T* text, size_type position, size_type count) const ETL_NOEXCEPT
     {
       return find_last_of(etl::basic_string_view<T, TTraits>(text, count), position);
     }
 
-    ETL_CONSTEXPR14 size_type find_last_of(const T* text, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_of(const T* text, size_type position = npos) const ETL_NOEXCEPT
     {
       return find_last_of(etl::basic_string_view<T, TTraits>(text), position);
     }
@@ -684,7 +710,7 @@ namespace etl
     //*************************************************************************
     /// Find first absence of characters
     //*************************************************************************
-    ETL_CONSTEXPR14 size_type find_first_not_of(etl::basic_string_view<T, TTraits> view, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(etl::basic_string_view<T, TTraits> view, size_type position = 0) const ETL_NOEXCEPT
     {
       const size_t lengthtext = size();
 
@@ -715,17 +741,17 @@ namespace etl
       return npos;
     }
 
-    ETL_CONSTEXPR14 size_type find_first_not_of(T c, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(T c, size_type position = 0) const ETL_NOEXCEPT
     {
       return find_first_not_of(etl::basic_string_view<T, TTraits>(&c, 1), position);
     }
 
-    ETL_CONSTEXPR14 size_type find_first_not_of(const T* text, size_type position, size_type count) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const T* text, size_type position, size_type count) const ETL_NOEXCEPT
     {
       return find_first_not_of(etl::basic_string_view<T, TTraits>(text, count), position);
     }
 
-    ETL_CONSTEXPR14 size_type find_first_not_of(const T* text, size_type position = 0) const
+    ETL_CONSTEXPR14 size_type find_first_not_of(const T* text, size_type position = 0) const ETL_NOEXCEPT
     {
       return find_first_not_of(etl::basic_string_view<T, TTraits>(text), position);
     }
@@ -733,7 +759,7 @@ namespace etl
     //*************************************************************************
     /// Find last absence of characters
     //*************************************************************************
-    ETL_CONSTEXPR14 size_type find_last_not_of(etl::basic_string_view<T, TTraits> view, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(etl::basic_string_view<T, TTraits> view, size_type position = npos) const ETL_NOEXCEPT
     {
       if (empty())
       {
@@ -742,7 +768,7 @@ namespace etl
 
       position = etl::min(position, size() - 1);
 
-      const_reverse_iterator it = rbegin() + size() - position - 1;
+      const_reverse_iterator it = rbegin() + static_cast<ptrdiff_t>(size() - position - 1);
 
       while (it != rend())
       {
@@ -771,17 +797,17 @@ namespace etl
       return npos;
     }
 
-    ETL_CONSTEXPR14 size_type find_last_not_of(T c, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(T c, size_type position = npos) const ETL_NOEXCEPT
     {
       return find_last_not_of(etl::basic_string_view<T, TTraits>(&c, 1), position);
     }
 
-    ETL_CONSTEXPR14 size_type find_last_not_of(const T* text, size_type position, size_type count) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const T* text, size_type position, size_type count) const ETL_NOEXCEPT
     {
       return find_last_not_of(etl::basic_string_view<T, TTraits>(text, count), position);
     }
 
-    ETL_CONSTEXPR14 size_type find_last_not_of(const T* text, size_type position = npos) const
+    ETL_CONSTEXPR14 size_type find_last_not_of(const T* text, size_type position = npos) const ETL_NOEXCEPT
     {
       return find_last_not_of(etl::basic_string_view<T, TTraits>(text), position);
     }
@@ -789,7 +815,7 @@ namespace etl
     //*********************************************************************
     /// Checks that the view is within this string
     //*********************************************************************
-    bool contains(const etl::basic_string_view<T, TTraits>& view) const 
+    bool contains(const etl::basic_string_view<T, TTraits>& view) const ETL_NOEXCEPT
     {
       return find(view) != npos;
     }
@@ -797,7 +823,7 @@ namespace etl
     //*********************************************************************
     /// Checks that text is within this string
     //*********************************************************************
-    bool contains(const_pointer s) const 
+    bool contains(const_pointer s) const ETL_NOEXCEPT
     {
       return find(s) != npos;
     }
@@ -805,7 +831,7 @@ namespace etl
     //*********************************************************************
     /// Checks that character is within this string
     //*********************************************************************
-    bool contains(value_type c) const 
+    bool contains(value_type c) const ETL_NOEXCEPT
     {
       return find(c) != npos;
     }
@@ -813,16 +839,15 @@ namespace etl
     //*************************************************************************
     /// Equality for string_view.
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator == (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
+    friend ETL_CONSTEXPR14 bool operator==(const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
-      return (lhs.size() == rhs.size()) &&
-              etl::equal(lhs.begin(), lhs.end(), rhs.begin());
+      return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
     }
 
     //*************************************************************************
     /// Inequality for string_view.
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator != (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
+    friend ETL_CONSTEXPR14 bool operator!=(const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
       return !(lhs == rhs);
     }
@@ -830,7 +855,7 @@ namespace etl
     //*************************************************************************
     /// Less-than for string_view.
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator < (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
+    friend ETL_CONSTEXPR14 bool operator<(const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
       return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
@@ -838,7 +863,7 @@ namespace etl
     //*************************************************************************
     /// Greater-than for string_view.
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator > (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
+    friend ETL_CONSTEXPR14 bool operator>(const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
       return rhs < lhs;
     }
@@ -846,7 +871,7 @@ namespace etl
     //*************************************************************************
     /// Less-than-equal for string_view.
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator <= (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
+    friend ETL_CONSTEXPR14 bool operator<=(const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
       return !(lhs > rhs);
     }
@@ -854,7 +879,7 @@ namespace etl
     //*************************************************************************
     /// Greater-than-equal for string_view.
     //*************************************************************************
-    friend ETL_CONSTEXPR14 bool operator >= (const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
+    friend ETL_CONSTEXPR14 bool operator>=(const etl::basic_string_view<T, TTraits>& lhs, const etl::basic_string_view<T, TTraits>& rhs)
     {
       return !(lhs < rhs);
     }
@@ -874,8 +899,8 @@ namespace etl
   //*************************************************************************
   /// make_string_view.
   //*************************************************************************
-  template<size_t Array_Size>
-  ETL_CONSTEXPR14 string_view make_string_view(const char(&text)[Array_Size])
+  template <size_t Array_Size>
+  ETL_CONSTEXPR14 string_view make_string_view(const char (&text)[Array_Size]) ETL_NOEXCEPT
   {
     size_t length = etl::char_traits<char>::length(text, Array_Size - 1U);
 
@@ -883,8 +908,8 @@ namespace etl
   }
 
   //***********************************
-  template<size_t Array_Size>
-  ETL_CONSTEXPR14 wstring_view make_string_view(const wchar_t(&text)[Array_Size])
+  template <size_t Array_Size>
+  ETL_CONSTEXPR14 wstring_view make_string_view(const wchar_t (&text)[Array_Size]) ETL_NOEXCEPT
   {
     size_t length = etl::char_traits<wchar_t>::length(text, Array_Size - 1U);
 
@@ -892,8 +917,8 @@ namespace etl
   }
 
   //***********************************
-  template<size_t Array_Size>
-  ETL_CONSTEXPR14 u8string_view make_string_view(const char8_t(&text)[Array_Size])
+  template <size_t Array_Size>
+  ETL_CONSTEXPR14 u8string_view make_string_view(const char8_t (&text)[Array_Size]) ETL_NOEXCEPT
   {
     size_t length = etl::char_traits<char8_t>::length(text, Array_Size - 1U);
 
@@ -901,8 +926,8 @@ namespace etl
   }
 
   //***********************************
-  template<size_t Array_Size>
-  ETL_CONSTEXPR14 u16string_view make_string_view(const char16_t(&text)[Array_Size])
+  template <size_t Array_Size>
+  ETL_CONSTEXPR14 u16string_view make_string_view(const char16_t (&text)[Array_Size]) ETL_NOEXCEPT
   {
     size_t length = etl::char_traits<char16_t>::length(text, Array_Size - 1U);
 
@@ -910,8 +935,8 @@ namespace etl
   }
 
   //***********************************
-  template<size_t Array_Size>
-  ETL_CONSTEXPR14 u32string_view make_string_view(const char32_t(&text)[Array_Size])
+  template <size_t Array_Size>
+  ETL_CONSTEXPR14 u32string_view make_string_view(const char32_t (&text)[Array_Size]) ETL_NOEXCEPT
   {
     size_t length = etl::char_traits<char32_t>::length(text, Array_Size - 1U);
 
@@ -962,19 +987,19 @@ namespace etl
     }
   };
 #endif
-}
+} // namespace etl
 
 //*************************************************************************
 /// Swaps the values.
 //*************************************************************************
 template <typename T, typename TTraits >
-void swap(etl::basic_string_view<T, TTraits>& lhs, etl::basic_string_view<T, TTraits>& rhs)
+void swap(etl::basic_string_view<T, TTraits>& lhs, etl::basic_string_view<T, TTraits>& rhs) ETL_NOEXCEPT
 {
   lhs.swap(rhs);
 }
 
 template <typename T>
-void swap(etl::basic_string_view<T, etl::char_traits<T> >& lhs, etl::basic_string_view<T, etl::char_traits<T> >& rhs)
+void swap(etl::basic_string_view<T, etl::char_traits<T> >& lhs, etl::basic_string_view<T, etl::char_traits<T> >& rhs) ETL_NOEXCEPT
 {
   lhs.swap(rhs);
 }
@@ -982,12 +1007,12 @@ void swap(etl::basic_string_view<T, etl::char_traits<T> >& lhs, etl::basic_strin
 //*************************************************************************
 /// Operator overload to write to std basic_ostream
 //*************************************************************************
-#if ETL_USING_STL
+#if ETL_USING_STD_OSTREAM
 template <typename T>
-std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, std::char_traits<T> > &os, 
+std::basic_ostream<T, std::char_traits<T> >& operator<<(std::basic_ostream<T, std::char_traits<T> >&    os,
                                                         etl::basic_string_view<T, etl::char_traits<T> > text)
 {
-  os.write(text.data(), text.size());
+  os.write(text.data(), static_cast<std::streamsize>(text.size()));
   return os;
 }
 #endif
@@ -995,4 +1020,3 @@ std::basic_ostream<T, std::char_traits<T> > &operator<<(std::basic_ostream<T, st
 #include "private/minmax_pop.h"
 
 #endif
-

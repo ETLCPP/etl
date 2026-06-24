@@ -1,0 +1,12 @@
+---
+title: "Generators"
+weight: 8
+---
+
+Several of the framework classes have 'generators'.  
+
+Some template classes in the ETL have specialisations to handle a variable numbers of template parameters. It is not possible to know beforehand what the maximum size will be required for any particular project, so the ETL supplies definitions with what seems to be a reasonable default size.  
+
+For many of the classes this is set to 16. To enable the use of the library in projects that require a higher capacity, generators have been created to automatically create the source code for supporting N variants.
+
+See Generators Tutorial for more information.

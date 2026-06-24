@@ -3,7 +3,8 @@ on:
   push:
     branches: [ master, development, pull-request/* ]
   pull_request:
-    branches: [ master, pull-request/* ]
+    branches: [ master, development, pull-request/* ]
+    types: [opened, synchronize, reopened]
 
 jobs:
   
@@ -25,10 +26,10 @@ jobs:
         export CXX=g++
         cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=11 ./
         gcc --version
-        make -j $(getconf _NPROCESSORS_ONLN)
+        make -j "$(getconf _NPROCESSORS_ONLN)"
     
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v
 
   build-gcc-cpp11-linux-no-stl:
     name: GCC C++11 Linux - No STL
@@ -48,7 +49,7 @@ jobs:
         export CXX=g++
         cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=11 ./
         gcc --version
-        make -j $(getconf _NPROCESSORS_ONLN)
+        make -j "$(getconf _NPROCESSORS_ONLN)"
     
     - name: Run tests
-      run: ./test/etl_tests
+      run: ./test/etl_tests -v

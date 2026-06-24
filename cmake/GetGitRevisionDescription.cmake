@@ -82,6 +82,19 @@ function(etl_get_git_head_revision _refspecvar _hashvar)
             set(GIT_DIR "")
         endif()
     endif()
+    if(NOT "${GIT_DIR}" STREQUAL "")
+        # Reject a .git dir that belongs to a parent project (e.g. when fetched
+        # as a URL tarball with no .git of its own and _etl_git_find_closest_git_dir
+        # walked up into the consuming project's repository). Gated by the same
+        # flag as above, since CMAKE_CURRENT_SOURCE_DIR is always at or below
+        # CMAKE_SOURCE_DIR, so this check is strictly tighter than the one above
+        # and must honor the same opt-out.
+        file(RELATIVE_PATH _relative_etl_to_git "${CMAKE_CURRENT_SOURCE_DIR}"
+             "${GIT_DIR}")
+        if("${_relative_etl_to_git}" MATCHES "^[.][.]" AND NOT ALLOW_LOOKING_ABOVE_CMAKE_SOURCE_DIR)
+            set(GIT_DIR "")
+        endif()
+    endif()
     if("${GIT_DIR}" STREQUAL "")
         set(${_refspecvar}
             "GITDIR-NOTFOUND"

@@ -46,8 +46,8 @@ namespace etl
     mutex()
       : id(NULL)
     {
-      osMutexAttr_t attr = { "ETL", osMutexRecursive | osMutexPrioInherit | osMutexRobust, 0, 0 };
-      id = osMutexNew(&attr);
+      osMutexAttr_t attr = {"ETL", osMutexRecursive | osMutexPrioInherit | osMutexRobust, 0, 0};
+      id                 = osMutexNew(&attr);
     }
 
     ~mutex()
@@ -77,6 +77,6 @@ namespace etl
 
     osMutexId_t id;
   };
-}
+} // namespace etl
 
 #endif

@@ -35,7 +35,7 @@ SOFTWARE.
 #include "functional.h"
 #include "type_traits.h"
 
-//#include <math.h>
+// #include <math.h>
 #include <stdint.h>
 
 namespace etl
@@ -68,13 +68,13 @@ namespace etl
     {
       typedef double calc_t;
     };
-  }
+  } // namespace private_mean
 
   //***************************************************************************
   /// Mean.
   //***************************************************************************
   template <typename TInput, typename TCalc = TInput>
-  class mean 
+  class mean
     : public private_mean::mean_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
@@ -129,7 +129,7 @@ namespace etl
     /// operator ()
     /// Add a pair of values.
     //*********************************
-    void operator ()(TInput value)
+    void operator()(TInput value)
     {
       add(value);
     }
@@ -139,7 +139,7 @@ namespace etl
     /// Add a range.
     //*********************************
     template <typename TIterator>
-    void operator ()(TIterator first, TIterator last)
+    void operator()(TIterator first, TIterator last)
     {
       add(first, last);
     }
@@ -155,7 +155,7 @@ namespace etl
 
         if (counter != 0)
         {
-          double n = double(counter);
+          double n   = double(counter);
           mean_value = sum / n;
         }
 
@@ -193,12 +193,12 @@ namespace etl
     }
 
   private:
-  
-    calc_t   sum;
-    uint32_t counter;
+
+    calc_t         sum;
+    uint32_t       counter;
     mutable double mean_value;
     mutable bool   recalculate;
   };
-}
+} // namespace etl
 
 #endif

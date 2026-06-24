@@ -1,1 +1,1 @@
-python .\update_release.py
+python3 ./update_release.py

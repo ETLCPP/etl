@@ -68,26 +68,26 @@ namespace etl
     {
       typedef double calc_t;
     };
-  }
+  } // namespace private_correlation
 
   //***************************************************************************
   /// Correlation Type.
   //***************************************************************************
   namespace private_correlation
   {
-    template<typename T = void>
+    template <typename T = void>
     struct correlation_type_statics
     {
       static ETL_CONSTANT bool Sample     = false;
       static ETL_CONSTANT bool Population = true;
     };
 
-    template<typename T>
+    template <typename T>
     ETL_CONSTANT bool correlation_type_statics<T>::Sample;
 
-    template<typename T>
+    template <typename T>
     ETL_CONSTANT bool correlation_type_statics<T>::Population;
-  }
+  } // namespace private_correlation
 
   struct correlation_type : public private_correlation::correlation_type_statics<>
   {
@@ -97,7 +97,7 @@ namespace etl
   /// Correlation.
   //***************************************************************************
   template <bool Correlation_Type, typename TInput, typename TCalc = TInput>
-  class correlation 
+  class correlation
     : public private_correlation::correlation_traits<TInput, TCalc>
     , public etl::binary_function<TInput, TInput, void>
   {
@@ -132,11 +132,11 @@ namespace etl
     //*********************************
     void add(TInput value1, TInput value2)
     {
-      inner_product   += TCalc(value1 * value2);
+      inner_product += TCalc(value1 * value2);
       sum_of_squares1 += TCalc(value1 * value1);
       sum_of_squares2 += TCalc(value2 * value2);
-      sum1            += TCalc(value1);
-      sum2            += TCalc(value2);
+      sum1 += TCalc(value1);
+      sum2 += TCalc(value2);
       ++counter;
       recalculate = true;
     }
@@ -159,7 +159,7 @@ namespace etl
     /// operator ()
     /// Add a pair of values.
     //*********************************
-    void operator ()(TInput value1, TInput value2)
+    void operator()(TInput value1, TInput value2)
     {
       add(value1, value2);
     }
@@ -169,7 +169,7 @@ namespace etl
     /// Add a range.
     //*********************************
     template <typename TIterator>
-    void operator ()(TIterator first1, TIterator last1, TIterator first2)
+    void operator()(TIterator first1, TIterator last1, TIterator first2)
     {
       add(first1, last1, first2);
     }
@@ -227,7 +227,7 @@ namespace etl
     }
 
   private:
-  
+
     //*********************************
     /// Do the calculation.
     //*********************************
@@ -240,7 +240,7 @@ namespace etl
 
         if (counter != 0)
         {
-          double n = double(counter);
+          double n          = double(counter);
           double adjustment = 1.0 / (n * (n - Adjustment));
 
           double square_of_sum1 = (sum1 * sum1);
@@ -265,7 +265,7 @@ namespace etl
           covariance_value = ((n * inner_product) - (sum1 * sum2)) * adjustment;
 
           if ((stddev1 > 0.0) && (stddev2 > 0.0))
-          {            
+          {
             correlation_value = covariance_value / (stddev1 * stddev2);
           }
         }
@@ -274,12 +274,12 @@ namespace etl
       }
     }
 
-    calc_t   inner_product;
-    calc_t   sum_of_squares1;
-    calc_t   sum_of_squares2;
-    calc_t   sum1;
-    calc_t   sum2;
-    uint32_t counter;
+    calc_t         inner_product;
+    calc_t         sum_of_squares1;
+    calc_t         sum_of_squares2;
+    calc_t         sum1;
+    calc_t         sum2;
+    uint32_t       counter;
     mutable double covariance_value;
     mutable double correlation_value;
     mutable bool   recalculate;
@@ -287,6 +287,6 @@ namespace etl
 
   template <bool Correlation_Type, typename TInput, typename TCalc>
   ETL_CONSTANT int correlation<Correlation_Type, TInput, TCalc>::Adjustment;
-}
+} // namespace etl
 
 #endif

@@ -28,39 +28,40 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <array>
 #include <algorithm>
-#include <utility>
+#include <array>
 #include <iterator>
-#include <string>
-#include <vector>
 #include <numeric>
+#include <string>
 #include <unordered_set>
+#include <utility>
+#include <vector>
 
 #include "data.h"
 
-#include "etl/unordered_set.h"
+#include "etl/char_traits.h"
 #include "etl/checksum.h"
 #include "etl/hash.h"
+#include "etl/unordered_set.h"
 
 namespace
 {
   using DC  = TestDataDC<std::string>;
   using NDC = TestDataNDC<std::string>;
-}
+} // namespace
 
 namespace etl
 {
   template <>
   struct hash<NDC>
   {
-    size_t operator ()(const NDC& e) const
+    size_t operator()(const NDC& e) const
     {
       size_t sum = 0U;
       return std::accumulate(e.value.begin(), e.value.end(), sum);
     }
   };
-}
+} // namespace etl
 
 namespace
 {
@@ -77,7 +78,7 @@ namespace
     {
     }
 
-    size_t operator ()(uint32_t e) const
+    size_t operator()(uint32_t e) const
     {
       return size_t(e);
     }
@@ -98,7 +99,7 @@ namespace
     {
     }
 
-    size_t operator ()(uint32_t lhs, uint32_t rhs) const
+    size_t operator()(uint32_t lhs, uint32_t rhs) const
     {
       return (lhs == rhs);
     }
@@ -112,7 +113,10 @@ namespace
   {
     size_t modulus;
 
-    parameterized_hash(size_t modulus_ = 2) : modulus(modulus_){}
+    parameterized_hash(size_t modulus_ = 2)
+      : modulus(modulus_)
+    {
+    }
 
     size_t operator()(size_t val) const
     {
@@ -127,7 +131,10 @@ namespace
     size_t modulus;
 
     // Hasher whose hash behaviour depends on provided data.
-    parameterized_equal(size_t modulus_ = 2) : modulus(modulus_){}
+    parameterized_equal(size_t modulus_ = 2)
+      : modulus(modulus_)
+    {
+    }
 
     bool operator()(size_t lhs, size_t rhs) const
     {
@@ -140,18 +147,19 @@ namespace
   {
     typedef int is_transparent;
 
-    size_t operator ()(const char* s) const
+    size_t operator()(const char* s) const
     {
-      return std::accumulate(s, s + etl::strlen(s), 0);
+      return std::accumulate(s, s + etl::strlen(s), size_t(0));
     }
 
-    size_t operator ()(const std::string& s) const
+    size_t operator()(const std::string& s) const
     {
-      return std::accumulate(s.begin(), s.end(), 0);
+      return std::accumulate(s.begin(), s.end(), size_t(0));
     }
   };
 
   //***************************************************************************
+#include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_unordered_set)
   {
     static const size_t SIZE = 10;
@@ -160,12 +168,12 @@ namespace
 
     struct simple_hash
     {
-      size_t operator ()(const NDC& value) const
+      size_t operator()(const NDC& value) const
       {
         return etl::checksum<size_t>(value.value.begin(), value.value.end());
       }
 
-      size_t operator ()(const ItemM& value) const
+      size_t operator()(const ItemM& value) const
       {
         etl::checksum<size_t> sum;
 
@@ -178,7 +186,7 @@ namespace
 
     using DataM = etl::unordered_set<ItemM, SIZE, SIZE, simple_hash>;
 
-    using DataDC          = etl::unordered_set<DC,  SIZE, SIZE / 2, simple_hash>;
+    using DataDC          = etl::unordered_set<DC, SIZE, SIZE / 2, simple_hash>;
     using DataNDC         = etl::unordered_set<NDC, SIZE, SIZE / 2, simple_hash>;
     using IDataNDC        = etl::iunordered_set<NDC, simple_hash>;
     using DataTransparent = etl::unordered_set<std::string, SIZE, SIZE / 2, transparent_hash, etl::equal_to<>>;
@@ -234,20 +242,11 @@ namespace
     {
       SetupFixture()
       {
-        NDC n[] =
-        {
-          N0, N1, N2, N3, N4, N5, N6, N7, N8, N9
-        };
+        NDC n[] = {N0, N1, N2, N3, N4, N5, N6, N7, N8, N9};
 
-        NDC n2[] =
-        {
-          N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10
-        };
+        NDC n2[] = {N0, N1, N2, N3, N4, N5, N6, N7, N8, N9, N10};
 
-        NDC n3[] =
-        {
-          N10, N11, N12, N13, N14, N15, N16, N17, N18, N19
-        };
+        NDC n3[] = {N10, N11, N12, N13, N14, N15, N16, N17, N18, N19};
 
         initial_data.assign(std::begin(n), std::end(n));
         excess_data.assign(std::begin(n2), std::end(n2));
@@ -270,8 +269,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_cpp17_deduced_constructor)
     {
-      etl::unordered_set data{ N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
-      etl::unordered_set<NDC, 10U> check = { N0, N1, N2, N3, N4, N5, N6, N7, N8, N9 };
+      etl::unordered_set           data{N0, N1, N2, N3, N4, N5, N6, N7, N8, N9};
+      etl::unordered_set<NDC, 10U> check = {N0, N1, N2, N3, N4, N5, N6, N7, N8, N9};
 
       CHECK(!data.empty());
       CHECK(data.full());
@@ -419,10 +418,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assign_range_using_transparent_comparator)
     {
-      std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+      std::array<const char*, 8> initial = {"AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH"};
 
       DataTransparent data;
-      
+
       data.assign(initial.begin(), initial.end());
 
       DataTransparent::iterator idata;
@@ -431,9 +430,9 @@ namespace
       {
         idata = data.find(initial[i]);
         CHECK(idata != data.end());
-      } 
+      }
     }
- 
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_value)
     {
@@ -465,7 +464,7 @@ namespace
       CHECK(idata != data.end());
       CHECK(*idata == N11);
     }
- 
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_value_using_transparent_comparator)
     {
@@ -523,10 +522,10 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_range_using_transparent_comparator)
     {
-      std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+      std::array<const char*, 8> initial = {"AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH"};
 
       DataTransparent data;
-        
+
       data.insert(initial.begin(), initial.end());
 
       DataTransparent::iterator idata;
@@ -535,15 +534,30 @@ namespace
       {
         idata = data.find(initial[i]);
         CHECK(idata != data.end());
-      } 
+      }
     }
- 
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_range_excess)
     {
       DataNDC data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::unordered_set_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      DataM data;
+
+      auto result1 = data.emplace(ItemM(1));
+      auto result2 = data.emplace(ItemM(2));
+      auto result3 = data.emplace(ItemM(3));
+
+      CHECK(result1.second == true);
+      CHECK(result2.second == true);
+      CHECK(result3.second == true);
+      CHECK_EQUAL(3U, data.size());
     }
 
     //*************************************************************************
@@ -575,17 +589,17 @@ namespace
     {
       DataNDC data;
 
-      data.insert(N0);  // Inserted
-      data.insert(N1);  // Inserted
-      data.insert(N2);  // Inserted
-      data.insert(N3);  // Inserted
-      data.insert(N4);  // Inserted
-      data.insert(N5);  // Inserted  
-      data.insert(N6);  // Inserted
-      data.insert(N7);  // Inserted
-      data.insert(N8);  // Inserted
-      data.insert(N9);  // Inserted
-      
+      data.insert(N0); // Inserted
+      data.insert(N1); // Inserted
+      data.insert(N2); // Inserted
+      data.insert(N3); // Inserted
+      data.insert(N4); // Inserted
+      data.insert(N5); // Inserted
+      data.insert(N6); // Inserted
+      data.insert(N7); // Inserted
+      data.insert(N8); // Inserted
+      data.insert(N9); // Inserted
+
       // Try to insert existing item when unordered_set is full should not fail
       CHECK_NO_THROW(data.insert(N0));
       CHECK_NO_THROW(data.insert(N1));
@@ -597,10 +611,50 @@ namespace
       CHECK_NO_THROW(data.insert(N7));
       CHECK_NO_THROW(data.insert(N8));
       CHECK_NO_THROW(data.insert(N9));
-      
+
       CHECK(data.size() == SIZE);
     }
-    
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_when_full)
+    {
+      DataNDC data;
+
+      data.insert(N0); // Inserted
+      data.insert(N1); // Inserted
+      data.insert(N2); // Inserted
+      data.insert(N3); // Inserted
+      data.insert(N4); // Inserted
+      data.insert(N5); // Inserted
+      data.insert(N6); // Inserted
+      data.insert(N7); // Inserted
+      data.insert(N8); // Inserted
+      data.insert(N9); // Inserted
+
+      CHECK(data.full());
+
+      // Emplacing a new key when the unordered_set is full should throw.
+      CHECK_THROW(data.emplace(N10), etl::unordered_set_full);
+
+      // Emplacing an existing (duplicate) key when the unordered_set is full
+      // should not throw; it should return an iterator to the existing element,
+      // matching the behaviour of insert().
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result;
+
+      CHECK_NO_THROW(result = data.emplace(N0));
+      CHECK(result.first != data.end());
+      CHECK(*result.first == N0);
+      CHECK(result.second == false);
+
+      CHECK_NO_THROW(result = data.emplace(N9));
+      CHECK(result.first != data.end());
+      CHECK(*result.first == N9);
+      CHECK(result.second == false);
+
+      // The unordered_set must be unchanged.
+      CHECK(data.size() == SIZE);
+    }
+
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
@@ -617,7 +671,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key_using_transparent_comparator)
     {
-      std::array<std::string, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+      std::array<std::string, 8> initial = {"AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH"};
 
       DataTransparent data(initial.begin(), initial.end());
 
@@ -639,7 +693,7 @@ namespace
       ++inext;
 
       DataNDC::iterator iafter = data.erase(idata);
-      idata = data.find(N5);
+      idata                    = data.find(N5);
 
       CHECK(idata == data.end());
       CHECK(inext == iafter);
@@ -659,7 +713,7 @@ namespace
       ++inext;
 
       DataNDC::iterator iafter = data.erase(idata);
-      idata = data.find(N5);
+      idata                    = data.find(N5);
 
       CHECK(idata == data.cend());
       CHECK(inext == iafter);
@@ -789,7 +843,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_count_key_using_transparent_comparator)
     {
-      std::array<std::string, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+      std::array<std::string, 8> initial = {"AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH"};
 
       DataTransparent data(initial.begin(), initial.end());
 
@@ -829,8 +883,8 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_hash_function)
     {
-      DataNDC data;
-      DataNDC::hasher hash_function =  data.hash_function();
+      DataNDC         data;
+      DataNDC::hasher hash_function = data.hash_function();
 
       CHECK_EQUAL(simple_hash()(NDC(std::string("ABCDEF"))), hash_function(NDC(std::string("ABCDEF"))));
     }
@@ -838,7 +892,7 @@ namespace
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_key_eq_function)
     {
-      DataNDC data;
+      DataNDC            data;
       DataNDC::key_equal key_eq = data.key_eq();
 
       CHECK(key_eq(NDC(std::string("ABCDEF")), NDC(std::string("ABCDEF"))));
@@ -853,7 +907,7 @@ namespace
       CHECK_CLOSE(0.0, data.load_factor(), 0.01);
 
       // Half the buckets used.
-      data.assign(initial_data.begin(), initial_data.begin() + (initial_data.size() / 4));
+      data.assign(initial_data.begin(), initial_data.begin() + static_cast<ptrdiff_t>(initial_data.size() / 4));
       CHECK_CLOSE(0.4, data.load_factor(), 0.01);
 
       // All of the buckets used.
@@ -880,7 +934,7 @@ namespace
 
       std::vector<std::string> s;
 
-      for (const auto &kv : set)
+      for (const auto& kv : set)
       {
         std::stringstream ss;
         ss << "set" << " = " << kv;
@@ -895,8 +949,8 @@ namespace
     TEST(test_parameterized_eq)
     {
       constexpr std::size_t MODULO = 4;
-      parameterized_hash hash{MODULO};
-      parameterized_equal eq{MODULO};
+      parameterized_hash    hash{MODULO};
+      parameterized_equal   eq{MODULO};
       // values are equal modulo 4
       etl::unordered_set<std::size_t, 10, 10, parameterized_hash, parameterized_equal> set;
       set.insert(2);
@@ -922,12 +976,12 @@ namespace
         // Force hash collisions
         size_t operator()(int key) const
         {
-          return key % 4;
+          return static_cast<size_t>(key % 4);
         }
       };
 
-      std::vector<int> random_keys1 = { 17, 14, 3,  7, 2, 6, 9,  3, 18, 10,  8, 11,  4, 1, 12, 15, 16,  0,  5, 19 };
-      std::vector<int> random_keys2 = {  3,  6, 5, 17, 2, 7, 3, 19,  8, 15, 14,  0, 18, 4, 10,  9, 16, 11, 12,  1 };
+      std::vector<int> random_keys1 = {17, 14, 3, 7, 2, 6, 9, 3, 18, 10, 8, 11, 4, 1, 12, 15, 16, 0, 5, 19};
+      std::vector<int> random_keys2 = {3, 6, 5, 17, 2, 7, 3, 19, 8, 15, 14, 0, 18, 4, 10, 9, 16, 11, 12, 1};
 
       // Check that the input data is valid.
       CHECK_EQUAL(random_keys1.size(), random_keys2.size());
@@ -1004,7 +1058,7 @@ namespace
       CustomHashFunction chf1(1);
       CustomKeyEq        ceq2(2);
 
-      std::array<uint32_t, 5> data = { 1, 2, 3, 4, 5 };
+      std::array<uint32_t, 5> data = {1, 2, 3, 4, 5};
 
       etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1(data.begin(), data.end(), chf1, ceq2);
 
@@ -1018,7 +1072,7 @@ namespace
       CustomHashFunction chf1(1);
       CustomKeyEq        ceq2(2);
 
-      etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1({ 1, 2, 3, 4, 5 }, chf1, ceq2);
+      etl::unordered_set<uint32_t, 5, 5, CustomHashFunction, CustomKeyEq> set1({1, 2, 3, 4, 5}, chf1, ceq2);
 
       CHECK_EQUAL(chf1.id, set1.hash_function().id);
       CHECK_EQUAL(ceq2.id, set1.key_eq().id);
@@ -1050,7 +1104,7 @@ namespace
     {
       DataNDC data(initial_data.begin(), initial_data.end());
 
-      NDC not_inserted  = NDC("ZZ");
+      NDC not_inserted = NDC("ZZ");
 
       CHECK_TRUE(data.contains(N0));
       CHECK_FALSE(data.contains(not_inserted));
@@ -1059,14 +1113,15 @@ namespace
     //*************************************************************************
     TEST(test_contains_with_transparent_comparator)
     {
-      std::array<const char*, 8> initial = { "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH" };
+      std::array<const char*, 8> initial = {"AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH"};
 
       DataTransparent data(initial.begin(), initial.end());
 
-      const char* not_inserted  = "ZZ";
+      const char* not_inserted = "ZZ";
 
       CHECK_TRUE(data.contains("FF"));
       CHECK_FALSE(data.contains(not_inserted));
     }
-  };
-}
+  }
+#include "etl/private/diagnostic_pop.h"
+} // namespace

@@ -1,0 +1,84 @@
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {{- $noindex := .Params.noindex | default false -}}
+  {{ if and (hugo.IsProduction) (not $noindex) -}}
+    <meta name="robots" content="index, follow" />
+  {{ else -}}
+    <meta name="robots" content="noindex, nofollow" />
+  {{ end -}}
+  {{ partialCached "favicons.html" . -}}
+  <title>
+    {{- if .IsHome -}}
+      {{ .Site.Title -}}
+    {{ else -}}
+      {{ with .Title }}{{ . }} – {{ end -}}
+      {{ .Site.Title -}}
+    {{ end -}}
+  </title>
+  <meta name="description" content="{{ partial "utils/page-description.html" . }}" />
+
+  {{- with .Params.canonical -}}
+    <link rel="canonical" href="{{ . }}" itemprop="url" />
+  {{- else -}}
+    <link rel="canonical" href="{{ .Permalink }}" itemprop="url" />
+  {{- end -}}
+
+  {{- partial "opengraph.html" . -}}
+  {{- partial "schema.html" . -}}
+  {{- partial "twitter_cards.html" . -}}
+
+  {{- $mainCss := resources.Get "css/compiled/main.css" -}}
+  {{- $customCss := resources.Get "css/custom.css" -}}
+  {{- $variablesCss := resources.Get "css/variables.css" | resources.ExecuteAsTemplate "css/variables.css" . -}}
+
+  {{- /* Production build */ -}}
+  {{- if hugo.IsProduction }}
+    {{- $styles := slice $variablesCss $mainCss $customCss | resources.Concat "css/compiled/main.css" | minify | fingerprint }}
+    <link rel="preload" href="{{ $styles.RelPermalink }}" as="style" integrity="{{ $styles.Data.Integrity }}" />
+    <link href="{{ $styles.RelPermalink }}" rel="stylesheet" integrity="{{ $styles.Data.Integrity }}" />
+
+  {{- /* Theme development mode (non-production + theme environment) */ -}}
+  {{- else if eq hugo.Environment "theme" }}
+    {{- $devStyles := resources.Get "css/styles.css" | postCSS (dict "inlineImports" true) }}
+    <link href="{{ $devStyles.RelPermalink }}" rel="stylesheet" />
+    <link href="{{ $variablesCss.RelPermalink }}" rel="stylesheet" />
+    <link href="{{ $customCss.RelPermalink }}" rel="stylesheet" />
+
+  {{- /* User local development */ -}}
+  {{- else }}
+    {{- $styles := resources.Get "css/compiled/main.css" -}}
+    <link href="{{ $styles.RelPermalink }}" rel="stylesheet" />
+    <link href="{{ $variablesCss.RelPermalink }}" rel="stylesheet" />
+    <link href="{{ $customCss.RelPermalink }}" rel="stylesheet" />
+  {{- end }}
+
+  {{ partial "components/analytics/analytics.html" . }}
+
+  {{- $scriptsHead := slice -}}
+  {{- range resources.Match "js/head/*.js" -}}
+    {{ $scriptsHead = $scriptsHead | append (resources.ExecuteAsTemplate .Name $ .) }}
+  {{- end -}}
+
+  {{- $scripts := $scriptsHead | resources.Concat "js/main-head.js" -}}
+
+  {{- if hugo.IsProduction -}}
+  {{- $scripts = $scripts | minify | fingerprint -}}
+  {{- end -}}
+  <script src="{{ $scripts.RelPermalink }}" integrity="{{ $scripts.Data.Integrity }}"></script>
+
+  <!-- Math engine -->
+  {{ $noop := .WordCount -}}
+  {{- $engine := site.Params.math.engine | default "katex" -}}
+  {{ if and (.Page.Store.Get "hasMath") (eq $engine "katex") -}}
+    {{ partialCached "scripts/katex.html" . -}}
+  {{ else if and (.Page.Store.Get "hasMath") (eq $engine "mathjax") -}}
+    {{ partialCached "scripts/mathjax.html" . -}}
+  {{ end -}}
+
+  {{ partial "utils/page-width-override.html" . }}
+  {{ partial "custom/head-end.html" . -}}
+
+  <link rel="stylesheet" href="/css/syntax-light.css" media="(prefers-color-scheme: light)">
+  <link rel="stylesheet" href="/css/syntax-dark.css"  media="(prefers-color-scheme: dark)">
+</head>

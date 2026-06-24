@@ -40,9 +40,11 @@ SOFTWARE.
 #include "crc8_ebu.h"
 #include "crc8_icode.h"
 #include "crc8_itu.h"
-#include "crc8_j1850_zero.h"
 #include "crc8_j1850.h"
+#include "crc8_j1850_zero.h"
 #include "crc8_maxim.h"
+#include "crc8_nrsc5.h"
+#include "crc8_opensafety.h"
 #include "crc8_rohc.h"
 #include "crc8_wcdma.h"
 
@@ -60,9 +62,12 @@ SOFTWARE.
 #include "crc16_en13757.h"
 #include "crc16_genibus.h"
 #include "crc16_kermit.h"
+#include "crc16_m17.h"
 #include "crc16_maxim.h"
 #include "crc16_mcrf4xx.h"
 #include "crc16_modbus.h"
+#include "crc16_opensafety_a.h"
+#include "crc16_opensafety_b.h"
 #include "crc16_profibus.h"
 #include "crc16_riello.h"
 #include "crc16_t10dif.h"
@@ -71,7 +76,6 @@ SOFTWARE.
 #include "crc16_usb.h"
 #include "crc16_x25.h"
 #include "crc16_xmodem.h"
-#include "crc16_m17.h"
 
 #include "crc32.h"
 #include "crc32_bzip2.h"
@@ -84,5 +88,6 @@ SOFTWARE.
 #include "crc32_xfer.h"
 
 #include "crc64_ecma.h"
+#include "crc64_iso.h"
 
 #endif

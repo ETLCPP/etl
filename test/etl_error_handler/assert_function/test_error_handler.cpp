@@ -28,13 +28,13 @@ SOFTWARE.
 
 #include "etl/error_handler.h"
 
-#include <stdio.h>
 #include <iostream>
+#include <stdio.h>
 
 #include "assert_function.h"
 
 int assert_return_count = 0;
-int assert_count = 0;
+int assert_count        = 0;
 
 //*****************************************************************************
 void assert_function(const etl::exception& e)
@@ -130,7 +130,7 @@ int main()
     ++assert_return_count;
   }
 
-  if (AssertAndReturnValue(true)) 
+  if (AssertAndReturnValue(true))
   {
     ++assert_return_count;
   }
@@ -164,4 +164,3 @@ int main()
 
   return (assert_count_passed && return_count_passed) ? 0 : 1;
 }
-

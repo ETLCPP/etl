@@ -28,8 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
-#include <string>
 #include <ostream>
+#include <string>
 
 #include "etl/parameter_type.h"
 
@@ -56,7 +56,7 @@ namespace
   class Object2 : public Object
   {
   };
-}
+} // namespace
 
 namespace etl
 {
@@ -66,7 +66,7 @@ namespace etl
   {
     typedef Object2 type;
   };
-}
+} // namespace etl
 
 namespace
 {
@@ -86,5 +86,5 @@ namespace
       b = !etl::is_reference<etl::parameter_type<Object2>::type>::value;
       CHECK(b);
     }
-  };
-}
+  }
+} // namespace

@@ -33,25 +33,24 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
-#include "iterator.h"
-#include "functional.h"
-#include "pool.h"
-#include "exception.h"
-#include "error_handler.h"
 #include "debug_count.h"
-#include "nullptr.h"
-#include "type_traits.h"
-#include "nth_type.h"
-#include "parameter_type.h"
-#include "iterator.h"
-#include "utility.h"
-#include "placement_new.h"
+#include "error_handler.h"
+#include "exception.h"
+#include "functional.h"
 #include "initializer_list.h"
+#include "iterator.h"
+#include "nth_type.h"
+#include "nullptr.h"
+#include "parameter_type.h"
+#include "placement_new.h"
+#include "pool.h"
+#include "type_traits.h"
+#include "utility.h"
 
 #include <stddef.h>
 
-#include "private/minmax_push.h"
 #include "private/comparator_is_transparent.h"
+#include "private/minmax_push.h"
 
 //*****************************************************************************
 ///\defgroup map map
@@ -181,8 +180,8 @@ namespace etl
 
     enum
     {
-      kLeft = 0,
-      kRight = 1,
+      kLeft    = 0,
+      kRight   = 1,
       kNeither = 2
     };
 
@@ -194,31 +193,28 @@ namespace etl
       //***********************************************************************
       /// Constructor
       //***********************************************************************
-      Node() :
-        weight(uint_least8_t(kNeither)),
-        dir(uint_least8_t(kNeither))
+      Node()
+        : weight(uint_least8_t(kNeither))
+        , dir(uint_least8_t(kNeither))
       {
         children[0] = ETL_NULLPTR;
         children[1] = ETL_NULLPTR;
       }
 
-      ~Node()
-      {
-
-      }
+      ~Node() {}
 
       //***********************************************************************
       /// Marks the node as a leaf.
       //***********************************************************************
       void mark_as_leaf()
       {
-        weight = uint_least8_t(kNeither);
-        dir = uint_least8_t(kNeither);
+        weight      = uint_least8_t(kNeither);
+        dir         = uint_least8_t(kNeither);
         children[0] = ETL_NULLPTR;
         children[1] = ETL_NULLPTR;
       }
 
-      Node*   children[2];
+      Node*         children[2];
       uint_least8_t weight;
       uint_least8_t dir;
     };
@@ -237,9 +233,7 @@ namespace etl
     //*************************************************************************
     /// Destructor
     //*************************************************************************
-    ~map_base()
-    {
-    }
+    ~map_base() {}
 
     //*************************************************************************
     /// Balance the critical node at the position provided as needed
@@ -275,7 +269,7 @@ namespace etl
         }
       } // while(weight_node)
 
-        // Step 2: Update weight for critical_node or rotate tree to balance node
+      // Step 2: Update weight for critical_node or rotate tree to balance node
       if (uint_least8_t(kNeither) == critical_node->weight)
       {
         critical_node->weight = critical_node->dir;
@@ -290,16 +284,22 @@ namespace etl
       {
         // If critical node matches child node direction then perform a two
         // node rotate in the direction of the critical node
-        if (critical_node->weight == critical_node->children[critical_node->dir]->dir)
+        // Check for nullptr before dereferencing to avoid C28182 warning
+        if (critical_node->children[critical_node->dir] != ETL_NULLPTR) ETL_UNLIKELY
         {
-          rotate_2node(critical_node, critical_node->dir);
-        }
-        // Otherwise perform a three node rotation in the direction of the
-        // critical node
-        else
-        {
-          rotate_3node(critical_node, critical_node->dir,
-            critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
+          if (critical_node->weight == critical_node->children[critical_node->dir]->dir)
+          {
+            rotate_2node(critical_node, critical_node->dir);
+          }
+          // Otherwise perform a three node rotation in the direction of the
+          // critical node
+          else
+          {
+            if (critical_node->children[critical_node->dir]->children[1 - critical_node->dir] != ETL_NULLPTR) ETL_UNLIKELY
+            {
+              rotate_3node(critical_node, critical_node->dir, critical_node->children[critical_node->dir]->children[1 - critical_node->dir]->dir);
+            }
+          }
         }
       }
     }
@@ -353,12 +353,12 @@ namespace etl
 
       // Capture new root (either E or D depending on dir)
       Node* new_root = position->children[dir]->children[1 - dir];
-      // Set weight factor for B or C based on F or G existing and being a different than dir
+      // Set weight factor for B or C based on F or G existing and being a
+      // different than dir
       position->children[dir]->weight = third != uint_least8_t(kNeither) && third != dir ? dir : uint_least8_t(kNeither);
 
       // Detach new root from its tree (replace with new roots child)
-      position->children[dir]->children[1 - dir] =
-        new_root->children[dir];
+      position->children[dir]->children[1 - dir] = new_root->children[dir];
       // Attach current left tree to new root
       new_root->children[dir] = position->children[dir];
       // Set weight factor for A based on F or G
@@ -432,7 +432,7 @@ namespace etl
       // their references in the process (e.g. position is the same as
       // replacement or replacement is a child of position)
       Node* detached = position;
-      Node* swap = replacement;
+      Node* swap     = replacement;
 
       // Update current position to point to swap (replacement) node first
       position = swap;
@@ -442,14 +442,14 @@ namespace etl
       replacement = swap->children[1 - swap->dir];
 
       // Point swap node to detached node's children and weight
-      swap->children[kLeft] = detached->children[kLeft];
+      swap->children[kLeft]  = detached->children[kLeft];
       swap->children[kRight] = detached->children[kRight];
-      swap->weight = detached->weight;
+      swap->weight           = detached->weight;
     }
 
-    size_type current_size;   ///< The number of the used nodes.
-    const size_type CAPACITY; ///< The maximum size of the map.
-    Node* root_node;          ///< The node that acts as the map root.
+    size_type       current_size; ///< The number of the used nodes.
+    const size_type CAPACITY;     ///< The maximum size of the map.
+    Node*           root_node;    ///< The node that acts as the map root.
     ETL_DECLARE_DEBUG_COUNT;
   };
 
@@ -462,23 +462,23 @@ namespace etl
   {
   public:
 
-    typedef TKey                           key_type;
+    typedef TKey                                  key_type;
     typedef ETL_OR_STD::pair<const TKey, TMapped> value_type;
-    typedef TMapped                        mapped_type;
-    typedef TKeyCompare                    key_compare;
-    typedef value_type&                    reference;
-    typedef const value_type&              const_reference;
+    typedef TMapped                               mapped_type;
+    typedef TKeyCompare                           key_compare;
+    typedef value_type&                           reference;
+    typedef const value_type&                     const_reference;
 #if ETL_USING_CPP11
-    typedef value_type&&                   rvalue_reference;
+    typedef value_type&& rvalue_reference;
 #endif
-    typedef value_type*                    pointer;
-    typedef const value_type*              const_pointer;
-    typedef size_t                         size_type;
+    typedef value_type*       pointer;
+    typedef const value_type* const_pointer;
+    typedef size_t            size_type;
 
     /// Defines the parameter types
-    typedef const key_type&    const_key_reference;
+    typedef const key_type& const_key_reference;
 #if ETL_USING_CPP11
-    typedef key_type&&         rvalue_key_reference;
+    typedef key_type&& rvalue_key_reference;
 #endif
     typedef mapped_type&       mapped_reference;
     typedef const mapped_type& const_mapped_reference;
@@ -509,10 +509,7 @@ namespace etl
       {
       }
 
-      ~Data_Node()
-      {
-
-      }
+      ~Data_Node() {}
 
       value_type value;
     };
@@ -625,64 +622,62 @@ namespace etl
       {
       }
 
-      ~iterator()
-      {
-      }
+      ~iterator() {}
 
-      iterator& operator ++()
+      iterator& operator++()
       {
         p_map->next_node(p_node);
         return *this;
       }
 
-      iterator operator ++(int)
+      iterator operator++(int)
       {
         iterator temp(*this);
         p_map->next_node(p_node);
         return temp;
       }
 
-      iterator& operator --()
+      iterator& operator--()
       {
         p_map->prev_node(p_node);
         return *this;
       }
 
-      iterator operator --(int)
+      iterator operator--(int)
       {
         iterator temp(*this);
         p_map->prev_node(p_node);
         return temp;
       }
 
-      iterator& operator =(const iterator& other)
+      iterator& operator=(const iterator& other)
       {
-        p_map = other.p_map;
+        p_map  = other.p_map;
         p_node = other.p_node;
         return *this;
       }
 
-      reference operator *() const
+      reference operator*() const
       {
         return imap::data_cast(p_node)->value;
       }
 
-      pointer operator &() const
+      pointer operator&() const
       {
         return &(imap::data_cast(p_node)->value);
       }
 
-      pointer operator ->() const
+      pointer operator->() const
       {
         return &(imap::data_cast(p_node)->value);
       }
 
-      friend bool operator == (const iterator& lhs, const iterator& rhs)
+      friend bool operator==(const iterator& lhs, const iterator& rhs)
       {
         return lhs.p_map == rhs.p_map && lhs.p_node == rhs.p_node;
       }
 
-      friend bool operator != (const iterator& lhs, const iterator& rhs)
+      friend bool operator!=(const iterator& lhs, const iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -737,64 +732,62 @@ namespace etl
       {
       }
 
-      ~const_iterator()
-      {
-      }
+      ~const_iterator() {}
 
-      const_iterator& operator ++()
+      const_iterator& operator++()
       {
         p_map->next_node(p_node);
         return *this;
       }
 
-      const_iterator operator ++(int)
+      const_iterator operator++(int)
       {
         const_iterator temp(*this);
         p_map->next_node(p_node);
         return temp;
       }
 
-      const_iterator& operator --()
+      const_iterator& operator--()
       {
         p_map->prev_node(p_node);
         return *this;
       }
 
-      const_iterator operator --(int)
+      const_iterator operator--(int)
       {
         const_iterator temp(*this);
         p_map->prev_node(p_node);
         return temp;
       }
 
-      const_iterator& operator =(const const_iterator& other)
+      const_iterator& operator=(const const_iterator& other)
       {
-        p_map = other.p_map;
+        p_map  = other.p_map;
         p_node = other.p_node;
         return *this;
       }
 
-      const_reference operator *() const
+      const_reference operator*() const
       {
         return imap::data_cast(p_node)->value;
       }
 
-      const_pointer operator &() const
+      const_pointer operator&() const
       {
         return imap::data_cast(p_node)->value;
       }
 
-      const_pointer operator ->() const
+      const_pointer operator->() const
       {
         return &(imap::data_cast(p_node)->value);
       }
 
-      friend bool operator == (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs)
       {
         return lhs.p_map == rhs.p_map && lhs.p_node == rhs.p_node;
       }
 
-      friend bool operator != (const const_iterator& lhs, const const_iterator& rhs)
+      friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs)
       {
         return !(lhs == rhs);
       }
@@ -923,7 +916,7 @@ namespace etl
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_reference operator [](rvalue_key_reference key)
+    mapped_reference operator[](rvalue_key_reference key)
     {
       iterator i_element = find(etl::move(key));
 
@@ -937,10 +930,12 @@ namespace etl
         // Get next available free node
         Data_Node& node = allocate_data_node_with_key(etl::move(key));
 
-        // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
+        // Obtain the inserted node (might be ETL_NULLPTR if node was a
+        // duplicate)
         inserted_node = insert_node(root_node, node);
 
-        // Insert node into tree and return iterator to new node location in tree
+        // Insert node into tree and return iterator to new node location in
+        // tree
         i_element = iterator(*this, inserted_node);
       }
 
@@ -953,7 +948,7 @@ namespace etl
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
-    mapped_reference operator [](const_key_reference key)
+    mapped_reference operator[](const_key_reference key)
     {
       iterator i_element = find(key);
 
@@ -967,10 +962,12 @@ namespace etl
         // Get next available free node
         Data_Node& node = allocate_data_node_with_key(key);
 
-        // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
+        // Obtain the inserted node (might be ETL_NULLPTR if node was a
+        // duplicate)
         inserted_node = insert_node(root_node, node);
 
-        // Insert node into tree and return iterator to new node location in tree
+        // Insert node into tree and return iterator to new node location in
+        // tree
         i_element = iterator(*this, inserted_node);
       }
 
@@ -979,7 +976,8 @@ namespace etl
 
     //*********************************************************************
     /// Returns a reference to the value at index 'key'
-    /// If asserts or exceptions are enabled, emits an etl::lookup_out_of_bounds if the key is not in the range.
+    /// If asserts or exceptions are enabled, emits an etl::lookup_out_of_bounds
+    /// if the key is not in the range.
     ///\param key The key.
     ///\return A reference to the value at index 'key'
     //*********************************************************************
@@ -1007,7 +1005,8 @@ namespace etl
 
     //*********************************************************************
     /// Returns a const reference to the value at index 'key'
-    /// If asserts or exceptions are enabled, emits an etl::lookup_out_of_bounds if the key is not in the range.
+    /// If asserts or exceptions are enabled, emits an etl::lookup_out_of_bounds
+    /// if the key is not in the range.
     ///\param key The key.
     ///\return A const reference to the value at index 'key'
     //*********************************************************************
@@ -1035,8 +1034,9 @@ namespace etl
 
     //*********************************************************************
     /// Assigns values to the map.
-    /// If asserts or exceptions are enabled, emits map_full if the map does not have enough free space.
-    /// If asserts or exceptions are enabled, emits map_iterator if the iterators are reversed.
+    /// If asserts or exceptions are enabled, emits map_full if the map does not
+    /// have enough free space. If asserts or exceptions are enabled, emits
+    /// map_iterator if the iterators are reversed.
     ///\param first The iterator to the first element.
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
@@ -1120,7 +1120,7 @@ namespace etl
     iterator erase(const_iterator position)
     {
       // Find the parent node to be removed
-      Node*& reference_node = find_node(root_node, position.p_node);
+      Node*&   reference_node = find_node(root_node, position.p_node);
       iterator next(*this, reference_node);
       ++next;
 
@@ -1201,14 +1201,15 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the map.
-    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
+    /// If asserts or exceptions are enabled, emits map_full if the map is
+    /// already full.
     ///\param value    The value to insert.
     //*********************************************************************
     ETL_OR_STD::pair<iterator, bool> insert(const_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
-      bool inserted = false;
+      bool  inserted      = false;
 
       ETL_ASSERT(!full(), ETL_ERROR(map_full));
 
@@ -1217,7 +1218,7 @@ namespace etl
 
       // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
-      inserted = inserted_node == &node;
+      inserted      = inserted_node == &node;
 
       // Insert node into tree and return iterator to new node location in tree
       return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
@@ -1226,14 +1227,15 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the map.
-    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
+    /// If asserts or exceptions are enabled, emits map_full if the map is
+    /// already full.
     ///\param value    The value to insert.
     //*********************************************************************
     ETL_OR_STD::pair<iterator, bool> insert(rvalue_reference value)
     {
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
-      bool inserted = false;
+      bool  inserted      = false;
 
       ETL_ASSERT(!full(), ETL_ERROR(map_full));
 
@@ -1242,7 +1244,7 @@ namespace etl
 
       // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
       inserted_node = insert_node(root_node, node);
-      inserted = inserted_node == &node;
+      inserted      = inserted_node == &node;
 
       // Insert node into tree and return iterator to new node location in tree
       return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
@@ -1251,7 +1253,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a value to the map starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
+    /// If asserts or exceptions are enabled, emits map_full if the map is
+    /// already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -1275,7 +1278,8 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************************************************
     /// Inserts a value to the map starting at the position recommended.
-    /// If asserts or exceptions are enabled, emits map_full if the map is already full.
+    /// If asserts or exceptions are enabled, emits map_full if the map is
+    /// already full.
     ///\param position The position that would precede the value to insert.
     ///\param value    The value to insert.
     //*********************************************************************
@@ -1299,7 +1303,8 @@ namespace etl
 
     //*********************************************************************
     /// Inserts a range of values to the map.
-    /// If asserts or exceptions are enabled, emits map_full if the map does not have enough free space.
+    /// If asserts or exceptions are enabled, emits map_full if the map does not
+    /// have enough free space.
     ///\param position The position to insert at.
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
@@ -1313,6 +1318,188 @@ namespace etl
         ++first;
       }
     }
+
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+    //*********************************************************************
+    /// Emplaces a value to the map.
+    /// Constructs the value_type in place from the given arguments.
+    //*********************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> emplace(Args&&... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node_from_args(etl::forward<Args>(args)...);
+
+      // Obtain the inserted node (might be ETL_NULLPTR if node was a duplicate)
+      Node* inserted_node = insert_node(root_node, node);
+      bool  inserted      = inserted_node == &node;
+
+      // Insert node into tree and return iterator to new node location in tree
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), inserted);
+    }
+
+    //*********************************************************************
+    /// Inserts an element into the map if the key does not exist.
+    /// The mapped value is constructed from args only if insertion takes place.
+    //*********************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, Args&&... args)
+    {
+      // Check if key already exists
+      Node* found = find_node(root_node, key);
+      if (found)
+      {
+        return ETL_OR_STD::make_pair(iterator(*this, found), false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node_emplace(key, etl::forward<Args>(args)...);
+
+      // Obtain the inserted node
+      Node* inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), true);
+    }
+
+    //*********************************************************************
+    /// Inserts an element into the map if the key does not exist.
+    /// The key is moved into the container if insertion takes place.
+    //*********************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(rvalue_key_reference key, Args&&... args)
+    {
+      // Check if key already exists
+      Node* found = find_node(root_node, key);
+      if (found)
+      {
+        return ETL_OR_STD::make_pair(iterator(*this, found), false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node_emplace(etl::move(key), etl::forward<Args>(args)...);
+
+      // Obtain the inserted node
+      Node* inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), true);
+    }
+#else
+    //*********************************************************************
+    /// Emplaces a value to the map.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> emplace(const value_type& value)
+    {
+      return insert(value);
+    }
+
+    //*********************************************************************
+    /// Inserts an element into the map if the key does not exist.
+    //*********************************************************************
+    template <typename T1>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, const T1& value1)
+    {
+      // Check if key already exists
+      Node* found = find_node(root_node, key);
+      if (found)
+      {
+        return ETL_OR_STD::make_pair(iterator(*this, found), false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node_emplace(key, value1);
+
+      // Obtain the inserted node
+      Node* inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), true);
+    }
+
+    //*********************************************************************
+    /// Inserts an element into the map if the key does not exist.
+    //*********************************************************************
+    template <typename T1, typename T2>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, const T1& value1, const T2& value2)
+    {
+      // Check if key already exists
+      Node* found = find_node(root_node, key);
+      if (found)
+      {
+        return ETL_OR_STD::make_pair(iterator(*this, found), false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node_emplace(key, value1, value2);
+
+      // Obtain the inserted node
+      Node* inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), true);
+    }
+
+    //*********************************************************************
+    /// Inserts an element into the map if the key does not exist.
+    //*********************************************************************
+    template <typename T1, typename T2, typename T3>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3)
+    {
+      // Check if key already exists
+      Node* found = find_node(root_node, key);
+      if (found)
+      {
+        return ETL_OR_STD::make_pair(iterator(*this, found), false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node_emplace(key, value1, value2, value3);
+
+      // Obtain the inserted node
+      Node* inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), true);
+    }
+
+    //*********************************************************************
+    /// Inserts an element into the map if the key does not exist.
+    //*********************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      // Check if key already exists
+      Node* found = find_node(root_node, key);
+      if (found)
+      {
+        return ETL_OR_STD::make_pair(iterator(*this, found), false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node_emplace(key, value1, value2, value3, value4);
+
+      // Obtain the inserted node
+      Node* inserted_node = insert_node(root_node, node);
+
+      // Insert node into tree and return iterator to new node location in tree
+      return ETL_OR_STD::make_pair(iterator(*this, inserted_node), true);
+    }
+#endif
 
     //*********************************************************************
     /// Returns an iterator pointing to the first element in the container
@@ -1397,7 +1584,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    imap& operator = (const imap& rhs)
+    imap& operator=(const imap& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -1412,7 +1599,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    imap& operator = (imap&& rhs)
+    imap& operator=(imap&& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -1509,7 +1696,7 @@ namespace etl
     {
       Data_Node* node = allocate_data_node();
 
-      ::new ((void*)etl::addressof(node->value.first))  key_type(key);
+      ::new ((void*)etl::addressof(node->value.first)) key_type(key);
       ::new ((void*)etl::addressof(node->value.second)) mapped_type();
       ETL_INCREMENT_DEBUG_COUNT;
       return *node;
@@ -1534,8 +1721,108 @@ namespace etl
     {
       Data_Node* node = allocate_data_node();
 
-      ::new ((void*)etl::addressof(node->value.first))  key_type(etl::move(key));
+      ::new ((void*)etl::addressof(node->value.first)) key_type(etl::move(key));
       ::new ((void*)etl::addressof(node->value.second)) mapped_type();
+      ETL_INCREMENT_DEBUG_COUNT;
+      return *node;
+    }
+
+  #if ETL_NOT_USING_STLPORT
+    //*************************************************************************
+    /// Allocate a Data_Node with the key and emplace args for the mapped value.
+    //*************************************************************************
+    template <typename... Args>
+    Data_Node& allocate_data_node_emplace(const_key_reference key, Args&&... args)
+    {
+      Data_Node* node = allocate_data_node();
+
+      ::new ((void*)etl::addressof(node->value.first)) key_type(key);
+      ::new ((void*)etl::addressof(node->value.second)) mapped_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+      return *node;
+    }
+
+    //*************************************************************************
+    /// Allocate a Data_Node with a moved key and emplace args for the mapped value.
+    //*************************************************************************
+    template <typename... Args>
+    Data_Node& allocate_data_node_emplace(rvalue_key_reference key, Args&&... args)
+    {
+      Data_Node* node = allocate_data_node();
+
+      ::new ((void*)etl::addressof(node->value.first)) key_type(etl::move(key));
+      ::new ((void*)etl::addressof(node->value.second)) mapped_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+      return *node;
+    }
+
+    //*************************************************************************
+    /// Allocate a Data_Node by constructing the value_type from args.
+    //*************************************************************************
+    template <typename... Args>
+    Data_Node& allocate_data_node_from_args(Args&&... args)
+    {
+      Data_Node* node = allocate_data_node();
+      ::new (&node->value) value_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+      return *node;
+    }
+  #endif
+
+#else
+
+    //*************************************************************************
+    /// Allocate a Data_Node with the key and emplace args for the mapped value.
+    //*************************************************************************
+    template <typename T1>
+    Data_Node& allocate_data_node_emplace(const_key_reference key, const T1& value1)
+    {
+      Data_Node* node = allocate_data_node();
+
+      ::new ((void*)etl::addressof(node->value.first)) key_type(key);
+      ::new ((void*)etl::addressof(node->value.second)) mapped_type(value1);
+      ETL_INCREMENT_DEBUG_COUNT;
+      return *node;
+    }
+
+    //*************************************************************************
+    /// Allocate a Data_Node with the key and emplace args for the mapped value.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    Data_Node& allocate_data_node_emplace(const_key_reference key, const T1& value1, const T2& value2)
+    {
+      Data_Node* node = allocate_data_node();
+
+      ::new ((void*)etl::addressof(node->value.first)) key_type(key);
+      ::new ((void*)etl::addressof(node->value.second)) mapped_type(value1, value2);
+      ETL_INCREMENT_DEBUG_COUNT;
+      return *node;
+    }
+
+    //*************************************************************************
+    /// Allocate a Data_Node with the key and emplace args for the mapped value.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    Data_Node& allocate_data_node_emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3)
+    {
+      Data_Node* node = allocate_data_node();
+
+      ::new ((void*)etl::addressof(node->value.first)) key_type(key);
+      ::new ((void*)etl::addressof(node->value.second)) mapped_type(value1, value2, value3);
+      ETL_INCREMENT_DEBUG_COUNT;
+      return *node;
+    }
+
+    //*************************************************************************
+    /// Allocate a Data_Node with the key and emplace args for the mapped value.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    Data_Node& allocate_data_node_emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      Data_Node* node = allocate_data_node();
+
+      ::new ((void*)etl::addressof(node->value.first)) key_type(key);
+      ::new ((void*)etl::addressof(node->value.second)) mapped_type(value1, value2, value3, value4);
       ETL_INCREMENT_DEBUG_COUNT;
       return *node;
     }
@@ -1713,9 +2000,10 @@ namespace etl
         }
         else
         {
-          // Downcast found to Data_Node class for comparison and other operations
-          Data_Node& found_data_node = imap::data_cast(*found);
-          const Data_Node& data_node = imap::data_cast(*node);
+          // Downcast found to Data_Node class for comparison and other
+          // operations
+          Data_Node&       found_data_node = imap::data_cast(*found);
+          const Data_Node& data_node       = imap::data_cast(*node);
 
           // Compare the node value to the current position value
           if (node_comp(data_node, found_data_node))
@@ -1749,18 +2037,19 @@ namespace etl
       // Default to no parent node found
       Node* found = ETL_NULLPTR;
 
-      // If the position provided is the same as the node then there is no parent
+      // If the position provided is the same as the node then there is no
+      // parent
       if (position && node && position != node)
       {
         while (position)
         {
           // Is this position not the parent of the node we are looking for?
-          if (position->children[kLeft] != node &&
-            position->children[kRight] != node)
+          if (position->children[kLeft] != node && position->children[kRight] != node)
           {
-            // Downcast node and position to Data_Node references for key comparisons
-            const Data_Node& node_data_node = imap::data_cast(*node);
-            Data_Node& position_data_node = imap::data_cast(*position);
+            // Downcast node and position to Data_Node references for key
+            // comparisons
+            const Data_Node& node_data_node     = imap::data_cast(*node);
+            Data_Node&       position_data_node = imap::data_cast(*position);
             // Compare the node value to the current position value
             if (node_comp(node_data_node, position_data_node))
             {
@@ -1797,17 +2086,18 @@ namespace etl
       // Default to no parent node found
       const Node* found = ETL_NULLPTR;
 
-      // If the position provided is the same as the node then there is no parent
+      // If the position provided is the same as the node then there is no
+      // parent
       if (position && node && position != node)
       {
         while (position)
         {
           // Is this position not the parent of the node we are looking for?
-          if (position->children[kLeft] != node &&
-            position->children[kRight] != node)
+          if (position->children[kLeft] != node && position->children[kRight] != node)
           {
-            // Downcast node and position to Data_Node references for key comparisons
-            const Data_Node& node_data_node = imap::data_cast(*node);
+            // Downcast node and position to Data_Node references for key
+            // comparisons
+            const Data_Node& node_data_node     = imap::data_cast(*node);
             const Data_Node& position_data_node = imap::data_cast(*position);
             // Compare the node value to the current position value
             if (node_comp(node_data_node, position_data_node))
@@ -1869,7 +2159,7 @@ namespace etl
         {
           // Make note of current position, but keep looking to left for more
           lower_node = position;
-          position = position->children[kLeft];
+          position   = position->children[kLeft];
         }
       }
 
@@ -1910,7 +2200,7 @@ namespace etl
         {
           // Make note of current position, but keep looking to left for more
           lower_node = position;
-          position = position->children[kLeft];
+          position   = position->children[kLeft];
         }
       }
 
@@ -1936,7 +2226,7 @@ namespace etl
         if (node_comp(key, data_node))
         {
           upper_node = node;
-          node = node->children[kLeft];
+          node       = node->children[kLeft];
         }
         else if (node_comp(data_node, key))
         {
@@ -1974,7 +2264,7 @@ namespace etl
         if (node_comp(key, data_node))
         {
           upper_node = node;
-          node = node->children[kLeft];
+          node       = node->children[kLeft];
         }
         else if (node_comp(data_node, key))
         {
@@ -2009,7 +2299,7 @@ namespace etl
       {
         // Find the critical parent node (default to ETL_NULLPTR)
         Node* critical_parent_node = ETL_NULLPTR;
-        Node* critical_node = root_node;
+        Node* critical_node        = root_node;
 
         while (found)
         {
@@ -2020,7 +2310,8 @@ namespace etl
             critical_node = found;
           }
 
-          // Downcast found to Data_Node class for comparison and other operations
+          // Downcast found to Data_Node class for comparison and other
+          // operations
           Data_Node& found_data_node = imap::data_cast(*found);
 
           // Is the node provided to the left of the current position?
@@ -2112,7 +2403,7 @@ namespace etl
     //*************************************************************************
     /// Find the next node in sequence from the node provided
     //*************************************************************************
-    void next_node(Node*&position)
+    void next_node(Node*& position)
     {
       if (position)
       {
@@ -2176,7 +2467,7 @@ namespace etl
     //*************************************************************************
     /// Find the previous node in sequence from the node provided
     //*************************************************************************
-    void prev_node(Node*&position)
+    void prev_node(Node*& position)
     {
       // If starting at the terminal end, the previous node is the maximum node
       // from the root
@@ -2258,12 +2549,12 @@ namespace etl
       // Step 1: Find the target node that matches the key provided, the
       // replacement node (might be the same as target node), and the critical
       // node to start rebalancing the tree from (up to the replacement node)
-      Node* found_parent = ETL_NULLPTR;
-      Node* found = ETL_NULLPTR;
+      Node* found_parent   = ETL_NULLPTR;
+      Node* found          = ETL_NULLPTR;
       Node* replace_parent = ETL_NULLPTR;
-      Node* replace = position;
+      Node* replace        = position;
       Node* balance_parent = ETL_NULLPTR;
-      Node* balance = root_node;
+      Node* balance        = root_node;
       while (replace)
       {
         // Downcast found to Data_Node class for comparison and other operations
@@ -2287,7 +2578,7 @@ namespace etl
 
           // Note the target node was found (and its parent)
           found_parent = replace_parent;
-          found = replace;
+          found        = replace;
         }
         // Replacement node found if its missing a child in the replace->dir
         // value set above
@@ -2301,18 +2592,16 @@ namespace etl
         // path of replacement node and our sibling (on longer path) is
         // balanced then we need to update the balance node to match this
         // replacement node but all our ancestors will not require rebalancing
-        if ((replace->weight == kNeither) ||
-          (replace->weight == (1 - replace->dir) &&
-            replace->children[1 - replace->dir]->weight == kNeither))
+        if ((replace->weight == kNeither) || (replace->weight == (1 - replace->dir) && replace->children[1 - replace->dir]->weight == kNeither))
         {
           // Update balance node (and its parent) to replacement node
           balance_parent = replace_parent;
-          balance = replace;
+          balance        = replace;
         }
 
         // Keep searching for the replacement node
         replace_parent = replace;
-        replace = replace->children[replace->dir];
+        replace        = replace->children[replace->dir];
       }
 
       // If target node was found, proceed with rebalancing and replacement
@@ -2343,13 +2632,12 @@ namespace etl
               // Is the root node being rebalanced (no parent)
               if (balance_parent == ETL_NULLPTR)
               {
-                rotate_3node(root_node, 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                rotate_3node(root_node, 1 - balance->dir, balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
               else
               {
                 rotate_3node(balance_parent->children[balance_parent->dir], 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                             balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
             }
             // Already balanced, rebalance and make it heavy in opposite
@@ -2367,7 +2655,8 @@ namespace etl
                 rotate_2node(balance_parent->children[balance_parent->dir], 1 - balance->dir);
                 balance_parent->children[balance_parent->dir]->weight = balance->dir;
               }
-              // Update balance node weight in opposite direction of node removed
+              // Update balance node weight in opposite direction of node
+              // removed
               balance->weight = 1 - balance->dir;
             }
             // Rebalance and leave it balanced
@@ -2396,7 +2685,7 @@ namespace etl
               }
               else
               {
-                found_parent = root_node;
+                found_parent   = root_node;
                 root_node->dir = root_node->children[kLeft] == found ? kLeft : kRight;
               }
             }
@@ -2404,15 +2693,14 @@ namespace etl
 
           // Next balance node to consider
           balance_parent = balance;
-          balance = balance->children[balance->dir];
+          balance        = balance->children[balance->dir];
         } // while(balance)
 
-          // Step 3: Swap found node with replacement node
+        // Step 3: Swap found node with replacement node
         if (found_parent)
         {
           // Handle traditional case
-          detach_node(found_parent->children[found_parent->dir],
-            replace_parent->children[replace_parent->dir]);
+          detach_node(found_parent->children[found_parent->dir], replace_parent->children[replace_parent->dir]);
         }
         // Handle root node removal
         else
@@ -2439,7 +2727,7 @@ namespace etl
         destroy_data_node(found_data_node);
       } // if(found)
 
-        // Return node found (might be ETL_NULLPTR)
+      // Return node found (might be ETL_NULLPTR)
       return found;
     }
 
@@ -2454,12 +2742,12 @@ namespace etl
       // Step 1: Find the target node that matches the key provided, the
       // replacement node (might be the same as target node), and the critical
       // node to start rebalancing the tree from (up to the replacement node)
-      Node* found_parent = ETL_NULLPTR;
-      Node* found = ETL_NULLPTR;
+      Node* found_parent   = ETL_NULLPTR;
+      Node* found          = ETL_NULLPTR;
       Node* replace_parent = ETL_NULLPTR;
-      Node* replace = position;
+      Node* replace        = position;
       Node* balance_parent = ETL_NULLPTR;
-      Node* balance = root_node;
+      Node* balance        = root_node;
       while (replace)
       {
         // Downcast found to Data_Node class for comparison and other operations
@@ -2483,7 +2771,7 @@ namespace etl
 
           // Note the target node was found (and its parent)
           found_parent = replace_parent;
-          found = replace;
+          found        = replace;
         }
         // Replacement node found if its missing a child in the replace->dir
         // value set above
@@ -2497,18 +2785,16 @@ namespace etl
         // path of replacement node and our sibling (on longer path) is
         // balanced then we need to update the balance node to match this
         // replacement node but all our ancestors will not require rebalancing
-        if ((replace->weight == kNeither) ||
-          (replace->weight == (1 - replace->dir) &&
-            replace->children[1 - replace->dir]->weight == kNeither))
+        if ((replace->weight == kNeither) || (replace->weight == (1 - replace->dir) && replace->children[1 - replace->dir]->weight == kNeither))
         {
           // Update balance node (and its parent) to replacement node
           balance_parent = replace_parent;
-          balance = replace;
+          balance        = replace;
         }
 
         // Keep searching for the replacement node
         replace_parent = replace;
-        replace = replace->children[replace->dir];
+        replace        = replace->children[replace->dir];
       }
 
       // If target node was found, proceed with rebalancing and replacement
@@ -2539,13 +2825,12 @@ namespace etl
               // Is the root node being rebalanced (no parent)
               if (balance_parent == ETL_NULLPTR)
               {
-                rotate_3node(root_node, 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                rotate_3node(root_node, 1 - balance->dir, balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
               else
               {
                 rotate_3node(balance_parent->children[balance_parent->dir], 1 - balance->dir,
-                  balance->children[1 - balance->dir]->children[balance->dir]->weight);
+                             balance->children[1 - balance->dir]->children[balance->dir]->weight);
               }
             }
             // Already balanced, rebalance and make it heavy in opposite
@@ -2563,7 +2848,8 @@ namespace etl
                 rotate_2node(balance_parent->children[balance_parent->dir], 1 - balance->dir);
                 balance_parent->children[balance_parent->dir]->weight = balance->dir;
               }
-              // Update balance node weight in opposite direction of node removed
+              // Update balance node weight in opposite direction of node
+              // removed
               balance->weight = 1 - balance->dir;
             }
             // Rebalance and leave it balanced
@@ -2592,7 +2878,7 @@ namespace etl
               }
               else
               {
-                found_parent = root_node;
+                found_parent   = root_node;
                 root_node->dir = root_node->children[kLeft] == found ? kLeft : kRight;
               }
             }
@@ -2600,15 +2886,14 @@ namespace etl
 
           // Next balance node to consider
           balance_parent = balance;
-          balance = balance->children[balance->dir];
+          balance        = balance->children[balance->dir];
         } // while(balance)
 
-          // Step 3: Swap found node with replacement node
+        // Step 3: Swap found node with replacement node
         if (found_parent)
         {
           // Handle traditional case
-          detach_node(found_parent->children[found_parent->dir],
-            replace_parent->children[replace_parent->dir]);
+          detach_node(found_parent->children[found_parent->dir], replace_parent->children[replace_parent->dir]);
         }
         // Handle root node removal
         else
@@ -2635,7 +2920,7 @@ namespace etl
         destroy_data_node(found_data_node);
       } // if(found)
 
-        // Return node found (might be ETL_NULLPTR)
+      // Return node found (might be ETL_NULLPTR)
       return found;
     }
 #endif
@@ -2647,15 +2932,15 @@ namespace etl
     /// Destructor.
     //*************************************************************************
 #if defined(ETL_POLYMORPHIC_MAP) || defined(ETL_POLYMORPHIC_CONTAINERS)
+
   public:
-    virtual ~imap()
-    {
-    }
+
+    virtual ~imap() {}
 #else
+
   protected:
-    ~imap()
-    {
-    }
+
+    ~imap() {}
 #endif
   };
 
@@ -2730,7 +3015,7 @@ namespace etl
     //*************************************************************************
     /// Constructor, from an initializer_list.
     //*************************************************************************
-    map(std::initializer_list<typename etl::imap<TKey, TValue, TCompare>::value_type> init)
+    map(std::initializer_list< typename etl::imap<TKey, TValue, TCompare>::value_type> init)
       : etl::imap<TKey, TValue, TCompare>(node_pool, MAX_SIZE)
     {
       this->assign(init.begin(), init.end());
@@ -2748,7 +3033,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    map& operator = (const map& rhs)
+    map& operator=(const map& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -2763,7 +3048,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    map& operator = (map&& rhs)
+    map& operator=(map&& rhs)
     {
       // Skip if doing self assignment
       if (this != &rhs)
@@ -2800,9 +3085,7 @@ namespace etl
   //*************************************************************************
 #if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
   template <typename... TPairs>
-  map(TPairs...) -> map<typename etl::nth_type_t<0, TPairs...>::first_type, 
-                        typename etl::nth_type_t<0, TPairs...>::second_type, 
-                        sizeof...(TPairs)>;
+  map(TPairs...) -> map<typename etl::nth_type_t<0, TPairs...>::first_type, typename etl::nth_type_t<0, TPairs...>::second_type, sizeof...(TPairs)>;
 #endif
 
   //*************************************************************************
@@ -2812,7 +3095,7 @@ namespace etl
   template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>, typename... TPairs>
   constexpr auto make_map(TPairs&&... pairs) -> etl::map<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
   {
-    return { etl::forward<TPairs>(pairs)... };
+    return {etl::forward<TPairs>(pairs)...};
   }
 #endif
 
@@ -2824,7 +3107,7 @@ namespace etl
   ///\ingroup lookup
   //***************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator ==(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator==(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
     return (lhs.size() == rhs.size()) && etl::equal(lhs.begin(), lhs.end(), rhs.begin());
   }
@@ -2837,7 +3120,7 @@ namespace etl
   ///\ingroup lookup
   //***************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator !=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator!=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
     return !(lhs == rhs);
   }
@@ -2850,9 +3133,9 @@ namespace etl
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator <(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator<(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
-    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+    return etl::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end(), lhs.value_comp());
   }
 
   //*************************************************************************
@@ -2863,7 +3146,7 @@ namespace etl
   /// second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator >(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator>(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
     return (rhs < lhs);
   }
@@ -2872,11 +3155,12 @@ namespace etl
   /// Less than or equal operator.
   ///\param lhs Reference to the first list.
   ///\param rhs Reference to the second list.
-  ///\return <b>true</b> if the first list is lexicographically less than or equal
+  ///\return <b>true</b> if the first list is lexicographically less than or
+  /// equal
   /// to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator <=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator<=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -2889,11 +3173,11 @@ namespace etl
   /// equal to the second, otherwise <b>false</b>.
   //*************************************************************************
   template <typename TKey, typename TMapped, typename TKeyCompare>
-  bool operator >=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
+  bool operator>=(const etl::imap<TKey, TMapped, TKeyCompare>& lhs, const etl::imap<TKey, TMapped, TKeyCompare>& rhs)
   {
     return !(lhs < rhs);
   }
-}
+} // namespace etl
 
 #include "private/minmax_pop.h"
 

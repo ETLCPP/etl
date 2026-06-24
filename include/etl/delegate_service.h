@@ -32,10 +32,11 @@ SOFTWARE.
 #define ETL_DELEGATE_SERVICE_INCLUDED
 
 #include "platform.h"
-#include "nullptr.h"
-#include "static_assert.h"
-#include "delegate.h"
 #include "array.h"
+#include "delegate.h"
+#include "static_assert.h"
+
+#include <stddef.h>
 
 namespace etl
 {
@@ -47,9 +48,7 @@ namespace etl
   /// The delegate ids must range between Offset and Offset + Range - 1.
   //***************************************************************************
 #if ETL_USING_CPP11 && !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
-  template <size_t Range, 
-            size_t Offset = 0U,
-            const etl::delegate<void(size_t)>* Delegates = nullptr>
+  template <size_t Range, size_t Offset = 0U, const etl::delegate<void(size_t)>* Delegates = nullptr>
   class delegate_service
   {
   public:
@@ -65,7 +64,7 @@ namespace etl
     void call() const
     {
       ETL_STATIC_ASSERT(Id < (Offset + Range), "Callback Id out of range");
-      ETL_STATIC_ASSERT(Id >= Offset,          "Callback Id out of range");
+      ETL_STATIC_ASSERT(Id >= Offset, "Callback Id out of range");
 
       Delegates[Id - Offset](Id);
     }
@@ -96,8 +95,7 @@ namespace etl
   /// \tparam Offset The lowest delegate id value.
   /// The delegate ids must range between Offset and Offset + Range - 1.
   //***************************************************************************
-  template <size_t Range, 
-            size_t Offset>
+  template <size_t Range, size_t Offset>
 #if ETL_USING_CPP11 && !defined(ETL_DELEGATE_FORCE_CPP03_IMPLEMENTATION)
   class delegate_service<Range, Offset, nullptr>
 #else
@@ -118,6 +116,14 @@ namespace etl
 
       lookup.fill(default_delegate);
     }
+
+    delegate_service(const delegate_service&) ETL_DELETE;
+    delegate_service& operator=(const delegate_service&) ETL_DELETE;
+
+#if ETL_USING_CPP11
+    delegate_service(delegate_service&&) ETL_DELETE;
+    delegate_service& operator=(delegate_service&&) ETL_DELETE;
+#endif
 
     //*************************************************************************
     /// Registers a delegate for the specified id.
@@ -209,7 +215,6 @@ namespace etl
     /// Lookup table of delegates.
     etl::array<delegate_type, Range> lookup;
   };
-}
+} // namespace etl
 
 #endif
-
