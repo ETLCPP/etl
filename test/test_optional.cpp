@@ -94,7 +94,7 @@ namespace
     {
     }
 
-    ETL_CONSTEXPR20 TestIL(std::initializer_list<int>& il, int a_, int b_, int c_)
+    ETL_CONSTEXPR20 TestIL(std::initializer_list<int> il, int a_, int b_, int c_)
       : a(a_)
       , b(b_)
       , c(c_)
@@ -1393,7 +1393,7 @@ namespace
       NothrowAtAll() noexcept {}
       NothrowAtAll(const NothrowAtAll&) noexcept {}
       NothrowAtAll(NothrowAtAll&&) noexcept {}
-      NothrowAtAll(std::initializer_list<int>&) noexcept {}
+      NothrowAtAll(std::initializer_list<int>) noexcept {}
       NothrowAtAll& operator=(const NothrowAtAll&) noexcept
       {
         return *this;
@@ -1436,11 +1436,11 @@ namespace
 
     struct ThrowingAll
     {
-      ThrowingAll() {}                            // may throw
-      ThrowingAll(const ThrowingAll&) {}          // may throw
-      ThrowingAll(ThrowingAll&&) {}               // may throw
-      ThrowingAll(std::initializer_list<int>&) {} // may throw
-      ThrowingAll& operator=(const ThrowingAll&)  // may throw
+      ThrowingAll() {}                           // may throw
+      ThrowingAll(const ThrowingAll&) {}         // may throw
+      ThrowingAll(ThrowingAll&&) {}              // may throw
+      ThrowingAll(std::initializer_list<int>) {} // may throw
+      ThrowingAll& operator=(const ThrowingAll&) // may throw
       {
         return *this;
       }
