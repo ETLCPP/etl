@@ -924,6 +924,56 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_swap_deleters)
+    {
+      struct Deleter
+      {
+        char id;
+
+        explicit Deleter(const char id_)
+          : id(id_)
+        {
+        }
+
+        Deleter(const Deleter&)            = delete;
+        Deleter& operator=(const Deleter&) = delete;
+
+        Deleter(Deleter&& other) noexcept
+          : id(other.id)
+        {
+          other.id = ' ';
+        }
+
+        Deleter& operator=(Deleter&& other) noexcept
+        {
+          if (&other != this)
+          {
+            id       = other.id;
+            other.id = ' ';
+          }
+
+          return *this;
+        }
+
+        ~Deleter() = default;
+
+        void operator()(int*) const {}
+      };
+
+      int                           a_obj = 1;
+      int                           b_obj = 2;
+      etl::unique_ptr<int, Deleter> up1(&a_obj, Deleter('A'));
+      etl::unique_ptr<int, Deleter> up2(&b_obj, Deleter('B'));
+
+      up1.swap(up2);
+
+      CHECK_EQUAL(2, *up1);
+      CHECK_EQUAL('B', up1.get_deleter().id);
+      CHECK_EQUAL(1, *up2);
+      CHECK_EQUAL('A', up2.get_deleter().id);
+    }
+
+    //*************************************************************************
     TEST(test_unique_ptr_from_nullptr_assignment)
     {
       etl::unique_ptr<int> up(new int);
@@ -1065,6 +1115,56 @@ namespace
       CHECK_EQUAL(1, up2[1]);
       CHECK_EQUAL(2, up2[2]);
       CHECK_EQUAL(3, up2[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_array_swap_deleters)
+    {
+      struct Deleter
+      {
+        char id;
+
+        explicit Deleter(const char id_)
+          : id(id_)
+        {
+        }
+
+        Deleter(const Deleter&)            = delete;
+        Deleter& operator=(const Deleter&) = delete;
+
+        Deleter(Deleter&& other) noexcept
+          : id(other.id)
+        {
+          other.id = ' ';
+        }
+
+        Deleter& operator=(Deleter&& other) noexcept
+        {
+          if (&other != this)
+          {
+            id       = other.id;
+            other.id = ' ';
+          }
+
+          return *this;
+        }
+
+        ~Deleter() = default;
+
+        void operator()(int*) const {}
+      };
+
+      int                             a_obj = 1;
+      int                             b_obj = 2;
+      etl::unique_ptr<int[], Deleter> up1(&a_obj, Deleter('A'));
+      etl::unique_ptr<int[], Deleter> up2(&b_obj, Deleter('B'));
+
+      up1.swap(up2);
+
+      CHECK_EQUAL(2, up1[0]);
+      CHECK_EQUAL('B', up1.get_deleter().id);
+      CHECK_EQUAL(1, up2[0]);
+      CHECK_EQUAL('A', up2.get_deleter().id);
     }
 
     //*************************************************************************

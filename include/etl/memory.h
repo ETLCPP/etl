@@ -2085,6 +2085,7 @@ namespace etl
       using ETL_OR_STD::swap;
 
       swap(p, value.p);
+      swap(deleter, value.deleter);
     }
 
     //*********************************
@@ -2292,6 +2293,7 @@ namespace etl
       using ETL_OR_STD::swap;
 
       swap(p, v.p);
+      swap(deleter, v.deleter);
     }
 
     //*********************************
