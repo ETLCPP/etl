@@ -399,6 +399,22 @@ namespace
     }
 
     //*************************************************************************
+    // Empty strings exercise the string_length == 0 path in from_string,
+    // which must not shift by (0 - 1U).
+    TEST(test_construct_from_empty_string)
+    {
+      etl::bitset<64, uint64_t> data_char("");
+      etl::bitset<64, uint64_t> data_wchar(L"");
+      etl::bitset<64, uint64_t> data_u16(u"");
+      etl::bitset<64, uint64_t> data_u32(U"");
+
+      CHECK_EQUAL(0U, data_char.count());
+      CHECK_EQUAL(0U, data_wchar.count());
+      CHECK_EQUAL(0U, data_u16.count());
+      CHECK_EQUAL(0U, data_u32.count());
+    }
+
+    //*************************************************************************
     TEST(test_construct_from_excess_string)
     {
       std::bitset<64>           compare("110001001000110100010101100111001100010010001101000101011001111100001");
