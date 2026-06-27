@@ -457,6 +457,8 @@ namespace etl
         using ETL_OR_STD::swap; // Allow ADL
 
         swap(index, other.index);
+        swap(p_deque, other.p_deque);
+        swap(p_buffer, other.p_buffer);
       }
 
     private:
@@ -703,6 +705,8 @@ namespace etl
       void swap(const_iterator& other)
       {
         ETL_OR_STD::swap(index, other.index);
+        ETL_OR_STD::swap(p_deque, other.p_deque);
+        ETL_OR_STD::swap(p_buffer, other.p_buffer);
       }
 
     private:

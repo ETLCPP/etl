@@ -633,6 +633,42 @@ namespace
     }
 
     //*************************************************************************
+    // The member swap() must exchange the complete iterator state (index,
+    // owning deque and buffer).
+    TEST(test_iterator_swap_different_deques)
+    {
+      DataInt data1 = {1, 2, 3, 4, 5};
+      DataInt data2 = {10, 20, 30, 40, 50};
+
+      DataInt::iterator itr1 = data1.begin() + 1; // -> 2
+      DataInt::iterator itr2 = data2.begin() + 3; // -> 40
+
+      itr1.swap(itr2);
+
+      CHECK_EQUAL(40, *itr1);
+      CHECK_EQUAL(2, *itr2);
+      CHECK(&itr1.container() == &data2);
+      CHECK(&itr2.container() == &data1);
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator_swap_different_deques)
+    {
+      DataInt data1 = {1, 2, 3, 4, 5};
+      DataInt data2 = {10, 20, 30, 40, 50};
+
+      DataInt::const_iterator itr1 = data1.begin() + 1; // -> 2
+      DataInt::const_iterator itr2 = data2.begin() + 3; // -> 40
+
+      itr1.swap(itr2);
+
+      CHECK_EQUAL(40, *itr1);
+      CHECK_EQUAL(2, *itr2);
+      CHECK(&itr1.container() == &data2);
+      CHECK(&itr2.container() == &data1);
+    }
+
+    //*************************************************************************
     TEST(test_iterator_comparison_rollover_left)
     {
       DataNDC data(SIZE, N0);
