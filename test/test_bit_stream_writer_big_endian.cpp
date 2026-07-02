@@ -119,7 +119,7 @@ namespace
     {
       std::array<char, 256> storage;
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.available(CHAR_BIT));
       CHECK_EQUAL(storage.size(), bit_stream.available<CHAR_BIT>());
@@ -140,7 +140,7 @@ namespace
       unsigned char storage  = 0;
       unsigned char expected = 0x5AU;
 
-      etl::bit_stream_writer bit_stream(&storage, 1U, etl::endian::big);
+      etl::bit_stream_writer bit_stream(&storage, 1U, etl::bit_order::msb_first);
 
       CHECK(bit_stream.write(false));
       CHECK_EQUAL(1U, bit_stream.used_data().size());
@@ -176,7 +176,7 @@ namespace
       std::array<char, 256U> expected;
       std::iota(expected.begin(), expected.end(), 0);
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       for (size_t i = 0UL; i < 256UL; ++i)
       {
@@ -204,7 +204,7 @@ namespace
       std::array<char, 256> expected;
       std::iota(expected.begin(), expected.end(), 0);
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       for (size_t i = 0UL; i < 256UL; ++i)
       {
@@ -233,7 +233,7 @@ namespace
 
       CHECK(expected.size() == storage.size());
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK(bit_stream.write(int16_t(0x0001)));
       CHECK_EQUAL(sizeof(int16_t) * 1, bit_stream.used_data().size());
@@ -265,7 +265,7 @@ namespace
 
       CHECK(expected.size() == storage.size());
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK(bit_stream.write(uint16_t(0x0001)));
       CHECK_EQUAL(sizeof(uint16_t) * 1, bit_stream.used_data().size());
@@ -298,7 +298,7 @@ namespace
 
       CHECK(expected.size() == storage.size());
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK(bit_stream.write(int32_t(0x00000001)));
       CHECK_EQUAL(sizeof(int32_t) * 1, bit_stream.used_data().size());
@@ -331,7 +331,7 @@ namespace
 
       CHECK(expected.size() == storage.size());
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK(bit_stream.write(uint32_t(0x00000001)));
       CHECK_EQUAL(sizeof(uint32_t) * 1, bit_stream.used_data().size());
@@ -365,7 +365,7 @@ namespace
 
       CHECK(expected.size() == storage.size());
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK(bit_stream.write(int64_t(0x0000000000000001LL)));
       CHECK_EQUAL(sizeof(int64_t) * 1, bit_stream.used_data().size());
@@ -399,7 +399,7 @@ namespace
 
       CHECK(expected.size() == storage.size());
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK(bit_stream.write(uint64_t(0x0000000000000001LL)));
       CHECK_EQUAL(sizeof(uint64_t) * 1, bit_stream.used_data().size());
@@ -429,7 +429,7 @@ namespace
       std::array<int8_t, 4>              write_data = {int8_t(0x01), int8_t(0xF5), int8_t(0x05), int8_t(0xFF)}; // 1, -11, 10, -1
       std::array<char, 4>                expected   = {char(0x0D), char(0x4B), char(0xF0), char(0x00)};         // 1, -11, 10, -1
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       // Insert into the stream
       CHECK(bit_stream.write(write_data[0], 5));
@@ -455,7 +455,7 @@ namespace
       std::array<char, 4 * sizeof(int16_t)> expected   = {char(0x00), char(0x55), char(0xAA), char(0x97),
                                                           char(0xFF), char(0x00), char(0x00), char(0x00)};
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       // Insert into the stream
       CHECK(bit_stream.write(write_data[0], 10));
@@ -484,7 +484,7 @@ namespace
                                                          char(0x56), char(0xA9), char(0x7F), char(0xFF), char(0xFF), char(0x00),
                                                          char(0x00), char(0x00), char(0x00), char(0x00)};
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       // Insert into the stream
       CHECK(bit_stream.write(write_data[0], 22));
@@ -521,7 +521,7 @@ namespace
                                                           char(0xD5), char(0x2A), char(0xD5), char(0x2A), char(0xD5), char(0x2F),
                                                           char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xF0)};
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       // Insert into the stream
       bit_stream.write(write_data[0], 47);
@@ -571,7 +571,7 @@ namespace
                                                          char(0xD5), char(0x2A), char(0xD5), char(0x2A), char(0xD5), char(0x2F),
                                                          char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xFF), char(0xF0)};
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       // Insert into the stream
       bit_stream.write(write_data[0], 47);
@@ -624,7 +624,7 @@ namespace
       std::array<char, 14> expected = {char(0x5A), char(0x12), char(0x34), char(0x89), char(0xAB), char(0xCD), char(0xEF),
                                        char(0xFE), char(0xDC), char(0xBA), char(0x98), char(0x56), char(0x78), char(0xA5)};
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       // Insert into the stream.
       bit_stream.write(c1);
@@ -670,7 +670,7 @@ namespace
       std::array<char, 14> expected = {char(0x6A), char(0x46), char(0x8A), char(0xF3), char(0x7B), char(0xDB),
                                        char(0x97), char(0x53), char(0x19), char(0xE1), char(0x28)};
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       // Insert into the stream.
       bit_stream.write(c1, 6);
@@ -718,7 +718,7 @@ namespace
 
       auto callback = etl::bit_stream_writer::callback_type::create< Accumulator, &Accumulator::Add>(accumulator);
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big, callback);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first, callback);
 
       // Insert into the stream.
       bit_stream.write(c1, 6);
@@ -754,7 +754,7 @@ namespace
       std::array<char, 12U> expected{char(0xEC), char(0xBA), char(0xDE), char(0x68), char(0xAF), char(0xD2),
                                      char(0xC5), char(0xC8), char(0x65), char(0xD3), char(0xDF), char(0x80)};
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       Object object1 = {-1234, 123456789, 250};
       Object object2 = {5678, -987654321, 126};
@@ -781,7 +781,7 @@ namespace
     {
       std::array<char, 2U> storage;
 
-      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(bit_stream.empty(), true);
       CHECK_EQUAL(bit_stream.full(), false);
@@ -795,6 +795,181 @@ namespace
 
       CHECK_EQUAL(bit_stream.empty(), false);
       CHECK_EQUAL(bit_stream.full(), true);
+    }
+  }
+
+  //*************************************************************************
+  /// Tests for the separately configurable byte order (endianness).
+  /// bit_order  controls MSB/LSB-first bit ordering.
+  /// byte_order controls big/little-endian byte ordering.
+  //*************************************************************************
+  SUITE(test_bit_stream_byte_order)
+  {
+    //*************************************************************************
+    /// bit_order = big (MSB first), byte_order = little.
+    /// The value's bytes are reversed but the bit order is unchanged.
+    //*************************************************************************
+    TEST(test_write_uint16_t_little_byte_order)
+    {
+      std::array<char, sizeof(uint16_t)> storage;
+      storage.fill(0);
+      std::array<char, sizeof(uint16_t)> expected = {char(0x34), char(0x12)};
+
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first, etl::bit_stream_writer::callback_type(),
+                                        etl::endian::little);
+
+      CHECK(bit_stream.write(uint16_t(0x1234)));
+
+      for (size_t i = 0UL; i < storage.size(); ++i)
+      {
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_write_uint32_t_little_byte_order)
+    {
+      std::array<char, sizeof(uint32_t)> storage;
+      storage.fill(0);
+      std::array<char, sizeof(uint32_t)> expected = {char(0x78), char(0x56), char(0x34), char(0x12)};
+
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first, etl::bit_stream_writer::callback_type(),
+                                        etl::endian::little);
+
+      CHECK(bit_stream.write(uint32_t(0x12345678)));
+
+      for (size_t i = 0UL; i < storage.size(); ++i)
+      {
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
+      }
+    }
+
+    //*************************************************************************
+    /// byte_order = big must match the default (no byte swap).
+    //*************************************************************************
+    TEST(test_write_uint16_t_big_byte_order_matches_default)
+    {
+      std::array<char, sizeof(uint16_t)> storage;
+      storage.fill(0);
+      std::array<char, sizeof(uint16_t)> expected = {char(0x12), char(0x34)};
+
+      etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first, etl::bit_stream_writer::callback_type(),
+                                        etl::endian::big);
+
+      CHECK(bit_stream.write(uint16_t(0x1234)));
+
+      for (size_t i = 0UL; i < storage.size(); ++i)
+      {
+        CHECK_EQUAL(int(expected[i]), int(storage[i]));
+      }
+    }
+
+    //*************************************************************************
+    /// The reader must undo the byte order applied by the writer.
+    //*************************************************************************
+    TEST(test_read_uint32_t_little_byte_order)
+    {
+      std::array<char, sizeof(uint32_t)> storage = {char(0x78), char(0x56), char(0x34), char(0x12)};
+
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first, etl::endian::little);
+
+      etl::optional<uint32_t> result = bit_stream.read<uint32_t>();
+      CHECK(result.has_value());
+      CHECK_EQUAL(uint32_t(0x12345678), result.value());
+    }
+
+    //*************************************************************************
+    /// Round-trip writer -> reader for every combination of bit order and
+    /// byte order, for an unsigned type.
+    //*************************************************************************
+    TEST(test_round_trip_all_orders_uint16_t)
+    {
+      const etl::bit_order           bit_orders[2]  = {etl::bit_order::msb_first, etl::bit_order::lsb_first};
+      const etl::endian              byte_orders[2] = {etl::endian::big, etl::endian::little};
+      const std::array<uint16_t, 8U> values         = {uint16_t(0x0000), uint16_t(0x0001), uint16_t(0x1234), uint16_t(0x5AA5),
+                                                       uint16_t(0xA55A), uint16_t(0x00FF), uint16_t(0xFF00), uint16_t(0xFFFF)};
+
+      for (size_t b = 0UL; b < 2UL; ++b)
+      {
+        for (size_t y = 0UL; y < 2UL; ++y)
+        {
+          for (size_t v = 0UL; v < values.size(); ++v)
+          {
+            std::array<char, sizeof(uint16_t)> storage;
+            storage.fill(0);
+
+            etl::bit_stream_writer writer(storage.data(), storage.size(), bit_orders[b], etl::bit_stream_writer::callback_type(), byte_orders[y]);
+            CHECK(writer.write(values[v]));
+
+            etl::bit_stream_reader  reader(storage.data(), storage.size(), bit_orders[b], byte_orders[y]);
+            etl::optional<uint16_t> result = reader.read<uint16_t>();
+            CHECK(result.has_value());
+            CHECK_EQUAL(values[v], result.value());
+          }
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Round-trip writer -> reader for every combination of bit order and
+    /// byte order, for a signed type.
+    //*************************************************************************
+    TEST(test_round_trip_all_orders_int32_t)
+    {
+      const etl::bit_order          bit_orders[2]  = {etl::bit_order::msb_first, etl::bit_order::lsb_first};
+      const etl::endian             byte_orders[2] = {etl::endian::big, etl::endian::little};
+      const std::array<int32_t, 6U> values         = {int32_t(0x00000000), int32_t(0x00000001), int32_t(0x12345678),
+                                                      int32_t(-1234),      int32_t(-1),         int32_t(0x7FFFFFFF)};
+
+      for (size_t b = 0UL; b < 2UL; ++b)
+      {
+        for (size_t y = 0UL; y < 2UL; ++y)
+        {
+          for (size_t v = 0UL; v < values.size(); ++v)
+          {
+            std::array<char, sizeof(int32_t)> storage;
+            storage.fill(0);
+
+            etl::bit_stream_writer writer(storage.data(), storage.size(), bit_orders[b], etl::bit_stream_writer::callback_type(), byte_orders[y]);
+            CHECK(writer.write(values[v]));
+
+            etl::bit_stream_reader reader(storage.data(), storage.size(), bit_orders[b], byte_orders[y]);
+            etl::optional<int32_t> result = reader.read<int32_t>();
+            CHECK(result.has_value());
+            CHECK_EQUAL(values[v], result.value());
+          }
+        }
+      }
+    }
+
+    //*************************************************************************
+    /// Byte order is only meaningful for full-width values, so it has no
+    /// effect on a sub-width field. The data must still round-trip.
+    //*************************************************************************
+    TEST(test_byte_order_ignored_for_sub_width_write)
+    {
+      std::array<char, sizeof(uint16_t)> storage_big;
+      std::array<char, sizeof(uint16_t)> storage_little;
+      storage_big.fill(0);
+      storage_little.fill(0);
+
+      etl::bit_stream_writer writer_big(storage_big.data(), storage_big.size(), etl::bit_order::msb_first, etl::bit_stream_writer::callback_type(),
+                                        etl::endian::big);
+      etl::bit_stream_writer writer_little(storage_little.data(), storage_little.size(), etl::bit_order::msb_first,
+                                           etl::bit_stream_writer::callback_type(), etl::endian::little);
+
+      CHECK(writer_big.write(uint16_t(0x0ABC), 12));
+      CHECK(writer_little.write(uint16_t(0x0ABC), 12));
+
+      for (size_t i = 0UL; i < storage_big.size(); ++i)
+      {
+        CHECK_EQUAL(int(storage_big[i]), int(storage_little[i]));
+      }
+
+      etl::bit_stream_reader  reader(storage_little.data(), storage_little.size(), etl::bit_order::msb_first, etl::endian::little);
+      etl::optional<uint16_t> result = reader.read<uint16_t>(12);
+      CHECK(result.has_value());
+      CHECK_EQUAL(uint16_t(0x0ABC), result.value());
     }
   }
 } // namespace

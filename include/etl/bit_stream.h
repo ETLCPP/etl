@@ -31,6 +31,7 @@ SOFTWARE.
 #include "binary.h"
 #include "delegate.h"
 #include "endianness.h"
+#include "enum_type.h"
 #include "error_handler.h"
 #include "exception.h"
 #include "integral_limits.h"
@@ -48,6 +49,26 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// Describes the order in which the bits of a value are written to, or read
+  /// from, a bit stream.
+  /// This is deliberately a distinct type from etl::endian (which describes
+  /// byte order) so that bit order cannot be confused with byte order.
+  //***************************************************************************
+  struct bit_order
+  {
+    enum enum_type
+    {
+      lsb_first, ///< Least significant bit first.
+      msb_first  ///< Most significant bit first.
+    };
+
+    ETL_DECLARE_ENUM_TYPE(bit_order, int)
+    ETL_ENUM_TYPE(lsb_first, "lsb_first")
+    ETL_ENUM_TYPE(msb_first, "msb_first")
+    ETL_END_ENUM_TYPE
+  };
+
   //***************************************************************************
   /// Encodes and decodes bitstreams.
   /// Data must be stored in the stream in network order.
@@ -349,7 +370,8 @@ namespace etl
             uint32_t mask = ((1U << mask_width) - 1U) << nbits;
             // uint32_t mask = ((uint32_t(1U) << mask_width) - 1U) << nbits;
 
-            // Move chunk to lowest char bits.
+            // Normalise the chunk to the low bits (>> nbits), then left-align
+            // it within the bits still free in the current char.
             // Chunks are never larger than one char.
             uint32_t chunk = ((value & mask) >> nbits) << (bits_available_in_char - mask_width);
 
@@ -383,7 +405,8 @@ namespace etl
             nbits -= mask_width;
             uint64_t mask = ((uint64_t(1U) << mask_width) - 1U) << nbits;
 
-            // Move chunk to lowest char bits.
+            // Normalise the chunk to the low bits (>> nbits), then left-align
+            // it within the bits still free in the current char.
             // Chunks are never larger than one char.
             uint64_t chunk = ((value & mask) >> nbits) << (bits_available_in_char - mask_width);
 
@@ -535,10 +558,12 @@ namespace etl
     /// Construct from span.
     //***************************************************************************
     template <size_t Length>
-    bit_stream_writer(const etl::span<char, Length>& span_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
+    bit_stream_writer(const etl::span<char, Length>& span_, etl::bit_order bit_order_, callback_type callback_ = callback_type(),
+                      etl::endian byte_order_ = etl::endian::big)
       : pdata(span_.begin())
       , length_chars(span_.size_bytes())
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
       , callback(callback_)
     {
       restart();
@@ -548,10 +573,12 @@ namespace etl
     /// Construct from span.
     //***************************************************************************
     template <size_t Length>
-    bit_stream_writer(const etl::span<unsigned char, Length>& span_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
+    bit_stream_writer(const etl::span<unsigned char, Length>& span_, etl::bit_order bit_order_, callback_type callback_ = callback_type(),
+                      etl::endian byte_order_ = etl::endian::big)
       : pdata(reinterpret_cast<char*>(span_.begin()))
       , length_chars(span_.size_bytes())
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
       , callback(callback_)
     {
       restart();
@@ -560,10 +587,12 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    bit_stream_writer(void* begin_, void* end_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
+    bit_stream_writer(void* begin_, void* end_, etl::bit_order bit_order_, callback_type callback_ = callback_type(),
+                      etl::endian byte_order_ = etl::endian::big)
       : pdata(reinterpret_cast<char*>(begin_))
       , length_chars(static_cast<size_t>(etl::distance(reinterpret_cast<unsigned char*>(begin_), reinterpret_cast<unsigned char*>(end_))))
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
       , callback(callback_)
     {
       restart();
@@ -572,10 +601,12 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream_writer(void* begin_, size_t length_chars_, etl::endian stream_endianness_, callback_type callback_ = callback_type())
+    bit_stream_writer(void* begin_, size_t length_chars_, etl::bit_order bit_order_, callback_type callback_ = callback_type(),
+                      etl::endian byte_order_ = etl::endian::big)
       : pdata(reinterpret_cast<char*>(begin_))
       , length_chars(length_chars_)
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
       , callback(callback_)
     {
       restart();
@@ -883,10 +914,17 @@ namespace etl
     template <typename T>
     void write_data(T value, uint_least8_t nbits)
     {
-      // Make sure that we are not writing more bits than should be available.
-      nbits = (nbits > (CHAR_BIT * sizeof(T))) ? (CHAR_BIT * sizeof(T)) : nbits;
+      ETL_ASSERT(nbits <= (CHAR_BIT * sizeof(T)), ETL_ERROR_GENERIC("bit_stream_writer::write_data: nbits too large"));
 
-      if (stream_endianness == etl::endian::little)
+      // Apply the byte order (endianness).
+      // Only meaningful when writing the full width of the type.
+      if ((byte_order == etl::endian::little) && (nbits == (CHAR_BIT * sizeof(T))))
+      {
+        value = etl::reverse_bytes(value);
+      }
+
+      // Apply the bit order.
+      if (bit_order == etl::bit_order::lsb_first)
       {
         value = etl::reverse_bits(value);
         value = value >> ((CHAR_BIT * sizeof(T)) - nbits);
@@ -899,7 +937,8 @@ namespace etl
         nbits -= mask_width;
         T mask = ((T(1U) << mask_width) - 1U) << nbits;
 
-        // Move chunk to lowest char bits.
+        // Normalise the chunk to the low bits (>> nbits), then left-align
+        // it within the bits still free in the current char.
         // Chunks are never larger than one char.
         T chunk = ((value & mask) >> nbits) << (bits_available_in_char - mask_width);
 
@@ -968,15 +1007,16 @@ namespace etl
       bits_available -= nbits;
     }
 
-    char* const       pdata;                  ///< The start of the bitstream buffer.
-    const size_t      length_chars;           ///< The length of the bitstream buffer.
-    const etl::endian stream_endianness;      ///< The endianness of the stream data.
-    unsigned char     bits_available_in_char; ///< The number of available bits in
-                                              ///< the current char.
-    size_t char_index;                        ///< The index of the current char in the bitstream buffer.
-    size_t bits_available;                    ///< The number of bits still available in the
-                                              ///< bitstream buffer.
-    callback_type callback;                   ///< An optional callback on every filled byte in buffer.
+    char* const          pdata;                  ///< The start of the bitstream buffer.
+    const size_t         length_chars;           ///< The length of the bitstream buffer.
+    const etl::bit_order bit_order;              ///< The bit order of the stream data (MSB or LSB first).
+    const etl::endian    byte_order;             ///< The byte order (endianness) of the stream data.
+    unsigned char        bits_available_in_char; ///< The number of available bits in
+                                                 ///< the current char.
+    size_t char_index;                           ///< The index of the current char in the bitstream buffer.
+    size_t bits_available;                       ///< The number of bits still available in the
+                                                 ///< bitstream buffer.
+    callback_type callback;                      ///< An optional callback on every filled byte in buffer.
   };
 
   //***************************************************************************
@@ -1035,10 +1075,11 @@ namespace etl
     /// Construct from span.
     //***************************************************************************
     template <size_t Length>
-    bit_stream_reader(const etl::span<char, Length>& span_, etl::endian stream_endianness_)
+    bit_stream_reader(const etl::span<char, Length>& span_, etl::bit_order bit_order_, etl::endian byte_order_ = etl::endian::big)
       : pdata(span_.begin())
       , length_chars(span_.size_bytes())
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
     {
       restart();
     }
@@ -1047,10 +1088,11 @@ namespace etl
     /// Construct from span.
     //***************************************************************************
     template <size_t Length>
-    bit_stream_reader(const etl::span<unsigned char, Length>& span_, etl::endian stream_endianness_)
+    bit_stream_reader(const etl::span<unsigned char, Length>& span_, etl::bit_order bit_order_, etl::endian byte_order_ = etl::endian::big)
       : pdata(reinterpret_cast<const char*>(span_.begin()))
       , length_chars(span_.size_bytes())
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
     {
       restart();
     }
@@ -1059,10 +1101,11 @@ namespace etl
     /// Construct from span.
     //***************************************************************************
     template <size_t Length>
-    bit_stream_reader(const etl::span<const char, Length>& span_, etl::endian stream_endianness_)
+    bit_stream_reader(const etl::span<const char, Length>& span_, etl::bit_order bit_order_, etl::endian byte_order_ = etl::endian::big)
       : pdata(span_.begin())
       , length_chars(span_.size_bytes())
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
     {
       restart();
     }
@@ -1071,10 +1114,11 @@ namespace etl
     /// Construct from span.
     //***************************************************************************
     template <size_t Length>
-    bit_stream_reader(const etl::span<const unsigned char, Length>& span_, etl::endian stream_endianness_)
+    bit_stream_reader(const etl::span<const unsigned char, Length>& span_, etl::bit_order bit_order_, etl::endian byte_order_ = etl::endian::big)
       : pdata(reinterpret_cast<const char*>(span_.begin()))
       , length_chars(span_.size_bytes())
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
     {
       restart();
     }
@@ -1082,10 +1126,11 @@ namespace etl
     //***************************************************************************
     /// Construct from range.
     //***************************************************************************
-    bit_stream_reader(const void* begin_, const void* end_, etl::endian stream_endianness_)
+    bit_stream_reader(const void* begin_, const void* end_, etl::bit_order bit_order_, etl::endian byte_order_ = etl::endian::big)
       : pdata(reinterpret_cast<const char*>(begin_))
       , length_chars(static_cast<size_t>(etl::distance(reinterpret_cast<const char*>(begin_), reinterpret_cast<const char*>(end_))))
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
     {
       restart();
     }
@@ -1093,10 +1138,11 @@ namespace etl
     //***************************************************************************
     /// Construct from begin and length.
     //***************************************************************************
-    bit_stream_reader(const void* begin_, size_t length_, etl::endian stream_endianness_)
+    bit_stream_reader(const void* begin_, size_t length_, etl::bit_order bit_order_, etl::endian byte_order_ = etl::endian::big)
       : pdata(reinterpret_cast<const char*>(begin_))
       , length_chars(length_)
-      , stream_endianness(stream_endianness_)
+      , bit_order(bit_order_)
+      , byte_order(byte_order_)
     {
       restart();
     }
@@ -1259,8 +1305,7 @@ namespace etl
     template <typename T>
     T read_value(uint_least8_t nbits, bool is_signed)
     {
-      // Make sure that we are not reading more bits than should be available.
-      nbits = (nbits > (CHAR_BIT * sizeof(T))) ? (CHAR_BIT * sizeof(T)) : nbits;
+      ETL_ASSERT(nbits <= (CHAR_BIT * sizeof(T)), ETL_ERROR_GENERIC("bit_stream_reader::read_value: nbits too large"));
 
       T             value = 0;
       uint_least8_t bits  = nbits;
@@ -1276,10 +1321,17 @@ namespace etl
         value |= static_cast<T>(chunk << nbits);
       }
 
-      if (stream_endianness == etl::endian::little)
+      if (bit_order == etl::bit_order::lsb_first)
       {
         value = value << ((CHAR_BIT * sizeof(T)) - bits);
         value = etl::reverse_bits(value);
+      }
+
+      // Apply the byte order (endianness).
+      // Only meaningful when reading the full width of the type.
+      if ((byte_order == etl::endian::little) && (bits == (CHAR_BIT * sizeof(T))))
+      {
+        value = etl::reverse_bytes(value);
       }
 
       if (is_signed && (bits != (CHAR_BIT * sizeof(T))))
@@ -1345,14 +1397,15 @@ namespace etl
       bits_available -= nbits;
     }
 
-    const char*       pdata;                  ///< The start of the bitstream buffer.
-    size_t            length_chars;           ///< The length, in char, of the bitstream buffer.
-    const etl::endian stream_endianness;      ///< The endianness of the stream data.
-    unsigned char     bits_available_in_char; ///< The number of available bits in
-                                              ///< the current char.
-    size_t char_index;                        ///< The index of the char in the bitstream buffer.
-    size_t bits_available;                    ///< The number of bits still available in the
-                                              ///< bitstream buffer.
+    const char*          pdata;                  ///< The start of the bitstream buffer.
+    size_t               length_chars;           ///< The length, in char, of the bitstream buffer.
+    const etl::bit_order bit_order;              ///< The bit order of the stream data (MSB or LSB first).
+    const etl::endian    byte_order;             ///< The byte order (endianness) of the stream data.
+    unsigned char        bits_available_in_char; ///< The number of available bits in
+                                                 ///< the current char.
+    size_t char_index;                           ///< The index of the char in the bitstream buffer.
+    size_t bits_available;                       ///< The number of bits still available in the
+                                                 ///< bitstream buffer.
   };
 
   //***************************************************************************

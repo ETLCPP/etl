@@ -3,7 +3,7 @@ title: "byte_stream_reader"
 ---
 
 {{< callout type="info">}}
-  Header: `byte_stream_reader.h`  
+  Header: `byte_stream.h`  
   From: `20.17.0`  
 {{< /callout >}}
 

@@ -3,11 +3,11 @@ title: "bit_stream_writer"
 ---
 
 {{< callout type="info">}}
-  Header: `bit_stream_writer.h`  
+  Header: `bit_stream.h`  
   Since: `TBC`  
 {{< /callout >}}
 
-A binary streaming utility that allows values to be written to an array of char or unsigned char using custom bits widths for efficient packing. Values may be streamed in either msb or lsb format.
+A binary streaming utility that allows values to be written to an array of char or unsigned char using custom bits widths for efficient packing. The bit order (MSB or LSB first) and the byte order (endianness) can be configured independently.
 
 Write functions come in both checked and unchecked forms.
 - Unchecked writes return `void`.
@@ -38,51 +38,56 @@ callback_type           etl::delegate<void(callback_parameter_type)>
 
 ## Member functions
 ```cpp
-bit_stream_writer(etl::span<char> span, etl::endian stream_endianness, callback_type callback = callback_type())
+bit_stream_writer(etl::span<char> span, etl::bit_order bit_order, callback_type callback = callback_type(), etl::endian byte_order = etl::endian::big)
 ```
 **Description**  
 Construct from span.  
 **Parameters**  
-`span` A char span of the read buffer.  
-`stream_endianness` The endianness of the stream. `etl::endian::little` or `etl::endian::big`.   
-`callback` An optional callback.
+`span` A char span of the write buffer.  
+`bit_order` The bit order of the stream. `etl::bit_order::msb_first` (MSB first) or `etl::bit_order::lsb_first` (LSB first).  
+`callback` An optional callback.  
+`byte_order` The byte order (endianness) of the stream. `etl::endian::big` or `etl::endian::little`. Defaults to `etl::endian::big`.
 
 ---
 
 ```cpp
-bit_stream_writer(etl::span<unsigned char> span, etl::endian stream_endianness, callback_type callback = callback_type())
+bit_stream_writer(etl::span<unsigned char> span, etl::bit_order bit_order, callback_type callback = callback_type(), etl::endian byte_order = etl::endian::big)
 ```
 **Description**  
 Construct from span.  
 **Parameters**  
-`span` A char span of the read buffer.  
-`stream_endianness` The endianness of the stream. etl::endian::little or etl::endian::big.  
-`callback` An optional callback.
+`span` An unsigned char span of the write buffer.  
+`bit_order` The bit order of the stream. `etl::bit_order::msb_first` (MSB first) or `etl::bit_order::lsb_first` (LSB first).  
+`callback` An optional callback.  
+`byte_order` The byte order (endianness) of the stream. `etl::endian::big` or `etl::endian::little`. Defaults to `etl::endian::big`.
 
 ---
 
 ```cpp
-bit_stream_writer(void* begin, void* end, etl::endian stream_endianness, callback_type callback = callback_type())
+bit_stream_writer(void* begin, void* end, etl::bit_order bit_order, callback_type callback = callback_type(), etl::endian byte_order = etl::endian::big)
 ```
 **Description**  
 Construct from range.  
 **Parameters**  
-`begin` A pointer to the beginning of the read buffer.  
-`end` A pointer to the beginning of the read buffer.  
-`stream_endianness` The endianness of the stream. `etl::endian::little` or `etl::endian::big`.  
-`callback` An optional callback.
+`begin` A pointer to the beginning of the write buffer.  
+`end` A pointer to the end of the write buffer.  
+`bit_order` The bit order of the stream. `etl::bit_order::msb_first` (MSB first) or `etl::bit_order::lsb_first` (LSB first).  
+`callback` An optional callback.  
+`byte_order` The byte order (endianness) of the stream. `etl::endian::big` or `etl::endian::little`. Defaults to `etl::endian::big`.
 
 ---
 
 ```cpp
-bit_stream_writer(void* begin, size_t length_chars, etl::endian stream_endianness, callback_type callback = callback_type())
+bit_stream_writer(void* begin, size_t length_chars, etl::bit_order bit_order, callback_type callback = callback_type(), etl::endian byte_order = etl::endian::big)
 ```
 **Description**  
 Construct from begin and length.  
 **Parameters**  
-`begin` A pointer to the beginning of the read buffer.  
-`length` The length, in char, of the read buffer.  
-`stream_endianness` The endianness of the stream. `etl::endian::little` or `etl::endian::big`.  
+`begin` A pointer to the beginning of the write buffer.  
+`length` The length, in char, of the write buffer.  
+`bit_order` The bit order of the stream. `etl::bit_order::msb_first` (MSB first) or `etl::bit_order::lsb_first` (LSB first).  
+`callback` An optional callback.  
+`byte_order` The byte order (endianness) of the stream. `etl::endian::big` or `etl::endian::little`. Defaults to `etl::endian::big`.  
 
 ---
 
