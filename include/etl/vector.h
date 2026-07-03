@@ -72,7 +72,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  class ivector<T, typename etl::enable_if<etl::negation<etl::is_object_pointer<T>>::value>::type> : public etl::vector_base
+  class ivector<T, typename etl::enable_if<etl::negation<etl::is_object_pointer<T> >::value>::type> : public etl::vector_base
   {
   public:
 
@@ -391,7 +391,7 @@ namespace etl
     //*********************************************************************
     template <typename TIterator>
     typename etl::enable_if<!etl::is_integral<TIterator>::value
-                              && etl::is_convertible<typename etl::remove_reference<decltype(*etl::declval<TIterator>())>::type, T>::value,
+                              && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, T>::value,
                             typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>::type
       assign(TIterator first, TIterator last)
     {
@@ -863,7 +863,7 @@ namespace etl
     //*********************************************************************
     template <class TIterator>
     typename etl::enable_if<!etl::is_integral<TIterator>::value
-                              && etl::is_convertible<typename etl::remove_reference<decltype(*etl::declval<TIterator>())>::type, T>::value,
+                              && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, T>::value,
                             void>::type
       insert(const_iterator position, TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
