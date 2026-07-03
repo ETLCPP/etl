@@ -4056,6 +4056,19 @@ namespace etl
   inline constexpr bool is_object_v = etl::is_object<T>::value;
 #endif
 
+  //***************************************************************************
+  /// is_object_pointer
+  //***************************************************************************
+  template <typename T>
+  struct is_object_pointer : etl::bool_constant<etl::is_pointer<T>::value && etl::is_object<typename etl::remove_pointer<T>::type>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_object_pointer_v = etl::is_object_pointer<T>::value;
+#endif
+
 #if ETL_USING_CPP11
   //*********************************
   /// Check for the presence of operator()

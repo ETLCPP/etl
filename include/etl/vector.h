@@ -61,16 +61,6 @@ SOFTWARE.
 
 namespace etl
 {
-  template <typename T>
-  struct is_object_pointer : etl::bool_constant<etl::is_pointer<T>::value && etl::is_object<typename etl::remove_pointer<T>::type>::value>
-  {
-  };
-
-  template <typename T>
-  struct is_not_object_pointer : etl::bool_constant<!is_object_pointer<T>::value>
-  {
-  };
-
   template <typename T, typename Enable = void>
   class ivector;
 
@@ -82,7 +72,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  class ivector<T, typename etl::enable_if<is_not_object_pointer<T>::value>::type> : public etl::vector_base
+  class ivector<T, typename etl::enable_if<etl::negation<etl::is_object_pointer<T>>::value>::type> : public etl::vector_base
   {
   public:
 
@@ -1200,7 +1190,7 @@ namespace etl
   ///\ingroup vector
   //***************************************************************************
   template <typename T>
-  class ivector<T, typename etl::enable_if<is_object_pointer<T>::value>::type> : public etl::pvoidvector
+  class ivector<T, typename etl::enable_if<etl::is_object_pointer<T>::value>::type> : public etl::pvoidvector
   {
   public:
 
@@ -1363,7 +1353,7 @@ namespace etl
     //*********************************************************************
     void resize(size_t new_size, value_type value)
     {
-      base_t::resize(new_size, const_cast<void*>(static_cast<const void*>(value)));
+      base_t::resize(new_size, to_void_ptr(value));
     }
 
     //*********************************************************************
@@ -1496,7 +1486,7 @@ namespace etl
     //*********************************************************************
     void assign(size_t n, const_reference value)
     {
-      base_t::assign(n, const_cast<void*>(static_cast<const void*>(value)));
+      base_t::assign(n, to_void_ptr(value));
     }
 
     //*************************************************************************
@@ -1515,7 +1505,7 @@ namespace etl
     //*********************************************************************
     void push_back(const_reference value)
     {
-      base_t::push_back(const_cast<void*>(static_cast<const void*>(value)));
+      base_t::push_back(to_void_ptr(value));
     }
 
     //*********************************************************************
@@ -1539,7 +1529,7 @@ namespace etl
     //*********************************************************************
     reference emplace_back(const_reference value)
     {
-      base_t::emplace_back(const_cast<void*>(static_cast<const void*>(value)));
+      base_t::emplace_back(to_void_ptr(value));
 
       return back();
     }
@@ -1698,6 +1688,8 @@ namespace etl
     //*************************************************************************
     virtual void repair() = 0;
 #endif
+
+  protected:
 
     //*********************************************************************
     /// Constructor.
