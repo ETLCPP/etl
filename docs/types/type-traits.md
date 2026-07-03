@@ -473,6 +473,6 @@ The result is found in the member `value`.
 
 ```cpp
 template <typename T>
-inline constexpr bool is_is_object_pointer_v = etl::is_object_pointer<T>::value;
+inline constexpr bool is_object_pointer_v = etl::is_object_pointer<T>::value;
 ```
 C++17
