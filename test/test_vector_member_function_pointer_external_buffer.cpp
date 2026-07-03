@@ -124,9 +124,8 @@ namespace
     {
       SetupFixture()
       {
-        MFPtr n[] = {
-          &Functions::f0, &Functions::f1, &Functions::f2, &Functions::f3, &Functions::f4, &Functions::f5, &Functions::f6, &Functions::f7,
-          &Functions::f8, &Functions::f9};
+        MFPtr n[]            = {&Functions::f0, &Functions::f1, &Functions::f2, &Functions::f3, &Functions::f4,
+                                &Functions::f5, &Functions::f6, &Functions::f7, &Functions::f8, &Functions::f9};
         MFPtr n_insert[]     = {&Functions::f10, &Functions::f11, &Functions::f12};
         MFPtr n_less[]       = {&Functions::f0, &Functions::f1, &Functions::f2, &Functions::f3, &Functions::f3,
                                 &Functions::f5, &Functions::f6, &Functions::f7, &Functions::f8, &Functions::f9};
