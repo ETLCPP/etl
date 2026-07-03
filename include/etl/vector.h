@@ -862,9 +862,8 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    typename etl::enable_if<!etl::is_integral<TIterator>::value
-                              && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, T>::value,
-                            void>::type
+    typename etl::enable_if<
+      !etl::is_integral<TIterator>::value && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, T>::value, void>::type
       insert(const_iterator position, TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
     {
       size_t count = static_cast<size_t>(etl::distance(first, last));
