@@ -505,7 +505,9 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
+#include "etl/private/diagnostic_uninitialized_push.h"
       CHECK(data.front() == compare_data.front());
+#include "etl/private/diagnostic_pop.h"
 
       Data emptyData;
       CHECK_THROW(emptyData.front(), etl::vector_out_of_bounds);
@@ -517,7 +519,9 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data         data(initial_data.begin(), initial_data.end());
 
+#include "etl/private/diagnostic_uninitialized_push.h"
       CHECK(data.front() == compare_data.front());
+#include "etl/private/diagnostic_pop.h"
 
       const Data emptyData;
       CHECK_THROW(emptyData.front(), etl::vector_out_of_bounds);
@@ -890,7 +894,9 @@ namespace
       Data data;
       Data data2;
 
+#include "etl/private/diagnostic_uninitialized_push.h"
       CHECK_THROW(data.insert(data2.end(), 1, Initial_Value);, etl::vector_out_of_bounds);
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************

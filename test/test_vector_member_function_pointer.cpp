@@ -799,6 +799,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
     {
       const size_t Initial_Size  = 5;
@@ -809,6 +810,7 @@ namespace
       data.assign(initial_data.begin(), initial_data.begin() + Initial_Size);
       CHECK_THROW(data.insert(data2.cbegin(), Initial_Value), etl::vector_out_of_bounds);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
 #include "etl/private/diagnostic_array_bounds_push.h"
@@ -859,6 +861,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST_FIXTURE(SetupFixture, test_emplace_position_value_outofbounds)
     {
       const size_t Initial_Size  = 5;
@@ -869,6 +872,7 @@ namespace
       data.assign(initial_data.begin(), initial_data.begin() + Initial_Size);
       CHECK_THROW(data.emplace(data2.cbegin(), Initial_Value), etl::vector_out_of_bounds);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_n_value)

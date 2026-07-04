@@ -1007,6 +1007,7 @@ namespace
     }
 
     //*************************************************************************
+  #include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_const_variant_accept_visitor)
     {
       struct Visitor : public etl::visitor<const char&, const int&, const std::string&>
@@ -1057,8 +1058,10 @@ namespace
       const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_const_variant_accept_visitor_deprecated)
     {
       struct Visitor : public etl::visitor<char, int, const std::string&>
@@ -1111,6 +1114,7 @@ namespace
       const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     TEST(test_variant_accept_functor_with_functor_class)
@@ -1218,6 +1222,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_const_variant_accept_functor_with_functor_class)
     {
       struct Visitor
@@ -1268,8 +1273,10 @@ namespace
       const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
+  #include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_const_variant_accept_functor_with_functor_class_deprecated)
     {
       struct Visitor
@@ -1301,9 +1308,11 @@ namespace
         std::string result_s;
       };
 
+
       Visitor visitor;
 
       test_variant_etl_3 variant_etl;
+
 
       variant_etl = char(1);
       const test_variant_etl_3 const_variant_etl1(variant_etl);
@@ -1320,6 +1329,7 @@ namespace
       const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", visitor.result_s);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
   #if ETL_USING_CPP17
@@ -1390,6 +1400,7 @@ namespace
     }
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_const_variant_accept_functor_with_overload)
     {
       char        result_c;
@@ -1416,8 +1427,10 @@ namespace
       const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", result_s);
     }
+#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
+#include "etl/private/diagnostic_uninitialized_push.h"
     TEST(test_const_variant_accept_functor_with_overload_deprecated)
     {
       char        result_c;
@@ -1444,6 +1457,7 @@ namespace
       const_variant_etl3.accept(visitor);
       CHECK_EQUAL("3", result_s);
     }
+#include "etl/private/diagnostic_pop.h"
   #endif
 
     //*************************************************************************
