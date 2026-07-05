@@ -1078,12 +1078,12 @@ namespace
       Data         data(initial_data.begin(), initial_data.end());
 
       Compare_Data::iterator const_cdi     = compare_data.begin() + 2U;
-      int                    compare_value = *(const_cdi + 1U);
+      int                    compare_value = compare_data[3];
       Compare_Data::iterator cdi           = compare_data.erase(const_cdi);
       CHECK_EQUAL(compare_value, *cdi);
 
       Data::iterator const_di   = data.begin() + 2U;
-      int            data_value = *(const_di + 1U);
+      int            data_value = data[3];
       Data::iterator di         = data.erase(const_di);
       CHECK_EQUAL(data_value, *di);
 
