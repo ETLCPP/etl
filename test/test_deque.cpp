@@ -2302,27 +2302,26 @@ namespace
     //*************************************************************************
     TEST(test_fill)
     {
-#include "etl/private/diagnostic_uninitialized_push.h"
       DataNDC data(initial_data.begin(), initial_data.end());
-#include "etl/private/diagnostic_pop.h"
 
       data.fill(N999);
 
+#include "etl/private/diagnostic_uninitialized_push.h"
       CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************
     TEST(test_const_iterator_subscript)
     {
-#include "etl/private/diagnostic_uninitialized_push.h"
       DataNDC data(initial_data.begin(), initial_data.end());
-#include "etl/private/diagnostic_pop.h"
 
       const DataNDC& cdata = data;
 
       // Access via const_iterator operator[]
       DataNDC::const_iterator cit = cdata.begin();
 
+#include "etl/private/diagnostic_uninitialized_push.h"
       // Verify operator[] returns values matching sequential access
       for (size_t i = 0; i < cdata.size(); ++i)
       {
@@ -2334,6 +2333,7 @@ namespace
       //  the type would be non-const reference which is incorrect for const_iterator)
       const NDC& ref = cit[0];
       CHECK(ref == cdata[0]);
+#include "etl/private/diagnostic_pop.h"
     }
   }
 } // namespace
