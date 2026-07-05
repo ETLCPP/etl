@@ -1078,7 +1078,9 @@ namespace
       Data         data(initial_data.begin(), initial_data.end());
 
       Compare_Data::iterator const_cdi     = compare_data.begin() + 2U;
+#include "etl/private/diagnostic_null_dereference_push.h"
       int                    compare_value = compare_data[3];
+#include "etl/private/diagnostic_pop.h"
       Compare_Data::iterator cdi           = compare_data.erase(const_cdi);
       CHECK_EQUAL(compare_value, *cdi);
 
@@ -1109,7 +1111,9 @@ namespace
       Data         data(initial_data.begin(), initial_data.end());
 
       Compare_Data::const_iterator const_cdi     = compare_data.cbegin() + 2U;
+#include "etl/private/diagnostic_null_dereference_push.h"
       int                          compare_value = compare_data[3];
+#include "etl/private/diagnostic_pop.h"
       Compare_Data::iterator       cdi           = compare_data.erase(const_cdi);
       CHECK_EQUAL(compare_value, *cdi);
 
