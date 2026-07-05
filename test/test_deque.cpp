@@ -2302,7 +2302,9 @@ namespace
     //*************************************************************************
     TEST(test_fill)
     {
+#include "etl/private/diagnostic_uninitialized_push.h"
       DataNDC data(initial_data.begin(), initial_data.end());
+#include "etl/private/diagnostic_pop.h"
 
       data.fill(N999);
 
