@@ -914,16 +914,7 @@ namespace etl
       TDistance top_index = value_index;
       TDistance child2nd  = (2 * value_index) + 2;
 
-      if (length < 2 || value_index >= length)
-      {
-        if (value_index < length)
-        {
-          *(first + value_index) = ETL_MOVE(value);
-        }
-
-        return;
-      }
-
+#include "etl/private/diagnostic_array_bounds_push.h"
       while (child2nd < length)
       {
         if (compare(*(first + child2nd), *(first + (child2nd - 1))))
@@ -941,6 +932,7 @@ namespace etl
         *(first + value_index) = ETL_MOVE(*(first + (child2nd - 1)));
         value_index            = child2nd - 1;
       }
+#include "etl/private/diagnostic_pop.h"
 
       push_heap(first, value_index, top_index, ETL_MOVE(value), compare);
     }
