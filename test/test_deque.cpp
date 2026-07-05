@@ -2314,7 +2314,9 @@ namespace
     //*************************************************************************
     TEST(test_const_iterator_subscript)
     {
+#include "etl/private/diagnostic_uninitialized_push.h"
       DataNDC data(initial_data.begin(), initial_data.end());
+#include "etl/private/diagnostic_pop.h"
 
       const DataNDC& cdata = data;
 
