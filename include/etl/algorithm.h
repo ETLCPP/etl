@@ -5941,6 +5941,8 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I2>::value, "partial_sort_copy requires the output to be random access iterators");
 
+#include "etl/private/diagnostic_array_bounds_push.h"
+
         I1 in_last  = ranges::next(first, last);
         I2 out_last = ranges::next(result_first, result_last);
 
@@ -5978,7 +5980,6 @@ namespace etl
           }
         }
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
         // Sort the heap to produce a sorted output range
         for (auto heap_end = heap_size - 1; heap_end > 0; --heap_end)
         {
