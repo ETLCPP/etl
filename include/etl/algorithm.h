@@ -914,6 +914,16 @@ namespace etl
       TDistance top_index = value_index;
       TDistance child2nd  = (2 * value_index) + 2;
 
+      if (length < 2 || value_index >= length)
+      {
+        if (value_index < length)
+        {
+          *(first + value_index) = ETL_MOVE(value);
+        }
+
+        return;
+      }
+
       while (child2nd < length)
       {
         if (compare(*(first + child2nd), *(first + (child2nd - 1))))
