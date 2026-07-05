@@ -5941,7 +5941,7 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I2>::value, "partial_sort_copy requires the output to be random access iterators");
 
-#include "etl/private/diagnostic_array_bounds_push.h"
+  #include "etl/private/diagnostic_array_bounds_push.h"
 
         I1 in_last  = ranges::next(first, last);
         I2 out_last = ranges::next(result_first, result_last);
@@ -7034,7 +7034,7 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I>::value, "pop_heap requires random access iterators");
 
-#include "etl/private/diagnostic_array_bounds_push.h"
+  #include "etl/private/diagnostic_array_bounds_push.h"
 
         I last_it = ranges::next(first, last);
 
@@ -7053,7 +7053,7 @@ namespace etl
 
         return ranges::next(first, last);
 
-#include "etl/private/diagnostic_pop.h"
+  #include "etl/private/diagnostic_pop.h"
       }
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>
