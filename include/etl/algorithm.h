@@ -5852,6 +5852,8 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I>::value, "partial_sort requires random access iterators");
 
+  #include "etl/private/diagnostic_array_bounds_push.h"
+
         I last_it = ranges::next(first, last);
 
         if (first == middle || first == last_it)
@@ -5888,6 +5890,8 @@ namespace etl
         }
 
         return last_it;
+
+  #include "etl/private/diagnostic_pop.h"
       }
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>
