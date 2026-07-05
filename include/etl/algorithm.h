@@ -7034,6 +7034,8 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I>::value, "pop_heap requires random access iterators");
 
+#include "etl/private/diagnostic_array_bounds_push.h"
+
         I last_it = ranges::next(first, last);
 
         auto length = etl::distance(first, last_it);
@@ -7050,6 +7052,8 @@ namespace etl
         sift_down(first, decltype(length)(0), etl::distance(first, last_it), comp, proj);
 
         return ranges::next(first, last);
+
+#include "etl/private/diagnostic_pop.h"
       }
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>
