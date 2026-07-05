@@ -965,6 +965,12 @@ namespace etl
     typedef typename etl::iterator_traits<TIterator>::value_type      value_t;
     typedef typename etl::iterator_traits<TIterator>::difference_type distance_t;
 
+    const distance_t n = last - first;
+    if (n <= 1)
+    {
+      return;
+    }
+
     value_t value = ETL_MOVE(*(last - 1));
     *(last - 1)   = ETL_MOVE(*first);
 
