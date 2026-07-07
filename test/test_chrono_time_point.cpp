@@ -185,6 +185,99 @@ namespace
       }
     }
 
+    //*************************************************************************
+    TEST(test_operator_plus_time_point_duration)
+    {
+      TimePoint tp{Chrono::hours(10)};
+
+      // Same duration type.
+      auto result = tp + Chrono::hours(5);
+      CHECK_EQUAL(15, result.time_since_epoch().count());
+
+      // Mixed duration types resolve to the common (finer) type.
+      auto result_mixed = tp + Chrono::days(1); // 10 hours + 24 hours
+      CHECK_EQUAL(34, result_mixed.time_since_epoch().count());
+      CHECK_TRUE((std::is_same<decltype(result_mixed)::duration, Chrono::hours>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_operator_plus_duration_time_point)
+    {
+      TimePoint tp{Chrono::hours(10)};
+
+      // Same duration type.
+      auto result = Chrono::hours(5) + tp;
+      CHECK_EQUAL(15, result.time_since_epoch().count());
+
+      // Mixed duration types resolve to the common (finer) type.
+      auto result_mixed = Chrono::days(1) + tp; // 24 hours + 10 hours
+      CHECK_EQUAL(34, result_mixed.time_since_epoch().count());
+      CHECK_TRUE((std::is_same<decltype(result_mixed)::duration, Chrono::hours>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_operator_minus_time_point_duration)
+    {
+      TimePoint tp{Chrono::hours(50)};
+
+      // Same duration type.
+      auto result = tp - Chrono::hours(5);
+      CHECK_EQUAL(45, result.time_since_epoch().count());
+
+      // Mixed duration types resolve to the common (finer) type.
+      auto result_mixed = tp - Chrono::days(1); // 50 hours - 24 hours
+      CHECK_EQUAL(26, result_mixed.time_since_epoch().count());
+      CHECK_TRUE((std::is_same<decltype(result_mixed)::duration, Chrono::hours>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_operator_minus_time_point_time_point)
+    {
+      TimePoint tp1{Chrono::hours(50)};
+      TimePoint tp2{Chrono::hours(20)};
+
+      // Subtracting two time_points yields the duration between them.
+      auto diff = tp1 - tp2;
+      CHECK_EQUAL(30, diff.count());
+      CHECK_TRUE((std::is_same<decltype(diff), Chrono::hours>::value));
+
+      // Mixed duration types resolve to the common (finer) duration.
+      Chrono::time_point<test_clock, Chrono::days> tp_days{Chrono::days(2)};   // 48 hours
+      auto                                         diff_mixed = tp1 - tp_days; // 50 hours - 48 hours
+      CHECK_EQUAL(2, diff_mixed.count());
+      CHECK_TRUE((std::is_same<decltype(diff_mixed), Chrono::hours>::value));
+
+      // The reverse difference is negative.
+      auto diff_negative = tp2 - tp1;
+      CHECK_EQUAL(-30, diff_negative.count());
+    }
+
+    //*************************************************************************
+    TEST(test_increment_decrement_operators)
+    {
+      TimePoint tp{Chrono::hours(10)};
+
+      // Pre-increment.
+      auto& pre_inc = ++tp;
+      CHECK_EQUAL(11, tp.time_since_epoch().count());
+      CHECK_EQUAL(11, pre_inc.time_since_epoch().count());
+
+      // Post-increment returns the previous value.
+      TimePoint post_inc = tp++;
+      CHECK_EQUAL(11, post_inc.time_since_epoch().count());
+      CHECK_EQUAL(12, tp.time_since_epoch().count());
+
+      // Pre-decrement.
+      auto& pre_dec = --tp;
+      CHECK_EQUAL(11, tp.time_since_epoch().count());
+      CHECK_EQUAL(11, pre_dec.time_since_epoch().count());
+
+      // Post-decrement returns the previous value.
+      TimePoint post_dec = tp--;
+      CHECK_EQUAL(11, post_dec.time_since_epoch().count());
+      CHECK_EQUAL(10, tp.time_since_epoch().count());
+    }
+
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_min_max_time_point)

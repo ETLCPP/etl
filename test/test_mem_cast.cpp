@@ -153,6 +153,24 @@ namespace
     }
 
     //*************************************************************************
+    // Cross-size copy/assignment must copy only the source's bytes and must
+    // not read past the end of the (smaller) source buffer.
+    TEST(test_mem_cast_copy_and_assign_from_smaller)
+    {
+      etl::mem_cast<sizeof(uint32_t), alignof(uint32_t)> smaller;
+      smaller.assign<uint32_t>(0x12345678UL);
+
+      // Cross-size copy construct (destination larger than source).
+      etl::mem_cast<sizeof(uint32_t) * 2U, alignof(uint32_t)> larger_copy(smaller);
+      CHECK_EQUAL(0x12345678UL, larger_copy.ref<uint32_t>());
+
+      // Cross-size assignment (destination larger than source).
+      etl::mem_cast<sizeof(uint32_t) * 2U, alignof(uint32_t)> larger_assign;
+      larger_assign = smaller;
+      CHECK_EQUAL(0x12345678UL, larger_assign.ref<uint32_t>());
+    }
+
+    //*************************************************************************
     TEST(test_mem_cast_assign_type_at_dynamic_offset)
     {
       MemCast memCast;

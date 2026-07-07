@@ -184,5 +184,64 @@ namespace etl
 
     template <typename TDuration>
     constexpr int etl::chrono::hh_mm_ss<TDuration>::fractional_width;
+
+    //***********************************************************************
+    /// 12/24 hours functions
+    //***********************************************************************
+
+    //***********************************************************************
+    /// Returns true if h is in the range [0h, 11h] (an am hour).
+    //***********************************************************************
+    ETL_NODISCARD
+    inline ETL_CONSTEXPR14 bool is_am(const etl::chrono::hours& h) ETL_NOEXCEPT
+    {
+      return (h >= etl::chrono::hours(0)) && (h <= etl::chrono::hours(11));
+    }
+
+    //***********************************************************************
+    /// Returns true if h is in the range [12h, 23h] (a pm hour).
+    //***********************************************************************
+    ETL_NODISCARD
+    inline ETL_CONSTEXPR14 bool is_pm(const etl::chrono::hours& h) ETL_NOEXCEPT
+    {
+      return (h >= etl::chrono::hours(12)) && (h <= etl::chrono::hours(23));
+    }
+
+    //***********************************************************************
+    /// Returns the 12-hour equivalent of h in the range [1h, 12h].
+    /// If h is not in the range [0h, 23h], the value returned is unspecified.
+    //***********************************************************************
+    ETL_NODISCARD
+    inline ETL_CONSTEXPR14 etl::chrono::hours make12(const etl::chrono::hours& h) ETL_NOEXCEPT
+    {
+      if (h == etl::chrono::hours(0))
+      {
+        return etl::chrono::hours(12);
+      }
+      else if (h > etl::chrono::hours(12))
+      {
+        return h - etl::chrono::hours(12);
+      }
+
+      return h;
+    }
+
+    //***********************************************************************
+    /// Returns the 24-hour equivalent of h, which is assumed to represent the
+    /// hour with the indicated am/pm.
+    /// If h is not in the range [1h, 12h], the value returned is unspecified.
+    //***********************************************************************
+    ETL_NODISCARD
+    inline ETL_CONSTEXPR14 etl::chrono::hours make24(const etl::chrono::hours& h, bool is_pm) ETL_NOEXCEPT
+    {
+      if (is_pm)
+      {
+        return (h == etl::chrono::hours(12)) ? h : (h + etl::chrono::hours(12));
+      }
+      else
+      {
+        return (h == etl::chrono::hours(12)) ? etl::chrono::hours(0) : h;
+      }
+    }
   } // namespace chrono
 } // namespace etl

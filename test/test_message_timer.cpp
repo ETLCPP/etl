@@ -434,6 +434,52 @@ namespace
     }
 
     //*************************************************************************
+    // Unregistering an active timer that is not at the tail of the active list
+    // must preserve the absolute timeout of the timers that follow it.
+    // Regression test: unregister_timer used to pass has_expired = true, which
+    // skipped the delta adjustment of the next timer, making it fire early.
+    //*************************************************************************
+    TEST(message_timer_unregister_active_timer_preserves_following_timer_timing)
+    {
+      etl::message_timer<2> timer_controller;
+
+      // id1 (period 10) becomes the active list head, id2 (period 20) follows it.
+      etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 10, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 20, etl::timer::mode::Single_Shot);
+
+      router1.clear();
+
+      timer_controller.start(id1);
+      timer_controller.start(id2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1UL;
+
+      while (ticks <= 30U)
+      {
+        if (ticks == 5U)
+        {
+          // id1 is the active head and still has a 'next' (id2).
+          timer_controller.unregister_timer(id1);
+        }
+
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      // id1 was unregistered before it could fire.
+      CHECK_EQUAL(0U, router1.message1.size());
+
+      // id2 must still fire at its original absolute time of 20, not earlier.
+      std::vector<uint64_t> compare2 = {20ULL};
+      CHECK_EQUAL(compare2.size(), router1.message2.size());
+      CHECK_ARRAY_EQUAL(compare2.data(), router1.message2.data(), compare2.size());
+    }
+
+    //*************************************************************************
     TEST(message_timer_repeating_clear)
     {
       etl::message_timer<3> timer_controller;

@@ -74,6 +74,323 @@ namespace etl
     return etl::to_address(itr.operator->());
   }
 
+#if ETL_USING_STL && ETL_USING_CPP17 && defined(__cpp_lib_launder)
+  using std::launder;
+#else
+  //*****************************************************************************
+  /// Obtains a pointer to the object created in the storage pointed to by p.
+  /// Prevents the compiler from making invalid assumptions when the lifetime of
+  /// an object has ended and a new object has been created in the same storage.
+  /// T must not be a function type nor a (possibly cv-qualified) void type.
+  /// https://en.cppreference.com/w/cpp/utility/launder
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR17 T* launder(T* p) ETL_NOEXCEPT
+  {
+  #if ETL_USING_CPP11
+    // etl::is_function is only defined for C++11 and later.
+    ETL_STATIC_ASSERT(!etl::is_function<T>::value, "etl::launder argument must not be a function type");
+  #endif
+    ETL_STATIC_ASSERT(!etl::is_void<T>::value, "etl::launder argument must not be a void type");
+
+  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
+    #if __has_builtin(__builtin_launder)
+    return __builtin_launder(p);
+    #else
+    return p;
+    #endif
+  #elif ETL_USING_GCC_COMPILER && (ETL_COMPILER_FULL_VERSION >= 70000)
+    // GCC 7, 8 and 9 provide __builtin_launder but not __has_builtin.
+    return __builtin_launder(p);
+  #else
+    return p;
+  #endif
+  }
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP23 && defined(__cpp_lib_start_lifetime_as)
+  using std::start_lifetime_as;
+  using std::start_lifetime_as_array;
+#else
+  namespace private_memory
+  {
+    //*************************************************************************
+    /// Implicitly create the objects in [p, p + n) and return a usable pointer
+    /// to the first one. Used by start_lifetime_as / start_lifetime_as_array.
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD
+    inline T* start_lifetime_as_impl(void* p, size_t n) ETL_NOEXCEPT
+    {
+      if (n == 0U)
+      {
+        // No objects are created, so there is nothing to launder.
+        // Return the original pointer to preserve pointer identity.
+        return static_cast<T*>(p);
+      }
+
+  #if ETL_USING_BUILTIN_MEMMOVE
+      void* const q = __builtin_memmove(p, p, sizeof(T) * n);
+  #else
+      void* const q = ::memmove(p, p, sizeof(T) * n);
+  #endif
+
+      return etl::launder(static_cast<T*>(q));
+    }
+  } // namespace private_memory
+
+  //*****************************************************************************
+  /// Implicitly creates an object of type T in the storage pointed to by p and
+  /// starts its lifetime. T must be a trivially copyable (implicit-lifetime)
+  /// type. The storage must be suitably sized and aligned for T.
+  /// https://en.cppreference.com/w/cpp/memory/start_lifetime_as
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  ETL_NODISCARD
+  T* start_lifetime_as(void* p) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "T must be trivially copyable");
+    return etl::private_memory::start_lifetime_as_impl<T>(p, 1U);
+  }
+
+  template <typename T>
+  ETL_NODISCARD
+  const T* start_lifetime_as(const void* p) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "T must be trivially copyable");
+    return etl::private_memory::start_lifetime_as_impl<const T>(const_cast<void*>(p), 1U);
+  }
+
+  template <typename T>
+  ETL_NODISCARD
+  volatile T* start_lifetime_as(volatile void* p) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "T must be trivially copyable");
+    return etl::private_memory::start_lifetime_as_impl<volatile T>(const_cast<void*>(p), 1U);
+  }
+
+  template <typename T>
+  ETL_NODISCARD
+  const volatile T* start_lifetime_as(const volatile void* p) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "T must be trivially copyable");
+    return etl::private_memory::start_lifetime_as_impl<const volatile T>(const_cast<void*>(p), 1U);
+  }
+
+  //*****************************************************************************
+  /// Implicitly creates an array of n objects of type T in the storage pointed
+  /// to by p and starts their lifetimes. T must be a trivially copyable
+  /// (implicit-lifetime) type. Returns a pointer to the first element, or a
+  /// pointer comparing equal to p when n is zero.
+  /// https://en.cppreference.com/w/cpp/memory/start_lifetime_as
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  ETL_NODISCARD
+  T* start_lifetime_as_array(void* p, size_t n) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "T must be trivially copyable");
+    return etl::private_memory::start_lifetime_as_impl<T>(p, n);
+  }
+
+  template <typename T>
+  ETL_NODISCARD
+  const T* start_lifetime_as_array(const void* p, size_t n) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "T must be trivially copyable");
+    return etl::private_memory::start_lifetime_as_impl<const T>(const_cast<void*>(p), n);
+  }
+
+  template <typename T>
+  ETL_NODISCARD
+  volatile T* start_lifetime_as_array(volatile void* p, size_t n) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "T must be trivially copyable");
+    return etl::private_memory::start_lifetime_as_impl<volatile T>(const_cast<void*>(p), n);
+  }
+
+  template <typename T>
+  ETL_NODISCARD
+  const volatile T* start_lifetime_as_array(const volatile void* p, size_t n) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "T must be trivially copyable");
+    return etl::private_memory::start_lifetime_as_impl<const volatile T>(const_cast<void*>(p), n);
+  }
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP11
+  using std::pointer_traits;
+#else
+  #if ETL_USING_CPP11
+  namespace private_memory
+  {
+    //*************************************************************************
+    /// Decomposes a pointer-like class template of the form
+    /// Pointer<Element, Args...> to recover its first template parameter and
+    /// to rebind it to a different first parameter. Left undefined for types
+    /// that are not such a template instantiation.
+    //*************************************************************************
+    template <typename T>
+    struct pointer_traits_template;
+
+    template <template <typename, typename...> class Pointer, typename Element, typename... Args>
+    struct pointer_traits_template<Pointer<Element, Args...> >
+    {
+      typedef Element type;
+
+      template <typename U>
+      struct rebind
+      {
+        typedef Pointer<U, Args...> type;
+      };
+    };
+
+    //*************************************************************************
+    /// Deduces the element_type of a pointer-like type. Prefers a nested
+    /// T::element_type, otherwise falls back to the first template parameter.
+    //*************************************************************************
+    template <typename T, typename = void>
+    struct pointer_traits_element_type
+    {
+      typedef typename pointer_traits_template<T>::type type;
+    };
+
+    template <typename T>
+    struct pointer_traits_element_type<T, etl::void_t<typename T::element_type> >
+    {
+      typedef typename T::element_type type;
+    };
+  } // namespace private_memory
+  #endif
+
+  //*****************************************************************************
+  /// Provides information about pointer-like types. General case where the
+  /// type itself models the pointer (fancy / smart pointers).
+  /// https://en.cppreference.com/w/cpp/memory/pointer_traits
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  struct pointer_traits
+  {
+    typedef T pointer;
+  #if ETL_USING_CPP11
+    typedef typename private_memory::pointer_traits_element_type<T>::type element_type;
+  #else
+    typedef typename T::element_type element_type;
+  #endif
+    typedef ptrdiff_t difference_type;
+
+  #if ETL_USING_CPP11
+    template <typename U>
+    using rebind = typename private_memory::pointer_traits_template<T>::template rebind<U>::type;
+  #endif
+
+    ETL_NODISCARD
+    static ETL_CONSTEXPR pointer pointer_to(element_type& r) ETL_NOEXCEPT
+    {
+      return T::pointer_to(r);
+    }
+  };
+
+  //*****************************************************************************
+  /// Provides information about pointer-like types. Raw pointer specialisation.
+  /// https://en.cppreference.com/w/cpp/memory/pointer_traits
+  ///\ingroup memory
+  //*****************************************************************************
+  template <typename T>
+  struct pointer_traits<T*>
+  {
+    typedef T*        pointer;
+    typedef T         element_type;
+    typedef ptrdiff_t difference_type;
+
+  #if ETL_USING_CPP11
+    template <typename U>
+    using rebind = U*;
+  #endif
+
+    ETL_NODISCARD
+    static ETL_CONSTEXPR pointer pointer_to(element_type& r) ETL_NOEXCEPT
+    {
+      return etl::addressof(r);
+    }
+  };
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP11
+  using std::align;
+#else
+  //*****************************************************************************
+  /// Aligns a pointer within a buffer. Advances 'ptr' to the next address with
+  /// the given 'alignment' that can hold 'size' bytes within 'space' bytes,
+  /// shrinking 'space' by the consumed padding. Returns the aligned pointer, or
+  /// ETL_NULLPTR when the buffer is too small. 'alignment' must be a power of 2;
+  /// the behaviour is undefined if it is not.
+  /// https://en.cppreference.com/w/cpp/memory/align
+  ///\ingroup memory
+  //*****************************************************************************
+  inline void* align(size_t alignment, size_t size, void*& ptr, size_t& space) ETL_NOEXCEPT
+  {
+    const uintptr_t p       = reinterpret_cast<uintptr_t>(ptr);
+    const uintptr_t aligned = (p + (alignment - 1U)) & ~(static_cast<uintptr_t>(alignment) - 1U);
+    const size_t    padding = static_cast<size_t>(aligned - p);
+
+    if ((padding > space) || (size > (space - padding)))
+    {
+      return ETL_NULLPTR;
+    }
+
+    space -= padding;
+    ptr = reinterpret_cast<void*>(aligned);
+
+    return ptr;
+  }
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_assume_aligned)
+  using std::assume_aligned;
+#else
+  //*****************************************************************************
+  /// Informs the compiler that the pointer 'ptr' is aligned to at least N bytes
+  /// and returns it. N must be a power of 2. Behaviour is undefined if 'ptr' is
+  /// not actually aligned to N.
+  /// https://en.cppreference.com/w/cpp/memory/assume_aligned
+  ///\ingroup memory
+  //*****************************************************************************
+  template <size_t N, typename T>
+  ETL_NODISCARD ETL_CONSTEXPR T* assume_aligned(T* ptr) ETL_NOEXCEPT
+  {
+  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
+    #if __has_builtin(__builtin_assume_aligned)
+    return static_cast<T*>(__builtin_assume_aligned(ptr, N));
+    #else
+    return ptr;
+    #endif
+  #else
+    return ptr;
+  #endif
+  }
+#endif
+
+#if ETL_USING_STL && ETL_USING_CPP26 && defined(__cpp_lib_is_sufficiently_aligned)
+  using std::is_sufficiently_aligned;
+#else
+  //*****************************************************************************
+  /// Checks whether 'ptr' is aligned to at least Alignment bytes.
+  /// Alignment must be a power of 2.
+  /// https://en.cppreference.com/w/cpp/memory/is_sufficiently_aligned
+  ///\ingroup memory
+  //*****************************************************************************
+  template <size_t Alignment, typename T>
+  ETL_NODISCARD
+  bool is_sufficiently_aligned(T* ptr) ETL_NOEXCEPT
+  {
+    return (reinterpret_cast<uintptr_t>(ptr) % Alignment) == 0U;
+  }
+#endif
+
 #if ETL_USING_STL
   //*****************************************************************************
   /// Fills uninitialised memory range with a value.
