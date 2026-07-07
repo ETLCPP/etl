@@ -123,6 +123,48 @@ namespace etl
       }
 
       //***************************************************************************
+      /// Pre-increments the stored duration by one tick.
+      //***************************************************************************
+      ETL_CONSTEXPR14 time_point& operator++() ETL_NOEXCEPT
+      {
+        ++dur;
+
+        return *this;
+      }
+
+      //***************************************************************************
+      /// Post-increments the stored duration by one tick.
+      //***************************************************************************
+      ETL_CONSTEXPR14 time_point operator++(int) ETL_NOEXCEPT
+      {
+        time_point temp(*this);
+        ++dur;
+
+        return temp;
+      }
+
+      //***************************************************************************
+      /// Pre-decrements the stored duration by one tick.
+      //***************************************************************************
+      ETL_CONSTEXPR14 time_point& operator--() ETL_NOEXCEPT
+      {
+        --dur;
+
+        return *this;
+      }
+
+      //***************************************************************************
+      /// Post-decrements the stored duration by one tick.
+      //***************************************************************************
+      ETL_CONSTEXPR14 time_point operator--(int) ETL_NOEXCEPT
+      {
+        time_point temp(*this);
+        --dur;
+
+        return temp;
+      }
+
+      //***************************************************************************
       /// Returns a time_point with the smallest possible duration.
       //***************************************************************************
       ETL_NODISCARD
@@ -198,6 +240,59 @@ namespace etl
       TToDuration dur = etl::chrono::duration_cast<TToDuration>(tp.time_since_epoch());
 
       return etl::chrono::time_point<TClock, TToDuration>(dur);
+    }
+
+    //***************************************************************************
+    /// Adds a duration to a time_point.
+    /// Returns a time_point whose duration is the common type of the two.
+    //***************************************************************************
+    template <typename TClock, typename TDuration1, typename TRep2, typename TPeriod2>
+    ETL_CONSTEXPR14 etl::chrono::time_point<TClock, typename etl::common_type<TDuration1, etl::chrono::duration<TRep2, TPeriod2> >::type>
+      operator+(const time_point<TClock, TDuration1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+    {
+      using common_duration   = typename etl::common_type<TDuration1, etl::chrono::duration<TRep2, TPeriod2> >::type;
+      using result_time_point = etl::chrono::time_point<TClock, common_duration>;
+
+      return result_time_point(lhs.time_since_epoch() + rhs);
+    }
+
+    //***************************************************************************
+    /// Adds a time_point to a duration.
+    /// Returns a time_point whose duration is the common type of the two.
+    //***************************************************************************
+    template <typename TRep1, typename TPeriod1, typename TClock, typename TDuration2>
+    ETL_CONSTEXPR14 etl::chrono::time_point<TClock, typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, TDuration2>::type>
+      operator+(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
+    {
+      using common_duration   = typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, TDuration2>::type;
+      using result_time_point = etl::chrono::time_point<TClock, common_duration>;
+
+      return result_time_point(lhs + rhs.time_since_epoch());
+    }
+
+    //***************************************************************************
+    /// Subtracts a duration from a time_point.
+    /// Returns a time_point whose duration is the common type of the two.
+    //***************************************************************************
+    template <typename TClock, typename TDuration1, typename TRep2, typename TPeriod2>
+    ETL_CONSTEXPR14 etl::chrono::time_point<TClock, typename etl::common_type<TDuration1, etl::chrono::duration<TRep2, TPeriod2> >::type>
+      operator-(const time_point<TClock, TDuration1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT
+    {
+      using common_duration   = typename etl::common_type<TDuration1, etl::chrono::duration<TRep2, TPeriod2> >::type;
+      using result_time_point = etl::chrono::time_point<TClock, common_duration>;
+
+      return result_time_point(lhs.time_since_epoch() - rhs);
+    }
+
+    //***************************************************************************
+    /// Subtracts one time_point from another.
+    /// Returns the duration between them as the common type of the two durations.
+    //***************************************************************************
+    template <typename TClock, typename TDuration1, typename TDuration2>
+    ETL_CONSTEXPR14 typename etl::common_type<TDuration1, TDuration2>::type operator-(const time_point<TClock, TDuration1>& lhs,
+                                                                                const time_point<TClock, TDuration2>& rhs) ETL_NOEXCEPT
+    {
+      return lhs.time_since_epoch() - rhs.time_since_epoch();
     }
 
     //***************************************************************************
