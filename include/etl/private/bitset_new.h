@@ -311,6 +311,11 @@ namespace etl
         // Build from the string.
         string_length = etl::min(active_bits, string_length);
 
+        if (string_length == 0U)
+        {
+          return;
+        }
+
         element_type mask = element_type(element_type(1) << (string_length - 1U));
 
         for (size_t i = 0U; i < string_length; ++i)
@@ -338,6 +343,11 @@ namespace etl
 
         // Build from the string.
         string_length = etl::min(active_bits, string_length);
+
+        if (string_length == 0U)
+        {
+          return;
+        }
 
         element_type mask = element_type(element_type(1) << (string_length - 1U));
 
@@ -367,6 +377,11 @@ namespace etl
         // Build from the string.
         string_length = etl::min(active_bits, string_length);
 
+        if (string_length == 0U)
+        {
+          return;
+        }
+
         element_type mask = element_type(element_type(1) << (string_length - 1U));
 
         for (size_t i = 0U; i < string_length; ++i)
@@ -394,6 +409,11 @@ namespace etl
 
         // Build from the string.
         string_length = etl::min(active_bits, string_length);
+
+        if (string_length == 0U)
+        {
+          return;
+        }
 
         element_type mask = element_type(element_type(1) << (string_length - 1U));
 
