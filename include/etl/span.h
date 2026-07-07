@@ -66,8 +66,8 @@ namespace etl
   {
   };
 #if ETL_USING_STL && ETL_USING_CPP11
-  template <typename T, size_t N>
-  struct is_std_array<std::array<T, N>> : etl::true_type
+  template <typename T, size_t Index>
+  struct is_std_array<std::array<T, Index>> : etl::true_type
   {
   };
 #endif
@@ -88,8 +88,8 @@ namespace etl
   struct is_etl_array : etl::false_type
   {
   };
-  template <typename T, size_t N>
-  struct is_etl_array<etl::array<T, N> > : etl::true_type
+  template <typename T, size_t Index>
+  struct is_etl_array<etl::array<T, Index> > : etl::true_type
   {
   };
   template <typename T>
