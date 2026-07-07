@@ -249,6 +249,68 @@ namespace
     }
 
     //*************************************************************************
+    // operator[] of the run time offset histogram uses the stored start index,
+    // so copying/moving must preserve it. Regression test: the copy/move
+    // constructors and assignment operators used to forget to copy start_index.
+    //*************************************************************************
+    TEST(test_int_runtime_offset_copy_constructor_preserves_start_index)
+    {
+      IntRuntimeOffsetHistogram histogram1(Start, input2.begin(), input2.end());
+
+      IntRuntimeOffsetHistogram histogram2(histogram1);
+
+      for (int key = Start; key < Start + static_cast<int>(Size); ++key)
+      {
+        CHECK_EQUAL(static_cast<int>(histogram1[key]), static_cast<int>(histogram2[key]));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_int_runtime_offset_copy_assignment_preserves_start_index)
+    {
+      IntRuntimeOffsetHistogram histogram1(Start, input2.begin(), input2.end());
+
+      IntRuntimeOffsetHistogram histogram2(Start);
+      histogram2 = histogram1;
+
+      for (int key = Start; key < Start + static_cast<int>(Size); ++key)
+      {
+        CHECK_EQUAL(static_cast<int>(histogram1[key]), static_cast<int>(histogram2[key]));
+      }
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_int_runtime_offset_move_constructor_preserves_start_index)
+    {
+      IntRuntimeOffsetHistogram histogram1(Start, input2.begin(), input2.end());
+      IntRuntimeOffsetHistogram histogram_source(Start, input2.begin(), input2.end());
+
+      IntRuntimeOffsetHistogram histogram2(etl::move(histogram_source));
+
+      for (int key = Start; key < Start + static_cast<int>(Size); ++key)
+      {
+        CHECK_EQUAL(static_cast<int>(histogram1[key]), static_cast<int>(histogram2[key]));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_int_runtime_offset_move_assignment_preserves_start_index)
+    {
+      IntRuntimeOffsetHistogram histogram1(Start, input2.begin(), input2.end());
+      IntRuntimeOffsetHistogram histogram_source(Start, input2.begin(), input2.end());
+
+      IntRuntimeOffsetHistogram histogram2(Start);
+      histogram2 = etl::move(histogram_source);
+
+      for (int key = Start; key < Start + static_cast<int>(Size); ++key)
+      {
+        CHECK_EQUAL(static_cast<int>(histogram1[key]), static_cast<int>(histogram2[key]));
+      }
+    }
+#endif
+
+    //*************************************************************************
     TEST(test_string_histogram_constructor)
     {
       StringHistogram histogram;

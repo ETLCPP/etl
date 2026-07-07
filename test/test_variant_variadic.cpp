@@ -320,6 +320,64 @@ namespace
     bool moved_to;
     bool copied_to;
   };
+
+  //*********************************************
+  // Trivially destructible, but non-copyable and non-movable.
+  // Exercises the trivially-destructible (variadic_union) emplace path.
+  struct TrivialNonMovable
+  {
+    TrivialNonMovable(int a_, int b_)
+      : a(a_)
+      , b(b_)
+    {
+    }
+
+    TrivialNonMovable(const TrivialNonMovable&)            = delete;
+    TrivialNonMovable(TrivialNonMovable&&)                 = delete;
+    TrivialNonMovable& operator=(const TrivialNonMovable&) = delete;
+    TrivialNonMovable& operator=(TrivialNonMovable&&)      = delete;
+
+    int a;
+    int b;
+  };
+
+  //*********************************************
+  // Non-trivially destructible, non-copyable and non-movable.
+  // Exercises the non-trivially-destructible (uninitialized_buffer) emplace path,
+  // including the initializer_list overload.
+  struct NonTrivialNonMovable
+  {
+    NonTrivialNonMovable(int a_, int b_)
+      : a(a_)
+      , b(b_)
+      , sum_of_list(0)
+    {
+    }
+
+    NonTrivialNonMovable(std::initializer_list<int> il, int b_)
+      : a(0)
+      , b(b_)
+      , sum_of_list(0)
+    {
+      for (int value : il)
+      {
+        sum_of_list += value;
+      }
+    }
+
+    ~NonTrivialNonMovable() // Makes it non-trivially destructible.
+    {
+    }
+
+    NonTrivialNonMovable(const NonTrivialNonMovable&)            = delete;
+    NonTrivialNonMovable(NonTrivialNonMovable&&)                 = delete;
+    NonTrivialNonMovable& operator=(const NonTrivialNonMovable&) = delete;
+    NonTrivialNonMovable& operator=(NonTrivialNonMovable&&)      = delete;
+
+    int a;
+    int b;
+    int sum_of_list;
+  };
 } // namespace
 
   // Moved from the top of the file otherwise clang has issues with
@@ -417,6 +475,28 @@ struct etl::is_copy_constructible<MoveableCopyable> : public etl::true_type
 
 template <>
 struct etl::is_move_constructible<MoveableCopyable> : public etl::true_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_copy_constructible<TrivialNonMovable> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<TrivialNonMovable> : public etl::false_type
+{
+};
+
+//*************************
+template <>
+struct etl::is_copy_constructible<NonTrivialNonMovable> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<NonTrivialNonMovable> : public etl::false_type
 {
 };
   #endif
@@ -731,6 +811,86 @@ namespace
       CHECK(etl::holds_alternative<std::string>(variant_text_etl));
       CHECK_EQUAL(text, etl::get<std::string>(variant_text_etl));
     }
+
+    //*************************************************************************
+    // emplace must construct the alternative in place from the forwarded
+    // arguments, without requiring the alternative to be copyable or movable
+    // (see issue #1493).
+    TEST(test_emplace_non_movable_type)
+    {
+      // Trivially destructible suite (variadic_union storage).
+      {
+        etl::variant<int, TrivialNonMovable> v;
+
+        TrivialNonMovable& r1 = v.emplace<TrivialNonMovable>(3, 4);
+        CHECK(etl::holds_alternative<TrivialNonMovable>(v));
+        CHECK_EQUAL(3, r1.a);
+        CHECK_EQUAL(4, r1.b);
+        CHECK_EQUAL(&r1, &etl::get<TrivialNonMovable>(v));
+
+        // Emplace by index over the existing alternative.
+        TrivialNonMovable& r2 = v.emplace<1>(5, 6);
+        CHECK_EQUAL(5, r2.a);
+        CHECK_EQUAL(6, r2.b);
+
+        // Switch to the trivial alternative and back again.
+        v.emplace<int>(42);
+        CHECK(etl::holds_alternative<int>(v));
+        CHECK_EQUAL(42, etl::get<int>(v));
+
+        TrivialNonMovable& r3 = v.emplace<TrivialNonMovable>(7, 8);
+        CHECK(etl::holds_alternative<TrivialNonMovable>(v));
+        CHECK_EQUAL(7, r3.a);
+        CHECK_EQUAL(8, r3.b);
+      }
+
+      // Non-trivially destructible suite (uninitialized_buffer storage).
+      {
+        etl::variant<std::string, NonTrivialNonMovable> v;
+
+        NonTrivialNonMovable& r1 = v.emplace<NonTrivialNonMovable>(1, 2);
+        CHECK(etl::holds_alternative<NonTrivialNonMovable>(v));
+        CHECK_EQUAL(1, r1.a);
+        CHECK_EQUAL(2, r1.b);
+        CHECK_EQUAL(&r1, &etl::get<NonTrivialNonMovable>(v));
+
+        // Emplace by index over the existing alternative.
+        NonTrivialNonMovable& r2 = v.emplace<1>(9, 10);
+        CHECK_EQUAL(9, r2.a);
+        CHECK_EQUAL(10, r2.b);
+
+        // Switch to the std::string alternative and back again.
+        v.emplace<std::string>("Some Text");
+        CHECK(etl::holds_alternative<std::string>(v));
+        CHECK_EQUAL(std::string("Some Text"), etl::get<std::string>(v));
+
+        NonTrivialNonMovable& r3 = v.emplace<NonTrivialNonMovable>(11, 12);
+        CHECK(etl::holds_alternative<NonTrivialNonMovable>(v));
+        CHECK_EQUAL(11, r3.a);
+        CHECK_EQUAL(12, r3.b);
+      }
+    }
+
+  #if ETL_HAS_INITIALIZER_LIST
+    //*************************************************************************
+    // The initializer_list emplace overloads must also construct in place,
+    // without requiring the alternative to be copyable or movable (#1493).
+    TEST(test_emplace_non_movable_type_with_initializer_list)
+    {
+      etl::variant<std::string, NonTrivialNonMovable> v;
+
+      // By type.
+      NonTrivialNonMovable& r1 = v.emplace<NonTrivialNonMovable>({10, 20, 30}, 99);
+      CHECK(etl::holds_alternative<NonTrivialNonMovable>(v));
+      CHECK_EQUAL(60, r1.sum_of_list);
+      CHECK_EQUAL(99, r1.b);
+
+      // By index.
+      NonTrivialNonMovable& r2 = v.emplace<1>({1, 2, 3, 4}, 7);
+      CHECK_EQUAL(10, r2.sum_of_list);
+      CHECK_EQUAL(7, r2.b);
+    }
+  #endif
 
     //*************************************************************************
     TEST(test_copy_constructor)

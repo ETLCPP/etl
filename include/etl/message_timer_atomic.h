@@ -108,7 +108,7 @@ namespace etl
           if (timer.is_active())
           {
             ++process_semaphore;
-            active_list.remove(timer.id, true);
+            active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
             --process_semaphore;
           }

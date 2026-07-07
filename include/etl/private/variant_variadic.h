@@ -715,7 +715,7 @@ namespace etl
       using type = etl::remove_cvref_t<T>;
 
       do_destroy();
-      do_construct<type>(type(etl::forward<TArgs>(args)...));
+      do_emplace<type>(etl::forward<TArgs>(args)...);
 
       type_id = index_of_type<T>::value;
 
@@ -735,7 +735,7 @@ namespace etl
       using type = etl::remove_cvref_t<T>;
 
       do_destroy();
-      do_construct<type>(type(il, etl::forward<TArgs>(args)...));
+      do_emplace<type>(il, etl::forward<TArgs>(args)...);
 
       type_id = index_of_type<T>::value;
 
@@ -755,7 +755,7 @@ namespace etl
       using type = type_from_index<Index>;
 
       do_destroy();
-      do_construct<type>(type(etl::forward<TArgs>(args)...));
+      do_emplace<type>(etl::forward<TArgs>(args)...);
 
       type_id = Index;
 
@@ -775,7 +775,7 @@ namespace etl
       using type = type_from_index<Index>;
 
       do_destroy();
-      do_construct<type>(type(il, etl::forward<TArgs>(args)...));
+      do_emplace<type>(il, etl::forward<TArgs>(args)...);
 
       type_id = Index;
 
@@ -1094,6 +1094,32 @@ namespace etl
     void do_destroy_impl(etl::integral_constant<bool, false>)
     {
       private_variant::variant_operations<0, TTypes...>::destroy(data, type_id);
+    }
+
+    //***************************************************************************
+    /// Emplace-construct the alternative in place from forwarded args.
+    /// No temporary, so no move/copy is required (works for move-hostile types).
+    //***************************************************************************
+    template <typename T, typename... TArgs>
+    void do_emplace(TArgs&&... args)
+    {
+      do_emplace_impl<T>(etl::integral_constant<bool, Is_Trivially_Destructible_Suite>{}, etl::forward<TArgs>(args)...);
+    }
+
+    // Trivially destructible suite: storage is a variadic_union. The old member is
+    // trivially destructible, so placement-new of the new member is well-defined at
+    // runtime (emplace is not constexpr, so placement-new is permitted here).
+    template <typename T, typename... TArgs>
+    void do_emplace_impl(etl::integral_constant<bool, true>, TArgs&&... args)
+    {
+      ::new (static_cast<void*>(etl::addressof(private_variant::variadic_union_get<index_of_type<T>::value>(data)))) T(etl::forward<TArgs>(args)...);
+    }
+
+    // Non-trivially destructible suite: storage is an uninitialized_buffer.
+    template <typename T, typename... TArgs>
+    void do_emplace_impl(etl::integral_constant<bool, false>, TArgs&&... args)
+    {
+      ::new (static_cast<char*>(data)) T(etl::forward<TArgs>(args)...);
     }
 
     //***************************************************************************
