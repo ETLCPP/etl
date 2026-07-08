@@ -1134,8 +1134,12 @@ namespace etl
     template <typename T, typename U>
     void do_construct_impl(U&& value, etl::integral_constant<bool, true>)
     {
-      // Trivially destructible: assign directly into the variadic_union.
-      private_variant::variadic_union_get<index_of_type<T>::value>(data) = etl::forward<U>(value);
+      // Begin the lifetime of the new alternative via placement new. The target
+      // union member is not alive after do_destroy(), and the alternative may be
+      // non-assignable (e.g. reference or const members), so assignment would be
+      // both undefined behaviour and ill-formed for such types. Use etl::addressof
+      // so the raw storage address is used even for types that overload operator&.
+      ::new (static_cast<void*>(etl::addressof(private_variant::variadic_union_get<index_of_type<T>::value>(data)))) T(etl::forward<U>(value));
     }
 
     template <typename T, typename U>

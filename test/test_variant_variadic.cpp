@@ -378,6 +378,48 @@ namespace
     int b;
     int sum_of_list;
   };
+
+  // Trivially destructible but not assignable (deleted copy and move
+  // assignment). Constructing an alternative of this type exercises the
+  // trivially-destructible-suite path, which must begin the alternative's
+  // lifetime with placement new rather than assigning into the union member.
+  struct NonAssignable
+  {
+    explicit NonAssignable(int value_)
+      : value(value_)
+    {
+    }
+
+    NonAssignable(const NonAssignable&)            = default;
+    NonAssignable(NonAssignable&&)                 = default;
+    NonAssignable& operator=(const NonAssignable&) = delete;
+    NonAssignable& operator=(NonAssignable&&)      = delete;
+
+    int value;
+  };
+
+  //*********************************************
+  // Trivially destructible type that overloads operator& (here by deleting it).
+  // Constructing an alternative of this type must obtain the placement-new
+  // target with etl::addressof, not the built-in unary operator&: taking the
+  // address with & would be ill-formed (deleted) or, for an operator& that
+  // returns something other than the object's address, would construct into the
+  // wrong storage.
+  struct NonAddressable
+  {
+    explicit NonAddressable(int value_)
+      : value(value_)
+    {
+    }
+
+    NonAddressable(const NonAddressable&) = default;
+    NonAddressable(NonAddressable&&)      = default;
+
+    NonAddressable*       operator&()       = delete;
+    const NonAddressable* operator&() const = delete;
+
+    int value;
+  };
 } // namespace
 
   // Moved from the top of the file otherwise clang has issues with
@@ -485,7 +527,17 @@ struct etl::is_copy_constructible<TrivialNonMovable> : public etl::false_type
 };
 
 template <>
+struct etl::is_copy_constructible<NonAssignable> : public etl::true_type
+{
+};
+
+template <>
 struct etl::is_move_constructible<TrivialNonMovable> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<NonAssignable> : public etl::true_type
 {
 };
 
@@ -496,7 +548,17 @@ struct etl::is_copy_constructible<NonTrivialNonMovable> : public etl::false_type
 };
 
 template <>
+struct etl::is_copy_constructible<NonAddressable> : public etl::true_type
+{
+};
+
+template <>
 struct etl::is_move_constructible<NonTrivialNonMovable> : public etl::false_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<NonAddressable> : public etl::true_type
 {
 };
   #endif
@@ -1054,6 +1116,81 @@ namespace
       variant_etl.emplace<D4>("1", "2", "3", "4");
       CHECK(etl::holds_alternative<D4>(variant_etl));
       CHECK_EQUAL(D4("1", "2", "3", "4"), etl::get<D4>(variant_etl));
+    }
+
+    //*************************************************************************
+    // Constructing an alternative must begin the object's lifetime with
+    // placement new, not assign into the (inactive) union member. A trivially
+    // destructible but non-assignable type would fail to compile (deleted
+    // assignment) or invoke undefined behaviour if assignment were used.
+    // (The trivially-destructible-suite union path is taken when the STL or the
+    // compiler type-trait built-ins are available; otherwise construction goes
+    // through the buffer path, which is exercised here just the same.)
+    TEST(test_construct_trivially_destructible_non_assignable_type)
+    {
+      using variant_type = etl::variant<int, NonAssignable>;
+
+      // Emplace by type.
+      variant_type variant_by_type;
+      variant_by_type.emplace<NonAssignable>(42);
+      CHECK(etl::holds_alternative<NonAssignable>(variant_by_type));
+      CHECK_EQUAL(42, etl::get<NonAssignable>(variant_by_type).value);
+
+      // Emplace by index.
+      variant_type variant_by_index;
+      variant_by_index.emplace<1>(43);
+      CHECK(etl::holds_alternative<NonAssignable>(variant_by_index));
+      CHECK_EQUAL(43, etl::get<NonAssignable>(variant_by_index).value);
+
+      // Assignment from a value (operator=(T&&)).
+      variant_type variant_by_assignment;
+      variant_by_assignment = NonAssignable(44);
+      CHECK(etl::holds_alternative<NonAssignable>(variant_by_assignment));
+      CHECK_EQUAL(44, etl::get<NonAssignable>(variant_by_assignment).value);
+
+      // Re-emplace over an already-active alternative (do_destroy then
+      // placement new into the same union member).
+      variant_by_assignment.emplace<NonAssignable>(45);
+      CHECK(etl::holds_alternative<NonAssignable>(variant_by_assignment));
+      CHECK_EQUAL(45, etl::get<NonAssignable>(variant_by_assignment).value);
+    }
+
+    //*************************************************************************
+    // Constructing an alternative must take the raw storage address for
+    // placement new via etl::addressof, not the built-in unary operator&.
+    // NonAddressable deletes operator&, so the old `&variadic_union_get(...)`
+    // form would be ill-formed. Read-back uses by-index etl::get (which returns
+    // a reference) and the reference returned by emplace, so it never invokes
+    // operator&. (The trivially-destructible-suite union path is taken when the
+    // STL or the compiler built-ins are available; otherwise construction goes
+    // through the buffer path, which is exercised here just the same.)
+    TEST(test_construct_type_with_overloaded_address_of_operator)
+    {
+      using variant_type = etl::variant<int, NonAddressable>;
+
+      // Emplace by type (returns a reference, so no operator& on read-back).
+      variant_type    variant_by_type;
+      NonAddressable& by_type = variant_by_type.emplace<NonAddressable>(42);
+      CHECK(etl::holds_alternative<NonAddressable>(variant_by_type));
+      CHECK_EQUAL(42, by_type.value);
+      CHECK_EQUAL(42, etl::get<1>(variant_by_type).value);
+
+      // Emplace by index.
+      variant_type variant_by_index;
+      variant_by_index.emplace<1>(43);
+      CHECK(etl::holds_alternative<NonAddressable>(variant_by_index));
+      CHECK_EQUAL(43, etl::get<1>(variant_by_index).value);
+
+      // Assignment from a value (operator=(T&&)).
+      variant_type variant_by_assignment;
+      variant_by_assignment = NonAddressable(44);
+      CHECK(etl::holds_alternative<NonAddressable>(variant_by_assignment));
+      CHECK_EQUAL(44, etl::get<1>(variant_by_assignment).value);
+
+      // Re-emplace over an already-active alternative.
+      variant_by_assignment.emplace<1>(45);
+      CHECK(etl::holds_alternative<NonAddressable>(variant_by_assignment));
+      CHECK_EQUAL(45, etl::get<1>(variant_by_assignment).value);
     }
 
     //*************************************************************************
