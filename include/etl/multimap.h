@@ -1369,6 +1369,35 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Emplaces a value to the multimap.
+    //*********************************************************************
+    iterator emplace(const_reference value)
+    {
+      return insert(value);
+    }
+
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+    //*********************************************************************
+    /// Emplaces a value to the multimap.
+    /// Constructs the value_type in place from the given arguments.
+    //*********************************************************************
+    template <typename... Args>
+    iterator emplace(Args&&... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(multimap_full));
+
+      // Get next available free node
+      Data_Node& node = allocate_data_node_from_args(etl::forward<Args>(args)...);
+
+      // Obtain the inserted node
+      Node* inserted_node = insert_node(root_node, node);
+
+      // Return iterator to new node location in tree
+      return iterator(*this, inserted_node);
+    }
+#endif
+
+    //*********************************************************************
     /// Returns an iterator pointing to the first element in the container
     /// whose key is not considered to go before the key provided or end()
     /// if all keys are considered to go before the key provided.
@@ -1567,6 +1596,21 @@ namespace etl
       ETL_INCREMENT_DEBUG_COUNT;
       return *node;
     }
+
+  #if ETL_NOT_USING_STLPORT
+    //*************************************************************************
+    /// Allocate a Data_Node by constructing the value_type from args.
+    //*************************************************************************
+    template <typename... Args>
+    Data_Node& allocate_data_node_from_args(Args&&... args)
+    {
+      Data_Node* node = allocate_data_node();
+      ::new (&node->value) const value_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+      return *node;
+    }
+  #endif
+
 #endif
 
     //*************************************************************************

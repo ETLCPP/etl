@@ -174,11 +174,11 @@ namespace etl
           unsigned int target_wd    = ymwd.weekday().c_encoding();
           unsigned int target_index = ymwd.index();
 
-          etl::chrono::weekday first_weekday(static_cast<unsigned>(sd.time_since_epoch().count()));
+          etl::chrono::weekday first_weekday(sd);
 
           unsigned int first_wd     = first_weekday.c_encoding();
           unsigned int offset       = (target_wd - first_wd + 7U) % 7U;
-          unsigned int day_of_month = offset + (target_index - 1U) * 7U;
+          unsigned int day_of_month = 1U + offset + (target_index - 1U) * 7U;
 
           etl::chrono::year_month_day result(year(), month(), etl::chrono::day(day_of_month));
 
@@ -382,7 +382,7 @@ namespace etl
         {
           etl::chrono::year_month_day ymd(year(), month(), etl::chrono::day(d));
           etl::chrono::sys_days       ymd_sys_days = static_cast<etl::chrono::sys_days>(ymd);
-          etl::chrono::weekday        wd(static_cast<unsigned>(ymd_sys_days.time_since_epoch().count()));
+          etl::chrono::weekday        wd(ymd_sys_days);
 
           if (wd == weekday())
           {

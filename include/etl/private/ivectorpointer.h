@@ -70,6 +70,13 @@ namespace etl
 
     typedef pvoidvector base_t;
 
+    template <typename TIterator>
+    struct is_compatible_iterator
+      : etl::integral_constant<bool, etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
+                                       && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value>
+    {
+    };
+
   public:
 
     //*********************************************************************
@@ -320,7 +327,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    typename etl::enable_if< is_compatible_iterator<TIterator>::value, void>::type assign(TIterator first, TIterator last)
     {
       base_t::assign(first, last);
     }
@@ -440,8 +447,8 @@ namespace etl
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
-    template <class TIterator>
-    void insert(const_iterator position, TIterator first, TIterator last)
+    template <typename TIterator>
+    typename etl::enable_if< is_compatible_iterator<TIterator>::value, void>::type insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
     }
@@ -572,6 +579,13 @@ namespace etl
   private:
 
     typedef pvoidvector base_t;
+
+    template <typename TIterator>
+    struct is_compatible_iterator
+      : etl::integral_constant<bool, etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
+                                       && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, value_type>::value>
+    {
+    };
 
   public:
 
@@ -823,7 +837,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    typename etl::enable_if< is_compatible_iterator<TIterator>::value, void>::type assign(TIterator first, TIterator last)
     {
       base_t::assign(first, last);
     }
@@ -901,8 +915,8 @@ namespace etl
     ///\param first    The first element to add.
     ///\param last     The last + 1 element to add.
     //*********************************************************************
-    template <class TIterator>
-    void insert(const_iterator position, TIterator first, TIterator last)
+    template <typename TIterator>
+    typename etl::enable_if< is_compatible_iterator<TIterator>::value, void>::type insert(const_iterator position, TIterator first, TIterator last)
     {
       base_t::insert(base_t::iterator(position), first, last);
     }

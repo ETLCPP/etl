@@ -28,6 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include <limits>
+
 #include "etl/format_spec.h"
 #include "etl/to_u16string.h"
 #include "etl/u16string.h"
@@ -578,6 +580,88 @@ namespace
 
       CHECK(etl::u16string<20>(STR("-124.0000")) == result_i);
       CHECK(result_d == result_i);
+    }
+
+    //*************************************************************************
+    TEST(test_issue_1438_does_not_handle_floating_point_number_with_integer_part_exceeding_max_uint64_t)
+    {
+      if (std::numeric_limits<double>::is_iec559)
+      {
+        // Check forced scientific formatting for smaller numbers.
+        etl::u16string<64> s0;
+        etl::to_string(1000.0, s0, Format().precision(5).width(15).right().scientific(true));
+        CHECK(etl::u16string<64>(STR("     1.00000e+3")) == s0);
+
+        etl::to_string(1000.0, s0, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::u16string<64>(STR("     1.00000E+3")) == s0);
+
+        // Maximum double value is 1.7976931348623157e+308, which rounds to 1.79769e+308 with 5 digits of precision.
+        etl::u16string<64> s1;
+        etl::to_string(std::numeric_limits<double>::max(), s1, Format().precision(5).width(15).right());
+        CHECK(etl::u16string<64>(STR("   1.79769e+308")) == s1);
+
+        // Negative maximum double value is -1.7976931348623157e+308, which rounds to -1.79769e+308 with 5 digits of precision.
+        etl::u16string<64> s2;
+        etl::to_string(-std::numeric_limits<double>::max(), s2, Format().precision(5).width(15).right());
+        CHECK(etl::u16string<64>(STR("  -1.79769e+308")) == s2);
+      }
+
+#if ETL_USING_64BIT_TYPES
+      using workspace_t = etl::private_to_string::workspace_t;
+
+      // Maximum workspace_t value is 9223372036854775807.
+      etl::u16string<64> s3;
+      etl::to_string(std::numeric_limits<workspace_t>::max(), s3, Format().precision(5).width(21).right());
+      CHECK(etl::u16string<64>(STR("  9223372036854775807")) == s3);
+
+      // Minimum workspace_t value is -9223372036854775808.
+      etl::u16string<64> s4;
+      etl::to_string(std::numeric_limits<workspace_t>::min(), s4, Format().precision(5).width(21).right());
+      CHECK(etl::u16string<64>(STR(" -9223372036854775808")) == s4);
+
+      using uworkspace_t = etl::private_to_string::uworkspace_t;
+
+      // Maximum uworkspace_t value is 18446744073709551615.
+      etl::u16string<64> s5;
+      etl::to_string(std::numeric_limits<uworkspace_t>::max(), s5, Format().precision(5).width(21).right());
+      CHECK(etl::u16string<64>(STR(" 18446744073709551615")) == s5);
+
+      // Minimum uworkspace_t value is 0.
+      etl::u16string<64> s6;
+      etl::to_string(std::numeric_limits<uworkspace_t>::min(), s6, Format().precision(5).width(21).right());
+      CHECK(etl::u16string<64>(STR("                    0")) == s6);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_issue_1436_case_support_for_nan_inf_in_to_string)
+    {
+      if (std::numeric_limits<double>::is_iec559)
+      {
+        etl::u16string<64> s1;
+        etl::to_string(std::numeric_limits<double>::quiet_NaN(), s1, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::u16string<64>(STR("            nan")) == s1);
+
+        etl::u16string<64> s2;
+        etl::to_string(std::numeric_limits<double>::infinity(), s2, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::u16string<64>(STR("            inf")) == s2);
+
+        etl::u16string<64> s3;
+        etl::to_string(-std::numeric_limits<double>::infinity(), s3, Format().precision(5).width(15).right().scientific(true).upper_case(false));
+        CHECK(etl::u16string<64>(STR("           -inf")) == s3);
+
+        etl::u16string<64> s4;
+        etl::to_string(std::numeric_limits<double>::quiet_NaN(), s4, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::u16string<64>(STR("            NAN")) == s4);
+
+        etl::u16string<64> s5;
+        etl::to_string(std::numeric_limits<double>::infinity(), s5, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::u16string<64>(STR("            INF")) == s5);
+
+        etl::u16string<64> s6;
+        etl::to_string(-std::numeric_limits<double>::infinity(), s6, Format().precision(5).width(15).right().scientific(true).upper_case(true));
+        CHECK(etl::u16string<64>(STR("           -INF")) == s6);
+      }
     }
   }
 } // namespace

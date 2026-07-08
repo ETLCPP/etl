@@ -37,11 +37,13 @@ SOFTWARE.
 #include <thread>
 #include <vector>
 
-#if defined(ETL_COMPILER_MICROSOFT)
-  #include <Windows.h>
-#endif
+#if ETL_HAS_ATOMIC
 
-#define REALTIME_TEST 0
+  #if defined(ETL_COMPILER_MICROSOFT)
+    #include <Windows.h>
+  #endif
+
+  #define REALTIME_TEST 0
 
 //***************************************************************************
 // The set of messages.
@@ -130,7 +132,7 @@ namespace
   Router1 router1;
   Bus1    bus1;
 
-  using event_callback_type = etl::imessage_timer_atomic<std::atomic_uint32_t>::event_callback_type;
+  using event_callback_type = etl::imessage_timer_atomic<etl::atomic_uint32_t>::event_callback_type;
 
   class TimerInsertRemoveTest
   {
@@ -170,7 +172,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_too_many_timers)
     {
-      etl::message_timer_atomic<2, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<2, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Single_Shot);
@@ -188,7 +190,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Single_Shot);
@@ -224,7 +226,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot_after_timeout)
     {
-      etl::message_timer_atomic<1, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<1, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Single_Shot);
       router1.clear();
@@ -270,7 +272,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
@@ -306,7 +308,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_bigger_step)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
@@ -346,7 +348,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_stop_start)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
@@ -393,7 +395,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_register_unregister)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1;
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
@@ -436,7 +438,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_repeating_clear)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
@@ -478,7 +480,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_route_through_bus)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, bus1, 37, etl::timer::mode::Single_Shot, ROUTER1);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, bus1, 23, etl::timer::mode::Single_Shot, ROUTER1);
@@ -517,7 +519,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_immediate_delayed)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
@@ -558,7 +560,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_one_shot_big_step_short_delay_insert)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 15, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 5, etl::timer::mode::Repeating);
@@ -590,7 +592,7 @@ namespace
     //*************************************************************************
     TEST(callback_timer_one_shot_empty_list_huge_tick_before_insert)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 5, etl::timer::mode::Single_Shot);
 
@@ -628,7 +630,7 @@ namespace
     //*************************************************************************
     TEST(message_timer_time_to_next)
     {
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Repeating);
@@ -679,7 +681,7 @@ namespace
     TEST(message_timer_time_to_next_with_has_active_timer)
     {
       timerInsertRemoveTest.clear();
-      etl::message_timer_atomic<3, std::atomic_uint32_t> timer_controller;
+      etl::message_timer_atomic<3, etl::atomic_uint32_t> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(message1, router1, 37, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = timer_controller.register_timer(message2, router1, 23, etl::timer::mode::Single_Shot);
@@ -734,18 +736,18 @@ namespace
     }
 
     //*************************************************************************
-#if REALTIME_TEST
+  #if REALTIME_TEST
 
-  #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently
-                                     // supported
-    #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
-    #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
-  #else
-    #define RAISE_THREAD_PRIORITY
-    #define FIX_PROCESSOR_AFFINITY
-  #endif
+    #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently
+                                       // supported
+      #define RAISE_THREAD_PRIORITY  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST)
+      #define FIX_PROCESSOR_AFFINITY SetThreadAffinityMask(GetCurrentThread(), 1);
+    #else
+      #define RAISE_THREAD_PRIORITY
+      #define FIX_PROCESSOR_AFFINITY
+    #endif
 
-    etl::message_timer_atomic<3, std::atomic_uint32_t> controller;
+    etl::message_timer_atomic<3, etl::atomic_uint32_t> controller;
 
     void timer_event()
     {
@@ -821,6 +823,8 @@ namespace
       CHECK_EQUAL(10U, router1.message2.size());
       CHECK(router1.message2.size() < 65U);
     }
-#endif
+  #endif
   }
 } // namespace
+
+#endif // ETL_HAS_ATOMIC

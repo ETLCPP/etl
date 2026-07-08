@@ -51,7 +51,7 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
-#include <stdint.h>
+#include <stddef.h>
 #include <string.h>
 
 #include "private/minmax_push.h"
@@ -91,26 +91,6 @@ namespace etl
   template <typename TIterator, typename TCompare>
   ETL_CONSTEXPR14 void insertion_sort(TIterator first, TIterator last, TCompare compare);
 
-  class algorithm_exception : public etl::exception
-  {
-  public:
-
-    algorithm_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
-      : exception(reason_, file_name_, line_number_)
-    {
-    }
-  };
-
-  class algorithm_error : public algorithm_exception
-  {
-  public:
-
-    algorithm_error(string_type file_name_, numeric_type line_number_)
-      : algorithm_exception(ETL_ERROR_TEXT("algorithm:error", ETL_ALGORITHM_FILE_ID"A"), file_name_, line_number_)
-    {
-    }
-  };
-
 } // namespace etl
 
 //*****************************************************************************
@@ -118,6 +98,22 @@ namespace etl
 //*****************************************************************************
 namespace etl
 {
+  struct stable_partition_exception : etl::exception
+  {
+    stable_partition_exception(string_type reason_, string_type file_, numeric_type line_)
+      : etl::exception(reason_, file_, line_)
+    {
+    }
+  };
+
+  struct stable_partition_buffer_too_small : stable_partition_exception
+  {
+    stable_partition_buffer_too_small(string_type file_, numeric_type line_)
+      : stable_partition_exception(ETL_ERROR_TEXT("stable_partition:buffer too small", ETL_ALGORITHM_FILE_ID"A"), file_, line_)
+    {
+    }
+  };
+
   namespace private_algorithm
   {
     template <bool use_swap>
@@ -558,7 +554,8 @@ namespace etl
   {
     while (first != last)
     {
-      *first = value;
+      // This cast is necessary because the signedness can differ
+      *first = static_cast<typename etl::iterator_traits<TIterator>::value_type>(value);
       ++first;
     }
   }
@@ -898,14 +895,16 @@ namespace etl
     {
       TDistance parent = (value_index - 1) / 2;
 
-      while ((value_index > top_index) && compare(first[parent], value))
+#include "etl/private/diagnostic_array_bounds_push.h"
+      while ((value_index > top_index) && compare(*(first + parent), value))
       {
-        first[value_index] = ETL_MOVE(first[parent]);
-        value_index        = parent;
-        parent             = (value_index - 1) / 2;
+        *(first + value_index) = ETL_MOVE(*(first + parent));
+        value_index            = parent;
+        parent                 = (value_index - 1) / 2;
       }
 
-      first[value_index] = ETL_MOVE(value);
+      *(first + value_index) = ETL_MOVE(value);
+#include "etl/private/diagnostic_pop.h"
     }
 
     // Adjust Heap Helper
@@ -917,20 +916,20 @@ namespace etl
 
       while (child2nd < length)
       {
-        if (compare(first[child2nd], first[child2nd - 1]))
+        if (compare(*(first + child2nd), *(first + (child2nd - 1))))
         {
           --child2nd;
         }
 
-        first[value_index] = ETL_MOVE(first[child2nd]);
-        value_index        = child2nd;
-        child2nd           = 2 * (child2nd + 1);
+        *(first + value_index) = ETL_MOVE(*(first + child2nd));
+        value_index            = child2nd;
+        child2nd               = 2 * (child2nd + 1);
       }
 
       if (child2nd == length)
       {
-        first[value_index] = ETL_MOVE(first[child2nd - 1]);
-        value_index        = child2nd - 1;
+        *(first + value_index) = ETL_MOVE(*(first + (child2nd - 1)));
+        value_index            = child2nd - 1;
       }
 
       push_heap(first, value_index, top_index, ETL_MOVE(value), compare);
@@ -944,7 +943,7 @@ namespace etl
 
       for (TDistance child = 1; child < n; ++child)
       {
-        if (compare(first[parent], first[child]))
+        if (compare(*(first + parent), *(first + child)))
         {
           return false;
         }
@@ -966,8 +965,8 @@ namespace etl
     typedef typename etl::iterator_traits<TIterator>::value_type      value_t;
     typedef typename etl::iterator_traits<TIterator>::difference_type distance_t;
 
-    value_t value = ETL_MOVE(last[-1]);
-    last[-1]      = ETL_MOVE(first[0]);
+    value_t value = ETL_MOVE(*(last - 1));
+    *(last - 1)   = ETL_MOVE(*first);
 
     private_heap::adjust_heap(first, distance_t(0), distance_t(last - first - 1), ETL_MOVE(value), compare);
   }
@@ -1358,7 +1357,9 @@ namespace etl
       value_type temp(ETL_MOVE(*first));
 
       // Move the rest.
+#include "etl/private/diagnostic_stringop_overread_push.h"
       TIterator result = etl::move(etl::next(first), last, first);
+#include "etl/private/diagnostic_pop.h"
 
       // Restore the first item in its rotated position.
       *result = ETL_MOVE(temp);
@@ -2132,6 +2133,34 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Moves the elements from the range (begin, end) to two different ranges
+  /// depending on the value returned by the predicate.<br>
+  ///\ingroup algorithm
+  //***************************************************************************
+  template <typename TSource, typename TDestinationTrue, typename TDestinationFalse, typename TUnaryPredicate>
+  ETL_CONSTEXPR14 ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse> partition_move(TSource begin, TSource end, TDestinationTrue destination_true,
+                                                                                 TDestinationFalse destination_false, TUnaryPredicate predicate)
+  {
+    while (begin != end)
+    {
+      if (predicate(*begin))
+      {
+        *destination_true = etl::move(*begin);
+        ++destination_true;
+      }
+      else
+      {
+        *destination_false = etl::move(*begin);
+        ++destination_false;
+      }
+
+      ++begin;
+    }
+
+    return ETL_OR_STD::pair<TDestinationTrue, TDestinationFalse>(destination_true, destination_false);
+  }
+
+  //***************************************************************************
   /// copy_if
   ///\ingroup algorithm
   ///< a href="http://en.cppreference.com/w/cpp/algorithm/copy"></a>
@@ -2786,7 +2815,9 @@ namespace etl
     d_size_type   d_size   = etl::distance(o_begin, o_end);
     min_size_type min_size = etl::min<min_size_type>(s_size, d_size);
 
+  #include "etl/private/diagnostic_null_dereference_push.h"
     return etl::move(i_begin, i_begin + min_size, o_begin);
+  #include "etl/private/diagnostic_pop.h"
   }
 
   //***************************************************************************
@@ -3071,7 +3102,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Transforms the elements from the range (begin, end) to two different
+  /// Transforms and copies the elements from the range (begin, end) to two different
   /// ranges depending on the value returned by the predicate.<br>
   ///\ingroup algorithm
   //***************************************************************************
@@ -3101,7 +3132,7 @@ namespace etl
   }
 
   //***************************************************************************
-  /// Transforms the elements from the ranges (begin1, end1) & (begin2)
+  /// Transforms and copies the elements from the ranges (begin1, end1) & (begin2)
   /// to two different ranges depending on the value returned by the predicate.
   ///\ingroup algorithm
   //***************************************************************************
@@ -3542,6 +3573,85 @@ namespace etl
     }
 
     return first;
+  }
+
+  //***************************************************************************
+  /// stable_partition
+  /// O(NlogN) time.
+  /// In-place.
+  //***************************************************************************
+  template <typename TIterator, typename TPredicate>
+  ETL_CONSTEXPR14 TIterator stable_partition(TIterator first, TIterator last, TPredicate predicate)
+  {
+    typename etl::iterator_traits<TIterator>::difference_type n = etl::distance(first, last);
+
+    if (n <= 1)
+    {
+      // Empty or single-element range: trivially partitioned either way.
+      return first;
+    }
+
+    TIterator mid = first;
+    etl::advance(mid, n / 2);
+
+    etl::stable_partition(first, mid, predicate);
+    etl::stable_partition(mid, last, predicate);
+
+    TIterator left_partition_start  = etl::find_if_not(first, last, predicate);
+    TIterator right_partition_start = etl::find_if(left_partition_start, last, predicate);
+    TIterator right_partition_end   = etl::find_if_not(right_partition_start, last, predicate);
+
+    return etl::rotate(left_partition_start, right_partition_start, right_partition_end);
+  }
+
+  //***************************************************************************
+  /// stable_partition
+  /// O(N) time.
+  /// O(N) extra space.
+  //***************************************************************************
+  template <typename TIterator, typename TPredicate>
+  ETL_CONSTEXPR14 TIterator stable_partition(TIterator first, TIterator last, TIterator buffer_first, TIterator buffer_last, TPredicate predicate)
+  {
+    typename etl::iterator_traits<TIterator>::difference_type n = etl::distance(first, last);
+
+    ETL_ASSERT((n <= etl::distance(buffer_first, buffer_last)), ETL_ERROR(stable_partition_buffer_too_small));
+
+    if (n <= 1)
+    {
+      // Empty or single-element range.
+      return first;
+    }
+
+    TIterator input_first = first;
+    TIterator buffer_true = buffer_first;
+
+    // Find where the partition point will be in the buffer.
+    typename etl::iterator_traits<TIterator>::difference_type true_count   = etl::count_if(first, last, predicate);
+    TIterator                                                 buffer_false = buffer_first + true_count;
+
+    // Move them to the correct places in the temporary buffer.
+    while (first != last)
+    {
+      if (predicate(*first))
+      {
+        *buffer_true++ = etl::move(*first);
+      }
+      else
+      {
+        *buffer_false++ = etl::move(*first);
+      }
+
+      ++first;
+    }
+
+    // Move them back to the original range.
+    TIterator buffer_end = buffer_first;
+    etl::advance(buffer_end, n);
+    etl::move(buffer_first, buffer_end, input_first);
+
+    etl::advance(input_first, true_count);
+
+    return input_first;
   }
 
   //*********************************************************
@@ -5860,12 +5970,14 @@ namespace etl
           }
         }
 
+  #include "etl/private/diagnostic_array_bounds_push.h"
         // Sort the heap to produce a sorted output range
         for (auto heap_end = heap_size - 1; heap_end > 0; --heap_end)
         {
           etl::iter_swap(result_first, result_first + heap_end);
           sift_down(result_first, decltype(heap_size){0}, heap_end, comp, proj2);
         }
+  #include "etl/private/diagnostic_pop.h"
 
         return {etl::move(in_last), etl::move(r)};
       }
@@ -6201,6 +6313,16 @@ namespace etl
 
         I left_partition  = stable_partition_impl(first, middle, etl::ref(pred), etl::ref(proj), len / 2);
         I right_partition = stable_partition_impl(middle, last, etl::ref(pred), etl::ref(proj), len - len / 2);
+
+        if (left_partition == middle)
+        {
+          return right_partition;
+        }
+
+        if (middle == right_partition)
+        {
+          return left_partition;
+        }
 
         return etl::rotate(left_partition, middle, right_partition);
       }

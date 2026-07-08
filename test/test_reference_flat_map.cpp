@@ -400,6 +400,47 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      Compare_DataNDC compare_data;
+      DataNDC         data;
+
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result;
+
+      DataNDC::value_type item(0, N0);
+      result = data.emplace(item);
+      compare_data.insert(item);
+
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == item);
+
+      DataNDC::value_type item2(2, N2);
+      result = data.emplace(item2);
+      compare_data.insert(item2);
+
+      isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == item2);
+
+      DataNDC::value_type item1(1, N1);
+      result = data.emplace(item1);
+      compare_data.insert(item1);
+
+      isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+      CHECK(result.second);
+      CHECK(*result.first == item1);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_value_changed)
     {
       Compare_DataNDC compare_data;

@@ -31,14 +31,11 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_NOT_USING_CPP11 && !defined(ETL_IN_UNIT_TEST)
-  #error NOT SUPPORTED FOR C++03 OR BELOW
-#endif
-
 #if ETL_USING_CPP11
 
   #if ETL_USING_STL
     #include <tuple>
+    #include <utility>
   #endif
 
   #include "functional.h"
@@ -774,10 +771,13 @@ namespace etl
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::get<Index> - Index out of range");
 
     // Get the type at this index.
-    using tuple_type = etl::nth_base_t<Index, tuple<TTypes...>>&&;
+    using tuple_type   = etl::nth_base_t<Index, tuple<TTypes...>>&&;
+    using element_type = etl::tuple_element_t<Index, etl::tuple<TTypes...>>;
 
-    // Cast the tuple to the selected type and get the value.
-    return etl::move(static_cast<tuple_type>(t).get_value());
+    // Forward the element. A reference member must not be turned into an
+    // rvalue, so cast to element_type&& (which collapses to a reference type
+    // when element_type is itself a reference).
+    return static_cast<element_type&&>(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -791,10 +791,13 @@ namespace etl
     ETL_STATIC_ASSERT(Index < sizeof...(TTypes), "etl::get<Index> - Index out of range");
 
     // Get the type at this index.
-    using tuple_type = const etl::nth_base_t<Index, etl::tuple<TTypes...>>&&;
+    using tuple_type   = const etl::nth_base_t<Index, etl::tuple<TTypes...>>&&;
+    using element_type = etl::tuple_element_t<Index, etl::tuple<TTypes...>>;
 
-    // Cast the tuple to the selected type and get the value.
-    return etl::move(static_cast<tuple_type>(t).get_value());
+    // Forward the element. A reference member must not be turned into an
+    // rvalue, so cast to const element_type&& (which collapses to a reference
+    // type when element_type is itself a reference).
+    return static_cast<const element_type&&>(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -847,8 +850,10 @@ namespace etl
     // Get the tuple base type that contains a T
     using tuple_type = etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>&&;
 
-    // Cast the tuple to the selected type and get the value.
-    return etl::move(static_cast<tuple_type>(t).get_value());
+    // Forward the element. A reference type T must not be turned into an
+    // rvalue, so cast to T&& (which collapses to a reference when T is a
+    // reference type).
+    return static_cast<T&&>(static_cast<tuple_type>(t).get_value());
   }
 
   //***************************************************************************
@@ -865,8 +870,10 @@ namespace etl
     // Get the tuple base type that contains a T
     using tuple_type = const etl::private_tuple::tuple_type_base_t<T, tuple<TTypes...>>&&;
 
-    // Cast the tuple to the selected type and get the value.
-    return etl::move(static_cast<tuple_type>(t).get_value());
+    // Forward the element. A reference type T must not be turned into an
+    // rvalue, so cast to const T&& (which collapses to a reference when T is a
+    // reference type).
+    return static_cast<const T&&>(static_cast<tuple_type>(t).get_value());
   }
 
   #if ETL_USING_CPP17
@@ -1183,7 +1190,13 @@ namespace etl
 
 namespace std
 {
-  #if ETL_NOT_USING_STL && !((defined(ETL_DEVELOPMENT_OS_APPLE) || (ETL_COMPILER_FULL_VERSION >= 190000)) && defined(ETL_COMPILER_CLANG))
+  // libc++ already declares std::tuple_size / std::tuple_element in its inline
+  // namespace (std::__1), so re-declaring them here would make the name
+  // ambiguous. Detect libc++ via _LIBCPP_VERSION and skip the forward
+  // declarations in that case, even when not using the STL.
+  #if ETL_NOT_USING_STL && !defined(_LIBCPP_VERSION)                                                                          \
+    && !((defined(ETL_DEVELOPMENT_OS_APPLE) || (ETL_COMPILER_FULL_VERSION >= 190000) && (ETL_COMPILER_FULL_VERSION < 210000)) \
+         && defined(ETL_COMPILER_CLANG))
   template <typename T>
   struct tuple_size;
 

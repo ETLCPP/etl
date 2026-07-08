@@ -32,9 +32,6 @@ SOFTWARE.
 #define ETL_DEBOUNCE_INCLUDED
 
 #include "platform.h"
-#include "static_assert.h"
-
-#include <stdint.h>
 
 namespace etl
 {

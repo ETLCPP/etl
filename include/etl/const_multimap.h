@@ -33,10 +33,6 @@ SOFTWARE.
 
 #include "platform.h"
 
-#if ETL_NOT_USING_CPP11
-  #error NOT SUPPORTED FOR C++03 OR BELOW
-#endif
-
 #include "algorithm.h"
 #include "functional.h"
 #include "nth_type.h"
@@ -44,6 +40,8 @@ SOFTWARE.
 #include "type_traits.h"
 
 #include "private/comparator_is_transparent.h"
+
+#if ETL_USING_CPP11
 
 ///\defgroup const_multimap const_multimap
 ///\ingroup containers
@@ -478,14 +476,14 @@ namespace etl
     value_type element_list[Size];
   };
 
-  //*************************************************************************
-  /// Template deduction guides.
-  //*************************************************************************
-#if ETL_USING_CPP17
+    //*************************************************************************
+    /// Template deduction guides.
+    //*************************************************************************
+  #if ETL_USING_CPP17
   template <typename... TPairs>
   const_multimap(TPairs...)
     -> const_multimap<typename etl::nth_type_t<0, TPairs...>::first_type, typename etl::nth_type_t<0, TPairs...>::second_type, sizeof...(TPairs)>;
-#endif
+  #endif
 
   //*********************************************************************
   /// Map type designed for constexpr.
@@ -536,16 +534,16 @@ namespace etl
     }
   };
 
-  //*************************************************************************
-  /// Template deduction guides.
-  //*************************************************************************
-#if ETL_USING_CPP17
+    //*************************************************************************
+    /// Template deduction guides.
+    //*************************************************************************
+  #if ETL_USING_CPP17
   template <typename TElements, size_t Size>
   const_multimap_ext(const etl::span<TElements, Size>&) -> const_multimap_ext<typename TElements::first_type, typename TElements::second_type>;
 
   template <typename TElements, size_t Size>
   const_multimap_ext(const TElements (&)[Size]) -> const_multimap_ext<typename TElements::first_type, typename TElements::second_type>;
-#endif
+  #endif
 
   //*************************************************************************
   /// Equality test.
@@ -625,4 +623,5 @@ namespace etl
   }
 } // namespace etl
 
+#endif
 #endif

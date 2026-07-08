@@ -39,6 +39,7 @@ SOFTWARE.
 
 #include "data.h"
 
+#include "etl/char_traits.h"
 #include "etl/checksum.h"
 #include "etl/hash.h"
 #include "etl/unordered_set.h"
@@ -158,6 +159,7 @@ namespace
   };
 
   //***************************************************************************
+#include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_unordered_set)
   {
     static const size_t SIZE = 10;
@@ -544,6 +546,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      DataM data;
+
+      auto result1 = data.emplace(ItemM(1));
+      auto result2 = data.emplace(ItemM(2));
+      auto result3 = data.emplace(ItemM(3));
+
+      CHECK(result1.second == true);
+      CHECK(result2.second == true);
+      CHECK(result3.second == true);
+      CHECK_EQUAL(3U, data.size());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_moved_value)
     {
       DataM data;
@@ -595,6 +612,46 @@ namespace
       CHECK_NO_THROW(data.insert(N8));
       CHECK_NO_THROW(data.insert(N9));
 
+      CHECK(data.size() == SIZE);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_when_full)
+    {
+      DataNDC data;
+
+      data.insert(N0); // Inserted
+      data.insert(N1); // Inserted
+      data.insert(N2); // Inserted
+      data.insert(N3); // Inserted
+      data.insert(N4); // Inserted
+      data.insert(N5); // Inserted
+      data.insert(N6); // Inserted
+      data.insert(N7); // Inserted
+      data.insert(N8); // Inserted
+      data.insert(N9); // Inserted
+
+      CHECK(data.full());
+
+      // Emplacing a new key when the unordered_set is full should throw.
+      CHECK_THROW(data.emplace(N10), etl::unordered_set_full);
+
+      // Emplacing an existing (duplicate) key when the unordered_set is full
+      // should not throw; it should return an iterator to the existing element,
+      // matching the behaviour of insert().
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result;
+
+      CHECK_NO_THROW(result = data.emplace(N0));
+      CHECK(result.first != data.end());
+      CHECK(*result.first == N0);
+      CHECK(result.second == false);
+
+      CHECK_NO_THROW(result = data.emplace(N9));
+      CHECK(result.first != data.end());
+      CHECK(*result.first == N9);
+      CHECK(result.second == false);
+
+      // The unordered_set must be unchanged.
       CHECK(data.size() == SIZE);
     }
 
@@ -1066,4 +1123,5 @@ namespace
       CHECK_FALSE(data.contains(not_inserted));
     }
   }
+#include "etl/private/diagnostic_pop.h"
 } // namespace

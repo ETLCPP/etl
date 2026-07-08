@@ -18,7 +18,7 @@
           "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/.devcontainer/s390x/toolchain-s390x.cmake",
           "-DBUILD_TESTS=ON",
           "-DNO_STL=OFF",
-          "-DETL_CXX_STANDARD=17"
+          "-DETL_CXX_STANDARD=23"
         ],
         "cmake.buildDirectory": "${workspaceFolder}/build-s390x",
         "cmake.generator": "Ninja"

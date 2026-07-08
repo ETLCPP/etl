@@ -42,7 +42,6 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "iterator.h"
 #include "nth_type.h"
-#include "nullptr.h"
 #include "parameter_type.h"
 #include "placement_new.h"
 #include "pool.h"
@@ -980,6 +979,102 @@ namespace etl
         ++first_;
       }
     }
+
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+    //*********************************************************************
+    /// Emplaces a value to the unordered_set.
+    //*********************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> emplace(Args&&... args)
+    {
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
+
+      if (full())
+      {
+        // A duplicate key does not require a free node, so emplacing it is not
+        // a capacity failure. Construct a temporary to obtain its key and only
+        // emit unordered_set_full if the key is not already present. This keeps
+        // emplace consistent with insert when the unordered_set is full.
+        value_type temp_value(etl::forward<Args>(args)...);
+        iterator   position = find(temp_value);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(unordered_set_full));
+          return result;
+        }
+
+        result.first  = position;
+        result.second = false;
+        return result;
+      }
+
+      // Construct the value in a temporary to get the key for hashing.
+      node_t* node = allocate_data_node();
+      node->clear();
+      ::new (&node->key) value_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      key_parameter_t key = node->key;
+
+      // Get the hash index.
+      size_t index = get_bucket_index(key);
+
+      // Get the bucket & bucket iterator.
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket  = *pbucket;
+
+      // The first one in the bucket?
+      if (bucket.empty())
+      {
+        // Just add the pointer to the bucket;
+        bucket.insert_after(bucket.before_begin(), *node);
+        adjust_first_last_markers_after_insert(&bucket);
+
+        result.first  = iterator(pbuckets + number_of_buckets, pbucket, pbucket->begin());
+        result.second = true;
+      }
+      else
+      {
+        // Step though the bucket looking for a place to insert.
+        local_iterator inode_previous = bucket.before_begin();
+        local_iterator inode          = bucket.begin();
+
+        while (inode != bucket.end())
+        {
+          // Do we already have this key?
+          if (key_equal_function(inode->key, key))
+          {
+            break;
+          }
+
+          ++inode_previous;
+          ++inode;
+        }
+
+        // Not already there?
+        if (inode == bucket.end())
+        {
+          // Add the node to the end of the bucket;
+          bucket.insert_after(inode_previous, *node);
+          adjust_first_last_markers_after_insert(&bucket);
+          ++inode_previous;
+
+          result.first  = iterator(pbuckets + number_of_buckets, pbucket, inode_previous);
+          result.second = true;
+        }
+        else
+        {
+          // Duplicate found, destroy the node
+          node->key.~value_type();
+          pnodepool->release(node);
+          ETL_DECREMENT_DEBUG_COUNT;
+        }
+      }
+
+      return result;
+    }
+#endif
 
     //*********************************************************************
     /// Erases an element.

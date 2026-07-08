@@ -710,6 +710,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_moved_value)
+    {
+      DataM data;
+
+      data.emplace(1, MC("1"));
+      data.emplace(2, MC("2"));
+      data.emplace(3, MC("3"));
+
+      CHECK("1" == data.find(1)->second.value);
+      CHECK("2" == data.find(2)->second.value);
+      CHECK("3" == data.find(3)->second.value);
+      CHECK_EQUAL(3U, data.size());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());

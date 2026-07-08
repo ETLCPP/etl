@@ -755,6 +755,47 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_excess)
+    {
+      DataInt data(int_data.begin(), int_data.end());
+
+      CHECK_THROW(data.emplace(99), etl::flat_set_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_when_full)
+    {
+      DataInt                                   data;
+      ETL_OR_STD::pair<DataInt::iterator, bool> data_result;
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data.emplace(static_cast<int>(i));
+      }
+
+      CHECK(data.full());
+
+      // Emplacing a new key when the set is full should throw etl::flat_set_full.
+      CHECK_THROW(data.emplace(static_cast<int>(SIZE)), etl::flat_set_full);
+
+      // Emplacing an existing (duplicate) key when the set is full should not
+      // throw; it should return an iterator to the existing element, matching
+      // the behaviour of insert().
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        data_result = data.emplace(static_cast<int>(i));
+
+        CHECK(data_result.first != data.end());
+        CHECK_EQUAL(static_cast<int>(i), *data_result.first);
+        CHECK(data_result.second == false);
+      }
+
+      // The set must be unchanged.
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());

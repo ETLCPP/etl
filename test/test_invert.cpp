@@ -112,5 +112,15 @@ namespace
       bool isEqual = std::equal(output2.begin(), output2.end(), result2b.begin(), Compare());
       CHECK(isEqual);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_invert_constexpr)
+    {
+      constexpr etl::invert<int> inv(0, 255);
+      static_assert(inv(100) == 155, "constexpr invert");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

@@ -43,7 +43,6 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "iterator.h"
 #include "nth_type.h"
-#include "nullptr.h"
 #include "parameter_type.h"
 #include "placement_new.h"
 #include "pool.h"
@@ -1162,6 +1161,250 @@ namespace etl
         insert(*first_);
         ++first_;
       }
+    }
+
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+    //*********************************************************************
+    /// Emplaces a value to the unordered_map.
+    /// Constructs the value_type in place from the given arguments.
+    //*********************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> emplace(Args&&... args)
+    {
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
+
+      ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
+
+      // Construct the value in a temporary node to get the key for hashing.
+      node_t* node = allocate_data_node();
+      node->clear();
+      ::new ((void*)etl::addressof(node->key_value_pair)) value_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      const_key_reference key = node->key_value_pair.first;
+
+      // Get the hash index.
+      size_t index = get_bucket_index(key);
+
+      // Get the bucket & bucket iterator.
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket  = *pbucket;
+
+      // The first one in the bucket?
+      if (bucket.empty())
+      {
+        // Just add the pointer to the bucket;
+        bucket.insert_after(bucket.before_begin(), *node);
+
+        adjust_first_last_markers_after_insert(pbucket);
+
+        result.first  = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
+        result.second = true;
+      }
+      else
+      {
+        // Step though the bucket looking for a place to insert.
+        local_iterator inode_previous = bucket.before_begin();
+        local_iterator inode          = bucket.begin();
+
+        while (inode != bucket.end())
+        {
+          // Do we already have this key?
+          if (key_equal_function(inode->key_value_pair.first, key))
+          {
+            break;
+          }
+
+          ++inode_previous;
+          ++inode;
+        }
+
+        // Not already there?
+        if (inode == bucket.end())
+        {
+          // Add the node to the end of the bucket;
+          bucket.insert_after(inode_previous, *node);
+          adjust_first_last_markers_after_insert(&bucket);
+          ++inode_previous;
+
+          result.first  = iterator((pbuckets + number_of_buckets), pbucket, inode_previous);
+          result.second = true;
+        }
+        else
+        {
+          // Duplicate found, destroy the node
+          node->key_value_pair.~value_type();
+          pnodepool->release(node);
+          ETL_DECREMENT_DEBUG_COUNT;
+        }
+      }
+
+      return result;
+    }
+
+    //*********************************************************************
+    /// Inserts an element into the unordered_map if the key does not exist.
+    /// The mapped value is constructed from args only if insertion takes place.
+    //*********************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, Args&&... args)
+    {
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
+
+      // Get the hash index.
+      size_t index = get_bucket_index(key);
+
+      // Get the bucket & bucket iterator.
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket  = *pbucket;
+
+      // The first one in the bucket?
+      if (bucket.empty())
+      {
+        ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
+
+        // Get a new node.
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new ((void*)etl::addressof(node->key_value_pair.first)) key_type(key);
+        ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type(etl::forward<Args>(args)...);
+        ETL_INCREMENT_DEBUG_COUNT;
+
+        // Just add the pointer to the bucket;
+        bucket.insert_after(bucket.before_begin(), *node);
+
+        adjust_first_last_markers_after_insert(pbucket);
+
+        result.first  = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
+        result.second = true;
+      }
+      else
+      {
+        // Step though the bucket looking for a place to insert.
+        local_iterator inode_previous = bucket.before_begin();
+        local_iterator inode          = bucket.begin();
+
+        while (inode != bucket.end())
+        {
+          // Do we already have this key?
+          if (key_equal_function(inode->key_value_pair.first, key))
+          {
+            // Found duplicate, return iterator to existing element
+            result.first = iterator((pbuckets + number_of_buckets), pbucket, inode);
+            return result;
+          }
+
+          ++inode_previous;
+          ++inode;
+        }
+
+        // Not already there, insert new element.
+        ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
+
+        // Get a new node.
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new ((void*)etl::addressof(node->key_value_pair.first)) key_type(key);
+        ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type(etl::forward<Args>(args)...);
+        ETL_INCREMENT_DEBUG_COUNT;
+
+        // Add the node to the end of the bucket;
+        bucket.insert_after(inode_previous, *node);
+        adjust_first_last_markers_after_insert(&bucket);
+        ++inode_previous;
+
+        result.first  = iterator((pbuckets + number_of_buckets), pbucket, inode_previous);
+        result.second = true;
+      }
+
+      return result;
+    }
+
+    //*********************************************************************
+    /// Inserts an element into the unordered_map if the key does not exist.
+    /// The key is moved into the container if insertion takes place.
+    //*********************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(rvalue_key_reference key, Args&&... args)
+    {
+      ETL_OR_STD::pair<iterator, bool> result(end(), false);
+
+      // Get the hash index.
+      size_t index = get_bucket_index(key);
+
+      // Get the bucket & bucket iterator.
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket  = *pbucket;
+
+      // The first one in the bucket?
+      if (bucket.empty())
+      {
+        ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
+
+        // Get a new node.
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new ((void*)etl::addressof(node->key_value_pair.first)) key_type(etl::move(key));
+        ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type(etl::forward<Args>(args)...);
+        ETL_INCREMENT_DEBUG_COUNT;
+
+        // Just add the pointer to the bucket;
+        bucket.insert_after(bucket.before_begin(), *node);
+
+        adjust_first_last_markers_after_insert(pbucket);
+
+        result.first  = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
+        result.second = true;
+      }
+      else
+      {
+        // Step though the bucket looking for a place to insert.
+        local_iterator inode_previous = bucket.before_begin();
+        local_iterator inode          = bucket.begin();
+
+        while (inode != bucket.end())
+        {
+          // Do we already have this key?
+          if (key_equal_function(inode->key_value_pair.first, key))
+          {
+            // Found duplicate, return iterator to existing element
+            result.first = iterator((pbuckets + number_of_buckets), pbucket, inode);
+            return result;
+          }
+
+          ++inode_previous;
+          ++inode;
+        }
+
+        // Not already there, insert new element.
+        ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
+
+        // Get a new node.
+        node_t* node = allocate_data_node();
+        node->clear();
+        ::new ((void*)etl::addressof(node->key_value_pair.first)) key_type(etl::move(key));
+        ::new ((void*)etl::addressof(node->key_value_pair.second)) mapped_type(etl::forward<Args>(args)...);
+        ETL_INCREMENT_DEBUG_COUNT;
+
+        // Add the node to the end of the bucket;
+        bucket.insert_after(inode_previous, *node);
+        adjust_first_last_markers_after_insert(&bucket);
+        ++inode_previous;
+
+        result.first  = iterator((pbuckets + number_of_buckets), pbucket, inode_previous);
+        result.second = true;
+      }
+
+      return result;
+    }
+#endif
+
+    //*********************************************************************
+    /// Emplaces a value to the unordered_map.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> emplace(const_reference key_value_pair)
+    {
+      return insert(key_value_pair);
     }
 
     //*********************************************************************

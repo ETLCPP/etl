@@ -982,6 +982,66 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_try_emplace_value)
+    {
+      Data1 data;
+
+      // Insert with an lvalue key (const_key_reference overload).
+      int                                     key0    = 0;
+      ETL_OR_STD::pair<Data1::iterator, bool> result1 = data.try_emplace(key0, "0");
+      CHECK(result1.second == true);
+      CHECK(result1.first->first == 0);
+      CHECK(result1.first->second.a == "0");
+
+      // Insert with an rvalue key (rvalue_key_reference overload).
+      ETL_OR_STD::pair<Data1::iterator, bool> result2 = data.try_emplace(1, "1");
+      CHECK(result2.second == true);
+      CHECK(result2.first->first == 1);
+      CHECK(result2.first->second.a == "1");
+
+      // Duplicate key: the mapped value must NOT be overwritten.
+      ETL_OR_STD::pair<Data1::iterator, bool> result3 = data.try_emplace(0, "99");
+      CHECK(result3.second == false);
+      CHECK(result3.first->first == 0);
+      CHECK(result3.first->second.a == "0");
+
+      CHECK_EQUAL(2U, data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_try_emplace_moved_value)
+    {
+      DataM data;
+
+      MC m1("1");
+      MC m2("2");
+
+      // Insert with a moved mapped value (lvalue key -> const_key_reference overload).
+      int                                     key1    = 1;
+      ETL_OR_STD::pair<DataM::iterator, bool> result1 = data.try_emplace(key1, std::move(m1));
+      CHECK(result1.second == true);
+      CHECK(!bool(m1)); // m1 was moved from
+      CHECK("1" == result1.first->second.value);
+
+      // Duplicate key (rvalue key literal -> rvalue_key_reference overload):
+      // m2 must NOT be moved from.
+      ETL_OR_STD::pair<DataM::iterator, bool> result2 = data.try_emplace(1, std::move(m2));
+      CHECK(result2.second == false);
+      CHECK(bool(m2)); // m2 was NOT moved
+      CHECK("1" == result2.first->second.value);
+
+      CHECK_EQUAL(1U, data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_try_emplace_excess)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.try_emplace(10, N10), etl::flat_map_full);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());

@@ -1683,5 +1683,48 @@ namespace
       CHECK(etl_data2.size() == swap_other_data.size());
       CHECK(etl_data2.max_size() == other_size);
     }
+
+    //*************************************************************************
+    template <typename TContainer, typename TIterator, typename = void>
+    struct is_assign_callable : std::false_type
+    {
+    };
+
+    template <typename TContainer, typename TIterator>
+    struct is_assign_callable<TContainer, TIterator,
+                              etl::void_t<decltype(std::declval<TContainer&>().assign(std::declval<TIterator>(), std::declval<TIterator>()))>>
+      : std::true_type
+    {
+    };
+
+    template <typename TContainer, typename TIterator1, typename TIterator2, typename = void>
+    struct is_insert_callable : std::false_type
+    {
+    };
+
+    template <typename TContainer, typename TIterator1, typename TIterator2>
+    struct is_insert_callable<
+      TContainer, TIterator1, TIterator2,
+      etl::void_t<decltype(std::declval<TContainer&>().insert(std::declval<TIterator1>(), std::declval<TIterator2>(), std::declval<TIterator2>()))>>
+      : std::true_type
+    {
+    };
+    TEST_FIXTURE(SetupFixture, test_issue_1464_etl_vector_insert_allows_inserting_an_incompatible_type)
+    {
+      struct SomeStruct
+      {
+        int foo;
+      };
+
+      using ContainerType = etl::vector<SomeStruct*, 4>;
+      using Iterator1Type = etl::vector<SomeStruct*, 4>::iterator;
+      using Iterator2Type = etl::vector<SomeStruct, 4>::const_iterator;
+
+      constexpr bool can_assign = is_assign_callable<ContainerType, Iterator2Type>::value;
+      CHECK_FALSE(can_assign);
+
+      constexpr bool can_insert = is_insert_callable<ContainerType, Iterator1Type, Iterator2Type>::value;
+      CHECK_FALSE(can_insert);
+    }
   }
 } // namespace

@@ -61,6 +61,14 @@ namespace etl
       lookup.fill(&unhandled_callback);
     }
 
+    callback_service(const callback_service&) ETL_DELETE;
+    callback_service& operator=(const callback_service&) ETL_DELETE;
+
+#if ETL_USING_CPP11
+    callback_service(callback_service&&) ETL_DELETE;
+    callback_service& operator=(callback_service&&) ETL_DELETE;
+#endif
+
     //*************************************************************************
     /// Registers a callback for the specified id.
     /// Compile time assert if the id is out of range.

@@ -100,26 +100,6 @@ namespace etl
 
   private:
 
-    //*********************************************************************
-    /// How to compare elements and keys.
-    //*********************************************************************
-    class compare
-    {
-    public:
-
-      bool operator()(const value_type& element, key_type key) const
-      {
-        return comp(element.first, key);
-      }
-
-      bool operator()(key_type key, const value_type& element) const
-      {
-        return comp(key, element.first);
-      }
-
-      key_compare comp;
-    };
-
   public:
 
     //*********************************************************************
@@ -597,6 +577,163 @@ namespace etl
       }
 
       return result;
+    }
+
+#endif
+
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+    //*************************************************************************
+    /// Inserts an element into the flat_map if the key does not exist.
+    /// The mapped value is constructed from args only if insertion takes place.
+    //*************************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, Args&&... args)
+    {
+      iterator i_element = lower_bound(key);
+
+      // Already exists?
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Inserts an element into the flat_map if the key does not exist.
+    /// The key is moved into the container if insertion takes place.
+    //*************************************************************************
+    template <typename... Args>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(rvalue_key_reference key, Args&&... args)
+    {
+      iterator i_element = lower_bound(key);
+
+      // Already exists?
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(etl::move(key));
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+#else
+
+    //*************************************************************************
+    /// Inserts an element into the flat_map if the key does not exist.
+    //*************************************************************************
+    template <typename T1>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, const T1& value1)
+    {
+      iterator i_element = lower_bound(key);
+
+      // Already exists?
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Inserts an element into the flat_map if the key does not exist.
+    //*************************************************************************
+    template <typename T1, typename T2>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, const T1& value1, const T2& value2)
+    {
+      iterator i_element = lower_bound(key);
+
+      // Already exists?
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Inserts an element into the flat_map if the key does not exist.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3)
+    {
+      iterator i_element = lower_bound(key);
+
+      // Already exists?
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      return refmap_t::insert_at(i_element, *pvalue);
+    }
+
+    //*************************************************************************
+    /// Inserts an element into the flat_map if the key does not exist.
+    //*************************************************************************
+    template <typename T1, typename T2, typename T3, typename T4>
+    ETL_OR_STD::pair<iterator, bool> try_emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+    {
+      iterator i_element = lower_bound(key);
+
+      // Already exists?
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
+      ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
+
+      // Create it.
+      value_type* pvalue = storage.allocate<value_type>();
+      ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
+      ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3, value4);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      return refmap_t::insert_at(i_element, *pvalue);
     }
 
 #endif

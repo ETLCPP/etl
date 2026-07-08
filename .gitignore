@@ -419,3 +419,6 @@ hugo/resources
 hugo/.hugo_build.lock
 docs/*.html
 test/build-coverage
+include/etl/iterator.h~RFfd5eda.TMP
+test/vs2022/Build
+docs/Messaging

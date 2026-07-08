@@ -1,0 +1,31 @@
+name: meson-gcc-c++23-no-stl
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+  pull_request:
+    branches: [ master, development, pull-request/* ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+
+  build-meson-gcc-cpp23-no-stl:
+    name: Meson GCC C++23 Linux - No STL
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v6
+
+    - name: Install Meson
+      run: sudo apt-get install -y meson
+
+    - name: Configure
+      run: |
+        export CC=gcc
+        export CXX=g++
+        meson setup builddir -Duse_stl=false -Dcpp_std=c++23
+
+    - name: Build
+      run: meson compile -C builddir
+
+    - name: Run tests
+      run: meson test -C builddir -v

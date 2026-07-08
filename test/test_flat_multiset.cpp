@@ -729,6 +729,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_excess)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.emplace(N10), etl::flat_multiset_full);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());

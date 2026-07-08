@@ -27,10 +27,14 @@ if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 endif()
 
+# Override the compile rule to use -fsyntax-only instead of -c,
+# since this project only checks syntax and doesn't produce object files.
+set(CMAKE_CXX_COMPILE_OBJECT "<CMAKE_CXX_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -fsyntax-only <SOURCE>")
+
 add_library(tests OBJECT)
 target_compile_definitions(tests PRIVATE __STDC_LIMIT_MACROS __STDC_CONSTANT_MACROS __STDC_FORMAT_MACROS)
 target_include_directories(tests PRIVATE "")
-target_include_directories(tests SYSTEM PRIVATE ../../include)
+target_include_directories(tests PRIVATE ../../include)
 set_target_properties(tests PROPERTIES
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS ON
@@ -38,7 +42,6 @@ set_target_properties(tests PROPERTIES
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 target_compile_options(tests
 	    PRIVATE
-		-fsyntax-only
 		-pedantic-errors
 		-Werror
 		-Wextra-semi
@@ -47,7 +50,6 @@ endif ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 target_compile_options(tests
 	    PRIVATE
-		-fsyntax-only
 		-pedantic-errors
 		-Werror
 		-Wextra-semi
@@ -59,9 +61,11 @@ endif ()
 if (ETL_CXX_STANDARD MATCHES "98")
 	message(STATUS "Compiling for C++98")
     set_property(TARGET tests PROPERTY CXX_STANDARD 98)
+    target_compile_options(tests PRIVATE -Wno-long-long -Wno-pedantic)
 elseif (ETL_CXX_STANDARD MATCHES "03")
 	message(STATUS "Compiling for C++03 (C++98)")
 	set_property(TARGET tests PROPERTY CXX_STANDARD 98)
+	target_compile_options(tests PRIVATE -Wno-long-long -Wno-pedantic)
 elseif (ETL_CXX_STANDARD MATCHES "11")
 	message(STATUS "Compiling for C++11")
 	set_property(TARGET tests PROPERTY CXX_STANDARD 11)
@@ -74,9 +78,25 @@ elseif (ETL_CXX_STANDARD MATCHES "17")
 elseif (ETL_CXX_STANDARD MATCHES "20")
 	message(STATUS "Compiling for C++20")
 	set_property(TARGET tests PROPERTY CXX_STANDARD 20)
+elseif (ETL_CXX_STANDARD MATCHES "23")
+	if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.20")
+		message(STATUS "Compiling for C++23")
+		set_property(TARGET tests PROPERTY CXX_STANDARD 23)
+	else()
+		message(STATUS "CMake version ${CMAKE_VERSION} does not support C++23, falling back to C++20")
+		set_property(TARGET tests PROPERTY CXX_STANDARD 20)
+	endif()
+elseif (ETL_CXX_STANDARD MATCHES "26")
+	if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.25")
+		message(STATUS "Compiling for C++26")
+		set_property(TARGET tests PROPERTY CXX_STANDARD 26)
+	else()
+		message(STATUS "CMake version ${CMAKE_VERSION} does not support C++26, falling back to C++23")
+		set_property(TARGET tests PROPERTY CXX_STANDARD 23)
+	endif()
 else()
-	message(STATUS "Compiling for C++23")
-	set_property(TARGET tests PROPERTY CXX_STANDARD 23)
+	message(STATUS "Compiling for C++17")
+	set_property(TARGET tests PROPERTY CXX_STANDARD 17)
 endif()
 
 target_sources(tests PRIVATE
@@ -115,6 +135,10 @@ target_sources(tests PRIVATE
 		checksum.h.t.cpp
 		chrono.h.t.cpp
 		concepts.h.t.cpp
+		const_map.h.t.cpp
+		const_multimap.h.t.cpp
+		const_multiset.h.t.cpp
+		const_set.h.t.cpp
 		circular_buffer.h.t.cpp
 		circular_iterator.h.t.cpp
 		closure.h.t.cpp
@@ -163,6 +187,7 @@ target_sources(tests PRIVATE
 		crc32_q.h.t.cpp
 		crc32_xfer.h.t.cpp
 		crc64_ecma.h.t.cpp
+		crc64_iso.h.t.cpp
 		crc8_ccitt.h.t.cpp
 		crc8_cdma2000.h.t.cpp
 		crc8_darc.h.t.cpp
@@ -174,6 +199,7 @@ target_sources(tests PRIVATE
 		crc8_j1850_zero.h.t.cpp
 		crc8_maxim.h.t.cpp
 		crc8_opensafety.h.t.cpp
+		crc8_nrsc5.h.t.cpp
 		crc8_rohc.h.t.cpp
 		crc8_wcdma.h.t.cpp
 		cyclic_value.h.t.cpp
@@ -215,11 +241,14 @@ target_sources(tests PRIVATE
 		histogram.h.t.cpp
 		ihash.h.t.cpp
 		imemory_block_allocator.h.t.cpp
+		index_of_type.h.t.cpp
 		indirect_vector.h.t.cpp
+		infinite_loop.h.t.cpp
 		initializer_list.h.t.cpp
 		inplace_function.h.t.cpp
 		instance_count.h.t.cpp
 		integral_limits.h.t.cpp
+		intrusive_avl_tree.h.t.cpp
 		intrusive_forward_list.h.t.cpp
 		intrusive_links.h.t.cpp
 		intrusive_list.h.t.cpp
@@ -239,6 +268,7 @@ target_sources(tests PRIVATE
 		list.h.t.cpp
 		log.h.t.cpp
 		macros.h.t.cpp
+		manchester.h.t.cpp
 		map.h.t.cpp
 		math.h.t.cpp
 		math_constants.h.t.cpp
@@ -284,6 +314,7 @@ target_sources(tests PRIVATE
 		poly_span.h.t.cpp
 		pool.h.t.cpp
 		power.h.t.cpp
+		print.h.t.cpp
 		priority_queue.h.t.cpp
 		pseudo_moving_average.h.t.cpp
 		quantize.h.t.cpp
@@ -295,6 +326,7 @@ target_sources(tests PRIVATE
 		queue_spsc_locked.h.t.cpp
 		radix.h.t.cpp
 		random.h.t.cpp
+		ranges.h.t.cpp
 		ratio.h.t.cpp
 		reference_counted_message.h.t.cpp
 		reference_counted_message_pool.h.t.cpp
@@ -306,6 +338,7 @@ target_sources(tests PRIVATE
 		rescale.h.t.cpp
 		result.h.t.cpp
 		rms.h.t.cpp
+		rounded_integral_division.h.t.cpp
 		scaled_rounding.h.t.cpp
 		scheduler.h.t.cpp
 		set.h.t.cpp
@@ -337,6 +370,7 @@ target_sources(tests PRIVATE
 		to_wstring.h.t.cpp
 		tuple.h.t.cpp
 		type_def.h.t.cpp
+		type_list.h.t.cpp
 		type_lookup.h.t.cpp
 		type_select.h.t.cpp
 		type_traits.h.t.cpp

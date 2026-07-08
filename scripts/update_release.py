@@ -1,10 +1,10 @@
-  
+
 import shutil
 import os
 
 # Get the current path of the script
 script_dir = os.path.dirname(os.path.abspath(__file__))
-  
+
 # Get the root folder of the ETL
 etl_dir = os.path.abspath(os.path.join(script_dir, os.pardir))
 
@@ -13,6 +13,9 @@ include_dir = os.path.join(etl_dir, 'include')
 
 # Get the ETL headers folder
 headers_dir = os.path.join(include_dir, 'etl')
+
+# Get the Hugo folder
+hugo_dir = os.path.join(etl_dir, 'hugo')
 
 # Get the Arduino folder
 arduino_dir = os.path.join(etl_dir, 'arduino')
@@ -54,6 +57,7 @@ def create_arduino_variant():
   print('etl_dir                  = ', etl_dir)
   print('include_dir              = ', include_dir)
   print('headers_dir              = ', headers_dir)
+  print('hugo_dir                 = ', hugo_dir)
   print('arduino_dir              = ', arduino_dir)
   print('examples_dir             = ', arduino_examples_dir)
   print('common_dir               = ', common_dir)
@@ -121,7 +125,7 @@ def get_version():
   version_file = os.path.join(etl_dir, 'version.txt')
   print('')
   print('version_file = ', version_file)
-    
+
   with open(version_file) as f:
     version = f.read().splitlines()
 
@@ -135,10 +139,10 @@ def update_version_h():
   print('Creating version.h')
 
   version_h = os.path.join(headers_dir, 'version.h')
-  
+
   with open(version_h) as f:
     text = f.read().splitlines()
-  
+
   search_major = '#define ETL_VERSION_MAJOR '
   search_minor = '#define ETL_VERSION_MINOR '
   search_patch = '#define ETL_VERSION_PATCH '
@@ -148,19 +152,19 @@ def update_version_h():
   length_patch = len(search_patch)
 
   for i in range(len(text) - 1):
-    
+
     index = text[i].find(search_major)
     if index != -1:
       text[i] = text[i][index:length_major] + major_version
       print(text[i])
-    
+
     index = text[i].find(search_minor)
     if index != -1:
       text[i] = text[i][index:length_minor] + minor_version
       print(text[i])
 
     index = text[i].find(search_patch)
-    if index != -1:     
+    if index != -1:
       text[i] = text[i][index:length_patch] + patch_version
       print(text[i])
 
@@ -170,16 +174,30 @@ def update_version_h():
       f.write('\n')
 
 #------------------------------------------------------------------------------
+def update_hugo_version_txt():
+  print('')
+  print('Copying version.txt to hugo/assets')
+
+  src = os.path.join(etl_dir,  'version.txt')
+  dst = os.path.join(hugo_dir, 'assets', 'version.txt')
+
+  try:
+      shutil.copyfile(src, dst)
+      print("Copy successful!")
+  except PermissionError:
+      print(f"Permission denied. Check if the file is open or locked.")
+
+#------------------------------------------------------------------------------
 def update_library_json(filename):
   print('')
   print('Creating %s' % filename)
-  
+
   with open(filename) as f:
     text = f.read().splitlines()
-  
+
   search = 'version'
 
-  for i in range(len(text) - 1):   
+  for i in range(len(text) - 1):
     index = text[i].find(search)
     if index != -1:
       text[i] = '  \"version\": \"' + full_version + '\",'
@@ -196,10 +214,10 @@ def update_library_properties(filename):
 
   with open(filename, 'r') as f:
     text = f.read().splitlines()
-  
+
   search = 'version'
 
-  for i in range(len(text) - 1):   
+  for i in range(len(text) - 1):
     index = text[i].find(search)
     if index != -1:
       text[i] = 'version=' + full_version
@@ -224,7 +242,8 @@ def update_versions():
   print("Version = %s.%s.%s" % (major_version, minor_version, patch_version ))
 
   update_version_h()
-  
+  update_hugo_version_txt()
+
   update_library_json(os.path.join(etl_dir,     'library.json'))
   update_library_json(os.path.join(arduino_dir, 'library-arduino.json'))
 

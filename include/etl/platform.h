@@ -103,6 +103,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Helper macros for ETL_NO_STD_MUTEX.
+#if defined(ETL_NO_STD_MUTEX)
+  #define ETL_USING_STD_MUTEX     0
+  #define ETL_NOT_USING_STD_MUTEX 1
+#else
+  #define ETL_USING_STD_MUTEX     1
+  #define ETL_NOT_USING_STD_MUTEX 0
+#endif
+
+//*************************************
 // Helper macros for ETL_STLPORT.
 #if defined(ETL_STLPORT)
   #define ETL_USING_STLPORT     1
@@ -162,6 +172,19 @@ SOFTWARE.
 #else
   #define ETL_USING_FORMAT_FLOATING_POINT     1
   #define ETL_NOT_USING_FORMAT_FLOATING_POINT 0
+#endif
+
+//*************************************
+// Helper macro for ETL_FORMAT_NO_LONG_DOUBLE_MATH.
+// Define ETL_FORMAT_NO_LONG_DOUBLE_MATH if the toolchain does not provide
+// long double math functions (log10l, floorl, powl, modfl, roundl).
+// When defined, long double arguments are cast to double for math operations.
+#if defined(ETL_FORMAT_NO_LONG_DOUBLE_MATH)
+  #define ETL_USING_FORMAT_LONG_DOUBLE_MATH     0
+  #define ETL_NOT_USING_FORMAT_LONG_DOUBLE_MATH 1
+#else
+  #define ETL_USING_FORMAT_LONG_DOUBLE_MATH     1
+  #define ETL_NOT_USING_FORMAT_LONG_DOUBLE_MATH 0
 #endif
 
 //*************************************
@@ -490,6 +513,18 @@ SOFTWARE.
 #endif
 
 //*************************************
+// C++26
+#if defined(__has_cpp_attribute)
+  #if __has_cpp_attribute(indeterminate)
+    #define ETL_INDETERMINATE [[indeterminate]]
+  #else
+    #define ETL_INDETERMINATE
+  #endif
+#else
+  #define ETL_INDETERMINATE
+#endif
+
+//*************************************
 // Determine if the ETL can use char8_t type.
 #if ETL_NO_SMALL_CHAR_SUPPORT
   #include "private/diagnostic_cxx_20_compat_push.h"
@@ -567,14 +602,14 @@ typedef uint_least32_t char32_t;
   #define ETL_HAS_ATOMIC                  0
   #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0
 #else
-  #if ((ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) \
-       || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
+  #if ((ETL_USING_CPP11 && ETL_USING_STL) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) \
+       || defined(ETL_COMPILER_CLANG))
     #define ETL_HAS_ATOMIC 1
   #else
     #define ETL_HAS_ATOMIC 0
   #endif
-  #if ((ETL_USING_CPP17 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) \
-       || defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG))
+  #if ((ETL_USING_CPP17 && ETL_USING_STL) || defined(ETL_COMPILER_ARM5) || defined(ETL_COMPILER_ARM6) || defined(ETL_COMPILER_GCC) \
+       || defined(ETL_COMPILER_CLANG))
     #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 1
   #else
     #define ETL_HAS_ATOMIC_ALWAYS_LOCK_FREE 0
@@ -650,6 +685,7 @@ namespace etl
     static ETL_CONSTANT bool using_cpp17                      = (ETL_USING_CPP17 == 1);
     static ETL_CONSTANT bool using_cpp20                      = (ETL_USING_CPP20 == 1);
     static ETL_CONSTANT bool using_cpp23                      = (ETL_USING_CPP23 == 1);
+    static ETL_CONSTANT bool using_cpp26                      = (ETL_USING_CPP26 == 1);
     static ETL_CONSTANT bool using_gcc_compiler               = (ETL_USING_GCC_COMPILER == 1);
     static ETL_CONSTANT bool using_microsoft_compiler         = (ETL_USING_MICROSOFT_COMPILER == 1);
     static ETL_CONSTANT bool using_arm5_compiler              = (ETL_USING_ARM5_COMPILER == 1);
@@ -697,6 +733,9 @@ namespace etl
     static ETL_CONSTANT bool has_chrono_literals_microseconds = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
     static ETL_CONSTANT bool has_chrono_literals_nanoseconds  = (ETL_HAS_CHRONO_LITERALS_DURATION == 1);
     static ETL_CONSTANT bool has_std_byteswap                 = (ETL_HAS_STD_BYTESWAP == 1);
+    static ETL_CONSTANT bool has_std_is_virtual_base_of       = (ETL_HAS_STD_IS_VIRTUAL_BASE_OF == 1);
+    static ETL_CONSTANT bool has_std_trivially_relocatable    = (ETL_HAS_STD_TRIVIALLY_RELOCATABLE == 1);
+    static ETL_CONSTANT bool has_std_atomic_min_max           = (ETL_HAS_STD_ATOMIC_MIN_MAX == 1);
     static ETL_CONSTANT bool has_noexcept_function_type       = (ETL_HAS_NOEXCEPT_FUNCTION_TYPE == 1);
 
     // Is...

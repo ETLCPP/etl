@@ -246,6 +246,36 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      Compare_DataNDC compare_data;
+      DataNDC         data;
+
+      data.emplace(N0);
+      compare_data.insert(N0);
+
+      bool isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+
+      data.emplace(N2);
+      compare_data.insert(N2);
+
+      isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+
+      data.emplace(N1);
+      compare_data.insert(N1);
+
+      isEqual = std::equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+
+      CHECK(std::is_sorted(data.begin(), data.end()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_value_multiple)
     {
       Compare_DataNDC compare_data;

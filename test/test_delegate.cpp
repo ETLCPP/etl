@@ -373,6 +373,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_is_valid_after_init_empty_braces)
+    {
+      etl::delegate<void(void)> d = {};
+
+      CHECK_FALSE(d.is_valid());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_is_valid_after_assign_empty_braces)
+    {
+      auto lambda = [] {
+      };
+
+      etl::delegate<void(void)> d(lambda);
+
+      CHECK_TRUE(d.is_valid());
+      d = {};
+      CHECK_FALSE(d.is_valid());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_free_void)
     {
       auto d = etl::delegate<void(void)>::create<free_void>();
@@ -2102,6 +2123,48 @@ namespace
       // static_assert fires
       auto d = etl::delegate<void(int&&)>::create(bad);
       (void)d;
+    }
+  #endif
+
+  #if ETL_USING_CPP14
+    //*************************************************************************
+    // Verify that constructing / creating / setting / assigning a delegate
+    // from a free function pointer is usable in a constant expression.
+    //*************************************************************************
+    TEST(test_constexpr_function_ptr_construction)
+    {
+      using delegate_type = etl::delegate<void(void)>;
+
+      constexpr delegate_type d1(&free_void);
+      constexpr delegate_type d2 = delegate_type::create(&free_void);
+
+      static_assert(d1 == d2, "constexpr-constructed delegates should compare equal");
+
+    #if ETL_USING_CPP20
+      // Exercise constexpr set() and operator= in a constant-evaluated
+      // mutating context. Requires C++20 because the underlying union must
+      // switch its active member, which is only permitted in constant
+      // expressions from C++20 onwards (P1330R0).
+      constexpr auto make_via_set = []() constexpr
+      {
+        delegate_type d;
+        d.set(&free_void);
+        return d;
+      };
+
+      constexpr auto make_via_assign = []() constexpr
+      {
+        delegate_type d;
+        d = &free_void;
+        return d;
+      };
+
+      constexpr delegate_type d3 = make_via_set();
+      constexpr delegate_type d4 = make_via_assign();
+
+      static_assert(d3 == d1, "");
+      static_assert(d4 == d1, "");
+    #endif
     }
   #endif
   }

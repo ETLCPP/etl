@@ -1072,5 +1072,30 @@ namespace
 
       CHECK(!is_equal);
     }
+
+    //*************************************************************************
+    TEST(test_move_assignment_actually_moves)
+    {
+      DataM data;
+      data.push(ItemM("A"));
+      data.push(ItemM("B"));
+      data.push(ItemM("C"));
+
+      DataM data2;
+      data2 = std::move(data);
+
+      CHECK_EQUAL(3U, data2.size());
+
+      // If the move was correct, data2 should hold the moved-to values
+      CHECK_EQUAL("A", data2[0].value);
+      CHECK_EQUAL("B", data2[1].value);
+      CHECK_EQUAL("C", data2[2].value);
+
+      // Original should be moved-from (empty strings with move-only type)
+      for (size_t i = 0; i < data.size(); ++i)
+      {
+        CHECK(data[i].value.empty());
+      }
+    }
   }
 } // namespace

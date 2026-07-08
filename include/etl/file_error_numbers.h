@@ -111,4 +111,5 @@ SOFTWARE.
 #define ETL_SIGNAL_FILE_ID                         "78"
 #define ETL_FORMAT_FILE_ID                         "79"
 #define ETL_INPLACE_FUNCTION_FILE_ID               "80"
+#define ETL_INTRUSIVE_AVL_TREE_FILE_ID             "81"
 #endif

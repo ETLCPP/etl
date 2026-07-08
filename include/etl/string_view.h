@@ -589,9 +589,9 @@ namespace etl
         return npos;
       }
 
-      position = etl::min(position, size());
+      position = etl::min(position, size() - view.size());
 
-      const_iterator iposition = etl::find_end(begin(), begin() + position, view.begin(), view.end());
+      const_iterator iposition = etl::find_end(begin(), begin() + position + view.size(), view.begin(), view.end());
 
       if (iposition == end())
       {

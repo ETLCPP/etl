@@ -228,7 +228,7 @@ namespace etl
     }
 
     /// Copy constructor
-    pair(const pair<T1, T2>& other)
+    ETL_CONSTEXPR pair(const pair<T1, T2>& other)
       : first(other.first)
       , second(other.second)
     {
@@ -254,16 +254,16 @@ namespace etl
 
     /// Constructing from std::pair
     template <typename U1, typename U2>
-    pair(const std::pair<U1, U2>& other)
+    ETL_CONSTEXPR pair(const std::pair<U1, U2>& other)
       : first(other.first)
       , second(other.second)
     {
     }
 
   #if ETL_USING_CPP11
-    /// Constructing to etl::pair
+    /// Constructing from std::pair (move)
     template <typename U1, typename U2>
-    pair(std::pair<U1, U2>&& other)
+    ETL_CONSTEXPR pair(std::pair<U1, U2>&& other)
       : first(etl::forward<U1>(other.first))
       , second(etl::forward<U2>(other.second))
     {
@@ -377,7 +377,7 @@ namespace etl
   inline bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
 #include "private/diagnostic_float_equal_push.h"
-    return (a.first == b.first) && !(a.second < b.second) && !(a.second > b.second);
+    return (a.first == b.first) && (a.second == b.second);
 #include "private/diagnostic_pop.h"
   }
 
@@ -892,13 +892,13 @@ namespace etl
   template <typename T>
   struct coordinate_2d
   {
-    coordinate_2d()
+    ETL_CONSTEXPR coordinate_2d()
       : x(T(0))
       , y(T(0))
     {
     }
 
-    coordinate_2d(T x_, T y_)
+    ETL_CONSTEXPR coordinate_2d(T x_, T y_)
       : x(x_)
       , y(y_)
     {

@@ -34,7 +34,6 @@ SOFTWARE.
 ///\ingroup string
 
 #include "platform.h"
-#include "static_assert.h"
 #include "type_traits.h"
 #include "utility.h"
 
@@ -216,6 +215,7 @@ namespace etl
       , boolalpha_(false)
       , show_base_(false)
       , fill_(typename TString::value_type(' '))
+      , scientific_(false)
     {
     }
 
@@ -223,7 +223,7 @@ namespace etl
     /// Constructor.
     //***************************************************************************
     ETL_CONSTEXPR basic_format_spec(uint_least8_t base__, uint_least8_t width__, uint_least8_t precision__, bool upper_case__, bool left_justified__,
-                                bool boolalpha__, bool show_base__, typename TString::value_type fill__) ETL_NOEXCEPT
+                                bool boolalpha__, bool show_base__, typename TString::value_type fill__, bool scientific__ = false) ETL_NOEXCEPT
       : base_(base__)
       , width_(width__)
       , precision_(precision__)
@@ -232,6 +232,7 @@ namespace etl
       , boolalpha_(boolalpha__)
       , show_base_(show_base__)
       , fill_(fill__)
+      , scientific_(scientific__)
     {
     }
 
@@ -247,6 +248,7 @@ namespace etl
       left_justified_ = false;
       boolalpha_      = false;
       show_base_      = false;
+      scientific_     = false;
       fill_           = typename TString::value_type(' ');
     }
 
@@ -562,13 +564,40 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Sets the scientific flag.
+    /// \return A reference to the basic_format_spec.
+    //***************************************************************************
+    ETL_CONSTEXPR14 basic_format_spec& scientific(bool b) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      scientific_ = b;
+      return *this;
+    }
+
+#if ETL_USING_CPP11
+    /// @overload
+    ETL_CONSTEXPR14 basic_format_spec&& scientific(bool b) ETL_RVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      scientific_ = b;
+      return etl::move(*this);
+    }
+#endif
+
+    //***************************************************************************
+    /// Gets the scientific flag.
+    //***************************************************************************
+    ETL_CONSTEXPR bool is_scientific() const ETL_NOEXCEPT
+    {
+      return scientific_;
+    }
+
+    //***************************************************************************
     /// Equality operator.
     //***************************************************************************
     ETL_CONSTEXPR friend bool operator==(const basic_format_spec& lhs, const basic_format_spec& rhs)
     {
       return (lhs.base_ == rhs.base_) && (lhs.width_ == rhs.width_) && (lhs.precision_ == rhs.precision_) && (lhs.upper_case_ == rhs.upper_case_)
              && (lhs.left_justified_ == rhs.left_justified_) && (lhs.boolalpha_ == rhs.boolalpha_) && (lhs.show_base_ == rhs.show_base_)
-             && (lhs.fill_ == rhs.fill_);
+             && (lhs.fill_ == rhs.fill_) && (lhs.scientific_ == rhs.scientific_);
     }
 
     //***************************************************************************
@@ -589,6 +618,7 @@ namespace etl
     bool                         boolalpha_;
     bool                         show_base_;
     typename TString::value_type fill_;
+    bool                         scientific_;
   };
 } // namespace etl
 

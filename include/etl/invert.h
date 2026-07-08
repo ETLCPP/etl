@@ -35,8 +35,6 @@ SOFTWARE.
 #include "functional.h"
 #include "limits.h"
 
-#include <stdint.h>
-
 namespace etl
 {
   //***************************************************************************
@@ -50,7 +48,7 @@ namespace etl
     //*****************************************************************
     // Constructor.
     //*****************************************************************
-    invert()
+    ETL_CONSTEXPR invert()
       : offset(TInput(0))
       , minuend((etl::numeric_limits<TInput>::is_signed) ? TInput(0) : etl::numeric_limits<TInput>::max())
     {
@@ -59,7 +57,7 @@ namespace etl
     //*****************************************************************
     // Constructor.
     //*****************************************************************
-    invert(TInput offset_, TInput minuend_)
+    ETL_CONSTEXPR invert(TInput offset_, TInput minuend_)
       : offset(offset_)
       , minuend(minuend_)
     {
@@ -68,7 +66,7 @@ namespace etl
     //*****************************************************************
     // operator ()
     //*****************************************************************
-    TInput operator()(TInput value) const
+    ETL_CONSTEXPR TInput operator()(TInput value) const
     {
       return minuend - (value - offset);
     }

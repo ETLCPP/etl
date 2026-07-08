@@ -103,10 +103,10 @@ namespace
   //   return (lhs.k < rhs.k);
   // }
 
+#include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_set)
   {
     //*************************************************************************
-#include "etl/private/diagnostic_null_dereference_push.h"
     template <typename T1, typename T2>
     bool Check_Equal(T1 begin1, T1 end1, T2 begin2)
     {
@@ -123,7 +123,6 @@ namespace
 
       return true;
     }
-#include "etl/private/diagnostic_pop.h"
 
     //*************************************************************************
     struct SetupFixture
@@ -560,6 +559,76 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      Compare_Data compare_data;
+      Data         data;
+
+      auto data_result = data.emplace(0);
+      compare_data.insert(0);
+
+      CHECK(data_result.first != data.end());
+      CHECK(*data_result.first == 0);
+      CHECK(data_result.second == true);
+
+      // Duplicate
+      data_result = data.emplace(0);
+      CHECK(*data_result.first == 0);
+      CHECK(data_result.second == false);
+
+      data.emplace(2);
+      compare_data.insert(2);
+
+      data.emplace(1);
+      compare_data.insert(1);
+
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(isEqual);
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_excess)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.emplace(99), etl::set_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_when_full)
+    {
+      Data                                   data;
+      ETL_OR_STD::pair<Data::iterator, bool> data_result;
+
+      for (size_t i = 0; i < MAX_SIZE; ++i)
+      {
+        data.emplace(static_cast<int>(i));
+      }
+
+      CHECK(data.full());
+
+      // Emplacing a new key when the set is full should throw etl::set_full.
+      CHECK_THROW(data.emplace(static_cast<int>(MAX_SIZE)), etl::set_full);
+
+      // Emplacing an existing (duplicate) key when the set is full should not
+      // throw; it should return an iterator to the existing element, matching
+      // the behaviour of insert().
+      for (size_t i = 0; i < MAX_SIZE; ++i)
+      {
+        data_result = data.emplace(static_cast<int>(i));
+
+        CHECK(data_result.first != data.end());
+        CHECK_EQUAL(static_cast<int>(i), *data_result.first);
+        CHECK(data_result.second == false);
+      }
+
+      // The set must be unchanged.
+      CHECK_EQUAL(MAX_SIZE, data.size());
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.key_comp()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_moved_value)
     {
       DataM data;
@@ -595,8 +664,8 @@ namespace
 
       for (size_t i = 0; i < MAX_SIZE; ++i)
       {
-        data_result    = data.insert(i);
-        compare_result = compare_data.insert(i);
+        data_result    = data.insert(static_cast<int>(i));
+        compare_result = compare_data.insert(static_cast<int>(i));
 
         // Check that both return successful return results
         CHECK_EQUAL(*data_result.first, *compare_result.first);
@@ -609,8 +678,8 @@ namespace
       // not throw error
       for (size_t i = 0; i < MAX_SIZE; ++i)
       {
-        data_result    = data.insert(i);
-        compare_result = compare_data.insert(i);
+        data_result    = data.insert(static_cast<int>(i));
+        compare_result = compare_data.insert(static_cast<int>(i));
 
         // Check that both return successful return results
         CHECK_EQUAL(*data_result.first, *compare_result.first);
@@ -1443,4 +1512,5 @@ namespace
       } while (std::next_permutation(permutation.begin(), permutation.end()));
     }
   }
+#include "etl/private/diagnostic_pop.h"
 } // namespace

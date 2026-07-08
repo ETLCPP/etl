@@ -486,6 +486,18 @@ namespace etl
     }
 
     //*********************************************************************
+    /// Emplaces a value to the reference_flat_multimap.
+    /// As the reference_flat_multimap stores references to externally owned
+    /// objects, the value is not constructed in place but inserted by
+    /// reference.
+    ///\param value    The value to emplace.
+    //*********************************************************************
+    ETL_OR_STD::pair<iterator, bool> emplace(value_type& value)
+    {
+      return insert(value);
+    }
+
+    //*********************************************************************
     /// Inserts a value to the flat_multi.
     /// If asserts or exceptions are enabled, emits flat_map_full if the
     /// flat_map is already full.

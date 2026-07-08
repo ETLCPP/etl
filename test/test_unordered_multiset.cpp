@@ -40,6 +40,7 @@ SOFTWARE.
 
 #include "data.h"
 
+#include "etl/char_traits.h"
 #include "etl/checksum.h"
 #include "etl/unordered_multiset.h"
 
@@ -560,6 +561,21 @@ namespace
       DataNDC data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::unordered_multiset_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      DataM data;
+
+      auto result1 = data.emplace(ItemM(1));
+      auto result2 = data.emplace(ItemM(2));
+      auto result3 = data.emplace(ItemM(1));
+
+      CHECK(result1 != data.end());
+      CHECK(result2 != data.end());
+      CHECK(result3 != data.end());
+      CHECK_EQUAL(3U, data.size());
     }
 
     //*************************************************************************

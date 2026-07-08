@@ -28,6 +28,8 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/algorithm.h"
+#include "etl/array.h"
 #include "etl/ranges.h"
 #include "etl/vector.h"
 
@@ -157,6 +159,7 @@ namespace std
 
 namespace
 {
+    #include "etl/private/diagnostic_null_dereference_push.h"
   SUITE(test_ranges)
   {
     //*************************************************************************
@@ -1563,6 +1566,53 @@ namespace
       CHECK(it == tv.end());
     }
 
+    TEST(test_ranges_transform_view_element_type_is_function_result)
+    {
+      // transform_view must be type-changing: the element type is the result of the
+      // transform function, not the underlying range's element type.
+      auto to_double = [](int i) -> double
+      {
+        return i * 1.5;
+      };
+
+      etl::vector<int, 4> v_in{1, 2, 3, 4};
+
+      auto tv = v_in | etl::views::transform(to_double);
+
+      using element_type = etl::remove_cvref_t<decltype(*tv.begin())>;
+      static_assert(etl::is_same<double, element_type>::value, "transform element should be the function result type");
+
+      // Fractional results must survive (they would be truncated to int by the old behaviour).
+      etl::vector<double, 4> v_out;
+      for (auto x : tv)
+      {
+        v_out.push_back(x);
+      }
+
+      CHECK_CLOSE(1.5, v_out[0], 0.001);
+      CHECK_CLOSE(3.0, v_out[1], 0.001);
+      CHECK_CLOSE(4.5, v_out[2], 0.001);
+      CHECK_CLOSE(6.0, v_out[3], 0.001);
+    }
+
+    TEST(test_ranges_transform_view_yields_range_then_join)
+    {
+      // A transform that returns a range, joined together, only compiles when the
+      // transform element type is the range returned by the function.
+      etl::array<int, 4> samples = {10, 20, 30, 40};
+      etl::array<int, 8> dst     = {0, 0, 0, 0, 0, 0, 0, 0};
+
+      auto stereo = samples | etl::views::transform([](int s) { return etl::views::repeat(s, 2); }) | etl::views::join;
+
+      etl::copy(stereo.begin(), stereo.end(), dst.begin());
+
+      etl::array<int, 8> expected = {10, 10, 20, 20, 30, 30, 40, 40};
+      for (size_t i = 0; i < dst.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], dst[i]);
+      }
+    }
+
     TEST(test_ranges_transform_view_iterator_increment)
     {
       auto square = [](int i) -> int
@@ -2176,6 +2226,36 @@ namespace
       CHECK_EQUAL(v_out_expected, v_out);
     }
 
+    TEST(test_ranges_filter_view_non_const_reference_type)
+    {
+      // filter must yield mutable element references when the underlying range
+      // is non-const, matching std::ranges::filter_view.
+      std::vector<int> v  = {1, 2, 3, 4};
+      auto             fv = v | etl::views::filter([](int i) { return i % 2 == 0; });
+
+      using element_ref = decltype(*fv.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "filter element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "filter element should be mutable");
+
+      *fv.begin() = 99; // first even element is v[1]
+      CHECK_EQUAL(99, v[1]);
+    }
+
+    TEST(test_ranges_filter_view_modify_elements)
+    {
+      // Double every even element in place; odd elements are left untouched.
+      std::vector<int> v = {1, 2, 3, 4, 5, 6};
+
+      for (auto& element : v | etl::views::filter([](int i) { return i % 2 == 0; }))
+      {
+        element *= 10;
+      }
+
+      std::vector<int> expected{1, 20, 3, 40, 5, 60};
+      CHECK_EQUAL(expected, v);
+    }
+
     TEST(test_ranges_join_functional)
     {
       using range_type = etl::vector<int, 3>;
@@ -2431,6 +2511,101 @@ namespace
       CHECK_EQUAL(result, v_expected);
     }
 
+    TEST(test_ranges_join_with_view_yields_range_then_join_with)
+    {
+      // join_with must support inner ranges whose iterators yield prvalues
+      // (e.g. repeat_view produced by a type-changing transform), and its declared
+      // reference type must stay consistent with what operator* actually yields.
+      etl::array<int, 3> samples = {10, 20, 30};
+      etl::array<int, 8> dst     = {0, 0, 0, 0, 0, 0, 0, 0};
+
+      auto stereo = samples | etl::views::transform([](int s) { return etl::views::repeat(s, 2); }) | etl::views::join_with(0);
+
+      using iterator_type      = decltype(stereo.begin());
+      using declared_reference = typename iterator_type::reference;
+      using actual_deref       = decltype(*etl::declval<iterator_type&>());
+      static_assert(etl::is_same<declared_reference, actual_deref>::value, "join_with_iterator::reference must match operator*");
+
+      etl::copy(stereo.begin(), stereo.end(), dst.begin());
+
+      etl::array<int, 8> expected = {10, 10, 0, 20, 20, 0, 30, 30};
+      for (size_t i = 0; i < dst.size(); ++i)
+      {
+        CHECK_EQUAL(expected[i], dst[i]);
+      }
+    }
+
+    TEST(test_ranges_join_with_writable_reference)
+    {
+      // For a mutable range pattern, join_with must yield mutable references and be
+      // writable, matching std::ranges::join_with_view (reference is the common
+      // reference of the inner range's and the pattern's references: int&).
+      etl::vector<etl::vector<int, 3>, 2> v{{1, 2, 3}, {4, 5, 6}};
+      etl::vector<int, 2>                 pattern{0};
+
+      auto jv = etl::views::join_with(v, pattern);
+
+      using element_ref = decltype(*jv.begin());
+      static_assert(etl::is_same<element_ref, int&>::value, "join_with element should be a non-const reference for a mutable range pattern");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "join_with element should be mutable");
+
+      // Sequence: 1, 2, 3, [0], 4, 5, 6
+      auto it = jv.begin();
+      *it     = 99; // first inner element -> v[0][0]
+      CHECK_EQUAL(99, v[0][0]);
+
+      ++it; // 2
+      ++it; // 3
+      ++it; // pattern separator
+      *it = 77;
+      CHECK_EQUAL(77, pattern[0]);
+    }
+
+    TEST(test_ranges_join_with_single_value_reference_is_const)
+    {
+      // A single-value pattern is backed by a value (single_view) and is therefore
+      // read as const, so the common reference degrades to const int&. (This is a
+      // minor deviation from std::ranges, where a single-element pattern is writable.)
+      etl::vector<etl::vector<int, 3>, 2> v{{1, 2, 3}, {4, 5, 6}};
+
+      auto jv = etl::views::join_with(v, 0);
+
+      using element_ref = decltype(*jv.begin());
+      static_assert(etl::is_same<element_ref, const int&>::value, "single-value join_with pattern should be read as const");
+
+      etl::vector<int, 10> out;
+      for (auto x : jv)
+      {
+        out.push_back(x);
+      }
+
+      etl::vector<int, 10> expected{1, 2, 3, 0, 4, 5, 6};
+      CHECK_EQUAL(expected, out);
+    }
+
+    TEST(test_ranges_join_with_common_value_type)
+    {
+      // When the inner range and the pattern have different (but common-convertible)
+      // element types, the element type is their common type, per
+      // [range.join.with.iterator].
+      etl::vector<etl::vector<int, 3>, 2> v{{1, 2, 3}, {4, 5, 6}};
+      etl::vector<char, 1>                pattern{char(0)};
+
+      auto jv = etl::views::join_with(v, pattern);
+
+      using element_type = etl::remove_cvref_t<decltype(*jv.begin())>;
+      static_assert(etl::is_same<int, element_type>::value, "join_with element type should be the common type of inner and pattern");
+
+      etl::vector<int, 10> out;
+      for (auto x : jv)
+      {
+        out.push_back(x);
+      }
+
+      etl::vector<int, 10> expected{1, 2, 3, 0, 4, 5, 6};
+      CHECK_EQUAL(expected, out);
+    }
+
     //*************************************************************************
     // split_view and views::split tests
     //*************************************************************************
@@ -2594,6 +2769,44 @@ namespace
         ++idx;
       }
       CHECK_EQUAL(idx, expected.size());
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_split_view_non_const_reference_type)
+    {
+      // split subranges must expose mutable element references when the
+      // underlying range is non-const, matching std::ranges::split_view.
+      std::vector<int> v_in{1, 0, 2};
+      auto             sv = etl::ranges::split_view(v_in, 0);
+
+      auto first_seg    = *sv.begin();
+      using element_ref = decltype(*first_seg.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "split element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "split element should be mutable");
+
+      *first_seg.begin() = 99;
+      CHECK_EQUAL(99, v_in[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_split_view_modify_elements)
+    {
+      // Split on 0, then negate every element of every segment in place.
+      std::vector<int> v_in{1, 2, 0, 3, 0, 4, 5};
+      auto             sv = etl::ranges::split_view(v_in, 0);
+
+      for (auto seg : sv)
+      {
+        for (auto& element : seg)
+        {
+          element = -element;
+        }
+      }
+
+      // Delimiters (the zeros) are not part of any segment and stay untouched.
+      std::vector<int> expected{-1, -2, 0, -3, 0, -4, -5};
+      CHECK_EQUAL(expected, v_in);
     }
 
     //*************************************************************************
@@ -2811,6 +3024,42 @@ namespace
       ++it;
       auto seg2 = *it;
       CHECK(seg2.empty());
+    }
+
+    TEST(test_ranges_lazy_split_view_non_const_reference_type)
+    {
+      // lazy_split inner-range elements must be mutable references when the
+      // underlying range is non-const, matching std::ranges::lazy_split_view.
+      std::vector<int> v_in{1, 2, 0, 3};
+      auto             sv = etl::ranges::lazy_split_view(v_in, 0);
+
+      auto first_seg    = *sv.begin();
+      using element_ref = decltype(*first_seg.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "lazy_split element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "lazy_split element should be mutable");
+
+      *first_seg.begin() = 99;
+      CHECK_EQUAL(99, v_in[0]);
+    }
+
+    TEST(test_ranges_lazy_split_view_modify_elements)
+    {
+      // Split lazily on 0, then double every element of every segment in place.
+      std::vector<int> v_in{1, 2, 0, 3, 0, 4};
+      auto             sv = etl::ranges::lazy_split_view(v_in, 0);
+
+      for (auto seg : sv)
+      {
+        for (auto& element : seg)
+        {
+          element *= 2;
+        }
+      }
+
+      // Delimiters (the zeros) are skipped and remain unchanged.
+      std::vector<int> expected{2, 4, 0, 6, 0, 8};
+      CHECK_EQUAL(expected, v_in);
     }
 
     TEST(test_counted)
@@ -3384,6 +3633,42 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_ranges_keys_view_alias)
+    {
+      std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
+
+      using range_t = etl::ranges::views::all_t<decltype(v)&>;
+      etl::ranges::keys_view<range_t> kv(etl::ranges::views::all(v));
+
+      auto it = kv.begin();
+      CHECK_EQUAL(10, *it);
+      ++it;
+      CHECK_EQUAL(20, *it);
+      ++it;
+      CHECK_EQUAL(30, *it);
+      ++it;
+      CHECK(it == kv.end());
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_values_view_alias)
+    {
+      std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
+
+      using range_t = etl::ranges::views::all_t<decltype(v)&>;
+      etl::ranges::values_view<range_t> vv(etl::ranges::views::all(v));
+
+      auto it = vv.begin();
+      CHECK_CLOSE(1.1, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(2.2, *it, 0.001);
+      ++it;
+      CHECK_CLOSE(3.3, *it, 0.001);
+      ++it;
+      CHECK(it == vv.end());
+    }
+
+    //*************************************************************************
     TEST(test_ranges_views_keys)
     {
       std::vector<std::pair<int, double>> v = {{10, 1.1}, {20, 2.2}, {30, 3.3}};
@@ -3488,6 +3773,39 @@ namespace
       CHECK_EQUAL('z', *it2);
       ++it2;
       CHECK(it2 == ev2.end());
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_elements_view_non_const_reference_type)
+    {
+      // elements must yield a mutable reference to the selected tuple element
+      // when the underlying range is non-const, matching std::ranges::elements_view.
+      std::vector<std::pair<int, double>> v  = {{1, 1.1}, {2, 2.2}};
+      auto                                ev = v | etl::views::keys;
+
+      using element_ref = decltype(*ev.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "elements element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "elements element should be mutable");
+
+      *ev.begin() = 99;
+      CHECK_EQUAL(99, v[0].first);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_elements_view_modify_elements)
+    {
+      // Write through the values (second element) of each pair in place.
+      std::vector<std::pair<int, int>> v = {{1, 10}, {2, 20}, {3, 30}};
+
+      for (auto& value : v | etl::views::values)
+      {
+        value += 1;
+      }
+
+      CHECK_EQUAL(11, v[0].second);
+      CHECK_EQUAL(21, v[1].second);
+      CHECK_EQUAL(31, v[2].second);
     }
 
     //*************************************************************************
@@ -3596,6 +3914,38 @@ namespace
       CHECK_EQUAL(42, etl::get<1>(*it));
       ++it;
       CHECK(it == ev.end());
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_enumerate_view_non_const_reference_type)
+    {
+      // The value element of the tuple must be a mutable reference when the
+      // underlying range is non-const, matching std::ranges::enumerate_view.
+      std::vector<int> v  = {10, 20, 30};
+      auto             ev = v | etl::views::enumerate;
+
+      using value_ref = decltype(etl::get<1>(*ev.begin()));
+
+      static_assert(etl::is_same<value_ref, int&>::value, "enumerate value element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<value_ref>>, "enumerate value element should be mutable");
+
+      etl::get<1>(*ev.begin()) = 99;
+      CHECK_EQUAL(99, v[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_enumerate_view_modify_elements)
+    {
+      // Add the index to each element in place via structured bindings.
+      std::vector<int> v = {10, 20, 30};
+
+      for (auto&& [index, value] : v | etl::views::enumerate)
+      {
+        value += static_cast<int>(index);
+      }
+
+      std::vector<int> expected{10, 21, 32};
+      CHECK_EQUAL(expected, v);
     }
 
     //*************************************************************************
@@ -3761,6 +4111,46 @@ namespace
       CHECK_EQUAL(20, etl::get<1>(*it));
       ++it;
       CHECK(it == zv.end());
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_zip_view_non_const_reference_type)
+    {
+      // Each zipped element must be a mutable reference into its source range
+      // when that range is non-const, matching std::ranges::zip_view.
+      std::vector<int>  v1 = {1, 2, 3};
+      std::vector<char> v2 = {'a', 'b', 'c'};
+      auto              zv = etl::views::zip(v1, v2);
+
+      using first_ref  = decltype(etl::get<0>(*zv.begin()));
+      using second_ref = decltype(etl::get<1>(*zv.begin()));
+
+      static_assert(etl::is_same<first_ref, int&>::value, "zip element 0 should be a non-const reference");
+      static_assert(etl::is_same<second_ref, char&>::value, "zip element 1 should be a non-const reference");
+
+      etl::get<0>(*zv.begin()) = 99;
+      etl::get<1>(*zv.begin()) = 'Z';
+      CHECK_EQUAL(99, v1[0]);
+      CHECK_EQUAL('Z', v2[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_zip_view_modify_elements)
+    {
+      // Write through both zipped ranges in place.
+      std::vector<int> v1 = {1, 2, 3};
+      std::vector<int> v2 = {10, 20, 30};
+
+      for (auto&& [a, b] : etl::views::zip(v1, v2))
+      {
+        a += 1;
+        b *= 2;
+      }
+
+      std::vector<int> expected1{2, 3, 4};
+      std::vector<int> expected2{20, 40, 60};
+      CHECK_EQUAL(expected1, v1);
+      CHECK_EQUAL(expected2, v2);
     }
 
     //*************************************************************************
@@ -4189,6 +4579,41 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_ranges_adjacent_view_non_const_reference_type)
+    {
+      // Each window element must be a mutable reference into the underlying
+      // range when it is non-const, matching std::ranges::adjacent_view.
+      std::vector<int> v  = {1, 2, 3};
+      auto             av = etl::views::adjacent<2>(v);
+
+      using first_ref  = decltype(etl::get<0>(*av.begin()));
+      using second_ref = decltype(etl::get<1>(*av.begin()));
+
+      static_assert(etl::is_same<first_ref, int&>::value, "adjacent element 0 should be a non-const reference");
+      static_assert(etl::is_same<second_ref, int&>::value, "adjacent element 1 should be a non-const reference");
+
+      etl::get<0>(*av.begin()) = 99;
+      CHECK_EQUAL(99, v[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_adjacent_view_modify_elements)
+    {
+      // Negate the first element of every adjacent pair in place. Each element
+      // 0..n-2 is the start of exactly one window; the last element is only a
+      // second member, so it is left unchanged.
+      std::vector<int> v = {1, 2, 3, 4};
+
+      for (auto&& window : etl::views::adjacent<2>(v))
+      {
+        etl::get<0>(window) = -etl::get<0>(window);
+      }
+
+      std::vector<int> expected{-1, -2, -3, 4};
+      CHECK_EQUAL(expected, v);
+    }
+
+    //*************************************************************************
     TEST(test_ranges_adjacent_transform_view_basic_sum)
     {
       std::vector<int> v = {1, 2, 3, 4, 5};
@@ -4434,6 +4859,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_ranges_chunk_view_rvalue_range_owning_view)
+    {
+      // Chunking an rvalue range stores it in an owning_view (by value).
+      // The owning_view's const begin()/end() must still yield the mutable
+      // 'iterator' rather than a 'const_iterator', otherwise instantiation fails.
+      auto cv = etl::ranges::views::chunk(std::vector<int>{1, 2, 3, 4, 5, 6, 7}, 3);
+
+      std::vector<std::vector<int>> expected{{1, 2, 3}, {4, 5, 6}, {7}};
+      size_t                        idx = 0;
+      for (auto chunk : cv)
+      {
+        std::vector<int> actual(chunk.begin(), chunk.end());
+        CHECK_EQUAL(expected[idx], actual);
+        ++idx;
+      }
+      CHECK_EQUAL(expected.size(), idx);
+    }
+
+    //*************************************************************************
     TEST(test_ranges_chunk_view_remainder)
     {
       // Range size not evenly divisible by chunk size
@@ -4619,6 +5063,81 @@ namespace
         ++idx;
       }
       CHECK_EQUAL(expected.size(), idx);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_chunk_view_non_const_reference_type)
+    {
+      // The chunk elements must expose a non-const iterator/reference when the
+      // underlying range is non-const, matching std::ranges::chunk_view.
+      std::vector<int> v  = {1, 2, 3, 4};
+      auto             cv = etl::ranges::chunk_view(v, 2);
+
+      auto first_chunk  = *cv.begin();
+      using element_ref = decltype(*first_chunk.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "chunk element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "chunk element should be mutable");
+
+      // Prove it at runtime by writing through the chunk.
+      *first_chunk.begin() = 99;
+      CHECK_EQUAL(99, v[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_chunk_view_modify_elements)
+    {
+      // Write through the chunks and verify the underlying range is mutated.
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6, 7};
+      auto             cv = etl::ranges::chunk_view(v, 3);
+
+      for (auto chunk : cv)
+      {
+        for (auto& element : chunk)
+        {
+          element *= 2;
+        }
+      }
+
+      std::vector<int> expected{2, 4, 6, 8, 10, 12, 14};
+      CHECK_EQUAL(expected, v);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_chunk_view_modify_elements_pipe)
+    {
+      // Write through chunks produced via the pipe syntax.
+      std::vector<int> v = {10, 20, 30, 40, 50};
+
+      for (auto chunk : v | etl::views::chunk(2))
+      {
+        for (auto& element : chunk)
+        {
+          element += 1;
+        }
+      }
+
+      std::vector<int> expected{11, 21, 31, 41, 51};
+      CHECK_EQUAL(expected, v);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_chunk_view_modify_elements_etl_vector)
+    {
+      // Non-const access also works with ETL containers.
+      etl::vector<int, 10> v  = {1, 2, 3, 4, 5, 6};
+      auto                 cv = etl::ranges::chunk_view(v, 2);
+
+      for (auto chunk : cv)
+      {
+        for (auto& element : chunk)
+        {
+          element = -element;
+        }
+      }
+
+      etl::vector<int, 10> expected = {-1, -2, -3, -4, -5, -6};
+      CHECK(expected == v);
     }
 
     //*************************************************************************
@@ -4819,6 +5338,43 @@ namespace
         ++idx;
       }
       CHECK_EQUAL(expected.size(), idx);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_slide_view_non_const_reference_type)
+    {
+      // A slide window must expose mutable element references when the
+      // underlying range is non-const, matching std::ranges::slide_view.
+      std::vector<int> v  = {1, 2, 3, 4};
+      auto             sv = etl::ranges::slide_view(v, 2);
+
+      auto first_window = *sv.begin();
+      using element_ref = decltype(*first_window.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "slide window element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "slide window element should be mutable");
+
+      *first_window.begin() = 99;
+      CHECK_EQUAL(99, v[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_slide_view_modify_elements)
+    {
+      // Each underlying element is the start of exactly one window, so writing
+      // through the first element of every window doubles all but the tail.
+      std::vector<int> v  = {1, 2, 3, 4, 5};
+      auto             sv = etl::ranges::slide_view(v, 2);
+
+      for (auto window : sv)
+      {
+        auto it = window.begin();
+        *it *= 2;
+      }
+
+      // Windows start at indices 0..3, so the final element is untouched.
+      std::vector<int> expected{2, 4, 6, 8, 5};
+      CHECK_EQUAL(expected, v);
     }
 
     //*************************************************************************
@@ -5031,6 +5587,45 @@ namespace
         ++idx;
       }
       CHECK_EQUAL(expected.size(), idx);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_chunk_by_view_non_const_reference_type)
+    {
+      // chunk_by chunks must expose mutable element references when the
+      // underlying range is non-const, matching std::ranges::chunk_by_view.
+      std::vector<int> v  = {1, 1, 2};
+      auto             cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
+
+      auto first_chunk  = *cv.begin();
+      using element_ref = decltype(*first_chunk.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "chunk_by element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "chunk_by element should be mutable");
+
+      *first_chunk.begin() = 99;
+      CHECK_EQUAL(99, v[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_chunk_by_view_modify_elements)
+    {
+      // Group consecutive equal elements, then negate every element in place.
+      // Each chunk boundary is computed from the chunk start forwards before
+      // that chunk's elements are modified, so the grouping stays correct.
+      std::vector<int> v  = {1, 1, 2, 2, 2, 3};
+      auto             cv = etl::ranges::chunk_by_view(v, [](int a, int b) { return a == b; });
+
+      for (auto chunk : cv)
+      {
+        for (auto& element : chunk)
+        {
+          element = -element;
+        }
+      }
+
+      std::vector<int> expected{-1, -1, -2, -2, -2, -3};
+      CHECK_EQUAL(expected, v);
     }
 
     //*************************************************************************
@@ -5302,6 +5897,40 @@ namespace
         actual.push_back(val);
       }
       CHECK_EQUAL(expected, actual);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_stride_view_non_const_reference_type)
+    {
+      // stride must yield mutable element references when the underlying range
+      // is non-const, matching std::ranges::stride_view.
+      std::vector<int> v  = {1, 2, 3, 4};
+      auto             sv = etl::ranges::stride_view(v, 2);
+
+      using element_ref = decltype(*sv.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "stride element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "stride element should be mutable");
+
+      *sv.begin() = 99;
+      CHECK_EQUAL(99, v[0]);
+    }
+
+    //*************************************************************************
+    TEST(test_ranges_stride_view_modify_elements)
+    {
+      // Stride by 2 and double every visited element in place.
+      std::vector<int> v  = {1, 2, 3, 4, 5, 6};
+      auto             sv = etl::ranges::stride_view(v, 2);
+
+      for (auto& element : sv)
+      {
+        element *= 2;
+      }
+
+      // Elements at indices 0, 2, 4 are visited (1, 3, 5 -> 2, 6, 10).
+      std::vector<int> expected{2, 2, 6, 4, 10, 6};
+      CHECK_EQUAL(expected, v);
     }
 
     //*************************************************************************
@@ -5739,7 +6368,39 @@ namespace
       CHECK_EQUAL(20, v_out[1]);
       CHECK_EQUAL(30, v_out[2]);
     }
+
+    TEST(test_ranges_to_input_view_non_const_reference_type)
+    {
+      // to_input_view must preserve the underlying range's mutable references,
+      // matching std::ranges::as_input_view.
+      std::vector<int> v_in{1, 2, 3};
+      auto             iv = etl::ranges::to_input_view(v_in);
+
+      using element_ref = decltype(*iv.begin());
+
+      static_assert(etl::is_same<element_ref, int&>::value, "to_input element should be a non-const reference");
+      static_assert(!etl::is_const_v<etl::remove_reference_t<element_ref>>, "to_input element should be mutable");
+
+      *iv.begin() = 99;
+      CHECK_EQUAL(99, v_in[0]);
+    }
+
+    TEST(test_ranges_to_input_view_modify_elements)
+    {
+      // Write through every element of the input view in place.
+      std::vector<int> v_in{1, 2, 3, 4};
+      auto             iv = etl::ranges::to_input_view(v_in);
+
+      for (auto& element : iv)
+      {
+        element *= 10;
+      }
+
+      std::vector<int> expected{10, 20, 30, 40};
+      CHECK_EQUAL(expected, v_in);
+    }
   }
+    #include "etl/private/diagnostic_pop.h"
 } // namespace
 
   #endif

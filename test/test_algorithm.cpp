@@ -2621,8 +2621,10 @@ namespace
 
       for (size_t i = 0UL; i <= initial_data.size(); ++i)
       {
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<int> data1(initial_data);
         std::vector<int> data2(initial_data);
+#include "etl/private/diagnostic_pop.h"
 
         auto std_result = std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
         auto etl_result = etl::rotate(data2.data(), data2.data() + i, data2.data() + data2.size());
@@ -2658,8 +2660,10 @@ namespace
 
       for (size_t i = 0UL; i <= initial_data.size(); ++i)
       {
+#include "etl/private/diagnostic_null_dereference_push.h"
         std::vector<int> data1(initial_data);
         std::vector<int> data2(initial_data);
+#include "etl/private/diagnostic_pop.h"
 
         auto std_result = std::rotate(data1.data(), data1.data() + i, data1.data() + data1.size());
 
@@ -2849,18 +2853,78 @@ namespace
       int data4[] = {0, 0, 0, 0, 0, 0, 0, 0};
       int data5[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
-      std::partition_copy(std::begin(data1), std::end(data1), std::begin(data2), std::begin(data3),
-                          std::bind(std::greater<int>(), std::placeholders::_1, 4));
-      etl::partition_copy(std::begin(data1), std::end(data1), std::begin(data4), std::begin(data5),
-                          std::bind(std::greater<int>(), std::placeholders::_1, 4));
+      bool complete = false;
 
-      bool are_equal;
+      while (!complete)
+      {
+        std::partition_copy(std::begin(data1), std::end(data1), std::begin(data2), std::begin(data3),
+                            std::bind(std::greater<int>(), std::placeholders::_1, 4));
+        etl::partition_copy(std::begin(data1), std::end(data1), std::begin(data4), std::begin(data5),
+                            std::bind(std::greater<int>(), std::placeholders::_1, 4));
 
-      are_equal = std::equal(std::begin(data2), std::end(data2), std::begin(data4));
-      CHECK(are_equal);
+        bool are_equal;
 
-      are_equal = std::equal(std::begin(data3), std::end(data3), std::begin(data5));
-      CHECK(are_equal);
+        are_equal = std::equal(std::begin(data2), std::end(data2), std::begin(data4));
+        CHECK(are_equal);
+
+        are_equal = std::equal(std::begin(data3), std::end(data3), std::begin(data5));
+        CHECK(are_equal);
+
+        complete = !std::next_permutation(std::begin(data1), std::end(data1));
+      }
+    }
+
+    //*************************************************************************
+    TEST(partition_move)
+    {
+      std::array<int, 8> indexes = {1, 2, 3, 4, 5, 6, 7, 8};
+
+      TestDataM<int> std_input[] = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      TestDataM<int> etl_input[] = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      TestDataM<int> std_true[]  = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      TestDataM<int> std_false[] = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      TestDataM<int> etl_true[]  = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+      TestDataM<int> etl_false[] = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                    TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+
+      auto compare = [](const TestDataM<int>& element)
+      {
+        return (element.value > 4);
+      };
+
+      bool complete = false;
+
+      while (!complete)
+      {
+        // Rebuild the input arrays.
+        for (size_t i = 0; i < indexes.size(); ++i)
+        {
+          std_input[i].value = indexes[i];
+          etl_input[i].value = indexes[i];
+        }
+
+        // Simulate what etl::partition_move should do using stable_partition and move.
+        auto boundary = std::stable_partition(std::begin(std_input), std::end(std_input), compare);
+        std::move(std::begin(std_input), boundary, std::begin(std_true));
+        std::move(boundary, std::end(std_input), std::begin(std_false));
+
+        // Execute etl::partition_move.
+        etl::partition_move(std::begin(etl_input), std::end(etl_input), std::begin(etl_true), std::begin(etl_false), compare);
+        bool are_equal;
+
+        are_equal = std::equal(std::begin(std_true), std::end(std_true), std::begin(etl_true));
+        CHECK(are_equal);
+
+        are_equal = std::equal(std::begin(std_false), std::end(std_false), std::begin(etl_false));
+        CHECK(are_equal);
+
+        complete = !std::next_permutation(std::begin(indexes), std::end(indexes));
+      }
     }
 
     //*************************************************************************
@@ -4285,6 +4349,181 @@ namespace
         compare = initial;
         data    = initial;
       }
+    }
+
+    //*************************************************************************
+    TEST(stable_partition_in_place_bidirectional_iterator_container)
+    {
+      // 40,320 permutations.
+      std::array<int, 8> initial_data = {0, 1, 2, 3, 4, 5, 6, 7};
+
+      std::array<int, 8> std_data = initial_data;
+      std::array<int, 8> etl_data = initial_data;
+
+      bool complete = false;
+
+      while (!complete)
+      {
+        auto std_pivot = std::stable_partition(std_data.begin(), std_data.end(), [](int i) { return etl::is_even(i); });
+        auto etl_pivot = etl::stable_partition(etl_data.begin(), etl_data.end(), [](int i) { return etl::is_even(i); });
+
+        auto std_distance = std::distance(std_data.begin(), std_pivot);
+        auto etl_distance = std::distance(etl_data.begin(), etl_pivot);
+
+        CHECK_EQUAL(*std_pivot, *etl_pivot);
+        CHECK_EQUAL(std_distance, etl_distance);
+
+        for (auto itr = std_data.begin(); itr != std_pivot; ++itr)
+        {
+          CHECK_TRUE((etl::is_even(*itr)));
+        }
+
+        for (auto itr = std_pivot; itr != std_data.end(); ++itr)
+        {
+          CHECK_FALSE((etl::is_even(*itr)));
+        }
+
+        complete = !std::next_permutation(initial_data.begin(), initial_data.end());
+
+        std_data = initial_data;
+        etl_data = initial_data;
+      }
+    }
+
+    //*************************************************************************
+    TEST(stable_partition_in_place_bidirectional_iterator_container_for_move_only_elements)
+    {
+      // 40,320 permutations.
+      std::array<TestDataM<int>, 8> initial_data = {TestDataM<int>(0), TestDataM<int>(1), TestDataM<int>(2), TestDataM<int>(3),
+                                                    TestDataM<int>(4), TestDataM<int>(5), TestDataM<int>(6), TestDataM<int>(7)};
+
+      std::array<TestDataM<int>, 8> std_data = std::move(initial_data);
+      std::array<TestDataM<int>, 8> etl_data = std::move(initial_data);
+
+      bool complete = false;
+
+      while (!complete)
+      {
+        auto std_pivot = std::stable_partition(std_data.begin(), std_data.end(), [](const TestDataM<int>& t) { return etl::is_even(t.value); });
+        auto etl_pivot = etl::stable_partition(etl_data.begin(), etl_data.end(), [](const TestDataM<int>& t) { return etl::is_even(t.value); });
+
+        auto std_distance = std::distance(std_data.begin(), std_pivot);
+        auto etl_distance = std::distance(etl_data.begin(), etl_pivot);
+
+        CHECK_EQUAL(*std_pivot, *etl_pivot);
+        CHECK_EQUAL(std_distance, etl_distance);
+
+        for (auto itr = std_data.begin(); itr != std_pivot; ++itr)
+        {
+          CHECK_TRUE((etl::is_even(itr->value)));
+        }
+
+        for (auto itr = std_pivot; itr != std_data.end(); ++itr)
+        {
+          CHECK_FALSE((etl::is_even(itr->value)));
+        }
+
+        complete = !std::next_permutation(initial_data.begin(), initial_data.end());
+
+        std_data = std::move(initial_data);
+        etl_data = std::move(initial_data);
+      }
+    }
+
+    //*************************************************************************
+    TEST(stable_partition_external_buffer_bidirectional_iterator_container)
+    {
+      // 40,320 permutations.
+      std::array<int, 8> initial_data = {0, 1, 2, 3, 4, 5, 6, 7};
+
+      std::array<int, 8> buffer = {0, 0, 0, 0, 0, 0, 0, 0};
+
+      std::array<int, 8> std_data = initial_data;
+      std::array<int, 8> etl_data = initial_data;
+
+      bool complete = false;
+
+      while (!complete)
+      {
+        auto std_pivot = std::stable_partition(std_data.begin(), std_data.end(), [](int i) { return etl::is_even(i); });
+        auto etl_pivot = etl::stable_partition(etl_data.begin(), etl_data.end(), buffer.begin(), buffer.end(), [](int i) { return etl::is_even(i); });
+
+        auto std_distance = std::distance(std_data.begin(), std_pivot);
+        auto etl_distance = std::distance(etl_data.begin(), etl_pivot);
+
+        CHECK_EQUAL(*std_pivot, *etl_pivot);
+        CHECK_EQUAL(std_distance, etl_distance);
+
+        for (auto itr = std_data.begin(); itr != std_pivot; ++itr)
+        {
+          CHECK_TRUE((etl::is_even(*itr)));
+        }
+
+        for (auto itr = std_pivot; itr != std_data.end(); ++itr)
+        {
+          CHECK_FALSE((etl::is_even(*itr)));
+        }
+
+        complete = !std::next_permutation(initial_data.begin(), initial_data.end());
+
+        std_data = initial_data;
+        etl_data = initial_data;
+      }
+    }
+
+    //*************************************************************************
+    TEST(stable_partition_external_buffer_bidirectional_iterator_container_for_move_only_elements)
+    {
+      // 40,320 permutations.
+      std::array<TestDataM<int>, 8> initial_data = {TestDataM<int>(0), TestDataM<int>(1), TestDataM<int>(2), TestDataM<int>(3),
+                                                    TestDataM<int>(4), TestDataM<int>(5), TestDataM<int>(6), TestDataM<int>(7)};
+
+      std::array<TestDataM<int>, 8> buffer = {TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0),
+                                              TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0), TestDataM<int>(0)};
+
+      std::array<TestDataM<int>, 8> std_data = std::move(initial_data);
+      std::array<TestDataM<int>, 8> etl_data = std::move(initial_data);
+
+      bool complete = false;
+
+      while (!complete)
+      {
+        auto std_pivot = std::stable_partition(std_data.begin(), std_data.end(), [](const TestDataM<int>& t) { return etl::is_even(t.value); });
+        auto etl_pivot = etl::stable_partition(etl_data.begin(), etl_data.end(), buffer.begin(), buffer.end(),
+                                               [](const TestDataM<int>& t) { return etl::is_even(t.value); });
+
+        auto std_distance = std::distance(std_data.begin(), std_pivot);
+        auto etl_distance = std::distance(etl_data.begin(), etl_pivot);
+
+        CHECK_EQUAL(std_pivot->value, etl_pivot->value);
+        CHECK_EQUAL(std_distance, etl_distance);
+
+        for (auto itr = std_data.begin(); itr != std_pivot; ++itr)
+        {
+          CHECK_TRUE((etl::is_even(itr->value)));
+        }
+
+        for (auto itr = std_pivot; itr != std_data.end(); ++itr)
+        {
+          CHECK_FALSE((etl::is_even(itr->value)));
+        }
+
+        complete = !std::next_permutation(initial_data.begin(), initial_data.end());
+
+        std_data = std::move(initial_data);
+        etl_data = std::move(initial_data);
+      }
+    }
+
+    //*************************************************************************
+    TEST(stable_partition_external_buffer_too_small)
+    {
+      int buffer[7];
+      int etl_data[8];
+
+      CHECK_THROW((etl::stable_partition(std::begin(etl_data), std::end(etl_data), std::begin(buffer), std::end(buffer),
+                                         [](int i) { return etl::is_even(i); })),
+                  etl::stable_partition_buffer_too_small);
     }
 
     //*************************************************************************

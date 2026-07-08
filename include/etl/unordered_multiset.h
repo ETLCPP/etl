@@ -42,7 +42,6 @@ SOFTWARE.
 #include "intrusive_forward_list.h"
 #include "iterator.h"
 #include "nth_type.h"
-#include "nullptr.h"
 #include "parameter_type.h"
 #include "placement_new.h"
 #include "pool.h"
@@ -920,6 +919,71 @@ namespace etl
         ++first_;
       }
     }
+
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+    //*********************************************************************
+    /// Emplaces a value to the unordered_multiset.
+    //*********************************************************************
+    template <typename... Args>
+    iterator emplace(Args&&... args)
+    {
+      iterator result = end();
+
+      ETL_ASSERT(!full(), ETL_ERROR(unordered_multiset_full));
+
+      // Construct the value
+      node_t* node = allocate_data_node();
+      node->clear();
+      ::new (&node->key) value_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      key_parameter_t key = node->key;
+
+      // Get the hash index.
+      size_t index = get_bucket_index(key);
+
+      // Get the bucket & bucket iterator.
+      bucket_t* pbucket = pbuckets + index;
+      bucket_t& bucket  = *pbucket;
+
+      // The first one in the bucket?
+      if (bucket.empty())
+      {
+        // Just add the pointer to the bucket;
+        bucket.insert_after(bucket.before_begin(), *node);
+        adjust_first_last_markers_after_insert(&bucket);
+
+        result = iterator((pbuckets + number_of_buckets), pbucket, pbucket->begin());
+      }
+      else
+      {
+        // Step though the bucket looking for a place to insert.
+        local_iterator inode_previous = bucket.before_begin();
+        local_iterator inode          = bucket.begin();
+
+        while (inode != bucket.end())
+        {
+          // Do we already have this key?
+          if (key_equal_function(inode->key, key))
+          {
+            break;
+          }
+
+          ++inode_previous;
+          ++inode;
+        }
+
+        // Add the node to the end of the bucket;
+        bucket.insert_after(inode_previous, *node);
+        adjust_first_last_markers_after_insert(&bucket);
+        ++inode_previous;
+
+        result = iterator((pbuckets + number_of_buckets), pbucket, inode_previous);
+      }
+
+      return result;
+    }
+#endif
 
     //*********************************************************************
     /// Erases an element.

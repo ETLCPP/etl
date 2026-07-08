@@ -633,6 +633,42 @@ namespace
     }
 
     //*************************************************************************
+    // The member swap() must exchange the complete iterator state (index,
+    // owning deque and buffer).
+    TEST(test_iterator_swap_different_deques)
+    {
+      DataInt data1 = {1, 2, 3, 4, 5};
+      DataInt data2 = {10, 20, 30, 40, 50};
+
+      DataInt::iterator itr1 = data1.begin() + 1; // -> 2
+      DataInt::iterator itr2 = data2.begin() + 3; // -> 40
+
+      itr1.swap(itr2);
+
+      CHECK_EQUAL(40, *itr1);
+      CHECK_EQUAL(2, *itr2);
+      CHECK(&itr1.container() == &data2);
+      CHECK(&itr2.container() == &data1);
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator_swap_different_deques)
+    {
+      DataInt data1 = {1, 2, 3, 4, 5};
+      DataInt data2 = {10, 20, 30, 40, 50};
+
+      DataInt::const_iterator itr1 = data1.begin() + 1; // -> 2
+      DataInt::const_iterator itr2 = data2.begin() + 3; // -> 40
+
+      itr1.swap(itr2);
+
+      CHECK_EQUAL(40, *itr1);
+      CHECK_EQUAL(2, *itr2);
+      CHECK(&itr1.container() == &data2);
+      CHECK(&itr2.container() == &data1);
+    }
+
+    //*************************************************************************
     TEST(test_iterator_comparison_rollover_left)
     {
       DataNDC data(SIZE, N0);
@@ -2271,6 +2307,29 @@ namespace
       data.fill(N999);
 
       CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_const_iterator_subscript)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      const DataNDC& cdata = data;
+
+      // Access via const_iterator operator[]
+      DataNDC::const_iterator cit = cdata.begin();
+
+      // Verify operator[] returns values matching sequential access
+      for (size_t i = 0; i < cdata.size(); ++i)
+      {
+        CHECK(cit[i] == cdata[i]);
+      }
+
+      // Verify const_iterator operator[] returns const_reference
+      // (This is a compile-time check - if the fix is reverted,
+      //  the type would be non-const reference which is incorrect for const_iterator)
+      const NDC& ref = cit[0];
+      CHECK(ref == cdata[0]);
     }
   }
 } // namespace

@@ -339,7 +339,23 @@ namespace etl
     template <typename... Args>
     ETL_OR_STD::pair<iterator, bool> emplace(Args&&... args)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
+      if (full())
+      {
+        // A duplicate key does not require a free slot, so emplacing it is not
+        // a capacity failure. Construct a temporary to obtain its key and only
+        // emit flat_set_full if the key is not already present. This keeps
+        // emplace consistent with insert when the set is full.
+        value_type temp_value(etl::forward<Args>(args)...);
+        iterator   position = find(temp_value);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(flat_set_full));
+          return ETL_OR_STD::pair<iterator, bool>(end(), false);
+        }
+
+        return ETL_OR_STD::pair<iterator, bool>(position, false);
+      }
 
       ETL_OR_STD::pair<iterator, bool> result;
 
@@ -360,7 +376,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;

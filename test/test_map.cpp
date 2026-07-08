@@ -809,6 +809,166 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      Compare_Data compare_data;
+      Data         data;
+
+      ETL_OR_STD::pair<Data::iterator, bool> data_result = data.emplace(std::string("0"), 0);
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
+
+      // Check that the insertion was successful
+      CHECK(data_result.first->first == std::string("0"));
+      CHECK(data_result.first->second == 0);
+      CHECK(data_result.second == true);
+
+      // Try adding a duplicate (should return iterator pointing to duplicate, inserted = false)
+      data_result = data.emplace(std::string("0"), 1);
+
+      CHECK(data_result.first->first == std::string("0"));
+      CHECK(data_result.first->second == 0);
+      CHECK(data_result.second == false);
+
+      // Add more elements
+      data.emplace(std::string("2"), 2);
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("2"), 2));
+
+      data.emplace(std::string("1"), 1);
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("1"), 1));
+
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value_from_pair)
+    {
+      Compare_Data compare_data;
+      Data         data;
+
+      Data::value_type pair0(std::string("0"), 0);
+      Data::value_type pair1(std::string("1"), 1);
+      Data::value_type pair2(std::string("2"), 2);
+
+      data.emplace(pair0);
+      compare_data.insert(pair0);
+
+      data.emplace(pair1);
+      compare_data.insert(pair1);
+
+      data.emplace(pair2);
+      compare_data.insert(pair2);
+
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+      ItemM d3(3);
+
+      data.emplace(std::string("1"), etl::move(d1));
+      data.emplace(std::string("2"), etl::move(d2));
+      data.emplace(std::string("3"), etl::move(d3));
+      data.emplace(std::string("4"), ItemM(4));
+
+      CHECK(!bool(d1));
+      CHECK(!bool(d2));
+      CHECK(!bool(d3));
+
+      CHECK(1 == data.at("1").value);
+      CHECK(2 == data.at("2").value);
+      CHECK(3 == data.at("3").value);
+      CHECK(4 == data.at("4").value);
+
+      CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_excess)
+    {
+      Data data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.emplace(std::string("10"), 10), etl::map_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_try_emplace_value)
+    {
+      Data data;
+
+      ETL_OR_STD::pair<Data::iterator, bool> result1 = data.try_emplace(std::string("0"), 0);
+      CHECK(result1.first->first == std::string("0"));
+      CHECK(result1.first->second == 0);
+      CHECK(result1.second == true);
+
+      // Try adding a duplicate (should not construct value, return existing)
+      ETL_OR_STD::pair<Data::iterator, bool> result2 = data.try_emplace(std::string("0"), 99);
+      CHECK(result2.first->first == std::string("0"));
+      CHECK(result2.first->second == 0);
+      CHECK(result2.second == false);
+
+      CHECK_EQUAL(1U, data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_try_emplace_moved_value)
+    {
+      DataM data;
+
+      ItemM d1(1);
+      ItemM d2(2);
+
+      data.try_emplace(std::string("1"), etl::move(d1));
+      CHECK(!bool(d1));
+      CHECK(1 == data.at("1").value);
+
+      // Duplicate key: d2 should NOT be moved from
+      data.try_emplace(std::string("1"), etl::move(d2));
+      CHECK(bool(d2));
+      CHECK(1 == data.at("1").value);
+      CHECK_EQUAL(1U, data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_try_emplace_rvalue_key)
+    {
+      DataM data;
+
+      std::string key1("1");
+      std::string key2("2");
+      std::string key1_dup("1");
+
+      auto result1 = data.try_emplace(etl::move(key1), ItemM(1));
+      CHECK(result1.second == true);
+      CHECK(key1.empty()); // key was moved from
+      CHECK(1 == data.at("1").value);
+
+      auto result2 = data.try_emplace(etl::move(key2), ItemM(2));
+      CHECK(result2.second == true);
+      CHECK(key2.empty()); // key was moved from
+      CHECK(2 == data.at("2").value);
+
+      // Duplicate key: key should NOT be moved from
+      auto result3 = data.try_emplace(etl::move(key1_dup), ItemM(99));
+      CHECK(result3.second == false);
+      CHECK(!key1_dup.empty()); // key was NOT moved
+      CHECK(1 == data.at("1").value);
+      CHECK_EQUAL(2U, data.size());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)
     {
       Compare_Data compare_data(random_data.begin(), random_data.end());
