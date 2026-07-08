@@ -296,3 +296,37 @@ Then use them with `--config`:
 ```sh
 bazel test //test:etl_tests --config=clang --config=c++20 --config=release
 ```
+
+### Injecting a Custom Profile Header
+
+Instead of passing many individual `--copt=-D...` flags, ETL can be configured in bulk through a user-provided `etl_profile.h` header. When such a header is reachable on the include path, `include/etl/platform.h` includes it automatically; otherwise ETL falls back to its built-in defaults (`ETL_NO_PROFILE_HEADER`).
+
+Because the header must sit on ETL's include path, `BUILD.bazel` exposes an `etl_profile` [`label_flag`](https://bazel.build/extending/config) so you can inject it as a Bazel target — without patching ETL's `BUILD.bazel`.
+
+First, wrap your profile header in a `cc_library` that places `etl_profile.h` on its include path:
+
+```python
+# path/to/BUILD.bazel
+cc_library(
+    name = "my_etl_profile",
+    hdrs = ["etl_profile.h"],
+    strip_include_prefix = ".",
+)
+```
+
+Then point the `etl_profile` flag at that target when building:
+
+```sh
+bazel build @etl//:etl --@etl//:etl_profile=//path/to:my_etl_profile
+```
+
+The flag defaults to an empty library (`:no_profile`), so ETL uses its built-in defaults unless you override it. As with any flag, the override can be made permanent in `.bazelrc`:
+
+```
+# .bazelrc
+build --@etl//:etl_profile=//path/to:my_etl_profile
+```
+
+> **Note:** Use the repository-qualified form `--@etl//:etl_profile=...` when consuming ETL as an
+> external dependency. When building from within the ETL repository itself, drop the repository
+> prefix: `--//:etl_profile=...`.
