@@ -183,7 +183,10 @@ namespace etl
               timer.callback();
             }
 
-            if (timer.repeating)
+            // Reinsert the timer, unless the callback has already restarted it.
+            // Checking is_active() avoids inserting it twice and creating a
+            // circular reference in the active list.
+            if (timer.repeating && !timer.is_active())
             {
               // Reinsert the timer.
               timer.delta = timer.period;

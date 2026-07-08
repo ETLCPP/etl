@@ -162,6 +162,33 @@ namespace
 
   callback_type free_function_callback2 = callback_type::create<free_callback2>();
 
+  //***************************************************************************
+  // Fixture for a repeating timer that restarts itself from within its own
+  // callback (regression test for issue #967).
+  //***************************************************************************
+  struct RestartInCallback
+  {
+    etl::callback_timer_interrupt<1, ScopedGuard>* p_controller = nullptr;
+    etl::timer::id::type                           id           = etl::timer::id::NO_TIMER;
+    uint32_t                                       new_period   = 0U;
+    std::vector<uint64_t>                          call_ticks;
+
+    void callback()
+    {
+      call_ticks.push_back(ticks);
+
+      // Change the period (this stops/deactivates the timer) and restart it
+      // from inside the callback. Before the fix, tick() would then insert the
+      // timer a second time, creating a circular reference in the active list.
+      p_controller->set_period(id, new_period);
+      p_controller->start(id);
+    }
+  };
+
+  RestartInCallback restart_in_callback;
+
+  callback_type restart_in_callback_member = callback_type::create<RestartInCallback, restart_in_callback, &RestartInCallback::callback>();
+
   SUITE(test_callback_timer_interrupt)
   {
     //*************************************************************************
@@ -999,6 +1026,52 @@ namespace
       }
 
       // Check the
+      CHECK_EQUAL(0U, ScopedGuard::guard_count);
+    }
+
+    //*************************************************************************
+    // Regression test for issue #967:
+    // Calling start() from within a repeating timer's callback (after the
+    // period has been changed, which stops the timer) must not insert the timer
+    // twice and create a circular reference in the active list.
+    //*************************************************************************
+    TEST(callback_timer_interrupt_restart_in_callback_no_circular_reference)
+    {
+      etl::callback_timer_interrupt<1, ScopedGuard> timer_controller;
+
+      restart_in_callback.p_controller = &timer_controller;
+      restart_in_callback.new_period   = 20U;
+      restart_in_callback.call_ticks.clear();
+
+      etl::timer::id::type id = timer_controller.register_timer(restart_in_callback_member, 10, etl::timer::mode::Repeating);
+      restart_in_callback.id  = id;
+
+      timer_controller.start(id);
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1U;
+
+      // Run long enough for several firings at the original (10) then new (20) period.
+      while (ticks < 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      // The timer must still be active (alive, not corrupted) and scheduled at
+      // the new period. A circular reference would corrupt the active list.
+      CHECK_TRUE(timer_controller.is_active(id));
+
+      // First firing at 10, then every 20 thereafter: 10, 30, 50, 70, 90.
+      std::vector<uint64_t> compare = {10, 30, 50, 70, 90};
+
+      CHECK_EQUAL(compare.size(), restart_in_callback.call_ticks.size());
+      CHECK_ARRAY_EQUAL(compare.data(), restart_in_callback.call_ticks.data(), compare.size());
+
+      timer_controller.clear();
+
       CHECK_EQUAL(0U, ScopedGuard::guard_count);
     }
   }
