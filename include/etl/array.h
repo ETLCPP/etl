@@ -40,6 +40,9 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 
+#include "private/tuple_element.h"
+#include "private/tuple_size.h"
+
 #include <stddef.h>
 
 ///\defgroup array array
@@ -1206,7 +1209,70 @@ namespace etl
     ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
     return static_cast<const T&&>(a[Index]);
   }
+
+  //*************************************************************************
+  /// Gets the number of elements in an array.
+  ///\tparam T    The type.
+  ///\tparam Size The array size.
+  //*************************************************************************
+  template <typename T, size_t Size>
+  struct tuple_size<etl::array<T, Size> > : etl::integral_constant<size_t, Size>
+  {
+  };
+
+  //*************************************************************************
+  /// Gets the type of the element at Index in an array.
+  ///\tparam Index The index.
+  ///\tparam T     The type.
+  ///\tparam Size  The array size.
+  //*************************************************************************
+  template <size_t Index, typename T, size_t Size>
+  struct tuple_element<Index, etl::array<T, Size> >
+  {
+    ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
+
+    using type = T;
+  };
 #endif
 } // namespace etl
+
+#if ETL_USING_CPP11
+namespace std
+{
+  // libc++ already declares std::tuple_size / std::tuple_element in its inline
+  // namespace (std::__1), so re-declaring them here would make the name
+  // ambiguous. Detect libc++ via _LIBCPP_VERSION and skip the forward
+  // declarations in that case, even when not using the STL.
+  #if ETL_NOT_USING_STL && !defined(_LIBCPP_VERSION)                                                                          \
+    && !((defined(ETL_DEVELOPMENT_OS_APPLE) || (ETL_COMPILER_FULL_VERSION >= 190000) && (ETL_COMPILER_FULL_VERSION < 210000)) \
+         && defined(ETL_COMPILER_CLANG))
+  template <typename T>
+  struct tuple_size;
+
+  template <size_t Index, typename TType>
+  struct tuple_element;
+  #endif
+
+  //***************************************************************************
+  /// Specialisation of tuple_size to allow the use of C++ structured bindings.
+  //***************************************************************************
+  template <typename T, size_t Size>
+  struct tuple_size<etl::array<T, Size> > : etl::integral_constant<size_t, Size>
+  {
+  };
+
+  //***************************************************************************
+  /// Specialisation of tuple_element to allow the use of C++ structured
+  /// bindings.
+  //***************************************************************************
+  template <size_t Index, typename T, size_t Size>
+  struct tuple_element<Index, etl::array<T, Size> >
+  {
+    ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
+
+    using type = T;
+  };
+} // namespace std
+#endif
 
 #endif
