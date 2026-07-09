@@ -709,7 +709,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the last element.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR const_reference back() const
+    ETL_NODISCARD ETL_CONSTEXPR const_reference back() const ETL_NOEXCEPT
     {
       return *data();
     }
@@ -1063,7 +1063,7 @@ namespace etl
   ///\param rhs The second array.
   //*************************************************************************
   template <typename T, const size_t SIZE>
-  void swap(etl::array<T, SIZE>& lhs, etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 void swap(etl::array<T, SIZE>& lhs, etl::array<T, SIZE>& rhs) ETL_NOEXCEPT_FROM(ETL_OR_STD::swap(etl::declval<T&>(), etl::declval<T&>()))
   {
     lhs.swap(rhs);
   }
@@ -1100,7 +1100,7 @@ namespace etl
   /// second, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, size_t SIZE>
-  bool operator<(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator<(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return etl::lexicographical_compare(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend());
   }
@@ -1114,7 +1114,7 @@ namespace etl
   ///< b>false</b>
   //*************************************************************************
   template <typename T, size_t SIZE>
-  bool operator<=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator<=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -1127,7 +1127,7 @@ namespace etl
   /// the second, otherwise <b>false</b>
   template <typename T, size_t SIZE>
   //*************************************************************************
-  bool operator>(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator>(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return (rhs < lhs);
   }
@@ -1141,7 +1141,7 @@ namespace etl
   ///< b>false</b>
   //*************************************************************************
   template <typename T, size_t SIZE>
-  bool operator>=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator>=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs < rhs);
   }
@@ -1155,7 +1155,7 @@ namespace etl
   ///\return A reference to the element
   //*************************************************************************
   template <size_t Index, typename T, size_t Size>
-  inline T& get(array<T, Size>& a)
+  ETL_NODISCARD ETL_CONSTEXPR14 T& get(array<T, Size>& a) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
     return a[Index];
@@ -1170,11 +1170,43 @@ namespace etl
   ///\return A const reference to the element
   //*************************************************************************
   template <size_t Index, typename T, size_t Size>
-  inline const T& get(const array<T, Size>& a)
+  ETL_NODISCARD ETL_CONSTEXPR14 const T& get(const array<T, Size>& a) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
     return a[Index];
   }
+
+#if ETL_USING_CPP11
+  //*************************************************************************
+  /// Gets an rvalue reference to an element in the array.
+  ///\tparam Index The index.
+  ///\tparam T The type.
+  ///\tparam Size The array size.
+  ///\param a The array.
+  ///\return An rvalue reference to the element
+  //*************************************************************************
+  template <size_t Index, typename T, size_t Size>
+  ETL_NODISCARD ETL_CONSTEXPR14 T&& get(array<T, Size>&& a) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
+    return static_cast<T&&>(a[Index]);
+  }
+
+  //*************************************************************************
+  /// Gets a const rvalue reference to an element in the array.
+  ///\tparam Index The index.
+  ///\tparam T The type.
+  ///\tparam Size The array size.
+  ///\param a The array.
+  ///\return A const rvalue reference to the element
+  //*************************************************************************
+  template <size_t Index, typename T, size_t Size>
+  ETL_NODISCARD ETL_CONSTEXPR14 const T&& get(const array<T, Size>&& a) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
+    return static_cast<const T&&>(a[Index]);
+  }
+#endif
 } // namespace etl
 
 #endif
