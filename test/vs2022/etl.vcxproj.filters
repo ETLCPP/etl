@@ -2075,6 +2075,9 @@
     <ClCompile Include="..\test_algorithm.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_algorithm_ranges.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_correlation.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>

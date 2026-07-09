@@ -10219,6 +10219,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03 - No virtual messages|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_algorithm.cpp" />
+    <ClCompile Include="..\test_algorithm_ranges.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic.cpp" />
     <ClCompile Include="..\test_base64_RFC2152_decoder.cpp" />

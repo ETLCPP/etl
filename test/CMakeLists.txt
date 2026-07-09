@@ -14,6 +14,7 @@ add_executable(etl_tests
 	main.cpp
 	murmurhash3.cpp
 	test_algorithm.cpp
+	test_algorithm_ranges.cpp
 	test_alignment.cpp
 	test_array.cpp
 	test_array_view.cpp
