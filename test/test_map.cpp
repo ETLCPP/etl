@@ -1720,6 +1720,7 @@ namespace
     {
       using Pair = std::pair<const std::string, int>;
 
+  #include "etl/private/diagnostic_null_dereference_push.h"
       etl::map data{Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4}, Pair{"5", 5}};
 
       auto v     = *data.begin();
@@ -1732,6 +1733,7 @@ namespace
       CHECK_EQUAL(3, data.at("3"));
       CHECK_EQUAL(4, data.at("4"));
       CHECK_EQUAL(5, data.at("5"));
+  #include "etl/private/diagnostic_pop.h"
 
       CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }
@@ -1743,6 +1745,7 @@ namespace
     {
       using Pair = ETL_OR_STD::pair<const std::string, int>;
 
+  #include "etl/private/diagnostic_null_dereference_push.h"
       auto data = etl::make_map<const std::string, int, std::less<std::string>>(Pair{"0", 0}, Pair{"1", 1}, Pair{"2", 2}, Pair{"3", 3}, Pair{"4", 4},
                                                                                 Pair{"5", 5});
 
@@ -1756,6 +1759,7 @@ namespace
       CHECK_EQUAL(3, data.at("3"));
       CHECK_EQUAL(4, data.at("4"));
       CHECK_EQUAL(5, data.at("5"));
+  #include "etl/private/diagnostic_pop.h"
 
       CHECK_TRUE(std::is_sorted(data.begin(), data.end(), data.value_comp()));
     }

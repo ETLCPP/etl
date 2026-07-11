@@ -593,6 +593,7 @@ namespace
     //*************************************************************************
     TEST(test_conversion_operator_for_forward_iterator)
     {
+#include "etl/private/diagnostic_null_dereference_push.h"
       DataF data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
       etl::circular_iterator<DataF::const_iterator> ci(std::begin(data), std::end(data));
@@ -607,6 +608,7 @@ namespace
       ++itr;
       ++ci;
       CHECK(itr == ci.current());
+#include "etl/private/diagnostic_pop.h"
     }
 
     //*************************************************************************

@@ -375,6 +375,10 @@ add_executable(etl_tests
 	test_vector_non_trivial.cpp
 	test_vector_pointer.cpp
 	test_vector_pointer_external_buffer.cpp
+	test_vector_function_pointer.cpp
+	test_vector_function_pointer_external_buffer.cpp
+	test_vector_member_function_pointer.cpp
+	test_vector_member_function_pointer_external_buffer.cpp
 	test_visitor.cpp
 	test_xor_checksum.cpp
 	test_xor_rotate_checksum.cpp

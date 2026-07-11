@@ -96,10 +96,9 @@ If assert or exceptions are not enabled then undefined behaviour occurs.
 
 ```cpp
 TMapped& operator[](key_parameter_t key)
-const TMapped& operator[](key_parameter_t key) const
 ```
 **Description**  
-Returns a reference or const reference to the indexed element.
+Returns a reference to the indexed element.
 If the key does not exist then one is created using the default constructor.  
 If the map is full then asserts an `etl::map_full`. If asserts or exceptions are not enabled then undefined behaviour occurs.
 

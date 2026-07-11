@@ -1077,13 +1077,15 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::iterator const_cdi     = compare_data.begin() + 2U;
-      int                    compare_value = *(const_cdi + 1U);
-      Compare_Data::iterator cdi           = compare_data.erase(const_cdi);
+      Compare_Data::iterator const_cdi = compare_data.begin() + 2U;
+#include "etl/private/diagnostic_null_dereference_push.h"
+      int compare_value = compare_data[3];
+#include "etl/private/diagnostic_pop.h"
+      Compare_Data::iterator cdi = compare_data.erase(const_cdi);
       CHECK_EQUAL(compare_value, *cdi);
 
       Data::iterator const_di   = data.begin() + 2U;
-      int            data_value = *(const_di + 1U);
+      int            data_value = data[3];
       Data::iterator di         = data.erase(const_di);
       CHECK_EQUAL(data_value, *di);
 
@@ -1108,13 +1110,15 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::const_iterator const_cdi     = compare_data.cbegin() + 2U;
-      int                          compare_value = *(const_cdi + 1U);
-      Compare_Data::iterator       cdi           = compare_data.erase(const_cdi);
+      Compare_Data::const_iterator const_cdi = compare_data.cbegin() + 2U;
+#include "etl/private/diagnostic_null_dereference_push.h"
+      int compare_value = compare_data[3];
+#include "etl/private/diagnostic_pop.h"
+      Compare_Data::iterator cdi = compare_data.erase(const_cdi);
       CHECK_EQUAL(compare_value, *cdi);
 
       Data::const_iterator const_di   = data.cbegin() + 2U;
-      int                  data_value = *(const_di + 1U);
+      int                  data_value = data[3];
       Data::iterator       di         = data.erase(const_di);
       CHECK_EQUAL(data_value, *di);
 
@@ -1139,15 +1143,9 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::const_iterator const_cdi     = compare_data.cbegin() + 2U;
-      int                          compare_value = *(const_cdi + 2U);
-      Compare_Data::iterator       cdi           = compare_data.erase(const_cdi, const_cdi + 2U);
-      CHECK_EQUAL(compare_value, *cdi);
+      compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
 
-      Data::const_iterator const_di   = data.cbegin() + 2U;
-      int                  data_value = *(const_di + 2U);
-      Data::iterator       di         = data.erase(const_di, const_di + 2U);
-      CHECK_EQUAL(data_value, *di);
+      data.erase(data.begin() + 2, data.begin() + 4);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 

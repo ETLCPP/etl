@@ -114,7 +114,7 @@ namespace etl
             TInterruptGuard guard;
             (void)guard; // Silence 'unused variable warnings.
 
-            active_list.remove(timer.id, true);
+            active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
           }
 

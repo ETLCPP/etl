@@ -3,7 +3,7 @@ title: "type_traits"
 ---
 
 Reverse engineered types traits classes from C++11 plus several ETL extensions.  
-This file is generated from type_traits_generator.h. See Generators  
+This file is generated from `type_traits_generator.h`. See Generators  
 Not all traits have been defined as some rely on compiler intrinsics that are not available on all compiler platforms.  
 
 `integral_constant`  
@@ -457,5 +457,22 @@ C++11
 ```cpp
 template <typename T, template <typename...> class Template>
 inline constexpr bool is_specialization_v = etl::is_specialization<T, Template>::value;
+```
+C++17
+
+## is_object_pointer  
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_object_pointer
+```
+Checks if `T` is a pointer to an object.  
+Pointers to functions and member functions return `false`.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_object_pointer_v = etl::is_object_pointer<T>::value;
 ```
 C++17

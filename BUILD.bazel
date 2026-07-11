@@ -2,8 +2,35 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
+# ETL can be tailored to a project through an `etl_profile.h` header (see
+# `include/etl/platform.h`). When no such header is on the include path, ETL
+# falls back to its built-in defaults via `ETL_NO_PROFILE_HEADER`.
+#
+# This label_flag lets a consumer inject that profile as a Bazel target, without
+# patching this BUILD file:
+#
+#     bazel build @etl//:etl --@etl//:etl_profile=//path/to:my_etl_profile
+#
+# The injected target is a cc_library that exposes a single `etl_profile.h` on
+# its include path, for example:
+#
+#     cc_library(
+#         name = "my_etl_profile",
+#         hdrs = ["etl_profile.h"],
+#         strip_include_prefix = ".",
+#     )
+#
+# The default is empty, so ETL's built-in defaults are used unless overridden.
+label_flag(
+    name = "etl_profile",
+    build_setting_default = ":no_profile",
+)
+
+cc_library(name = "no_profile")
+
 cc_library(
     name = "etl",
     hdrs = glob(["include/**/*.h"]),
     includes = ["include"],
+    deps = [":etl_profile"],
 )
