@@ -36,6 +36,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "initializer_list.h"
+#include "invoke.h"
 #include "memory.h"
 #include "placement_new.h"
 #include "type_traits.h"
@@ -48,6 +49,16 @@ namespace etl
   //*****************************************************************************
   template <typename T>
   class optional;
+
+  template <typename T>
+  struct is_optional : etl::false_type
+  {
+  };
+
+  template <typename T>
+  struct is_optional<optional<T> > : etl::true_type
+  {
+  };
 
   //*****************************************************************************
   /// A null option type.
@@ -1519,6 +1530,124 @@ namespace etl
     {
       return this->has_value() ? this->operator->() + 1 : ETL_NULLPTR;
     }
+
+#if ETL_USING_CPP11
+    template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, T&>::type>::type>
+    auto transform(F&& f) & -> etl::optional<U>
+    {
+      return transform_impl<F, optional&, U, T&>(etl::forward<F>(f), *this);
+    }
+
+    template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const T&>::type>::type>
+    auto transform(F&& f) const& -> etl::optional<U>
+    {
+      return transform_impl<F, const optional&, U, const T&>(etl::forward<F>(f), *this);
+    }
+
+    template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, T&&>::type>::type>
+    auto transform(F&& f) && -> etl::optional<U>
+    {
+      return transform_impl<F, optional&&, U, T&&>(etl::forward<F>(f), etl::move(*this));
+    }
+
+    template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const T&&>::type>::type>
+    auto transform(F&& f) const&& -> etl::optional<U>
+    {
+      return transform_impl<F, const optional&&, U, const T&&>(etl::forward<F>(f), etl::move(*this));
+    }
+
+    template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, T&>::type>::type>
+    auto and_then(F&& f) & -> U
+    {
+      return and_then_impl<F, optional&, U, T&>(etl::forward<F>(f), *this);
+    }
+
+    template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const T&>::type>::type>
+    auto and_then(F&& f) const& -> U
+    {
+      return and_then_impl<F, const optional&, U, const T&>(etl::forward<F>(f), *this);
+    }
+
+    template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, T&&>::type>::type>
+    auto and_then(F&& f) && -> U
+    {
+      return and_then_impl<F, optional&&, U, T&&>(etl::forward<F>(f), etl::move(*this));
+    }
+
+    template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const T&&>::type>::type>
+    auto and_then(F&& f) const&& -> U
+    {
+      return and_then_impl<F, const optional&&, U, const T&&>(etl::forward<F>(f), etl::move(*this));
+    }
+
+    template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void>::type>::type>
+    auto or_else(F&& f) & -> U
+    {
+      return or_else_impl<F, optional&, U>(etl::forward<F>(f), *this);
+    }
+
+    template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void>::type>::type>
+    auto or_else(F&& f) const& -> U
+    {
+      return or_else_impl<F, const optional&, U>(etl::forward<F>(f), *this);
+    }
+
+    template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void>::type>::type>
+    auto or_else(F&& f) && -> U
+    {
+      return or_else_impl<F, optional&&, U>(etl::forward<F>(f), etl::move(*this));
+    }
+
+    template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void>::type>::type>
+    auto or_else(F&& f) const&& -> U
+    {
+      return or_else_impl<F, const optional&&, U>(etl::forward<F>(f), etl::move(*this));
+    }
+
+  private:
+
+    template < typename F, typename TOpt, typename TRet, typename TValueRef, typename = typename etl::enable_if<!etl::is_void<TRet>::value>::type>
+    auto transform_impl(F&& f, TOpt&& opt) const -> etl::optional<TRet>
+    {
+      if (opt.has_value())
+      {
+        return etl::optional<TRet>(etl::invoke(etl::forward<F>(f), etl::forward<TValueRef>(*opt)));
+      }
+      else
+      {
+        return etl::optional<TRet>();
+      }
+    }
+
+    template < typename F, typename TOpt, typename TRet, typename TValueRef,
+               typename = typename etl::enable_if<!etl::is_void<TRet>::value && etl::is_optional<TRet>::value>::type>
+    auto and_then_impl(F&& f, TOpt&& opt) const -> TRet
+    {
+      if (opt.has_value())
+      {
+        return etl::invoke(etl::forward<F>(f), etl::forward<TValueRef>(*opt));
+      }
+      else
+      {
+        return TRet();
+      }
+    }
+
+    template < typename F, typename TOpt, typename TRet,
+               typename = typename etl::enable_if< !etl::is_void<TRet>::value && etl::is_optional<TRet>::value
+                                                   && etl::is_same<typename TRet::value_type, T>::value>::type>
+    auto or_else_impl(F&& f, TOpt&& opt) const -> TRet
+    {
+      if (opt.has_value())
+      {
+        return TRet(etl::forward<TOpt>(opt));
+      }
+      else
+      {
+        return etl::invoke(etl::forward<F>(f));
+      }
+    }
+#endif
   };
 
 #include "private/diagnostic_uninitialized_push.h"
