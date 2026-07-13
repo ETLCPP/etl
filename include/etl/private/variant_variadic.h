@@ -1084,6 +1084,8 @@ namespace etl
     void do_destroy()
     {
       do_destroy_impl(etl::integral_constant<bool, Is_Trivially_Destructible_Suite>{});
+
+      type_id = variant_npos;
     }
 
     void do_destroy_impl(etl::integral_constant<bool, true>)
