@@ -400,6 +400,42 @@ namespace
       // int i = etl::get<11>(data2);
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_get_rvalue)
+    {
+      Data       data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      const Data data2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      int&&       r0 = etl::get<3>(std::move(data1));
+      const int&& r1 = etl::get<3>(std::move(data2));
+
+      CHECK_EQUAL(3, r0);
+      CHECK_EQUAL(3, r1);
+
+      // The rvalue overloads must be selected and return rvalue references.
+      CHECK((std::is_same<int&&, decltype(etl::get<3>(std::move(data1)))>::value));
+      CHECK((std::is_same<const int&&, decltype(etl::get<3>(std::move(data2)))>::value));
+
+      // Moving out of an rvalue array element actually moves.
+      etl::array<Moveable, 2U> data3 = {Moveable(1), Moveable(2)};
+
+      Moveable moved(etl::get<0>(std::move(data3)));
+
+      CHECK_EQUAL(1, moved.value);
+      CHECK(!data3[0].valid);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_get_constexpr)
+    {
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 int result = etl::get<3>(data);
+      CHECK_EQUAL(3, result);
+    }
+
     //*************************************************************************
     TEST(test_assign)
     {
@@ -692,6 +728,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_less_than_constexpr)
+    {
+      ETL_CONSTEXPR14 Data lesser = {0, 1, 2, 3, 4, 4, 6, 7, 8, 9};
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 bool result = (lesser < data);
+      CHECK(result);
+    }
+
+    //*************************************************************************
     TEST(test_less_than_equal)
     {
       Data data    = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -701,6 +747,16 @@ namespace
       CHECK(lesser <= data);
       CHECK(data <= data);
       CHECK(!(greater <= data));
+    }
+
+    //*************************************************************************
+    TEST(test_less_than_equal_constexpr)
+    {
+      ETL_CONSTEXPR14 Data lesser = {0, 1, 2, 3, 4, 4, 6, 7, 8, 9};
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 bool result = (lesser <= data);
+      CHECK(result);
     }
 
     //*************************************************************************
@@ -716,6 +772,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_greater_than_constexpr)
+    {
+      ETL_CONSTEXPR14 Data greater = {0, 1, 2, 3, 5, 5, 6, 7, 8, 9};
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 bool result = (greater > data);
+      CHECK(result);
+    }
+
+    //*************************************************************************
     TEST(test_greater_than_equal)
     {
       Data data    = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -725,6 +791,16 @@ namespace
       CHECK(greater >= data);
       CHECK(data >= data);
       CHECK(!(lesser >= data));
+    }
+
+    //*************************************************************************
+    TEST(test_greater_than_equal_constexpr)
+    {
+      ETL_CONSTEXPR14 Data greater = {0, 1, 2, 3, 5, 5, 6, 7, 8, 9};
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 bool result = (greater >= data);
+      CHECK(result);
     }
 
     //*************************************************************************
