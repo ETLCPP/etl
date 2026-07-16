@@ -35,6 +35,9 @@ SOFTWARE.
 #include <algorithm>
 #include <array>
 #include <iterator>
+#if ETL_USING_CPP11
+  #include <tuple>
+#endif
 #include <type_traits>
 
 #include "etl/integral_limits.h"
@@ -435,6 +438,60 @@ namespace
       ETL_CONSTEXPR14 int result = etl::get<3>(data);
       CHECK_EQUAL(3, result);
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_tuple_size)
+    {
+      CHECK_EQUAL(SIZE, (etl::tuple_size<Data>::value));
+      CHECK_EQUAL(SIZE, (std::tuple_size<Data>::value));
+
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(SIZE, (etl::tuple_size_v<Data>));
+      CHECK_EQUAL(SIZE, (std::tuple_size_v<Data>));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_tuple_element)
+    {
+      CHECK_TRUE((std::is_same<int, etl::tuple_element_t<0, Data>>::value));
+      CHECK_TRUE((std::is_same<int, etl::tuple_element_t<SIZE - 1, Data>>::value));
+
+      CHECK_TRUE((std::is_same<int, std::tuple_element<0, Data>::type>::value));
+      CHECK_TRUE((std::is_same<int, std::tuple_element<SIZE - 1, Data>::type>::value));
+    }
+#endif
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_structured_bindings)
+    {
+      etl::array<int, 3> data = {1, 2, 3};
+
+      // Bind by reference and modify.
+      auto& [a, b, c] = data;
+
+      CHECK_EQUAL(1, a);
+      CHECK_EQUAL(2, b);
+      CHECK_EQUAL(3, c);
+
+      a = 10;
+      b = 20;
+      c = 30;
+
+      CHECK_EQUAL(10, data[0]);
+      CHECK_EQUAL(20, data[1]);
+      CHECK_EQUAL(30, data[2]);
+
+      // Bind by const reference.
+      const auto& [x, y, z] = data;
+
+      CHECK_EQUAL(10, x);
+      CHECK_EQUAL(20, y);
+      CHECK_EQUAL(30, z);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_assign)
