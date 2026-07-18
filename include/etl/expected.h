@@ -945,7 +945,7 @@ namespace etl
 
     template < typename F, typename TExp, typename TRet, typename TValueRef,
                typename = etl::enable_if_t<!etl::is_void<TRet>::value && etl::is_expected<TRet>::value
-                                                   && etl::is_same<typename TRet::error_type, TError>::value>>
+                                           && etl::is_same<typename TRet::error_type, TError>::value>>
     auto and_then_impl(F&& f, TExp&& exp) const -> TRet
     {
       if (exp.has_value())
@@ -960,7 +960,7 @@ namespace etl
 
     template < typename F, typename TExp, typename TRet, typename TErrorRef,
                typename = etl::enable_if_t<!etl::is_void<TRet>::value && etl::is_expected<TRet>::value
-                                                   && etl::is_same<typename TRet::value_type, TValue>::value>>
+                                           && etl::is_same<typename TRet::value_type, TValue>::value>>
     auto or_else_impl(F&& f, TExp&& exp) const -> TRet
     {
       if (exp.has_value())
@@ -1353,7 +1353,7 @@ namespace etl
 
     template < typename F, typename TExp, typename TRet,
                typename = etl::enable_if_t< !etl::is_void<TRet>::value && etl::is_expected<TRet>::value
-                                                   && etl::is_same<typename TRet::error_type, TError>::value>>
+                                            && etl::is_same<typename TRet::error_type, TError>::value>>
     auto and_then_impl(F&& f, TExp&& exp) const -> TRet
     {
       if (exp.has_value())
@@ -1368,7 +1368,7 @@ namespace etl
 
     template <typename F, typename TExp, typename TRet, typename TErrorRef,
               typename = etl::enable_if_t< !etl::is_void<TRet>::value && etl::is_expected<TRet>::value
-                                                  && etl::is_same<typename TRet::value_type, void>::value>>
+                                           && etl::is_same<typename TRet::value_type, void>::value>>
     auto or_else_impl(F&& f, TExp&& exp) const -> TRet
     {
       if (exp.has_value())
