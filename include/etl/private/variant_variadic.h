@@ -86,6 +86,8 @@ namespace etl
       static void destroy(char*, size_t) {}
       static void copy(char*, const char*, size_t) {}
       static void move(char*, const char*, size_t) {}
+      static void copy_assign(char*, const char*, size_t) {}
+      static void move_assign(char*, const char*, size_t) {}
     };
 
     // Recursive case.
@@ -128,6 +130,30 @@ namespace etl
         }
       }
 
+      static void copy_assign(char* dst, const char* src, size_t type_id)
+      {
+        if (type_id == Index)
+        {
+          copy_assign_impl(dst, src, etl::integral_constant<bool, etl::is_copy_assignable<THead>::value>{});
+        }
+        else
+        {
+          variant_operations<Index + 1, TRest...>::copy_assign(dst, src, type_id);
+        }
+      }
+
+      static void move_assign(char* dst, const char* src, size_t type_id)
+      {
+        if (type_id == Index)
+        {
+          move_assign_impl(dst, src, etl::integral_constant<bool, etl::is_move_assignable<THead>::value>{});
+        }
+        else
+        {
+          variant_operations<Index + 1, TRest...>::move_assign(dst, src, type_id);
+        }
+      }
+
     private:
 
       static void copy_impl(char* dst, const char* src, etl::true_type)
@@ -143,6 +169,20 @@ namespace etl
       }
 
       static void move_impl(char*, const char*, etl::false_type) {}
+
+      static void copy_assign_impl(char* dst, const char* src, etl::true_type)
+      {
+        *reinterpret_cast<THead*>(dst) = *reinterpret_cast<const THead*>(src);
+      }
+
+      static void copy_assign_impl(char*, const char*, etl::false_type) {}
+
+      static void move_assign_impl(char* dst, const char* src, etl::true_type)
+      {
+        *reinterpret_cast<THead*>(dst) = etl::move(*reinterpret_cast<THead*>(const_cast<char*>(src)));
+      }
+
+      static void move_assign_impl(char*, const char*, etl::false_type) {}
     };
 
     //*******************************************
@@ -431,6 +471,80 @@ namespace etl
       {
       }
 
+      variant_base(const variant_base& other) noexcept(etl::conjunction<etl::is_nothrow_copy_constructible<TTypes>...>::value)
+        : type_id(other.type_id)
+      {
+        if (other.type_id != variant_npos)
+        {
+          variant_operations<0, TTypes...>::copy(data, other.data, other.type_id);
+        }
+      }
+
+      variant_base(variant_base&& other) noexcept(etl::conjunction<etl::is_nothrow_move_constructible<TTypes>...>::value)
+        : type_id(other.type_id)
+      {
+        if (other.type_id != variant_npos)
+        {
+          variant_operations<0, TTypes...>::move(data, other.data, other.type_id);
+        }
+      }
+
+      variant_base& operator=(const variant_base& other) noexcept(etl::conjunction<etl::is_nothrow_copy_constructible<TTypes>...>::value
+                                                                  && etl::conjunction<etl::is_nothrow_copy_assignable<TTypes>...>::value)
+      {
+        if (this != &other)
+        {
+          if ((type_id != variant_npos) && (type_id == other.type_id))
+          {
+            variant_operations<0, TTypes...>::copy_assign(data, other.data, type_id);
+          }
+          else
+          {
+            if (type_id != variant_npos)
+            {
+              variant_operations<0, TTypes...>::destroy(data, type_id);
+              type_id = variant_npos;
+            }
+
+            if (other.type_id != variant_npos)
+            {
+              variant_operations<0, TTypes...>::copy(data, other.data, other.type_id);
+              type_id = other.type_id;
+            }
+          }
+        }
+
+        return *this;
+      }
+
+      variant_base& operator=(variant_base&& other) noexcept(etl::conjunction<etl::is_nothrow_move_constructible<TTypes>...>::value
+                                                             && etl::conjunction<etl::is_nothrow_move_assignable<TTypes>...>::value)
+      {
+        if (this != &other)
+        {
+          if ((type_id != variant_npos) && (type_id == other.type_id))
+          {
+            variant_operations<0, TTypes...>::move_assign(data, other.data, type_id);
+          }
+          else
+          {
+            if (type_id != variant_npos)
+            {
+              variant_operations<0, TTypes...>::destroy(data, type_id);
+              type_id = variant_npos;
+            }
+
+            if (other.type_id != variant_npos)
+            {
+              variant_operations<0, TTypes...>::move(data, other.data, other.type_id);
+              type_id = other.type_id;
+            }
+          }
+        }
+
+        return *this;
+      }
+
       ~variant_base()
       {
         if (type_id != variant_npos)
@@ -474,7 +588,259 @@ namespace etl
       {
       }
 
+      variant_base(const variant_base& other) noexcept(etl::conjunction<etl::is_nothrow_copy_constructible<TTypes>...>::value)
+        : data()
+        , type_id(other.type_id)
+      {
+        copy_construct_from(other, is_all_trivially_copyable{});
+      }
+
+      variant_base(variant_base&& other) noexcept(etl::conjunction<etl::is_nothrow_move_constructible<TTypes>...>::value)
+        : data()
+        , type_id(other.type_id)
+      {
+        move_construct_from(other, is_all_trivially_copyable{});
+      }
+
+      variant_base& operator=(const variant_base& other) noexcept(etl::conjunction<etl::is_nothrow_copy_constructible<TTypes>...>::value
+                                                                  && etl::conjunction<etl::is_nothrow_copy_assignable<TTypes>...>::value)
+      {
+        if (this != &other)
+        {
+          copy_assign_from(other, is_all_trivially_copyable{});
+        }
+        return *this;
+      }
+
+      variant_base& operator=(variant_base&& other) noexcept(etl::conjunction<etl::is_nothrow_move_constructible<TTypes>...>::value
+                                                             && etl::conjunction<etl::is_nothrow_move_assignable<TTypes>...>::value)
+      {
+        if (this != &other)
+        {
+          move_assign_from(other, is_all_trivially_copyable{});
+        }
+        return *this;
+      }
+
       ~variant_base() = default;
+
+    private:
+
+      // All alternatives trivially copyable => a raw-byte copy correctly
+      // reproduces both copy and move construction.
+      typedef etl::integral_constant<bool, etl::conjunction<etl::is_trivially_copyable<TTypes>...>::value> is_all_trivially_copyable;
+
+      //*******************************************
+      // Trivially copyable fast path: raw-byte copy.
+      //*******************************************
+      void copy_construct_from(const variant_base& other, etl::true_type) noexcept
+      {
+        memcpy(static_cast<void*>(&data), static_cast<const void*>(&other.data), sizeof(data));
+      }
+
+      void move_construct_from(const variant_base& other, etl::true_type) noexcept
+      {
+        memcpy(static_cast<void*>(&data), static_cast<const void*>(&other.data), sizeof(data));
+      }
+
+      void copy_assign_from(const variant_base& other, etl::true_type) noexcept
+      {
+        type_id = other.type_id;
+        memcpy(static_cast<void*>(&data), static_cast<const void*>(&other.data), sizeof(data));
+      }
+
+      void move_assign_from(const variant_base& other, etl::true_type) noexcept
+      {
+        type_id = other.type_id;
+        memcpy(static_cast<void*>(&data), static_cast<const void*>(&other.data), sizeof(data));
+      }
+
+      //*******************************************
+      // Non-trivial path: dispatch to the active alternative's own
+      // copy/move constructor. The active union member shares its address
+      // with the union, so the raw-pointer dispatch places the new object
+      // in the correct storage.
+      //*******************************************
+      void copy_construct_from(const variant_base& other, etl::false_type)
+      {
+        if (other.type_id != variant_npos)
+        {
+          variant_operations<0, TTypes...>::copy(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), other.type_id);
+        }
+      }
+
+      void move_construct_from(variant_base& other, etl::false_type)
+      {
+        if (other.type_id != variant_npos)
+        {
+          variant_operations<0, TTypes...>::move(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), other.type_id);
+        }
+      }
+
+      void copy_assign_from(const variant_base& other, etl::false_type)
+      {
+        if ((type_id != variant_npos) && (type_id == other.type_id))
+        {
+          variant_operations<0, TTypes...>::copy_assign(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), type_id);
+          return;
+        }
+
+        if (type_id != variant_npos)
+        {
+          variant_operations<0, TTypes...>::destroy(reinterpret_cast<char*>(&data), type_id);
+          type_id = variant_npos;
+        }
+
+        if (other.type_id != variant_npos)
+        {
+          variant_operations<0, TTypes...>::copy(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), other.type_id);
+          type_id = other.type_id;
+        }
+      }
+
+      void move_assign_from(variant_base& other, etl::false_type)
+      {
+        if ((type_id != variant_npos) && (type_id == other.type_id))
+        {
+          variant_operations<0, TTypes...>::move_assign(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), type_id);
+          return;
+        }
+
+        if (type_id != variant_npos)
+        {
+          variant_operations<0, TTypes...>::destroy(reinterpret_cast<char*>(&data), type_id);
+          type_id = variant_npos;
+        }
+
+        if (other.type_id != variant_npos)
+        {
+          variant_operations<0, TTypes...>::move(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), other.type_id);
+          type_id = other.type_id;
+        }
+      }
+    };
+
+    //*******************************************
+    /// Trait: are all types copy constructible?
+    //*******************************************
+    template <typename... TTypes>
+    struct are_all_copy_constructible : etl::conjunction<etl::is_copy_constructible<TTypes>...>
+    {
+    };
+
+    //*******************************************
+    /// Trait: are all types move constructible?
+    //*******************************************
+    template <typename... TTypes>
+    struct are_all_move_constructible : etl::conjunction<etl::is_move_constructible<TTypes>...>
+    {
+    };
+
+    //*******************************************
+    /// Trait: are all types copy assignable?
+    //*******************************************
+    template <typename... TTypes>
+    struct are_all_copy_assignable : etl::conjunction<etl::is_copy_assignable<TTypes>...>
+    {
+    };
+
+    //*******************************************
+    /// Trait: are all types move assignable?
+    //*******************************************
+    template <typename... TTypes>
+    struct are_all_move_assignable : etl::conjunction<etl::is_move_assignable<TTypes>...>
+    {
+    };
+
+    //*******************************************
+    /// Flat base that conditionally deletes the copy and move CONSTRUCTORS.
+    /// Every special member is declared directly (no intermediate bases) so
+    /// that MSVC does not spuriously delete the defaulted move members when a
+    /// sibling/base subobject has a deleted special member.
+    //*******************************************
+    template <bool IsCopyConstructible, bool IsMoveConstructible>
+    struct variant_constructor_control
+    {
+      variant_constructor_control()                                              = default;
+      variant_constructor_control(const variant_constructor_control&)            = default;
+      variant_constructor_control(variant_constructor_control&&)                 = default;
+      variant_constructor_control& operator=(const variant_constructor_control&) = default;
+      variant_constructor_control& operator=(variant_constructor_control&&)      = default;
+    };
+
+    template <>
+    struct variant_constructor_control<false, true>
+    {
+      variant_constructor_control()                                              = default;
+      variant_constructor_control(const variant_constructor_control&)            = delete;
+      variant_constructor_control(variant_constructor_control&&)                 = default;
+      variant_constructor_control& operator=(const variant_constructor_control&) = default;
+      variant_constructor_control& operator=(variant_constructor_control&&)      = default;
+    };
+
+    template <>
+    struct variant_constructor_control<true, false>
+    {
+      variant_constructor_control()                                              = default;
+      variant_constructor_control(const variant_constructor_control&)            = default;
+      variant_constructor_control(variant_constructor_control&&)                 = delete;
+      variant_constructor_control& operator=(const variant_constructor_control&) = default;
+      variant_constructor_control& operator=(variant_constructor_control&&)      = default;
+    };
+
+    template <>
+    struct variant_constructor_control<false, false>
+    {
+      variant_constructor_control()                                              = default;
+      variant_constructor_control(const variant_constructor_control&)            = delete;
+      variant_constructor_control(variant_constructor_control&&)                 = delete;
+      variant_constructor_control& operator=(const variant_constructor_control&) = default;
+      variant_constructor_control& operator=(variant_constructor_control&&)      = default;
+    };
+
+    //*******************************************
+    /// Flat base that conditionally deletes the copy and move ASSIGNMENT
+    /// operators. Every special member is declared directly (see the note on
+    /// variant_constructor_control above).
+    //*******************************************
+    template <bool IsCopyAssignable, bool IsMoveAssignable>
+    struct variant_assignment_control
+    {
+      variant_assignment_control()                                             = default;
+      variant_assignment_control(const variant_assignment_control&)            = default;
+      variant_assignment_control(variant_assignment_control&&)                 = default;
+      variant_assignment_control& operator=(const variant_assignment_control&) = default;
+      variant_assignment_control& operator=(variant_assignment_control&&)      = default;
+    };
+
+    template <>
+    struct variant_assignment_control<false, true>
+    {
+      variant_assignment_control()                                             = default;
+      variant_assignment_control(const variant_assignment_control&)            = default;
+      variant_assignment_control(variant_assignment_control&&)                 = default;
+      variant_assignment_control& operator=(const variant_assignment_control&) = delete;
+      variant_assignment_control& operator=(variant_assignment_control&&)      = default;
+    };
+
+    template <>
+    struct variant_assignment_control<true, false>
+    {
+      variant_assignment_control()                                             = default;
+      variant_assignment_control(const variant_assignment_control&)            = default;
+      variant_assignment_control(variant_assignment_control&&)                 = default;
+      variant_assignment_control& operator=(const variant_assignment_control&) = default;
+      variant_assignment_control& operator=(variant_assignment_control&&)      = delete;
+    };
+
+    template <>
+    struct variant_assignment_control<false, false>
+    {
+      variant_assignment_control()                                             = default;
+      variant_assignment_control(const variant_assignment_control&)            = default;
+      variant_assignment_control(variant_assignment_control&&)                 = default;
+      variant_assignment_control& operator=(const variant_assignment_control&) = delete;
+      variant_assignment_control& operator=(variant_assignment_control&&)      = delete;
     };
   } // namespace private_variant
 
@@ -483,7 +849,13 @@ namespace etl
   ///\ingroup variant
   //***************************************************************************
   template <typename... TTypes>
-  class variant : private private_variant::variant_base<private_variant::are_all_trivially_destructible<TTypes...>::value, TTypes...>
+  class variant
+    : private private_variant::variant_base<private_variant::are_all_trivially_destructible<TTypes...>::value, TTypes...>
+    , private private_variant::variant_constructor_control< private_variant::are_all_copy_constructible<TTypes...>::value,
+                                                            private_variant::are_all_move_constructible<TTypes...>::value>
+    , private private_variant::variant_assignment_control<
+        private_variant::are_all_copy_constructible<TTypes...>::value && private_variant::are_all_copy_assignable<TTypes...>::value,
+        private_variant::are_all_move_constructible<TTypes...>::value && private_variant::are_all_move_assignable<TTypes...>::value>
   {
     using base_type = private_variant::variant_base<private_variant::are_all_trivially_destructible<TTypes...>::value, TTypes...>;
 
@@ -671,31 +1043,13 @@ namespace etl
     /// Copy constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
-  #include "diagnostic_uninitialized_push.h"
-    ETL_CONSTEXPR14 variant(const variant& other) noexcept(etl::conjunction<etl::is_nothrow_copy_constructible<TTypes>...>::value)
-      : base_type(other.type_id)
-    {
-      if (other.index() != variant_npos)
-      {
-        do_copy_from(other, etl::integral_constant<bool, Is_Trivially_Destructible_Suite>{});
-      }
-    }
-  #include "diagnostic_pop.h"
+    variant(const variant& other) = default;
 
     //***************************************************************************
     /// Move constructor.
     ///\param other The other variant object to copy.
     //***************************************************************************
-  #include "diagnostic_uninitialized_push.h"
-    ETL_CONSTEXPR14 variant(variant&& other) noexcept(etl::conjunction<etl::is_nothrow_move_constructible<TTypes>...>::value)
-      : base_type(other.type_id)
-    {
-      if (other.index() != variant_npos)
-      {
-        do_move_from(other, etl::integral_constant<bool, Is_Trivially_Destructible_Suite>{});
-      }
-    }
-  #include "diagnostic_pop.h"
+    variant(variant&& other) = default;
 
     //***************************************************************************
     /// Destructor.
@@ -806,51 +1160,13 @@ namespace etl
     /// Assignment operator for variant type.
     ///\param other The variant to assign.
     //***************************************************************************
-    variant& operator=(const variant& other) ETL_NOEXCEPT_IF((etl::conjunction<etl::is_nothrow_copy_constructible<TTypes>...>::value))
-    {
-      if (this != &other)
-      {
-        if (other.index() == variant_npos)
-        {
-          type_id = variant_npos;
-        }
-        else
-        {
-          do_destroy();
-
-          do_copy_from(other, etl::integral_constant<bool, Is_Trivially_Destructible_Suite>{});
-
-          type_id = other.type_id;
-        }
-      }
-
-      return *this;
-    }
+    variant& operator=(const variant& other) = default;
 
     //***************************************************************************
-    /// Assignment operator for variant type.
+    /// Move assignment operator for variant type.
     ///\param other The variant to assign.
     //***************************************************************************
-    variant& operator=(variant&& other) ETL_NOEXCEPT_IF((etl::conjunction<etl::is_nothrow_move_constructible<TTypes>...>::value))
-    {
-      if (this != &other)
-      {
-        if (other.index() == variant_npos)
-        {
-          type_id = variant_npos;
-        }
-        else
-        {
-          do_destroy();
-
-          do_move_from(other, etl::integral_constant<bool, Is_Trivially_Destructible_Suite>{});
-
-          type_id = other.type_id;
-        }
-      }
-
-      return *this;
-    }
+    variant& operator=(variant&& other) = default;
 
     //***************************************************************************
     /// Checks whether the variant doesn't contain a valid value.
@@ -1149,36 +1465,6 @@ namespace etl
     {
       // Non-trivially destructible: use placement new.
       ::new (static_cast<char*>(data)) T(etl::forward<U>(value));
-    }
-
-    //***************************************************************************
-    /// Copy from another variant.
-    //***************************************************************************
-    void do_copy_from(const variant& other, etl::integral_constant<bool, true>)
-    {
-      // Trivially destructible: copy via memcpy to avoid issues with non-trivial copy assignment in union.
-      memcpy(static_cast<void*>(&data), static_cast<const void*>(&other.data), sizeof(data));
-    }
-
-    void do_copy_from(const variant& other, etl::integral_constant<bool, false>)
-    {
-      // Non-trivially destructible: use switch-based dispatch.
-      private_variant::variant_operations<0, TTypes...>::copy(data, other.data, other.type_id);
-    }
-
-    //***************************************************************************
-    /// Move from another variant.
-    //***************************************************************************
-    void do_move_from(variant& other, etl::integral_constant<bool, true>)
-    {
-      // Trivially destructible: copy via memcpy (trivial move == copy).
-      memcpy(static_cast<void*>(&data), static_cast<const void*>(&other.data), sizeof(data));
-    }
-
-    void do_move_from(variant& other, etl::integral_constant<bool, false>)
-    {
-      // Non-trivially destructible: use switch-based dispatch.
-      private_variant::variant_operations<0, TTypes...>::move(data, other.data, other.type_id);
     }
 
   #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
