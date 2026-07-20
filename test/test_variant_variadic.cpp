@@ -1097,6 +1097,71 @@ namespace
     }
   #endif
 
+  #if ETL_USING_EXCEPTIONS
+    //*************************************************************************
+    // A throwing emplace() must leave the variant valueless-after-exception
+    // (index() == variant_npos) rather than reporting the stale old index.
+    struct ThrowOnConstruct
+    {
+      struct exception
+      {
+      };
+
+      ThrowOnConstruct() = default;
+      explicit ThrowOnConstruct(int)
+      {
+        throw exception();
+      }
+    };
+
+    TEST(test_emplace_throwing_is_valueless_by_exception)
+    {
+      // Trivially destructible suite (variadic_union storage).
+      {
+        etl::variant<int, ThrowOnConstruct> v;
+        v.emplace<int>(42);
+        CHECK(!v.valueless_by_exception());
+        CHECK_EQUAL(0U, v.index());
+
+        bool threw = false;
+        try
+        {
+          v.emplace<ThrowOnConstruct>(1);
+        }
+        catch (const ThrowOnConstruct::exception&)
+        {
+          threw = true;
+        }
+
+        CHECK(threw);
+        CHECK(v.valueless_by_exception());
+        CHECK_EQUAL(etl::variant_npos, v.index());
+      }
+
+      // Non-trivially destructible suite (uninitialized_buffer storage).
+      {
+        etl::variant<std::string, ThrowOnConstruct> v;
+        v.emplace<std::string>("Some Text");
+        CHECK(!v.valueless_by_exception());
+        CHECK_EQUAL(0U, v.index());
+
+        bool threw = false;
+        try
+        {
+          v.emplace<1>(1);
+        }
+        catch (const ThrowOnConstruct::exception&)
+        {
+          threw = true;
+        }
+
+        CHECK(threw);
+        CHECK(v.valueless_by_exception());
+        CHECK_EQUAL(etl::variant_npos, v.index());
+      }
+    }
+  #endif
+
     //*************************************************************************
     TEST(test_copy_constructor)
     {
