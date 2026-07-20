@@ -695,7 +695,7 @@ namespace etl
     template <typename T>
     typename etl::enable_if<etl::is_integral<T>::value, bool>::type write(T value, uint_least8_t nbits = CHAR_BIT * sizeof(T))
     {
-      bool success = (available(nbits) > 0U);
+      bool success = (nbits > 0U) && (available(nbits) > 0U);
 
       if (success)
       {
@@ -914,6 +914,7 @@ namespace etl
     template <typename T>
     void write_data(T value, uint_least8_t nbits)
     {
+      ETL_ASSERT(nbits > 0U, ETL_ERROR_GENERIC("bit_stream_writer::write_data: nbits is zero"));
       ETL_ASSERT(nbits <= (CHAR_BIT * sizeof(T)), ETL_ERROR_GENERIC("bit_stream_writer::write_data: nbits too large"));
 
       // Apply the byte order (endianness).
@@ -1305,6 +1306,7 @@ namespace etl
     template <typename T>
     T read_value(uint_least8_t nbits, bool is_signed)
     {
+      ETL_ASSERT(nbits > 0U, ETL_ERROR_GENERIC("bit_stream_reader::read_value: nbits is zero"));
       ETL_ASSERT(nbits <= (CHAR_BIT * sizeof(T)), ETL_ERROR_GENERIC("bit_stream_reader::read_value: nbits too large"));
 
       T             value = 0;
