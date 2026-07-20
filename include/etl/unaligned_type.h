@@ -666,7 +666,7 @@ namespace etl
     unaligned_type_ext(unaligned_type_ext<T, Endian_Other> && other)
       : private_unaligned_type::unaligned_type_storage_ext<Size>(other.storage)
     {
-      // If we're constructing from a different endianess then we need to
+      // If we're constructing from a different endianness then we need to
       // reverse the data order.
       if (Endian != Endian_Other)
       {
@@ -728,7 +728,7 @@ namespace etl
     {
       this->storage = other.storage;
 
-      // If we're assigning from a different endianess then we need to reverse
+      // If we're assigning from a different endianness then we need to reverse
       // the data order.
       if (Endian != Endian_Other)
       {

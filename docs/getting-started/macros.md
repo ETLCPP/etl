@@ -83,19 +83,19 @@ These may be defined in the project settings or the user created `etl_profile.h`
 | `ETL_NODISCARD`                      | If `ETL_CPP11_SUPPORTED` is defined as `1` then this macro is defined as `[[nodiscard]]`, otherwise defined as blank.|
 | `ETL_DEPRECATED`                     | If `ETL_CPP14_SUPPORTED` is defined as `1` then this macro is defined as `[[deprecated]]`, otherwise defined as blank.|
 | `ETL_DEPRECATED_REASON(reason)`      | If `ETL_CPP14_SUPPORTED` is defined as `1` then this macro is defined as `[[deprecated(reason)]]`, otherwise defined as blank.|
-| `ETL_FALLTHROUGH`                    | If `ETL_CPP17_SUPPORTED` is defined as `1` then this macro is defined as `[[falltrough]]`, otherwise defined as blank.|
+| `ETL_FALLTHROUGH`                    | If `ETL_CPP17_SUPPORTED` is defined as `1` then this macro is defined as `[[fallthrough]]`, otherwise defined as blank.|
 | `ETL_NORETURN`                       | If `ETL_CPP11_SUPPORTED` is defined as `1` then this macro is defined as `[[noreturn]]`, otherwise defined as blank.|
 | `ETL_OR_STD`                         |    If ETL_NO_STL is defined and ETL_IN_UNIT_TEST is not then `ETL_OR_STD` is defined as `etl`, otherwise it is defined as `std`.|
 | `ETL_IN_UNIT_TEST`                   | If defined, then the code is being compiled in the unit tests.<br/>For internal ETL use only.|
 | `ETL_HAS_ATOMIC`                     | This is defined as `1` if the compiler supplies an atomic class, otherwise `0`.|
 | `ETL_INLINE_VAR`                     | If `ETL_CPP17_SUPPORTED` is defined as `1` then this macro is defined as `inline`, otherwise defined as blank.|
-| `ETL_USING_STL`                      | This macro will be defined as `0` & `1` dependant of whether `ETL_NO_STL` is defined or not.|
+| `ETL_USING_STL`                      | This macro will be defined as `0` & `1` depending on whether `ETL_NO_STL` is defined or not.|
 | `ETL_NOT_USING_STL`                  | Inversion of `ETL_USING_STL`.|
-| `ETL_USING_STLPORT`                  | This macro will be defined as `0` & `1` dependant of whether `ETL_STLPORT` is defined or not.|
+| `ETL_USING_STLPORT`                  | This macro will be defined as `0` & `1` depending on whether `ETL_STLPORT` is defined or not.|
 | `ETL_NOT_USING_STLPORT`              | Inversion of `ETL_USING_STLPORT`.|
-| `ETL_USING_8BIT_TYPES`               | This macro will be defined as `0` & `1` dependant of whether `CHAR_BIT == 8` or not.|   
+| `ETL_USING_8BIT_TYPES`               | This macro will be defined as `0` & `1` depending on whether `CHAR_BIT == 8` or not.|   
 | `ETL_NOT_USING_8BIT_TYPES`           | Inversion of `ETL_USING_8BIT_TYPES`.|
-| `ETL_USING_64BIT_TYPES`              | This macro will be defined as `0` & `1` dependant of whether `ETL_NO_64BIT_TYPES` is defined or not.|
+| `ETL_USING_64BIT_TYPES`              | This macro will be defined as `0` & `1` depending on whether `ETL_NO_64BIT_TYPES` is defined or not.|
 | `ETL_NOT_USING_64BIT_TYPES`          | Inversion of `ETL_USING_64BIT_TYPES`.|
 | `ETL_HAS_ISTRING_REPAIR`             | Set to `1` if the repair functionality for `etl::istring` is enabled, otherwise `0`.|
 | `ETL_HAS_IVECTOR_REPAIR`             | Set to `1` if the repair functionality for `etl::ivector` is enabled, otherwise `0`.|
@@ -103,7 +103,7 @@ These may be defined in the project settings or the user created `etl_profile.h`
 | `ETL_IS_DEBUG_BUILD`                 | Set to `1` if in a debug build, otherwise `0`.|
 | `ETL_HAS_POLYMORPHIC_MESSAGES`       | Set to `1` if messages are polymorphic, otherwise `0`.|
 | `ETL_HAS_ERROR_ON_STRING_TRUNCATION` | Set to `1` if truncated strings are an error, otherwise `0`.|
-| `ETL_USING_LIBC_WCHAR_H`             | These macros will be defined as `0` & `1` dependant of whether `ETL_NO_LIBC_WCHAR_H` is defined or not.|
+| `ETL_USING_LIBC_WCHAR_H`             | These macros will be defined as `0` & `1` depending on whether `ETL_NO_LIBC_WCHAR_H` is defined or not.|
 | `ETL_NOT_USING_LIBC_WCHAR_H`         | Inversion of `ETL_USING_LIBC_WCHAR_H`.|
 | `ETL_USING_CPP11`                    | This is defined as `1` if the compiler supports C++11, otherwise `0`.|
 | `ETL_USING_CPP14`                    | This is defined as `1` if the compiler supports C++14, otherwise `0`.|
