@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: bazel build //test:etl_tests --cxxopt=-std=c++23 --copt=-DETL_NO_STL
