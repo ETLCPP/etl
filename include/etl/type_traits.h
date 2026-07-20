@@ -3317,7 +3317,7 @@ namespace etl
 #else
 
   //*********************************************
-  // Assume that anything other than arithmetics
+  // Assume that anything other than arithmetic
   // and pointers return false for the traits.
   //*********************************************
 
