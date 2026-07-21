@@ -36,13 +36,12 @@ RUN set -eux \
     && apt-get -y install --no-install-recommends \
         python3-full \
         python3-pip \
-        python3-cogapp \
         git \
         wget \
         cmake \
         clang-format \
-        clang-format-18 \
         lcov \
+    && python3 -m pip install --no-cache-dir cogapp \
     && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
