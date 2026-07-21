@@ -211,6 +211,7 @@ namespace etl
     typedef T                                element_type;
     typedef typename etl::remove_cv<T>::type value_type;
     typedef size_t                           size_type;
+    typedef ptrdiff_t                        difference_type;
     typedef T&                               reference;
     typedef const T&                         const_reference;
     typedef T*                               pointer;
@@ -788,6 +789,7 @@ namespace etl
     typedef T                                element_type;
     typedef typename etl::remove_cv<T>::type value_type;
     typedef size_t                           size_type;
+    typedef ptrdiff_t                        difference_type;
     typedef T&                               reference;
     typedef const T&                         const_reference;
     typedef T*                               pointer;
