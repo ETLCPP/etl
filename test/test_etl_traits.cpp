@@ -33,6 +33,7 @@ SOFTWARE.
 #include "etl/platform.h"
 #include "etl/char_traits.h"
 #include "etl/mutex.h"
+#include "etl/semaphore.h"
 #include "etl/version.h"
 
 namespace
@@ -69,6 +70,7 @@ namespace
       // Has...
       CHECK_EQUAL((ETL_HAS_ATOMIC == 1), etl::traits::has_atomic);
       CHECK_EQUAL((ETL_HAS_MUTEX == 1), etl::traits::has_mutex);
+      CHECK_EQUAL((ETL_HAS_SEMAPHORE == 1), etl::traits::has_semaphore);
       CHECK_EQUAL((ETL_HAS_NULLPTR == 1), etl::traits::has_nullptr);
       CHECK_EQUAL((ETL_HAS_CHAR8_T == 1), etl::traits::has_char8_t);
       CHECK_EQUAL((ETL_HAS_NATIVE_CHAR8_T == 1), etl::traits::has_native_char8_t);
