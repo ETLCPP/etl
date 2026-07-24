@@ -59,7 +59,7 @@ namespace etl
 
     // Convertible to any type of null non-member pointer.
     template <class T>
-    operator T*() const
+    ETL_CONSTEXPR operator T*() const ETL_NOEXCEPT
     {
       return 0;
     }
@@ -74,7 +74,7 @@ namespace etl
   /// A null option.
   ///\ingroup utilities
   //*****************************************************************************
-  ETL_INLINE_VAR const nullopt_t nullopt = {};
+  ETL_INLINE_VAR ETL_CONSTANT nullopt_t nullopt = {};
 
   //***************************************************************************
   /// Exception for optional.
