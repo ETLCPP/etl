@@ -74,7 +74,7 @@ namespace etl
   /// A null option.
   ///\ingroup utilities
   //*****************************************************************************
-  const nullopt_t nullopt = {};
+  ETL_INLINE_VAR const nullopt_t nullopt = {};
 
   //***************************************************************************
   /// Exception for optional.
