@@ -94,7 +94,7 @@ pool_ext(char* buffer, size_t size)
 ```
 **Description**  
 For `etl::pool_ext`.
-Constructs a pool from an external bufffer.  
+Constructs a pool from an external buffer.  
 No elements are constructed.
 
 ## Operations
