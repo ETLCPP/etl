@@ -231,6 +231,35 @@ namespace etl
     struct enable_if_comparable : etl::enable_if<is_standard_integer<T>::value && is_standard_integer<U>::value, TReturn>
     {
     };
+
+    //***********************************
+    /// cmp_less implementation helpers, selected by SFINAE to avoid
+    /// signed/unsigned comparison warnings in dead code branches.
+    //***********************************
+
+    // Both same signedness.
+    template <typename T, typename U>
+    ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value == etl::is_signed<U>::value, bool>::type cmp_less_impl(T t, U u)
+      ETL_NOEXCEPT
+    {
+      return t < u;
+    }
+
+    // T is signed, U is unsigned.
+    template <typename T, typename U>
+    ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value && !etl::is_signed<U>::value, bool>::type cmp_less_impl(T t, U u)
+      ETL_NOEXCEPT
+    {
+      return (t < T(0)) || (typename etl::make_unsigned<T>::type(t) < u);
+    }
+
+    // T is unsigned, U is signed.
+    template <typename T, typename U>
+    ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<!etl::is_signed<T>::value && etl::is_signed<U>::value, bool>::type cmp_less_impl(T t, U u)
+      ETL_NOEXCEPT
+    {
+      return (u >= U(0)) && (t < typename etl::make_unsigned<U>::type(u));
+    }
   } // namespace private_utility
 
   //***************************************************************************
@@ -264,9 +293,7 @@ namespace etl
   template <typename T, typename U>
   ETL_NODISCARD ETL_CONSTEXPR typename private_utility::enable_if_comparable<T, U, bool>::type cmp_less(T t, U u) ETL_NOEXCEPT
   {
-    return (etl::is_signed<T>::value == etl::is_signed<U>::value) ? (t < u)
-           : etl::is_signed<T>::value                             ? ((t < T(0)) || (typename etl::make_unsigned<T>::type(t) < u))
-                                                                  : ((u >= U(0)) && (t < typename etl::make_unsigned<U>::type(u)));
+    return etl::private_utility::cmp_less_impl(t, u);
   }
 
   //***************************************************************************
