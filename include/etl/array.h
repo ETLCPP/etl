@@ -1053,7 +1053,13 @@ namespace etl
   template <typename T, typename... TValues>
   constexpr auto make_array(TValues&&... values) ETL_NOEXCEPT -> etl::array<T, sizeof...(TValues)>
   {
-    return {etl::forward<T>(values)...};
+    // Forward each argument as its own deduced type, then convert explicitly to T.
+    // Forwarding as T (the old behaviour) made the call ill-formed for any const-qualified
+    // lvalue of type T: forward<T> requires a non-const T&, and a T&& cannot bind to a
+    // reference-related const lvalue. The explicit conversion also keeps narrowing
+    // initialisers (e.g. make_array<char>(0, 1)) working, which plain forwarding into the
+    // braced initialiser list would reject.
+    return {static_cast<T>(etl::forward<TValues>(values))...};
   }
 #endif
 
