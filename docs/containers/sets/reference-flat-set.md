@@ -32,13 +32,18 @@ etl::reference_flat_setdata{ 0, 1, 2, 3, 4, 5, 6, 7 };
 Defines data as a set of int/int pairs, of length 8, containing the supplied data.
 
 ## Make template
-C++11 and above
-template <typename TKey
+**C++11 and above**
+```cpp
+template <typename TKey,
+          typename TKeyCompare = etl::less<TKey>,
           typename... T>
-constexpr auto make_reference_flat_set(T&&... values)
+constexpr auto make_reference_flat_set(T&&... keys) -> etl::reference_flat_set<TKey, sizeof...(T), TKeyCompare>
+```
 
 ### Example
+```cpp
 auto data = etl::make_reference_flat_set<int>(0, 1, 2, 3, 4, 5, 6, 7);
+```
 
 ## Member types
 

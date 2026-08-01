@@ -40,7 +40,7 @@ template <typename TKey,
           typename TMapped, 
           typename TKeyCompare = etl::less<TKey>, 
           typename... TPairs>
-constexpr auto make_flat_map(TValues&&... values)
+constexpr auto make_flat_map(TPairs&&... pairs) -> etl::flat_map<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
 ```
 
 ### Example

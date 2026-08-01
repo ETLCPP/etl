@@ -33,20 +33,20 @@ etl::flat_multimap data{ etl::pair{0, 1}, etl::pair{2, 3}, etl::pair{4, 5}, etl:
 ```
 Defines data as an `flat_multimap` of `int`/`int` pairs, of length 4, containing the supplied data.
 
-## make_flat_map
+## make_flat_multimap
 C++11 and above
 ```cpp
 template <typename TKey, 
           typename TMapped, 
           typename TKeyCompare = etl::less<TKey>, 
           typename... TPairs>
-constexpr auto make_flat_map(TValues&&... values)
+constexpr auto make_flat_multimap(TPairs&&... pairs) -> etl::flat_multimap<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
 ```
 
 ### Example
 ```cpp
-auto data = etl::make_flat_map<int, int>(etl::pair{0, 1}, etl::pair{2, 3}, 
-                                         etl::pair{4, 5}, etl::pair{6, 7});
+auto data = etl::make_flat_multimap<int, int>(etl::pair{0, 1}, etl::pair{2, 3},
+                                              etl::pair{4, 5}, etl::pair{6, 7});
 ```
 
 ## Member types

@@ -39,7 +39,7 @@ Defines data as an array of 'int', of length '10', containing the supplied data.
 
 ```cpp
 template <typename T, typename... TValues>
-constexpr auto make_array(TValues&&... values)
+constexpr auto make_array(TValues&&... values) -> etl::array<T, sizeof...(TValues)>
 ```
 
 ### Example

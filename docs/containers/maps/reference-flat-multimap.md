@@ -36,19 +36,20 @@ etl::reference_flat_multimap data{ etl::pair{0, 1}, etl::pair{2, 3}, etl::pair{4
 Defines data as an reference_flat_multimap of int, of length 4, containing the supplied data.
 
 ## Make template
-C++11 and above
-
+**C++11 and above**
 ```cpp
-template <typename TKey, 
-          typename TMapped, 
-          typename TKeyCompare = etl::less<TKey>, 
+template <typename TKey,
+          typename TMapped,
+          typename TKeyCompare = etl::less<TKey>,
           typename... TPairs>
-constexpr auto make_reference_flat_map(TValues&&... values)
+constexpr auto make_reference_flat_multimap(TPairs&&... pairs) -> etl::reference_flat_multimap<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
 ```
 
 ### Example
+```cpp
 auto data = etl::make_reference_flat_multimap<int, int>(etl::pair{0, 1}, etl::pair{2, 3},
-                                                   etl::pair{4, 5}, etl::pair{6, 7});
+                                                        etl::pair{4, 5}, etl::pair{6, 7});
+```
 
 ## Member types
 

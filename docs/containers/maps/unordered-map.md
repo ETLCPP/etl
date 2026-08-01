@@ -44,11 +44,11 @@ C++11 and above
 
 ```cpp
 template <typename TKey, 
-          typename TValue, 
-          typename THash       = etl::hash<TKey>, 
-          typename TKeyEqual   = etl::equal_to<TKey>
+          typename T,
+          typename THash      = etl::hash<TKey>,
+          typename TKeyEqual  = etl::equal_to<TKey>,
           typename... TPairs>
-constexpr auto make_unordered_map(TValues&&... values)
+constexpr auto make_unordered_map(TPairs&&... pairs) -> etl::unordered_map<TKey, T, sizeof...(TPairs), sizeof...(TPairs), THash, TKeyEqual>
 ```
 
 ### Example
