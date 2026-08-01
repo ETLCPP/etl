@@ -2300,6 +2300,29 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+    // Arguments that are const-qualified lvalues of the element type used to be rejected:
+    // the old implementation forwarded each argument as T, and forward<T> cannot accept a
+    // const T lvalue (it requires a non-const T&, and T&& cannot bind to a reference-related
+    // const lvalue).
+    TEST(test_make_deque_from_const_lvalues_of_element_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_deque<char>(static_const_lvalue, local_const_lvalue, mutable_lvalue);
+
+      using Type = etl::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same<char, Type>::value));
+
+      CHECK_EQUAL(42, data[0]);
+      CHECK_EQUAL(43, data[1]);
+      CHECK_EQUAL(44, data[2]);
+    }
+#endif
+
+    //*************************************************************************
     TEST(test_fill)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
