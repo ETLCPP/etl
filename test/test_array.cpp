@@ -841,6 +841,30 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    // The arguments are converted to the element type with static_cast, so narrowing
+    // initialisers (int literals and int lvalues narrowed to char) must keep working.
+    // Plain forwarding into the braced initialiser list would reject them.
+    TEST(test_make_array_from_narrowing_values)
+    {
+      static const int static_const_int = 45;
+      const int        local_const_int  = 46;
+      int              mutable_int      = 47;
+
+      auto data = etl::make_array<char>(0, 1, static_const_int, local_const_int, mutable_int);
+
+      using Type = etl::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same<char, Type>::value));
+
+      CHECK_EQUAL(0, data[0]);
+      CHECK_EQUAL(1, data[1]);
+      CHECK_EQUAL(45, data[2]);
+      CHECK_EQUAL(46, data[3]);
+      CHECK_EQUAL(47, data[4]);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP14
     TEST(test_make_array_is_constexpr)
     {
