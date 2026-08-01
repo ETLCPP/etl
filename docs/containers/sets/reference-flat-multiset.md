@@ -41,8 +41,25 @@ constexpr auto make_reference_flat_multiset(T&&... keys) -> etl::reference_flat_
 ```
 
 ### Example
+
+{{< callout type="warning" >}}
+  This example does not currently compile: `make_reference_flat_multiset` cannot be
+  instantiated, because the reference containers have no `initializer_list`
+  constructor for its braced return value to bind to. This is a known defect.
+{{< /callout >}}
+
 ```cpp
-auto data = etl::make_reference_flat_multiset<int>(0, 1, 2, 3, 4, 5, 6, 7);
+// The referenced objects must outlive the container.
+int k0 = 0;
+int k1 = 1;
+int k2 = 2;
+int k3 = 3;
+int k4 = 4;
+int k5 = 5;
+int k6 = 6;
+int k7 = 7;
+
+auto data = etl::make_reference_flat_multiset<int>(k0, k1, k2, k3, k4, k5, k6, k7);
 ```
 
 ## Member types

@@ -45,8 +45,8 @@ constexpr auto make_flat_map(TPairs&&... pairs) -> etl::flat_map<TKey, TMapped, 
 
 ### Example
 ```cpp
-auto data = etl::make_flat_map<int, int>(etl::pair{0, 1}, etl::pair{2, 3}, 
-                                         etl::pair{4, 5}, etl::pair{6, 7});
+auto data = etl::make_flat_map<int, int>(etl::pair<int, int>{0, 1}, etl::pair<int, int>{2, 3},
+                                         etl::pair<int, int>{4, 5}, etl::pair<int, int>{6, 7});
 ```
 
 ## Member types

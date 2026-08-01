@@ -46,9 +46,21 @@ constexpr auto make_reference_flat_multimap(TPairs&&... pairs) -> etl::reference
 ```
 
 ### Example
+
+{{< callout type="warning" >}}
+  This example does not currently compile: `make_reference_flat_multimap` cannot be
+  instantiated, because the reference containers have no `initializer_list`
+  constructor for its braced return value to bind to. This is a known defect.
+{{< /callout >}}
+
 ```cpp
-auto data = etl::make_reference_flat_multimap<int, int>(etl::pair{0, 1}, etl::pair{2, 3},
-                                                        etl::pair{4, 5}, etl::pair{6, 7});
+// The referenced objects must outlive the container.
+etl::pair<int, int> p0{0, 1};
+etl::pair<int, int> p1{2, 3};
+etl::pair<int, int> p2{4, 5};
+etl::pair<int, int> p3{6, 7};
+
+auto data = etl::make_reference_flat_multimap<int, int>(p0, p1, p2, p3);
 ```
 
 ## Member types

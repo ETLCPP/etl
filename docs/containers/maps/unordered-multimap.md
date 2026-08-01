@@ -51,8 +51,8 @@ constexpr auto make_unordered_multimap(TPairs&&... pairs) -> etl::unordered_mult
 
 ### Example
 ```cpp
-auto data = etl::make_unordered_multimap<int, int>(etl::pair{0, 1}, etl::pair{2, 3},
-                                                   etl::pair{4, 5}, etl::pair{6, 7});
+auto data = etl::make_unordered_multimap<int, int>(etl::pair<int, int>{0, 1}, etl::pair<int, int>{2, 3},
+                                                   etl::pair<int, int>{4, 5}, etl::pair<int, int>{6, 7});
 ```
 
 ## Member types
