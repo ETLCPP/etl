@@ -32,9 +32,11 @@ etl::deque data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 Defines data as an `deque` of `int`, of length `10`, containing the supplied data.
 
 ## Make template
+**C++11 and above**
+```cpp
 template <typename T, typename... TValues>
-  constexpr auto make_deque(TValues&&... values)
-  C++11 and above
+constexpr auto make_deque(TValues&&... values) -> etl::deque<T, sizeof...(TValues)>
+```
 
 ### Example
 ```cpp
