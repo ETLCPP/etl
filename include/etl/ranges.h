@@ -150,7 +150,8 @@ namespace etl
         return *etl::prev(cend());
       }
 
-      constexpr decltype(auto) operator[](size_t i)
+      template < typename D2 = D, etl::enable_if_t<!etl::is_random_access_iterator< decltype(etl::declval<const D2&>().begin())>::value, int> = 0>
+      constexpr decltype(auto) operator[](range_difference_t<D2> i)
       {
         auto it{static_cast<D*>(this)->begin()};
         etl::advance(it, i);
@@ -158,13 +159,13 @@ namespace etl
       }
 
       template < typename D2 = D, etl::enable_if_t<etl::is_random_access_iterator< decltype(etl::declval<const D2&>().begin())>::value, int> = 0>
-      constexpr decltype(auto) operator[](size_t i)
+      constexpr decltype(auto) operator[](range_difference_t<D2> i)
       {
         return static_cast<D*>(this)->begin()[i];
       }
 
       template < typename D2 = D, etl::enable_if_t<etl::is_random_access_iterator< decltype(etl::declval<const D2&>().begin())>::value, int> = 0>
-      constexpr decltype(auto) operator[](size_t i) const
+      constexpr decltype(auto) operator[](range_difference_t<D2> i) const
       {
         return cbegin()[i];
       }
@@ -502,6 +503,11 @@ namespace etl
         return _i;
       }
 
+      constexpr value_type operator[](difference_type n) const
+      {
+        return *(*this + n);
+      }
+
     private:
 
       value_type _i;
@@ -671,6 +677,11 @@ namespace etl
       constexpr value_type operator*()
       {
         return _value;
+      }
+
+      constexpr value_type operator[](difference_type n) const
+      {
+        return *(*this + n);
       }
 
     private:

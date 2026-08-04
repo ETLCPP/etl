@@ -1143,9 +1143,12 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
-      compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
+      Compare_Data::iterator cdi = compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
 
-      data.erase(data.begin() + 2, data.begin() + 4);
+      Data::iterator di = data.erase(data.begin() + 2, data.begin() + 4);
+
+      CHECK(cdi == compare_data.begin() + 2);
+      CHECK(di == data.begin() + 2);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 

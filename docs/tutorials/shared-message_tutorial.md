@@ -34,7 +34,7 @@ To this end a template alias is defined; `etl::atomic_counted_message`, which us
 In a muti-threaded or interrupt driven system, a method must be derived to manage access to the pool. 
 
 All reference counted messages have an owner. 
-Owners are obects based on `etl::ireference_counted_message_pool`.
+Owners are objects based on `etl::ireference_counted_message_pool`.
 
 A reference counted message pool will allocate reference counted messages. The storage for these are allocated from a supplied memory block allocator.
 
@@ -256,7 +256,7 @@ private:
 };
 
 //*****************************************************************************
-// A message bus that can accomodate two subscribers.
+// A message bus that can accommodate two subscribers.
 //*****************************************************************************
 struct Bus : public etl::message_bus<2U>
 {
