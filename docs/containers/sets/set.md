@@ -36,9 +36,9 @@ Defines data as an set of `int`, of length 8, containing the supplied data.
 
 ```cpp
 template <typename TKey, 
-          typename TKeyCompare = etl::less<TKey>, 
-          typename... TPairs>
-constexpr auto make_set(TValues&&... values)
+          typename TCompare = etl::less<TKey>,
+          typename... T>
+constexpr auto make_set(T&&... keys) -> etl::set<TKey, sizeof...(T), TCompare>
 ```
 
 ### Example

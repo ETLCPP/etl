@@ -18,7 +18,7 @@ The `initializer_list` template class is a special case in that it *must* have a
 
 This header will either include the standard `<initializer_list>` header, or attempt to define a `std::initializer_list` template class that is compatible with the current compiler.  
 
-The header will define `ETL_USING_INITIALIZER_LIST` to either `1` or `0` dependant of whether `std::initializer_list` is available or not.  
+The header will define `ETL_USING_INITIALIZER_LIST` to either `1` or `0` dependent on whether `std::initializer_list` is available or not.  
 
 The ETL will select the STL version if you are using the STL and `ETL_FORCE_ETL_INITIALIZER_LIST` is not defined or, 
 `ETL_FORCE_STD_INITIALIZER_LIST` is defined.  
