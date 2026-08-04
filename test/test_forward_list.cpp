@@ -1446,6 +1446,32 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    // Arguments that are const-qualified lvalues must be accepted and must not
+    // affect the deduced element type. Guards against the defect fixed for
+    // make_array and make_deque, which forwarded each argument as the element
+    // type rather than as its own deduced type and so rejected const lvalues.
+    TEST(test_make_forward_list_from_const_lvalues_of_element_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_forward_list(static_const_lvalue, local_const_lvalue, mutable_lvalue);
+
+      auto v     = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same<char, Type>::value));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(42, *itr++);
+      CHECK_EQUAL(43, *itr++);
+      CHECK_EQUAL(44, *itr++);
+    }
+#endif
+
+    //*************************************************************************
     TEST(test_forward_list_exception_types)
     {
       // Verify exception class hierarchy is correct
