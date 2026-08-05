@@ -3724,7 +3724,7 @@ namespace etl
   struct common_type<T1, T2>
     : etl::conditional< etl::is_same<T1, typename etl::decay<T1>::type>::value && etl::is_same<T2, typename etl::decay<T2>::type>::value,
                         private_common_type::common_type_2_impl<T1, T2>,
-                        common_type<typename etl::decay<T2>::type, typename etl::decay<T2>::type>>::type
+                        common_type<typename etl::decay<T1>::type, typename etl::decay<T2>::type>>::type
   {
   };
 
