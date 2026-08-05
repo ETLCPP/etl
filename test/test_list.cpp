@@ -2377,5 +2377,29 @@ namespace
       CHECK_EQUAL(3, data2.begin()->value);
     }
 #endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    // An explicit element type selects the element type and converts every
+    // argument (Library Fundamentals TS make_array design), accepting
+    // const-qualified lvalues and narrowing initialisers.
+    TEST(test_make_list_explicit_element_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_list<char>(static_const_lvalue, local_const_lvalue, mutable_lvalue, 45, 46);
+
+      CHECK((std::is_same<etl::list<char, 5U>, decltype(data)>::value));
+
+      auto itr = data.begin();
+      CHECK_EQUAL(42, *itr++);
+      CHECK_EQUAL(43, *itr++);
+      CHECK_EQUAL(44, *itr++);
+      CHECK_EQUAL(45, *itr++);
+      CHECK_EQUAL(46, *itr++);
+    }
+#endif
   }
 } // namespace

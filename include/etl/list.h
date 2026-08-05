@@ -2218,10 +2218,13 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_list(T&&... t) -> etl::list<typename etl::common_type_t<T...>, sizeof...(T)>
+  template <typename T = void, typename... TValues>
+  constexpr auto make_list(TValues&&... values) -> etl::list<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
   {
-    return {etl::forward<T>(t)...};
+    // Library Fundamentals TS make_array design: the element type is T when
+    // supplied explicitly, otherwise the decayed common type of the arguments.
+    using TElement = etl::private_make::element_type_t<T, TValues...>;
+    return {static_cast<TElement>(etl::forward<TValues>(values))...};
   }
 #endif
 

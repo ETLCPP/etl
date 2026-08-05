@@ -65,15 +65,20 @@ Defines data as an `forward_list` of int, of length 10, containing the supplied 
 ## Make template
 **C++11 and above**  
 ```cpp
-template <typename... T>
-constexpr auto make_forward_list(T&&... t) -> etl::forward_list<typename etl::common_type_t<T...>, sizeof...(T)>
+template <typename T = void, typename... TValues>
+constexpr auto make_forward_list(TValues&&... values) -> etl::forward_list<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
 ```
 
-The element type is deduced as the common type of the arguments.
+The element type is `T` when supplied, otherwise the decayed common type of
+the arguments (the Library Fundamentals TS `make_array` design).
 
 ### Example
 ```cpp
+// Deduced element type: etl::forward_list<int, 10>.
 auto data = etl::make_forward_list(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+// Explicit element type: etl::forward_list<char, 10>. Each argument is converted.
+auto chars = etl::make_forward_list<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 ```
 
 ## Member types

@@ -2532,16 +2532,17 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
-  template <typename T, typename... TValues>
-  constexpr auto make_deque(TValues&&... values) -> etl::deque<T, sizeof...(TValues)>
+  template <typename T = void, typename... TValues>
+  constexpr auto make_deque(TValues&&... values) -> etl::deque<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
   {
-    // Forward each argument as its own deduced type, then convert explicitly to T.
-    // Forwarding as T (the old behaviour) made the call ill-formed for any const-qualified
-    // lvalue of type T: forward<T> requires a non-const T&, and a T&& cannot bind to a
-    // reference-related const lvalue. The explicit conversion also keeps narrowing
-    // initialisers (e.g. make_deque<char>(0, 1)) working, which plain forwarding into the
-    // braced initialiser list would reject.
-    return {static_cast<T>(etl::forward<TValues>(values))...};
+    // Library Fundamentals TS make_array design: the element type is T when
+    // supplied explicitly, otherwise the decayed common type of the arguments.
+    // Each argument is forwarded as its own deduced type and converted
+    // explicitly, which accepts const-qualified lvalues (forwarding as the
+    // element type rejected them) and keeps narrowing initialisers such as
+    // make_deque<char>(0, 1) working.
+    using TElement = etl::private_make::element_type_t<T, TValues...>;
+    return {static_cast<TElement>(etl::forward<TValues>(values))...};
   }
 #endif
 

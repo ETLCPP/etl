@@ -998,6 +998,25 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    // With no explicit element type, the element type is deduced as the
+    // decayed common type of the arguments (Library Fundamentals TS
+    // make_array design).
+    TEST(test_make_array_deduced_element_type)
+    {
+      static const int static_const_lvalue = 1;
+
+      auto data = etl::make_array(static_const_lvalue, 2L, 3);
+
+      CHECK((std::is_same<etl::array<long, 3U>, decltype(data)>::value));
+
+      CHECK_EQUAL(1L, data[0]);
+      CHECK_EQUAL(2L, data[1]);
+      CHECK_EQUAL(3L, data[2]);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP14
     TEST(test_make_array_is_constexpr)
     {

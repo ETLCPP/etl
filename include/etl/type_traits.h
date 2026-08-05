@@ -3751,6 +3751,29 @@ namespace etl
 
   template <typename... T>
   using common_type_t = typename common_type<T...>::type;
+
+  //***********************************
+  // Selects the element type for the make_xxx container factories, following
+  // the Library Fundamentals TS make_array design: TDesired if it was supplied
+  // explicitly, otherwise the decayed common type of the arguments. The
+  // specialisation keeps common_type uninstantiated when TDesired is supplied,
+  // so arguments with no common type are still accepted in that case.
+  namespace private_make
+  {
+    template <typename TDesired, typename... TArgs>
+    struct element_type
+    {
+      using type = TDesired;
+    };
+
+    template <typename... TArgs>
+    struct element_type<void, TArgs...> : etl::common_type<typename etl::decay<TArgs>::type...>
+    {
+    };
+
+    template <typename TDesired, typename... TArgs>
+    using element_type_t = typename element_type<TDesired, TArgs...>::type;
+  } // namespace private_make
 #endif
 
   //***************************************************************************
