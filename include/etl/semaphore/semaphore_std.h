@@ -30,8 +30,10 @@ SOFTWARE.
 #define ETL_SEMAPHORE_STD_INCLUDED
 
 #include "../platform.h"
-#include "../limits.h"
+#include "../chrono.h"
 
+#include <chrono>
+#include <cstddef>
 #include <semaphore>
 
 namespace etl
@@ -40,9 +42,79 @@ namespace etl
   ///\ingroup semaphore
   ///\brief These semaphore classes are implemented using std::counting_semaphore and std::binary_semaphore.
   //***************************************************************************
-  template <ptrdiff_t LeastMaxValue = etl::numeric_limits<ptrdiff_t>::max()>
-  using counting_semaphore = std::counting_semaphore<LeastMaxValue>;
-  using binary_semaphore   = std::binary_semaphore;
+
+  namespace private_semaphore_std
+  {
+    template <class Clock>
+    struct CompatClock
+    {
+      using rep                   = Clock::rep;
+      using period                = std::ratio<Clock::period::num, Clock::period::den>;
+      using duration              = std::chrono::duration<rep, period>;
+      using time_point            = std::chrono::time_point<CompatClock>;
+      static const bool is_steady = Clock::is_steady;
+      static time_point now()
+      {
+        return time_point{duration{Clock::now().time_since_epoch().count()}};
+      }
+    };
+  } // namespace private_semaphore_std
+
+  template <ptrdiff_t LeastMaxValue = std::counting_semaphore<>::max()>
+  class counting_semaphore
+  {
+  public:
+
+    explicit counting_semaphore(ptrdiff_t desired)
+      : sem(desired)
+    {
+    }
+
+    void acquire()
+    {
+      return sem.acquire();
+    }
+
+    bool try_acquire()
+    {
+      return sem.try_acquire();
+    }
+
+    template <class Rep, class Period>
+    bool try_acquire_for(const etl::chrono::duration<Rep, Period>& rel_time)
+    {
+      std::chrono::duration<Rep, std::ratio<Period::num, Period::den>> duration(rel_time.count());
+
+      return sem.try_acquire_for(duration);
+    }
+
+    template <class Clock, class Duration>
+    bool try_acquire_until(const etl::chrono::time_point<Clock, Duration>& abs_time)
+    {
+      using CompatDuration = std::chrono::duration<typename Duration::rep, std::ratio<Duration::period::num, Duration::period::den>>;
+
+      std::chrono::time_point<private_semaphore_std::CompatClock<Clock>, CompatDuration> time_point{
+        CompatDuration(abs_time.time_since_epoch().count())};
+
+      return sem.try_acquire_until(time_point);
+    }
+
+    void release(ptrdiff_t update = 1)
+    {
+      return sem.release(update);
+    }
+
+    static constexpr ptrdiff_t max() noexcept
+    {
+      return LeastMaxValue;
+    }
+
+  private:
+
+    std::counting_semaphore<LeastMaxValue> sem;
+  };
+
+  using binary_semaphore = counting_semaphore<1>;
 } // namespace etl
 
 #endif
