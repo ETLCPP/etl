@@ -571,8 +571,8 @@ namespace etl
 
   private:
 
-    typed_storage(etl::typed_storage<T>&) ETL_DELETE;
-    typed_storage& operator=(etl::typed_storage<T>&) ETL_DELETE;
+    typed_storage(const etl::typed_storage<T>&) ETL_DELETE;
+    typed_storage& operator=(const etl::typed_storage<T>&) ETL_DELETE;
 
     struct dummy_t
     {
@@ -842,8 +842,8 @@ namespace etl
 
   private:
 
-    typed_storage_ext(etl::typed_storage_ext<T>&) ETL_DELETE;
-    typed_storage_ext& operator=(etl::typed_storage_ext<T>&) ETL_DELETE;
+    typed_storage_ext(const etl::typed_storage_ext<T>&) ETL_DELETE;
+    typed_storage_ext& operator=(const etl::typed_storage_ext<T>&) ETL_DELETE;
 
     pointer pbuffer;
     bool    valid;
