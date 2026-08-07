@@ -1328,7 +1328,7 @@ namespace etl
     //***************************************************************************
     template < typename U, etl::enable_if_t< etl::is_constructible<T, U&&>::value && !etl::is_same<etl::decay_t<U>, etl::optional<T>>::value
                                                && !etl::is_same<etl::decay_t<U>, etl::in_place_t>::value
-                                               && !etl::is_same<etl::decay_t<U>, etl::nullopt_t>::value && etl::is_pod<etl::remove_cv_t<T>>::value,
+                                               && !etl::is_same<etl::decay_t<U>, etl::nullopt_t>::value && etl::is_pod<etl::remove_cvref_t<T>>::value,
                                              int> = 0>
     ETL_CONSTEXPR14 optional(U&& value_) ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<T, U&&>::value))
       : impl_t(etl::forward<U>(value_))
@@ -1340,7 +1340,7 @@ namespace etl
     //***************************************************************************
     template < typename U, etl::enable_if_t< etl::is_constructible<T, U&&>::value && !etl::is_same<etl::decay_t<U>, etl::optional<T>>::value
                                                && !etl::is_same<etl::decay_t<U>, etl::in_place_t>::value
-                                               && !etl::is_same<etl::decay_t<U>, etl::nullopt_t>::value && !etl::is_pod<etl::remove_cv_t<T>>::value,
+                                               && !etl::is_same<etl::decay_t<U>, etl::nullopt_t>::value && !etl::is_pod<etl::remove_cvref_t<T>>::value,
                                              int> = 0>
     ETL_CONSTEXPR20_STL optional(U&& value_) ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<T, U&&>::value))
       : impl_t(etl::forward<U>(value_))
@@ -1450,7 +1450,7 @@ namespace etl
     /// Converting assignment operator from value type.
     //***************************************************************************
     template < typename U, etl::enable_if_t< etl::is_constructible<T, U&&>::value && !etl::is_same<etl::decay_t<U>, etl::optional<T>>::value
-                                               && !etl::is_same<etl::decay_t<U>, etl::nullopt_t>::value && etl::is_pod<etl::remove_cv_t<T>>::value,
+                                               && !etl::is_same<etl::decay_t<U>, etl::nullopt_t>::value && etl::is_pod<etl::remove_cvref_t<T>>::value,
                                              int> = 0>
     ETL_CONSTEXPR14 optional& operator=(U&& value_) ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<T, U&&>::value))
     {
@@ -1463,7 +1463,7 @@ namespace etl
     /// Converting assignment operator from value type.
     //***************************************************************************
     template < typename U, etl::enable_if_t< etl::is_constructible<T, U&&>::value && !etl::is_same<etl::decay_t<U>, etl::optional<T>>::value
-                                               && !etl::is_same<etl::decay_t<U>, etl::nullopt_t>::value && !etl::is_pod<etl::remove_cv_t<T>>::value,
+                                               && !etl::is_same<etl::decay_t<U>, etl::nullopt_t>::value && !etl::is_pod<etl::remove_cvref_t<T>>::value,
                                              int> = 0>
     ETL_CONSTEXPR20_STL optional& operator=(U&& value_) ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<T, U&&>::value))
     {
@@ -1520,73 +1520,77 @@ namespace etl
     }
 
 #if ETL_USING_CPP11
-    template <typename F, typename U = etl::remove_cv_t<etl::invoke_result_t<F, T&>>>
+    template <typename F, typename U = etl::remove_cvref_t<etl::invoke_result_t<F, T&>>,
+      etl::enable_if_t<!etl::is_void<U>::value, int> = 0>
     auto transform(F&& f) & -> etl::optional<U>
     {
       return transform_impl<F, optional&, U, T&>(etl::forward<F>(f), *this);
     }
 
-    template < typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F, const T&>>>
+    template <typename F, typename U = etl::remove_cvref_t<etl::invoke_result_t<F, const T&>>,
+      etl::enable_if_t<!etl::is_void<U>::value, int> = 0>
     auto transform(F&& f) const& -> etl::optional<U>
     {
       return transform_impl<F, const optional&, U, const T&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F, T&&>>>
+    template <typename F, typename U = etl::remove_cvref_t<etl::invoke_result_t<F, T&&>>,
+      etl::enable_if_t<!etl::is_void<U>::value, int> = 0>
     auto transform(F&& f) && -> etl::optional<U>
     {
       return transform_impl<F, optional&&, U, T&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template < typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F, const T&&>>>
+    template <typename F, typename U = etl::remove_cvref_t<etl::invoke_result_t<F, const T&&>>,
+      etl::enable_if_t<!etl::is_void<U>::value, int> = 0>
     auto transform(F&& f) const&& -> etl::optional<U>
     {
       return transform_impl<F, const optional&&, U, const T&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F, T&>>>
+    template <typename F, typename U = etl::remove_cvref_t< etl::invoke_result_t<F, T&>>>
     auto and_then(F&& f) & -> U
     {
       return and_then_impl<F, optional&, U, T&>(etl::forward<F>(f), *this);
     }
 
-    template < typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F, const T&>>>
+    template < typename F, typename U = etl::remove_cvref_t< etl::invoke_result_t<F, const T&>>>
     auto and_then(F&& f) const& -> U
     {
       return and_then_impl<F, const optional&, U, const T&>(etl::forward<F>(f), *this);
     }
 
-    template <typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F, T&&>>>
+    template <typename F, typename U = etl::remove_cvref_t< etl::invoke_result_t<F, T&&>>>
     auto and_then(F&& f) && -> U
     {
       return and_then_impl<F, optional&&, U, T&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template < typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F, const T&&>>>
+    template < typename F, typename U = etl::remove_cvref_t< etl::invoke_result_t<F, const T&&>>>
     auto and_then(F&& f) const&& -> U
     {
       return and_then_impl<F, const optional&&, U, const T&&>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template <typename F, typename U = etl::remove_cv_t<etl::invoke_result_t<F>>>
+    template <typename F, typename U = etl::remove_cvref_t<etl::invoke_result_t<F>>>
     auto or_else(F&& f) & -> U
     {
       return or_else_impl<F, optional&, U>(etl::forward<F>(f), *this);
     }
 
-    template < typename F, typename U = etl::remove_cv_t<etl::invoke_result_t<F>>>
+    template < typename F, typename U = etl::remove_cvref_t<etl::invoke_result_t<F>>>
     auto or_else(F&& f) const& -> U
     {
       return or_else_impl<F, const optional&, U>(etl::forward<F>(f), *this);
     }
 
-    template <typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F>>>
+    template <typename F, typename U = etl::remove_cvref_t< etl::invoke_result_t<F>>>
     auto or_else(F&& f) && -> U
     {
       return or_else_impl<F, optional&&, U>(etl::forward<F>(f), etl::move(*this));
     }
 
-    template < typename F, typename U = etl::remove_cv_t< etl::invoke_result_t<F>>>
+    template < typename F, typename U = etl::remove_cvref_t< etl::invoke_result_t<F>>>
     auto or_else(F&& f) const&& -> U
     {
       return or_else_impl<F, const optional&&, U>(etl::forward<F>(f), etl::move(*this));
