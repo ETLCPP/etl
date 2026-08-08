@@ -248,7 +248,7 @@ namespace etl
     /// Construct from iterator + size
     //*************************************************************************
     template <typename TIterator>
-    explicit ETL_CONSTEXPR14 span(const TIterator begin_, const size_t size_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    explicit ETL_CONSTEXPR14 span(const TIterator begin_, const size_t size_)
       : pbegin(etl::to_address(begin_))
     {
       ETL_ASSERT(size_ == Extent, ETL_ERROR(span_size_mismatch));
@@ -260,7 +260,7 @@ namespace etl
     //*************************************************************************
     template <typename TIteratorBegin, typename TIteratorEnd>
     ETL_CONSTEXPR14 span(const TIteratorBegin begin_, const TIteratorEnd end_,
-                   typename etl::enable_if< !etl::is_integral<TIteratorEnd>::value, void>::type* = 0) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+                   typename etl::enable_if< !etl::is_integral<TIteratorEnd>::value, void>::type* = 0)
       : pbegin(etl::to_address(begin_))
     {
       ETL_ASSERT(etl::distance(begin_, end_) == Extent, ETL_ERROR(span_size_mismatch));
@@ -292,7 +292,7 @@ namespace etl
                        && etl::is_convertible< decltype(etl::declval< typename etl::remove_reference<TContainer>::type&>().data()), pointer>::value
                        && etl::is_same< typename etl::remove_cv<T>::type,
                                         typename etl::remove_cv<typename etl::remove_reference< TContainer>::type::value_type>::type>::value,
-                     void>::type* = 0) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+                     void>::type* = 0)
       : pbegin(a.data())
     {
       ETL_ASSERT(a.size() == Extent, ETL_ERROR(span_size_mismatch));

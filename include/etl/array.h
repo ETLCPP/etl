@@ -111,7 +111,7 @@ namespace etl
     /// Returns a reference to the value at index 'i'.
     ///\param i The index of the element to access.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 reference at(size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_NODISCARD ETL_CONSTEXPR14 reference at(size_t i)
     {
       ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
@@ -122,7 +122,7 @@ namespace etl
     /// Returns a const reference to the value at index 'i'.
     ///\param i The index of the element to access.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const_reference at(size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_NODISCARD ETL_CONSTEXPR14 const_reference at(size_t i) const
     {
       ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
