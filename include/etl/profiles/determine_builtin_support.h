@@ -57,8 +57,56 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 1
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_IS_DESTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_DESTRUCTIBLE 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE 1
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_STANDARD_LAYOUT)
+    #define ETL_USING_BUILTIN_IS_STANDARD_LAYOUT 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIAL)
+    #define ETL_USING_BUILTIN_IS_TRIVIAL 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_UNION)
+    #define ETL_USING_BUILTIN_IS_UNION 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_EMPTY)
+    #define ETL_USING_BUILTIN_IS_EMPTY 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_POLYMORPHIC)
+    #define ETL_USING_BUILTIN_IS_POLYMORPHIC 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_ABSTRACT)
+    #define ETL_USING_BUILTIN_IS_ABSTRACT 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_FINAL)
+    #define ETL_USING_BUILTIN_IS_FINAL 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_AGGREGATE)
+    #define ETL_USING_BUILTIN_IS_AGGREGATE 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR)
+    #define ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS)
+    #define ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS 1
   #endif
 
   #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
@@ -120,8 +168,56 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE (__has_builtin(__has_trivial_destructor) || __has_builtin(__is_trivially_destructible))
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_IS_DESTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_DESTRUCTIBLE __has_builtin(__is_destructible)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE)
+    #define ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE __has_builtin(__is_nothrow_destructible)
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE (__has_builtin(__has_trivial_copy) || __has_builtin(__is_trivially_copyable))
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_STANDARD_LAYOUT)
+    #define ETL_USING_BUILTIN_IS_STANDARD_LAYOUT __has_builtin(__is_standard_layout)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIAL)
+    #define ETL_USING_BUILTIN_IS_TRIVIAL __has_builtin(__is_trivial)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_UNION)
+    #define ETL_USING_BUILTIN_IS_UNION __has_builtin(__is_union)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_EMPTY)
+    #define ETL_USING_BUILTIN_IS_EMPTY __has_builtin(__is_empty)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_POLYMORPHIC)
+    #define ETL_USING_BUILTIN_IS_POLYMORPHIC __has_builtin(__is_polymorphic)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_ABSTRACT)
+    #define ETL_USING_BUILTIN_IS_ABSTRACT __has_builtin(__is_abstract)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_FINAL)
+    #define ETL_USING_BUILTIN_IS_FINAL __has_builtin(__is_final)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_AGGREGATE)
+    #define ETL_USING_BUILTIN_IS_AGGREGATE __has_builtin(__is_aggregate)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR)
+    #define ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR __has_builtin(__has_virtual_destructor)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS)
+    #define ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS __has_builtin(__has_unique_object_representations)
   #endif
 
   #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
@@ -174,6 +270,46 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
   #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_STANDARD_LAYOUT)
+    #define ETL_USING_BUILTIN_IS_STANDARD_LAYOUT 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIAL)
+    #define ETL_USING_BUILTIN_IS_TRIVIAL 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_UNION)
+    #define ETL_USING_BUILTIN_IS_UNION 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_EMPTY)
+    #define ETL_USING_BUILTIN_IS_EMPTY 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_POLYMORPHIC)
+    #define ETL_USING_BUILTIN_IS_POLYMORPHIC 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_ABSTRACT)
+    #define ETL_USING_BUILTIN_IS_ABSTRACT 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_FINAL)
+    #define ETL_USING_BUILTIN_IS_FINAL 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_AGGREGATE)
+    #define ETL_USING_BUILTIN_IS_AGGREGATE 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR)
+    #define ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS)
+    #define ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS 1
+  #endif
 #endif
 
 // The default. Set to 0, if not already set.
@@ -201,8 +337,56 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_IS_DESTRUCTIBLE)
+  #define ETL_USING_BUILTIN_IS_DESTRUCTIBLE 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE)
+  #define ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE 0
+#endif
+
 #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_STANDARD_LAYOUT)
+  #define ETL_USING_BUILTIN_IS_STANDARD_LAYOUT 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_TRIVIAL)
+  #define ETL_USING_BUILTIN_IS_TRIVIAL 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_UNION)
+  #define ETL_USING_BUILTIN_IS_UNION 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_EMPTY)
+  #define ETL_USING_BUILTIN_IS_EMPTY 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_POLYMORPHIC)
+  #define ETL_USING_BUILTIN_IS_POLYMORPHIC 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_ABSTRACT)
+  #define ETL_USING_BUILTIN_IS_ABSTRACT 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_FINAL)
+  #define ETL_USING_BUILTIN_IS_FINAL 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_AGGREGATE)
+  #define ETL_USING_BUILTIN_IS_AGGREGATE 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR)
+  #define ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS)
+  #define ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS 0
 #endif
 
 #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
