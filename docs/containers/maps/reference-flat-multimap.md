@@ -36,19 +36,32 @@ etl::reference_flat_multimap data{ etl::pair{0, 1}, etl::pair{2, 3}, etl::pair{4
 Defines data as an reference_flat_multimap of int, of length 4, containing the supplied data.
 
 ## Make template
-C++11 and above
-
+**C++11 and above**
 ```cpp
-template <typename TKey, 
-          typename TMapped, 
-          typename TKeyCompare = etl::less<TKey>, 
+template <typename TKey,
+          typename TMapped,
+          typename TKeyCompare = etl::less<TKey>,
           typename... TPairs>
-constexpr auto make_reference_flat_map(TValues&&... values)
+constexpr auto make_reference_flat_multimap(TPairs&&... pairs) -> etl::reference_flat_multimap<TKey, TMapped, sizeof...(TPairs), TKeyCompare>
 ```
 
 ### Example
-auto data = etl::make_reference_flat_multimap<int, int>(etl::pair{0, 1}, etl::pair{2, 3},
-                                                   etl::pair{4, 5}, etl::pair{6, 7});
+
+{{< callout type="warning" >}}
+  This example does not currently compile: `make_reference_flat_multimap` cannot be
+  instantiated, because the reference containers have no `initializer_list`
+  constructor for its braced return value to bind to. This is a known defect.
+{{< /callout >}}
+
+```cpp
+// The referenced objects must outlive the container.
+etl::pair<int, int> p0{0, 1};
+etl::pair<int, int> p1{2, 3};
+etl::pair<int, int> p2{4, 5};
+etl::pair<int, int> p3{6, 7};
+
+auto data = etl::make_reference_flat_multimap<int, int>(p0, p1, p2, p3);
+```
 
 ## Member types
 

@@ -66,8 +66,8 @@ namespace etl
   {
   };
 #if ETL_USING_STL && ETL_USING_CPP11
-  template <typename T, size_t N>
-  struct is_std_array<std::array<T, N>> : etl::true_type
+  template <typename T, size_t Index>
+  struct is_std_array<std::array<T, Index>> : etl::true_type
   {
   };
 #endif
@@ -88,8 +88,8 @@ namespace etl
   struct is_etl_array : etl::false_type
   {
   };
-  template <typename T, size_t N>
-  struct is_etl_array<etl::array<T, N> > : etl::true_type
+  template <typename T, size_t Index>
+  struct is_etl_array<etl::array<T, Index> > : etl::true_type
   {
   };
   template <typename T>
@@ -211,6 +211,7 @@ namespace etl
     typedef T                                element_type;
     typedef typename etl::remove_cv<T>::type value_type;
     typedef size_t                           size_type;
+    typedef ptrdiff_t                        difference_type;
     typedef T&                               reference;
     typedef const T&                         const_reference;
     typedef T*                               pointer;
@@ -788,6 +789,7 @@ namespace etl
     typedef T                                element_type;
     typedef typename etl::remove_cv<T>::type value_type;
     typedef size_t                           size_type;
+    typedef ptrdiff_t                        difference_type;
     typedef T&                               reference;
     typedef const T&                         const_reference;
     typedef T*                               pointer;
