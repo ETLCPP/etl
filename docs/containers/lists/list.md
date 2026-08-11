@@ -69,13 +69,15 @@ Defines data as an list of `int`, of length `10`, containing the supplied data.
 ## Make template
 **C++11 and above**  
 ```cpp
-template <typename T, typename... TValues>
-constexpr auto make_list(TValues&&... values)
+template <typename... T>
+constexpr auto make_list(T&&... t) -> etl::list<typename etl::common_type_t<T...>, sizeof...(T)>
 ```
+
+The element type is deduced as the common type of the arguments.
 
 ### Example
 ```cpp
-auto data = etl::make_list<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+auto data = etl::make_list(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 ```
 
 ## Member types
