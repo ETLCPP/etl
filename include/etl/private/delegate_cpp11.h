@@ -690,6 +690,14 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
       {
+        if (stub == function_ptr_stub)
+        {
+          ptr.fp = ETL_NULLPTR;
+        }
+        else
+        {
+          ptr.object = ETL_NULLPTR;
+        }
         stub = ETL_NULLPTR;
       }
 

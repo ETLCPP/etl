@@ -2167,6 +2167,20 @@ namespace
     #endif
     }
   #endif
+
+    TEST(test_delegate_clear_equals_default_constructed)
+    {
+      using delegate_type = etl::delegate<void(int, int)>;
+
+      delegate_type       delegate = {};
+      const delegate_type default_constructed;
+
+      CHECK(delegate == default_constructed);
+      delegate = delegate_type::create(free_int);
+      CHECK(delegate != default_constructed);
+      delegate = {};
+      CHECK(delegate == default_constructed);
+    }
   }
 } // namespace
 
