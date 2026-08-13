@@ -31,8 +31,26 @@ SOFTWARE.
 
 #include "../platform.h"
 
-#include "FreeRTOS.h"
-#include <semphr.h>
+#if defined(__has_include)
+
+  #if __has_include("FreeRTOS.h") && __has_include(<semphr.h>)
+    #include "FreeRTOS.h"
+    #include <semphr.h>
+
+  #elif __has_include("freertos/FreeRTOS.h") && __has_include("freertos/semphr.h")
+    #include "freertos/FreeRTOS.h"
+    #include "freertos/semphr.h"
+
+  #else
+    #error "FreeRTOS.h and semphr.h not found. Please include path to FreeRTOS in your project settings"
+  #endif // __has_include
+
+#else
+
+  #include "FreeRTOS.h"
+  #include <semphr.h>
+
+#endif // defined(__has_include)
 
 namespace etl
 {
