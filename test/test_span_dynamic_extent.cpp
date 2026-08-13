@@ -983,7 +983,6 @@ namespace
       CHECK((std::is_same_v<const int* const, std::remove_reference_t<decltype(pspan4_ext.front())>>));
     }
 
-  #if ETL_USING_STL
     //*************************************************************************
     TEST(test_template_deduction_guide_for_std_vector)
     {
@@ -1001,7 +1000,6 @@ namespace
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span.front())>>));
       CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(span2.front())>>));
     }
-  #endif
 
     //*************************************************************************
     TEST(test_template_deduction_guide_for_type_with_data_and_size)
