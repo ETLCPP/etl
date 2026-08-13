@@ -1509,6 +1509,11 @@ namespace etl
   template <typename T, size_t Size>
   span(const std::array<T, Size>&) -> span<const T, Size>;
   #endif
+
+  // Any other type that supports data() and size() member functions
+  template <typename TContainer, typename = etl::enable_if_t<etl::has_data<TContainer>::value && etl::has_size<TContainer>::value
+                                                             && etl::is_lvalue_reference<TContainer&&>::value>>
+  span(TContainer&&) -> span<etl::remove_pointer_t<decltype(etl::declval<TContainer&>().data())>, etl::dynamic_extent>;
 #endif
 
   //*************************************************************************
