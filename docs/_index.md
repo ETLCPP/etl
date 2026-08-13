@@ -4,6 +4,8 @@ weight: 998
 type: hextra-home
 ---
 
+<meta name="algolia-site-verification"  content="00F8AEB171531498" />
+
 <div class="not-prose badges">
 
 <div>
