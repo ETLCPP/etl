@@ -1008,9 +1008,15 @@ namespace
     {
       struct DataAndSize
       {
-        int    buffer[4] = {1, 2, 3, 4};
-        int*   data() { return buffer; }
-        size_t size() const { return 4U; }
+        int  buffer[4] = {1, 2, 3, 4};
+        int* data()
+        {
+          return buffer;
+        }
+        size_t size() const
+        {
+          return 4U;
+        }
 
         using value_type = int;
       };
