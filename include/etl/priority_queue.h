@@ -121,14 +121,14 @@ namespace etl
     ETL_STATIC_ASSERT(sizeof(TContainer) == 0, "Unsupported container type for etl::ipriority_queue");
   };
 
-  template <typename T, const size_t N>
-  struct priority_queue_container_interface<etl::vector<T, N> >
+  template <typename T, const size_t Index>
+  struct priority_queue_container_interface<etl::vector<T, Index> >
   {
     typedef etl::ivector<T> type;
   };
 
-  template <typename T, const size_t N>
-  struct priority_queue_container_interface<etl::deque<T, N> >
+  template <typename T, const size_t Index>
+  struct priority_queue_container_interface<etl::deque<T, Index> >
   {
     typedef etl::ideque<T> type;
   };

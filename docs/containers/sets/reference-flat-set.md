@@ -32,13 +32,35 @@ etl::reference_flat_setdata{ 0, 1, 2, 3, 4, 5, 6, 7 };
 Defines data as a set of int/int pairs, of length 8, containing the supplied data.
 
 ## Make template
-C++11 and above
-template <typename TKey
+**C++11 and above**
+```cpp
+template <typename TKey,
+          typename TKeyCompare = etl::less<TKey>,
           typename... T>
-constexpr auto make_reference_flat_set(T&&... values)
+constexpr auto make_reference_flat_set(T&&... keys) -> etl::reference_flat_set<TKey, sizeof...(T), TKeyCompare>
+```
 
 ### Example
-auto data = etl::make_reference_flat_set<int>(0, 1, 2, 3, 4, 5, 6, 7);
+
+{{< callout type="warning" >}}
+  This example does not currently compile: `make_reference_flat_set` cannot be
+  instantiated, because the reference containers have no `initializer_list`
+  constructor for its braced return value to bind to. This is a known defect.
+{{< /callout >}}
+
+```cpp
+// The referenced objects must outlive the container.
+int k0 = 0;
+int k1 = 1;
+int k2 = 2;
+int k3 = 3;
+int k4 = 4;
+int k5 = 5;
+int k6 = 6;
+int k7 = 7;
+
+auto data = etl::make_reference_flat_set<int>(k0, k1, k2, k3, k4, k5, k6, k7);
+```
 
 ## Member types
 

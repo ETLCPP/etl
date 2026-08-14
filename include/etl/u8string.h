@@ -80,7 +80,7 @@ namespace etl
     /// Constructor.
     //*************************************************************************
     u8string()
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->initialise();
     }
@@ -90,7 +90,7 @@ namespace etl
     ///\param other The other u8string.
     //*************************************************************************
     u8string(const etl::u8string<MAX_SIZE_>& other)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->assign(other);
     }
@@ -100,7 +100,7 @@ namespace etl
     ///\param other The other iu8string.
     //*************************************************************************
     u8string(const etl::iu8string& other)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->assign(other);
     }
@@ -112,7 +112,7 @@ namespace etl
     ///\param length   The number of characters. Default = npos.
     //*************************************************************************
     u8string(const etl::iu8string& other, size_t position, size_t length = npos)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       ETL_ASSERT(position < other.size(), ETL_ERROR(string_out_of_bounds));
 
@@ -124,7 +124,7 @@ namespace etl
     ///\param text The initial text of the u8string.
     //*************************************************************************
     ETL_EXPLICIT_STRING_FROM_CHAR u8string(const value_type* text)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->assign(text);
     }
@@ -135,7 +135,7 @@ namespace etl
     ///\param count The number of characters to copy.
     //*************************************************************************
     u8string(const value_type* text, size_t count)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->assign(text, text + count);
     }
@@ -146,7 +146,7 @@ namespace etl
     ///\param value        The value to fill the u8string with.
     //*************************************************************************
     u8string(size_type count, value_type c)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->initialise();
       this->resize(count, c);
@@ -160,7 +160,7 @@ namespace etl
     //*************************************************************************
     template <typename TIterator>
     u8string(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->assign(first, last);
     }
@@ -170,7 +170,7 @@ namespace etl
     /// Construct from initializer_list.
     //*************************************************************************
     u8string(std::initializer_list<value_type> init)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->assign(init.begin(), init.end());
     }
@@ -181,7 +181,7 @@ namespace etl
     ///\param view The string_view.
     //*************************************************************************
     explicit u8string(const etl::u8string_view& view)
-      : iu8string(reinterpret_cast<value_type*>(&buffer), MAX_SIZE)
+      : iu8string(buffer, MAX_SIZE)
     {
       this->assign(view.begin(), view.end());
     }
