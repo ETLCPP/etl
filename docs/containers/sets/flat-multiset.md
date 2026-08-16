@@ -33,17 +33,18 @@ etl::flat_multiset data{ 0, 1, 2, 3 };
 ```
 Defines data as an `flat_multiset` of `int`, of length 4, containing the supplied data.
 
-## make_flat_set
+## make_flat_multiset
 C++11 and above
 ```cpp
-template <typename T,
-          typename TKeyCompare = etl::less<T>>
-constexpr auto make_flat_set(TValues&&... values)
+template <typename TKey,
+          typename TKeyCompare = etl::less<TKey>,
+          typename... T>
+constexpr auto make_flat_multiset(T&&... keys) -> etl::flat_multiset<TKey, sizeof...(T), TKeyCompare>
 ```
 
 ### Example
 ```cpp
-auto data = etl::make_flat_set<int>({0, 1, 2, 3 });
+auto data = etl::make_flat_multiset<int>(0, 1, 2, 3);
 ```
 
 ## Member types
