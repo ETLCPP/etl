@@ -16,7 +16,7 @@ jobs:
         os: [ubuntu-24.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Install libc++
       run: |
@@ -45,7 +45,7 @@ jobs:
         os: [ubuntu-24.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -67,7 +67,7 @@ jobs:
         os: [ubuntu-24.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -89,7 +89,7 @@ jobs:
         os: [ubuntu-24.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -111,7 +111,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -133,7 +133,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -155,7 +155,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -177,7 +177,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
