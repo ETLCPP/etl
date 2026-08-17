@@ -1212,8 +1212,6 @@ namespace etl
 
     typedef pvoidvector base_t;
 
-    typedef typename etl::remove_const<typename etl::remove_pointer<T>::type>::type* element_type;
-
     template <typename TIterator>
     struct is_compatible_iterator
       : etl::bool_constant<etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
@@ -1728,7 +1726,10 @@ namespace etl
     // Convert from pointer to void**
     static ETL_CONSTEXPR14 void** to_void_pptr(pointer p_buffer) ETL_NOEXCEPT
     {
-      return reinterpret_cast<void**>(const_cast<element_type*>(p_buffer));
+      ETL_STATIC_ASSERT(!etl::is_const<typename etl::remove_pointer<pointer>::type>::value,
+                        "to_void_pptr must not remove const from the pointed-to element type");
+
+      return static_cast<void**>(const_cast<void*>(static_cast<const void*>(p_buffer)));
     }
   };
 
