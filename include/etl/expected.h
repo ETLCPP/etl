@@ -746,7 +746,7 @@ namespace etl
     //*******************************************
     const value_type& operator*() const ETL_LVALUE_REF_QUALIFIER
     {
-      ETL_ASSERT_OR_RETURN_VALUE(has_value(), ETL_ERROR(expected_invalid), ETL_NULLPTR);
+      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
 
       return etl::get<value_type>(storage);
     }
@@ -757,7 +757,7 @@ namespace etl
     //*******************************************
     value_type&& operator*() &&
     {
-      ETL_ASSERT_OR_RETURN_VALUE(has_value(), ETL_ERROR(expected_invalid), ETL_NULLPTR);
+      ETL_ASSERT(has_value(), ETL_ERROR(expected_invalid));
 
       return etl::move(etl::get<value_type>(storage));
     }
