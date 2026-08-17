@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Build
-      run: bazel build //test:etl_tests --cxxopt=-std=c++23 --copt=-DETL_NO_STL
+      run: bazel build //test:etl_tests --cxxopt=-std=c++23 --copt=-DETL_NO_STL --//:etl_profile=//:no_profile
 
     - name: Run tests
-      run: bazel test //test:etl_tests --cxxopt=-std=c++23 --copt=-DETL_NO_STL --test_output=all
+      run: bazel test //test:etl_tests --cxxopt=-std=c++23 --copt=-DETL_NO_STL  --//:etl_profile=//:no_profile --test_output=all
