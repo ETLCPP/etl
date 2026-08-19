@@ -901,6 +901,22 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assigns an iterator range to the circular buffer.
+    //*************************************************************************
+    void assign(iterator first, const iterator& last)
+    {
+      assign_range(first, last);
+    }
+
+    //*************************************************************************
+    /// Assigns a const iterator range to the circular buffer.
+    //*************************************************************************
+    void assign(const_iterator first, const const_iterator& last)
+    {
+      assign_range(first, last);
+    }
+
+    //*************************************************************************
     /// Assigns a range to the circular buffer.
     //*************************************************************************
     template <typename TIterator>
@@ -915,11 +931,19 @@ namespace etl
     //*************************************************************************
     void assign(size_type n, const_reference value)
     {
+      if (n == 0U)
+      {
+        clear();
+        return;
+      }
+
+      const T value_copy(value);
+
       clear();
 
       while (n-- != 0U)
       {
-        push(value);
+        push(value_copy);
       }
     }
 
@@ -1058,6 +1082,43 @@ namespace etl
     }
 
   protected:
+
+    //*************************************************************************
+    /// Assigns a circular buffer iterator range.
+    //*************************************************************************
+    template <typename TIterator>
+    void assign_range(TIterator first, const TIterator& last)
+    {
+      const bool is_self_range = (&first.container() == this) && (&last.container() == this);
+
+      if (!is_self_range)
+      {
+        clear();
+        push(first, last);
+      }
+      else
+      {
+        const size_type first_index = static_cast<size_type>(first.get_index());
+        const size_type last_index  = static_cast<size_type>(last.get_index());
+
+        while (out != first_index)
+        {
+          pop();
+        }
+
+        while (in != last_index)
+        {
+          if (in == 0U)
+          {
+            in = buffer_size;
+          }
+
+          --in;
+          pbuffer[in].~T();
+          ETL_DECREMENT_DEBUG_COUNT;
+        }
+      }
+    }
 
     //*************************************************************************
     /// Protected constructor.

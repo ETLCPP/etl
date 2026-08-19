@@ -165,6 +165,45 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_assign_self_range)
+    {
+      Buffer_t buffer1;
+      Compare  input{Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"),  Ndc("4"),  Ndc("5"), Ndc("6"),
+                    Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")};
+      Compare  expected(input.end() - SIZE, input.end());
+      Data     data(input.begin(), input.end(), buffer1.raw, SIZE);
+
+      data.assign(data.begin(), data.end());
+
+      CHECK(data.full());
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+
+      Data::const_iterator first = data.cbegin() + 2;
+      Data::const_iterator last  = data.cend() - 2;
+      Compare              partial_expected(expected.begin() + 2, expected.end() - 2);
+
+      data.assign(first, last);
+
+      CHECK_EQUAL(partial_expected.size(), data.size());
+      CHECK(std::equal(partial_expected.begin(), partial_expected.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_assign_aliased_value)
+    {
+      Buffer_t buffer1;
+      Compare  input{Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4")};
+      Data     data(input.begin(), input.end(), buffer1.raw, SIZE);
+
+      const Ndc expected(data.front());
+      data.assign(7U, data.front());
+
+      CHECK_EQUAL(7U, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&expected](const Ndc& item) { return item == expected; }));
+    }
+
+    //*************************************************************************
     TEST(test_set_buffer_after_default_constructor)
     {
       Buffer_t buffer1;
