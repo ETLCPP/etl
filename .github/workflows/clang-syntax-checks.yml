@@ -30,6 +30,10 @@ on:
       - 'subprojects/**'
       - '.devcontainer/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-clang-cpp03-linux-STL:
     name: Syntax Check - Clang C++03 Linux STL

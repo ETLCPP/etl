@@ -31,9 +31,8 @@ on:
       - 'subprojects/**'
       - '.devcontainer/**'
 
-# Allow only one concurrent deployment to GitHub Pages
 concurrency:
-  group: coverage-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 # Grant GITHUB_TOKEN the minimum permissions needed at the workflow level
