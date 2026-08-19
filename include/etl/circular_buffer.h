@@ -901,6 +901,29 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assigns a range to the circular buffer.
+    //*************************************************************************
+    template <typename TIterator>
+    typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type assign(TIterator first, const TIterator& last)
+    {
+      clear();
+      push(first, last);
+    }
+
+    //*************************************************************************
+    /// Assigns 'n' copies of a value to the circular buffer.
+    //*************************************************************************
+    void assign(size_type n, const_reference value)
+    {
+      clear();
+
+      while (n-- != 0U)
+      {
+        push(value);
+      }
+    }
+
+    //*************************************************************************
     /// push.
     /// Adds an item to the buffer.
     /// If the buffer is filled then the oldest item is overwritten.
@@ -1128,6 +1151,24 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Constructor, with size.
+    //*************************************************************************
+    explicit circular_buffer(size_t initial_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
+    {
+      this->assign(initial_size, T());
+    }
+
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    //*************************************************************************
+    circular_buffer(size_t initial_size, typename etl::icircular_buffer<T>::const_reference value)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
+    {
+      this->assign(initial_size, value);
+    }
+
+    //*************************************************************************
     /// Constructor.
     /// Constructs a buffer from an iterator range.
     //*************************************************************************
@@ -1272,6 +1313,24 @@ namespace etl
     circular_buffer_ext(size_t max_size)
       : icircular_buffer<T>(ETL_NULLPTR, max_size)
     {
+    }
+
+    //*************************************************************************
+    /// Constructor, with size.
+    //*************************************************************************
+    explicit circular_buffer_ext(size_t initial_size, void* buffer, size_t max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
+    {
+      this->assign(initial_size, T());
+    }
+
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    //*************************************************************************
+    circular_buffer_ext(size_t initial_size, typename etl::icircular_buffer<T>::const_reference value, void* buffer, size_t max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
+    {
+      this->assign(initial_size, value);
     }
 
     //*************************************************************************

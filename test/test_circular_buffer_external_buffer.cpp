@@ -79,6 +79,92 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_with_size)
+    {
+      etl::uninitialized_buffer_of<int, SIZE + 1> buffer1;
+      etl::circular_buffer_ext<int>               data(5U, buffer1.raw, SIZE);
+
+      CHECK_EQUAL(5U, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [](int value) { return value == 0; }));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_with_excess_size)
+    {
+      etl::uninitialized_buffer_of<int, SIZE + 1> buffer1;
+      etl::circular_buffer_ext<int>               data(SIZE + 3U, buffer1.raw, SIZE);
+
+      CHECK(data.full());
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [](int value) { return value == 0; }));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_with_size_and_value)
+    {
+      Buffer_t  buffer1;
+      const Ndc value("value");
+      Data      data(5U, value, buffer1.raw, SIZE);
+
+      CHECK_EQUAL(5U, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&value](const Ndc& item) { return item == value; }));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_with_excess_size_and_value)
+    {
+      Buffer_t  buffer1;
+      const Ndc value("value");
+      Data      data(SIZE + 3U, value, buffer1.raw, SIZE);
+
+      CHECK(data.full());
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&value](const Ndc& item) { return item == value; }));
+    }
+
+    //*************************************************************************
+    TEST(test_assign_size_and_value)
+    {
+      Buffer_t buffer1;
+      Data     data(buffer1.raw, SIZE);
+      data.push(Ndc("old"));
+
+      const Ndc value("value");
+      data.assign(5U, value);
+
+      CHECK_EQUAL(5U, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&value](const Ndc& item) { return item == value; }));
+
+      data.assign(0U, value);
+      CHECK(data.empty());
+
+      data.assign(SIZE + 3U, value);
+      CHECK(data.full());
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&value](const Ndc& item) { return item == value; }));
+    }
+
+    //*************************************************************************
+    TEST(test_assign_range)
+    {
+      Buffer_t buffer1;
+      Compare  input{Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"),  Ndc("4"),  Ndc("5"), Ndc("6"),
+                    Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")};
+      Compare  expected(input.end() - SIZE, input.end());
+      Data     data(buffer1.raw, SIZE);
+      data.push(Ndc("old"));
+
+      data.assign(input.begin(), input.end());
+
+      CHECK(data.full());
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+
+      data.assign(input.begin(), input.begin());
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
     TEST(test_set_buffer_after_default_constructor)
     {
       Buffer_t buffer1;
