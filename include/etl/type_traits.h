@@ -3317,15 +3317,36 @@ namespace etl
 #else
 
   //*********************************************
-  // Assume that anything other than arithmetics
+  // Assume that anything other than arithmetic
   // and pointers return false for the traits.
   //*********************************************
 
   //*********************************************
   // is_assignable
+  #if !ETL_USING_BUILTIN_IS_ASSIGNABLE && ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    template <typename, typename T1, typename T2>
+    struct is_assignable_ : etl::false_type
+    {
+    };
+
+    template <typename T1, typename T2>
+    struct is_assignable_<etl::void_t<decltype(etl::declval<T1>() = etl::declval<T2>())>, T1, T2> : etl::true_type
+    {
+    };
+  } // namespace private_type_traits
+  #endif
+
   template <typename T1, typename T2>
   #if ETL_USING_BUILTIN_IS_ASSIGNABLE
   struct is_assignable : public etl::bool_constant<__is_assignable(T1, T2)>
+  #elif ETL_USING_CPP11
+  // Builtin-free assignability detection. Used when the __is_assignable builtin
+  // is unavailable (e.g. MSVC, where determine_builtin_support.h disables the
+  // __has_builtin block). Mirrors the void_t-based is_constructible above so
+  // that class types are correctly reported as (copy/move) assignable.
+  struct is_assignable : public private_type_traits::is_assignable_<etl::void_t<>, T1, T2>
   #else
   struct is_assignable
     : public etl::bool_constant< (etl::is_arithmetic<T1>::value || etl::is_pointer<T1>::value)
@@ -3703,7 +3724,7 @@ namespace etl
   struct common_type<T1, T2>
     : etl::conditional< etl::is_same<T1, typename etl::decay<T1>::type>::value && etl::is_same<T2, typename etl::decay<T2>::type>::value,
                         private_common_type::common_type_2_impl<T1, T2>,
-                        common_type<typename etl::decay<T2>::type, typename etl::decay<T2>::type>>::type
+                        common_type<typename etl::decay<T1>::type, typename etl::decay<T2>::type>>::type
   {
   };
 

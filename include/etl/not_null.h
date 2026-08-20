@@ -46,7 +46,7 @@ namespace etl
   {
   public:
 
-    not_null_exception(string_type reason_, string_type file_name_, numeric_type line_number_) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    not_null_exception(string_type reason_, string_type file_name_, numeric_type line_number_)
       : exception(reason_, file_name_, line_number_)
     {
     }
@@ -59,7 +59,7 @@ namespace etl
   {
   public:
 
-    not_null_contains_null(string_type file_name_, numeric_type line_number_) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    not_null_contains_null(string_type file_name_, numeric_type line_number_)
       : not_null_exception(ETL_ERROR_TEXT("not_null:contains null", ETL_NOT_NULL_FILE_ID"A"), file_name_, line_number_)
     {
     }
@@ -92,7 +92,7 @@ namespace etl
     /// Constructs a not_null from a pointer.
     /// Asserts if the pointer is null.
     //*********************************
-    ETL_CONSTEXPR14 explicit not_null(underlying_type ptr_) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 explicit not_null(underlying_type ptr_)
       : ptr(ptr_)
     {
       ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
@@ -110,7 +110,7 @@ namespace etl
     /// Assignment from a pointer.
     /// Asserts if the pointer is null.
     //*********************************
-    ETL_CONSTEXPR14 not_null& operator=(underlying_type rhs) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 not_null& operator=(underlying_type rhs)
     {
       ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
 
@@ -193,7 +193,7 @@ namespace etl
     /// Asserts if the unique_ptr contains null.
     /// Moves from the unique_ptr.
     //*********************************
-    ETL_CONSTEXPR14 explicit not_null(underlying_type&& u_ptr_) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 explicit not_null(underlying_type&& u_ptr_)
       : u_ptr(etl::move(u_ptr_))
     {
       ETL_ASSERT(u_ptr.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
@@ -204,7 +204,7 @@ namespace etl
     /// Asserts if the unique_ptr contains null.
     /// Moves from the unique_ptr.
     //*********************************
-    ETL_CONSTEXPR14 not_null& operator=(underlying_type&& rhs) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 not_null& operator=(underlying_type&& rhs)
     {
       ETL_ASSERT_OR_RETURN_VALUE(rhs.get() != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
 

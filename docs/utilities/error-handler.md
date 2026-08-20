@@ -16,7 +16,7 @@ You have a choice of:
 - Error log
 - No error checking
 
-The type of error handler used is dependant on the compile time macro defined.  
+The type of error handler used is dependent on the compile time macro defined.  
 Note: This are usually set as a project wide definition.  
 
 | Macro                   | Actions                                                                                              |
