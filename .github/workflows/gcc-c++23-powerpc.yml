@@ -30,6 +30,10 @@ on:
       - 'subprojects/**'
       - '.devcontainer/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   build-gcc-cpp23-linux-no-stl-powerpc:

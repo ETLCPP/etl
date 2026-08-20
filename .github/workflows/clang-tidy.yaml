@@ -31,6 +31,10 @@ on:
       - 'subprojects/**'
       - '.devcontainer/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   clang-tidy:
     name: clang-tidy

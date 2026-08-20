@@ -3,6 +3,10 @@ name: clang-format-update
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   clang-format:
     runs-on: ubuntu-24.04

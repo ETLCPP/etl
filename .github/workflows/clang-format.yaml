@@ -7,6 +7,10 @@ on:
     branches: [ master, development, pull-request/* ]
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   clang-format:
     name: clang-format

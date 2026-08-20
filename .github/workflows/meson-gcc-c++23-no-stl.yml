@@ -30,6 +30,10 @@ on:
       - 'subprojects/**'
       - '.devcontainer/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   build-meson-gcc-cpp23-no-stl:
