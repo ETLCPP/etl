@@ -2,9 +2,33 @@ name: clang-c++20
 on:
   push:
     branches: [ master, development, pull-request/* ]
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - 'BUILD.bazel'
+      - 'MODULE.bazel*'
+      - 'meson.build'
+      - 'meson_options.txt'
+      - 'subprojects/**'
+      - '.devcontainer/**'
   pull_request:
     branches: [ master, development, pull-request/* ]
     types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - 'BUILD.bazel'
+      - 'MODULE.bazel*'
+      - 'meson.build'
+      - 'meson_options.txt'
+      - 'subprojects/**'
+      - '.devcontainer/**'
 
 jobs:
 
@@ -16,7 +40,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -50,7 +74,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -79,7 +103,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -108,7 +132,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -137,7 +161,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -159,7 +183,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -181,7 +205,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -203,7 +227,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -216,4 +240,3 @@ jobs:
 
     - name: Run tests
       run: ./test/etl_tests -v
-

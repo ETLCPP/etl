@@ -218,10 +218,9 @@ namespace
     {
       etl::string<100> s;
 
-      // mapped to unsigned char
-      // CHECK_EQUAL("34", test_format(s, "{}", static_cast<uint8_t>(34)));
-      // mapped to signed char
-      // CHECK_EQUAL("-14", test_format(s, "{}", static_cast<int8_t>(-14)));
+      // int8_t/uint8_t are formatted as integers (issue #1549), not as characters
+      CHECK_EQUAL("34", test_format(s, "{}", static_cast<uint8_t>(34)));
+      CHECK_EQUAL("-14", test_format(s, "{}", static_cast<int8_t>(-14)));
       CHECK_EQUAL("6534", test_format(s, "{}", static_cast<uint16_t>(6534)));
       CHECK_EQUAL("-9414", test_format(s, "{}", static_cast<int16_t>(-9414)));
       CHECK_EQUAL("236534", test_format(s, "{}", static_cast<uint32_t>(236534)));
@@ -619,45 +618,35 @@ namespace
     //*************************************************************************
     TEST(test_format_signed_char)
     {
+      // signed char (typically int8_t) is formatted as an integer by default
+      // (issue #1549), matching std::format. Only {:c} converts it to a character.
+      // '?' (debug-escape) is NOT a valid presentation type for signed char.
       etl::string<100> s;
 
-      CHECK_EQUAL("a s b", test_format(s, "a {} b", static_cast<signed char>('s')));
+      CHECK_EQUAL("a 115 b", test_format(s, "a {} b", static_cast<signed char>('s')));
       CHECK_EQUAL("a s b", test_format(s, "a {:c} b", static_cast<signed char>('s')));
-      CHECK_EQUAL("a 's' b", test_format(s, "a {:?} b", static_cast<signed char>('s')));
-      CHECK_EQUAL("a \t b", test_format(s, "a {} b", static_cast<signed char>('\t')));
-      CHECK_EQUAL("a '\\t' b", test_format(s, "a {:?} b", static_cast<signed char>('\t')));
-      CHECK_EQUAL("a '\\n' b", test_format(s, "a {:?} b", static_cast<signed char>('\n')));
-      CHECK_EQUAL("a '\\r' b", test_format(s, "a {:?} b", static_cast<signed char>('\r')));
-      CHECK_EQUAL("a '\\\"' b", test_format(s, "a {:?} b", static_cast<signed char>('"')));
-      CHECK_EQUAL("a '\\'' b", test_format(s, "a {:?} b", static_cast<signed char>('\'')));
-      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<signed char>('\\')));
-      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<signed char>('\\')));
       CHECK_EQUAL("a 97 b", test_format(s, "a {:d} b", static_cast<signed char>('a')));
       CHECK_EQUAL("a 61 b", test_format(s, "a {:X} b", static_cast<signed char>('a')));
       CHECK_EQUAL("a 61 b", test_format(s, "a {:x} b", static_cast<signed char>('a')));
       CHECK_EQUAL("a 0x61 b", test_format(s, "a {:#x} b", static_cast<signed char>('a')));
+      CHECK_EQUAL("a -12 b", test_format(s, "a {} b", static_cast<signed char>(-12)));
     }
 
     //*************************************************************************
     TEST(test_format_unsigned_char)
     {
+      // unsigned char (typically uint8_t) is formatted as an integer by default
+      // (issue #1549), matching std::format. Only {:c} converts it to a character.
+      // '?' (debug-escape) is NOT a valid presentation type for unsigned char.
       etl::string<100> s;
 
-      CHECK_EQUAL("a s b", test_format(s, "a {} b", static_cast<unsigned char>('s')));
+      CHECK_EQUAL("a 115 b", test_format(s, "a {} b", static_cast<unsigned char>('s')));
       CHECK_EQUAL("a s b", test_format(s, "a {:c} b", static_cast<unsigned char>('s')));
-      CHECK_EQUAL("a 's' b", test_format(s, "a {:?} b", static_cast<unsigned char>('s')));
-      CHECK_EQUAL("a \t b", test_format(s, "a {} b", static_cast<unsigned char>('\t')));
-      CHECK_EQUAL("a '\\t' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\t')));
-      CHECK_EQUAL("a '\\n' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\n')));
-      CHECK_EQUAL("a '\\r' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\r')));
-      CHECK_EQUAL("a '\\\"' b", test_format(s, "a {:?} b", static_cast<unsigned char>('"')));
-      CHECK_EQUAL("a '\\'' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\'')));
-      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\\')));
-      CHECK_EQUAL("a '\\\\' b", test_format(s, "a {:?} b", static_cast<unsigned char>('\\')));
       CHECK_EQUAL("a 97 b", test_format(s, "a {:d} b", static_cast<unsigned char>('a')));
       CHECK_EQUAL("a 61 b", test_format(s, "a {:X} b", static_cast<unsigned char>('a')));
       CHECK_EQUAL("a 61 b", test_format(s, "a {:x} b", static_cast<unsigned char>('a')));
       CHECK_EQUAL("a 0x61 b", test_format(s, "a {:#x} b", static_cast<unsigned char>('a')));
+      CHECK_EQUAL("a 65 b", test_format(s, "a {} b", static_cast<unsigned char>(65)));
     }
 
     //*************************************************************************

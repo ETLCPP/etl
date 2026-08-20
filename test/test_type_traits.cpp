@@ -2269,5 +2269,23 @@ namespace
       CHECK_TRUE(etl::is_unsigned<char32_t>::value);
 #endif
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_common_type)
+    {
+      // Reference types must decay to the same result as std::common_type.
+      CHECK((etl::is_same<etl::common_type_t<long&, int&>, long>::value));
+      CHECK((etl::is_same<etl::common_type_t<long&, int&>, std::common_type<long&, int&>::type>::value));
+      CHECK((etl::is_same<etl::common_type_t<int&, long&>, long>::value));
+      CHECK((etl::is_same<etl::common_type_t<int&, long&>, std::common_type<int&, long&>::type>::value));
+      CHECK((etl::is_same<etl::common_type_t<const char&, char&>, char>::value));
+      CHECK((etl::is_same<etl::common_type_t<const char&, char&>, std::common_type<const char&, char&>::type>::value));
+
+      // Already decayed types.
+      CHECK((etl::is_same<etl::common_type_t<int, long, int>, long>::value));
+      CHECK((etl::is_same<etl::common_type_t<int, long, int>, std::common_type<int, long, int>::type>::value));
+    }
+#endif
   }
 } // namespace

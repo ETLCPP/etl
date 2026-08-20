@@ -473,6 +473,20 @@ namespace
       CHECK_EQUAL(iv3.empty(), true);
     }
 
+    TEST(test_ranges_iota_view_const)
+    {
+      const auto iv = etl::ranges::iota_view(1, 7);
+
+      int compare = 1;
+      for (auto i : iv)
+      {
+        CHECK_EQUAL(i, compare);
+        ++compare;
+      }
+
+      CHECK_EQUAL(iv[4], 5);
+    }
+
     TEST(test_ranges_views_iota)
     {
       auto iv = etl::ranges::views::iota(1, 7);
@@ -538,6 +552,18 @@ namespace
       CHECK_EQUAL(iv3.size(), 0);
       CHECK_EQUAL(iv3.end(), iv3.begin());
       CHECK_EQUAL(iv3.empty(), true);
+    }
+
+    TEST(test_ranges_repeat_view_const)
+    {
+      const auto rv = etl::ranges::repeat_view(1, 7);
+
+      for (auto i : rv)
+      {
+        CHECK_EQUAL(i, 1);
+      }
+
+      CHECK_EQUAL(rv[4], 1);
     }
 
     TEST(test_ranges_views_repeat)

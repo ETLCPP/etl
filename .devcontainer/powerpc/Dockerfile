@@ -1,9 +1,31 @@
 # powerpc Test Environment for ETL
 # Uses QEMU user-mode emulation to run powerpc binaries on x64 host
-FROM debian:sid-20260406
+#
+# NOTE: floating tags like "sid" or "sid-slim" drift over time and cannot be
+# pinned retroactively (Docker Hub keeps only the latest manifest per tag).
+# debian:sid-20260202 is a dated, immutable tag (built and pushed once, not
+# retagged later), pinned here by digest for full reproducibility. All apt
+# sources are also switched to the matching snapshot.debian.org archive
+# before the first "apt-get update" runs.
+FROM debian@sha256:9ab6e6f3543eeb30510c516377bbb05f95ebb7507a956c0b772184deb7ecd340
 
 # Avoid prompts from apt
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Pin apt to the snapshot.debian.org archive for the given date BEFORE any
+# package installation, so every apt-get update/install in this file (not
+# just the ones after this point) resolves to the exact same package set.
+RUN rm -f /etc/apt/sources.list /etc/apt/sources.list.d/*.sources
+
+RUN cat <<EOF > /etc/apt/sources.list.d/debian.sources
+Types: deb
+URIs: http://snapshot.debian.org/archive/debian/20260202T000000Z
+Suites: sid
+Components: main
+Signed-By: /usr/share/keyrings/debian-archive-keyring.pgp
+EOF
+
+RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid
 
 # Install QEMU user-mode emulation and powerpc cross-compilation tools
 RUN dpkg --add-architecture powerpc && \
@@ -20,24 +42,14 @@ RUN dpkg --add-architecture powerpc && \
     debian-ports-archive-keyring \
     && rm -rf /var/lib/apt/lists/*
 
-RUN cat <<EOF > /etc/apt/sources.list.d/debian.sources
-Types: deb
-URIs: http://snapshot.debian.org/archive/debian/20260406T000000Z
-Suites: sid
-Components: main
-Signed-By: /usr/share/keyrings/debian-archive-keyring.pgp
-EOF
-
 RUN cat <<EOF > /etc/apt/sources.list.d/powerpc.sources
 Types: deb
-URIs: http://snapshot.debian.org/archive/debian-ports/20260406T000000Z
+URIs: http://snapshot.debian.org/archive/debian-ports/20260202T000000Z
 Suites: sid
 Components: main
 Architectures: powerpc
 Signed-By: /usr/share/keyrings/debian-ports-archive-keyring.gpg
 EOF
-
-RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     qemu-user-static \
