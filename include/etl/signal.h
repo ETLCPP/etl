@@ -384,7 +384,7 @@ namespace etl
     //*************************************************************************
     /// For a delegate slot type.
     //*************************************************************************
-    template <typename TSlotType, typename... TArgs>
+    template <typename TSlotType>
     static typename etl::enable_if_t<etl::is_delegate<TSlotType>::value, bool> slot_is_valid(const TSlotType& s) ETL_NOEXCEPT
     {
       return s.is_valid();
@@ -393,7 +393,7 @@ namespace etl
     //*************************************************************************
     /// For a non-delegate slot type.
     //*************************************************************************
-    template <typename TSlotType, typename... TArgs>
+    template <typename TSlotType>
     static typename etl::enable_if_t<!etl::is_delegate<TSlotType>::value, bool> slot_is_valid(const TSlotType&) ETL_NOEXCEPT
     {
       return true;
