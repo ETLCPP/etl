@@ -40,7 +40,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -74,7 +74,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -103,7 +103,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -132,7 +132,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     # Temporary fix. See https://github.com/actions/runner-images/issues/8659
     - name: Install newer Clang
@@ -161,7 +161,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -183,7 +183,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -205,7 +205,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -227,7 +227,7 @@ jobs:
         os: [macos-15]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
