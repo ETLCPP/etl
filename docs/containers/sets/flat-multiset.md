@@ -234,7 +234,7 @@ The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)
 ---
 
 ```cpp
-pair<iterator, bool> emplace((const_reference value))
+pair<iterator, bool> emplace(const_reference value)
 pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
 ```
 **Description**  
