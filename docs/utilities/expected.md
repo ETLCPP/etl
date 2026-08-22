@@ -421,6 +421,7 @@ value_type& value() const
 Get the value.
 Undefined if has_value() returns false.
 Not valid for void specialisation.
+Before: C++11
 
 ---
 
@@ -537,12 +538,45 @@ Before: C++11
 ---
 
 ```cpp
+template <typename G>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+error_type error_or(G&& default_error) const&
+```
+**Description**
+Returns the error or default_error if has_value() returns true.
+Since: C++11
+
+---
+
+```cpp
+template <typename G>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+error_type error_or(G&& default_error)&&
+```
+**Description**
+Returns the error or default_error if has_value() returns true.
+Since: C++11
+
+---
+
+```cpp
+template <typename G>
+error_type error_or(const G& default_error) const
+```
+**Description**
+Returns the error or default_error if has_value() returns true.
+Before: C++11
+
+---
+
+```cpp
 template <typename... TArgs>
 ETL_CONSTEXPR14 value_type& emplace(TArgs&&... args) ETL_NOEXCEPT
 ```
 **Description**  
-Returns the error if has_value() returns false.
-Undefined if has_value() returns true.
+Create from arguments.
 Since: C++11
 
 ---
@@ -576,7 +610,7 @@ Const class member access operator.
 ```cpp
 value_type& operator *()
 ```
-**Description**  
+**Description**
 Dereference operator.
 
 ---
@@ -584,5 +618,224 @@ Dereference operator.
 ```cpp
 const value_type& operator *() const
 ```
-**Description**  
+**Description**
 Dereference operator.
+
+---
+
+```cpp
+value_type&& operator *() &&
+```
+**Description**
+Dereference operator.
+Since: C++11
+
+---
+
+```cpp
+const value_type&& operator *() const&&
+```
+**Description**
+Dereference operator.
+Since: C++11
+
+---
+
+```cpp
+ETL_NODISCARD
+ETL_CONSTEXPR14
+value_type* begin() ETL_NOEXCEPT
+```
+**Description**
+Returns a pointer to the value if has_value(), otherwise returns nullptr.
+Allows expected to be used as a range of 0 or 1 elements.
+
+---
+
+```cpp
+ETL_NODISCARD
+ETL_CONSTEXPR14
+const value_type* begin() const ETL_NOEXCEPT
+```
+**Description**
+Returns a pointer to the value if has_value(), otherwise returns nullptr.
+
+---
+
+```cpp
+ETL_NODISCARD
+ETL_CONSTEXPR14
+value_type* end() ETL_NOEXCEPT
+```
+**Description**
+Returns a pointer past the value if has_value(), otherwise returns nullptr.
+
+---
+
+```cpp
+ETL_NODISCARD
+ETL_CONSTEXPR14
+const value_type* end() const ETL_NOEXCEPT
+```
+**Description**
+Returns a pointer past the value if has_value(), otherwise returns nullptr.
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TValue&>::type>::type>
+auto transform(F&& f) & -> expected<U, TError>
+```
+**Description**
+If has_value(), invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TValue&>::type>::type>
+auto transform(F&& f) const& -> expected<U, TError>
+```
+**Description**
+If has_value(), invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TValue&&>::type>::type>
+auto transform(F&& f) && -> expected<U, TError>
+```
+**Description**
+If has_value(), invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TValue&&>::type>::type>
+auto transform(F&& f) const&& -> expected<U, TError>
+```
+**Description**
+If has_value(), invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
+Since: C++11
+
+---
+
+```cpp
+template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TValue&>::type>::type>
+auto and_then(F&& f) & -> U
+```
+**Description**
+If has_value(), invokes f on the value and returns the result; otherwise returns an unexpected object that contains error().
+Since: C++11
+
+---
+
+```cpp
+template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TValue&>::type>::type>
+auto and_then(F&& f) const& -> U
+```
+**Description**
+If has_value(), invokes f on the value and returns the result; otherwise returns an expected object that contains error().
+Since: C++11
+
+---
+
+```cpp
+template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TValue&&>::type>::type>
+auto and_then(F&& f) && -> U
+```
+**Description**
+If has_value(), invokes f on the value and returns the result; otherwise returns an expected object that contains error().
+Since: C++11
+
+---
+
+```cpp
+template < typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TValue&&>::type>::type>
+auto and_then(F&& f) const&& -> U
+```
+**Description**
+If has_value(), invokes f on the value and returns the result; otherwise returns an expected object that contains error().
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TError&>::type>::type>
+auto or_else(F&& f) & -> U
+```
+**Description**
+If has_value(), returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TError&>::type>::type>
+auto or_else(F&& f) const& -> U
+```
+**Description**
+If has_value(), returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TError&&>::type>::type>
+auto or_else(F&& f) && -> U
+```
+**Description**
+If has_value(), returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TError&&>::type>::type>
+auto or_else(F&& f) const&& -> U
+```
+**Description**
+If has_value(), returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TError&>::type>::type>
+auto transform_error(F&& f) & -> expected<TValue, U>
+```
+**Description**
+If has_value() returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TError&>::type>::type>
+auto transform_error(F&& f) const& -> expected<TValue, U>
+```
+**Description**
+If has_value() returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, TError&&>::type>::type>
+auto transform_error(F&& f) && -> expected<TValue, U>
+```
+**Description**
+If has_value() returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
+Since: C++11
+
+---
+
+```cpp
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void, const TError&&>::type>::type>
+auto transform_error(F&& f) const&& -> expected<TValue, U>
+```
+**Description**
+If has_value() returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
+Since: C++11
