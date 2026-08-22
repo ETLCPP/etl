@@ -38,13 +38,20 @@ Defines data as an array of 'int', of length '10', containing the supplied data.
 **C++11 and above**
 
 ```cpp
-template <typename T, typename... TValues>
-constexpr auto make_array(TValues&&... values) -> etl::array<T, sizeof...(TValues)>
+template <typename T = void, typename... TValues>
+constexpr auto make_array(TValues&&... values) -> etl::array</*element-type*/, sizeof...(TValues)>
 ```
+
+The element type is `T` when supplied, otherwise the decayed common type of
+the arguments (the Library Fundamentals TS `make_array` design).
 
 ### Example
 ```cpp
-auto data = etl::make_array<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+// Deduced element type: etl::array<int, 10>.
+auto data = etl::make_array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+// Explicit element type: etl::array<char, 10>. Each argument is converted.
+auto chars = etl::make_array<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 ```
 
 ## Member types
