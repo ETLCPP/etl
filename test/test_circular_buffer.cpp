@@ -67,7 +67,7 @@ namespace
       CHECK(data.crbegin() == data.crend());
     }
 
-#if ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_from_literal)
     {

@@ -4,6 +4,10 @@ on:
   release:
     types: [published]  # Trigger only when a GitHub release is published
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   publish:
     runs-on: ubuntu-latest

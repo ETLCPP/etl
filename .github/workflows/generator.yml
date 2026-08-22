@@ -6,6 +6,10 @@ on:
     branches: [ master, pull-request/* ]
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generator-run:
     name: Header Generator
