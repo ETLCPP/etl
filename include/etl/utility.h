@@ -145,7 +145,31 @@ namespace etl
   // We can't have std::swap and etl::swap templates coexisting in the unit
   // tests as the compiler will be unable to decide which one to use, due to
   // ADL.
+  // These are declared in type_traits.h, so that etl::is_swappable can find
+  // them, and defined here.
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
+  #if ETL_USING_CPP11
+  //***************************************************************************
+  // swap
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_move_constructible<T>::value && etl::is_move_assignable<T>::value>::type swap(T& a, T& b)
+    ETL_NOEXCEPT_IF(etl::is_nothrow_move_constructible<T>::value&& etl::is_nothrow_move_assignable<T>::value)
+  {
+    T temp(ETL_MOVE(a));
+    a = ETL_MOVE(b);
+    b = ETL_MOVE(temp);
+  }
+
+  template <typename T, size_t Size>
+  ETL_CONSTEXPR14 typename etl::enable_if<private_type_traits::is_swappable_helper<T>::value>::type swap(T (&a)[Size], T (&b)[Size])
+    ETL_NOEXCEPT_IF(private_type_traits::is_nothrow_swappable_helper<T>::value)
+  {
+    for (size_t i = 0UL; i < Size; ++i)
+    {
+      swap(a[i], b[i]);
+    }
+  }
+  #else
   //***************************************************************************
   // swap
   template <typename T>
@@ -156,7 +180,7 @@ namespace etl
     b = ETL_MOVE(temp);
   }
 
-  template < class T, size_t Size >
+  template <typename T, size_t Size>
   ETL_CONSTEXPR14 void swap(T (&a)[Size], T (&b)[Size]) ETL_NOEXCEPT
   {
     for (size_t i = 0UL; i < Size; ++i)
@@ -164,6 +188,7 @@ namespace etl
       swap(a[i], b[i]);
     }
   }
+  #endif
 #endif
 
   //***************************************************************************
