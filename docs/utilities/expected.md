@@ -647,7 +647,7 @@ ETL_CONSTEXPR14
 value_type* begin() ETL_NOEXCEPT
 ```
 **Description**
-Returns a pointer to the value if has_value(), otherwise returns nullptr.
+Returns a pointer to the value if has_value() returns true, otherwise returns nullptr.
 Allows expected to be used as a range of 0 or 1 elements.
 
 ---
@@ -658,7 +658,7 @@ ETL_CONSTEXPR14
 const value_type* begin() const ETL_NOEXCEPT
 ```
 **Description**
-Returns a pointer to the value if has_value(), otherwise returns nullptr.
+Returns a pointer to the value if has_value() returns true, otherwise returns nullptr.
 
 ---
 
@@ -668,7 +668,7 @@ ETL_CONSTEXPR14
 value_type* end() ETL_NOEXCEPT
 ```
 **Description**
-Returns a pointer past the value if has_value(), otherwise returns nullptr.
+Returns a pointer past the value if has_value() returns true, otherwise returns nullptr.
 
 ---
 
@@ -678,7 +678,7 @@ ETL_CONSTEXPR14
 const value_type* end() const ETL_NOEXCEPT
 ```
 **Description**
-Returns a pointer past the value if has_value(), otherwise returns nullptr.
+Returns a pointer past the value if has_value() returns true, otherwise returns nullptr.
 
 ---
 
@@ -687,7 +687,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform(F&& f) & -> expected<U, TError>
 ```
 **Description**
-If has_value(), invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
+If has_value() returns true then invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
 Since: C++11
 
 ---
@@ -697,7 +697,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform(F&& f) const& -> expected<U, TError>
 ```
 **Description**
-If has_value(), invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
+If has_value() returns true then invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
 Since: C++11
 
 ---
@@ -707,7 +707,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform(F&& f) && -> expected<U, TError>
 ```
 **Description**
-If has_value(), invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
+If has_value() returns true then invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
 Since: C++11
 
 ---
@@ -717,7 +717,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform(F&& f) const&& -> expected<U, TError>
 ```
 **Description**
-If has_value(), invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
+If has_value() returns true then invokes f on the value and returns the result wrapped in an expected object; otherwise returns an expected object that contains error().
 Since: C++11
 
 ---
@@ -727,7 +727,7 @@ template < typename F, typename U = typename etl::remove_cvref< typename etl::in
 auto and_then(F&& f) & -> U
 ```
 **Description**
-If has_value(), invokes f on the value and returns the result; otherwise returns an unexpected object that contains error().
+If has_value() returns true then invokes f on the value and returns the result; otherwise returns an expected object that contains error().
 Since: C++11
 
 ---
@@ -737,7 +737,7 @@ template < typename F, typename U = typename etl::remove_cvref< typename etl::in
 auto and_then(F&& f) const& -> U
 ```
 **Description**
-If has_value(), invokes f on the value and returns the result; otherwise returns an expected object that contains error().
+If has_value() returns true then invokes f on the value and returns the result; otherwise returns an expected object that contains error().
 Since: C++11
 
 ---
@@ -747,7 +747,7 @@ template < typename F, typename U = typename etl::remove_cvref< typename etl::in
 auto and_then(F&& f) && -> U
 ```
 **Description**
-If has_value(), invokes f on the value and returns the result; otherwise returns an expected object that contains error().
+If has_value() returns true then invokes f on the value and returns the result; otherwise returns an expected object that contains error().
 Since: C++11
 
 ---
@@ -757,7 +757,7 @@ template < typename F, typename U = typename etl::remove_cvref< typename etl::in
 auto and_then(F&& f) const&& -> U
 ```
 **Description**
-If has_value(), invokes f on the value and returns the result; otherwise returns an expected object that contains error().
+If has_value() returns true then invokes f on the value and returns the result; otherwise returns an expected object that contains error().
 Since: C++11
 
 ---
@@ -767,7 +767,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto or_else(F&& f) & -> U
 ```
 **Description**
-If has_value(), returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
+If has_value() returns true then returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
 Since: C++11
 
 ---
@@ -777,7 +777,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto or_else(F&& f) const& -> U
 ```
 **Description**
-If has_value(), returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
+If has_value() returns true then returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
 Since: C++11
 
 ---
@@ -787,7 +787,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto or_else(F&& f) && -> U
 ```
 **Description**
-If has_value(), returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
+If has_value() returns true then returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
 Since: C++11
 
 ---
@@ -797,7 +797,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto or_else(F&& f) const&& -> U
 ```
 **Description**
-If has_value(), returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
+If has_value() returns true then returns an expected object that contains value(); otherwise invokes f on error() and returns the result.
 Since: C++11
 
 ---
@@ -807,7 +807,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform_error(F&& f) & -> expected<TValue, U>
 ```
 **Description**
-If has_value() returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
+If has_value() returns true then returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
 Since: C++11
 
 ---
@@ -817,7 +817,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform_error(F&& f) const& -> expected<TValue, U>
 ```
 **Description**
-If has_value() returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
+If has_value() returns true then returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
 Since: C++11
 
 ---
@@ -827,7 +827,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform_error(F&& f) && -> expected<TValue, U>
 ```
 **Description**
-If has_value() returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
+If has_value() returns true then returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
 Since: C++11
 
 ---
@@ -837,5 +837,5 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform_error(F&& f) const&& -> expected<TValue, U>
 ```
 **Description**
-If has_value() returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
+If has_value() returns true then returns an expected that contains value(); otherwise invokes f on error() and returns the result wrapped in an expected object.
 Since: C++11
