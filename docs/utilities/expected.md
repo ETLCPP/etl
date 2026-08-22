@@ -192,13 +192,13 @@ Swap with another etl::unexpected
 ```cpp
 template <typename TValue, typename TError>
 class expected
-```cpp
+```
 
 Specialisation for void value type.
 ```cpp
 template <typename TError>
 class expected<void, TError>
-```cpp
+```
 
 ### Types
 
