@@ -135,6 +135,7 @@ SOFTWARE.
 #include "etl/reference_flat_set.h"
 #include "etl/scaled_rounding.h"
 #include "etl/scheduler.h"
+#include "etl/semaphore.h"
 #include "etl/set.h"
 #include "etl/smallest.h"
 #include "etl/sqrt.h"

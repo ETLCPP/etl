@@ -3698,6 +3698,12 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_arm.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_gcc_sync.h" />
     <ClInclude Include="..\..\include\etl\mutex\mutex_std.h" />
+    <ClInclude Include="..\..\include\etl\semaphore.h" />
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_exceptions.h" />
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_freertos.h" />
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_gcc_sync.h" />
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_clang_sync.h" />
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_std.h" />
     <ClInclude Include="..\..\include\etl\packet.h" />
     <ClInclude Include="..\..\include\etl\permutations.h" />
     <ClInclude Include="..\..\include\etl\private\minmax_pop.h" />

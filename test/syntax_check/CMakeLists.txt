@@ -341,6 +341,7 @@ target_sources(tests PRIVATE
 		rounded_integral_division.h.t.cpp
 		scaled_rounding.h.t.cpp
 		scheduler.h.t.cpp
+		semaphore.h.t.cpp
 		set.h.t.cpp
 		shared_message.h.t.cpp
 		signal.h.t.cpp
