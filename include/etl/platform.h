@@ -525,6 +525,20 @@ SOFTWARE.
 #endif
 
 //*************************************
+// inline
+#if ETL_USING_GCC_COMPILER || ETL_USING_CLANG_COMPILER
+  #define ETL_NO_INLINE     __attribute__((noinline))
+  #define ETL_ALWAYS_INLINE __attribute__((always_inline))
+#elif ETL_USING_MICROSOFT_COMPILER
+  #define ETL_NO_INLINE     __declspec(noinline)
+  #define ETL_ALWAYS_INLINE __forceinline
+#else
+  // will trigger a compilation error if used
+  #define ETL_NO_INLINE     unsupported compiler
+  #define ETL_ALWAYS_INLINE unsupported compiler
+#endif
+
+//*************************************
 // Determine if the ETL can use char8_t type.
 #if ETL_NO_SMALL_CHAR_SUPPORT
   #include "private/diagnostic_cxx_20_compat_push.h"
