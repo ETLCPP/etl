@@ -2004,8 +2004,9 @@ namespace etl
   {
     // Library Fundamentals TS make_array design: the element type is T when
     // supplied explicitly, otherwise the decayed common type of the arguments.
+    // convert forwards same-type arguments and static_casts the rest.
     using TElement = etl::private_make::element_type_t<T, TValues...>;
-    return {static_cast<TElement>(etl::forward<TValues>(values))...};
+    return {etl::private_make::convert<TElement>(etl::forward<TValues>(values))...};
   }
 #endif
 

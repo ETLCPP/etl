@@ -1054,16 +1054,16 @@ namespace etl
   //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST
   template <typename T = void, typename... TValues>
-  constexpr auto make_array(TValues&&... values) ETL_NOEXCEPT -> etl::array<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
+  constexpr auto make_array(TValues&&... values) -> etl::array<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
   {
     // Library Fundamentals TS make_array design: the element type is T when
     // supplied explicitly, otherwise the decayed common type of the arguments.
-    // Each argument is forwarded as its own deduced type and converted
-    // explicitly, which accepts const-qualified lvalues (forwarding as the
-    // element type rejected them) and keeps narrowing initialisers such as
-    // make_array<char>(0, 1) working.
+    // convert forwards arguments that already have the element type and
+    // converts the rest with static_cast, so const-qualified lvalues,
+    // narrowing initialisers such as make_array<char>(0, 1) and non-movable
+    // element types all work.
     using TElement = etl::private_make::element_type_t<T, TValues...>;
-    return {static_cast<TElement>(etl::forward<TValues>(values))...};
+    return {etl::private_make::convert<TElement>(etl::forward<TValues>(values))...};
   }
 #endif
 

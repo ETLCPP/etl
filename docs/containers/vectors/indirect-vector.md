@@ -47,7 +47,7 @@ Defines data as an `indirect_vector` of `int`, of length `10`, containing the su
 ```cpp
 template <typename T = void, typename... TValues>
 constexpr auto make_indirect_vector(TValues&&... values)
-  -> etl::indirect_vector<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
+  -> etl::indirect_vector</*element-type*/, sizeof...(TValues)>
 ```
 
 The element type is `T` when supplied, otherwise the decayed common type of

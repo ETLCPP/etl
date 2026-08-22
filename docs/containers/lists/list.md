@@ -70,7 +70,7 @@ Defines data as an list of `int`, of length `10`, containing the supplied data.
 **C++11 and above**  
 ```cpp
 template <typename T = void, typename... TValues>
-constexpr auto make_list(TValues&&... values) -> etl::list<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
+constexpr auto make_list(TValues&&... values) -> etl::list</*element-type*/, sizeof...(TValues)>
 ```
 
 The element type is `T` when supplied, otherwise the decayed common type of

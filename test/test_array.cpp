@@ -1017,6 +1017,38 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    // Arguments that already have the element type are forwarded rather than
+    // cast. Casting created a prvalue that, before C++17, had to be
+    // materialised through the move constructor, so a copyable type with a
+    // deleted move constructor was rejected.
+    TEST(test_make_array_for_copyable_non_movable)
+    {
+      struct NonMovable
+      {
+        explicit NonMovable(int v_)
+          : v(v_)
+        {
+        }
+        NonMovable(const NonMovable&) = default;
+        NonMovable(NonMovable&&)      = delete;
+        int v;
+      };
+
+      NonMovable       mutable_lvalue(1);
+      const NonMovable const_lvalue(2);
+
+      auto data = etl::make_array<NonMovable>(mutable_lvalue, const_lvalue);
+
+      using Type = etl::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same<NonMovable, Type>::value));
+
+      CHECK_EQUAL(1, data[0].v);
+      CHECK_EQUAL(2, data[1].v);
+    }
+#endif
+
+    //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP14
     TEST(test_make_array_is_constexpr)
     {

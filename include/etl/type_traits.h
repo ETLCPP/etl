@@ -3753,13 +3753,14 @@ namespace etl
   using common_type_t = typename common_type<T...>::type;
 
   //***********************************
-  // Selects the element type for the make_xxx container factories, following
-  // the Library Fundamentals TS make_array design: TDesired if it was supplied
-  // explicitly, otherwise the decayed common type of the arguments. The
-  // specialisation keeps common_type uninstantiated when TDesired is supplied,
-  // so arguments with no common type are still accepted in that case.
+  // Implementation details of the make_xxx container factories.
   namespace private_make
   {
+    // Selects the element type, following the Library Fundamentals TS
+    // make_array design: TDesired if it was supplied explicitly, otherwise the
+    // common type of the arguments (common_type decays). The specialisation
+    // keeps common_type uninstantiated when TDesired is supplied, so arguments
+    // with no common type are still accepted in that case.
     template <typename TDesired, typename... TArgs>
     struct element_type
     {
@@ -3767,12 +3768,28 @@ namespace etl
     };
 
     template <typename... TArgs>
-    struct element_type<void, TArgs...> : etl::common_type<typename etl::decay<TArgs>::type...>
+    struct element_type<void, TArgs...> : etl::common_type<TArgs...>
     {
     };
 
     template <typename TDesired, typename... TArgs>
     using element_type_t = typename element_type<TDesired, TArgs...>::type;
+
+    // Converts a factory argument to the element type. An argument that
+    // already has the element type is forwarded unchanged; any other argument
+    // is converted with static_cast, which keeps narrowing initialisers such
+    // as make_array<char>(0, 1) working. Forwarding rather than casting in the
+    // same-type case avoids materialising a temporary, which before C++17
+    // requires an accessible copy or move constructor even though the copy is
+    // elided, and would reject copyable-but-non-movable element types.
+    template <typename TElement, typename TValue>
+    using convert_type_t = typename etl::conditional<etl::is_same<typename etl::decay<TValue>::type, TElement>::value, TValue&&, TElement>::type;
+
+    template <typename TElement, typename TValue>
+    constexpr convert_type_t<TElement, TValue> convert(TValue&& value)
+    {
+      return static_cast<convert_type_t<TElement, TValue>>(value);
+    }
   } // namespace private_make
 #endif
 

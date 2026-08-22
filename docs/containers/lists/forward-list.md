@@ -66,7 +66,7 @@ Defines data as an `forward_list` of int, of length 10, containing the supplied 
 **C++11 and above**  
 ```cpp
 template <typename T = void, typename... TValues>
-constexpr auto make_forward_list(TValues&&... values) -> etl::forward_list<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
+constexpr auto make_forward_list(TValues&&... values) -> etl::forward_list</*element-type*/, sizeof...(TValues)>
 ```
 
 The element type is `T` when supplied, otherwise the decayed common type of

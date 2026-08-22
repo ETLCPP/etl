@@ -35,7 +35,7 @@ Defines data as an `deque` of `int`, of length `10`, containing the supplied dat
 **C++11 and above**
 ```cpp
 template <typename T = void, typename... TValues>
-constexpr auto make_deque(TValues&&... values) -> etl::deque<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
+constexpr auto make_deque(TValues&&... values) -> etl::deque</*element-type*/, sizeof...(TValues)>
 ```
 
 The element type is `T` when supplied, otherwise the decayed common type of

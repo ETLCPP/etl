@@ -39,7 +39,7 @@ Defines data as an array of 'int', of length '10', containing the supplied data.
 
 ```cpp
 template <typename T = void, typename... TValues>
-constexpr auto make_array(TValues&&... values) -> etl::array<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
+constexpr auto make_array(TValues&&... values) -> etl::array</*element-type*/, sizeof...(TValues)>
 ```
 
 The element type is `T` when supplied, otherwise the decayed common type of
