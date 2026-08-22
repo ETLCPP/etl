@@ -36,14 +36,15 @@ Defines data as an `flat_set` of `int`, of length 4, containing the supplied dat
 ## make_flat_set
 C++11 and above
 ```cpp
-template <typename T,
-          typename TKeyCompare = etl::less<T>>
-constexpr auto make_flat_set(TValues&&... values)
+template <typename TKey,
+          typename TKeyCompare = etl::less<TKey>,
+          typename... T>
+constexpr auto make_flat_set(T&&... keys) -> etl::flat_set<TKey, sizeof...(T), TKeyCompare>
 ```
 
 ### Example
 ```cpp
-auto data = etl::make_flat_set<int>({0, 1, 2, 3 });
+auto data = etl::make_flat_set<int>(0, 1, 2, 3);
 ```
 
 ## Member types

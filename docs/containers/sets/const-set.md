@@ -17,7 +17,7 @@ Uses `etl::less` as the default key comparison method.
 etl::const_set<typename TKey, size_t Size, TKeyCompare = etl::less>
 ```
 
-**Enternal storage**
+**Internal storage**
 ```cpp
 etl::const_set_ext<typename TKey, TKeyCompare = etl::less>
 ```

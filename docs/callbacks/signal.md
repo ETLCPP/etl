@@ -15,7 +15,7 @@ template <typename TFunction, size_t Size, typename TSlot = etl::delegate<TFunct
 class signal
 ```
 `TFunction`  The callback function signature.
-`Size`       The maximum numbr of slots for the signal.
+`Size`       The maximum number of slots for the signal.
 `TSlot`      The callback slot type. Default = `etl::delegate<TFunction>`
 
 ## Types
