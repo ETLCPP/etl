@@ -68,6 +68,10 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED)
     #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED 1
   #endif
+
+  #if !defined(ETL_USING_BUILTIN_BIT_CAST)
+    #define ETL_USING_BUILTIN_BIT_CAST 1
+  #endif
 #endif
 
 #if defined(ETL_USE_BUILTIN_MEM_FUNCTIONS) // Set all of them to be true if not
@@ -132,6 +136,10 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED __has_builtin(__builtin_is_constant_evaluated)
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_BIT_CAST)
+    #define ETL_USING_BUILTIN_BIT_CAST __has_builtin(__builtin_bit_cast)
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_MEMCPY)
     #define ETL_USING_BUILTIN_MEMCPY __has_builtin(__builtin_memcpy)
   #endif
@@ -173,6 +181,13 @@ SOFTWARE.
                                     // intrinsic is enabled here for the no-STL configuration.
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
+  #endif
+
+  // MSVC has supported __builtin_bit_cast since VS2019 16.6. __has_builtin is not
+  // used for Microsoft (see above) to avoid a VS2022 intellisense issue, so the
+  // intrinsic is enabled here directly for the no-STL configuration.
+  #if !defined(ETL_USING_BUILTIN_BIT_CAST) && (_MSC_VER >= 1926)
+    #define ETL_USING_BUILTIN_BIT_CAST 1
   #endif
 #endif
 
@@ -245,6 +260,17 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_BIT_CAST)
+  #define ETL_USING_BUILTIN_BIT_CAST 0
+#endif
+
+// __builtin_bit_cast is only of use to the ETL from C++11 onwards.
+// Disable it for older standards, so that the generated code for those users is unchanged.
+#if ETL_USING_BUILTIN_BIT_CAST && !ETL_USING_CPP11
+  #undef ETL_USING_BUILTIN_BIT_CAST
+  #define ETL_USING_BUILTIN_BIT_CAST 0
+#endif
+
 namespace etl
 {
   namespace traits
@@ -268,6 +294,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_virtual_base_of                   = (ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_relocatable             = (ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE == 1);
     static ETL_CONSTANT bool using_builtin_builtin_is_cpp_trivially_relocatable = (ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE == 1);
+    static ETL_CONSTANT bool using_builtin_bit_cast                             = (ETL_USING_BUILTIN_BIT_CAST == 1);
   } // namespace traits
 } // namespace etl
 

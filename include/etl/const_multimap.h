@@ -458,7 +458,8 @@ namespace etl
     //*************************************************************************
     ///\brief Construct a const_map from a variadic list of elements.
     /// Static asserts if the element type is not constructible.
-    /// Static asserts if the elements are not of type <code>value_type</code>.
+    /// Static asserts if the elements are not constructible into
+    /// <code>value_type</code>.
     /// Static asserts if the number of elements is greater than the capacity of
     /// the const_map.
     //*************************************************************************
@@ -467,7 +468,8 @@ namespace etl
       : iconst_multimap<TKey, TMapped, TKeyCompare>(element_list, sizeof...(elements), Size)
       , element_list{etl::forward<TElements>(elements)...}
     {
-      static_assert((etl::are_all_same<value_type, etl::decay_t<TElements>...>::value), "All elements must be value_type");
+      static_assert((etl::conjunction<etl::is_constructible<value_type, etl::decay_t<TElements>>...>::value),
+                    "All elements must be constructible into value_type");
       static_assert(sizeof...(elements) <= Size, "Number of elements exceeds capacity");
     }
 
