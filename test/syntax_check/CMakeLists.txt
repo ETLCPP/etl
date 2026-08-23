@@ -203,6 +203,7 @@ target_sources(tests PRIVATE
 		crc8_rohc.h.t.cpp
 		crc8_wcdma.h.t.cpp
 		cyclic_value.h.t.cpp
+		clamped_value.h.t.cpp
 		debounce.h.t.cpp
 		debug_count.h.t.cpp
 		delegate.h.t.cpp

@@ -1,0 +1,214 @@
+///\file
+
+/******************************************************************************
+The MIT License(MIT)
+
+Embedded Template Library.
+https://github.com/ETLCPP/etl
+https://www.etlcpp.com
+
+Copyright(c) 2026 John Wellbelove
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions :
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
+#include "unit_test_framework.h"
+
+#include "etl/clamped_value.h"
+
+#include <limits.h>
+
+namespace
+{
+  SUITE(test_clamped_value)
+  {
+    //*************************************************************************
+    TEST(test_compile_time_initialisation)
+    {
+      etl::clamped_value<int, 2, 7>       value;
+      const etl::clamped_value<int, 2, 7> const_value(value);
+      int                                 converted_value       = value;
+      int                                 converted_const_value = const_value;
+      CHECK_EQUAL(2, value.get());
+      CHECK_EQUAL(2, value.min());
+      CHECK_EQUAL(7, value.max());
+      CHECK_EQUAL(2, converted_value);
+      CHECK_EQUAL(2, converted_const_value);
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_initialisation)
+    {
+      etl::clamped_value<int>       value(2, 7, 5);
+      etl::clamped_value<int>       default_value;
+      etl::clamped_value<int>       range_value(2, 7);
+      const etl::clamped_value<int> const_value(value);
+      int                           converted_value       = value;
+      int                           converted_const_value = const_value;
+      CHECK_EQUAL(5, value.get());
+      CHECK_EQUAL(2, value.min());
+      CHECK_EQUAL(7, value.max());
+      CHECK_EQUAL(0, default_value.get());
+      CHECK_EQUAL(2, range_value.get());
+      CHECK_EQUAL(5, converted_value);
+      CHECK_EQUAL(5, converted_const_value);
+    }
+
+    //*************************************************************************
+    TEST(test_set_and_assignment_clamp_values)
+    {
+      etl::clamped_value<int, 2, 7> compile_time(1);
+      etl::clamped_value<int>       run_time(2, 7, 8);
+      CHECK_EQUAL(2, compile_time.get());
+      CHECK_EQUAL(7, run_time.get());
+      compile_time = 8;
+      run_time.set(1);
+      CHECK_EQUAL(7, compile_time.get());
+      CHECK_EQUAL(2, run_time.get());
+    }
+
+    //*************************************************************************
+    TEST(test_increment_and_decrement_saturate)
+    {
+      etl::clamped_value<int, 2, 7> compile_time(7);
+      etl::clamped_value<int>       run_time(2, 7, 2);
+      ++compile_time;
+      --run_time;
+      CHECK_EQUAL(7, compile_time.get());
+      CHECK_EQUAL(2, run_time.get());
+      compile_time.to_min();
+      run_time.to_max();
+      --compile_time;
+      ++run_time;
+      CHECK_EQUAL(2, compile_time.get());
+      CHECK_EQUAL(7, run_time.get());
+    }
+
+    //*************************************************************************
+    TEST(test_postfix_operators)
+    {
+      etl::clamped_value<int, 2, 7> value(4);
+      etl::clamped_value<int, 2, 7> previous_increment = value++;
+      CHECK_EQUAL(4, previous_increment.get());
+      CHECK_EQUAL(5, value.get());
+      etl::clamped_value<int, 2, 7> previous_decrement = value--;
+      CHECK_EQUAL(5, previous_decrement.get());
+      CHECK_EQUAL(4, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_advance_saturates)
+    {
+      etl::clamped_value<int, 2, 7> value;
+      value.advance(100);
+      CHECK_EQUAL(7, value.get());
+      value.advance(-100);
+      CHECK_EQUAL(2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_set_run_time_bounds)
+    {
+      etl::clamped_value<int> value(2, 7, 6);
+      value.set(3, 8);
+      CHECK_EQUAL(3, value.get());
+      CHECK_EQUAL(3, value.min());
+      CHECK_EQUAL(8, value.max());
+    }
+
+    //*************************************************************************
+    TEST(test_copy_equality_and_swap_compile_time)
+    {
+      etl::clamped_value<int, 2, 7> value1(4);
+      etl::clamped_value<int, 2, 7> value2(value1);
+      CHECK(value1 == value2);
+      value2 = 6;
+      CHECK(value1 != value2);
+      swap(value1, value2);
+      CHECK_EQUAL(6, value1.get());
+      CHECK_EQUAL(4, value2.get());
+    }
+
+    //*************************************************************************
+    TEST(test_copy_assignment_and_self_assignment_run_time)
+    {
+      etl::clamped_value<int> value1(2, 7, 5);
+      etl::clamped_value<int> value2(3, 8, 6);
+      value1 = value2;
+      CHECK_EQUAL(6, value1.get());
+      CHECK_EQUAL(3, value1.min());
+      CHECK_EQUAL(8, value1.max());
+      etl::clamped_value<int>* value1_pointer = &value1;
+      value1                                  = *value1_pointer;
+      CHECK_EQUAL(6, value1.get());
+      CHECK_EQUAL(3, value1.min());
+      CHECK_EQUAL(8, value1.max());
+    }
+
+    //*************************************************************************
+    TEST(test_unsigned_boundary_values)
+    {
+      etl::clamped_value<unsigned, 0U, 2U> value(2U);
+      ++value;
+      CHECK_EQUAL(2U, value.get());
+      value.to_min();
+      --value;
+      CHECK_EQUAL(0U, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_runtime_postfix_and_advance)
+    {
+      etl::clamped_value<int> value(2, 7, 4);
+      etl::clamped_value<int> previous_increment = value++;
+      CHECK_EQUAL(4, previous_increment.get());
+      CHECK_EQUAL(5, value.get());
+      etl::clamped_value<int> previous_decrement = value--;
+      CHECK_EQUAL(5, previous_decrement.get());
+      CHECK_EQUAL(4, value.get());
+      value.advance(0);
+      CHECK_EQUAL(4, value.get());
+      value.advance(3);
+      CHECK_EQUAL(7, value.get());
+      value.advance(-3);
+      CHECK_EQUAL(4, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_advance_extreme_values)
+    {
+      etl::clamped_value<int, 2, 7> compile_time(4);
+      etl::clamped_value<int>       run_time(2, 7, 4);
+      compile_time.advance(INT_MAX);
+      run_time.advance(INT_MIN);
+      CHECK_EQUAL(7, compile_time.get());
+      CHECK_EQUAL(2, run_time.get());
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_clamped_value_constexpr_ctor)
+    {
+      constexpr etl::clamped_value<int, 0, 9> value;
+      static_assert(value.get() == 0, "constexpr clamped_value constructor");
+      CHECK(true);
+    }
+#endif
+  }
+} // namespace
