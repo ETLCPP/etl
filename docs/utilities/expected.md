@@ -735,7 +735,7 @@ Since: C++11
 ---
 
 ```cpp
-template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void,>::type>::type>
+template <typename F, typename U = typename etl::remove_cvref< typename etl::invoke_result<F, void>::type>::type>
 auto transform(F&& f) && -> expected<U, TError>
 ```
 **Description**
@@ -991,7 +991,7 @@ template <typename F, typename U = typename etl::remove_cvref< typename etl::inv
 auto transform_error(F&& f) && -> expected<TValue, U>
 ```
 **Description**
-For void specialisaation.
+For void specialisation.
 If has_value() returns true, it returns a default constructed expected object of the appropriate type; otherwise it invokes f on error() and returns the result wrapped in an expected object.
 Since: C++11
 
