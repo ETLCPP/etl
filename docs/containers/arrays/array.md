@@ -43,7 +43,10 @@ constexpr auto make_array(TValues&&... values) -> etl::array</*element-type*/, s
 ```
 
 The element type is `T` when supplied, otherwise the decayed common type of
-the arguments (the Library Fundamentals TS `make_array` design).
+the arguments (the Library Fundamentals TS `make_array` design). An empty
+array requires the element type to be supplied explicitly, e.g.
+`etl::make_array<int>()`; a call with neither an element type nor arguments
+is ill-formed, as there is nothing to deduce the element type from.
 
 ### Example
 ```cpp

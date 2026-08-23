@@ -1018,6 +1018,22 @@ namespace
 
     //*************************************************************************
 #if ETL_HAS_INITIALIZER_LIST
+    // An empty array requires the element type to be supplied explicitly.
+    // etl::make_array() with no element type and no arguments is ill-formed,
+    // as in the Library Fundamentals TS: there is nothing to deduce the
+    // element type from.
+    TEST(test_make_array_empty)
+    {
+      auto data = etl::make_array<int>();
+
+      CHECK((std::is_same<etl::array<int, 0U>, decltype(data)>::value));
+      CHECK_TRUE(data.empty());
+      CHECK_EQUAL(0U, data.size());
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
     // Arguments that already have the element type are forwarded rather than
     // cast. Casting created a prvalue that, before C++17, had to be
     // materialised through the move constructor, so a copyable type with a
