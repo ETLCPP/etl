@@ -61,6 +61,7 @@ SOFTWARE.
 #include "etl/cstring.h"
 #include "etl/cumulative_moving_average.h"
 #include "etl/cyclic_value.h"
+#include "etl/clamped_value.h"
 #include "etl/debounce.h"
 #include "etl/debug_count.h"
 #include "etl/deque.h"
