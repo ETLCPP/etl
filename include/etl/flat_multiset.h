@@ -321,7 +321,6 @@ namespace etl
     //*************************************************************************
     /// Emplaces a value to the set.
     //*************************************************************************
-    template <typename T1>
     ETL_OR_STD::pair<iterator, bool> emplace(const_reference value)
     {
       return insert(value);

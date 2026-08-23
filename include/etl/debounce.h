@@ -536,7 +536,10 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Constructor.
+    /// Sets the count thresholds.
+    ///\param valid  The count for a valid state.
+    ///\param hold   The count after valid for a hold state. Default = 0.
+    ///\param repeat The count after hold for a key repeat. Default = 0.
     //*************************************************************************
     void set(count_t valid, count_t hold = 0, count_t repeat = 0)
     {

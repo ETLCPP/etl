@@ -2,9 +2,37 @@ name: clang-c++17
 on:
   push:
     branches: [ master, development, pull-request/* ]
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - 'BUILD.bazel'
+      - 'MODULE.bazel*'
+      - 'meson.build'
+      - 'meson_options.txt'
+      - 'subprojects/**'
+      - '.devcontainer/**'
   pull_request:
     branches: [ master, development, pull-request/* ]
     types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - 'BUILD.bazel'
+      - 'MODULE.bazel*'
+      - 'meson.build'
+      - 'meson_options.txt'
+      - 'subprojects/**'
+      - '.devcontainer/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
 
@@ -16,7 +44,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
@@ -38,7 +66,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Install libc++
       run: |
@@ -67,7 +95,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
