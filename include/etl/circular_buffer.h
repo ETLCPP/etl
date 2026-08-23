@@ -901,6 +901,53 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Assigns an iterator range to the circular buffer.
+    //*************************************************************************
+    void assign(iterator first, const iterator& last)
+    {
+      assign_range(first, last);
+    }
+
+    //*************************************************************************
+    /// Assigns a const iterator range to the circular buffer.
+    //*************************************************************************
+    void assign(const_iterator first, const const_iterator& last)
+    {
+      assign_range(first, last);
+    }
+
+    //*************************************************************************
+    /// Assigns a range to the circular buffer.
+    //*************************************************************************
+    template <typename TIterator>
+    typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type assign(TIterator first, const TIterator& last)
+    {
+      clear();
+      push(first, last);
+    }
+
+    //*************************************************************************
+    /// Assigns 'n' copies of a value to the circular buffer.
+    //*************************************************************************
+    void assign(size_type n, const_reference value)
+    {
+      if (n == 0U)
+      {
+        clear();
+        return;
+      }
+
+      const T value_copy(value);
+
+      clear();
+
+      while (n-- != 0U)
+      {
+        push(value_copy);
+      }
+    }
+
+    //*************************************************************************
     /// push.
     /// Adds an item to the buffer.
     /// If the buffer is filled then the oldest item is overwritten.
@@ -1037,6 +1084,43 @@ namespace etl
   protected:
 
     //*************************************************************************
+    /// Assigns a circular buffer iterator range.
+    //*************************************************************************
+    template <typename TIterator>
+    void assign_range(TIterator first, const TIterator& last)
+    {
+      const bool is_self_range = (&first.container() == this) && (&last.container() == this);
+
+      if (!is_self_range)
+      {
+        clear();
+        push(first, last);
+      }
+      else
+      {
+        const size_type first_index = static_cast<size_type>(first.get_index());
+        const size_type last_index  = static_cast<size_type>(last.get_index());
+
+        while (out != first_index)
+        {
+          pop();
+        }
+
+        while (in != last_index)
+        {
+          if (in == 0U)
+          {
+            in = buffer_size;
+          }
+
+          --in;
+          pbuffer[in].~T();
+          ETL_DECREMENT_DEBUG_COUNT;
+        }
+      }
+    }
+
+    //*************************************************************************
     /// Protected constructor.
     //*************************************************************************
     icircular_buffer(pointer pbuffer_, size_type max_length)
@@ -1125,6 +1209,24 @@ namespace etl
     circular_buffer()
       : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
     {
+    }
+
+    //*************************************************************************
+    /// Constructor, with size.
+    //*************************************************************************
+    explicit circular_buffer(size_t initial_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
+    {
+      this->assign(initial_size, T());
+    }
+
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    //*************************************************************************
+    circular_buffer(size_t initial_size, typename etl::icircular_buffer<T>::const_reference value)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer.raw), MAX_SIZE)
+    {
+      this->assign(initial_size, value);
     }
 
     //*************************************************************************
@@ -1272,6 +1374,24 @@ namespace etl
     circular_buffer_ext(size_t max_size)
       : icircular_buffer<T>(ETL_NULLPTR, max_size)
     {
+    }
+
+    //*************************************************************************
+    /// Constructor, with size.
+    //*************************************************************************
+    explicit circular_buffer_ext(size_t initial_size, void* buffer, size_t max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
+    {
+      this->assign(initial_size, T());
+    }
+
+    //*************************************************************************
+    /// Constructor, from initial size and value.
+    //*************************************************************************
+    circular_buffer_ext(size_t initial_size, typename etl::icircular_buffer<T>::const_reference value, void* buffer, size_t max_size)
+      : icircular_buffer<T>(reinterpret_cast<T*>(buffer), max_size)
+    {
+      this->assign(initial_size, value);
     }
 
     //*************************************************************************

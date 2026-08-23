@@ -384,7 +384,7 @@ namespace etl
     /// constructor.
     //***************************************************************************
     template <typename... TArgs>
-    typed_storage(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    typed_storage(TArgs&&... args)
       : valid(false)
     {
       create(etl::forward<TArgs>(args)...);
@@ -456,7 +456,7 @@ namespace etl
     /// the internal byte array.
     //***************************************************************************
     template <typename... TArgs>
-    reference create(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    reference create(TArgs&&... args)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
       pointer p = ::new (&storage.value) value_type(etl::forward<TArgs>(args)...);
@@ -536,7 +536,7 @@ namespace etl
     //***************************************************************************
     /// \returns a pointer of type T and asserts if has_value() is false.
     //***************************************************************************
-    pointer operator->() ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    pointer operator->()
     {
       ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
 
@@ -546,7 +546,7 @@ namespace etl
     //***************************************************************************
     /// \returns a const pointer of type T and asserts if has_value() is false.
     //***************************************************************************
-    const_pointer operator->() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    const_pointer operator->() const
     {
       ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
 
@@ -556,7 +556,7 @@ namespace etl
     //***************************************************************************
     /// \returns reference of type T and asserts if has_value() is false.
     //***************************************************************************
-    reference operator*() ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    reference operator*()
     {
       return *operator->();
     }
@@ -564,15 +564,15 @@ namespace etl
     //***************************************************************************
     /// \returns const_reference of type T and asserts if has_value() is false.
     //***************************************************************************
-    const_reference operator*() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    const_reference operator*() const
     {
       return *operator->();
     }
 
   private:
 
-    typed_storage(etl::typed_storage<T>&) ETL_DELETE;
-    typed_storage& operator=(etl::typed_storage<T>&) ETL_DELETE;
+    typed_storage(const etl::typed_storage<T>&) ETL_DELETE;
+    typed_storage& operator=(const etl::typed_storage<T>&) ETL_DELETE;
 
     struct dummy_t
     {
@@ -620,7 +620,7 @@ namespace etl
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
-    typed_storage_ext(void* pbuffer_) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    typed_storage_ext(void* pbuffer_)
       : pbuffer(reinterpret_cast<T*>(pbuffer_))
       , valid(false)
     {
@@ -633,7 +633,7 @@ namespace etl
     /// constructor.
     //***************************************************************************
     template <typename... TArgs>
-    typed_storage_ext(void* pbuffer_, TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    typed_storage_ext(void* pbuffer_, TArgs&&... args)
       : pbuffer(reinterpret_cast<T*>(pbuffer_))
       , valid(false)
     {
@@ -645,7 +645,7 @@ namespace etl
     /// Move constructor.
     /// Transfers ownership of the buffer from \p other to this.
     //***************************************************************************
-    typed_storage_ext(typed_storage_ext<T>&& other) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    typed_storage_ext(typed_storage_ext<T>&& other)
       : pbuffer(other.pbuffer)
       , valid(other.valid)
     {
@@ -727,7 +727,7 @@ namespace etl
     /// the external buffer.
     //***************************************************************************
     template <typename... TArgs>
-    reference create(TArgs&&... args) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    reference create(TArgs&&... args)
     {
       ETL_ASSERT(!has_value(), ETL_ERROR(etl::typed_storage_error));
       pointer p = ::new (pbuffer) value_type(etl::forward<TArgs>(args)...);
@@ -807,7 +807,7 @@ namespace etl
     //***************************************************************************
     /// \returns a pointer of type T and asserts if has_value() is false.
     //***************************************************************************
-    pointer operator->() ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    pointer operator->()
     {
       ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
 
@@ -817,7 +817,7 @@ namespace etl
     //***************************************************************************
     /// \returns a const pointer of type T and asserts if has_value() is false.
     //***************************************************************************
-    const_pointer operator->() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    const_pointer operator->() const
     {
       ETL_ASSERT(has_value(), ETL_ERROR(etl::typed_storage_error));
 
@@ -827,7 +827,7 @@ namespace etl
     //***************************************************************************
     /// \returns reference of type T and asserts if has_value() is false.
     //***************************************************************************
-    reference operator*() ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    reference operator*()
     {
       return *operator->();
     }
@@ -835,15 +835,15 @@ namespace etl
     //***************************************************************************
     /// \returns const_reference of type T and asserts if has_value() is false.
     //***************************************************************************
-    const_reference operator*() const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    const_reference operator*() const
     {
       return *operator->();
     }
 
   private:
 
-    typed_storage_ext(etl::typed_storage_ext<T>&) ETL_DELETE;
-    typed_storage_ext& operator=(etl::typed_storage_ext<T>&) ETL_DELETE;
+    typed_storage_ext(const etl::typed_storage_ext<T>&) ETL_DELETE;
+    typed_storage_ext& operator=(const etl::typed_storage_ext<T>&) ETL_DELETE;
 
     pointer pbuffer;
     bool    valid;

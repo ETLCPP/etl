@@ -39,7 +39,7 @@ type: hextra-home
   </div>
 
   <div>
-    <a href="https://etlcpp.github.io/etl/"><img src="https://github.com/ETLCPP/etl/actions/workflows/coverage.yml/badge.svg" alt="coverage"">
+    <a href="https://etlcpp.github.io/etl/"><img src="https://github.com/ETLCPP/etl/actions/workflows/coverage.yml/badge.svg" alt="coverage"></a>
     <a href="https://www.codacy.com/manual/jwellbelove/etl"><img src="https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946" alt="Codacy"></a>
   </div>
 

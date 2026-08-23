@@ -96,7 +96,11 @@ namespace
     MoveableOnlyData& operator=(const MoveableOnlyData&) = delete;
     MoveableOnlyData(MoveableOnlyData&&)                 = default;
     MoveableOnlyData& operator=(MoveableOnlyData&&)      = default;
-    int               d;
+    MoveableOnlyData(int _d)
+      : d{_d}
+    {
+    }
+    int d;
   };
 
   //*****************************************************************************
@@ -578,6 +582,17 @@ namespace
       data.d = VALUE1;
 
       d(std::move(data));
+
+      CHECK(function_called == FunctionCalled::Free_Moveableonly_Called);
+      CHECK(parameter_correct);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_free_moveableonly_deduced_type)
+    {
+      auto d = etl::delegate<void(MoveableOnlyData&&)>::create<free_moveableonly>();
+
+      d({VALUE1}); // deduce argument type from braced initializer list
 
       CHECK(function_called == FunctionCalled::Free_Moveableonly_Called);
       CHECK(parameter_correct);
@@ -2167,6 +2182,20 @@ namespace
     #endif
     }
   #endif
+
+    TEST(test_delegate_clear_equals_default_constructed)
+    {
+      using delegate_type = etl::delegate<void(int, int)>;
+
+      delegate_type       delegate = {};
+      const delegate_type default_constructed;
+
+      CHECK(delegate == default_constructed);
+      delegate = delegate_type::create(free_int);
+      CHECK(delegate != default_constructed);
+      delegate = {};
+      CHECK(delegate == default_constructed);
+    }
   }
 } // namespace
 
