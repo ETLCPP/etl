@@ -1052,7 +1052,7 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
   template <typename T = void, typename... TValues>
   constexpr auto make_array(TValues&&... values) -> etl::array<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
   {

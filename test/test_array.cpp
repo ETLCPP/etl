@@ -77,7 +77,7 @@ namespace
       CHECK_EQUAL(data.max_size(), 0);
     }
 
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -861,7 +861,7 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_array_template_deduction)
     {
       etl::array data{char(0), short(1), 2, long(3), 4, 5, 6, 7, 8, 9};
@@ -883,7 +883,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP17
     TEST(test_array_template_deduction_for_movable)
     {
       etl::array data{Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4),
@@ -906,7 +906,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     TEST(test_make_array)
     {
       auto data = etl::make_array<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -928,7 +928,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     TEST(test_make_array_for_movable)
     {
       auto data = etl::make_array<Moveable>(Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4), Moveable(5), Moveable(6), Moveable(7),
@@ -951,7 +951,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     // Arguments that are const-qualified lvalues of the element type used to be rejected:
     // the old implementation forwarded each argument as T, and forward<T> cannot accept a
     // const T lvalue (it requires a non-const T&, and T&& cannot bind to a reference-related
@@ -974,7 +974,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     // The arguments are converted to the element type with static_cast, so narrowing
     // initialisers (int literals and int lvalues narrowed to char) must keep working.
     // Plain forwarding into the braced initialiser list would reject them.
@@ -998,7 +998,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     // With no explicit element type, the element type is deduced as the
     // decayed common type of the arguments (Library Fundamentals TS
     // make_array design).
@@ -1017,7 +1017,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     // An empty array requires the element type to be supplied explicitly.
     // etl::make_array() with no element type and no arguments is ill-formed,
     // as in the Library Fundamentals TS: there is nothing to deduce the
@@ -1033,7 +1033,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     // Arguments that already have the element type are forwarded rather than
     // cast. Casting created a prvalue that, before C++17, had to be
     // materialised through the move constructor, so a copyable type with a
@@ -1065,7 +1065,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST && ETL_USING_CPP14
+#if ETL_USING_CPP14
     TEST(test_make_array_is_constexpr)
     {
       static constexpr unsigned char constexpr_value = 0x18U;
