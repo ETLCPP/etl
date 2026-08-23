@@ -1516,7 +1516,7 @@ namespace etl
     }
 
     // for integers
-    template <typename OutputIt, typename T, bool skip_last_zeros = false>
+    template <typename OutputIt, typename T>
     void format_num(OutputIt& it, T value, const format_spec_t& spec)
     {
       size_t width = 0;
