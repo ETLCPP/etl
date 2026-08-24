@@ -317,6 +317,8 @@ SOFTWARE.
 
   #if !defined(ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS)
     #define ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS 1
+  #endif
+
   // MSVC has supported __builtin_bit_cast since VS2019 16.6. __has_builtin is not
   // used for Microsoft (see above) to avoid a VS2022 intellisense issue, so the
   // intrinsic is enabled here directly for the no-STL configuration.
