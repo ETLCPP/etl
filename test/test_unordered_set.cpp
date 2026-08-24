@@ -1122,6 +1122,27 @@ namespace
       CHECK_TRUE(data.contains("FF"));
       CHECK_FALSE(data.contains(not_inserted));
     }
+
+    //*************************************************************************
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+    // Arguments that are const-qualified lvalues of the key type must be
+    // accepted. Guards against the defect fixed for make_array and make_deque,
+    // which forwarded each argument as the element type rather than as its own
+    // deduced type and so rejected const lvalues.
+    TEST(test_make_unordered_set_from_const_lvalues_of_key_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_unordered_set<char>(static_const_lvalue, local_const_lvalue, mutable_lvalue);
+
+      CHECK_EQUAL(3U, data.size());
+      CHECK_EQUAL(1U, data.count(42));
+      CHECK_EQUAL(1U, data.count(43));
+      CHECK_EQUAL(1U, data.count(44));
+    }
+#endif
   }
 #include "etl/private/diagnostic_pop.h"
 } // namespace

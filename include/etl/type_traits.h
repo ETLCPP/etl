@@ -3894,15 +3894,36 @@ namespace etl
 #else
 
   //*********************************************
-  // Assume that anything other than arithmetics
+  // Assume that anything other than arithmetic
   // and pointers return false for the traits.
   //*********************************************
 
   //*********************************************
   // is_assignable
+  #if !ETL_USING_BUILTIN_IS_ASSIGNABLE && ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    template <typename, typename T1, typename T2>
+    struct is_assignable_ : etl::false_type
+    {
+    };
+
+    template <typename T1, typename T2>
+    struct is_assignable_<etl::void_t<decltype(etl::declval<T1>() = etl::declval<T2>())>, T1, T2> : etl::true_type
+    {
+    };
+  } // namespace private_type_traits
+  #endif
+
   template <typename T1, typename T2>
   #if ETL_USING_BUILTIN_IS_ASSIGNABLE
   struct is_assignable : public etl::bool_constant<__is_assignable(T1, T2)>
+  #elif ETL_USING_CPP11
+  // Builtin-free assignability detection. Used when the __is_assignable builtin
+  // is unavailable (e.g. MSVC, where determine_builtin_support.h disables the
+  // __has_builtin block). Mirrors the void_t-based is_constructible above so
+  // that class types are correctly reported as (copy/move) assignable.
+  struct is_assignable : public private_type_traits::is_assignable_<etl::void_t<>, T1, T2>
   #else
   struct is_assignable
     : public etl::bool_constant< (etl::is_arithmetic<T1>::value || etl::is_pointer<T1>::value)
@@ -4280,7 +4301,7 @@ namespace etl
   struct common_type<T1, T2>
     : etl::conditional< etl::is_same<T1, typename etl::decay<T1>::type>::value && etl::is_same<T2, typename etl::decay<T2>::type>::value,
                         private_common_type::common_type_2_impl<T1, T2>,
-                        common_type<typename etl::decay<T2>::type, typename etl::decay<T2>::type>>::type
+                        common_type<typename etl::decay<T1>::type, typename etl::decay<T2>::type>>::type
   {
   };
 
@@ -4307,6 +4328,46 @@ namespace etl
 
   template <typename... T>
   using common_type_t = typename common_type<T...>::type;
+
+  //***********************************
+  // Implementation details of the make_xxx container factories.
+  namespace private_make
+  {
+    // Selects the element type, following the Library Fundamentals TS
+    // make_array design: TDesired if it was supplied explicitly, otherwise the
+    // common type of the arguments (common_type decays). The specialisation
+    // keeps common_type uninstantiated when TDesired is supplied, so arguments
+    // with no common type are still accepted in that case.
+    template <typename TDesired, typename... TArgs>
+    struct element_type
+    {
+      using type = TDesired;
+    };
+
+    template <typename... TArgs>
+    struct element_type<void, TArgs...> : etl::common_type<TArgs...>
+    {
+    };
+
+    template <typename TDesired, typename... TArgs>
+    using element_type_t = typename element_type<TDesired, TArgs...>::type;
+
+    // Converts a factory argument to the element type. An argument that
+    // already has the element type is forwarded unchanged; any other argument
+    // is converted with static_cast, which keeps narrowing initialisers such
+    // as make_array<char>(0, 1) working. Forwarding rather than casting in the
+    // same-type case avoids materialising a temporary, which before C++17
+    // requires an accessible copy or move constructor even though the copy is
+    // elided, and would reject copyable-but-non-movable element types.
+    template <typename TElement, typename TValue>
+    using convert_type_t = typename etl::conditional<etl::is_same<typename etl::decay<TValue>::type, TElement>::value, TValue&&, TElement>::type;
+
+    template <typename TElement, typename TValue>
+    constexpr convert_type_t<TElement, TValue> convert(TValue&& value)
+    {
+      return static_cast<convert_type_t<TElement, TValue>>(value);
+    }
+  } // namespace private_make
 #endif
 
   //***************************************************************************
