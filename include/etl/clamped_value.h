@@ -33,6 +33,11 @@ SOFTWARE.
 
 #include "platform.h"
 #include "algorithm.h"
+#include "error_handler.h"
+#include "limits.h"
+#include "static_assert.h"
+#include "type_traits.h"
+#include "utility.h"
 
 ///\defgroup clamped_value clamped_value
 /// Provides a value that is clamped between two limits.
@@ -40,7 +45,56 @@ SOFTWARE.
 
 namespace etl
 {
-  template <typename T, T Min = 0, T Max = 0, bool EtlRuntimeSpecialisation = ((Min == 0) && (Max == 0))>
+  namespace private_clamped_value
+  {
+    //*************************************************************************
+    /// Common integral types and arithmetic for clamped_value.
+    //*************************************************************************
+    template <typename T>
+    struct traits
+    {
+      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "clamped_value requires an integral type");
+
+      typedef typename etl::make_signed<T>::type   difference_type;
+      typedef typename etl::make_unsigned<T>::type unsigned_type;
+      typedef etl::numeric_limits<T>               limits_type;
+      typedef etl::numeric_limits<difference_type> difference_limits_type;
+    };
+
+    //*************************************************************************
+    /// Advances a value and saturates it at the supplied bounds.
+    ///\param value The current value.
+    ///\param min_value The minimum value.
+    ///\param max_value The maximum value.
+    ///\param n The number of steps.
+    ///\return The advanced value.
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
+    {
+      typedef typename traits<T>::unsigned_type unsigned_type;
+
+      if ((n > 0) && (value < max_value))
+      {
+        const unsigned_type distance = static_cast<unsigned_type>(max_value) - static_cast<unsigned_type>(value);
+        const unsigned_type step     = static_cast<unsigned_type>(n);
+
+        value = (step >= distance) ? max_value : static_cast<T>(static_cast<unsigned_type>(value) + step);
+      }
+
+      if ((n < 0) && (value > min_value))
+      {
+        const unsigned_type distance = static_cast<unsigned_type>(value) - static_cast<unsigned_type>(min_value);
+        const unsigned_type step     = static_cast<unsigned_type>(-(n + 1)) + 1U;
+
+        value = (step >= distance) ? min_value : static_cast<T>(static_cast<unsigned_type>(value) - step);
+      }
+
+      return value;
+    }
+  } // namespace private_clamped_value
+
+  template <typename T, T Min = 0, T Max = 0, bool RuntimeSpecialisation = ((Min == 0) && (Max == 0))>
   class clamped_value;
 
   //***************************************************************************
@@ -55,6 +109,10 @@ namespace etl
   class clamped_value<T, Min, Max, false>
   {
   public:
+
+    typedef typename private_clamped_value::traits<T>::difference_type        difference_type;
+    typedef typename private_clamped_value::traits<T>::limits_type            limits_type;
+    typedef typename private_clamped_value::traits<T>::difference_limits_type difference_limits_type;
 
     ETL_STATIC_ASSERT(Min <= Max, "clamped_value minimum must not exceed maximum");
 
@@ -74,8 +132,8 @@ namespace etl
     ///\param initial The initial value.
     //*************************************************************************
     ETL_CONSTEXPR14 explicit clamped_value(T initial) ETL_NOEXCEPT
+      : value(etl::clamp(initial, Min, Max))
     {
-      set(initial);
     }
 
     //*************************************************************************
@@ -88,6 +146,8 @@ namespace etl
 
     //*************************************************************************
     /// Assignment operator.
+    ///\param other The value to copy.
+    ///\return A reference to this value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
@@ -131,35 +191,16 @@ namespace etl
     /// Saturates at the Min/Max range.
     ///\param n The number of steps.
     //*************************************************************************
-    ETL_CONSTEXPR14 void advance(int n) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT
     {
-      while ((n > 0) && (value < Max))
-      {
-        ++(*this);
-        --n;
-      }
-
-      while ((n < 0) && (value > Min))
-      {
-        --(*this);
-        ++n;
-      }
+      value = private_clamped_value::advance(value, Min, Max, n);
     }
 
     //*************************************************************************
     /// Conversion operator.
     /// \return The value of the underlying type.
     //*************************************************************************
-    ETL_CONSTEXPR14 operator T() ETL_NOEXCEPT
-    {
-      return value;
-    }
-
-    //*************************************************************************
-    /// Const conversion operator.
-    /// \return The value of the underlying type.
-    //*************************************************************************
-    ETL_CONSTEXPR operator const T() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 operator T() const ETL_NOEXCEPT
     {
       return value;
     }
@@ -167,16 +208,21 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     /// Saturates at Max.
+    ///\return A reference to this value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator++() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      value = etl::clamp(static_cast<T>(value + (value < Max)), Min, Max);
+      if (value < Max)
+      {
+        ++value;
+      }
       return *this;
     }
 
     //*************************************************************************
     /// ++ operator.
     /// Saturates at Max.
+    ///\return The value before incrementing.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value operator++(int) ETL_NOEXCEPT
     {
@@ -188,16 +234,21 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     /// Saturates at Min.
+    ///\return A reference to this value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator--() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      value = etl::clamp(static_cast<T>(value - (value > Min)), Min, Max);
+      if (value > Min)
+      {
+        --value;
+      }
       return *this;
     }
 
     //*************************************************************************
     /// -- operator.
     /// Saturates at Min.
+    ///\return The value before decrementing.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value operator--(int) ETL_NOEXCEPT
     {
@@ -209,6 +260,8 @@ namespace etl
     //*************************************************************************
     /// = operator.
     /// Clamps to the Min/Max range.
+    ///\param value_ The value to assign.
+    ///\return A reference to this value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
@@ -217,31 +270,66 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the value.
+    /// Adds a number of steps and clamps to the range.
+    ///\param n The number of steps.
+    ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR T get() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      advance(n);
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Subtracts a number of steps and clamps to the range.
+    ///\param n The number of steps.
+    ///\return A reference to this value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      if (n == difference_limits_type::lowest()) ETL_UNLIKELY
+      {
+        advance(difference_limits_type::max());
+        ++(*this);
+      }
+      else
+      {
+        advance(static_cast<difference_type>(-n));
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Gets the value.
+    ///\return The current value.
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR T get() const ETL_NOEXCEPT
     {
       return value;
     }
 
     //*************************************************************************
     /// Gets the minimum value.
+    ///\return The minimum value.
     //*************************************************************************
-    static ETL_CONSTEXPR T min() ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR T min() const ETL_NOEXCEPT
     {
       return Min;
     }
 
     //*************************************************************************
     /// Gets the maximum value.
+    ///\return The maximum value.
     //*************************************************************************
-    static ETL_CONSTEXPR T max() ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR T max() const ETL_NOEXCEPT
     {
       return Max;
     }
 
     //*************************************************************************
     /// Swaps the values.
+    ///\param other The value to swap with.
     //*************************************************************************
     void swap(clamped_value& other) ETL_NOEXCEPT
     {
@@ -251,6 +339,8 @@ namespace etl
 
     //*************************************************************************
     /// Swaps the values.
+    ///\param lhs The first value.
+    ///\param rhs The second value.
     //*************************************************************************
     friend void swap(clamped_value& lhs, clamped_value& rhs) ETL_NOEXCEPT
     {
@@ -259,6 +349,9 @@ namespace etl
 
     //*************************************************************************
     /// Operator ==.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if the values are equal.
     //*************************************************************************
     friend ETL_CONSTEXPR bool operator==(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
     {
@@ -267,11 +360,102 @@ namespace etl
 
     //*************************************************************************
     /// Operator !=.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if the values are not equal.
     //*************************************************************************
     friend ETL_CONSTEXPR bool operator!=(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
     {
       return !(lhs == rhs);
     }
+
+    //*************************************************************************
+    /// Operator <.
+    ///\param lhs The left-hand operand.
+    ///\param rhs The right-hand operand.
+    ///\return `true` if lhs is less than rhs.
+    /// @{
+    friend ETL_CONSTEXPR bool operator<(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return lhs.value < rhs.value;
+    }
+
+    friend ETL_CONSTEXPR bool operator<(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
+    {
+      return lhs.value < rhs;
+    }
+
+    friend ETL_CONSTEXPR bool operator<(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return lhs < rhs.value;
+    }
+    /// @}
+
+    //*************************************************************************
+    /// Operator <=.
+    ///\param lhs The left-hand operand.
+    ///\param rhs The right-hand operand.
+    ///\return `true` if lhs is less than or equal to rhs.
+    /// @{
+    friend ETL_CONSTEXPR bool operator<=(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(rhs < lhs);
+    }
+
+    friend ETL_CONSTEXPR bool operator<=(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
+    {
+      return !(rhs < lhs);
+    }
+
+    friend ETL_CONSTEXPR bool operator<=(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(rhs < lhs);
+    }
+    /// @}
+
+    //*************************************************************************
+    /// Operator >.
+    ///\param lhs The left-hand operand.
+    ///\param rhs The right-hand operand.
+    ///\return `true` if lhs is greater than rhs.
+    /// @{
+    friend ETL_CONSTEXPR bool operator>(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return rhs < lhs;
+    }
+
+    friend ETL_CONSTEXPR bool operator>(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
+    {
+      return rhs < lhs;
+    }
+
+    friend ETL_CONSTEXPR bool operator>(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return rhs < lhs;
+    }
+    /// @}
+
+    //*************************************************************************
+    /// Operator >=.
+    ///\param lhs The left-hand operand.
+    ///\param rhs The right-hand operand.
+    ///\return `true` if lhs is greater than or equal to rhs.
+    /// @{
+    friend ETL_CONSTEXPR bool operator>=(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs < rhs);
+    }
+
+    friend ETL_CONSTEXPR bool operator>=(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
+    {
+      return !(lhs < rhs);
+    }
+
+    friend ETL_CONSTEXPR bool operator>=(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs < rhs);
+    }
+    /// @}
 
   private:
 
@@ -291,14 +475,19 @@ namespace etl
   {
   public:
 
+    typedef typename private_clamped_value::traits<T>::difference_type        difference_type;
+    typedef typename private_clamped_value::traits<T>::limits_type            limits_type;
+    typedef typename private_clamped_value::traits<T>::difference_limits_type difference_limits_type;
+
     //*************************************************************************
     /// Default constructor.
-    /// Sets the value and bounds to the template parameter values.
+    /// Sets the value to the minimum representable value of `T` and the
+    /// bounds to the full range of `T`.
     //*************************************************************************
     ETL_CONSTEXPR clamped_value() ETL_NOEXCEPT
-      : value(Min)
-      , min_value(Min)
-      , max_value(Max)
+      : value(limits_type::lowest())
+      , min_value(limits_type::lowest())
+      , max_value(limits_type::max())
     {
     }
 
@@ -308,11 +497,12 @@ namespace etl
     ///\param min_ The minimum value.
     ///\param max_ The maximum value.
     //*************************************************************************
-    ETL_CONSTEXPR clamped_value(T min_, T max_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value(T min_, T max_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
       : value(min_)
       , min_value(min_)
       , max_value(max_)
     {
+      ETL_ASSERT(min_ <= max_, ETL_ERROR_GENERIC("clamped_value: invalid range"));
     }
 
     //*************************************************************************
@@ -323,15 +513,18 @@ namespace etl
     ///\param max_ The maximum value.
     ///\param initial The initial value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value(T min_, T max_, T initial) ETL_NOEXCEPT
-      : min_value(min_)
+    ETL_CONSTEXPR14 clamped_value(T min_, T max_, T initial) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+      : value(initial)
+      , min_value(min_)
       , max_value(max_)
     {
-      set(initial);
+      ETL_ASSERT(min_ <= max_, ETL_ERROR_GENERIC("clamped_value: invalid range"));
+      value = etl::clamp(initial, min_, max_);
     }
 
     //*************************************************************************
     /// Copy constructor.
+    ///\param other The value to copy.
     //*************************************************************************
     ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT
       : value(other.value)
@@ -346,8 +539,9 @@ namespace etl
     ///\param min_ The minimum value.
     ///\param max_ The maximum value.
     //*************************************************************************
-    ETL_CONSTEXPR14 void set(T min_, T max_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void set(T min_, T max_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
+      ETL_ASSERT(min_ <= max_, ETL_ERROR_GENERIC("clamped_value: invalid range"));
       min_value = min_;
       max_value = max_;
       value     = min_;
@@ -384,35 +578,16 @@ namespace etl
     /// Saturates at the runtime Min/Max range.
     ///\param n The number of steps.
     //*************************************************************************
-    ETL_CONSTEXPR14 void advance(int n) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT
     {
-      while ((n > 0) && (value < max_value))
-      {
-        ++(*this);
-        --n;
-      }
-
-      while ((n < 0) && (value > min_value))
-      {
-        --(*this);
-        ++n;
-      }
+      value = private_clamped_value::advance(value, min_value, max_value, n);
     }
 
     //*************************************************************************
     /// Conversion operator.
     /// \return The value of the underlying type.
     //*************************************************************************
-    ETL_CONSTEXPR14 operator T() ETL_NOEXCEPT
-    {
-      return value;
-    }
-
-    //*************************************************************************
-    /// Const conversion operator.
-    /// \return The value of the underlying type.
-    //*************************************************************************
-    ETL_CONSTEXPR operator const T() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 operator T() const ETL_NOEXCEPT
     {
       return value;
     }
@@ -420,16 +595,21 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     /// Saturates at the maximum.
+    ///\return A reference to this value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator++() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      value = etl::clamp(static_cast<T>(value + (value < max_value)), min_value, max_value);
+      if (value < max_value)
+      {
+        ++value;
+      }
       return *this;
     }
 
     //*************************************************************************
     /// ++ operator.
     /// Saturates at the maximum.
+    ///\return The value before incrementing.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value operator++(int) ETL_NOEXCEPT
     {
@@ -441,16 +621,21 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     /// Saturates at the minimum.
+    ///\return A reference to this value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator--() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      value = etl::clamp(static_cast<T>(value - (value > min_value)), min_value, max_value);
+      if (value > min_value)
+      {
+        --value;
+      }
       return *this;
     }
 
     //*************************************************************************
     /// -- operator.
     /// Saturates at the minimum.
+    ///\return The value before decrementing.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value operator--(int) ETL_NOEXCEPT
     {
@@ -462,6 +647,8 @@ namespace etl
     //*************************************************************************
     /// = operator.
     /// Clamps to the runtime Min/Max range.
+    ///\param value_ The value to assign.
+    ///\return A reference to this value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
@@ -472,6 +659,8 @@ namespace etl
     //*************************************************************************
     /// = operator.
     /// Copies the value and runtime bounds.
+    ///\param other The value to copy.
+    ///\return A reference to this value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
@@ -487,31 +676,66 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the value.
+    /// Adds a number of steps and clamps to the range.
+    ///\param n The number of steps.
+    ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR T get() const ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      advance(n);
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Subtracts a number of steps and clamps to the range.
+    ///\param n The number of steps.
+    ///\return A reference to this value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      if (n == difference_limits_type::lowest()) ETL_UNLIKELY
+      {
+        advance(difference_limits_type::max());
+        ++(*this);
+      }
+      else
+      {
+        advance(static_cast<difference_type>(-n));
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Gets the value.
+    ///\return The current value.
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR T get() const ETL_NOEXCEPT
     {
       return value;
     }
 
     //*************************************************************************
     /// Gets the minimum value.
+    ///\return The minimum value.
     //*************************************************************************
-    ETL_CONSTEXPR T min() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR T min() const ETL_NOEXCEPT
     {
       return min_value;
     }
 
     //*************************************************************************
     /// Gets the maximum value.
+    ///\return The maximum value.
     //*************************************************************************
-    ETL_CONSTEXPR T max() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR T max() const ETL_NOEXCEPT
     {
       return max_value;
     }
 
     //*************************************************************************
     /// Swaps the values and runtime bounds.
+    ///\param other The value to swap with.
     //*************************************************************************
     void swap(clamped_value& other) ETL_NOEXCEPT
     {
@@ -523,6 +747,8 @@ namespace etl
 
     //*************************************************************************
     /// Swaps the values and runtime bounds.
+    ///\param lhs The first value.
+    ///\param rhs The second value.
     //*************************************************************************
     friend void swap(clamped_value& lhs, clamped_value& rhs) ETL_NOEXCEPT
     {
@@ -531,19 +757,111 @@ namespace etl
 
     //*************************************************************************
     /// Operator ==.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if the values are equal.
     //*************************************************************************
     friend ETL_CONSTEXPR bool operator==(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
     {
-      return (lhs.value == rhs.value) && (lhs.min_value == rhs.min_value) && (lhs.max_value == rhs.max_value);
+      return lhs.value == rhs.value;
     }
 
     //*************************************************************************
     /// Operator !=.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if the values differ.
     //*************************************************************************
     friend ETL_CONSTEXPR bool operator!=(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
     {
       return !(lhs == rhs);
     }
+
+    //*************************************************************************
+    /// Operator <.
+    ///\param lhs The left-hand operand.
+    ///\param rhs The right-hand operand.
+    ///\return `true` if lhs is less than rhs.
+    /// @{
+    friend ETL_CONSTEXPR bool operator<(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return lhs.value < rhs.value;
+    }
+    friend ETL_CONSTEXPR bool operator<(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
+    {
+      return lhs.value < rhs;
+    }
+    friend ETL_CONSTEXPR bool operator<(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return lhs < rhs.value;
+    }
+    /// @}
+
+    //*************************************************************************
+    /// Operator <=.
+    ///\param lhs The left-hand operand.
+    ///\param rhs The right-hand operand.
+    ///\return `true` if lhs is less than or equal to rhs.
+    /// @{
+    friend ETL_CONSTEXPR bool operator<=(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(rhs < lhs);
+    }
+
+    friend ETL_CONSTEXPR bool operator<=(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
+    {
+      return !(rhs < lhs);
+    }
+
+    friend ETL_CONSTEXPR bool operator<=(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(rhs < lhs);
+    }
+    /// @}
+
+    //*************************************************************************
+    /// Operator >.
+    ///\param lhs The left-hand operand.
+    ///\param rhs The right-hand operand.
+    ///\return `true` if lhs is greater than rhs.
+    /// @{
+    friend ETL_CONSTEXPR bool operator>(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return rhs < lhs;
+    }
+
+    friend ETL_CONSTEXPR bool operator>(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
+    {
+      return rhs < lhs;
+    }
+
+    friend ETL_CONSTEXPR bool operator>(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return rhs < lhs;
+    }
+    /// @}
+
+    //*************************************************************************
+    /// Operator >=.
+    ///\param lhs The left-hand operand.
+    ///\param rhs The right-hand operand.
+    ///\return `true` if lhs is greater than or equal to rhs.
+    /// @{
+    friend ETL_CONSTEXPR bool operator>=(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs < rhs);
+    }
+
+    friend ETL_CONSTEXPR bool operator>=(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
+    {
+      return !(lhs < rhs);
+    }
+
+    friend ETL_CONSTEXPR bool operator>=(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs < rhs);
+    }
+    /// @}
 
   private:
 

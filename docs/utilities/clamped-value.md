@@ -49,13 +49,14 @@ void set(T value);
 void set(T min, T max);
 void to_min();
 void to_max();
-void advance(int n);
+void advance(difference_type n) noexcept;
 ```
 
 `set(T)` clamps the current value. The runtime `set(min, max)` changes the
 range and resets the value to the new minimum. `to_min()` and `to_max()` move
-the value directly to a bound. `advance` increments or decrements repeatedly;
-it saturates at the minimum or maximum rather than wrapping.
+the value directly to a bound. `advance` uses the signed counterpart of `T`
+as its step type and saturates in constant time at the minimum or maximum
+rather than wrapping.
 
 Increment and decrement operators also saturate:
 
@@ -67,20 +68,21 @@ Increment and decrement operators also saturate:
 ## Access
 
 ```cpp
-T get() const noexcept;
-T min() const noexcept;
-T max() const noexcept;
+ETL_NODISCARD T get() const noexcept;
+ETL_NODISCARD T min() const noexcept;
+ETL_NODISCARD T max() const noexcept;
 ```
 
-Gets the current value and its bounds. For compile-time bounds, `min()` and
-`max()` are static functions.
+Gets the current value and its bounds. Both compile-time and runtime
+specializations provide these accessors as const-qualified member functions.
 
 ## Operators
 
 ```cpp
-operator T() noexcept;
-operator const T() const noexcept;
+operator T() const noexcept;
 clamped_value& operator=(T value) & noexcept;
+clamped_value& operator+=(difference_type n) & noexcept;
+clamped_value& operator-=(difference_type n) & noexcept;
 ```
 
 Conversion and assignment to the underlying type are supported. Assignment is
@@ -95,3 +97,9 @@ void swap(clamped_value& lhs, clamped_value& rhs);
 ```
 
 Swaps clamped values. Runtime values also swap their bounds.
+
+Equality, inequality, relational comparisons, and comparisons against `T` are
+provided. Equality compares the current values; runtime bounds do not affect
+equality. Runtime ranges must satisfy `min <= max`; invalid ranges trigger an
+ETL assertion. The default runtime specialization uses the full representable
+range of `T`.
