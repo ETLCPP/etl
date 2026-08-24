@@ -519,7 +519,7 @@ namespace etl
       , max_value(max_)
     {
       ETL_ASSERT(min_ <= max_, ETL_ERROR_GENERIC("clamped_value: invalid range"));
-      value = etl::clamp(initial, min_, max_);
+      set(initial);
     }
 
     //*************************************************************************
