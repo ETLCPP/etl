@@ -29,13 +29,3 @@ SOFTWARE.
 ******************************************************************************/
 
 #include <etl/clamped_value.h>
-
-void test_clamped_value()
-{
-  etl::clamped_value<int, 0, 10> compile_time;
-  etl::clamped_value<int>        run_time(0, 10, 5);
-  compile_time.set(20);
-  run_time.set(-1);
-  ++compile_time;
-  --run_time;
-}

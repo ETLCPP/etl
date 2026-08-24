@@ -33,6 +33,7 @@ SOFTWARE.
 #include "etl/clamped_value.h"
 
 #include <limits.h>
+#include <stdint.h>
 
 namespace
 {
@@ -53,6 +54,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_compile_time_bounds_accessors_are_const)
+    {
+      const etl::clamped_value<int, 2, 7> value(4);
+      CHECK_EQUAL(2, value.min());
+      CHECK_EQUAL(7, value.max());
+    }
+
+    //*************************************************************************
     TEST(test_run_time_initialisation)
     {
       etl::clamped_value<int>       value(2, 7, 5);
@@ -64,7 +73,9 @@ namespace
       CHECK_EQUAL(5, value.get());
       CHECK_EQUAL(2, value.min());
       CHECK_EQUAL(7, value.max());
-      CHECK_EQUAL(0, default_value.get());
+      CHECK_EQUAL(etl::numeric_limits<int>::lowest(), default_value.min());
+      CHECK_EQUAL(etl::numeric_limits<int>::max(), default_value.max());
+      CHECK_EQUAL(etl::numeric_limits<int>::lowest(), default_value.get());
       CHECK_EQUAL(2, range_value.get());
       CHECK_EQUAL(5, converted_value);
       CHECK_EQUAL(5, converted_const_value);
@@ -146,6 +157,25 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_compile_time_instances_with_different_bounds)
+    {
+      etl::clamped_value<int, 2, 7> value1(3);
+      etl::clamped_value<int, 2, 8> value2(3);
+      CHECK(value1 == value2);
+    }
+
+    //*************************************************************************
+    TEST(test_runtime_equality_uses_current_value)
+    {
+      etl::clamped_value<int> equal_value1(2, 7, 3);
+      etl::clamped_value<int> equal_value2(2, 8, 3);
+      etl::clamped_value<int> different_value(2, 8, 4);
+      CHECK(equal_value1 == equal_value2);
+      CHECK(!(equal_value1 != equal_value2));
+      CHECK(equal_value1 != different_value);
+    }
+
+    //*************************************************************************
     TEST(test_copy_assignment_and_self_assignment_run_time)
     {
       etl::clamped_value<int> value1(2, 7, 5);
@@ -188,6 +218,70 @@ namespace
       CHECK_EQUAL(7, value.get());
       value.advance(-3);
       CHECK_EQUAL(4, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_wide_and_negative_ranges)
+    {
+      etl::clamped_value<int, -7, -2>                      negative(-4);
+      etl::clamped_value<int64_t, -INT64_C(7), INT64_C(7)> wide(0);
+      etl::clamped_value<unsigned>                         unsigned_value(2U, 7U, 4U);
+
+      negative.advance(100);
+      wide.advance(INT64_MAX);
+      unsigned_value.advance(3);
+
+      CHECK_EQUAL(-2, negative.get());
+      CHECK_EQUAL(INT64_C(7), wide.get());
+      CHECK_EQUAL(7U, unsigned_value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_compound_and_comparison_operators)
+    {
+      etl::clamped_value<int, 2, 7> value(4);
+      etl::clamped_value<int, 2, 7> other(6);
+
+      value += 10;
+      CHECK_EQUAL(7, value.get());
+      value -= 10;
+      CHECK_EQUAL(2, value.get());
+      CHECK(value < other);
+      CHECK(value < 6);
+      CHECK(4 < other);
+      CHECK(value <= other);
+      CHECK(value <= 4);
+      CHECK(4 <= other);
+      CHECK(other > value);
+      CHECK(other > 4);
+      CHECK(6 > value);
+      CHECK(other >= value);
+      CHECK(other >= 6);
+      CHECK(6 >= value);
+      CHECK(value == 2);
+      CHECK(2 == value);
+      CHECK(value != 6);
+      CHECK(6 != value);
+    }
+
+    //*************************************************************************
+    TEST(test_runtime_comparison_operator_overloads)
+    {
+      etl::clamped_value<int> value(2, 7, 4);
+      etl::clamped_value<int> other(2, 8, 6);
+
+      CHECK(value < other);
+      CHECK(value < 6);
+      CHECK(4 < other);
+      CHECK(value <= other);
+      CHECK(value <= 4);
+      CHECK(4 <= other);
+      CHECK(other > value);
+      CHECK(other > 4);
+      CHECK(6 > value);
+      CHECK(other >= value);
+      CHECK(other >= 6);
+      CHECK(6 >= value);
     }
 
     //*************************************************************************
