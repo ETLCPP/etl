@@ -848,6 +848,104 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE || (ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_layout_compatible))
+    TEST(test_is_layout_compatible)
+    {
+      struct A
+      {
+        int a;
+      };
+
+      struct B
+      {
+        const int b;
+      };
+
+      struct C
+      {
+        int c1;
+        int c2;
+      };
+
+      struct D
+      {
+        char d;
+      };
+
+      CHECK((etl::is_layout_compatible<int, int>::value));
+      CHECK((etl::is_layout_compatible<int, const int>::value));
+      CHECK((etl::is_layout_compatible<A, A>::value));
+      CHECK((etl::is_layout_compatible<A, B>::value));
+      CHECK((!etl::is_layout_compatible<A, C>::value));
+      CHECK((!etl::is_layout_compatible<A, D>::value));
+      CHECK((!etl::is_layout_compatible<int, char>::value));
+
+  #if ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_layout_compatible)
+      CHECK((etl::is_layout_compatible<A, B>::value == std::is_layout_compatible<A, B>::value));
+      CHECK((etl::is_layout_compatible<A, C>::value == std::is_layout_compatible<A, C>::value));
+  #endif
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_layout_compatible_v<A, B>));
+      CHECK((!etl::is_layout_compatible_v<A, C>));
+  #endif
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF || (ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_pointer_interconvertible))
+    TEST(test_is_pointer_interconvertible_base_of)
+    {
+      struct Base
+      {
+        int b;
+      };
+
+      struct Derived : public Base
+      {
+      };
+
+      struct VirtualDerived : virtual public Base
+      {
+      };
+
+      struct Polymorphic
+      {
+        virtual ~Polymorphic() {}
+
+        int p;
+      };
+
+      struct PolymorphicDerived : public Polymorphic
+      {
+      };
+
+      struct Unrelated
+      {
+        int u;
+      };
+
+      CHECK((etl::is_pointer_interconvertible_base_of<Base, Base>::value));
+      CHECK((etl::is_pointer_interconvertible_base_of<Base, Derived>::value));
+      CHECK((!etl::is_pointer_interconvertible_base_of<Base, VirtualDerived>::value));
+      CHECK((!etl::is_pointer_interconvertible_base_of<Polymorphic, PolymorphicDerived>::value));
+      CHECK((!etl::is_pointer_interconvertible_base_of<Base, Unrelated>::value));
+      CHECK((!etl::is_pointer_interconvertible_base_of<Derived, Base>::value));
+
+  #if ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_pointer_interconvertible)
+      CHECK((etl::is_pointer_interconvertible_base_of<Base, Derived>::value == std::is_pointer_interconvertible_base_of<Base, Derived>::value));
+      CHECK((etl::is_pointer_interconvertible_base_of<Base, VirtualDerived>::value
+             == std::is_pointer_interconvertible_base_of<Base, VirtualDerived>::value));
+  #endif
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_pointer_interconvertible_base_of_v<Base, Derived>));
+      CHECK((!etl::is_pointer_interconvertible_base_of_v<Base, VirtualDerived>));
+  #endif
+    }
+#endif
+
+    //*************************************************************************
     TEST(test_is_destructible)
     {
 #if ETL_USING_CPP11 || ETL_USING_BUILTIN_IS_DESTRUCTIBLE
@@ -2379,6 +2477,33 @@ namespace
 #undef CHECK_EQUAL_FOR_TYPE
 
     //*************************************************************************
+    TEST(test_is_scoped_enum)
+    {
+      CHECK_FALSE((etl::is_scoped_enum<void>::value));
+      CHECK_FALSE((etl::is_scoped_enum<int>::value));
+      CHECK_FALSE((etl::is_scoped_enum<int*>::value));
+      CHECK_FALSE((etl::is_scoped_enum<ToAny>::value));
+      CHECK_FALSE((etl::is_scoped_enum<Enum>::value));
+      CHECK_FALSE((etl::is_scoped_enum<const Enum>::value));
+      CHECK_FALSE((etl::is_scoped_enum<Enum*>::value));
+
+      CHECK_TRUE((etl::is_scoped_enum<EnumClass>::value));
+      CHECK_TRUE((etl::is_scoped_enum<const EnumClass>::value));
+      CHECK_FALSE((etl::is_scoped_enum<EnumClass*>::value));
+
+#if ETL_USING_CPP17
+      CHECK_FALSE((etl::is_scoped_enum_v<Enum>));
+      CHECK_TRUE((etl::is_scoped_enum_v<EnumClass>));
+#endif
+
+#if ETL_USING_CPP23 && defined(__cpp_lib_is_scoped_enum)
+      CHECK_EQUAL((std::is_scoped_enum<Enum>::value), (etl::is_scoped_enum<Enum>::value));
+      CHECK_EQUAL((std::is_scoped_enum<EnumClass>::value), (etl::is_scoped_enum<EnumClass>::value));
+      CHECK_EQUAL((std::is_scoped_enum<int>::value), (etl::is_scoped_enum<int>::value));
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_integral_constants)
     {
 #if ETL_USING_CPP17
@@ -2756,6 +2881,42 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_is_trivially_default_constructible)
+    {
+#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
+  #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+      CHECK((etl::is_trivially_default_constructible<int>::value) == (std::is_trivially_default_constructible<int>::value));
+      CHECK((etl::is_trivially_default_constructible<Copyable>::value) == (std::is_trivially_default_constructible<Copyable>::value));
+      CHECK((etl::is_trivially_default_constructible<Moveable>::value) == (std::is_trivially_default_constructible<Moveable>::value));
+      CHECK((etl::is_trivially_default_constructible<MoveableCopyable>::value) == (std::is_trivially_default_constructible<MoveableCopyable>::value));
+
+    #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_default_constructible_v<int>) == (std::is_trivially_default_constructible_v<int>));
+      CHECK((etl::is_trivially_default_constructible_v<Copyable>) == (std::is_trivially_default_constructible_v<Copyable>));
+    #endif
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_move_constructible)
+    {
+#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
+  #if ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_trivially_move_constructible<int>::value) == (std::is_trivially_move_constructible<int>::value));
+      CHECK((etl::is_trivially_move_constructible<Copyable>::value) == (std::is_trivially_move_constructible<Copyable>::value));
+      CHECK((etl::is_trivially_move_constructible<Moveable>::value) == (std::is_trivially_move_constructible<Moveable>::value));
+      CHECK((etl::is_trivially_move_constructible<MoveableCopyable>::value) == (std::is_trivially_move_constructible<MoveableCopyable>::value));
+
+    #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_move_constructible_v<int>) == (std::is_trivially_move_constructible_v<int>));
+      CHECK((etl::is_trivially_move_constructible_v<Moveable>) == (std::is_trivially_move_constructible_v<Moveable>));
+    #endif
+  #endif
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_is_trivially_destructible)
     {
 #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
@@ -2767,6 +2928,25 @@ namespace
       CHECK((etl::is_trivially_destructible<Copyable>::value) == (std::is_trivially_destructible<Copyable>::value));
       CHECK((etl::is_trivially_destructible<Moveable>::value) == (std::is_trivially_destructible<Moveable>::value));
       CHECK((etl::is_trivially_destructible<MoveableCopyable>::value) == (std::is_trivially_destructible<MoveableCopyable>::value));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_assignable)
+    {
+#if ETL_USING_CPP11 && !defined(ETL_USER_DEFINED_TYPE_TRAITS) \
+  && (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED || ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+      CHECK((etl::is_trivially_assignable<int&, int>::value) == (std::is_trivially_assignable<int&, int>::value));
+      CHECK((etl::is_trivially_assignable<int, int>::value) == (std::is_trivially_assignable<int, int>::value));
+      CHECK((etl::is_trivially_assignable<Copyable&, const Copyable&>::value) == (std::is_trivially_assignable<Copyable&, const Copyable&>::value));
+      CHECK((etl::is_trivially_assignable<Moveable&, Moveable&&>::value) == (std::is_trivially_assignable<Moveable&, Moveable&&>::value));
+      CHECK((etl::is_trivially_assignable<MoveableCopyable&, const MoveableCopyable&>::value)
+            == (std::is_trivially_assignable<MoveableCopyable&, const MoveableCopyable&>::value));
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_assignable_v<int&, int>) == (std::is_trivially_assignable_v<int&, int>));
+      CHECK((etl::is_trivially_assignable_v<Copyable&, const Copyable&>) == (std::is_trivially_assignable_v<Copyable&, const Copyable&>));
   #endif
 #endif
     }
@@ -2785,6 +2965,23 @@ namespace
       CHECK((etl::is_trivially_copy_assignable<Moveable>::value) == (std::is_trivially_copy_assignable<Moveable>::value));
       CHECK((etl::is_trivially_copy_assignable<MoveableCopyable>::value) == (std::is_trivially_copy_assignable<MoveableCopyable>::value));
     #endif
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_move_assignable)
+    {
+#if ETL_USING_CPP11 && !defined(ETL_USER_DEFINED_TYPE_TRAITS) \
+  && (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED || ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+      CHECK((etl::is_trivially_move_assignable<int>::value) == (std::is_trivially_move_assignable<int>::value));
+      CHECK((etl::is_trivially_move_assignable<Copyable>::value) == (std::is_trivially_move_assignable<Copyable>::value));
+      CHECK((etl::is_trivially_move_assignable<Moveable>::value) == (std::is_trivially_move_assignable<Moveable>::value));
+      CHECK((etl::is_trivially_move_assignable<MoveableCopyable>::value) == (std::is_trivially_move_assignable<MoveableCopyable>::value));
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_move_assignable_v<int>) == (std::is_trivially_move_assignable_v<int>));
+      CHECK((etl::is_trivially_move_assignable_v<Moveable>) == (std::is_trivially_move_assignable_v<Moveable>));
   #endif
 #endif
     }

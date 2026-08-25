@@ -42,6 +42,8 @@ Not all traits have been defined as some rely on compiler intrinsics that are no
 `is_aggregate`  
 `is_trivial`  
 `is_standard_layout`  
+`is_layout_compatible`  
+`is_pointer_interconvertible_base_of`  
 `is_destructible`  
 `is_nothrow_destructible`  
 `has_virtual_destructor`  
@@ -72,6 +74,7 @@ Not all traits have been defined as some rely on compiler intrinsics that are no
 `declvar`       `20.28.0`   
 `common_type`  
 `is_enum`       `20.30.0`  
+`is_scoped_enum` `20.50.0`  
 `underlying_type` `20.42.0`  
 &emsp;Unless the ETL is set to use builtins, the user must specialise the template for their enumerations.  
 
@@ -87,8 +90,12 @@ The following will be defined according to the C++ standard and user defined mac
 `is_move_constructible`  
 `is_trivially_constructible`  
 `is_trivially_copy_constructible`  
+`is_trivially_default_constructible`  
+`is_trivially_move_constructible`  
 `is_trivially_destructible`  
+`is_trivially_assignable`  
 `is_trivially_copy_assignable`  
+`is_trivially_move_assignable`  
 `is_trivially_copyable`  
 
 ## Scenario 1
@@ -873,5 +880,122 @@ The result is found in the member `value`.
 ```cpp
 template <typename T>
 inline constexpr bool is_scalar_v = etl::is_scalar<T>::value;
+```
+C++17
+
+## is_scoped_enum
+From: `20.50.0`
+
+```cpp
+template <typename T>
+struct is_scoped_enum
+```
+Checks if `T` is a scoped enumeration type; that is, an enumeration type that is not implicitly convertible to an integer.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_scoped_enum_v = etl::is_scoped_enum<T>::value;
+```
+C++17
+
+## is_trivially_default_constructible
+From: `20.50.0`
+
+```cpp
+template <typename T>
+struct is_trivially_default_constructible
+```
+Checks if `T` is default constructible and the default construction is trivial.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_trivially_default_constructible_v = etl::is_trivially_default_constructible<T>::value;
+```
+C++17
+
+## is_trivially_move_constructible
+From: `20.50.0`
+
+```cpp
+template <typename T>
+struct is_trivially_move_constructible
+```
+Checks if `T` is move constructible and the move construction is trivial.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_trivially_move_constructible_v = etl::is_trivially_move_constructible<T>::value;
+```
+C++17
+
+## is_trivially_move_assignable
+From: `20.50.0`
+
+```cpp
+template <typename T>
+struct is_trivially_move_assignable
+```
+Checks if `T` is move assignable and the move assignment is trivial.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_trivially_move_assignable_v = etl::is_trivially_move_assignable<T>::value;
+```
+C++17
+
+## is_trivially_assignable
+
+```cpp
+template <typename T1, typename T2>
+struct is_trivially_assignable
+```
+Checks if an expression of type `T2` can be assigned to an lvalue expression of type `T1`, and that the assignment is trivial.  
+The result is found in the member `value`.  
+&emsp;See Scenarios 1 to 4 above for how this trait is defined when the STL or the compiler built-ins are unavailable.  
+
+```cpp
+template <typename T1, typename T2>
+inline constexpr bool is_trivially_assignable_v = etl::is_trivially_assignable<T1, T2>::value;
+```
+C++17
+
+## is_layout_compatible
+From: `20.50.0`
+
+```cpp
+template <typename T, typename U>
+struct is_layout_compatible
+```
+Checks if `T` and `U` are layout-compatible types.  
+The result is found in the member `value`.  
+&emsp;When using the STL with C++20 or above, this is defined as `std::is_layout_compatible<T, U>`.  
+&emsp;Otherwise it requires compiler support (the `__is_layout_compatible` intrinsic). When neither is available, this trait is not defined, as there is no portable way of determining layout compatibility.  
+
+```cpp
+template <typename T, typename U>
+inline constexpr bool is_layout_compatible_v = etl::is_layout_compatible<T, U>::value;
+```
+C++17
+
+## is_pointer_interconvertible_base_of
+From: `20.50.0`
+
+```cpp
+template <typename TBase, typename TDerived>
+struct is_pointer_interconvertible_base_of
+```
+Checks if `TBase` is a pointer-interconvertible base class of `TDerived`; that is, every object of type `TDerived` has its `TBase` base class subobject at the same address as the complete object.  
+The result is found in the member `value`.  
+&emsp;When using the STL with C++20 or above, this is defined as `std::is_pointer_interconvertible_base_of<TBase, TDerived>`.  
+&emsp;Otherwise it requires compiler support (the `__is_pointer_interconvertible_base_of` intrinsic). When neither is available, this trait is not defined, as there is no portable way of determining pointer interconvertibility.  
+&emsp;Note that, as required by the standard, the program is ill-formed if `TDerived` is a complete non-union class type and `TBase` is an incomplete class type. The trait cannot be used to probe possibly-incomplete types.  
+
+```cpp
+template <typename TBase, typename TDerived>
+inline constexpr bool is_pointer_interconvertible_base_of_v = etl::is_pointer_interconvertible_base_of<TBase, TDerived>::value;
 ```
 C++17
