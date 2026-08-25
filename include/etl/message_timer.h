@@ -379,7 +379,7 @@ namespace etl
           if (timer.is_active())
           {
             ETL_DISABLE_TIMER_UPDATES;
-            active_list.remove(timer.id, true);
+            active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
             ETL_ENABLE_TIMER_UPDATES;
           }

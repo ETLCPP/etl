@@ -158,6 +158,33 @@ namespace
     {
     }
   };
+
+  //***********************************
+  // A minimal fancy pointer with a nested element_type and a static
+  // pointer_to. Used to exercise etl::pointer_traits' primary template.
+  template <typename T>
+  struct fancy_pointer
+  {
+    typedef T element_type;
+
+    T* raw;
+
+    static fancy_pointer pointer_to(T& r)
+    {
+      fancy_pointer p;
+      p.raw = etl::addressof(r);
+      return p;
+    }
+  };
+
+  //***********************************
+  // A fancy pointer without a nested element_type, so pointer_traits must
+  // deduce the element type from the first template parameter.
+  template <typename T>
+  struct bare_pointer
+  {
+    T* raw;
+  };
 } // namespace
 
 namespace
@@ -1806,6 +1833,157 @@ namespace
 
       CHECK_EQUAL(&i, etl::to_address(pi));
       CHECK_EQUAL(plist_item, etl::to_address(itr));
+    }
+
+    //*************************************************************************
+    TEST(test_launder)
+    {
+      int  i = 42;
+      int* p = etl::launder(&i);
+      CHECK_EQUAL(&i, p);
+      CHECK_EQUAL(42, *p);
+
+      // Launder a new object created in reused storage.
+      struct quad_t
+      {
+        uint8_t a;
+        uint8_t b;
+        uint8_t c;
+        uint8_t d;
+      };
+
+      alignas(quad_t) unsigned char buffer[sizeof(quad_t)];
+      quad_t*                       q  = ::new (buffer) quad_t{1, 2, 3, 4};
+      quad_t*                       lq = etl::launder(q);
+      CHECK(reinterpret_cast<unsigned char*>(lq) == buffer);
+      CHECK_EQUAL(1, lq->a);
+      CHECK_EQUAL(2, lq->b);
+      CHECK_EQUAL(3, lq->c);
+      CHECK_EQUAL(4, lq->d);
+    }
+
+    //*************************************************************************
+    TEST(test_start_lifetime_as)
+    {
+      struct quad_t
+      {
+        uint8_t a;
+        uint8_t b;
+        uint8_t c;
+        uint8_t d;
+      };
+
+      alignas(quad_t) unsigned char buffer[sizeof(quad_t)] = {1, 2, 3, 4};
+
+      quad_t* p = etl::start_lifetime_as<quad_t>(buffer);
+      CHECK(reinterpret_cast<unsigned char*>(p) == buffer);
+      CHECK_EQUAL(1, p->a);
+      CHECK_EQUAL(2, p->b);
+      CHECK_EQUAL(3, p->c);
+      CHECK_EQUAL(4, p->d);
+
+      const void*   cbuffer = buffer;
+      const quad_t* cp      = etl::start_lifetime_as<quad_t>(cbuffer);
+      CHECK(reinterpret_cast<const unsigned char*>(cp) == buffer);
+      CHECK_EQUAL(1, cp->a);
+      CHECK_EQUAL(4, cp->d);
+    }
+
+    //*************************************************************************
+    TEST(test_start_lifetime_as_array)
+    {
+      alignas(uint16_t) unsigned char buffer[sizeof(uint16_t) * 3] = {0, 0, 0, 0, 0, 0};
+
+      uint16_t* p = etl::start_lifetime_as_array<uint16_t>(buffer, 3);
+      CHECK(reinterpret_cast<unsigned char*>(p) == buffer);
+      p[0] = 1;
+      p[2] = 2;
+      CHECK_EQUAL(1, p[0]);
+      CHECK_EQUAL(2, p[2]);
+
+      // n == 0 returns a pointer comparing equal to p.
+      uint16_t* p0 = etl::start_lifetime_as_array<uint16_t>(buffer, 0);
+      CHECK(reinterpret_cast<unsigned char*>(p0) == buffer);
+    }
+
+    //*************************************************************************
+    TEST(test_pointer_traits)
+    {
+      typedef etl::pointer_traits<int*> traits;
+
+      CHECK((std::is_same<int*, traits::pointer>::value));
+      CHECK((std::is_same<int, traits::element_type>::value));
+      CHECK((std::is_same<ptrdiff_t, traits::difference_type>::value));
+#if ETL_USING_CPP11
+      CHECK((std::is_same<char*, traits::rebind<char> >::value));
+#endif
+
+      int  i = 42;
+      int* p = traits::pointer_to(i);
+      CHECK_EQUAL(&i, p);
+    }
+
+    //*************************************************************************
+    TEST(test_pointer_traits_fancy_pointer)
+    {
+      typedef etl::pointer_traits<fancy_pointer<int> > traits;
+
+      CHECK((std::is_same<fancy_pointer<int>, traits::pointer>::value));
+      CHECK((std::is_same<int, traits::element_type>::value));
+      CHECK((std::is_same<ptrdiff_t, traits::difference_type>::value));
+      CHECK((std::is_same<fancy_pointer<char>, traits::rebind<char> >::value));
+
+      int                i = 42;
+      fancy_pointer<int> p = traits::pointer_to(i);
+      CHECK_EQUAL(&i, p.raw);
+
+      // element_type and rebind are deduced from the first template parameter
+      // when there is no nested element_type.
+      CHECK((std::is_same<int, etl::pointer_traits<bare_pointer<int> >::element_type>::value));
+      CHECK((std::is_same<bare_pointer<char>, etl::pointer_traits<bare_pointer<int> >::rebind<char> >::value));
+    }
+
+    //*************************************************************************
+    TEST(test_align)
+    {
+      alignas(16) unsigned char buffer[64];
+
+      void*  ptr   = buffer + 1; // Deliberately misaligned.
+      size_t space = sizeof(buffer) - 1;
+
+      void* aligned = etl::align(16, 8, ptr, space);
+
+      // 'buffer' is 16-aligned, so aligning 'buffer + 1' to 16 skips 15 bytes of
+      // padding, landing on 'buffer + 16' and shrinking 'space' by that padding.
+      CHECK(aligned != ETL_NULLPTR);
+      CHECK(reinterpret_cast<unsigned char*>(aligned) == buffer + 16);
+      CHECK(reinterpret_cast<unsigned char*>(ptr) == buffer + 16);
+      CHECK_EQUAL(sizeof(buffer) - 1 - 15, space);
+
+      // Not enough space returns nullptr.
+      void*  small_ptr   = buffer + 1;
+      size_t small_space = 2;
+      CHECK(etl::align(16, 8, small_ptr, small_space) == ETL_NULLPTR);
+    }
+
+    //*************************************************************************
+    TEST(test_assume_aligned)
+    {
+      alignas(16) int data[4] = {1, 2, 3, 4};
+
+      int* p = etl::assume_aligned<16>(&data[0]);
+      CHECK_EQUAL(&data[0], p);
+      CHECK_EQUAL(1, *p);
+    }
+
+    //*************************************************************************
+    TEST(test_is_sufficiently_aligned)
+    {
+      alignas(16) unsigned char buffer[32];
+
+      CHECK(etl::is_sufficiently_aligned<16>(buffer));
+      CHECK(etl::is_sufficiently_aligned<8>(buffer));
+      CHECK(!etl::is_sufficiently_aligned<16>(buffer + 1));
     }
 
 #if ETL_USING_CPP17

@@ -914,6 +914,7 @@ namespace etl
       TDistance top_index = value_index;
       TDistance child2nd  = (2 * value_index) + 2;
 
+#include "etl/private/diagnostic_array_bounds_push.h"
       while (child2nd < length)
       {
         if (compare(*(first + child2nd), *(first + (child2nd - 1))))
@@ -931,6 +932,7 @@ namespace etl
         *(first + value_index) = ETL_MOVE(*(first + (child2nd - 1)));
         value_index            = child2nd - 1;
       }
+#include "etl/private/diagnostic_pop.h"
 
       push_heap(first, value_index, top_index, ETL_MOVE(value), compare);
     }
@@ -964,6 +966,12 @@ namespace etl
   {
     typedef typename etl::iterator_traits<TIterator>::value_type      value_t;
     typedef typename etl::iterator_traits<TIterator>::difference_type distance_t;
+
+    const distance_t n = last - first;
+    if (n <= 1)
+    {
+      return;
+    }
 
     value_t value = ETL_MOVE(*(last - 1));
     *(last - 1)   = ETL_MOVE(*first);
@@ -5844,6 +5852,8 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I>::value, "partial_sort requires random access iterators");
 
+  #include "etl/private/diagnostic_array_bounds_push.h"
+
         I last_it = ranges::next(first, last);
 
         if (first == middle || first == last_it)
@@ -5880,6 +5890,8 @@ namespace etl
         }
 
         return last_it;
+
+  #include "etl/private/diagnostic_pop.h"
       }
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>
@@ -5933,6 +5945,8 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I2>::value, "partial_sort_copy requires the output to be random access iterators");
 
+  #include "etl/private/diagnostic_array_bounds_push.h"
+
         I1 in_last  = ranges::next(first, last);
         I2 out_last = ranges::next(result_first, result_last);
 
@@ -5970,7 +5984,6 @@ namespace etl
           }
         }
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
         // Sort the heap to produce a sorted output range
         for (auto heap_end = heap_size - 1; heap_end > 0; --heap_end)
         {
@@ -7025,6 +7038,8 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I>::value, "pop_heap requires random access iterators");
 
+  #include "etl/private/diagnostic_array_bounds_push.h"
+
         I last_it = ranges::next(first, last);
 
         auto length = etl::distance(first, last_it);
@@ -7041,6 +7056,8 @@ namespace etl
         sift_down(first, decltype(length)(0), etl::distance(first, last_it), comp, proj);
 
         return ranges::next(first, last);
+
+  #include "etl/private/diagnostic_pop.h"
       }
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>

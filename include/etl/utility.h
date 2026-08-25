@@ -490,6 +490,7 @@ namespace etl
   };
 
 #if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
+  #if ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// exchange (const)
   //***************************************************************************
@@ -500,7 +501,6 @@ namespace etl
     object      = new_value;
     return old_value;
   }
-
   template <typename T, typename U>
   T exchange(T& object, const U& new_value)
   {
@@ -508,16 +508,30 @@ namespace etl
     object      = new_value;
     return old_value;
   }
-#else
+  #else
   //***************************************************************************
-  /// exchange (const)
+  /// exchange
   //***************************************************************************
   template <typename T, typename U = T>
-  T exchange(T& object, const U& new_value)
+  ETL_CONSTEXPR14 T exchange(T& object, U&& new_value)
+    ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value && etl::is_nothrow_assignable<T&, U>::value))
   {
-    return std::exchange(object, new_value);
+    T old_value = etl::move(object);
+    object      = etl::forward<U>(new_value);
+    return old_value;
   }
-#endif
+  #endif // ETL_CPP11_NOT_SUPPORTED
+#else
+  //***************************************************************************
+  /// exchange
+  //***************************************************************************
+  template <typename T, typename U = T>
+  ETL_CONSTEXPR14 T exchange(T& object, U&& new_value)
+    ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value && etl::is_nothrow_assignable<T&, U>::value))
+  {
+    return std::exchange(object, etl::forward<U>(new_value));
+  }
+#endif // ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
 
   //***************************************************************************
   /// as_const

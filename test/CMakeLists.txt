@@ -14,6 +14,7 @@ add_executable(etl_tests
 	main.cpp
 	murmurhash3.cpp
 	test_algorithm.cpp
+	test_algorithm_ranges.cpp
 	test_alignment.cpp
 	test_array.cpp
 	test_array_view.cpp
@@ -374,6 +375,10 @@ add_executable(etl_tests
 	test_vector_non_trivial.cpp
 	test_vector_pointer.cpp
 	test_vector_pointer_external_buffer.cpp
+	test_vector_function_pointer.cpp
+	test_vector_function_pointer_external_buffer.cpp
+	test_vector_member_function_pointer.cpp
+	test_vector_member_function_pointer_external_buffer.cpp
 	test_visitor.cpp
 	test_xor_checksum.cpp
 	test_xor_rotate_checksum.cpp

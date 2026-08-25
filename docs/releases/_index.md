@@ -5,6 +5,24 @@ weight: 2002
 
 Click on the links to see the original Github page.
 
+## 20.48.1
+
+**Pull requests:**  
+
+[#1477](https://github.com/ETLCPP/etl/pull/1477) Fix for 1405: etl::exchange doesn't work with unique_ptr
+[#1484](https://github.com/ETLCPP/etl/pull/1484) Fix `etl::message_timer` firing following timers early on unregister
+[#1485](https://github.com/ETLCPP/etl/pull/1485) Fix `etl::histogram` copy/move not preserving start_index
+[#1486](https://github.com/ETLCPP/etl/pull/1486) Fix `etl::bitset` single-element `from_string` shift on empty string
+[#1487](https://github.com/ETLCPP/etl/pull/1487) Fix `etl::pearson::reset()` not resetting the first-byte flag
+[#1488](https://github.com/ETLCPP/etl/pull/1488) Fix `etl::mem_cast` cross-size copy constructor and assignment
+[#1489](https://github.com/ETLCPP/etl/pull/1489) Add missing interfaces to `etl::chrono`
+[#1490](https://github.com/ETLCPP/etl/pull/1490) Add missing memory functions, according the standard
+[#1491](https://github.com/ETLCPP/etl/pull/1491) Add optional `etl_profile` `label_flag` for Bazel profile injection
+[#1492](https://github.com/ETLCPP/etl/pull/1492) Allow `etl::vector` to store pointers to functions and member functions
+[#1494](https://github.com/ETLCPP/etl/pull/1494) Refactor `variant::emplace` to perfect forward args instead of copy/move construct
+[#1495](https://github.com/ETLCPP/etl/pull/1495) Separate bit order and endianness in `bit_stream.h`
+[#1496](https://github.com/ETLCPP/etl/pull/1496) Fix non-assignable alternatives in variant
+
 ## 20.48.0
 
 **Pull requests:**  

@@ -100,6 +100,41 @@ ETL_NOEXCEPT
 **Description**  
 Subtracts a duration.
 
+## Increment/decrement
+```cpp
+ETL_CONSTEXPR14 time_point& operator ++() 
+ETL_NOEXCEPT
+```
+**Description**  
+Pre-increments the stored duration by one tick.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 time_point operator ++(int) 
+ETL_NOEXCEPT
+```
+**Description**  
+Post-increments the stored duration by one tick.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 time_point& operator --() 
+ETL_NOEXCEPT
+```
+**Description**  
+Pre-decrements the stored duration by one tick.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 time_point operator --(int) 
+ETL_NOEXCEPT
+```
+**Description**  
+Post-decrements the stored duration by one tick.
+
 ## Constants
 ```cpp
 ETL_NODISCARD
@@ -179,6 +214,65 @@ Compare day with another.
 If time_point < other, returns -1  
 else if time_point > other, returns 1  
 else returns 0
+
+## Non-member mathematical operators
+```cpp
+template <typename TClock, typename TDuration1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+etl::chrono::time_point<TClock, typename etl::common_type<TDuration1, etl::chrono::duration<TRep2, TPeriod2> >::type>
+  operator +(const time_point<TClock, TDuration1>& lhs, 
+             const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+ETL_NOEXCEPT
+```
+**Description**  
+Adds a duration to a time_point.  
+**Return**  
+A time_point whose duration is the common type of the two.
+
+---
+
+```cpp
+template <typename TRep1, typename TPeriod1, typename TClock, typename TDuration2>
+ETL_CONSTEXPR14 
+etl::chrono::time_point<TClock, typename etl::common_type<etl::chrono::duration<TRep1, TPeriod1>, TDuration2>::type>
+  operator +(const etl::chrono::duration<TRep1, TPeriod1>& lhs, 
+             const time_point<TClock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+```
+**Description**  
+Adds a duration to a time_point.  
+**Return**  
+A time_point whose duration is the common type of the two.
+
+---
+
+```cpp
+template <typename TClock, typename TDuration1, typename TRep2, typename TPeriod2>
+ETL_CONSTEXPR14 
+etl::chrono::time_point<TClock, typename etl::common_type<TDuration1, etl::chrono::duration<TRep2, TPeriod2> >::type>
+  operator -(const time_point<TClock, TDuration1>& lhs, 
+             const etl::chrono::duration<TRep2, TPeriod2>& rhs) 
+ETL_NOEXCEPT
+```
+**Description**  
+Subtracts a duration from a time_point.  
+**Return**  
+A time_point whose duration is the common type of the two.
+
+---
+
+```cpp
+template <typename TClock, typename TDuration1, typename TDuration2>
+ETL_CONSTEXPR14 
+typename etl::common_type<TDuration1, TDuration2>::type 
+  operator -(const time_point<TClock, TDuration1>& lhs, 
+             const time_point<TClock, TDuration2>& rhs) 
+ETL_NOEXCEPT
+```
+**Description**  
+Subtracts one time_point from another.  
+**Return**  
+The duration between them as the common type of the two durations.
 
 ## Non-member comparison operators
 ```cpp

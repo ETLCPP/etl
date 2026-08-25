@@ -227,11 +227,13 @@ namespace etl
         return ETL_NULLPTR == base::etl_parent;
       }
 
+#include "private/diagnostic_null_dereference_push.h"
       ETL_NODISCARD
       link_type* get_parent()
       {
         return static_cast<link_type*>(base::etl_parent);
       }
+#include "private/diagnostic_pop.h"
 
       ETL_NODISCARD
       const link_type* get_parent() const

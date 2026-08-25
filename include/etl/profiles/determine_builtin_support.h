@@ -167,6 +167,15 @@ SOFTWARE.
   #endif
 #endif
 
+#if defined(ETL_COMPILER_MICROSOFT) // The Microsoft compiler supports the __is_trivially_copyable
+                                    // intrinsic directly. __has_builtin is not used for Microsoft
+                                    // (see above) to avoid a VS2022 intellisense issue, so the
+                                    // intrinsic is enabled here for the no-STL configuration.
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
+  #endif
+#endif
+
 // The default. Set to 0, if not already set.
 #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
   #define ETL_USING_BUILTIN_IS_ASSIGNABLE 0

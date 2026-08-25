@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/memory.h"
 #include "etl/utility.h"
 
 #include <algorithm>
@@ -313,6 +314,32 @@ namespace
       CHECK_EQUAL(2, a);
       CHECK_EQUAL(2, b);
       CHECK_EQUAL(1, c);
+    }
+
+    //*************************************************************************
+    TEST(test_exchange_unique_ptr)
+    {
+      etl::unique_ptr<int> p1(new int(1));
+      etl::unique_ptr<int> p2 = etl::exchange(p1, nullptr);
+
+      CHECK_FALSE(p1);
+      CHECK_TRUE(p2);
+      CHECK_EQUAL(*p2, 1);
+    }
+
+    //*************************************************************************
+    TEST(test_exchange_unique_ptr_move_in)
+    {
+      etl::unique_ptr<int> a(new int(10));
+      etl::unique_ptr<int> b(new int(20));
+
+      etl::unique_ptr<int> old = etl::exchange(a, etl::move(b));
+
+      CHECK_TRUE(old);
+      CHECK_EQUAL(*old, 10);
+      CHECK_TRUE(a);
+      CHECK_EQUAL(*a, 20);
+      CHECK_FALSE(b);
     }
 
     //*************************************************************************

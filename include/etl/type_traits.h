@@ -1144,8 +1144,8 @@ namespace etl
   inline constexpr bool is_class_v = is_class<T>::value;
   #endif
 
-    //***************************************************************************
-    /// is_base_of
+  //***************************************************************************
+  /// is_base_of
   #if ETL_USING_CPP11
   namespace private_type_traits
   {
@@ -1358,9 +1358,9 @@ namespace etl
   };
   #endif
 
-    //***************************************************************************
-    /// is_convertible
-    ///\ingroup type_traits
+  //***************************************************************************
+  /// is_convertible
+  ///\ingroup type_traits
   #if ETL_USING_CPP11
   namespace private_type_traits
   {
@@ -2149,9 +2149,9 @@ namespace etl
 
   #endif
 
-    //***************************************************************************
-    /// is_convertible
-    ///\ingroup type_traits
+  //***************************************************************************
+  /// is_convertible
+  ///\ingroup type_traits
   #if ETL_USING_CPP11
   template <typename TFrom, typename TTo>
   struct is_convertible : std::is_convertible<TFrom, TTo>
@@ -3909,6 +3909,32 @@ namespace etl
 #endif
   }
 
+  //***************************************************************************
+  /// Is T a member pointer
+  //***************************************************************************
+  namespace private_type_traits
+  {
+    template <typename T>
+    struct is_member_pointer_helper : etl::false_type
+    {
+    };
+
+    template <typename T, typename TObject>
+    struct is_member_pointer_helper<T TObject::*> : etl::true_type
+    {
+    };
+  } // namespace private_type_traits
+
+  template <typename T>
+  struct is_member_pointer : private_type_traits::is_member_pointer_helper< typename etl::remove_cv<T>::type>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_member_pointer_v = etl::is_member_pointer<T>::value;
+#endif
+
 #if ETL_USING_CPP11
   //*********************************
   /// Check if T is a function type
@@ -4008,6 +4034,15 @@ namespace etl
   inline constexpr bool is_function_v = etl::is_function<T>::value;
   #endif
 
+#else
+
+  template <typename T>
+  struct is_function : etl::bool_constant<!etl::is_member_pointer<T>::value && !etl::is_const<const T>::value && !etl::is_reference<T>::value>
+  {
+  };
+
+#endif
+
   //***************************************************************************
   /// is_object
   //***************************************************************************
@@ -4016,10 +4051,22 @@ namespace etl
   {
   };
 
-  #if ETL_USING_CPP17
+#if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_object_v = etl::is_object<T>::value;
-  #endif
+#endif
+
+  //***************************************************************************
+  /// is_object_pointer
+  //***************************************************************************
+  template <typename T>
+  struct is_object_pointer : etl::bool_constant<etl::is_pointer<T>::value && etl::is_object<typename etl::remove_pointer<T>::type>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_object_pointer_v = etl::is_object_pointer<T>::value;
 #endif
 
 #if ETL_USING_CPP11
@@ -4073,32 +4120,6 @@ namespace etl
   template <typename T>
   inline constexpr bool has_unique_call_operator_v = etl::has_unique_call_operator<T>::value;
   #endif
-#endif
-
-  //***************************************************************************
-  /// Is T a member pointer
-  //***************************************************************************
-  namespace private_type_traits
-  {
-    template <typename T>
-    struct is_member_pointer_helper : etl::false_type
-    {
-    };
-
-    template <typename T, typename TObject>
-    struct is_member_pointer_helper<T TObject::*> : etl::true_type
-    {
-    };
-  } // namespace private_type_traits
-
-  template <typename T>
-  struct is_member_pointer : private_type_traits::is_member_pointer_helper< typename etl::remove_cv<T>::type>
-  {
-  };
-
-#if ETL_USING_CPP17
-  template <typename T>
-  inline constexpr bool is_member_pointer_v = etl::is_member_pointer<T>::value;
 #endif
 
 #if ETL_USING_CPP11
