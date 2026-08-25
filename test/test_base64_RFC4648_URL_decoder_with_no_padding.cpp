@@ -30,19 +30,15 @@ SOFTWARE.
 
 #include "etl/base64_decoder.h"
 
+#include "etl/integral_limits.h"
 #include "etl/string.h"
 #include "etl/vector.h"
 
 #include <algorithm>
 #include <array>
+#include <iterator>
 #include <string>
 #include <vector>
-
-#if ETL_USING_STL
-  #include <iterator>
-#endif
-
-#include "etl/integral_limits.h"
 
 //*****************************************************************************
 // Encode/decode using RFC-4648-URL with no padding

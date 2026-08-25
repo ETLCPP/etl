@@ -76,6 +76,32 @@ namespace
     int i;
   };
 
+  //*********************************
+  int apply_sum(int a, int b, int c)
+  {
+    return a + b + c;
+  }
+
+  //*********************************
+  struct Summer
+  {
+    int operator()(int a, int b) const
+    {
+      return a + b;
+    }
+  };
+
+  //*********************************
+  struct Accumulator
+  {
+    int total;
+
+    void add(int a, int b)
+    {
+      total = a + b;
+    }
+  };
+
   SUITE(test_tuple)
   {
     //*************************************************************************
@@ -930,5 +956,61 @@ namespace
       CHECK_EQUAL(1, i);
       CHECK_EQUAL(std::string("2"), d.value);
     }
+
+    //*************************************************************************
+    TEST(test_apply_free_function)
+    {
+      etl::tuple<int, int, int> t(1, 2, 3);
+
+      CHECK_EQUAL(6, etl::apply(apply_sum, t));
+    }
+
+    //*************************************************************************
+    TEST(test_apply_function_object)
+    {
+      etl::tuple<int, int> t(10, 20);
+
+      CHECK_EQUAL(30, etl::apply(Summer(), t));
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP11
+    TEST(test_apply_lambda)
+    {
+      etl::tuple<int, int, int> t(2, 3, 4);
+
+      int result = etl::apply([](int a, int b, int c) { return a * b * c; }, t);
+
+      CHECK_EQUAL(24, result);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_apply_member_function)
+    {
+      Accumulator acc = {0};
+
+      etl::apply(&Accumulator::add, etl::make_tuple(&acc, 5, 7));
+
+      CHECK_EQUAL(12, acc.total);
+    }
+
+    //*************************************************************************
+    TEST(test_apply_rvalue_tuple)
+    {
+      CHECK_EQUAL(6, etl::apply(apply_sum, etl::make_tuple(1, 2, 3)));
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP11
+    TEST(test_apply_empty_tuple)
+    {
+      etl::tuple<> t;
+
+      int result = etl::apply([]() { return 42; }, t);
+
+      CHECK_EQUAL(42, result);
+    }
+#endif
   }
 } // namespace
