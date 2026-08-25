@@ -1621,5 +1621,51 @@ namespace
 
       CHECK(std::equal(blank_data.begin(), blank_data.end(), data.begin()));
     }
+
+    //*************************************************************************
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+    // Arguments that are const-qualified lvalues must be accepted and must not
+    // affect the deduced element type. Guards against the defect fixed for
+    // make_array and make_deque, which forwarded each argument as the element
+    // type rather than as its own deduced type and so rejected const lvalues.
+    TEST(test_make_indirect_vector_from_const_lvalues_of_element_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_indirect_vector(static_const_lvalue, local_const_lvalue, mutable_lvalue);
+
+      using Type = typename std::remove_reference<decltype(data[0])>::type;
+      CHECK((std::is_same<char, Type>::value));
+
+      CHECK_EQUAL(42, data[0]);
+      CHECK_EQUAL(43, data[1]);
+      CHECK_EQUAL(44, data[2]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+    // An explicit element type selects the element type and converts every
+    // argument (Library Fundamentals TS make_array design), accepting
+    // const-qualified lvalues and narrowing initialisers.
+    TEST(test_make_indirect_vector_explicit_element_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_indirect_vector<char>(static_const_lvalue, local_const_lvalue, mutable_lvalue, 45, 46);
+
+      CHECK((std::is_same<etl::indirect_vector<char, 5U>, decltype(data)>::value));
+
+      CHECK_EQUAL(42, data[0]);
+      CHECK_EQUAL(43, data[1]);
+      CHECK_EQUAL(44, data[2]);
+      CHECK_EQUAL(45, data[3]);
+      CHECK_EQUAL(46, data[4]);
+    }
+#endif
   }
 } // namespace

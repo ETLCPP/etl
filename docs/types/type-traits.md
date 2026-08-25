@@ -32,6 +32,26 @@ Not all traits have been defined as some rely on compiler intrinsics that are no
 `is_compound`  
 `is_array`  
 `is_pointer`  
+`is_null_pointer`  
+`is_scalar`  
+`is_union`  
+`is_empty`  
+`is_polymorphic`  
+`is_abstract`  
+`is_final`  
+`is_aggregate`  
+`is_trivial`  
+`is_standard_layout`  
+`is_destructible`  
+`is_nothrow_destructible`  
+`has_virtual_destructor`  
+`has_unique_object_representations`  
+`is_bounded_array`  
+`is_unbounded_array`  
+`is_swappable`  
+`is_swappable_with`  
+`is_nothrow_swappable`  
+`is_nothrow_swappable_with`  
 `is_reference`  
 `is_base_of`  
 `make_signed`  
@@ -474,5 +494,384 @@ The result is found in the member `value`.
 ```cpp
 template <typename T>
 inline constexpr bool is_object_pointer_v = etl::is_object_pointer<T>::value;
+```
+C++17
+
+## is_pod
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_pod
+```
+Checks if `T` is a POD (Plain Old Data) type.  
+The result is found in the member `value`.  
+&emsp;When using the STL, this is defined as `is_standard_layout<T> && is_trivially_default_constructible<T> && is_trivially_copyable<T>`.  
+&emsp;When not using the STL, this is conservatively defined as `is_fundamental<T> || is_pointer<T>`.
+
+```cpp
+template <typename T>
+inline constexpr bool is_pod_v = etl::is_pod<T>::value;
+```
+C++17
+
+## is_standard_layout
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_standard_layout
+```
+Checks if `T` is a standard-layout type.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_standard_layout_v = etl::is_standard_layout<T>::value;
+```
+C++17
+
+## is_trivial
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_trivial
+```
+Checks if `T` is a trivial type; i.e. it is trivially copyable and has one or more
+default constructors, all of which are trivial.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_trivial_v = etl::is_trivial<T>::value;
+```
+C++17
+
+**Note:** When not using the STL, this trait requires compiler support (the `__is_trivial` intrinsic).
+If that is not available then the trait is not defined, as there is no portable way of
+determining whether a type is trivial.
+
+## is_bounded_array
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_bounded_array
+```
+Checks if `T` is an array type of known bound.  
+`T[N]` returns `true`, `T[]` and all other types return `false`.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_bounded_array_v = etl::is_bounded_array<T>::value;
+```
+C++17
+
+## is_unbounded_array
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_unbounded_array
+```
+Checks if `T` is an array type of unknown bound.  
+`T[]` returns `true`, `T[N]` and all other types return `false`.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_unbounded_array_v = etl::is_unbounded_array<T>::value;
+```
+C++17
+
+## is_destructible
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_destructible
+```
+Checks if `T` is a destructible type; that is, an object type whose destructor is not deleted and is accessible, a reference type, or an array of a destructible type.  
+Incomplete types, `void`, function types and arrays of unknown bound are not destructible.  
+The result is found in the member `value`.  
+&emsp;When not using the STL, the trait is detected by checking whether `declval<T&>().~T()` is a valid expression.  
+&emsp;Requires either compiler support or C++11. When neither is available, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_destructible_v = etl::is_destructible<T>::value;
+```
+C++17
+
+## is_nothrow_destructible
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_nothrow_destructible
+```
+Checks if `T` is a destructible type whose destructor is known not to throw.  
+Types that are not destructible are not nothrow destructible.  
+The result is found in the member `value`.  
+&emsp;When not using the STL, the trait is detected by checking `noexcept(declval<T&>().~T())` for destructible types.  
+&emsp;Requires either compiler support or C++11. When neither is available, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_nothrow_destructible_v = etl::is_nothrow_destructible<T>::value;
+```
+C++17
+
+## is_swappable
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_swappable
+```
+Checks if `T` is a referenceable type and lvalues of type `T` can be swapped by an unqualified call to `swap`.  
+The result is found in the member `value`.  
+&emsp;When using the STL and C++17, this is defined as `std::is_swappable<T>`.  
+&emsp;Otherwise the trait checks whether `swap(declval<T&>(), declval<T&>())` is a valid expression, where the `swap` considered is `etl::swap`, `std::swap` if it is available, and any `swap` found by argument dependent lookup.  
+&emsp;Requires C++11. Without it there is no way of detecting the validity of an expression, so this trait is not defined.  
+&emsp;Note that when using the STL with C++11 or C++14, the accuracy of this trait depends on `std::swap` being constrained by the standard library implementation. Standard libraries that only constrain `std::swap` from C++17 will cause this trait to report `true` for types that cannot actually be swapped.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_swappable_v = etl::is_swappable<T>::value;
+```
+C++17
+
+## is_swappable_with
+From: `20.49.0`
+
+```cpp
+template <typename T, typename U>
+struct is_swappable_with
+```
+Checks if expressions of type `T` and `U` can be swapped by unqualified calls to `swap`, in both directions.  
+The result is found in the member `value`.  
+&emsp;When using the STL and C++17, this is defined as `std::is_swappable_with<T, U>`.  
+&emsp;Otherwise the trait checks whether both `swap(declval<T>(), declval<U>())` and `swap(declval<U>(), declval<T>())` are valid expressions, where the `swap` considered is `etl::swap`, `std::swap` if it is available, and any `swap` found by argument dependent lookup.  
+&emsp;Note that, unlike `is_swappable`, no references are added to `T` and `U`, so the value categories of the arguments are those of `T` and `U`. `is_swappable_with<int, int>::value` is `false`, whereas `is_swappable_with<int&, int&>::value` is `true`.  
+&emsp;Requires C++11. Without it there is no way of detecting the validity of an expression, so this trait is not defined.  
+&emsp;Note that when using the STL with C++11 or C++14, the accuracy of this trait depends on `std::swap` being constrained by the standard library implementation. Standard libraries that only constrain `std::swap` from C++17 will cause this trait to report `true` for types that cannot actually be swapped.  
+
+```cpp
+template <typename T, typename U>
+inline constexpr bool is_swappable_with_v = etl::is_swappable_with<T, U>::value;
+```
+C++17
+
+## is_nothrow_swappable
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_nothrow_swappable
+```
+Checks if `T` is a referenceable type and lvalues of type `T` can be swapped by an unqualified call to `swap`, and that the swap cannot throw.  
+The result is found in the member `value`.  
+&emsp;When using the STL and C++17, this is defined as `std::is_nothrow_swappable<T>`.  
+&emsp;Otherwise the trait checks that `etl::is_swappable<T>::value` is `true` and that `swap(declval<T&>(), declval<T&>())` is `noexcept`.  
+&emsp;Requires C++11. Without it there is no way of detecting the validity of an expression, so this trait is not defined.  
+&emsp;Note that when neither the STL nor the type traits builtins are available, `etl::is_nothrow_move_constructible` and `etl::is_nothrow_move_assignable` are conservatively `false` for class types, so `etl::swap` is not `noexcept` for them and this trait is conservatively `false` too.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_nothrow_swappable_v = etl::is_nothrow_swappable<T>::value;
+```
+C++17
+
+## is_nothrow_swappable_with
+From: `20.49.0`
+
+```cpp
+template <typename T, typename U>
+struct is_nothrow_swappable_with
+```
+Checks if expressions of type `T` and `U` can be swapped by unqualified calls to `swap`, in both directions, and that neither swap can throw.  
+The result is found in the member `value`.  
+&emsp;When using the STL and C++17, this is defined as `std::is_nothrow_swappable_with<T, U>`.  
+&emsp;Otherwise the trait checks that `etl::is_swappable_with<T, U>::value` is `true` and that both `swap(declval<T>(), declval<U>())` and `swap(declval<U>(), declval<T>())` are `noexcept`.  
+&emsp;Note that, as for `is_swappable_with`, no references are added to `T` and `U`, so the value categories of the arguments are those of `T` and `U`. `is_nothrow_swappable_with<int, int>::value` is `false`, whereas `is_nothrow_swappable_with<int&, int&>::value` is `true`.  
+&emsp;Requires C++11. Without it there is no way of detecting the validity of an expression, so this trait is not defined.  
+&emsp;Note that when neither the STL nor the type traits builtins are available, `etl::is_nothrow_move_constructible` and `etl::is_nothrow_move_assignable` are conservatively `false` for class types, so `etl::swap` is not `noexcept` for them and this trait is conservatively `false` too.  
+
+```cpp
+template <typename T, typename U>
+inline constexpr bool is_nothrow_swappable_with_v = etl::is_nothrow_swappable_with<T, U>::value;
+```
+C++17
+
+## is_union
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_union
+```
+Checks if `T` is a union type.  
+The result is found in the member `value`.  
+&emsp;When the compiler does not provide the required intrinsic, this trait conservatively reports `false` for every type.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_union_v = etl::is_union<T>::value;
+```
+C++17
+
+## is_empty
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_empty
+```
+Checks if `T` is an empty class type; that is, a non-union class type with no non-static data members other than zero-sized bit-fields, no virtual functions, no virtual base classes and no non-empty base classes.  
+The result is found in the member `value`.  
+&emsp;Requires compiler support. When the compiler does not provide the required intrinsic, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_empty_v = etl::is_empty<T>::value;
+```
+C++17
+
+## is_polymorphic
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_polymorphic
+```
+Checks if `T` is a polymorphic class type; that is, a class that declares or inherits at least one virtual function.  
+The result is found in the member `value`.  
+&emsp;Requires compiler support. When the compiler does not provide the required intrinsic, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_polymorphic_v = etl::is_polymorphic<T>::value;
+```
+C++17
+
+## is_abstract
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_abstract
+```
+Checks if `T` is an abstract class type; that is, a class that declares or inherits at least one pure virtual function.  
+The result is found in the member `value`.  
+&emsp;Requires compiler support. When the compiler does not provide the required intrinsic, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_abstract_v = etl::is_abstract<T>::value;
+```
+C++17
+
+## is_final
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_final
+```
+Checks if `T` is a class or union type marked `final`, optionally cv-qualified.  
+The result is found in the member `value`.  
+&emsp;When using the STL, this requires C++14 or above. Otherwise it requires compiler support. When neither is available, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_final_v = etl::is_final<T>::value;
+```
+C++17
+
+## is_aggregate
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_aggregate
+```
+Checks if `T` is an aggregate type, optionally cv-qualified.  
+An aggregate is an array type or a class type that has no user-declared or inherited constructors, no private or protected non-static data members, no virtual functions and no virtual, private or protected base classes.  
+The result is found in the member `value`.  
+&emsp;When using the STL, this requires C++17 or above. Otherwise it requires compiler support. When neither is available, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_aggregate_v = etl::is_aggregate<T>::value;
+```
+C++17
+
+## has_virtual_destructor
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct has_virtual_destructor
+```
+Checks if `T` is a class type with a virtual destructor, optionally cv-qualified.  
+The result is found in the member `value`.  
+&emsp;When not using the STL, this requires compiler support. When it is not available, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool has_virtual_destructor_v = etl::has_virtual_destructor<T>::value;
+```
+C++17
+
+## has_unique_object_representations
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct has_unique_object_representations
+```
+Checks if `T` is trivially copyable and any two objects of type `T` with the same value have the same object representation; that is, the type has no padding bits and no two distinct object representations compare equal.  
+Arrays and cv-qualifiers are ignored; the trait is applied to `etl::remove_all_extents<typename etl::remove_cv<T>::type>::type`.  
+The result is found in the member `value`.  
+&emsp;When using the STL, this requires C++17 or above. Otherwise it requires compiler support. When neither is available, this trait is not defined.  
+
+```cpp
+template <typename T>
+inline constexpr bool has_unique_object_representations_v = etl::has_unique_object_representations<T>::value;
+```
+C++17
+
+## is_null_pointer
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_null_pointer
+```
+Checks if `T` is `etl::nullptr_t`, optionally cv-qualified.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_null_pointer_v = etl::is_null_pointer<T>::value;
+```
+C++17
+
+## is_scalar
+From: `20.49.0`
+
+```cpp
+template <typename T>
+struct is_scalar
+```
+Checks if `T` is a scalar type; that is, an arithmetic, enumeration, pointer, pointer to member or `etl::nullptr_t` type, optionally cv-qualified.  
+The result is found in the member `value`.  
+
+```cpp
+template <typename T>
+inline constexpr bool is_scalar_v = etl::is_scalar<T>::value;
 ```
 C++17

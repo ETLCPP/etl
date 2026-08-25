@@ -185,7 +185,7 @@ namespace etl
     ///\param slot: The slot to connect.
     ///\return <b>false</b> if not all slots could be connected.
     //*************************************************************************
-    bool connect(const slot_type& slot) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    bool connect(const slot_type& slot)
     {
       if (!connected(slot))
       {
@@ -204,7 +204,7 @@ namespace etl
     ///\param slots: std::initializer_list of slots to connect.
     ///\return <b>false</b> if not all slots could be connected.
     //*************************************************************************
-    bool connect(std::initializer_list<const slot_type> slots) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    bool connect(std::initializer_list<const slot_type> slots)
     {
       for (const slot_type& slot : slots)
       {
@@ -226,7 +226,7 @@ namespace etl
     ///\param slots: etl::span of slots to connect.
     ///\return <b>false</b> if not all slots could be connected.
     //*************************************************************************
-    bool connect(const span_type slots) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    bool connect(const span_type slots)
     {
       for (const slot_type& slot : slots)
       {
@@ -384,7 +384,7 @@ namespace etl
     //*************************************************************************
     /// For a delegate slot type.
     //*************************************************************************
-    template <typename TSlotType, typename... TArgs>
+    template <typename TSlotType>
     static typename etl::enable_if_t<etl::is_delegate<TSlotType>::value, bool> slot_is_valid(const TSlotType& s) ETL_NOEXCEPT
     {
       return s.is_valid();
@@ -393,7 +393,7 @@ namespace etl
     //*************************************************************************
     /// For a non-delegate slot type.
     //*************************************************************************
-    template <typename TSlotType, typename... TArgs>
+    template <typename TSlotType>
     static typename etl::enable_if_t<!etl::is_delegate<TSlotType>::value, bool> slot_is_valid(const TSlotType&) ETL_NOEXCEPT
     {
       return true;

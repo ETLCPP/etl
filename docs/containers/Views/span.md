@@ -356,7 +356,7 @@ bool equal(const etl::span<T1, N1>& lhs, const etl::span<T2, N2>& rhs)
 ```
 **Description**  
 Equality function.  
-Performs a comparision of the range values.  
+Performs a comparison of the range values.  
 Returns `true` if one of the following are `true`  
 1. Both spans are empty.  
 2. They both point to the same range of data. 
