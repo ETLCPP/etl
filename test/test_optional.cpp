@@ -1603,5 +1603,218 @@ namespace
   #endif
     }
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_transform)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      etl::optional<int> doubled = engaged.transform([](int i) { return i * 2; });
+      CHECK_TRUE(doubled.has_value());
+      CHECK_EQUAL(84, doubled.value());
+
+      etl::optional<int> from_empty = empty.transform([](int i) { return i * 2; });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_transform_const)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> doubled = engaged.transform([](int i) { return i * 2; });
+      CHECK_TRUE(doubled.has_value());
+      CHECK_EQUAL(84, doubled.value());
+
+      etl::optional<int> from_empty = empty.transform([](int i) { return i * 2; });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_transform_change_type)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      etl::optional<std::string> text = engaged.transform([](int) { return std::string("forty two"); });
+      CHECK_TRUE(text.has_value());
+      CHECK_EQUAL("forty two", text.value());
+
+      etl::optional<std::string> text_from_empty = empty.transform([](int) { return std::string("forty two"); });
+      CHECK_FALSE(text_from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_transform_non_pod)
+    {
+      etl::optional<Data> engaged(Data("transform"));
+      etl::optional<Data> empty;
+
+      etl::optional<size_t> length = engaged.transform([](const Data& d) { return d.value.size(); });
+      CHECK_TRUE(length.has_value());
+      CHECK_EQUAL(9U, length.value());
+
+      etl::optional<size_t> length_from_empty = empty.transform([](const Data& d) { return d.value.size(); });
+      CHECK_FALSE(length_from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_transform_move)
+    {
+      etl::optional<DataM> engaged(DataM(42U));
+
+      etl::optional<DataM> moved = etl::move(engaged).transform([](DataM&& d) { return DataM(etl::move(d)); });
+      CHECK_TRUE(moved.has_value());
+      CHECK_TRUE(moved.value().valid);
+      CHECK_EQUAL(42U, moved.value().value);
+      CHECK_FALSE(engaged.value().valid);
+
+      etl::optional<DataM> empty;
+      etl::optional<DataM> from_empty = etl::move(empty).transform([](DataM&& d) { return DataM(etl::move(d)); });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      etl::optional<int> incremented = engaged.and_then([](int i) { return etl::optional<int>(i + 1); });
+      CHECK_TRUE(incremented.has_value());
+      CHECK_EQUAL(43, incremented.value());
+
+      etl::optional<int> from_empty = empty.and_then([](int i) { return etl::optional<int>(i + 1); });
+      CHECK_FALSE(from_empty.has_value());
+
+      etl::optional<int> rejected = engaged.and_then([](int) { return etl::optional<int>(); });
+      CHECK_FALSE(rejected.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then_const)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> incremented = engaged.and_then([](int i) { return etl::optional<int>(i + 1); });
+      CHECK_TRUE(incremented.has_value());
+      CHECK_EQUAL(43, incremented.value());
+
+      etl::optional<int> from_empty = empty.and_then([](int i) { return etl::optional<int>(i + 1); });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then_change_type)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      etl::optional<std::string> text = engaged.and_then([](int) { return etl::optional<std::string>("forty two"); });
+      CHECK_TRUE(text.has_value());
+      CHECK_EQUAL("forty two", text.value());
+
+      etl::optional<std::string> text_from_empty = empty.and_then([](int) { return etl::optional<std::string>("forty two"); });
+      CHECK_FALSE(text_from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then_move)
+    {
+      etl::optional<DataM> engaged(DataM(42U));
+
+      etl::optional<uint32_t> value = etl::move(engaged).and_then([](DataM&& d) { return etl::optional<uint32_t>(d.value); });
+      CHECK_TRUE(value.has_value());
+      CHECK_EQUAL(42U, value.value());
+
+      etl::optional<DataM>    empty;
+      etl::optional<uint32_t> from_empty = etl::move(empty).and_then([](DataM&& d) { return etl::optional<uint32_t>(d.value); });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_or_else)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+      bool               called = false;
+
+      etl::optional<int> from_engaged = engaged.or_else(
+        [&called]()
+        {
+          called = true;
+          return etl::optional<int>(99);
+        });
+      CHECK_TRUE(from_engaged.has_value());
+      CHECK_EQUAL(42, from_engaged.value());
+      CHECK_FALSE(called);
+
+      etl::optional<int> from_empty = empty.or_else(
+        [&called]()
+        {
+          called = true;
+          return etl::optional<int>(99);
+        });
+      CHECK_TRUE(from_empty.has_value());
+      CHECK_EQUAL(99, from_empty.value());
+      CHECK_TRUE(called);
+
+      etl::optional<int> still_empty = empty.or_else([]() { return etl::optional<int>(); });
+      CHECK_FALSE(still_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_or_else_const)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> from_engaged = engaged.or_else([]() { return etl::optional<int>(99); });
+      CHECK_TRUE(from_engaged.has_value());
+      CHECK_EQUAL(42, from_engaged.value());
+
+      etl::optional<int> from_empty = empty.or_else([]() { return etl::optional<int>(99); });
+      CHECK_TRUE(from_empty.has_value());
+      CHECK_EQUAL(99, from_empty.value());
+    }
+
+    //*************************************************************************
+    TEST(test_or_else_move)
+    {
+      etl::optional<DataM> engaged(DataM(42U));
+
+      etl::optional<DataM> from_engaged = etl::move(engaged).or_else([]() { return etl::optional<DataM>(DataM(99U)); });
+      CHECK_TRUE(from_engaged.has_value());
+      CHECK_EQUAL(42U, from_engaged.value().value);
+
+      etl::optional<DataM> empty;
+      etl::optional<DataM> from_empty = etl::move(empty).or_else([]() { return etl::optional<DataM>(DataM(99U)); });
+      CHECK_TRUE(from_empty.has_value());
+      CHECK_EQUAL(99U, from_empty.value().value);
+    }
+
+    //*************************************************************************
+    TEST(test_monadic_chaining)
+    {
+      etl::optional<int> engaged(8);
+      etl::optional<int> empty;
+
+      etl::optional<int> result = engaged.transform([](int i) { return i * 2; })
+                                    .and_then([](int i) { return etl::optional<int>(i + 1); })
+                                    .or_else([]() { return etl::optional<int>(0); });
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(17, result.value());
+
+      etl::optional<int> result_from_empty = empty.transform([](int i) { return i * 2; })
+                                               .and_then([](int i) { return etl::optional<int>(i + 1); })
+                                               .or_else([]() { return etl::optional<int>(123); });
+      CHECK_TRUE(result_from_empty.has_value());
+      CHECK_EQUAL(123, result_from_empty.value());
+    }
+#endif
   }
 } // namespace
