@@ -226,6 +226,28 @@ namespace
       CHECK_TRUE(data.max_size() == Max_Size);
       CHECK_FALSE(data.begin() == data.end());
     }
+
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor_of_plain_pair)
+    {
+      static const etl::const_multimap data{ETL_OR_STD::pair{Key('A'), 0}, ETL_OR_STD::pair{Key('B'), 1}, ETL_OR_STD::pair{Key('C'), 2},
+                                            ETL_OR_STD::pair{Key('D'), 3}, ETL_OR_STD::pair{Key('E'), 4}, ETL_OR_STD::pair{Key('F'), 5},
+                                            ETL_OR_STD::pair{Key('G'), 6}, ETL_OR_STD::pair{Key('G'), 7}, ETL_OR_STD::pair{Key('G'), 8},
+                                            ETL_OR_STD::pair{Key('J'), 9}};
+
+      etl::const_multimap<Key, int, 10U> check{ETL_OR_STD::pair{Key('A'), 0}, ETL_OR_STD::pair{Key('B'), 1}, ETL_OR_STD::pair{Key('C'), 2},
+                                               ETL_OR_STD::pair{Key('D'), 3}, ETL_OR_STD::pair{Key('E'), 4}, ETL_OR_STD::pair{Key('F'), 5},
+                                               ETL_OR_STD::pair{Key('G'), 6}, ETL_OR_STD::pair{Key('H'), 7}, ETL_OR_STD::pair{Key('I'), 8},
+                                               ETL_OR_STD::pair{Key('J'), 9}};
+
+      CHECK_TRUE(data.is_valid());
+      CHECK_TRUE(data.size() == Max_Size);
+      CHECK_FALSE(data.empty());
+      CHECK_TRUE(data.full());
+      CHECK_TRUE(data.capacity() == Max_Size);
+      CHECK_TRUE(data.max_size() == Max_Size);
+      CHECK_FALSE(data.begin() == data.end());
+    }
 #endif
 
     //*************************************************************************

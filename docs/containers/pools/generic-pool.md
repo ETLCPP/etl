@@ -72,7 +72,7 @@ generic_pool_ext(char* buffer, size_t size)
 ```
 **Description**  
 For `etl::generic_pool_ext`.
-Constructs a generic_pool from an external bufffer.  
+Constructs a generic_pool from an external buffer.  
 No elements are constructed.
 
 ## Operations
