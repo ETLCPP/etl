@@ -31,26 +31,26 @@ SOFTWARE.
 
 #include "../platform.h"
 
-#if defined(__has_include)
+#if defined(__has_include) // Compiler supports __has_include
 
-  #if __has_include("FreeRTOS.h") && __has_include(<semphr.h>)
-    #include "FreeRTOS.h"
+  #if __has_include(<FreeRTOS.h>) && __has_include(<semphr.h>) // Standard FreeRTOS include layout
+    #include <FreeRTOS.h>
     #include <semphr.h>
 
-  #elif __has_include("freertos/FreeRTOS.h") && __has_include("freertos/semphr.h")
-    #include "freertos/FreeRTOS.h"
-    #include "freertos/semphr.h"
+  #elif __has_include(<freertos/FreeRTOS.h>) && __has_include(<freertos/semphr.h>) // ESP-IDF style include layout
+    #include <freertos/FreeRTOS.h>
+    #include <freertos/semphr.h>
 
-  #else
+  #else // Neither include layout found
     #error "FreeRTOS.h and semphr.h not found. Please include path to FreeRTOS in your project settings"
-  #endif // __has_include
+  #endif
 
 #else
 
-  #include "FreeRTOS.h"
+  #include <FreeRTOS.h>
   #include <semphr.h>
 
-#endif // defined(__has_include)
+#endif
 
 namespace etl
 {
