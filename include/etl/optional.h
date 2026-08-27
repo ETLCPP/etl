@@ -50,6 +50,11 @@ namespace etl
   template <typename T>
   class optional;
 
+  //*****************************************************************************
+  /// Determines if a type is an etl::optional.
+  /// Ignores any cv qualification on the type being tested.
+  ///\ingroup utilities
+  //*****************************************************************************
   template <typename T>
   struct is_optional : etl::false_type
   {
@@ -59,6 +64,26 @@ namespace etl
   struct is_optional<optional<T> > : etl::true_type
   {
   };
+
+  template <typename T>
+  struct is_optional<const optional<T> > : etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_optional<volatile optional<T> > : etl::true_type
+  {
+  };
+
+  template <typename T>
+  struct is_optional<const volatile optional<T> > : etl::true_type
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_optional_v = etl::is_optional<T>::value;
+#endif
 
   //*****************************************************************************
   /// A null option type.
