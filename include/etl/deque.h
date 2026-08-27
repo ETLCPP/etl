@@ -348,16 +348,7 @@ namespace etl
       }
 
       //***************************************************
-      reference operator[](difference_type i)
-      {
-        iterator result(*this);
-        result += i;
-
-        return *result;
-      }
-
-      //***************************************************
-      const_reference operator[](difference_type i) const
+      reference operator[](difference_type i) const
       {
         iterator result(*this);
         result += i;
@@ -607,10 +598,10 @@ namespace etl
       }
 
       //***************************************************
-      const_reference operator[](size_t i) const
+      const_reference operator[](difference_type i) const
       {
         const_iterator result(*this);
-        result += static_cast<difference_type>(i);
+        result += i;
 
         return *result;
       }

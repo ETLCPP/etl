@@ -2323,9 +2323,10 @@ namespace
 
 #include "etl/private/diagnostic_uninitialized_push.h"
       // Verify operator[] returns values matching sequential access
-      for (size_t i = 0; i < cdata.size(); ++i)
+      DataNDC::difference_type it_idx = 0;
+      for (size_t i = 0; i < cdata.size(); ++i, ++it_idx)
       {
-        CHECK(cit[i] == cdata[i]);
+        CHECK(cit[it_idx] == cdata[i]);
       }
 
       // Verify const_iterator operator[] returns const_reference
