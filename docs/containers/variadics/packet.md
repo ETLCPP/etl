@@ -22,7 +22,7 @@ etl::packet<typename TBase, size_t SIZE, size_t ALIGNMENT>
 
 `base_t` = `TBase`
 
-## Contructors
+## Constructors
 
 **C++03**  
 ```cpp

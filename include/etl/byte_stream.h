@@ -509,6 +509,28 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Construct from span.
+    //***************************************************************************
+    byte_stream_reader(etl::span<unsigned char> span_, etl::endian stream_endianness_)
+      : pdata(reinterpret_cast<const char*>(span_.begin()))
+      , pcurrent(reinterpret_cast<const char*>(span_.begin()))
+      , stream_length(span_.size_bytes())
+      , stream_endianness(stream_endianness_)
+    {
+    }
+
+    //***************************************************************************
+    /// Construct from span.
+    //***************************************************************************
+    byte_stream_reader(etl::span<const unsigned char> span_, etl::endian stream_endianness_)
+      : pdata(reinterpret_cast<const char*>(span_.begin()))
+      , pcurrent(reinterpret_cast<const char*>(span_.begin()))
+      , stream_length(span_.size_bytes())
+      , stream_endianness(stream_endianness_)
+    {
+    }
+
+    //***************************************************************************
     /// Construct from range.
     //***************************************************************************
     byte_stream_reader(const void* begin_, const void* end_, etl::endian stream_endianness_)

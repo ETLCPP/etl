@@ -908,7 +908,7 @@ ETL_CONSTEXPR14 bool operator==(const etl::to_arithmetic_result<T>& lhs, const e
   }
   else
   {
-    return (lhs.status() == rhs.status());
+    return (lhs.error() == rhs.error());
   }
 }
 
@@ -952,7 +952,7 @@ ETL_CONSTEXPR14 bool operator!=(const etl::to_arithmetic_result<T>& lhs, const U
 /// Inequality test for etl::to_arithmetic_result
 //***************************************************************************
 template <typename T, typename U>
-ETL_CONSTEXPR14 bool operator!=(const T& lhs, const etl::to_arithmetic_result<T>& rhs)
+ETL_CONSTEXPR14 bool operator!=(const T& lhs, const etl::to_arithmetic_result<U>& rhs)
 {
   return !(lhs == rhs);
 }
