@@ -123,7 +123,7 @@ namespace etl
 
     ETL_CONSTANT size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1U;
 
-    return (value << 1U) | (value >> SHIFT);
+    return static_cast<T>((value << 1U) | (value >> SHIFT));
 #endif
   }
 
@@ -149,7 +149,7 @@ namespace etl
     }
     else
     {
-      return (value << distance) | (value >> SHIFT);
+      return static_cast<T>((value << distance) | (value >> SHIFT));
     }
 #endif
   }
@@ -168,7 +168,7 @@ namespace etl
 
     ETL_CONSTANT size_t SHIFT = etl::integral_limits<typename etl::make_unsigned<T>::type>::bits - 1U;
 
-    return (value >> 1U) | (value << SHIFT);
+    return static_cast<T>((value >> 1U) | (value << SHIFT));
 #endif
   }
 
@@ -194,7 +194,7 @@ namespace etl
     }
     else
     {
-      return (value >> distance) | (value << SHIFT);
+      return static_cast<T>((value >> distance) | (value << SHIFT));
     }
 #endif
   }
