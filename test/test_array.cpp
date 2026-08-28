@@ -35,6 +35,9 @@ SOFTWARE.
 #include <algorithm>
 #include <array>
 #include <iterator>
+#if ETL_USING_CPP11
+  #include <tuple>
+#endif
 #include <type_traits>
 
 #include "etl/integral_limits.h"
@@ -74,7 +77,7 @@ namespace
       CHECK_EQUAL(data.max_size(), 0);
     }
 
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+#if ETL_USING_CPP17 && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     //*************************************************************************
     TEST(test_cpp17_deduced_constructor)
     {
@@ -400,6 +403,96 @@ namespace
       // int i = etl::get<11>(data2);
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_get_rvalue)
+    {
+      Data       data1 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      const Data data2 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      int&&       r0 = etl::get<3>(std::move(data1));
+      const int&& r1 = etl::get<3>(std::move(data2));
+
+      CHECK_EQUAL(3, r0);
+      CHECK_EQUAL(3, r1);
+
+      // The rvalue overloads must be selected and return rvalue references.
+      CHECK((std::is_same<int&&, decltype(etl::get<3>(std::move(data1)))>::value));
+      CHECK((std::is_same<const int&&, decltype(etl::get<3>(std::move(data2)))>::value));
+
+      // Moving out of an rvalue array element actually moves.
+      etl::array<Moveable, 2U> data3 = {Moveable(1), Moveable(2)};
+
+      Moveable moved(etl::get<0>(std::move(data3)));
+
+      CHECK_EQUAL(1, moved.value);
+      CHECK(!data3[0].valid);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_get_constexpr)
+    {
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 int result = etl::get<3>(data);
+      CHECK_EQUAL(3, result);
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_tuple_size)
+    {
+      CHECK_EQUAL(SIZE, (etl::tuple_size<Data>::value));
+      CHECK_EQUAL(SIZE, (std::tuple_size<Data>::value));
+
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(SIZE, (etl::tuple_size_v<Data>));
+      CHECK_EQUAL(SIZE, (std::tuple_size_v<Data>));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_tuple_element)
+    {
+      CHECK_TRUE((std::is_same<int, etl::tuple_element_t<0, Data>>::value));
+      CHECK_TRUE((std::is_same<int, etl::tuple_element_t<SIZE - 1, Data>>::value));
+
+      CHECK_TRUE((std::is_same<int, std::tuple_element<0, Data>::type>::value));
+      CHECK_TRUE((std::is_same<int, std::tuple_element<SIZE - 1, Data>::type>::value));
+    }
+#endif
+
+#if ETL_USING_CPP17
+    //*************************************************************************
+    TEST(test_structured_bindings)
+    {
+      etl::array<int, 3> data = {1, 2, 3};
+
+      // Bind by reference and modify.
+      auto& [a, b, c] = data;
+
+      CHECK_EQUAL(1, a);
+      CHECK_EQUAL(2, b);
+      CHECK_EQUAL(3, c);
+
+      a = 10;
+      b = 20;
+      c = 30;
+
+      CHECK_EQUAL(10, data[0]);
+      CHECK_EQUAL(20, data[1]);
+      CHECK_EQUAL(30, data[2]);
+
+      // Bind by const reference.
+      const auto& [x, y, z] = data;
+
+      CHECK_EQUAL(10, x);
+      CHECK_EQUAL(20, y);
+      CHECK_EQUAL(30, z);
+    }
+#endif
+
     //*************************************************************************
     TEST(test_assign)
     {
@@ -692,6 +785,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_less_than_constexpr)
+    {
+      ETL_CONSTEXPR14 Data lesser = {0, 1, 2, 3, 4, 4, 6, 7, 8, 9};
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 bool result = (lesser < data);
+      CHECK(result);
+    }
+
+    //*************************************************************************
     TEST(test_less_than_equal)
     {
       Data data    = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -701,6 +804,16 @@ namespace
       CHECK(lesser <= data);
       CHECK(data <= data);
       CHECK(!(greater <= data));
+    }
+
+    //*************************************************************************
+    TEST(test_less_than_equal_constexpr)
+    {
+      ETL_CONSTEXPR14 Data lesser = {0, 1, 2, 3, 4, 4, 6, 7, 8, 9};
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 bool result = (lesser <= data);
+      CHECK(result);
     }
 
     //*************************************************************************
@@ -716,6 +829,16 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_greater_than_constexpr)
+    {
+      ETL_CONSTEXPR14 Data greater = {0, 1, 2, 3, 5, 5, 6, 7, 8, 9};
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 bool result = (greater > data);
+      CHECK(result);
+    }
+
+    //*************************************************************************
     TEST(test_greater_than_equal)
     {
       Data data    = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -728,7 +851,17 @@ namespace
     }
 
     //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
+    TEST(test_greater_than_equal_constexpr)
+    {
+      ETL_CONSTEXPR14 Data greater = {0, 1, 2, 3, 5, 5, 6, 7, 8, 9};
+      ETL_CONSTEXPR14 Data data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      ETL_CONSTEXPR14 bool result = (greater >= data);
+      CHECK(result);
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP17 && !defined(ETL_TEMPLATE_DEDUCTION_GUIDE_TESTS_DISABLED)
     TEST(test_array_template_deduction)
     {
       etl::array data{char(0), short(1), 2, long(3), 4, 5, 6, 7, 8, 9};
@@ -750,7 +883,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_USING_CPP17 && ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP17
     TEST(test_array_template_deduction_for_movable)
     {
       etl::array data{Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4),
@@ -773,7 +906,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     TEST(test_make_array)
     {
       auto data = etl::make_array<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -795,7 +928,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
+#if ETL_USING_CPP11
     TEST(test_make_array_for_movable)
     {
       auto data = etl::make_array<Moveable>(Moveable(0), Moveable(1), Moveable(2), Moveable(3), Moveable(4), Moveable(5), Moveable(6), Moveable(7),
@@ -814,6 +947,136 @@ namespace
       CHECK_EQUAL(Moveable(7), data[7]);
       CHECK_EQUAL(Moveable(8), data[8]);
       CHECK_EQUAL(Moveable(9), data[9]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP11
+    // Arguments that are const-qualified lvalues of the element type used to be rejected:
+    // the old implementation forwarded each argument as T, and forward<T> cannot accept a
+    // const T lvalue (it requires a non-const T&, and T&& cannot bind to a reference-related
+    // const lvalue).
+    TEST(test_make_array_from_const_lvalues_of_element_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_array<char>(static_const_lvalue, local_const_lvalue, mutable_lvalue);
+
+      using Type = etl::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same<char, Type>::value));
+
+      CHECK_EQUAL(42, data[0]);
+      CHECK_EQUAL(43, data[1]);
+      CHECK_EQUAL(44, data[2]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP11
+    // The arguments are converted to the element type with static_cast, so narrowing
+    // initialisers (int literals and int lvalues narrowed to char) must keep working.
+    // Plain forwarding into the braced initialiser list would reject them.
+    TEST(test_make_array_from_narrowing_values)
+    {
+      static const int static_const_int = 45;
+      const int        local_const_int  = 46;
+      int              mutable_int      = 47;
+
+      auto data = etl::make_array<char>(0, 1, static_const_int, local_const_int, mutable_int);
+
+      using Type = etl::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same<char, Type>::value));
+
+      CHECK_EQUAL(0, data[0]);
+      CHECK_EQUAL(1, data[1]);
+      CHECK_EQUAL(45, data[2]);
+      CHECK_EQUAL(46, data[3]);
+      CHECK_EQUAL(47, data[4]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP11
+    // With no explicit element type, the element type is deduced as the
+    // decayed common type of the arguments (Library Fundamentals TS
+    // make_array design).
+    TEST(test_make_array_deduced_element_type)
+    {
+      static const int static_const_lvalue = 1;
+
+      auto data = etl::make_array(static_const_lvalue, 2L, 3);
+
+      CHECK((std::is_same<etl::array<long, 3U>, decltype(data)>::value));
+
+      CHECK_EQUAL(1L, data[0]);
+      CHECK_EQUAL(2L, data[1]);
+      CHECK_EQUAL(3L, data[2]);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP11
+    // An empty array requires the element type to be supplied explicitly.
+    // etl::make_array() with no element type and no arguments is ill-formed,
+    // as in the Library Fundamentals TS: there is nothing to deduce the
+    // element type from.
+    TEST(test_make_array_empty)
+    {
+      auto data = etl::make_array<int>();
+
+      CHECK((std::is_same<etl::array<int, 0U>, decltype(data)>::value));
+      CHECK_TRUE(data.empty());
+      CHECK_EQUAL(0U, data.size());
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP11
+    // Arguments that already have the element type are forwarded rather than
+    // cast. Casting created a prvalue that, before C++17, had to be
+    // materialised through the move constructor, so a copyable type with a
+    // deleted move constructor was rejected.
+    TEST(test_make_array_for_copyable_non_movable)
+    {
+      struct NonMovable
+      {
+        explicit NonMovable(int v_)
+          : v(v_)
+        {
+        }
+        NonMovable(const NonMovable&) = default;
+        NonMovable(NonMovable&&)      = delete;
+        int v;
+      };
+
+      NonMovable       mutable_lvalue(1);
+      const NonMovable const_lvalue(2);
+
+      auto data = etl::make_array<NonMovable>(mutable_lvalue, const_lvalue);
+
+      using Type = etl::remove_reference_t<decltype(data[0])>;
+      CHECK((std::is_same<NonMovable, Type>::value));
+
+      CHECK_EQUAL(1, data[0].v);
+      CHECK_EQUAL(2, data[1].v);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP14
+    TEST(test_make_array_is_constexpr)
+    {
+      static constexpr unsigned char constexpr_value = 0x18U;
+
+      constexpr auto data = etl::make_array<unsigned char>(constexpr_value, constexpr_value);
+
+      static_assert(data.size() == 2U, "make_array size");
+      static_assert(data[0] == 0x18U, "make_array element");
+
+      CHECK_EQUAL(0x18U, data[0]);
+      CHECK_EQUAL(0x18U, data[1]);
     }
 #endif
 

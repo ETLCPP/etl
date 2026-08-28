@@ -47,6 +47,12 @@ SOFTWARE.
   #include <type_traits>
 #endif
 
+// Required for std::swap, which etl::is_swappable must consider in any
+// configuration that does not define etl::swap.
+#if ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_IN_UNIT_TEST))
+  #include <utility>
+#endif
+
 namespace etl
 {
 #if ETL_USING_CPP11
@@ -742,6 +748,38 @@ namespace etl
   #endif
 
   //***************************************************************************
+  /// is_bounded_array
+  template <typename T>
+  struct is_bounded_array : false_type
+  {
+  };
+  template <typename T, size_t Size>
+  struct is_bounded_array<T[Size]> : true_type
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_bounded_array_v = is_bounded_array<T>::value;
+  #endif
+
+  //***************************************************************************
+  /// is_unbounded_array
+  template <typename T>
+  struct is_unbounded_array : false_type
+  {
+  };
+  template <typename T>
+  struct is_unbounded_array<T[]> : true_type
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_unbounded_array_v = is_unbounded_array<T>::value;
+  #endif
+
+  //***************************************************************************
   /// is_pointer
   template <typename T>
   struct is_pointer_helper : false_type
@@ -844,6 +882,38 @@ namespace etl
   #if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_pod_v = etl::is_pod<T>::value;
+  #endif
+
+  //***************************************************************************
+  /// is_standard_layout
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a type is standard layout, so the trait is not defined.
+  #if ETL_USING_BUILTIN_IS_STANDARD_LAYOUT
+  template <typename T>
+  struct is_standard_layout : etl::bool_constant<__is_standard_layout(T)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_standard_layout_v = etl::is_standard_layout<T>::value;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// is_trivial
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a type is trivial, so the trait is not defined.
+  #if ETL_USING_BUILTIN_IS_TRIVIAL
+  template <typename T>
+  struct is_trivial : etl::bool_constant<__is_trivial(T)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_trivial_v = etl::is_trivial<T>::value;
+    #endif
   #endif
 
   //***************************************************************************
@@ -1142,6 +1212,137 @@ namespace etl
   #if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_class_v = is_class<T>::value;
+  #endif
+
+  //***************************************************************************
+  /// is_union
+  /// Requires compiler support. Without it there is no portable way to
+  /// distinguish a union from a class, so the trait is not defined.
+  #if ETL_USING_BUILTIN_IS_UNION
+  template <typename T>
+  struct is_union : etl::bool_constant<__is_union(T)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_union_v = is_union<T>::value;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// is_empty
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a class type is empty, so the trait is not defined.
+  #if ETL_USING_BUILTIN_IS_EMPTY
+  template <typename T>
+  struct is_empty : etl::bool_constant<__is_empty(T)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_empty_v = is_empty<T>::value;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// is_polymorphic
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a class type is polymorphic, so the trait is not defined.
+  #if ETL_USING_BUILTIN_IS_POLYMORPHIC
+  template <typename T>
+  struct is_polymorphic : etl::bool_constant<__is_polymorphic(T)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_polymorphic_v = is_polymorphic<T>::value;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// is_abstract
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a class type is abstract, so the trait is not defined.
+  #if ETL_USING_BUILTIN_IS_ABSTRACT
+  template <typename T>
+  struct is_abstract : etl::bool_constant<__is_abstract(T)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_abstract_v = is_abstract<T>::value;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// is_final
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a class type is final, so the trait is not defined.
+  #if ETL_USING_BUILTIN_IS_FINAL
+  template <typename T>
+  struct is_final : etl::bool_constant<__is_final(T)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_final_v = is_final<T>::value;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// is_aggregate
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a type is an aggregate, so the trait is not defined.
+  #if ETL_USING_BUILTIN_IS_AGGREGATE
+  template <typename T>
+  struct is_aggregate : etl::bool_constant<__is_aggregate(typename etl::remove_cv<T>::type)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_aggregate_v = is_aggregate<T>::value;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// has_virtual_destructor
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a class type has a virtual destructor, so the trait is
+  /// not defined.
+  #if ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR
+  template <typename T>
+  struct has_virtual_destructor : etl::bool_constant<__has_virtual_destructor(T)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool has_virtual_destructor_v = has_virtual_destructor<T>::value;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// has_unique_object_representations
+  /// Requires compiler support. Without it there is no portable way to
+  /// determine whether a type has a unique object representation, so the trait
+  /// is not defined.
+  #if ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS
+  template <typename T>
+  struct has_unique_object_representations
+    : etl::bool_constant<__has_unique_object_representations(typename etl::remove_cv<typename etl::remove_all_extents<T>::type>::type)>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool has_unique_object_representations_v = has_unique_object_representations<T>::value;
+    #endif
   #endif
 
   //***************************************************************************
@@ -1464,6 +1665,132 @@ namespace etl
 
   template <typename TFrom, typename TTo >
   inline constexpr bool is_nothrow_convertible_v = etl::is_nothrow_convertible<TFrom, TTo>::value;
+  #endif
+
+  //***************************************************************************
+  /// is_destructible
+  /// Requires either compiler support or C++11. Without them there is no
+  /// portable way to determine whether a type is destructible, so the trait
+  /// is not defined.
+  #if ETL_USING_BUILTIN_IS_DESTRUCTIBLE
+  template <typename T>
+  struct is_destructible : etl::bool_constant<__is_destructible(T)>
+  {
+  };
+  #elif ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    // Selected only if 'declval<T&>().~T()' is a valid expression.
+    // Void types, function types and types with an inaccessible or deleted
+    // destructor all fail substitution and select the fallback.
+    template <typename T>
+    struct is_destructible_impl
+    {
+    private:
+
+      template <typename U, typename = decltype(etl::declval<U&>().~U())>
+      static etl::true_type test(int);
+
+      template <typename>
+      static etl::false_type test(...);
+
+    public:
+
+      static ETL_CONSTANT bool value = decltype(test<T>(0))::value;
+    };
+
+    template <typename T>
+    struct is_destructible_helper : etl::bool_constant<is_destructible_impl<typename etl::remove_all_extents<T>::type>::value>
+    {
+    };
+
+    // Reference types are always destructible.
+    template <typename T>
+    struct is_destructible_helper<T&> : etl::true_type
+    {
+    };
+
+    template <typename T>
+    struct is_destructible_helper<T&&> : etl::true_type
+    {
+    };
+
+    // Arrays of unknown bound are incomplete types.
+    template <typename T>
+    struct is_destructible_helper<T[]> : etl::false_type
+    {
+    };
+  } // namespace private_type_traits
+
+  template <typename T>
+  struct is_destructible : etl::bool_constant<private_type_traits::is_destructible_helper<T>::value>
+  {
+  };
+  #endif
+
+  // C++17 implies C++11, so the trait is always defined when the alias is.
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_destructible_v = etl::is_destructible<T>::value;
+  #endif
+
+  //***************************************************************************
+  /// is_nothrow_destructible
+  /// Requires either compiler support or C++11. Without them there is no
+  /// portable way to determine whether a type is nothrow destructible, so the
+  /// trait is not defined.
+  #if ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE
+  template <typename T>
+  struct is_nothrow_destructible : etl::bool_constant<__is_nothrow_destructible(T)>
+  {
+  };
+  #elif ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    // Only instantiated for destructible types, so 'declval<T&>().~T()' is a valid expression.
+    template <typename T, bool IsDestructible = etl::is_destructible<T>::value>
+    struct is_nothrow_destructible_impl : etl::false_type
+    {
+    };
+
+    template <typename T>
+    struct is_nothrow_destructible_impl<T, true> : etl::bool_constant<noexcept(etl::declval<T&>().~T())>
+    {
+    };
+
+    template <typename T>
+    struct is_nothrow_destructible_helper : etl::bool_constant<is_nothrow_destructible_impl<typename etl::remove_all_extents<T>::type>::value>
+    {
+    };
+
+    // Reference types are always nothrow destructible.
+    template <typename T>
+    struct is_nothrow_destructible_helper<T&> : etl::true_type
+    {
+    };
+
+    template <typename T>
+    struct is_nothrow_destructible_helper<T&&> : etl::true_type
+    {
+    };
+
+    // Arrays of unknown bound are incomplete types.
+    template <typename T>
+    struct is_nothrow_destructible_helper<T[]> : etl::false_type
+    {
+    };
+  } // namespace private_type_traits
+
+  template <typename T>
+  struct is_nothrow_destructible : etl::bool_constant<private_type_traits::is_nothrow_destructible_helper<T>::value>
+  {
+  };
+  #endif
+
+  // C++17 implies C++11, so the trait is always defined when the alias is.
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_nothrow_destructible_v = etl::is_nothrow_destructible<T>::value;
   #endif
 
     //***************************************************************************
@@ -1851,6 +2178,56 @@ namespace etl
   inline constexpr bool is_array_v = std::is_array_v<T>;
   #endif
 
+    //***************************************************************************
+    /// is_bounded_array
+    ///\ingroup type_traits
+  #if ETL_USING_CPP20 && defined(__cpp_lib_bounded_array_traits)
+  template <typename T>
+  struct is_bounded_array : std::is_bounded_array<T>
+  {
+  };
+  #else
+  template <typename T>
+  struct is_bounded_array : std::false_type
+  {
+  };
+
+  template <typename T, size_t Size>
+  struct is_bounded_array<T[Size]> : std::true_type
+  {
+  };
+  #endif
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_bounded_array_v = etl::is_bounded_array<T>::value;
+  #endif
+
+    //***************************************************************************
+    /// is_unbounded_array
+    ///\ingroup type_traits
+  #if ETL_USING_CPP20 && defined(__cpp_lib_bounded_array_traits)
+  template <typename T>
+  struct is_unbounded_array : std::is_unbounded_array<T>
+  {
+  };
+  #else
+  template <typename T>
+  struct is_unbounded_array : std::false_type
+  {
+  };
+
+  template <typename T>
+  struct is_unbounded_array<T[]> : std::true_type
+  {
+  };
+  #endif
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_unbounded_array_v = etl::is_unbounded_array<T>::value;
+  #endif
+
   //***************************************************************************
   /// is_pointer
   ///\ingroup type_traits
@@ -1918,6 +2295,72 @@ namespace etl
   #if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_pod_v = std::is_standard_layout_v<T> && std::is_trivially_default_constructible_v<T> && std::is_trivially_copyable_v<T>;
+  #endif
+
+  //***************************************************************************
+  /// is_standard_layout
+  ///\ingroup type_traits
+  template <typename T>
+  struct is_standard_layout : std::is_standard_layout<T>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_standard_layout_v = std::is_standard_layout_v<T>;
+  #endif
+
+  //***************************************************************************
+  /// is_trivial
+  ///\ingroup type_traits
+  #if ETL_USING_CPP26
+  // std::is_trivial is deprecated in C++26 and later; avoid using it and
+  // compose the trait from is_trivially_copyable && is_trivially_default_constructible instead.
+  template <typename T>
+  struct is_trivial : etl::bool_constant<std::is_trivially_copyable<T>::value && std::is_trivially_default_constructible<T>::value>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_trivial_v = std::is_trivially_copyable_v<T> && std::is_trivially_default_constructible_v<T>;
+    #endif
+  #else
+  template <typename T>
+  struct is_trivial : std::is_trivial<T>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_trivial_v = std::is_trivial_v<T>;
+    #endif
+  #endif
+
+  //***************************************************************************
+  /// is_destructible
+  ///\ingroup type_traits
+  template <typename T>
+  struct is_destructible : std::is_destructible<T>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_destructible_v = std::is_destructible_v<T>;
+  #endif
+
+  //***************************************************************************
+  /// is_nothrow_destructible
+  ///\ingroup type_traits
+  template <typename T>
+  struct is_nothrow_destructible : std::is_nothrow_destructible<T>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_nothrow_destructible_v = std::is_nothrow_destructible_v<T>;
   #endif
 
   #if defined(ETL_COMPILER_GCC)
@@ -2101,6 +2544,127 @@ namespace etl
   #endif
 
   //***************************************************************************
+  /// is_union
+  template <typename T>
+  struct is_union : std::is_union<T>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_union_v = std::is_union_v<T>;
+  #endif
+
+  //***************************************************************************
+  /// is_empty
+  template <typename T>
+  struct is_empty : std::is_empty<T>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_empty_v = std::is_empty_v<T>;
+  #endif
+
+  //***************************************************************************
+  /// is_polymorphic
+  template <typename T>
+  struct is_polymorphic : std::is_polymorphic<T>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_polymorphic_v = std::is_polymorphic_v<T>;
+  #endif
+
+  //***************************************************************************
+  /// is_abstract
+  template <typename T>
+  struct is_abstract : std::is_abstract<T>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_abstract_v = std::is_abstract_v<T>;
+  #endif
+
+  //***************************************************************************
+  /// is_final
+  /// std::is_final is only available from C++14, so for C++11 the compiler
+  /// builtin is used, if available. Otherwise the trait is not defined.
+  #if ETL_USING_CPP14
+  template <typename T>
+  struct is_final : std::is_final<T>
+  {
+  };
+
+    #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_final_v = std::is_final_v<T>;
+    #endif
+  #elif ETL_USING_BUILTIN_IS_FINAL
+  template <typename T>
+  struct is_final : etl::bool_constant<__is_final(T)>
+  {
+  };
+  #endif
+
+  //***************************************************************************
+  /// is_aggregate
+  /// std::is_aggregate is only available from C++17, so for C++11 and C++14 the
+  /// compiler builtin is used, if available. Otherwise the trait is not defined.
+  #if ETL_USING_CPP17
+  template <typename T>
+  struct is_aggregate : std::is_aggregate<T>
+  {
+  };
+
+  template <typename T>
+  inline constexpr bool is_aggregate_v = std::is_aggregate_v<T>;
+  #elif ETL_USING_BUILTIN_IS_AGGREGATE
+  template <typename T>
+  struct is_aggregate : etl::bool_constant<__is_aggregate(typename etl::remove_cv<T>::type)>
+  {
+  };
+  #endif
+
+  //***************************************************************************
+  /// has_virtual_destructor
+  template <typename T>
+  struct has_virtual_destructor : std::has_virtual_destructor<T>
+  {
+  };
+
+  #if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool has_virtual_destructor_v = std::has_virtual_destructor_v<T>;
+  #endif
+
+  //***************************************************************************
+  /// has_unique_object_representations
+  /// std::has_unique_object_representations is only available from C++17, so for
+  /// C++11 and C++14 the compiler builtin is used, if available. Otherwise the
+  /// trait is not defined.
+  #if ETL_USING_CPP17
+  template <typename T>
+  struct has_unique_object_representations : std::has_unique_object_representations<T>
+  {
+  };
+
+  template <typename T>
+  inline constexpr bool has_unique_object_representations_v = std::has_unique_object_representations_v<T>;
+  #elif ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS
+  template <typename T>
+  struct has_unique_object_representations
+    : etl::bool_constant<__has_unique_object_representations(typename etl::remove_cv<typename etl::remove_all_extents<T>::type>::type)>
+  {
+  };
+  #endif
+
+  //***************************************************************************
   /// add_lvalue_reference
   template <typename T>
   struct add_lvalue_reference : std::add_lvalue_reference<T>
@@ -2252,6 +2816,19 @@ namespace etl
   #endif
 
 #endif // Condition = ETL_USING_STL && ETL_USING_CPP11
+
+  //***************************************************************************
+  /// is_null_pointer
+  ///\ingroup type_traits
+  template <typename T>
+  struct is_null_pointer : etl::is_same<typename etl::remove_cv<T>::type, etl::nullptr_t>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_null_pointer_v = is_null_pointer<T>::value;
+#endif
 
   //***************************************************************************
   // ETL extended type traits.
@@ -3317,15 +3894,36 @@ namespace etl
 #else
 
   //*********************************************
-  // Assume that anything other than arithmetics
+  // Assume that anything other than arithmetic
   // and pointers return false for the traits.
   //*********************************************
 
   //*********************************************
   // is_assignable
+  #if !ETL_USING_BUILTIN_IS_ASSIGNABLE && ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    template <typename, typename T1, typename T2>
+    struct is_assignable_ : etl::false_type
+    {
+    };
+
+    template <typename T1, typename T2>
+    struct is_assignable_<etl::void_t<decltype(etl::declval<T1>() = etl::declval<T2>())>, T1, T2> : etl::true_type
+    {
+    };
+  } // namespace private_type_traits
+  #endif
+
   template <typename T1, typename T2>
   #if ETL_USING_BUILTIN_IS_ASSIGNABLE
   struct is_assignable : public etl::bool_constant<__is_assignable(T1, T2)>
+  #elif ETL_USING_CPP11
+  // Builtin-free assignability detection. Used when the __is_assignable builtin
+  // is unavailable (e.g. MSVC, where determine_builtin_support.h disables the
+  // __has_builtin block). Mirrors the void_t-based is_constructible above so
+  // that class types are correctly reported as (copy/move) assignable.
+  struct is_assignable : public private_type_traits::is_assignable_<etl::void_t<>, T1, T2>
   #else
   struct is_assignable
     : public etl::bool_constant< (etl::is_arithmetic<T1>::value || etl::is_pointer<T1>::value)
@@ -3703,7 +4301,7 @@ namespace etl
   struct common_type<T1, T2>
     : etl::conditional< etl::is_same<T1, typename etl::decay<T1>::type>::value && etl::is_same<T2, typename etl::decay<T2>::type>::value,
                         private_common_type::common_type_2_impl<T1, T2>,
-                        common_type<typename etl::decay<T2>::type, typename etl::decay<T2>::type>>::type
+                        common_type<typename etl::decay<T1>::type, typename etl::decay<T2>::type>>::type
   {
   };
 
@@ -3730,6 +4328,46 @@ namespace etl
 
   template <typename... T>
   using common_type_t = typename common_type<T...>::type;
+
+  //***********************************
+  // Implementation details of the make_xxx container factories.
+  namespace private_make
+  {
+    // Selects the element type, following the Library Fundamentals TS
+    // make_array design: TDesired if it was supplied explicitly, otherwise the
+    // common type of the arguments (common_type decays). The specialisation
+    // keeps common_type uninstantiated when TDesired is supplied, so arguments
+    // with no common type are still accepted in that case.
+    template <typename TDesired, typename... TArgs>
+    struct element_type
+    {
+      using type = TDesired;
+    };
+
+    template <typename... TArgs>
+    struct element_type<void, TArgs...> : etl::common_type<TArgs...>
+    {
+    };
+
+    template <typename TDesired, typename... TArgs>
+    using element_type_t = typename element_type<TDesired, TArgs...>::type;
+
+    // Converts a factory argument to the element type. An argument that
+    // already has the element type is forwarded unchanged; any other argument
+    // is converted with static_cast, which keeps narrowing initialisers such
+    // as make_array<char>(0, 1) working. Forwarding rather than casting in the
+    // same-type case avoids materialising a temporary, which before C++17
+    // requires an accessible copy or move constructor even though the copy is
+    // elided, and would reject copyable-but-non-movable element types.
+    template <typename TElement, typename TValue>
+    using convert_type_t = typename etl::conditional<etl::is_same<typename etl::decay<TValue>::type, TElement>::value, TValue&&, TElement>::type;
+
+    template <typename TElement, typename TValue>
+    constexpr convert_type_t<TElement, TValue> convert(TValue&& value)
+    {
+      return static_cast<convert_type_t<TElement, TValue>>(value);
+    }
+  } // namespace private_make
 #endif
 
   //***************************************************************************
@@ -3935,6 +4573,23 @@ namespace etl
   inline constexpr bool is_member_pointer_v = etl::is_member_pointer<T>::value;
 #endif
 
+  //***************************************************************************
+  /// is_scalar
+  /// An arithmetic, enumeration, pointer, pointer to member or
+  /// etl::nullptr_t type, optionally cv-qualified.
+  //***************************************************************************
+  template <typename T>
+  struct is_scalar
+    : etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_enum<T>::value || etl::is_pointer<T>::value || etl::is_member_pointer<T>::value
+                         || etl::is_null_pointer<T>::value>
+  {
+  };
+
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_scalar_v = etl::is_scalar<T>::value;
+#endif
+
 #if ETL_USING_CPP11
   //*********************************
   /// Check if T is a function type
@@ -4067,6 +4722,235 @@ namespace etl
 #if ETL_USING_CPP17
   template <typename T>
   inline constexpr bool is_object_pointer_v = etl::is_object_pointer<T>::value;
+#endif
+
+  //***************************************************************************
+  /// swap
+  /// Declared here, and defined in utility.h, so that etl::is_swappable below
+  /// finds it by ordinary unqualified lookup.
+  /// We can't have std::swap and etl::swap templates coexisting in the unit
+  /// tests as the compiler will be unable to decide which one to use, due to
+  /// ADL.
+  //***************************************************************************
+#if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
+  #if ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    template <typename T>
+    struct is_swappable_helper;
+
+    template <typename T>
+    struct is_nothrow_swappable_helper;
+  } // namespace private_type_traits
+
+  // Constrained, as the standard requires, so that an attempt to swap a type
+  // that cannot be moved is a substitution failure rather than a hard error.
+  // This is what allows etl::is_swappable to be implemented.
+  // The exception specification is conditional, as the standard requires, so
+  // that etl::is_nothrow_swappable can be implemented.
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_move_constructible<T>::value && etl::is_move_assignable<T>::value>::type swap(T& a, T& b)
+    ETL_NOEXCEPT_IF(etl::is_nothrow_move_constructible<T>::value&& etl::is_nothrow_move_assignable<T>::value);
+
+  template <typename T, size_t Size>
+  ETL_CONSTEXPR14 typename etl::enable_if<private_type_traits::is_swappable_helper<T>::value>::type swap(T (&a)[Size], T (&b)[Size])
+    ETL_NOEXCEPT_IF(private_type_traits::is_nothrow_swappable_helper<T>::value);
+  #else
+  template <typename T>
+  ETL_CONSTEXPR14 void swap(T& a, T& b) ETL_NOEXCEPT;
+
+  template <typename T, size_t Size>
+  ETL_CONSTEXPR14 void swap(T (&a)[Size], T (&b)[Size]) ETL_NOEXCEPT;
+  #endif
+#endif
+
+  //***************************************************************************
+  /// is_swappable
+  /// Determines whether lvalues of type T can be swapped by an unqualified
+  /// call to swap.
+  /// Requires C++11. Without it there is no way of detecting the validity of
+  /// an expression, so the trait is not defined.
+  //***************************************************************************
+#if ETL_USING_STL && ETL_USING_CPP17
+  template <typename T>
+  struct is_swappable : std::is_swappable<T>
+  {
+  };
+
+  //***************************************************************************
+  /// is_swappable_with
+  //***************************************************************************
+  template <typename T, typename U>
+  struct is_swappable_with : std::is_swappable_with<T, U>
+  {
+  };
+#elif ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    namespace swap_detect
+    {
+  // Bring std::swap into scope, if it is available, so that the unqualified
+  // call below finds it in those configurations that do not define etl::swap.
+  // Otherwise etl::swap is found by ordinary lookup in the enclosing
+  // namespace. Either way, a swap found by argument dependent lookup takes
+  // part in overload resolution.
+  #if ETL_USING_STL || defined(ETL_IN_UNIT_TEST)
+      using std::swap;
+  #endif
+
+      // Selected only if 'swap(declval<T&>(), declval<T&>())' is a valid expression.
+      template <typename T>
+      struct is_swappable_test
+      {
+      private:
+
+        template <typename U, typename = decltype(swap(etl::declval<U&>(), etl::declval<U&>()))>
+        static etl::true_type test(int);
+
+        template <typename>
+        static etl::false_type test(...);
+
+      public:
+
+        static ETL_CONSTANT bool value = decltype(test<T>(0))::value;
+      };
+
+      // Selected only if both 'swap(declval<T>(), declval<U>())' and
+      // 'swap(declval<U>(), declval<T>())' are valid expressions.
+      template <typename T, typename U>
+      struct is_swappable_with_test
+      {
+      private:
+
+        template <typename T1, typename U1, typename = decltype(swap(etl::declval<T1>(), etl::declval<U1>())),
+                  typename = decltype(swap(etl::declval<U1>(), etl::declval<T1>()))>
+        static etl::true_type test(int);
+
+        template <typename, typename>
+        static etl::false_type test(...);
+
+      public:
+
+        static ETL_CONSTANT bool value = decltype(test<T, U>(0))::value;
+      };
+    } // namespace swap_detect
+
+    template <typename T>
+    struct is_swappable_helper : etl::bool_constant<swap_detect::is_swappable_test<T>::value>
+    {
+    };
+
+    template <typename T, typename U>
+    struct is_swappable_with_helper : etl::bool_constant<swap_detect::is_swappable_with_test<T, U>::value>
+    {
+    };
+  } // namespace private_type_traits
+
+  template <typename T>
+  struct is_swappable : etl::bool_constant<private_type_traits::is_swappable_helper<T>::value>
+  {
+  };
+
+  //***************************************************************************
+  /// is_swappable_with
+  //***************************************************************************
+  template <typename T, typename U>
+  struct is_swappable_with : etl::bool_constant<private_type_traits::is_swappable_with_helper<T, U>::value>
+  {
+  };
+#endif
+
+  //***************************************************************************
+  /// is_nothrow_swappable
+  /// Determines whether lvalues of type T can be swapped by an unqualified
+  /// call to swap, and that the swap cannot throw.
+  /// Requires C++11. Without it there is no way of detecting the validity of
+  /// an expression, so the trait is not defined.
+  //***************************************************************************
+#if ETL_USING_STL && ETL_USING_CPP17
+  template <typename T>
+  struct is_nothrow_swappable : std::is_nothrow_swappable<T>
+  {
+  };
+
+  //***************************************************************************
+  /// is_nothrow_swappable_with
+  //***************************************************************************
+  template <typename T, typename U>
+  struct is_nothrow_swappable_with : std::is_nothrow_swappable_with<T, U>
+  {
+  };
+#elif ETL_USING_CPP11
+  namespace private_type_traits
+  {
+    namespace swap_detect
+    {
+      // Only 'true' if the type is swappable and the swap expression is noexcept.
+      template <typename T, bool Is_Swappable = is_swappable_test<T>::value>
+      struct is_nothrow_swappable_test
+      {
+        static ETL_CONSTANT bool value = false;
+      };
+
+      template <typename T>
+      struct is_nothrow_swappable_test<T, true>
+      {
+        static ETL_CONSTANT bool value = noexcept(swap(etl::declval<T&>(), etl::declval<T&>()));
+      };
+
+      // Only 'true' if the types are swappable with each other and both of the
+      // swap expressions are noexcept.
+      template <typename T, typename U, bool Is_Swappable_With = is_swappable_with_test<T, U>::value>
+      struct is_nothrow_swappable_with_test
+      {
+        static ETL_CONSTANT bool value = false;
+      };
+
+      template <typename T, typename U>
+      struct is_nothrow_swappable_with_test<T, U, true>
+      {
+        static ETL_CONSTANT bool value = noexcept(swap(etl::declval<T>(), etl::declval<U>())) && noexcept(swap(etl::declval<U>(), etl::declval<T>()));
+      };
+    } // namespace swap_detect
+
+    template <typename T>
+    struct is_nothrow_swappable_helper : etl::bool_constant<swap_detect::is_nothrow_swappable_test<T>::value>
+    {
+    };
+
+    template <typename T, typename U>
+    struct is_nothrow_swappable_with_helper : etl::bool_constant<swap_detect::is_nothrow_swappable_with_test<T, U>::value>
+    {
+    };
+  } // namespace private_type_traits
+
+  template <typename T>
+  struct is_nothrow_swappable : etl::bool_constant<private_type_traits::is_nothrow_swappable_helper<T>::value>
+  {
+  };
+
+  //***************************************************************************
+  /// is_nothrow_swappable_with
+  //***************************************************************************
+  template <typename T, typename U>
+  struct is_nothrow_swappable_with : etl::bool_constant<private_type_traits::is_nothrow_swappable_with_helper<T, U>::value>
+  {
+  };
+#endif
+
+  // C++17 implies C++11, so the trait is always defined when the alias is.
+#if ETL_USING_CPP17
+  template <typename T>
+  inline constexpr bool is_swappable_v = etl::is_swappable<T>::value;
+
+  template <typename T, typename U>
+  inline constexpr bool is_swappable_with_v = etl::is_swappable_with<T, U>::value;
+
+  template <typename T>
+  inline constexpr bool is_nothrow_swappable_v = etl::is_nothrow_swappable<T>::value;
+
+  template <typename T, typename U>
+  inline constexpr bool is_nothrow_swappable_with_v = etl::is_nothrow_swappable_with<T, U>::value;
 #endif
 
 #if ETL_USING_CPP11

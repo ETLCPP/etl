@@ -119,6 +119,63 @@ Output:
 
 This first filters the even numbers and then squares them. Each `|` passes the result of the previous stage as input to the next view adaptor.
 
+## Range Access and Primitives
+
+These are declared in the `etl::ranges` namespace in `iterator.h`, which is included by `ranges.h`.
+
+### Range access
+
+Function objects, equivalent to their `std::ranges` counterparts.
+
+| Name | Description |
+|---|---|
+| `begin`, `end` | The iterator to the first element, and the sentinel. |
+| `cbegin`, `cend` | The const iterator to the first element, and the const sentinel. |
+| `rbegin`, `rend` | The reverse iterator to the last element in forward order, and the past-the-end reverse iterator. |
+| `crbegin`, `crend` | The const reverse iterator to the last element in forward order, and the const past-the-end reverse iterator. |
+| `size` | The number of elements, as a `size_t`. |
+| `ssize` | The number of elements, as a `ptrdiff_t`. |
+| `empty` | Whether the range has no elements. |
+| `data`, `cdata` | A pointer to the first element. |
+| `distance` | The number of elements between two iterators, or in a range. |
+| `advance` | Advances an iterator by a given distance and/or to a bound. |
+| `next`, `prev` | An iterator advanced forwards or backwards by a given distance and/or to a bound. |
+
+`size` and `ssize` use the range's `size()` member if it has one; otherwise they count the elements by traversing the range, which requires at least a forward range.
+
+#### distance
+
+```cpp
+// Iterator and sentinel of the same type.
+template <typename I>
+constexpr etl::iter_difference_t<I> distance(I first, I last)
+
+// Iterator and sentinel of different types.
+template <typename I, typename S>
+constexpr etl::iter_difference_t<I> distance(I first, S last)
+
+// Range.
+template <typename R>
+constexpr etl::iter_difference_t<etl::ranges::iterator_t<R>> distance(R&& r)
+```
+
+The range overload uses the range's `size()` member if it has one; otherwise it counts the elements by traversing from `begin()` to `end()`.
+
+### Range primitives
+
+Alias templates that give the associated types of a range.
+
+| Name | Description |
+|---|---|
+| `iterator_t<R>` | The iterator type. |
+| `const_iterator_t<R>` | The const iterator type. |
+| `sentinel_t<R>` | The sentinel type. |
+| `const_sentinel_t<R>` | The const sentinel type. |
+| `range_size_t<R>` | The size type. |
+| `range_difference_t<R>` | The difference type. |
+| `range_value_t<R>` | The element value type. |
+| `range_reference_t<R>` | The element reference type. |
+
 ## Supported Views
 
 All views are in the `etl::ranges` namespace. Corresponding range adaptor objects are available in `etl::ranges::views`.
