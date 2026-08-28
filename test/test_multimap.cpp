@@ -103,6 +103,34 @@ namespace
 
       return true;
     }
+    template <typename R1, typename R2>
+    bool Check_Equal(R1 range1, R2 range2)
+    {
+      while (range1.first != range1.second)
+      {
+        if (range2.first == range2.second)
+        {
+          return false;
+        }
+        auto& pair1 = *range1.first;
+        auto& pair2 = *range2.first;
+        if ((pair1.first != pair2.first) || (pair1.second != pair2.second))
+        {
+          return false;
+        }
+
+        ++range1.first;
+        ++range2.first;
+      }
+
+      return range2.first == range2.second;
+    }
+    template <typename T1, typename T2>
+    bool Check_ContainsPair(T1 begin, T1 end, const T2& pair)
+    {
+      return std::find_if(begin, end, [&pair](typename T1::reference item) { return (item.first == pair.first) && (item.second == pair.second); })
+             != end;
+    }
 #include "etl/private/diagnostic_null_dereference_push.h"
 
     //*************************************************************************
@@ -694,13 +722,7 @@ namespace
       ETL_OR_STD::pair<Compare_Data::iterator, Compare_Data::iterator> compare_result = compare_data.equal_range("1");
 
       // Check that both return the same return results
-      CHECK(compare_result.first->first == data_result.first->first);
-      CHECK(compare_result.first->second == data_result.first->second);
-      CHECK(compare_result.second->first == data_result.second->first);
-      CHECK(compare_result.second->second == data_result.second->second);
-
-      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-
+      const bool isEqual = Check_Equal(data_result, compare_result);
       CHECK(isEqual);
     }
 
@@ -718,13 +740,7 @@ namespace
       ETL_OR_STD::pair<CMap::iterator, CMap::iterator> compare_result = compare_data.equal_range("1");
 
       // Check that both return the same return results
-      CHECK(compare_result.first->first == data_result.first->first);
-      CHECK(compare_result.first->second == data_result.first->second);
-      CHECK(compare_result.second->first == data_result.second->first);
-      CHECK(compare_result.second->second == data_result.second->second);
-
-      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-
+      const bool isEqual = Check_Equal(data_result, compare_result);
       CHECK(isEqual);
     }
 
@@ -739,13 +755,7 @@ namespace
       ETL_OR_STD::pair<Compare_Data::const_iterator, Compare_Data::const_iterator> compare_result = compare_data.equal_range("2");
 
       // Check that both return the same return results
-      CHECK(compare_result.first->first == data_result.first->first);
-      CHECK(compare_result.first->second == data_result.first->second);
-      CHECK(compare_result.second->first == data_result.second->first);
-      CHECK(compare_result.second->second == data_result.second->second);
-
-      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-
+      const bool isEqual = Check_Equal(data_result, compare_result);
       CHECK(isEqual);
     }
 
@@ -763,13 +773,7 @@ namespace
       ETL_OR_STD::pair<CMap::const_iterator, CMap::const_iterator> compare_result = compare_data.equal_range("2");
 
       // Check that both return the same return results
-      CHECK(compare_result.first->first == data_result.first->first);
-      CHECK(compare_result.first->second == data_result.first->second);
-      CHECK(compare_result.second->first == data_result.second->first);
-      CHECK(compare_result.second->second == data_result.second->second);
-
-      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
-
+      const bool isEqual = Check_Equal(data_result, compare_result);
       CHECK(isEqual);
     }
 
@@ -1022,47 +1026,47 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
-      Data::iterator         i_data    = data.find("0");
-      Compare_Data::iterator i_compare = compare_data.find("0");
+      Data::iterator i_data    = data.find("0");
+      auto           i_compare = compare_data.equal_range("0");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find("1");
-      i_compare = compare_data.find("1");
+      i_compare = compare_data.equal_range("1");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find("2");
-      i_compare = compare_data.find("2");
+      i_compare = compare_data.equal_range("2");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find("3");
-      i_compare = compare_data.find("3");
+      i_compare = compare_data.equal_range("3");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(".");
-      i_compare = compare_data.find(".");
+      i_compare = compare_data.equal_range(".");
 
       // Check that both return successful return results
-      CHECK(data.end() == i_data);
-      CHECK(compare_data.end() == i_compare);
+      CHECK(i_data == data.end());
+      CHECK(i_compare.first == i_compare.second);
 
       i_data    = data.find("A");
-      i_compare = compare_data.find("A");
+      i_compare = compare_data.equal_range("A");
 
       // Check that both return successful return results
-      CHECK(data.end() == i_data);
-      CHECK(compare_data.end() == i_compare);
+      CHECK(i_data == data.end());
+      CHECK(i_compare.first == i_compare.second);
     }
 
     //*************************************************************************
@@ -1075,46 +1079,46 @@ namespace
       CMap compare_data(initial_data.begin(), initial_data.end());
 
       EMap::iterator i_data    = data.find(Key("0"));
-      CMap::iterator i_compare = compare_data.find("0");
+      auto           i_compare = compare_data.equal_range("0");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(Key("1"));
-      i_compare = compare_data.find("1");
+      i_compare = compare_data.equal_range("1");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(Key("2"));
-      i_compare = compare_data.find("2");
+      i_compare = compare_data.equal_range("2");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(Key("3"));
-      i_compare = compare_data.find("3");
+      i_compare = compare_data.equal_range("3");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(Key("."));
-      i_compare = compare_data.find(".");
+      i_compare = compare_data.equal_range(".");
 
       // Check that both return successful return results
-      CHECK(data.end() == i_data);
-      CHECK(compare_data.end() == i_compare);
+      CHECK(i_data == data.end());
+      CHECK(i_compare.first == i_compare.second);
 
       i_data    = data.find(Key("A"));
-      i_compare = compare_data.find("A");
+      i_compare = compare_data.equal_range("A");
 
       // Check that both return successful return results
-      CHECK(data.end() == i_data);
-      CHECK(compare_data.end() == i_compare);
+      CHECK(i_data == data.end());
+      CHECK(i_compare.first == i_compare.second);
     }
 
     //*************************************************************************
@@ -1123,47 +1127,47 @@ namespace
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
       const Data         data(initial_data.begin(), initial_data.end());
 
-      Data::const_iterator         i_data    = data.find("0");
-      Compare_Data::const_iterator i_compare = compare_data.find("0");
+      Data::const_iterator i_data    = data.find("0");
+      auto                 i_compare = compare_data.equal_range("0");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find("1");
-      i_compare = compare_data.find("1");
+      i_compare = compare_data.equal_range("1");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find("2");
-      i_compare = compare_data.find("2");
+      i_compare = compare_data.equal_range("2");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find("3");
-      i_compare = compare_data.find("3");
+      i_compare = compare_data.equal_range("3");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(".");
-      i_compare = compare_data.find(".");
+      i_compare = compare_data.equal_range(".");
 
       // Check that both return successful return results
-      CHECK(data.end() == i_data);
-      CHECK(compare_data.end() == i_compare);
+      CHECK(i_data == data.end());
+      CHECK(i_compare.first == i_compare.second);
 
       i_data    = data.find("A");
-      i_compare = compare_data.find("A");
+      i_compare = compare_data.equal_range("A");
 
       // Check that both return successful return results
-      CHECK(data.end() == i_data);
-      CHECK(compare_data.end() == i_compare);
+      CHECK(i_data == data.end());
+      CHECK(i_compare.first == i_compare.second);
     }
 
     //*************************************************************************
@@ -1176,46 +1180,46 @@ namespace
       const CMap compare_data(initial_data.begin(), initial_data.end());
 
       EMap::const_iterator i_data    = data.find(Key("0"));
-      CMap::const_iterator i_compare = compare_data.find("0");
+      auto                 i_compare = compare_data.equal_range("0");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(Key("1"));
-      i_compare = compare_data.find("1");
+      i_compare = compare_data.equal_range("1");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(Key("2"));
-      i_compare = compare_data.find("2");
+      i_compare = compare_data.equal_range("2");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(Key("3"));
-      i_compare = compare_data.find("3");
+      i_compare = compare_data.equal_range("3");
 
       // Check that both return successful return results
-      CHECK(i_compare->first == i_data->first);
-      CHECK(i_compare->second == i_data->second);
+      CHECK(i_data != data.end());
+      CHECK(Check_ContainsPair(i_compare.first, i_compare.second, *i_data));
 
       i_data    = data.find(Key("."));
-      i_compare = compare_data.find(".");
+      i_compare = compare_data.equal_range(".");
 
       // Check that both return successful return results
-      CHECK(data.end() == i_data);
-      CHECK(compare_data.end() == i_compare);
+      CHECK(i_data == data.end());
+      CHECK(i_compare.first == i_compare.second);
 
       i_data    = data.find(Key("A"));
-      i_compare = compare_data.find("A");
+      i_compare = compare_data.equal_range("A");
 
       // Check that both return successful return results
-      CHECK(data.end() == i_data);
-      CHECK(compare_data.end() == i_compare);
+      CHECK(i_data == data.end());
+      CHECK(i_compare.first == i_compare.second);
     }
 
     //*************************************************************************
