@@ -8,7 +8,7 @@ weight: 4
   Similar to: `std::forward_list`
 {{< /callout >}}
 
-An intrusive forward list.https://www.messenger.com/t/837634551/
+An intrusive forward list.
 
 ```cpp
 template <typename TValue, typename TLink>
