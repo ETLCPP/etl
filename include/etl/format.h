@@ -35,7 +35,6 @@ SOFTWARE.
 
 #include "algorithm.h"
 #include "array.h"
-#include "array_view.h"
 #include "error_handler.h"
 #include "limits.h"
 #include "math.h"
@@ -601,7 +600,7 @@ namespace etl
     };
 
     template <typename T>
-    struct has_formatter_parse<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().parse(etl::declval<format_parse_context&>()))> >
+    struct has_formatter_parse<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().parse(etl::declval<format_parse_context&>()))>>
       : etl::true_type
     {
     };
@@ -616,7 +615,7 @@ namespace etl
 
     template <typename T>
     struct has_formatter_format<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().format(
-                                     etl::declval<const T&>(), etl::declval<etl::basic_format_context<char*, char>&>()))> > : etl::true_type
+                                     etl::declval<const T&>(), etl::declval<etl::basic_format_context<char*, char>&>()))>> : etl::true_type
     {
     };
 
@@ -777,7 +776,7 @@ namespace etl
     // Converting constructor for user-defined types that provide an
     // etl::formatter<T> specialisation. The value is stored type-erased in a
     // handle, matching the std::basic_format_arg behaviour for custom types.
-    template <typename T, typename = etl::enable_if_t<private_format::is_formattable<T>::value> >
+    template <typename T, typename = etl::enable_if_t<private_format::is_formattable<T>::value>>
     basic_format_arg(const T& v)
       : data(handle(v))
     {
@@ -834,7 +833,7 @@ namespace etl
       return _args.get(i);
     }
 
-    etl::array_view<basic_format_arg<Context>> get()
+    etl::span<basic_format_arg<Context>> get()
     {
       return _args;
     }
@@ -852,6 +851,15 @@ namespace etl
     template <class... Args>
     basic_format_args(format_arg_store<Context, Args...>& store)
       : _args(store.get())
+    {
+    }
+
+    // non-standard
+    // Constructs from externally owned storage, for cases where the number of
+    // arguments is only known at runtime and so no format_arg_store<Context, Args...>
+    // can be formed. The referenced storage must outlive this object.
+    explicit basic_format_args(etl::span<basic_format_arg<Context>> args_)
+      : _args(args_)
     {
     }
 
@@ -879,7 +887,7 @@ namespace etl
 
   private:
 
-    etl::array_view<basic_format_arg<Context>> _args;
+    etl::span<basic_format_arg<Context>> _args;
   };
 
   namespace private_format
@@ -1990,7 +1998,7 @@ namespace etl
       }
 
       // for user-defined types routed through basic_format_arg::handle
-      void operator()(typename basic_format_arg<format_context<OutputIt> >::handle h)
+      void operator()(typename basic_format_arg<format_context<OutputIt>>::handle h)
       {
         h.format(parse_ctx, fmt_ctx);
       }

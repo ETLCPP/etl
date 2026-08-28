@@ -962,6 +962,29 @@ namespace
     }
 
     //*************************************************************************
+    // Arguments whose count is only known at runtime cannot be held in a
+    // format_arg_store<Context, Args...>, so basic_format_args can also be built
+    // directly over caller owned storage.
+    TEST(test_vformat_to_runtime_sized_args)
+    {
+      etl::string<100> s;
+
+      using iterator_t = etl::back_insert_iterator<etl::string<100>>;
+      using arg_t      = etl::format_arg<iterator_t>;
+
+      etl::array<arg_t, 4> storage = {arg_t(1), arg_t("two"), arg_t(3), arg_t('x')};
+
+      // Only the first three of the four slots are used.
+      etl::vformat_to(etl::back_inserter(s), "{} {} {}", etl::format_args<iterator_t>(etl::span<arg_t>(storage.data(), 3U)));
+      CHECK_EQUAL("1 two 3", s);
+
+      // An empty argument list is also valid.
+      s.clear();
+      etl::vformat_to(etl::back_inserter(s), "no args", etl::format_args<iterator_t>(etl::span<arg_t>()));
+      CHECK_EQUAL("no args", s);
+    }
+
+    //*************************************************************************
     TEST(test_format_custom_type)
     {
       etl::string<100> s;
