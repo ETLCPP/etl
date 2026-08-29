@@ -2183,6 +2183,65 @@ namespace
     }
   #endif
 
+  #if ETL_USING_CPP17
+    //*************************************************************************
+    // Verify that copy assigning a delegate, and comparing against a default
+    // constructed one, are usable in a constant expression.
+    //*************************************************************************
+    TEST(test_constexpr_copy_assignment_and_clear)
+    {
+      using delegate_type = etl::delegate<void(void)>;
+
+      // Copy assignment from a bound delegate.
+      constexpr auto copy_assigned = []() constexpr
+      {
+        const delegate_type source(&free_void);
+        delegate_type       d;
+        d = source;
+        return d;
+      };
+
+      constexpr delegate_type d1 = copy_assigned();
+
+      static_assert(d1.is_valid(), "a copy assigned delegate should be valid");
+      static_assert(d1 == delegate_type(&free_void), "a copy assigned delegate should compare equal to its source");
+
+      // Copy assignment from a default constructed delegate, and comparing an
+      // unbound delegate against another one. Neither may inspect the null stub
+      // pointer, which the undefined behaviour sanitizer makes non-constant.
+      constexpr auto cleared = []() constexpr
+      {
+        delegate_type d(&free_void);
+        d = delegate_type();
+        return d;
+      };
+
+      constexpr delegate_type d2 = cleared();
+
+      static_assert(!d2.is_valid(), "a delegate assigned from a default constructed one should be invalid");
+      static_assert(d2 == delegate_type(), "an unbound delegate should compare equal to a default constructed one");
+      static_assert(d2 != d1, "an unbound delegate should not compare equal to a bound one");
+
+      // The same operations must still behave identically at run time.
+      delegate_type d3;
+      d3 = d1;
+      CHECK_TRUE(d3.is_valid());
+      CHECK(d3 == d1);
+
+      d3 = delegate_type();
+      CHECK_FALSE(d3.is_valid());
+      CHECK(d3 == delegate_type());
+
+      // Assigning a null function pointer clears the delegate at run time.
+      // This is deliberately not checked in a constant expression: the null
+      // test cannot be folded there when the sanitizer instruments it.
+      delegate_type d4(&free_void);
+      d4 = static_cast<void (*)()>(ETL_NULLPTR);
+      CHECK_FALSE(d4.is_valid());
+      CHECK(d4 == delegate_type());
+    }
+  #endif
+
     TEST(test_delegate_clear_equals_default_constructed)
     {
       using delegate_type = etl::delegate<void(int, int)>;
