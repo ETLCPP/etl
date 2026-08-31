@@ -94,6 +94,15 @@ namespace etl
     template <size_t Index, typename THead, typename... TRest>
     struct variant_operations<Index, THead, TRest...>
     {
+  #include "diagnostic_uninitialized_push.h"
+      //*************************************************************************
+      // destroy
+      //
+      // GCC can emit a false positive -Wmaybe-uninitialized when this is inlined
+      // into a variant destructor at high optimisation levels, as it cannot
+      // prove that the branch for an inactive alternative is never taken.
+      // The alternative identified by type_id is always fully constructed.
+      //*************************************************************************
       static void destroy(char* data, size_t type_id)
       {
         if (type_id == Index)
@@ -105,6 +114,7 @@ namespace etl
           variant_operations<Index + 1, TRest...>::destroy(data, type_id);
         }
       }
+  #include "diagnostic_pop.h"
 
       static void copy(char* dst, const char* src, size_t type_id)
       {
@@ -156,6 +166,14 @@ namespace etl
 
     private:
 
+  #include "diagnostic_uninitialized_push.h"
+      //*************************************************************************
+      // The *_impl functions below read the alternative identified by type_id,
+      // which is always fully constructed. GCC can emit a false positive
+      // -Wmaybe-uninitialized when these are inlined at high optimisation
+      // levels, as it cannot prove that the branch for an inactive alternative
+      // is never taken.
+      //*************************************************************************
       static void copy_impl(char* dst, const char* src, etl::true_type)
       {
         ::new (dst) THead(*reinterpret_cast<const THead*>(src));
@@ -183,6 +201,7 @@ namespace etl
       }
 
       static void move_assign_impl(char*, const char*, etl::false_type) {}
+  #include "diagnostic_pop.h"
     };
 
     //*******************************************

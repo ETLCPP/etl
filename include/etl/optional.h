@@ -703,6 +703,11 @@ namespace etl
         }
 #endif
 
+#include "private/diagnostic_uninitialized_push.h"
+        //*******************************
+        // GCC may warn that 'valid' is used uninitialised when the storage of a
+        // nested optional is inspected through an inlined destructor chain.
+        // The flag is always initialised by the constructors, so this is a false positive.
         //*******************************
         ETL_CONSTEXPR20_STL
         void destroy()
@@ -713,6 +718,7 @@ namespace etl
             valid = false;
           }
         }
+#include "private/diagnostic_pop.h"
 
         //*******************************
         union union_type

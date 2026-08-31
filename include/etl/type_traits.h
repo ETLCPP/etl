@@ -3603,8 +3603,9 @@ namespace etl
   template <typename T>
   struct is_nothrow_relocatable
   {
-    // In builtins mode, conservatively use trivially_relocatable as the definition
-    static ETL_CONSTANT bool value = etl::is_trivially_relocatable<T>::value;
+    static ETL_CONSTANT bool value = etl::is_trivially_relocatable<T>::value
+                             || (etl::is_nothrow_move_constructible<typename etl::remove_all_extents<T>::type>::value
+                                 && etl::is_nothrow_destructible<typename etl::remove_all_extents<T>::type>::value);
   };
 
 #elif defined(ETL_USER_DEFINED_TYPE_TRAITS) && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)

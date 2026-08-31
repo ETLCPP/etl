@@ -35,6 +35,12 @@ SOFTWARE.
 #include <type_traits>
 #include <utility>
 
+// GCC can emit false positive -Wmaybe-uninitialized warnings inside the test data
+// types when optional's storage is inspected through inlined, never-taken branches.
+// The diagnostic is raised late (after inlining), so the suppression has to cover the
+// whole translation unit. It is popped at the end of the file.
+#include "etl/private/diagnostic_uninitialized_push.h"
+
 #include "data.h"
 #include "etl/algorithm.h"
 #include "etl/optional.h"
@@ -1949,3 +1955,5 @@ namespace
 #endif
   }
 } // namespace
+
+#include "etl/private/diagnostic_pop.h"

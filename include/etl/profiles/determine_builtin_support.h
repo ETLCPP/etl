@@ -232,6 +232,10 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED __has_builtin(__builtin_is_constant_evaluated)
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_CONSTANT_P)
+    #define ETL_USING_BUILTIN_CONSTANT_P __has_builtin(__builtin_constant_p)
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_BIT_CAST)
     #define ETL_USING_BUILTIN_BIT_CAST __has_builtin(__builtin_bit_cast)
   #endif
@@ -444,6 +448,16 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE 0
 #endif
 
+// __builtin_constant_p predates __has_builtin on GCC and Clang, so enable it for
+// those compilers when __has_builtin was not available to detect it.
+#if !defined(ETL_USING_BUILTIN_CONSTANT_P) && (defined(__GNUC__) || defined(__clang__))
+  #define ETL_USING_BUILTIN_CONSTANT_P 1
+#endif
+
+#if !defined(ETL_USING_BUILTIN_CONSTANT_P)
+  #define ETL_USING_BUILTIN_CONSTANT_P 0
+#endif
+
 #if !defined(ETL_USING_BUILTIN_BIT_CAST)
   #define ETL_USING_BUILTIN_BIT_CAST 0
 #endif
@@ -470,6 +484,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable                = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
     static ETL_CONSTANT bool using_builtin_underlying_type                      = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
     static ETL_CONSTANT bool using_builtin_is_constant_evaluated                = (ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1);
+    static ETL_CONSTANT bool using_builtin_constant_p                           = (ETL_USING_BUILTIN_CONSTANT_P == 1);
     static ETL_CONSTANT bool using_builtin_memcpy                               = (ETL_USING_BUILTIN_MEMCPY == 1);
     static ETL_CONSTANT bool using_builtin_memmove                              = (ETL_USING_BUILTIN_MEMMOVE == 1);
     static ETL_CONSTANT bool using_builtin_memset                               = (ETL_USING_BUILTIN_MEMSET == 1);

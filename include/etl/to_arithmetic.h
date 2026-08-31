@@ -713,7 +713,9 @@ namespace etl
             const uvalue_t                                    uvalue = static_cast<uvalue_t>(accumulator_result.value());
 
             // Convert from the accumulator type to the desired type.
-            result = (is_negative ? static_cast<TValue>(static_cast<TValue>(0) - static_cast<TValue>(uvalue)) : etl::bit_cast<TValue>(uvalue));
+            // The negation is performed on the unsigned type to avoid signed overflow
+            // when the value is the most negative value for the type.
+            result = (is_negative ? etl::bit_cast<TValue>(static_cast<uvalue_t>(static_cast<uvalue_t>(0) - uvalue)) : etl::bit_cast<TValue>(uvalue));
           }
         }
       }

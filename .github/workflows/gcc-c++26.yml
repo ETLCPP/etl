@@ -50,7 +50,6 @@ jobs:
       run: |
         docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-ubuntu-2604 bash -c "\
           cd /workspaces/etl && \
-          export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0 && \
           export CC=gcc && \
           export CXX=g++ && \
           cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./ && \
@@ -72,7 +71,6 @@ jobs:
       run: |
         docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-ubuntu-2604 bash -c "\
           cd /workspaces/etl && \
-          export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0 && \
           export CC=gcc && \
           export CXX=g++ && \
           cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./ && \
@@ -94,7 +92,6 @@ jobs:
       run: |
         docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-ubuntu-2604 bash -c "\
           cd /workspaces/etl && \
-          export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0 && \
           export CC=gcc && \
           export CXX=g++ && \
           cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./ && \
@@ -116,7 +113,6 @@ jobs:
       run: |
         docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-ubuntu-2604 bash -c "\
           cd /workspaces/etl && \
-          export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0 && \
           export CC=gcc && \
           export CXX=g++ && \
           cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./ && \

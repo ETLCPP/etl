@@ -35,6 +35,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "memory.h"
+#include "nullptr.h"
 #include "type_traits.h"
 
 namespace etl
@@ -95,7 +96,16 @@ namespace etl
     ETL_CONSTEXPR14 explicit not_null(underlying_type ptr_)
       : ptr(ptr_)
     {
-      ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
+      if (etl::is_constant_evaluated())
+      {
+        // ETL_IS_FOLDED_NULL keeps the compile time rejection of null working
+        // when the undefined behaviour sanitizer instruments the comparison.
+        ETL_ASSERT(!ETL_IS_FOLDED_NULL(ptr_), ETL_ERROR(not_null_contains_null));
+      }
+      else
+      {
+        ETL_ASSERT(ptr_ != ETL_NULLPTR, ETL_ERROR(not_null_contains_null));
+      }
     }
 
     //*********************************
@@ -112,7 +122,14 @@ namespace etl
     //*********************************
     ETL_CONSTEXPR14 not_null& operator=(underlying_type rhs)
     {
-      ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
+      if (etl::is_constant_evaluated())
+      {
+        ETL_ASSERT_OR_RETURN_VALUE(!ETL_IS_FOLDED_NULL(rhs), ETL_ERROR(not_null_contains_null), *this);
+      }
+      else
+      {
+        ETL_ASSERT_OR_RETURN_VALUE(rhs != ETL_NULLPTR, ETL_ERROR(not_null_contains_null), *this);
+      }
 
       ptr = rhs;
 

@@ -62,7 +62,6 @@ jobs:
         export CXX=clang++-17
         export CXXFLAGS="-stdlib=libc++"
         export LDFLAGS="-stdlib=libc++"
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./
         clang-17 --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -91,7 +90,6 @@ jobs:
       run: |
         export CC=clang-17
         export CXX=clang++-17
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./
         clang-17 --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -120,7 +118,6 @@ jobs:
       run: |
         export CC=clang-17
         export CXX=clang++-17
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=20 ./
         clang-17 --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -149,7 +146,6 @@ jobs:
       run: |
         export CC=clang-17
         export CXX=clang++-17
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=20 ./
         clang-17 --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -171,7 +167,6 @@ jobs:
       run: |
         export CC=clang
         export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./
         clang --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -193,7 +188,6 @@ jobs:
       run: |
         export CC=clang
         export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./
         clang --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -215,7 +209,6 @@ jobs:
       run: |
         export CC=clang
         export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=20 ./
         clang --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -237,7 +230,6 @@ jobs:
       run: |
         export CC=clang
         export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=20 ./
         clang --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
