@@ -1144,5 +1144,237 @@ namespace
       CHECK(true);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_to_unsigned_from_int8_t)
+    {
+      auto umin   = etl::to_unsigned(etl::integral_limits<int8_t>::min);
+      auto umax   = etl::to_unsigned(etl::integral_limits<int8_t>::max);
+      auto uzero  = etl::to_unsigned(int8_t(0));
+      auto uplus  = etl::to_unsigned(int8_t(50));
+      auto uminus = etl::to_unsigned(int8_t(-50));
+
+      auto umin_expected   = static_cast<uint8_t>(etl::integral_limits<int8_t>::min);
+      auto umax_expected   = static_cast<uint8_t>(etl::integral_limits<int8_t>::max);
+      auto uzero_expected  = static_cast<uint8_t>(0);
+      auto uplus_expected  = static_cast<uint8_t>(50);
+      auto uminus_expected = static_cast<uint8_t>(-50);
+
+      CHECK((etl::is_same<decltype(umin), uint8_t>::value));
+      CHECK((etl::is_same<decltype(umax), uint8_t>::value));
+      CHECK((etl::is_same<decltype(uzero), uint8_t>::value));
+      CHECK((etl::is_same<decltype(uplus), uint8_t>::value));
+      CHECK((etl::is_same<decltype(uminus), uint8_t>::value));
+
+      CHECK_EQUAL(int(umin_expected), int(umin));
+      CHECK_EQUAL(int(umax_expected), int(umax));
+      CHECK_EQUAL(int(uzero_expected), int(uzero));
+      CHECK_EQUAL(int(uplus_expected), int(uplus));
+      CHECK_EQUAL(int(uminus_expected), int(uminus));
+    }
+
+    //*************************************************************************
+    TEST(test_to_unsigned_from_int16_t)
+    {
+      auto umin   = etl::to_unsigned(etl::integral_limits<int16_t>::min);
+      auto umax   = etl::to_unsigned(etl::integral_limits<int16_t>::max);
+      auto uzero  = etl::to_unsigned(int16_t(0));
+      auto uplus  = etl::to_unsigned(int16_t(50));
+      auto uminus = etl::to_unsigned(int16_t(-50));
+
+      auto umin_expected   = static_cast<uint16_t>(etl::integral_limits<int16_t>::min);
+      auto umax_expected   = static_cast<uint16_t>(etl::integral_limits<int16_t>::max);
+      auto uzero_expected  = static_cast<uint16_t>(0);
+      auto uplus_expected  = static_cast<uint16_t>(50);
+      auto uminus_expected = static_cast<uint16_t>(-50);
+
+      CHECK((etl::is_same<decltype(umin), uint16_t>::value));
+      CHECK((etl::is_same<decltype(umax), uint16_t>::value));
+      CHECK((etl::is_same<decltype(uzero), uint16_t>::value));
+      CHECK((etl::is_same<decltype(uplus), uint16_t>::value));
+      CHECK((etl::is_same<decltype(uminus), uint16_t>::value));
+
+      CHECK_EQUAL(umin_expected, umin);
+      CHECK_EQUAL(umax_expected, umax);
+      CHECK_EQUAL(uzero_expected, uzero);
+      CHECK_EQUAL(uplus_expected, uplus);
+      CHECK_EQUAL(uminus_expected, uminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_unsigned_from_int32_t)
+    {
+      auto umin   = etl::to_unsigned(etl::integral_limits<int32_t>::min);
+      auto umax   = etl::to_unsigned(etl::integral_limits<int32_t>::max);
+      auto uzero  = etl::to_unsigned(int32_t(0));
+      auto uplus  = etl::to_unsigned(int32_t(50));
+      auto uminus = etl::to_unsigned(int32_t(-50));
+
+      auto umin_expected   = static_cast<uint32_t>(etl::integral_limits<int32_t>::min);
+      auto umax_expected   = static_cast<uint32_t>(etl::integral_limits<int32_t>::max);
+      auto uzero_expected  = static_cast<uint32_t>(0);
+      auto uplus_expected  = static_cast<uint32_t>(50);
+      auto uminus_expected = static_cast<uint32_t>(-50);
+
+      CHECK((etl::is_same<decltype(umin), uint32_t>::value));
+      CHECK((etl::is_same<decltype(umax), uint32_t>::value));
+      CHECK((etl::is_same<decltype(uzero), uint32_t>::value));
+      CHECK((etl::is_same<decltype(uplus), uint32_t>::value));
+      CHECK((etl::is_same<decltype(uminus), uint32_t>::value));
+
+      CHECK_EQUAL(umin_expected, umin);
+      CHECK_EQUAL(umax_expected, umax);
+      CHECK_EQUAL(uzero_expected, uzero);
+      CHECK_EQUAL(uplus_expected, uplus);
+      CHECK_EQUAL(uminus_expected, uminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_unsigned_from_int64_t)
+    {
+      auto umin   = etl::to_unsigned(etl::integral_limits<int64_t>::min);
+      auto umax   = etl::to_unsigned(etl::integral_limits<int64_t>::max);
+      auto uzero  = etl::to_unsigned(int64_t(0));
+      auto uplus  = etl::to_unsigned(int64_t(50));
+      auto uminus = etl::to_unsigned(int64_t(-50));
+
+      auto umin_expected   = static_cast<uint64_t>(etl::integral_limits<int64_t>::min);
+      auto umax_expected   = static_cast<uint64_t>(etl::integral_limits<int64_t>::max);
+      auto uzero_expected  = static_cast<uint64_t>(0);
+      auto uplus_expected  = static_cast<uint64_t>(50);
+      auto uminus_expected = static_cast<uint64_t>(-50);
+
+      CHECK((etl::is_same<decltype(umin), uint64_t>::value));
+      CHECK((etl::is_same<decltype(umax), uint64_t>::value));
+      CHECK((etl::is_same<decltype(uzero), uint64_t>::value));
+      CHECK((etl::is_same<decltype(uplus), uint64_t>::value));
+      CHECK((etl::is_same<decltype(uminus), uint64_t>::value));
+
+      CHECK_EQUAL(umin_expected, umin);
+      CHECK_EQUAL(umax_expected, umax);
+      CHECK_EQUAL(uzero_expected, uzero);
+      CHECK_EQUAL(uplus_expected, uplus);
+      CHECK_EQUAL(uminus_expected, uminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_from_uint8_t)
+    {
+      auto smin   = etl::to_signed(etl::integral_limits<uint8_t>::min);
+      auto smax   = etl::to_signed(etl::integral_limits<uint8_t>::max);
+      auto splus  = etl::to_signed(uint8_t(50));
+      auto sminus = etl::to_signed(uint8_t(206));
+
+      auto smin_expected   = static_cast<int8_t>(etl::integral_limits<uint8_t>::min);
+      auto smax_expected   = static_cast<int8_t>(etl::integral_limits<uint8_t>::max);
+      auto splus_expected  = static_cast<int8_t>(50);
+      auto sminus_expected = static_cast<int8_t>(206);
+
+      CHECK((etl::is_same<decltype(smin), int8_t>::value));
+      CHECK((etl::is_same<decltype(smax), int8_t>::value));
+      CHECK((etl::is_same<decltype(splus), int8_t>::value));
+      CHECK((etl::is_same<decltype(sminus), int8_t>::value));
+
+      CHECK_EQUAL(int(smin_expected), int(smin));
+      CHECK_EQUAL(int(smax_expected), int(smax));
+      CHECK_EQUAL(int(splus_expected), int(splus));
+      CHECK_EQUAL(int(sminus_expected), int(sminus));
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_from_uint16_t)
+    {
+      auto smin   = etl::to_signed(etl::integral_limits<uint16_t>::min);
+      auto smax   = etl::to_signed(etl::integral_limits<uint16_t>::max);
+      auto splus  = etl::to_signed(uint16_t(50));
+      auto sminus = etl::to_signed(uint16_t(65486));
+
+      auto smin_expected   = static_cast<int16_t>(etl::integral_limits<uint16_t>::min);
+      auto smax_expected   = static_cast<int16_t>(etl::integral_limits<uint16_t>::max);
+      auto splus_expected  = static_cast<int16_t>(50);
+      auto sminus_expected = static_cast<int16_t>(65486);
+
+      CHECK((etl::is_same<decltype(smin), int16_t>::value));
+      CHECK((etl::is_same<decltype(smax), int16_t>::value));
+      CHECK((etl::is_same<decltype(splus), int16_t>::value));
+      CHECK((etl::is_same<decltype(sminus), int16_t>::value));
+
+      CHECK_EQUAL(smin_expected, smin);
+      CHECK_EQUAL(smax_expected, smax);
+      CHECK_EQUAL(splus_expected, splus);
+      CHECK_EQUAL(sminus_expected, sminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_from_uint32_t)
+    {
+      auto smin   = etl::to_signed(etl::integral_limits<uint32_t>::min);
+      auto smax   = etl::to_signed(etl::integral_limits<uint32_t>::max);
+      auto splus  = etl::to_signed(uint32_t(50));
+      auto sminus = etl::to_signed(uint32_t(4294967246U));
+
+      auto smin_expected   = static_cast<int32_t>(etl::integral_limits<uint32_t>::min);
+      auto smax_expected   = static_cast<int32_t>(etl::integral_limits<uint32_t>::max);
+      auto splus_expected  = static_cast<int32_t>(50);
+      auto sminus_expected = static_cast<int32_t>(4294967246U);
+
+      CHECK((etl::is_same<decltype(smin), int32_t>::value));
+      CHECK((etl::is_same<decltype(smax), int32_t>::value));
+      CHECK((etl::is_same<decltype(splus), int32_t>::value));
+      CHECK((etl::is_same<decltype(sminus), int32_t>::value));
+
+      CHECK_EQUAL(smin_expected, smin);
+      CHECK_EQUAL(smax_expected, smax);
+      CHECK_EQUAL(splus_expected, splus);
+      CHECK_EQUAL(sminus_expected, sminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_from_uint64_t)
+    {
+      auto smin   = etl::to_signed(etl::integral_limits<uint64_t>::min);
+      auto smax   = etl::to_signed(etl::integral_limits<uint64_t>::max);
+      auto splus  = etl::to_signed(uint64_t(50));
+      auto sminus = etl::to_signed(uint64_t(18446744073709551566ULL));
+
+      auto smin_expected   = static_cast<int64_t>(etl::integral_limits<uint64_t>::min);
+      auto smax_expected   = static_cast<int64_t>(etl::integral_limits<uint64_t>::max);
+      auto splus_expected  = static_cast<int64_t>(50);
+      auto sminus_expected = static_cast<int64_t>(18446744073709551566ULL);
+
+      CHECK((etl::is_same<decltype(smin), int64_t>::value));
+      CHECK((etl::is_same<decltype(smax), int64_t>::value));
+      CHECK((etl::is_same<decltype(splus), int64_t>::value));
+      CHECK((etl::is_same<decltype(sminus), int64_t>::value));
+
+      CHECK_EQUAL(smin_expected, smin);
+      CHECK_EQUAL(smax_expected, smax);
+      CHECK_EQUAL(splus_expected, splus);
+      CHECK_EQUAL(sminus_expected, sminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_unsigned_constexpr)
+    {
+      const char value = -50;
+
+      constexpr auto Size = etl::to_unsigned(value);
+
+      CHECK_EQUAL(static_cast<unsigned char>(value), Size);
+
+      int a[Size] = {0}; // Use Size in a context that requires a constant expression
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_constexpr)
+    {
+      const unsigned char value = 50;
+
+      constexpr auto Size = etl::to_signed(value);
+
+      CHECK_EQUAL(static_cast<char>(value), Size);
+
+      int a[Size] = {0}; // Use Size in a context that requires a constant expression
+    }
   }
 } // namespace

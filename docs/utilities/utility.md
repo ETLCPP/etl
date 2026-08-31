@@ -529,3 +529,49 @@ struct nontype_t;
 ```cpp
 using FortyTwo = etl::nontype_t<42>
 ```
+
+---
+
+## to_unsigned
+
+```cpp
+template <typename T>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+typename etl::make_unsigned<T>::type>::type 
+  to_unsigned(T value) ETL_NOEXCEPT
+```
+
+**Description** 
+Casts `value` to the unsigned type.
+
+**Example**
+
+```cpp
+char a = -50;
+auto b = etl::to_unsigned(a);
+```
+`b` is of type `unsigned char` and contains the value `206`.
+
+---
+
+## to_signed
+
+```cpp
+template <typename T>
+ETL_NODISCARD
+ETL_CONSTEXPR14
+typename etl::make_signed<T>::type>::type 
+  to_signed(T value) ETL_NOEXCEPT
+```
+
+**Description** 
+Casts `value` to the signed type.
+
+**Example**
+
+```cpp
+unsigned char a = 206;
+auto b = etl::to_signed(a);
+```
+`b` is of type `char` and contains the value `-50`.
