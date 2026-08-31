@@ -53,6 +53,10 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 1
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE 1
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 1
   #endif
@@ -75,6 +79,14 @@ SOFTWARE.
 
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIAL)
     #define ETL_USING_BUILTIN_IS_TRIVIAL 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE)
+    #define ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF)
+    #define ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF 1
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_UNION)
@@ -168,6 +180,10 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE (__has_builtin(__has_trivial_constructor) || __has_builtin(__is_trivially_constructible))
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE __has_builtin(__is_trivially_assignable)
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE (__has_builtin(__has_trivial_destructor) || __has_builtin(__is_trivially_destructible))
   #endif
@@ -190,6 +206,14 @@ SOFTWARE.
 
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIAL)
     #define ETL_USING_BUILTIN_IS_TRIVIAL __has_builtin(__is_trivial)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE)
+    #define ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE __has_builtin(__is_layout_compatible)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF)
+    #define ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF __has_builtin(__is_pointer_interconvertible_base_of)
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_UNION)
@@ -283,6 +307,10 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE 1
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_STANDARD_LAYOUT)
     #define ETL_USING_BUILTIN_IS_STANDARD_LAYOUT 1
   #endif
@@ -352,6 +380,10 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+  #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE 0
+#endif
+
 #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
   #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 0
 #endif
@@ -374,6 +406,14 @@ SOFTWARE.
 
 #if !defined(ETL_USING_BUILTIN_IS_TRIVIAL)
   #define ETL_USING_BUILTIN_IS_TRIVIAL 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE)
+  #define ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF)
+  #define ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF 0
 #endif
 
 #if !defined(ETL_USING_BUILTIN_IS_UNION)
@@ -480,6 +520,7 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_nothrow_constructible             = (ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_nothrow_assignable                = (ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_constructible           = (ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivially_assignable              = (ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_destructible            = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable                = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
     static ETL_CONSTANT bool using_builtin_underlying_type                      = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
