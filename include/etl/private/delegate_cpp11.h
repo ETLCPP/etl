@@ -492,7 +492,7 @@ namespace etl
     //*************************************************************************
     /// Assignment
     //*************************************************************************
-    delegate& operator=(const delegate& rhs) = default;
+    ETL_CONSTEXPR14 delegate& operator=(const delegate& rhs) = default;
 
     //*************************************************************************
     /// Create from Lambda or Functor.

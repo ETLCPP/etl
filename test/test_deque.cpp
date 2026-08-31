@@ -2347,6 +2347,25 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+    // With no explicit element type, the element type is deduced as the
+    // decayed common type of the arguments (Library Fundamentals TS
+    // make_array design).
+    TEST(test_make_deque_deduced_element_type)
+    {
+      static const int static_const_lvalue = 1;
+
+      auto data = etl::make_deque(static_const_lvalue, 2L, 3);
+
+      CHECK((std::is_same<etl::deque<long, 3U>, decltype(data)>::value));
+
+      CHECK_EQUAL(1L, data[0]);
+      CHECK_EQUAL(2L, data[1]);
+      CHECK_EQUAL(3L, data[2]);
+    }
+#endif
+
+    //*************************************************************************
     TEST(test_fill)
     {
       DataNDC data(initial_data.begin(), initial_data.end());
@@ -2370,9 +2389,10 @@ namespace
 
 #include "etl/private/diagnostic_uninitialized_push.h"
       // Verify operator[] returns values matching sequential access
-      for (size_t i = 0; i < cdata.size(); ++i)
+      DataNDC::difference_type it_idx = 0;
+      for (size_t i = 0; i < cdata.size(); ++i, ++it_idx)
       {
-        CHECK(cit[i] == cdata[i]);
+        CHECK(cit[it_idx] == cdata[i]);
       }
 
       // Verify const_iterator operator[] returns const_reference

@@ -333,4 +333,4 @@ operator >=
 
 ## Technical stuff
 
-The const set is implemented as a sorted array key/value pairs.
+The const set is implemented as a sorted array of values.

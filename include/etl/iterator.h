@@ -1656,6 +1656,22 @@ namespace etl
           }
           return n;
         }
+
+        // Overload for ranges
+        template <typename R, typename I = decltype(ETL_OR_STD::begin(etl::declval<R&>()))>
+        constexpr etl::iter_difference_t<I> operator()(R&& r) const
+        {
+          using U = etl::remove_cvref_t<R>;
+
+          if constexpr (has_size_member<U>::value)
+          {
+            return static_cast<etl::iter_difference_t<I>>(r.size());
+          }
+          else
+          {
+            return (*this)(ETL_OR_STD::begin(r), ETL_OR_STD::end(r));
+          }
+        }
       };
 
       struct size

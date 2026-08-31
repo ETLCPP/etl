@@ -1325,6 +1325,35 @@ namespace
     }
 
     //*************************************************************************
+    // Issue #1567: the variant propagates trivial copyability from its
+    // alternatives, as required by P0602R4.
+    TEST(test_trivially_copyable)
+    {
+      // Fundamental types are trivially copyable in every ETL configuration.
+      CHECK((std::is_trivially_copyable<etl::variant<char, int, double> >::value));
+      CHECK((std::is_trivially_copy_constructible<etl::variant<char, int, double> >::value));
+      CHECK((std::is_trivially_move_constructible<etl::variant<char, int, double> >::value));
+      CHECK((std::is_trivially_copy_assignable<etl::variant<char, int, double> >::value));
+      CHECK((std::is_trivially_move_assignable<etl::variant<char, int, double> >::value));
+
+      // An alternative that is not trivially copyable prevents propagation.
+      CHECK((!std::is_trivially_copyable<etl::variant<int, AssignTracker> >::value));
+
+      // The variant still copies and moves correctly.
+      typedef etl::variant<char, int, double> trivial_variant;
+
+      trivial_variant variant_1(1.5);
+      trivial_variant variant_2(variant_1);
+      CHECK_EQUAL(2U, variant_2.index());
+      CHECK_EQUAL(1.5, etl::get<double>(variant_2));
+
+      trivial_variant variant_3;
+      variant_3 = variant_2;
+      CHECK_EQUAL(2U, variant_3.index());
+      CHECK_EQUAL(1.5, etl::get<double>(variant_3));
+    }
+
+    //*************************************************************************
     // Issue #1512: even though the copy operations are disabled at compile
     // time, a move-only variant must still move construct / move assign
     // correctly, preserving the active alternative.

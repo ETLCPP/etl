@@ -1435,6 +1435,11 @@ namespace etl
     return lhs.error() == rhs.error();
   }
 
+#include "private/diagnostic_uninitialized_push.h"
+  //*******************************************
+  // The error is only read when the expected does not have a value, in which
+  // case it is always fully constructed. GCC can emit a false positive
+  // -Wmaybe-uninitialized when these are inlined at high optimisation levels.
   //*******************************************
   template <typename TError, typename TError2>
   ETL_CONSTEXPR14 bool operator==(const etl::expected<void, TError>& lhs, const etl::expected<void, TError2>& rhs)
@@ -1460,6 +1465,7 @@ namespace etl
     }
     return lhs.error() == rhs.error();
   }
+#include "private/diagnostic_pop.h"
 
   //*******************************************
   template <typename TError, typename TError2>
