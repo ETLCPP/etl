@@ -114,6 +114,9 @@ namespace
   using key_type       = Data::key_type;
   using const_iterator = Data::const_iterator;
 
+  static_assert(etl::is_same<etl::iconst_multiset<key_type>, etl::iconst_multiset<key_type, etl::less<key_type>>>::value,
+                "default compare is not less");
+
   SUITE(test_const_multiset)
   {
     //*************************************************************************
