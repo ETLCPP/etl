@@ -314,7 +314,7 @@ namespace etl
   } // namespace private_variant
 
   /// Definition of variant_npos.
-  constexpr size_t variant_npos = etl::integral_limits<size_t>::max;
+  ETL_INLINE_VAR constexpr size_t variant_npos = etl::integral_limits<size_t>::max;
 
   //***********************************
   // variant. Forward declaration
