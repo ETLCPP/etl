@@ -1363,6 +1363,7 @@ namespace
       CHECK_EQUAL(static_cast<unsigned char>(value), Size);
 
       int a[Size] = {0}; // Use Size in a context that requires a constant expression
+      (void)a;           // Avoid unused variable warning
     }
 
     //*************************************************************************
@@ -1375,6 +1376,7 @@ namespace
       CHECK_EQUAL(static_cast<char>(value), Size);
 
       int a[Size] = {0}; // Use Size in a context that requires a constant expression
+      (void)a;           // Avoid unused variable warning
     }
   }
 } // namespace

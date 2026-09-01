@@ -1171,7 +1171,7 @@ namespace etl
   ///\return The unsigned integer.
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, typename etl::make_unsigned<T>::type>::type to_unsigned(T value)
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, typename etl::make_unsigned<T>::type>::type to_unsigned(T value)
     ETL_NOEXCEPT
   {
     return static_cast<typename etl::make_unsigned<T>::type>(value);
@@ -1183,7 +1183,7 @@ namespace etl
   ///\return The signed integer.
   //***************************************************************************
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR14 typename etl::enable_if<etl::is_integral<T>::value, typename etl::make_signed<T>::type>::type to_signed(T value)
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, typename etl::make_signed<T>::type>::type to_signed(T value)
     ETL_NOEXCEPT
   {
     return static_cast<typename etl::make_signed<T>::type>(value);
