@@ -77,6 +77,7 @@ namespace etl
       typedef ptrdiff_t                              difference_type;
       typedef TBase*                                 pointer;
       typedef TBase&                                 reference;
+      typedef const TBase&                           const_reference;
       typedef ETL_OR_STD::random_access_iterator_tag iterator_category;
 
       //*****************************************
@@ -112,6 +113,15 @@ namespace etl
       TBase* operator->() const
       {
         return ptr;
+      }
+
+      //***************************************************
+      reference operator[](difference_type i) const
+      {
+        iterator result(*this);
+        result += i;
+
+        return *result;
       }
 
       //*****************************************

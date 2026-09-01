@@ -188,7 +188,7 @@ A nested class that is sent to the user defined callback function.
 notification()
 ```
 **Description**  
-Default contructor.
+Default constructor.
 Initialises to a default constructed descriptor and a count of zero.
 
 ---

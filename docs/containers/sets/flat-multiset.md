@@ -33,17 +33,18 @@ etl::flat_multiset data{ 0, 1, 2, 3 };
 ```
 Defines data as an `flat_multiset` of `int`, of length 4, containing the supplied data.
 
-## make_flat_set
+## make_flat_multiset
 C++11 and above
 ```cpp
-template <typename T,
-          typename TKeyCompare = etl::less<T>>
-constexpr auto make_flat_set(TValues&&... values)
+template <typename TKey,
+          typename TKeyCompare = etl::less<TKey>,
+          typename... T>
+constexpr auto make_flat_multiset(T&&... keys) -> etl::flat_multiset<TKey, sizeof...(T), TKeyCompare>
 ```
 
 ### Example
 ```cpp
-auto data = etl::make_flat_set<int>({0, 1, 2, 3 });
+auto data = etl::make_flat_multiset<int>(0, 1, 2, 3);
 ```
 
 ## Member types
@@ -234,55 +235,60 @@ The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)
 ---
 
 ```cpp
-pair<iterator, bool> emplace((const_reference value))
-pair<iterator, bool> emplace(const key_type& key, const mapped_type& value)
+pair<iterator, bool> emplace(const_reference value)
 ```
 **Description**  
-Inserts key/value pairs into the set by constructing directly into storage.  
+Inserts a value into the set by constructing directly into storage.  
 The return type is either `std::pair` (default) or `etl::pair` (`ETL_NO_STL`)
 
 ---
 
 **C++03**  
-The emplace functions differ from that of std::set in that, due to C++03 not supporting 'perfect forwarding'.
+The emplace functions differ from that of std::multiset in that, due to C++03 not supporting 'perfect forwarding'.
+
+```cpp
+pair<iterator, bool> emplace()
+```
+**Description**  
+Emplaces a default constructed value into the set.
 
 ```cpp
 template <typename T1>
-pair<iterator, bool> emplace(const key_type& key, const T1& value1)
+pair<iterator, bool> emplace(const T1& value1)
 ```
 **Description**  
-Emplaces a value constructed from `key` and 1 argument into the set.
+Emplaces a value constructed from 1 argument into the set.
 
 ```cpp
 template <typename T1, typename T2>
-pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2)
+pair<iterator, bool> emplace(const T1& value1, const T2& value2)
 ```
 **Description**  
-Emplaces a value constructed from `key` and 2 arguments into the set.
+Emplaces a value constructed from 2 arguments into the set.
 
 ```cpp
 template <typename T1, typename T2, typename T3>
-pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3)
+pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
 ```
 **Description**  
-Emplaces a value constructed from `key` and 3 arguments into the set.
+Emplaces a value constructed from 3 arguments into the set.
 
 ```cpp
 template <typename T1, typename T2, typename T3, typename T4>
-pair<iterator, bool> emplace(const key_type& key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
+pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
 ```
 **Description**  
-Emplaces a value constructed from `key` and 4 arguments into the set.
+Emplaces a value constructed from 4 arguments into the set.
 
 ---
 
 **C++11**  
 ```cpp
 template <typename ... Args>
-pair<iterator, bool> emplace(const key_type& key, Args&& ... args)
+pair<iterator, bool> emplace(Args&& ... args)
 ```
 **Description**  
-Emplaces a value constructed from the `key` and arguments into the set.
+Emplaces a value constructed from the arguments into the set.
 
 ---
 
@@ -492,9 +498,9 @@ operator !=
 
 ## Technical stuff
 
-Flat maps are usually implemented internally as a sorted vector of key/value pairs. Whilst this makes searching fast, it can have a detrimental effect when items are inserted into a container that stores complex, non-trivial keys or values.  
+Flat sets are usually implemented internally as a sorted vector of values. Whilst this makes searching fast, it can have a detrimental effect when items are inserted into a container that stores complex, non-trivial values.  
 As inserting requires that all of the items to the right of the insert position must be shifted this can become an expensive operation for larger containers.  
 
-To improve insertion performance ETL flat maps are implemented as vectors of pointers to key/value pairs, sorted by key value. An insertion will involve a copy of a range of pointers; an operation that can be  very fast.  
+To improve insertion performance ETL flat sets are implemented as vectors of pointers to values, sorted by value. An insertion will involve a copy of a range of pointers; an operation that can be  very fast.  
 
 The downside is that access to an item via an iterator will involve one indirection and the overhead of the container will be one pointer per item. A normal flat set implementation does not have this overhead.
