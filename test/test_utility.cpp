@@ -785,6 +785,161 @@ namespace
     }
 #endif
 
+    //*********************************
+    TEST(test_cmp_equal)
+    {
+      // Same signedness.
+      CHECK_TRUE(etl::cmp_equal(1, 1));
+      CHECK_FALSE(etl::cmp_equal(1, 2));
+      CHECK_TRUE(etl::cmp_equal(1U, 1U));
+      CHECK_FALSE(etl::cmp_equal(1U, 2U));
+
+      // Mixed signedness where the built-in operator would give the wrong result.
+      // -1 as unsigned would be a large value, so a naive (a == b) would be false anyway,
+      // but the classic trap is comparing a negative signed with an equal-bit-pattern unsigned.
+      CHECK_FALSE(etl::cmp_equal(-1, static_cast<unsigned int>(-1)));
+      CHECK_FALSE(etl::cmp_equal(static_cast<unsigned int>(-1), -1));
+
+      // Non-negative signed compared with unsigned.
+      CHECK_TRUE(etl::cmp_equal(5, 5U));
+      CHECK_TRUE(etl::cmp_equal(5U, 5));
+      CHECK_FALSE(etl::cmp_equal(-5, 5U));
+      CHECK_FALSE(etl::cmp_equal(5U, -5));
+
+      // Different widths.
+      CHECK_TRUE(etl::cmp_equal(int8_t(100), int64_t(100)));
+      CHECK_FALSE(etl::cmp_equal(int8_t(-1), uint64_t(0xFFFFFFFFFFFFFFFFULL)));
+    }
+
+    //*********************************
+    TEST(test_cmp_not_equal)
+    {
+      CHECK_FALSE(etl::cmp_not_equal(1, 1));
+      CHECK_TRUE(etl::cmp_not_equal(1, 2));
+      CHECK_TRUE(etl::cmp_not_equal(-1, static_cast<unsigned int>(-1)));
+      CHECK_FALSE(etl::cmp_not_equal(5, 5U));
+      CHECK_TRUE(etl::cmp_not_equal(-5, 5U));
+    }
+
+    //*********************************
+    TEST(test_cmp_less)
+    {
+      // Same signedness.
+      CHECK_TRUE(etl::cmp_less(1, 2));
+      CHECK_FALSE(etl::cmp_less(2, 1));
+      CHECK_FALSE(etl::cmp_less(1, 1));
+      CHECK_TRUE(etl::cmp_less(1U, 2U));
+      CHECK_FALSE(etl::cmp_less(2U, 1U));
+
+      // A negative signed value is always less than any unsigned value.
+      CHECK_TRUE(etl::cmp_less(-1, 0U));
+      CHECK_TRUE(etl::cmp_less(-1, static_cast<unsigned int>(-1)));
+      CHECK_FALSE(etl::cmp_less(static_cast<unsigned int>(-1), -1));
+
+      // Non-negative signed with unsigned.
+      CHECK_TRUE(etl::cmp_less(5, 6U));
+      CHECK_FALSE(etl::cmp_less(6, 5U));
+      CHECK_TRUE(etl::cmp_less(5U, 6));
+      CHECK_FALSE(etl::cmp_less(6U, 5));
+
+      // Large unsigned is not less than a small signed.
+      CHECK_FALSE(etl::cmp_less(0xFFFFFFFFU, 1));
+      CHECK_TRUE(etl::cmp_less(1, 0xFFFFFFFFU));
+    }
+
+    //*********************************
+    TEST(test_cmp_greater)
+    {
+      CHECK_TRUE(etl::cmp_greater(2, 1));
+      CHECK_FALSE(etl::cmp_greater(1, 2));
+      CHECK_FALSE(etl::cmp_greater(1, 1));
+
+      CHECK_FALSE(etl::cmp_greater(-1, 0U));
+      CHECK_TRUE(etl::cmp_greater(static_cast<unsigned int>(-1), -1));
+      CHECK_TRUE(etl::cmp_greater(0xFFFFFFFFU, 1));
+      CHECK_FALSE(etl::cmp_greater(1, 0xFFFFFFFFU));
+    }
+
+    //*********************************
+    TEST(test_cmp_less_equal)
+    {
+      CHECK_TRUE(etl::cmp_less_equal(1, 1));
+      CHECK_TRUE(etl::cmp_less_equal(1, 2));
+      CHECK_FALSE(etl::cmp_less_equal(2, 1));
+
+      CHECK_TRUE(etl::cmp_less_equal(-1, static_cast<unsigned int>(-1)));
+      CHECK_FALSE(etl::cmp_less_equal(static_cast<unsigned int>(-1), -1));
+      CHECK_TRUE(etl::cmp_less_equal(5U, 5));
+      CHECK_FALSE(etl::cmp_less_equal(6U, 5));
+    }
+
+    //*********************************
+    TEST(test_cmp_greater_equal)
+    {
+      CHECK_TRUE(etl::cmp_greater_equal(1, 1));
+      CHECK_TRUE(etl::cmp_greater_equal(2, 1));
+      CHECK_FALSE(etl::cmp_greater_equal(1, 2));
+
+      CHECK_FALSE(etl::cmp_greater_equal(-1, static_cast<unsigned int>(-1)));
+      CHECK_TRUE(etl::cmp_greater_equal(static_cast<unsigned int>(-1), -1));
+      CHECK_TRUE(etl::cmp_greater_equal(5, 5U));
+      CHECK_FALSE(etl::cmp_greater_equal(-5, 5U));
+    }
+
+    //*********************************
+    TEST(test_in_range)
+    {
+      // Signed target type.
+      CHECK_TRUE(etl::in_range<int8_t>(0));
+      CHECK_TRUE(etl::in_range<int8_t>(127));
+      CHECK_TRUE(etl::in_range<int8_t>(-128));
+      CHECK_FALSE(etl::in_range<int8_t>(128));
+      CHECK_FALSE(etl::in_range<int8_t>(-129));
+      CHECK_FALSE(etl::in_range<int8_t>(200));
+
+      // Unsigned target type.
+      CHECK_TRUE(etl::in_range<uint8_t>(0));
+      CHECK_TRUE(etl::in_range<uint8_t>(255));
+      CHECK_FALSE(etl::in_range<uint8_t>(256));
+      CHECK_FALSE(etl::in_range<uint8_t>(-1));
+
+      // Unsigned source that would be negative if reinterpreted as signed.
+      CHECK_FALSE(etl::in_range<int8_t>(static_cast<unsigned int>(-1)));
+      CHECK_TRUE(etl::in_range<uint32_t>(static_cast<unsigned int>(-1)));
+
+      // Wider target always contains a narrower value.
+      CHECK_TRUE(etl::in_range<int64_t>(int8_t(-1)));
+      CHECK_TRUE(etl::in_range<int64_t>(uint32_t(0xFFFFFFFFU)));
+    }
+
+#if ETL_USING_CPP14
+    //*********************************
+    TEST(test_cmp_and_in_range_constexpr)
+    {
+      constexpr bool ce0 = etl::cmp_equal(1, 1);
+      constexpr bool ce1 = etl::cmp_not_equal(-1, static_cast<unsigned int>(-1));
+      constexpr bool ce2 = etl::cmp_less(-1, 0U);
+      constexpr bool ce3 = etl::cmp_greater(static_cast<unsigned int>(-1), -1);
+      constexpr bool ce4 = etl::cmp_less_equal(-1, static_cast<unsigned int>(-1));
+      constexpr bool ce5 = etl::cmp_greater_equal(static_cast<unsigned int>(-1), -1);
+      constexpr bool ce6 = etl::in_range<int8_t>(100);
+      constexpr bool ce7 = etl::in_range<int8_t>(200);
+
+      static_assert(ce0, "cmp_equal constexpr");
+      static_assert(ce1, "cmp_not_equal constexpr");
+      static_assert(ce2, "cmp_less constexpr");
+      static_assert(ce3, "cmp_greater constexpr");
+      static_assert(ce4, "cmp_less_equal constexpr");
+      static_assert(ce5, "cmp_greater_equal constexpr");
+      static_assert(ce6, "in_range true constexpr");
+      static_assert(!ce7, "in_range false constexpr");
+
+      CHECK_TRUE(ce0);
+      CHECK_TRUE(ce6);
+      CHECK_FALSE(ce7);
+    }
+#endif
+
 #if ETL_HAS_PACKED
     //*********************************
     TEST(test_packed)

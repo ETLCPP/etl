@@ -354,7 +354,6 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    template <typename... TElements>
     ETL_CONSTEXPR14 explicit iconst_multiset(const value_type* element_list_, size_type size_, size_type max_elements_) ETL_NOEXCEPT
       : element_list(element_list_)
       , element_list_end{element_list_ + size_}

@@ -40,6 +40,9 @@ SOFTWARE.
 #include "static_assert.h"
 #include "type_traits.h"
 
+#include "private/tuple_element.h"
+#include "private/tuple_size.h"
+
 #include <stddef.h>
 
 ///\defgroup array array
@@ -111,7 +114,7 @@ namespace etl
     /// Returns a reference to the value at index 'i'.
     ///\param i The index of the element to access.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 reference at(size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_NODISCARD ETL_CONSTEXPR14 reference at(size_t i)
     {
       ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
@@ -122,7 +125,7 @@ namespace etl
     /// Returns a const reference to the value at index 'i'.
     ///\param i The index of the element to access.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const_reference at(size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS)
+    ETL_NODISCARD ETL_CONSTEXPR14 const_reference at(size_t i) const
     {
       ETL_ASSERT(i < SIZE, ETL_ERROR(array_out_of_range));
 
@@ -709,7 +712,7 @@ namespace etl
     //*************************************************************************
     /// Returns a const reference to the last element.
     //*************************************************************************
-    ETL_NODISCARD ETL_CONSTEXPR const_reference back() const
+    ETL_NODISCARD ETL_CONSTEXPR const_reference back() const ETL_NOEXCEPT
     {
       return *data();
     }
@@ -1049,11 +1052,18 @@ namespace etl
   //*************************************************************************
   /// Make
   //*************************************************************************
-#if ETL_HAS_INITIALIZER_LIST
-  template <typename T, typename... TValues>
-  constexpr auto make_array(TValues&&... values) ETL_NOEXCEPT -> etl::array<T, sizeof...(TValues)>
+#if ETL_USING_CPP11
+  template <typename T = void, typename... TValues>
+  constexpr auto make_array(TValues&&... values) -> etl::array<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
   {
-    return {etl::forward<T>(values)...};
+    // Library Fundamentals TS make_array design: the element type is T when
+    // supplied explicitly, otherwise the decayed common type of the arguments.
+    // convert forwards arguments that already have the element type and
+    // converts the rest with static_cast, so const-qualified lvalues,
+    // narrowing initialisers such as make_array<char>(0, 1) and non-movable
+    // element types all work.
+    using TElement = etl::private_make::element_type_t<T, TValues...>;
+    return {etl::private_make::convert<TElement>(etl::forward<TValues>(values))...};
   }
 #endif
 
@@ -1063,7 +1073,7 @@ namespace etl
   ///\param rhs The second array.
   //*************************************************************************
   template <typename T, const size_t SIZE>
-  void swap(etl::array<T, SIZE>& lhs, etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 void swap(etl::array<T, SIZE>& lhs, etl::array<T, SIZE>& rhs) ETL_NOEXCEPT_FROM(ETL_OR_STD::swap(etl::declval<T&>(), etl::declval<T&>()))
   {
     lhs.swap(rhs);
   }
@@ -1100,7 +1110,7 @@ namespace etl
   /// second, otherwise <b>false</b>
   //*************************************************************************
   template <typename T, size_t SIZE>
-  bool operator<(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator<(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return etl::lexicographical_compare(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend());
   }
@@ -1114,7 +1124,7 @@ namespace etl
   ///< b>false</b>
   //*************************************************************************
   template <typename T, size_t SIZE>
-  bool operator<=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator<=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs > rhs);
   }
@@ -1127,7 +1137,7 @@ namespace etl
   /// the second, otherwise <b>false</b>
   template <typename T, size_t SIZE>
   //*************************************************************************
-  bool operator>(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator>(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return (rhs < lhs);
   }
@@ -1141,7 +1151,7 @@ namespace etl
   ///< b>false</b>
   //*************************************************************************
   template <typename T, size_t SIZE>
-  bool operator>=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
+  ETL_CONSTEXPR14 bool operator>=(const etl::array<T, SIZE>& lhs, const etl::array<T, SIZE>& rhs)
   {
     return !(lhs < rhs);
   }
@@ -1155,7 +1165,7 @@ namespace etl
   ///\return A reference to the element
   //*************************************************************************
   template <size_t Index, typename T, size_t Size>
-  inline T& get(array<T, Size>& a)
+  ETL_NODISCARD ETL_CONSTEXPR14 T& get(array<T, Size>& a) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
     return a[Index];
@@ -1170,11 +1180,106 @@ namespace etl
   ///\return A const reference to the element
   //*************************************************************************
   template <size_t Index, typename T, size_t Size>
-  inline const T& get(const array<T, Size>& a)
+  ETL_NODISCARD ETL_CONSTEXPR14 const T& get(const array<T, Size>& a) ETL_NOEXCEPT
   {
     ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
     return a[Index];
   }
+
+#if ETL_USING_CPP11
+  //*************************************************************************
+  /// Gets an rvalue reference to an element in the array.
+  ///\tparam Index The index.
+  ///\tparam T The type.
+  ///\tparam Size The array size.
+  ///\param a The array.
+  ///\return An rvalue reference to the element
+  //*************************************************************************
+  template <size_t Index, typename T, size_t Size>
+  ETL_NODISCARD ETL_CONSTEXPR14 T&& get(array<T, Size>&& a) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
+    return static_cast<T&&>(a[Index]);
+  }
+
+  //*************************************************************************
+  /// Gets a const rvalue reference to an element in the array.
+  ///\tparam Index The index.
+  ///\tparam T The type.
+  ///\tparam Size The array size.
+  ///\param a The array.
+  ///\return A const rvalue reference to the element
+  //*************************************************************************
+  template <size_t Index, typename T, size_t Size>
+  ETL_NODISCARD ETL_CONSTEXPR14 const T&& get(const array<T, Size>&& a) ETL_NOEXCEPT
+  {
+    ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
+    return static_cast<const T&&>(a[Index]);
+  }
+
+  //*************************************************************************
+  /// Gets the number of elements in an array.
+  ///\tparam T    The type.
+  ///\tparam Size The array size.
+  //*************************************************************************
+  template <typename T, size_t Size>
+  struct tuple_size<etl::array<T, Size> > : etl::integral_constant<size_t, Size>
+  {
+  };
+
+  //*************************************************************************
+  /// Gets the type of the element at Index in an array.
+  ///\tparam Index The index.
+  ///\tparam T     The type.
+  ///\tparam Size  The array size.
+  //*************************************************************************
+  template <size_t Index, typename T, size_t Size>
+  struct tuple_element<Index, etl::array<T, Size> >
+  {
+    ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
+
+    using type = T;
+  };
+#endif
 } // namespace etl
+
+#if ETL_USING_CPP11
+namespace std
+{
+  // libc++ already declares std::tuple_size / std::tuple_element in its inline
+  // namespace (std::__1), so re-declaring them here would make the name
+  // ambiguous. Detect libc++ via _LIBCPP_VERSION and skip the forward
+  // declarations in that case, even when not using the STL.
+  #if ETL_NOT_USING_STL && !defined(_LIBCPP_VERSION)                                                                          \
+    && !((defined(ETL_DEVELOPMENT_OS_APPLE) || (ETL_COMPILER_FULL_VERSION >= 190000) && (ETL_COMPILER_FULL_VERSION < 210000)) \
+         && defined(ETL_COMPILER_CLANG))
+  template <typename T>
+  struct tuple_size;
+
+  template <size_t Index, typename TType>
+  struct tuple_element;
+  #endif
+
+  //***************************************************************************
+  /// Specialisation of tuple_size to allow the use of C++ structured bindings.
+  //***************************************************************************
+  template <typename T, size_t Size>
+  struct tuple_size<etl::array<T, Size> > : etl::integral_constant<size_t, Size>
+  {
+  };
+
+  //***************************************************************************
+  /// Specialisation of tuple_element to allow the use of C++ structured
+  /// bindings.
+  //***************************************************************************
+  template <size_t Index, typename T, size_t Size>
+  struct tuple_element<Index, etl::array<T, Size> >
+  {
+    ETL_STATIC_ASSERT(Index < Size, "Index out of bounds");
+
+    using type = T;
+  };
+} // namespace std
+#endif
 
 #endif

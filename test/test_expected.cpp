@@ -619,6 +619,20 @@ namespace
     }
 
     //*************************************************************************
+    // See https://github.com/ETLCPP/etl/issues/1532
+    TEST(test_dereference_const_and_rvalue_expected)
+    {
+      typedef etl::expected<int, const char*> Expected1532;
+
+      Expected1532        e  = 42;
+      const Expected1532& ce = e;
+
+      CHECK_EQUAL(42, *e);
+      CHECK_EQUAL(42, *ce);
+      CHECK_EQUAL(42, *Expected1532(42));
+    }
+
+    //*************************************************************************
     struct value_or_helper
     {
       Expected get_value() const

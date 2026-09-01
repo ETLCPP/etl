@@ -2,9 +2,37 @@ name: clang-c++14
 on:
   push:
     branches: [ master, development, pull-request/* ]
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - 'BUILD.bazel'
+      - 'MODULE.bazel*'
+      - 'meson.build'
+      - 'meson_options.txt'
+      - 'subprojects/**'
+      - '.devcontainer/**'
   pull_request:
     branches: [ master, development, pull-request/* ]
     types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - 'BUILD.bazel'
+      - 'MODULE.bazel*'
+      - 'meson.build'
+      - 'meson_options.txt'
+      - 'subprojects/**'
+      - '.devcontainer/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
 
@@ -16,13 +44,12 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
         export CC=clang
         export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./
         clang --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -38,7 +65,7 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Install libc++
       run: |
@@ -51,7 +78,6 @@ jobs:
         export CXX=clang++
         export CXXFLAGS="-stdlib=libc++"
         export LDFLAGS="-stdlib=libc++"
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./
         clang --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
@@ -67,13 +93,12 @@ jobs:
         os: [ubuntu-22.04]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6.0.3
 
     - name: Build
       run: |
         export CC=clang
         export CXX=clang++
-        export ASAN_OPTIONS=alloc_dealloc_mismatch=0,detect_leaks=0
         cmake -D BUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./
         clang --version
         make -j "$(getconf _NPROCESSORS_ONLN)"

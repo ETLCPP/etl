@@ -71,6 +71,82 @@ T exchange(T& object, const U& new_value)
 Copies the new value to object and returns the old value.  
 Note: This is not an atomic operation.
 
+## Integer comparison functions
+
+Safe comparison of integers of different signedness. Unlike the built-in
+comparison operators, negative signed integers always compare less than (and
+never equal to) unsigned integers, so the result is never affected by
+value-changing implicit conversions.  
+The arguments must be standard signed or unsigned integer types, including
+`signed char` and `unsigned char`. `bool`, `char` and the extended character
+types are not permitted.  
+When the STL is available and the compiler provides
+`__cpp_lib_integer_comparison_functions` (C++20), the `std` versions are used.  
+Since: `20.49.0`
+
+```cpp
+template <typename T, typename U>
+constexpr bool cmp_equal(T t, U u) noexcept
+```
+**Description**  
+Returns `true` if `t` is equal to `u`.
+
+---
+
+```cpp
+template <typename T, typename U>
+constexpr bool cmp_not_equal(T t, U u) noexcept
+```
+**Description**  
+Returns `true` if `t` is not equal to `u`.
+
+---
+
+```cpp
+template <typename T, typename U>
+constexpr bool cmp_less(T t, U u) noexcept
+```
+**Description**  
+Returns `true` if `t` is less than `u`.
+
+---
+
+```cpp
+template <typename T, typename U>
+constexpr bool cmp_greater(T t, U u) noexcept
+```
+**Description**  
+Returns `true` if `t` is greater than `u`.
+
+---
+
+```cpp
+template <typename T, typename U>
+constexpr bool cmp_less_equal(T t, U u) noexcept
+```
+**Description**  
+Returns `true` if `t` is less than or equal to `u`.
+
+---
+
+```cpp
+template <typename T, typename U>
+constexpr bool cmp_greater_equal(T t, U u) noexcept
+```
+**Description**  
+Returns `true` if `t` is greater than or equal to `u`.
+
+---
+
+```cpp
+template <typename R, typename T>
+constexpr bool in_range(T t) noexcept
+```
+**Description**  
+Returns `true` if the value of `t` is in the range of values that can be
+represented by `R`, that is, if `t` can be converted to `R` without loss of its
+value.
+
 ## add_const
 
 ```cpp

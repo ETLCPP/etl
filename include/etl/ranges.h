@@ -150,7 +150,8 @@ namespace etl
         return *etl::prev(cend());
       }
 
-      constexpr decltype(auto) operator[](size_t i)
+      template < typename D2 = D, etl::enable_if_t<!etl::is_random_access_iterator< decltype(etl::declval<const D2&>().begin())>::value, int> = 0>
+      constexpr decltype(auto) operator[](range_difference_t<D2> i)
       {
         auto it{static_cast<D*>(this)->begin()};
         etl::advance(it, i);
@@ -158,13 +159,13 @@ namespace etl
       }
 
       template < typename D2 = D, etl::enable_if_t<etl::is_random_access_iterator< decltype(etl::declval<const D2&>().begin())>::value, int> = 0>
-      constexpr decltype(auto) operator[](size_t i)
+      constexpr decltype(auto) operator[](range_difference_t<D2> i)
       {
         return static_cast<D*>(this)->begin()[i];
       }
 
       template < typename D2 = D, etl::enable_if_t<etl::is_random_access_iterator< decltype(etl::declval<const D2&>().begin())>::value, int> = 0>
-      constexpr decltype(auto) operator[](size_t i) const
+      constexpr decltype(auto) operator[](range_difference_t<D2> i) const
       {
         return cbegin()[i];
       }
@@ -502,6 +503,11 @@ namespace etl
         return _i;
       }
 
+      constexpr value_type operator[](difference_type n) const
+      {
+        return *(*this + n);
+      }
+
     private:
 
       value_type _i;
@@ -671,6 +677,11 @@ namespace etl
       constexpr value_type operator*()
       {
         return _value;
+      }
+
+      constexpr value_type operator[](difference_type n) const
+      {
+        return *(*this + n);
       }
 
     private:
@@ -4489,7 +4500,7 @@ namespace etl
     /// An iterator adaptor that extracts the Nth element from a tuple-like
     /// value type using etl::get or std::get (found via ADL).
     //*************************************************************************
-    template <class Range, size_t N>
+    template <class Range, size_t Index>
     class elements_iterator
     {
     public:
@@ -4498,7 +4509,7 @@ namespace etl
 
       using base_iterator   = typename trait::iterator;
       using base_value_type = typename trait::value_type;
-      using value_type      = etl::tuple_element_t<N, base_value_type>;
+      using value_type      = etl::tuple_element_t<Index, base_value_type>;
       using difference_type = typename trait::difference_type;
 
     private:
@@ -4510,7 +4521,7 @@ namespace etl
       static decltype(auto) deref_element(const base_iterator& it)
       {
         using etl::get;
-        return get<N>(*it);
+        return get<Index>(*it);
       }
 
     public:
@@ -4574,13 +4585,13 @@ namespace etl
     /// A range adaptor that takes a view of tuple-like values and produces
     /// a view of the Nth element of each tuple-like value.
     //*************************************************************************
-    template <class Range, size_t N>
-    class elements_view : public etl::ranges::view_interface<elements_view<Range, N>>
+    template <class Range, size_t Index>
+    class elements_view : public etl::ranges::view_interface<elements_view<Range, Index>>
     {
     public:
 
-      using iterator       = elements_iterator<Range, N>;
-      using const_iterator = elements_iterator<Range, N>;
+      using iterator       = elements_iterator<Range, Index>;
+      using const_iterator = elements_iterator<Range, Index>;
 
       elements_view(Range&& r)
         : _r{etl::move(r)}
@@ -4614,29 +4625,29 @@ namespace etl
       mutable Range _r;
     };
 
-    template <class Range, size_t N>
-    elements_view(Range&&, etl::integral_constant<size_t, N>) -> elements_view<views::all_t<Range>, N>;
+    template <class Range, size_t Index>
+    elements_view(Range&&, etl::integral_constant<size_t, Index>) -> elements_view<views::all_t<Range>, Index>;
 
-    template <size_t N>
-    struct elements_range_adapter_closure : public range_adapter_closure<elements_range_adapter_closure<N>>
+    template <size_t Index>
+    struct elements_range_adapter_closure : public range_adapter_closure<elements_range_adapter_closure<Index>>
     {
       template <typename Range>
-      using target_view_type = elements_view<Range, N>;
+      using target_view_type = elements_view<Range, Index>;
 
       elements_range_adapter_closure() = default;
 
       template <typename Range>
       constexpr auto operator()(Range&& r)
       {
-        return elements_view<views::all_t<Range>, N>(views::all(etl::forward<Range>(r)));
+        return elements_view<views::all_t<Range>, Index>(views::all(etl::forward<Range>(r)));
       }
     };
 
-    /// keys_view is an alias for elements_view with N=0.
+    /// keys_view is an alias for elements_view with Index=0.
     template <class Range>
     using keys_view = elements_view<Range, 0>;
 
-    /// values_view is an alias for elements_view with N=1.
+    /// values_view is an alias for elements_view with Index=1.
     template <class Range>
     using values_view = elements_view<Range, 1>;
 
@@ -4644,39 +4655,39 @@ namespace etl
     {
       namespace private_views
       {
-        template <size_t N>
+        template <size_t Index>
         struct elements_fn : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
           {
-            return elements_view<views::all_t<Range>, N>(views::all(etl::forward<Range>(r)));
+            return elements_view<views::all_t<Range>, Index>(views::all(etl::forward<Range>(r)));
           }
 
           constexpr auto operator()() const
           {
-            return ranges::elements_range_adapter_closure<N>();
+            return ranges::elements_range_adapter_closure<Index>();
           }
         };
       } // namespace private_views
 
-      template <size_t N>
-      inline constexpr private_views::elements_fn<N> elements{};
+      template <size_t Index>
+      inline constexpr private_views::elements_fn<Index> elements{};
 
       inline constexpr private_views::elements_fn<0> keys{};
       inline constexpr private_views::elements_fn<1> values{};
     } // namespace views
 
     //*************************************************************************
-    /// Helper: create a tuple type that repeats T exactly N times.
+    /// Helper: create a tuple type that repeats T exactly Index times.
     //*************************************************************************
     namespace private_ranges
     {
-      template <typename T, size_t N, typename = etl::make_index_sequence<N>>
+      template <typename T, size_t Index, typename = etl::make_index_sequence<Index>>
       struct repeat_tuple;
 
-      template <typename T, size_t N, size_t... Is>
-      struct repeat_tuple<T, N, etl::index_sequence<Is...>>
+      template <typename T, size_t Index, size_t... Is>
+      struct repeat_tuple<T, Index, etl::index_sequence<Is...>>
       {
         template <size_t>
         using always = T;
@@ -4684,16 +4695,16 @@ namespace etl
         using type = etl::tuple<always<Is>...>;
       };
 
-      template <typename T, size_t N>
-      using repeat_tuple_t = typename repeat_tuple<T, N>::type;
+      template <typename T, size_t Index>
+      using repeat_tuple_t = typename repeat_tuple<T, Index>::type;
 
-      /// Helper: compute invoke_result_t<Fun, T, T, ..., T> with T repeated N
+      /// Helper: compute invoke_result_t<Fun, T, T, ..., T> with T repeated Index
       /// times.
-      template <typename Fun, typename T, size_t N, typename = etl::make_index_sequence<N>>
+      template <typename Fun, typename T, size_t Index, typename = etl::make_index_sequence<Index>>
       struct repeat_invoke_result;
 
-      template <typename Fun, typename T, size_t N, size_t... Is>
-      struct repeat_invoke_result<Fun, T, N, etl::index_sequence<Is...>>
+      template <typename Fun, typename T, size_t Index, size_t... Is>
+      struct repeat_invoke_result<Fun, T, Index, etl::index_sequence<Is...>>
       {
         template <size_t>
         using always = T;
@@ -4701,20 +4712,20 @@ namespace etl
         using type = etl::invoke_result_t<Fun, always<Is>...>;
       };
 
-      template <typename Fun, typename T, size_t N>
-      using repeat_invoke_result_t = typename repeat_invoke_result<Fun, T, N>::type;
+      template <typename Fun, typename T, size_t Index>
+      using repeat_invoke_result_t = typename repeat_invoke_result<Fun, T, Index>::type;
     } // namespace private_ranges
 
     //*************************************************************************
     /// adjacent_iterator
-    /// An iterator adaptor that produces tuples of N consecutive elements
-    /// from the underlying range. Each increment advances all N internal
+    /// An iterator adaptor that produces tuples of Index consecutive elements
+    /// from the underlying range. Each increment advances all Index internal
     /// iterators by one position.
     //*************************************************************************
-    template <class Range, size_t N>
+    template <class Range, size_t Index>
     class adjacent_iterator
     {
-      static_assert(N > 0, "adjacent window size must be > 0");
+      static_assert(Index > 0, "adjacent window size must be > 0");
 
     public:
 
@@ -4723,17 +4734,17 @@ namespace etl
       using base_iterator   = typename trait::iterator;
       using base_value_type = typename trait::value_type;
       using base_reference  = decltype(*etl::declval<base_iterator&>());
-      using value_type      = private_ranges::repeat_tuple_t<base_value_type, N>;
+      using value_type      = private_ranges::repeat_tuple_t<base_value_type, Index>;
       using difference_type = typename trait::difference_type;
       // Each tuple element is a reference into the underlying range, so the
       // window elements remain mutable when the underlying range is non-const,
       // as required for std::ranges::adjacent_view.
-      using reference = private_ranges::repeat_tuple_t<base_reference, N>;
+      using reference = private_ranges::repeat_tuple_t<base_reference, Index>;
       using pointer   = value_type*;
 
       using iterator_category = ETL_OR_STD::forward_iterator_tag;
 
-      /// Construct from an array of N iterators (the sliding window).
+      /// Construct from an array of Index iterators (the sliding window).
       template <size_t... Is>
       constexpr adjacent_iterator(base_iterator first, base_iterator last, etl::index_sequence<Is...>)
         : _iters{advance_copy(first, last, Is)...}
@@ -4747,7 +4758,7 @@ namespace etl
 
       constexpr adjacent_iterator& operator++()
       {
-        increment(etl::make_index_sequence<N>{});
+        increment(etl::make_index_sequence<Index>{});
         return *this;
       }
 
@@ -4760,14 +4771,14 @@ namespace etl
 
       constexpr reference operator*() const
       {
-        return deref(etl::make_index_sequence<N>{});
+        return deref(etl::make_index_sequence<Index>{});
       }
 
       friend constexpr bool operator==(const adjacent_iterator& lhs, const adjacent_iterator& rhs)
       {
-        // Compare the last iterator in the window (index N-1).
+        // Compare the last iterator in the window (index Index-1).
         // When it reaches end, the window is exhausted.
-        return lhs._iters[N - 1] == rhs._iters[N - 1];
+        return lhs._iters[Index - 1] == rhs._iters[Index - 1];
       }
 
       friend constexpr bool operator!=(const adjacent_iterator& lhs, const adjacent_iterator& rhs)
@@ -4798,27 +4809,27 @@ namespace etl
         return reference(*_iters[Is]...);
       }
 
-      base_iterator _iters[N];
+      base_iterator _iters[Index];
       base_iterator _end;
     };
 
     //*************************************************************************
     /// adjacent_view
-    /// A range adaptor that takes a range and a compile-time window size N
+    /// A range adaptor that takes a range and a compile-time window size Index
     /// and produces a view of tuples, where the i-th tuple contains the
-    /// elements at positions [i, i+1, ..., i+N-1] from the underlying range.
-    /// The resulting view has (size - N + 1) elements, or is empty if the
-    /// underlying range has fewer than N elements.
+    /// elements at positions [i, i+1, ..., i+Index-1] from the underlying range.
+    /// The resulting view has (size - Index + 1) elements, or is empty if the
+    /// underlying range has fewer than Index elements.
     //*************************************************************************
-    template <class Range, size_t N>
-    class adjacent_view : public etl::ranges::view_interface<adjacent_view<Range, N>>
+    template <class Range, size_t Index>
+    class adjacent_view : public etl::ranges::view_interface<adjacent_view<Range, Index>>
     {
-      static_assert(N > 0, "adjacent window size must be > 0");
+      static_assert(Index > 0, "adjacent window size must be > 0");
 
     public:
 
-      using iterator       = adjacent_iterator<Range, N>;
-      using const_iterator = adjacent_iterator<Range, N>;
+      using iterator       = adjacent_iterator<Range, Index>;
+      using const_iterator = adjacent_iterator<Range, Index>;
 
       constexpr adjacent_view(Range&& r)
         : _r{etl::move(r)}
@@ -4834,19 +4845,19 @@ namespace etl
 
       constexpr const_iterator begin() const
       {
-        return const_iterator(ETL_OR_STD::begin(_r), ETL_OR_STD::end(_r), etl::make_index_sequence<N>{});
+        return const_iterator(ETL_OR_STD::begin(_r), ETL_OR_STD::end(_r), etl::make_index_sequence<Index>{});
       }
 
       constexpr const_iterator end() const
       {
-        // The end iterator has all N internal iterators at the end position.
-        return const_iterator(ETL_OR_STD::end(_r), ETL_OR_STD::end(_r), etl::make_index_sequence<N>{});
+        // The end iterator has all Index internal iterators at the end position.
+        return const_iterator(ETL_OR_STD::end(_r), ETL_OR_STD::end(_r), etl::make_index_sequence<Index>{});
       }
 
       constexpr size_t size() const
       {
         auto total = static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
-        return (total >= N) ? (total - N + 1) : 0;
+        return (total >= Index) ? (total - Index + 1) : 0;
       }
 
     private:
@@ -4854,21 +4865,21 @@ namespace etl
       mutable Range _r;
     };
 
-    template <class Range, size_t N>
-    adjacent_view(Range&&, etl::integral_constant<size_t, N>) -> adjacent_view<views::all_t<Range>, N>;
+    template <class Range, size_t Index>
+    adjacent_view(Range&&, etl::integral_constant<size_t, Index>) -> adjacent_view<views::all_t<Range>, Index>;
 
-    template <size_t N>
-    struct adjacent_range_adapter_closure : public range_adapter_closure<adjacent_range_adapter_closure<N>>
+    template <size_t Index>
+    struct adjacent_range_adapter_closure : public range_adapter_closure<adjacent_range_adapter_closure<Index>>
     {
       template <typename Range>
-      using target_view_type = adjacent_view<Range, N>;
+      using target_view_type = adjacent_view<Range, Index>;
 
       adjacent_range_adapter_closure() = default;
 
       template <typename Range>
       constexpr auto operator()(Range&& r)
       {
-        return adjacent_view<views::all_t<Range>, N>(views::all(etl::forward<Range>(r)));
+        return adjacent_view<views::all_t<Range>, Index>(views::all(etl::forward<Range>(r)));
       }
     };
 
@@ -4876,24 +4887,24 @@ namespace etl
     {
       namespace private_views
       {
-        template <size_t N>
+        template <size_t Index>
         struct adjacent_fn : public range_adapter_closure_base
         {
           template <class Range>
           constexpr auto operator()(Range&& r) const
           {
-            return adjacent_view<views::all_t<Range>, N>(views::all(etl::forward<Range>(r)));
+            return adjacent_view<views::all_t<Range>, Index>(views::all(etl::forward<Range>(r)));
           }
 
           constexpr auto operator()() const
           {
-            return ranges::adjacent_range_adapter_closure<N>();
+            return ranges::adjacent_range_adapter_closure<Index>();
           }
         };
       } // namespace private_views
 
-      template <size_t N>
-      inline constexpr private_views::adjacent_fn<N> adjacent{};
+      template <size_t Index>
+      inline constexpr private_views::adjacent_fn<Index> adjacent{};
 
       /// pairwise is an alias for adjacent<2>.
       inline constexpr private_views::adjacent_fn<2> pairwise{};
@@ -4901,14 +4912,14 @@ namespace etl
 
     //*************************************************************************
     /// adjacent_transform_iterator
-    /// An iterator adaptor that takes a sliding window of N consecutive
+    /// An iterator adaptor that takes a sliding window of Index consecutive
     /// elements from the underlying range and applies a transformation
     /// function to them, producing a single value per window position.
     //*************************************************************************
-    template <class Range, class Fun, size_t N>
+    template <class Range, class Fun, size_t Index>
     class adjacent_transform_iterator
     {
-      static_assert(N > 0, "adjacent window size must be > 0");
+      static_assert(Index > 0, "adjacent window size must be > 0");
 
     public:
 
@@ -4916,7 +4927,7 @@ namespace etl
 
       using base_iterator   = typename trait::const_iterator;
       using base_value_type = typename trait::value_type;
-      using value_type      = private_ranges::repeat_invoke_result_t<Fun, base_value_type, N>;
+      using value_type      = private_ranges::repeat_invoke_result_t<Fun, base_value_type, Index>;
       using difference_type = typename trait::difference_type;
       using pointer         = const value_type*;
       using reference       = value_type;
@@ -4939,7 +4950,7 @@ namespace etl
 
       constexpr adjacent_transform_iterator& operator++()
       {
-        increment(etl::make_index_sequence<N>{});
+        increment(etl::make_index_sequence<Index>{});
         return *this;
       }
 
@@ -4952,14 +4963,14 @@ namespace etl
 
       constexpr value_type operator*() const
       {
-        return deref(etl::make_index_sequence<N>{});
+        return deref(etl::make_index_sequence<Index>{});
       }
 
       friend constexpr bool operator==(const adjacent_transform_iterator& lhs, const adjacent_transform_iterator& rhs)
       {
-        // Compare the last iterator in the window (index N-1).
+        // Compare the last iterator in the window (index Index-1).
         // When it reaches end, the window is exhausted.
-        return lhs._iters[N - 1] == rhs._iters[N - 1];
+        return lhs._iters[Index - 1] == rhs._iters[Index - 1];
       }
 
       friend constexpr bool operator!=(const adjacent_transform_iterator& lhs, const adjacent_transform_iterator& rhs)
@@ -4991,28 +5002,28 @@ namespace etl
       }
 
       Fun           _f;
-      base_iterator _iters[N];
+      base_iterator _iters[Index];
       base_iterator _end;
     };
 
     //*************************************************************************
     /// adjacent_transform_view
-    /// A range adaptor that takes a range, a compile-time window size N, and
+    /// A range adaptor that takes a range, a compile-time window size Index, and
     /// a transformation function, and produces a view whose elements are the
-    /// result of applying the function to each sliding window of N consecutive
+    /// result of applying the function to each sliding window of Index consecutive
     /// elements from the underlying range.
-    /// The resulting view has (size - N + 1) elements, or is empty if the
-    /// underlying range has fewer than N elements.
+    /// The resulting view has (size - Index + 1) elements, or is empty if the
+    /// underlying range has fewer than Index elements.
     //*************************************************************************
-    template <class Range, class Fun, size_t N>
-    class adjacent_transform_view : public etl::ranges::view_interface< adjacent_transform_view<Range, Fun, N>>
+    template <class Range, class Fun, size_t Index>
+    class adjacent_transform_view : public etl::ranges::view_interface< adjacent_transform_view<Range, Fun, Index>>
     {
-      static_assert(N > 0, "adjacent window size must be > 0");
+      static_assert(Index > 0, "adjacent window size must be > 0");
 
     public:
 
-      using iterator       = adjacent_transform_iterator<Range, Fun, N>;
-      using const_iterator = adjacent_transform_iterator<Range, Fun, N>;
+      using iterator       = adjacent_transform_iterator<Range, Fun, Index>;
+      using const_iterator = adjacent_transform_iterator<Range, Fun, Index>;
 
       constexpr adjacent_transform_view(Fun f, Range&& r)
         : _f{f}
@@ -5029,19 +5040,19 @@ namespace etl
 
       constexpr const_iterator begin() const
       {
-        return const_iterator(_f, ETL_OR_STD::begin(_r), ETL_OR_STD::end(_r), etl::make_index_sequence<N>{});
+        return const_iterator(_f, ETL_OR_STD::begin(_r), ETL_OR_STD::end(_r), etl::make_index_sequence<Index>{});
       }
 
       constexpr const_iterator end() const
       {
-        // The end iterator has all N internal iterators at the end position.
-        return const_iterator(_f, ETL_OR_STD::end(_r), ETL_OR_STD::end(_r), etl::make_index_sequence<N>{});
+        // The end iterator has all Index internal iterators at the end position.
+        return const_iterator(_f, ETL_OR_STD::end(_r), ETL_OR_STD::end(_r), etl::make_index_sequence<Index>{});
       }
 
       constexpr size_t size() const
       {
         auto total = static_cast<size_t>(etl::distance(ETL_OR_STD::cbegin(_r), ETL_OR_STD::cend(_r)));
-        return (total >= N) ? (total - N + 1) : 0;
+        return (total >= Index) ? (total - Index + 1) : 0;
       }
 
     private:
@@ -5050,14 +5061,14 @@ namespace etl
       mutable Range _r;
     };
 
-    template <class Fun, class Range, size_t N>
-    adjacent_transform_view(Fun, Range&&, etl::integral_constant<size_t, N>) -> adjacent_transform_view<views::all_t<Range>, Fun, N>;
+    template <class Fun, class Range, size_t Index>
+    adjacent_transform_view(Fun, Range&&, etl::integral_constant<size_t, Index>) -> adjacent_transform_view<views::all_t<Range>, Fun, Index>;
 
-    template <size_t N, typename Fun>
-    struct adjacent_transform_range_adapter_closure : public range_adapter_closure< adjacent_transform_range_adapter_closure<N, Fun>>
+    template <size_t Index, typename Fun>
+    struct adjacent_transform_range_adapter_closure : public range_adapter_closure< adjacent_transform_range_adapter_closure<Index, Fun>>
     {
       template <typename Range>
-      using target_view_type = adjacent_transform_view<Range, Fun, N>;
+      using target_view_type = adjacent_transform_view<Range, Fun, Index>;
 
       adjacent_transform_range_adapter_closure(Fun f)
         : _f{f}
@@ -5067,7 +5078,7 @@ namespace etl
       template <typename Range>
       constexpr auto operator()(Range&& r)
       {
-        return adjacent_transform_view<views::all_t<Range>, Fun, N>(_f, views::all(etl::forward<Range>(r)));
+        return adjacent_transform_view<views::all_t<Range>, Fun, Index>(_f, views::all(etl::forward<Range>(r)));
       }
 
       Fun _f;
@@ -5077,25 +5088,25 @@ namespace etl
     {
       namespace private_views
       {
-        template <size_t N>
+        template <size_t Index>
         struct adjacent_transform_fn
         {
           template <class Range, typename Fun>
           constexpr auto operator()(Range&& r, Fun&& f) const
           {
-            return adjacent_transform_view<views::all_t<Range>, etl::decay_t<Fun>, N>(etl::forward<Fun>(f), views::all(etl::forward<Range>(r)));
+            return adjacent_transform_view<views::all_t<Range>, etl::decay_t<Fun>, Index>(etl::forward<Fun>(f), views::all(etl::forward<Range>(r)));
           }
 
           template <typename Fun>
           constexpr auto operator()(Fun&& f) const
           {
-            return ranges::adjacent_transform_range_adapter_closure< N, etl::decay_t<Fun>>(etl::forward<Fun>(f));
+            return ranges::adjacent_transform_range_adapter_closure< Index, etl::decay_t<Fun>>(etl::forward<Fun>(f));
           }
         };
       } // namespace private_views
 
-      template <size_t N>
-      inline constexpr private_views::adjacent_transform_fn<N> adjacent_transform{};
+      template <size_t Index>
+      inline constexpr private_views::adjacent_transform_fn<Index> adjacent_transform{};
 
       /// pairwise_transform is an alias for adjacent_transform<2>.
       inline constexpr private_views::adjacent_transform_fn<2> pairwise_transform{};

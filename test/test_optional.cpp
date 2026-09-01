@@ -35,6 +35,12 @@ SOFTWARE.
 #include <type_traits>
 #include <utility>
 
+// GCC can emit false positive -Wmaybe-uninitialized warnings inside the test data
+// types when optional's storage is inspected through inlined, never-taken branches.
+// The diagnostic is raised late (after inlining), so the suppression has to cover the
+// whole translation unit. It is popped at the end of the file.
+#include "etl/private/diagnostic_uninitialized_push.h"
+
 #include "data.h"
 #include "etl/algorithm.h"
 #include "etl/optional.h"
@@ -1603,5 +1609,351 @@ namespace
   #endif
     }
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_transform)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      etl::optional<int> doubled = engaged.transform([](int i) { return i * 2; });
+      CHECK_TRUE(doubled.has_value());
+      CHECK_EQUAL(84, doubled.value());
+
+      etl::optional<int> from_empty = empty.transform([](int i) { return i * 2; });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_transform_const)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> doubled = engaged.transform([](int i) { return i * 2; });
+      CHECK_TRUE(doubled.has_value());
+      CHECK_EQUAL(84, doubled.value());
+
+      etl::optional<int> from_empty = empty.transform([](int i) { return i * 2; });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_transform_change_type)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      etl::optional<std::string> text = engaged.transform([](int) { return std::string("forty two"); });
+      CHECK_TRUE(text.has_value());
+      CHECK_EQUAL("forty two", text.value());
+
+      etl::optional<std::string> text_from_empty = empty.transform([](int) { return std::string("forty two"); });
+      CHECK_FALSE(text_from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_transform_non_pod)
+    {
+      etl::optional<Data> engaged(Data("transform"));
+      etl::optional<Data> empty;
+
+      etl::optional<size_t> length = engaged.transform([](const Data& d) { return d.value.size(); });
+      CHECK_TRUE(length.has_value());
+      CHECK_EQUAL(9U, length.value());
+
+      etl::optional<size_t> length_from_empty = empty.transform([](const Data& d) { return d.value.size(); });
+      CHECK_FALSE(length_from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_transform_move)
+    {
+      etl::optional<DataM> engaged(DataM(42U));
+
+      etl::optional<DataM> moved = etl::move(engaged).transform([](DataM&& d) { return DataM(etl::move(d)); });
+      CHECK_TRUE(moved.has_value());
+      CHECK_TRUE(moved.value().valid);
+      CHECK_EQUAL(42U, moved.value().value);
+      CHECK_FALSE(engaged.value().valid);
+
+      etl::optional<DataM> empty;
+      etl::optional<DataM> from_empty = etl::move(empty).transform([](DataM&& d) { return DataM(etl::move(d)); });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      etl::optional<int> incremented = engaged.and_then([](int i) { return etl::optional<int>(i + 1); });
+      CHECK_TRUE(incremented.has_value());
+      CHECK_EQUAL(43, incremented.value());
+
+      etl::optional<int> from_empty = empty.and_then([](int i) { return etl::optional<int>(i + 1); });
+      CHECK_FALSE(from_empty.has_value());
+
+      etl::optional<int> rejected = engaged.and_then([](int) { return etl::optional<int>(); });
+      CHECK_FALSE(rejected.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then_const)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> incremented = engaged.and_then([](int i) { return etl::optional<int>(i + 1); });
+      CHECK_TRUE(incremented.has_value());
+      CHECK_EQUAL(43, incremented.value());
+
+      etl::optional<int> from_empty = empty.and_then([](int i) { return etl::optional<int>(i + 1); });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then_change_type)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      etl::optional<std::string> text = engaged.and_then([](int) { return etl::optional<std::string>("forty two"); });
+      CHECK_TRUE(text.has_value());
+      CHECK_EQUAL("forty two", text.value());
+
+      etl::optional<std::string> text_from_empty = empty.and_then([](int) { return etl::optional<std::string>("forty two"); });
+      CHECK_FALSE(text_from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then_move)
+    {
+      etl::optional<DataM> engaged(DataM(42U));
+
+      etl::optional<uint32_t> value = etl::move(engaged).and_then([](DataM&& d) { return etl::optional<uint32_t>(d.value); });
+      CHECK_TRUE(value.has_value());
+      CHECK_EQUAL(42U, value.value());
+
+      etl::optional<DataM>    empty;
+      etl::optional<uint32_t> from_empty = etl::move(empty).and_then([](DataM&& d) { return etl::optional<uint32_t>(d.value); });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_or_else)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+      bool               called = false;
+
+      etl::optional<int> from_engaged = engaged.or_else(
+        [&called]()
+        {
+          called = true;
+          return etl::optional<int>(99);
+        });
+      CHECK_TRUE(from_engaged.has_value());
+      CHECK_EQUAL(42, from_engaged.value());
+      CHECK_FALSE(called);
+
+      etl::optional<int> from_empty = empty.or_else(
+        [&called]()
+        {
+          called = true;
+          return etl::optional<int>(99);
+        });
+      CHECK_TRUE(from_empty.has_value());
+      CHECK_EQUAL(99, from_empty.value());
+      CHECK_TRUE(called);
+
+      etl::optional<int> still_empty = empty.or_else([]() { return etl::optional<int>(); });
+      CHECK_FALSE(still_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_or_else_const)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> from_engaged = engaged.or_else([]() { return etl::optional<int>(99); });
+      CHECK_TRUE(from_engaged.has_value());
+      CHECK_EQUAL(42, from_engaged.value());
+
+      etl::optional<int> from_empty = empty.or_else([]() { return etl::optional<int>(99); });
+      CHECK_TRUE(from_empty.has_value());
+      CHECK_EQUAL(99, from_empty.value());
+    }
+
+    //*************************************************************************
+    TEST(test_or_else_move)
+    {
+      etl::optional<DataM> engaged(DataM(42U));
+
+      etl::optional<DataM> from_engaged = etl::move(engaged).or_else([]() { return etl::optional<DataM>(DataM(99U)); });
+      CHECK_TRUE(from_engaged.has_value());
+      CHECK_EQUAL(42U, from_engaged.value().value);
+
+      etl::optional<DataM> empty;
+      etl::optional<DataM> from_empty = etl::move(empty).or_else([]() { return etl::optional<DataM>(DataM(99U)); });
+      CHECK_TRUE(from_empty.has_value());
+      CHECK_EQUAL(99U, from_empty.value().value);
+    }
+
+    //*************************************************************************
+    TEST(test_monadic_chaining)
+    {
+      etl::optional<int> engaged(8);
+      etl::optional<int> empty;
+
+      etl::optional<int> result = engaged.transform([](int i) { return i * 2; })
+                                    .and_then([](int i) { return etl::optional<int>(i + 1); })
+                                    .or_else([]() { return etl::optional<int>(0); });
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(17, result.value());
+
+      etl::optional<int> result_from_empty = empty.transform([](int i) { return i * 2; })
+                                               .and_then([](int i) { return etl::optional<int>(i + 1); })
+                                               .or_else([]() { return etl::optional<int>(123); });
+      CHECK_TRUE(result_from_empty.has_value());
+      CHECK_EQUAL(123, result_from_empty.value());
+    }
+
+    //*************************************************************************
+    TEST(test_is_optional)
+    {
+      CHECK_TRUE((etl::is_optional<etl::optional<int>>::value));
+      CHECK_TRUE((etl::is_optional<const etl::optional<int>>::value));
+      CHECK_TRUE((etl::is_optional<volatile etl::optional<int>>::value));
+      CHECK_TRUE((etl::is_optional<const volatile etl::optional<int>>::value));
+      CHECK_TRUE((etl::is_optional<etl::optional<Data>>::value));
+
+      CHECK_FALSE((etl::is_optional<int>::value));
+      CHECK_FALSE((etl::is_optional<Data>::value));
+      CHECK_FALSE((etl::is_optional<etl::optional<int>*>::value));
+      CHECK_FALSE((etl::is_optional<etl::optional<int>&>::value));
+
+  #if ETL_USING_CPP17
+      CHECK_TRUE((etl::is_optional_v<etl::optional<int>>));
+      CHECK_TRUE((etl::is_optional_v<const etl::optional<int>>));
+      CHECK_FALSE((etl::is_optional_v<int>));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_transform_const_rvalue)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> doubled = etl::move(engaged).transform([](const int&& i) { return i * 2; });
+      CHECK_TRUE(doubled.has_value());
+      CHECK_EQUAL(84, doubled.value());
+      CHECK_TRUE(engaged.has_value());
+      CHECK_EQUAL(42, engaged.value());
+
+      etl::optional<int> from_empty = etl::move(empty).transform([](const int&& i) { return i * 2; });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then_const_rvalue)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> incremented = etl::move(engaged).and_then([](const int&& i) { return etl::optional<int>(i + 1); });
+      CHECK_TRUE(incremented.has_value());
+      CHECK_EQUAL(43, incremented.value());
+
+      etl::optional<int> from_empty = etl::move(empty).and_then([](const int&& i) { return etl::optional<int>(i + 1); });
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_or_else_const_rvalue)
+    {
+      const etl::optional<int> engaged(42);
+      const etl::optional<int> empty;
+
+      etl::optional<int> from_engaged = etl::move(engaged).or_else([]() { return etl::optional<int>(99); });
+      CHECK_TRUE(from_engaged.has_value());
+      CHECK_EQUAL(42, from_engaged.value());
+
+      etl::optional<int> from_empty = etl::move(empty).or_else([]() { return etl::optional<int>(99); });
+      CHECK_TRUE(from_empty.has_value());
+      CHECK_EQUAL(99, from_empty.value());
+    }
+
+    //*************************************************************************
+    /// Unlike std::optional, a callable returning a reference is accepted.
+    /// The reference is stripped from the result type and the value is copied.
+    //*************************************************************************
+    TEST(test_transform_callable_returning_reference)
+    {
+      etl::optional<int> engaged(42);
+
+      auto result = engaged.transform([](int& i) -> int& { return i; });
+
+      CHECK_TRUE((etl::is_same<etl::optional<int>, decltype(result)>::value));
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(42, result.value());
+
+      // The result is a copy, not an alias of the source.
+      result.value() = 1;
+      CHECK_EQUAL(42, engaged.value());
+    }
+
+    //*************************************************************************
+    TEST(test_and_then_callable_returning_reference)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      auto f = [](int i) -> etl::optional<int>&
+      {
+        static etl::optional<int> shared;
+        shared = i + 1;
+        return shared;
+      };
+
+      auto result = engaged.and_then(f);
+
+      CHECK_TRUE((etl::is_same<etl::optional<int>, decltype(result)>::value));
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(43, result.value());
+
+      auto from_empty = empty.and_then(f);
+      CHECK_FALSE(from_empty.has_value());
+    }
+
+    //*************************************************************************
+    TEST(test_or_else_callable_returning_reference)
+    {
+      etl::optional<int> engaged(42);
+      etl::optional<int> empty;
+
+      auto f = []() -> etl::optional<int>&
+      {
+        static etl::optional<int> shared(99);
+        return shared;
+      };
+
+      auto from_engaged = engaged.or_else(f);
+
+      CHECK_TRUE((etl::is_same<etl::optional<int>, decltype(from_engaged)>::value));
+      CHECK_TRUE(from_engaged.has_value());
+      CHECK_EQUAL(42, from_engaged.value());
+
+      auto from_empty = empty.or_else(f);
+      CHECK_TRUE(from_empty.has_value());
+      CHECK_EQUAL(99, from_empty.value());
+    }
+#endif
   }
 } // namespace
+
+#include "etl/private/diagnostic_pop.h"
