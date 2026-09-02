@@ -13,6 +13,7 @@ project(etl_unit_tests LANGUAGES CXX)
 add_executable(etl_tests
 	main.cpp
 	murmurhash3.cpp
+	clocks_for_unit_tests.cpp
 	test_algorithm.cpp
 	test_algorithm_ranges.cpp
 	test_alignment.cpp

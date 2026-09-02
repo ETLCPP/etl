@@ -4047,6 +4047,7 @@
     <ClInclude Include="..\etl_profile.h" />
     <ClInclude Include="..\murmurhash3.h" />
     <ClInclude Include="..\iterators_for_unit_tests.h" />
+    <ClInclude Include="..\clocks_for_unit_tests.h" />
     <ClInclude Include="..\unittest++\AssertException.h" />
     <ClInclude Include="..\unittest++\CheckMacros.h" />
     <ClInclude Include="..\unittest++\Checks.h" />
@@ -4083,6 +4084,7 @@
     <ClInclude Include="..\unit_test_framework.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\clocks_for_unit_tests.cpp" />
     <ClCompile Include="..\etl_error_handler\assert_function\assert_function.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang C++20|Win32'">true</ExcludedFromBuild>

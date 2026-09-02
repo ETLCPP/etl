@@ -1,5 +1,6 @@
 etl_test_sources = files(
 	'main.cpp',
+  'clocks_for_unit_tests.cpp',
 	'murmurhash3.cpp',
 	'test_algorithm.cpp',
 	'test_algorithm_ranges.cpp',
