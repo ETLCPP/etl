@@ -98,7 +98,7 @@ namespace etl
       ETL_ASSERT(update <= max() - old, ETL_ERROR(semaphore_out_of_bounds));
     }
 
-    static constexpr ptrdiff_t max() noexcept
+    static ETL_CONSTEXPR ptrdiff_t max() ETL_NOEXCEPT
     {
       return LeastMaxValue;
     }
