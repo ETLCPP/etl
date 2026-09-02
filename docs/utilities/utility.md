@@ -624,10 +624,10 @@ Casts `value` to the unsigned type.
 **Example**
 
 ```cpp
-char a = -50;
+int8_t a = -50;
 auto b = etl::to_unsigned(a);
 ```
-`b` is of type `unsigned char` and contains the value `206`.
+`b` is of type `uint8_t` and contains the value `206`.
 
 ---
 
@@ -647,7 +647,7 @@ Casts `value` to the signed type.
 **Example**
 
 ```cpp
-unsigned char a = 206;
+uint8_t a = 206;
 auto b = etl::to_signed(a);
 ```
-`b` is of type `char` and contains the value `-50`.
+`b` is of type `int8_t` and contains the value `-50`.
