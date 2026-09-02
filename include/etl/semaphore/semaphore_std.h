@@ -46,12 +46,12 @@ namespace etl
   namespace private_semaphore_std
   {
     template <class Clock>
-    struct CompatClock
+    struct compat_clock
     {
-      using rep                   = Clock::rep;
+      using rep                   = typename Clock::rep;
       using period                = std::ratio<Clock::period::num, Clock::period::den>;
       using duration              = std::chrono::duration<rep, period>;
-      using time_point            = std::chrono::time_point<CompatClock>;
+      using time_point            = std::chrono::time_point<compat_clock>;
       static const bool is_steady = Clock::is_steady;
       static time_point now()
       {
@@ -63,6 +63,9 @@ namespace etl
   template <ptrdiff_t LeastMaxValue = std::counting_semaphore<>::max()>
   class counting_semaphore
   {
+    ETL_STATIC_ASSERT(LeastMaxValue > 0, "LeastMaxValue should be 1 or more");
+    ETL_STATIC_ASSERT(LeastMaxValue <= std::counting_semaphore<>::max(), "LeastMaxValue is too high");
+
   public:
 
     explicit counting_semaphore(ptrdiff_t desired)
@@ -93,7 +96,7 @@ namespace etl
     {
       using CompatDuration = std::chrono::duration<typename Duration::rep, std::ratio<Duration::period::num, Duration::period::den>>;
 
-      std::chrono::time_point<private_semaphore_std::CompatClock<Clock>, CompatDuration> time_point{
+      std::chrono::time_point<private_semaphore_std::compat_clock<Clock>, CompatDuration> time_point{
         CompatDuration(abs_time.time_since_epoch().count())};
 
       return sem.try_acquire_until(time_point);
@@ -110,6 +113,10 @@ namespace etl
     }
 
   private:
+
+    // Non-copyable
+    counting_semaphore(const counting_semaphore&) ETL_DELETE;
+    counting_semaphore& operator=(const counting_semaphore&) ETL_DELETE;
 
     std::counting_semaphore<LeastMaxValue> sem;
   };

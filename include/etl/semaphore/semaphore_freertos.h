@@ -33,7 +33,12 @@ SOFTWARE.
 #include "../chrono.h"
 #include "../error_handler.h"
 #include "../limits.h"
+#include "../rounded_integral_division.h"
+#include "../type_traits.h"
 #include "semaphore_exceptions.h"
+
+#include "FreeRTOS.h"
+#include <semphr.h>
 
 namespace etl
 {
@@ -65,7 +70,7 @@ namespace etl
 
     bool try_acquire()
     {
-      return try_acquire_for(0_s);
+      return try_acquire_for(chrono::seconds(0));
     }
 
     template <class Rep, class Period>
