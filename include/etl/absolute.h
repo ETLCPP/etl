@@ -64,8 +64,7 @@ namespace etl
   }
 
   template <typename T>
-  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value && !etl::is_integral<T>::value, T>::type absolute(T value)
-    ETL_NOEXCEPT
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value && !etl::is_integral<T>::value, T>::type absolute(T value) ETL_NOEXCEPT
   {
     return (value < T(0)) ? -value : value;
   }
