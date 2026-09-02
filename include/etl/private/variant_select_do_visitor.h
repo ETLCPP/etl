@@ -34,7 +34,7 @@ SOFTWARE.
 namespace private_variant
 {
   //***************************************************************************
-  // Selects a do_visitor inplementation that is configured for the number of
+  // Selects a do_visitor implementation that is configured for the number of
   // types.
   //***************************************************************************
   template <size_t NTypes>

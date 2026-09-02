@@ -133,6 +133,8 @@ ETL_CONSTEXPR17 typename std::iterator_traits<TIterator>::difference_type
  distance(TIterator first, TIterator last)
 ```
 
+See [Ranges](../../ranges/ranges) for the `etl::ranges` range access primitives, including `etl::ranges::distance`.
+
 ## iterator
 A base class provided to simplify definitions of the required types for iterators.
 https://en.cppreference.com/w/cpp/iterator/iterator

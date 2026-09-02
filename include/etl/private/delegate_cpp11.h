@@ -413,32 +413,23 @@ namespace etl
     //*************************************************************************
     /// Execute the delegate.
     //*************************************************************************
-    template <typename... TCallArgs>
-    ETL_CONSTEXPR14 return_type operator()(TCallArgs&&... args) const
+    ETL_CONSTEXPR14 return_type operator()(TArgs... args) const
     {
-      ETL_STATIC_ASSERT((sizeof...(TCallArgs) == sizeof...(TArgs)), "Incorrect number of parameters passed to delegate");
-      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TCallArgs&&...>, argument_types>::value),
-                        "Incompatible parameter types passed to delegate");
-
       ETL_ASSERT(is_valid(), ETL_ERROR(delegate_uninitialised));
 
-      return (*invocation.stub)(invocation, etl::forward<TCallArgs>(args)...);
+      return (*invocation.stub)(invocation, etl::forward<TArgs>(args)...);
     }
 
     //*************************************************************************
     /// Execute the delegate if valid.
     /// 'void' return delegate.
     //*************************************************************************
-    template <typename TRet = TReturn, typename... TCallArgs>
-    ETL_CONSTEXPR14 typename etl::enable_if_t<etl::is_same<TRet, void>::value, bool> call_if(TCallArgs&&... args) const
+    template <typename TRet = TReturn>
+    ETL_CONSTEXPR14 typename etl::enable_if_t<etl::is_same<TRet, void>::value, bool> call_if(TArgs... args) const
     {
-      ETL_STATIC_ASSERT((sizeof...(TCallArgs) == sizeof...(TArgs)), "Incorrect number of parameters passed to delegate");
-      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TCallArgs&&...>, argument_types>::value),
-                        "Incompatible parameter types passed to delegate");
-
       if (is_valid())
       {
-        (*invocation.stub)(invocation, etl::forward<TCallArgs>(args)...);
+        (*invocation.stub)(invocation, etl::forward<TArgs>(args)...);
         return true;
       }
       else
@@ -451,18 +442,14 @@ namespace etl
     /// Execute the delegate if valid.
     /// Non 'void' return delegate.
     //*************************************************************************
-    template <typename TRet = TReturn, typename... TCallArgs>
-    ETL_CONSTEXPR14 typename etl::enable_if_t<!etl::is_same<TRet, void>::value, etl::optional<TReturn>> call_if(TCallArgs&&... args) const
+    template <typename TRet = TReturn>
+    ETL_CONSTEXPR14 typename etl::enable_if_t<!etl::is_same<TRet, void>::value, etl::optional<TReturn>> call_if(TArgs... args) const
     {
-      ETL_STATIC_ASSERT((sizeof...(TCallArgs) == sizeof...(TArgs)), "Incorrect number of parameters passed to delegate");
-      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TCallArgs&&...>, argument_types>::value),
-                        "Incompatible parameter types passed to delegate");
-
       etl::optional<TReturn> result;
 
       if (is_valid())
       {
-        result = (*invocation.stub)(invocation, etl::forward<TCallArgs>(args)...);
+        result = (*invocation.stub)(invocation, etl::forward<TArgs>(args)...);
       }
 
       return result;
@@ -472,20 +459,16 @@ namespace etl
     /// Execute the delegate if valid or call alternative.
     /// Run time alternative.
     //*************************************************************************
-    template <typename TAlternative, typename... TCallArgs>
-    ETL_CONSTEXPR14 TReturn call_or(TAlternative&& alternative, TCallArgs&&... args) const
+    template <typename TAlternative>
+    ETL_CONSTEXPR14 TReturn call_or(TAlternative&& alternative, TArgs... args) const
     {
-      ETL_STATIC_ASSERT((sizeof...(TCallArgs) == sizeof...(TArgs)), "Incorrect number of parameters passed to delegate");
-      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TCallArgs&&...>, argument_types>::value),
-                        "Incompatible parameter types passed to delegate");
-
       if (is_valid())
       {
-        return (*invocation.stub)(invocation, etl::forward<TCallArgs>(args)...);
+        return (*invocation.stub)(invocation, etl::forward<TArgs>(args)...);
       }
       else
       {
-        return etl::forward<TAlternative>(alternative)(etl::forward<TCallArgs>(args)...);
+        return etl::forward<TAlternative>(alternative)(etl::forward<TArgs>(args)...);
       }
     }
 
@@ -493,27 +476,23 @@ namespace etl
     /// Execute the delegate if valid or call alternative.
     /// Compile time alternative.
     //*************************************************************************
-    template <TReturn (*Method)(TArgs...), typename... TCallArgs>
-    ETL_CONSTEXPR14 TReturn call_or(TCallArgs&&... args) const
+    template <TReturn (*Method)(TArgs...)>
+    ETL_CONSTEXPR14 TReturn call_or(TArgs... args) const
     {
-      ETL_STATIC_ASSERT((sizeof...(TCallArgs) == sizeof...(TArgs)), "Incorrect number of parameters passed to delegate");
-      ETL_STATIC_ASSERT((etl::type_lists_are_convertible<etl::type_list<TCallArgs&&...>, argument_types>::value),
-                        "Incompatible parameter types passed to delegate");
-
       if (is_valid())
       {
-        return (*invocation.stub)(invocation, etl::forward<TCallArgs>(args)...);
+        return (*invocation.stub)(invocation, etl::forward<TArgs>(args)...);
       }
       else
       {
-        return (Method)(etl::forward<TCallArgs>(args)...);
+        return (Method)(etl::forward<TArgs>(args)...);
       }
     }
 
     //*************************************************************************
     /// Assignment
     //*************************************************************************
-    delegate& operator=(const delegate& rhs) = default;
+    ETL_CONSTEXPR14 delegate& operator=(const delegate& rhs) = default;
 
     //*************************************************************************
     /// Create from Lambda or Functor.
@@ -690,6 +669,14 @@ namespace etl
       //***********************************************************************
       ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
       {
+        if (stub == function_ptr_stub)
+        {
+          ptr.fp = ETL_NULLPTR;
+        }
+        else
+        {
+          ptr.object = ETL_NULLPTR;
+        }
         stub = ETL_NULLPTR;
       }
 

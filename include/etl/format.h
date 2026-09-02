@@ -35,7 +35,6 @@ SOFTWARE.
 
 #include "algorithm.h"
 #include "array.h"
-#include "array_view.h"
 #include "error_handler.h"
 #include "limits.h"
 #include "math.h"
@@ -91,44 +90,70 @@ namespace etl
       POINTER  // const void*
     };
 
-    // Map a type to its category. Decays and removes cv-qualifiers.
+    // Trait mapping a type (with references and cv-qualifiers removed) to its type_category.
+    //
+    // NOTE: signed char/unsigned char (typically int8_t/uint8_t) are NOT
+    // categorised as CHAR here - only plain 'char' gets character semantics.
+    // signed/unsigned char are formatted as integers, matching basic_format_arg
+    // storage and std::format's formatter<signed char>/<unsigned char>. This is
+    // enforced structurally: the INTEGER partial specialisation is constrained
+    // with is_integral<T> && !is_same<T, bool> && !is_same<T, char>, so
+    // signed/unsigned char (is_integral == true) fall into INTEGER while the
+    // dedicated bool/char full specialisations take priority for those exact types.
+    template <class T, class = void>
+    struct type_category_trait
+    {
+      static constexpr type_category value = type_category::NONE; // unknown type: custom formatter, be permissive
+    };
+
+    template <>
+    struct type_category_trait<bool>
+    {
+      static constexpr type_category value = type_category::BOOLEAN;
+    };
+
+    template <>
+    struct type_category_trait<char>
+    {
+      static constexpr type_category value = type_category::CHAR;
+    };
+
+    template <class T>
+    struct type_category_trait<
+      T, typename etl::enable_if<etl::is_integral<T>::value && !etl::is_same<T, bool>::value && !etl::is_same<T, char>::value>::type>
+    {
+      static constexpr type_category value = type_category::INTEGER;
+    };
+
+    template <class T>
+    struct type_category_trait<T, typename etl::enable_if<etl::is_floating_point<T>::value>::type>
+    {
+      static constexpr type_category value = type_category::FLOAT;
+    };
+
+    template <class T>
+    struct type_category_trait<T,
+                               typename etl::enable_if<etl::is_same<T, char*>::value || etl::is_same<T, const char*>::value
+                                                       || etl::is_same<T, etl::string_view>::value || etl::is_base_of<etl::istring, T>::value>::type>
+    {
+      static constexpr type_category value = type_category::STRING;
+    };
+
+    template <class T>
+    struct type_category_trait<
+      T, typename etl::enable_if<etl::is_pointer<T>::value && !etl::is_same<T, char*>::value && !etl::is_same<T, const char*>::value>::type>
+    {
+      static constexpr type_category value = type_category::POINTER;
+    };
+
+    // Map a type to its category. Removes references and cv-qualifiers, then defers
+    // entirely to the type_category_trait specialisations above.
     template <class T>
     constexpr type_category get_type_category()
     {
       using U = typename etl::remove_cv<typename etl::remove_reference<T>::type>::type;
 
-      // Order matters: bool before integral, char before integral
-      if (etl::is_same<U, bool>::value)
-        return type_category::BOOLEAN;
-      if (etl::is_same<U, char>::value)
-        return type_category::CHAR;
-      if (etl::is_same<U, signed char>::value)
-        return type_category::CHAR;
-      if (etl::is_same<U, unsigned char>::value)
-        return type_category::CHAR;
-      if (etl::is_integral<U>::value)
-        return type_category::INTEGER;
-      if (etl::is_same<U, float>::value)
-        return type_category::FLOAT;
-      if (etl::is_same<U, double>::value)
-        return type_category::FLOAT;
-      if (etl::is_same<U, long double>::value)
-        return type_category::FLOAT;
-      if (etl::is_same<U, const char*>::value)
-        return type_category::STRING;
-      if (etl::is_same<U, char*>::value)
-        return type_category::STRING;
-      if (etl::is_same<U, etl::string_view>::value)
-        return type_category::STRING;
-      if (etl::is_base_of<etl::istring, U>::value)
-        return type_category::STRING;
-      if (etl::is_pointer<U>::value)
-        return type_category::POINTER;
-      if (etl::is_same<U, const void*>::value)
-        return type_category::POINTER;
-      if (etl::is_same<U, void*>::value)
-        return type_category::POINTER;
-      return type_category::NONE; // unknown type: custom formatter, be permissive
+      return type_category_trait<U>::value;
     }
 
     // Check if a format type character is valid for a given type category.
@@ -601,7 +626,7 @@ namespace etl
     };
 
     template <typename T>
-    struct has_formatter_parse<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().parse(etl::declval<format_parse_context&>()))> >
+    struct has_formatter_parse<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().parse(etl::declval<format_parse_context&>()))>>
       : etl::true_type
     {
     };
@@ -616,7 +641,7 @@ namespace etl
 
     template <typename T>
     struct has_formatter_format<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().format(
-                                     etl::declval<const T&>(), etl::declval<etl::basic_format_context<char*, char>&>()))> > : etl::true_type
+                                     etl::declval<const T&>(), etl::declval<etl::basic_format_context<char*, char>&>()))>> : etl::true_type
     {
     };
 
@@ -727,13 +752,16 @@ namespace etl
     {
     }
 
+    // int8_t / uint8_t are typically defined as signed char / unsigned char, but
+    // (unlike plain char) they are formatted as integers by default, matching
+    // std::format's formatter<signed char>/formatter<unsigned char> behaviour.
     basic_format_arg(const signed char v)
-      : data(static_cast<char>(v))
+      : data(static_cast<int>(v))
     {
     }
 
     basic_format_arg(const unsigned char v)
-      : data(static_cast<char>(v))
+      : data(static_cast<unsigned int>(v))
     {
     }
 
@@ -777,7 +805,7 @@ namespace etl
     // Converting constructor for user-defined types that provide an
     // etl::formatter<T> specialisation. The value is stored type-erased in a
     // handle, matching the std::basic_format_arg behaviour for custom types.
-    template <typename T, typename = etl::enable_if_t<private_format::is_formattable<T>::value> >
+    template <typename T, typename = etl::enable_if_t<private_format::is_formattable<T>::value>>
     basic_format_arg(const T& v)
       : data(handle(v))
     {
@@ -834,7 +862,7 @@ namespace etl
       return _args.get(i);
     }
 
-    etl::array_view<basic_format_arg<Context>> get()
+    etl::span<basic_format_arg<Context>> get()
     {
       return _args;
     }
@@ -852,6 +880,15 @@ namespace etl
     template <class... Args>
     basic_format_args(format_arg_store<Context, Args...>& store)
       : _args(store.get())
+    {
+    }
+
+    // non-standard
+    // Constructs from externally owned storage, for cases where the number of
+    // arguments is only known at runtime and so no format_arg_store<Context, Args...>
+    // can be formed. The referenced storage must outlive this object.
+    explicit basic_format_args(etl::span<basic_format_arg<Context>> args_)
+      : _args(args_)
     {
     }
 
@@ -879,7 +916,7 @@ namespace etl
 
   private:
 
-    etl::array_view<basic_format_arg<Context>> _args;
+    etl::span<basic_format_arg<Context>> _args;
   };
 
   namespace private_format
@@ -1487,7 +1524,7 @@ namespace etl
     }
 
     // for integers
-    template <typename OutputIt, typename T, bool skip_last_zeros = false>
+    template <typename OutputIt, typename T>
     void format_num(OutputIt& it, T value, const format_spec_t& spec)
     {
       size_t width = 0;
@@ -1990,7 +2027,7 @@ namespace etl
       }
 
       // for user-defined types routed through basic_format_arg::handle
-      void operator()(typename basic_format_arg<format_context<OutputIt> >::handle h)
+      void operator()(typename basic_format_arg<format_context<OutputIt>>::handle h)
       {
         h.format(parse_ctx, fmt_ctx);
       }
