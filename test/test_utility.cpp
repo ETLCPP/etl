@@ -1511,11 +1511,11 @@ namespace
     //*************************************************************************
     TEST(test_to_unsigned_constexpr)
     {
-      const char value = static_cast<char>(-50);
+      const int8_t value = static_cast<int8_t>(-50);
 
       constexpr auto Size = etl::to_unsigned(value);
 
-      CHECK_EQUAL(static_cast<unsigned char>(value), Size);
+      CHECK_EQUAL(static_cast<uint8_t>(value), Size);
 
       int a[Size] = {0}; // Use Size in a context that requires a constant expression
       (void)a;           // Avoid unused variable warning
@@ -1524,11 +1524,11 @@ namespace
     //*************************************************************************
     TEST(test_to_signed_constexpr)
     {
-      const unsigned char value = static_cast<unsigned char>(50);
+      const uint8_t value = static_cast<uint8_t>(50);
 
       constexpr auto Size = etl::to_signed(value);
 
-      CHECK_EQUAL(static_cast<char>(value), Size);
+      CHECK_EQUAL(static_cast<int8_t>(value), Size);
 
       int a[Size] = {0}; // Use Size in a context that requires a constant expression
       (void)a;           // Avoid unused variable warning
