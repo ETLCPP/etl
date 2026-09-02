@@ -36,6 +36,8 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
+#if ETL_USING_CPP11
+
 namespace etl
 {
   namespace private_rounded_integral_division
@@ -565,7 +567,7 @@ namespace etl
 
     // Work with magnitudes in unsigned form (avoids abs() overflow for
     // T::min()).
-    typedef typename std::make_unsigned<T>::type utype;
+    typedef typename etl::make_unsigned<T>::type utype;
     const utype                                  abs_denominator  = (denominator < 0) ? (utype(0) - utype(denominator)) : utype(denominator);
     const utype                                  abs_remainder    = (remainder < 0) ? (utype(0) - utype(remainder)) : utype(remainder);
     const utype                                  half_denominator = abs_denominator / 2U;
@@ -783,4 +785,5 @@ namespace etl
   }
 } // namespace etl
 
+#endif
 #endif

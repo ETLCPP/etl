@@ -44,8 +44,8 @@ SOFTWARE.
 #include <stdint.h>
 
 #if defined(ETL_IN_UNIT_TEST) && ETL_NOT_USING_STL
-  #define ETL_DISABLE_TIMER_UPDATES
-  #define ETL_ENABLE_TIMER_UPDATES
+  #define ETL_DISABLE_TIMER_UPDATES ((void)0)
+  #define ETL_ENABLE_TIMER_UPDATES  ((void)0)
   #define ETL_TIMER_UPDATES_ENABLED true
 
   #undef ETL_MESSAGE_TIMER_USE_ATOMIC_LOCK
@@ -157,7 +157,6 @@ namespace etl
       list(etl::message_timer_data* ptimers_)
         : head(etl::timer::id::NO_TIMER)
         , tail(etl::timer::id::NO_TIMER)
-        , current(etl::timer::id::NO_TIMER)
         , ptimers(ptimers_)
       {
       }
@@ -286,22 +285,13 @@ namespace etl
       //*******************************
       etl::timer::id::type begin()
       {
-        current = head;
-        return current;
-      }
-
-      //*******************************
-      etl::timer::id::type previous(etl::timer::id::type last)
-      {
-        current = ptimers[last].previous;
-        return current;
+        return head;
       }
 
       //*******************************
       etl::timer::id::type next(etl::timer::id::type last)
       {
-        current = ptimers[last].next;
-        return current;
+        return ptimers[last].next;
       }
 
       //*******************************
@@ -316,16 +306,14 @@ namespace etl
           timer.next                     = etl::timer::id::NO_TIMER;
         }
 
-        head    = etl::timer::id::NO_TIMER;
-        tail    = etl::timer::id::NO_TIMER;
-        current = etl::timer::id::NO_TIMER;
+        head = etl::timer::id::NO_TIMER;
+        tail = etl::timer::id::NO_TIMER;
       }
 
     private:
 
       etl::timer::id::type head;
       etl::timer::id::type tail;
-      etl::timer::id::type current;
 
       etl::message_timer_data* const ptimers;
     };
@@ -391,7 +379,7 @@ namespace etl
           if (timer.is_active())
           {
             ETL_DISABLE_TIMER_UPDATES;
-            active_list.remove(timer.id, true);
+            active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
             ETL_ENABLE_TIMER_UPDATES;
           }

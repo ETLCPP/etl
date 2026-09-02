@@ -1,0 +1,3 @@
+{{ with resources.Get "version.txt" }}
+  {{ .Content | strings.TrimSpace }}
+{{ end }}

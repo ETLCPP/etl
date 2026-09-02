@@ -35,8 +35,9 @@ SOFTWARE.
 #include "functional.h"
 #include "type_traits.h"
 
+#include <stddef.h>
+
 ////#include <math.h>
-#include <stdint.h>
 
 namespace etl
 {

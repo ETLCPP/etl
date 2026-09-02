@@ -115,7 +115,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT(Size >= Other_Size, "Other size is too large");
 
-      memcpy(buffer, other.buffer, Size_);
+      memcpy(buffer, other.data(), Other_Size);
     }
 
     //***********************************
@@ -126,7 +126,7 @@ namespace etl
     {
       ETL_STATIC_ASSERT(Size >= Other_Size, "RHS size is too large");
 
-      memcpy(buffer, rhs.buffer, Size_);
+      memcpy(buffer, rhs.data(), Other_Size);
 
       return *this;
     }
@@ -565,7 +565,7 @@ namespace etl
     ETL_NODISCARD
     size_t alignment() const
     {
-      typedef typename etl::smallest_uint_for_bits<sizeof(uintptr_t) * CHAR_BIT>::type type;
+      typedef etl::smallest_uint_for_bits<sizeof(uintptr_t) * CHAR_BIT>::type type;
 
       const type p = reinterpret_cast<type>(pbuffer);
 

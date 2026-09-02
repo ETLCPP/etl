@@ -3541,6 +3541,7 @@
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
     <ClInclude Include="..\..\include\etl\delegate_observable.h" />
     <ClInclude Include="..\..\include\etl\expected.h" />
+    <ClInclude Include="..\..\include\etl\format.h" />
     <ClInclude Include="..\..\include\etl\function_traits.h" />
     <ClInclude Include="..\..\include\etl\gcd.h" />
     <ClInclude Include="..\..\include\etl\generators\fsm_cpp03_generator.h" />
@@ -3699,7 +3700,6 @@
     <ClInclude Include="..\..\include\etl\mutex\mutex_std.h" />
     <ClInclude Include="..\..\include\etl\packet.h" />
     <ClInclude Include="..\..\include\etl\permutations.h" />
-    <ClInclude Include="..\..\include\etl\private\ivectorpointer.h" />
     <ClInclude Include="..\..\include\etl\private\minmax_pop.h" />
     <ClInclude Include="..\..\include\etl\private\minmax_push.h" />
     <ClInclude Include="..\..\include\etl\profiles\arduino_arm.h" />
@@ -3786,6 +3786,7 @@
     <ClInclude Include="..\..\include\etl\ihash.h" />
     <ClInclude Include="..\..\include\etl\instance_count.h" />
     <ClInclude Include="..\..\include\etl\integral_limits.h" />
+    <ClInclude Include="..\..\include\etl\intrusive_avl_tree.h" />
     <ClInclude Include="..\..\include\etl\intrusive_forward_list.h" />
     <ClInclude Include="..\..\include\etl\intrusive_links.h" />
     <ClInclude Include="..\..\include\etl\intrusive_list.h" />
@@ -7200,6 +7201,26 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03 - No virtual messages|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\intrusive_avl_tree.h.t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang C++20|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang C++20 - Optimised -O2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++23|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++23 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual imessage|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++ 20 - No Tests|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - No STL - Optimised -O2 - Sanitiser|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++17 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release MSVC C++20 - Optimised O2|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - No virtual messages|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++14 - No STL|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03 - No virtual messages|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\syntax_check\intrusive_forward_list.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang C++20|Win32'">true</ExcludedFromBuild>
@@ -10197,6 +10218,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03 - No virtual messages|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\test_algorithm.cpp" />
+    <ClCompile Include="..\test_algorithm_ranges.cpp" />
     <ClCompile Include="..\test_alignment.cpp" />
     <ClCompile Include="..\test_atomic.cpp" />
     <ClCompile Include="..\test_base64_RFC2152_decoder.cpp" />
@@ -10273,8 +10295,9 @@
     <ClCompile Include="..\test_circular_buffer.cpp" />
     <ClCompile Include="..\test_circular_buffer_external_buffer.cpp" />
     <ClCompile Include="..\test_circular_iterator.cpp" />
-    <ClCompile Include="..\test_closure.cpp" />
-    <ClCompile Include="..\test_closure_constexpr.cpp" />
+    <ClCompile Include="..\test_closure_with_default_delegate.cpp" />
+    <ClCompile Include="..\test_closure_with_default_delegate_constexpr.cpp" />
+    <ClCompile Include="..\test_closure_with_inplace_function.cpp" />
     <ClCompile Include="..\test_concepts.cpp" />
     <ClCompile Include="..\test_const_map.cpp" />
     <ClCompile Include="..\test_const_map_constexpr.cpp" />
@@ -10640,6 +10663,7 @@
     <ClCompile Include="..\test_hash.cpp" />
     <ClCompile Include="..\test_instance_count.cpp" />
     <ClCompile Include="..\test_integral_limits.cpp" />
+    <ClCompile Include="..\test_intrusive_avl_tree.cpp" />
     <ClCompile Include="..\test_intrusive_forward_list.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC - No Tests|Win32'">false</ExcludedFromBuild>
@@ -11438,6 +11462,10 @@
     <ClCompile Include="..\test_variant_pool.cpp" />
     <ClCompile Include="..\test_vector.cpp" />
     <ClCompile Include="..\test_vector_external_buffer.cpp" />
+    <ClCompile Include="..\test_vector_function_pointer.cpp" />
+    <ClCompile Include="..\test_vector_function_pointer_external_buffer.cpp" />
+    <ClCompile Include="..\test_vector_member_function_pointer.cpp" />
+    <ClCompile Include="..\test_vector_member_function_pointer_external_buffer.cpp" />
     <ClCompile Include="..\test_vector_non_trivial.cpp" />
     <ClCompile Include="..\test_vector_pointer.cpp" />
     <ClCompile Include="..\test_vector_pointer_external_buffer.cpp" />
@@ -11473,19 +11501,32 @@
     <None Include="..\..\.clang-format" />
     <None Include="..\..\.coderabbit.yaml" />
     <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.github\workflows\bazel-gcc-c++23-no-stl.yml" />
     <None Include="..\..\.github\workflows\clang-c++11.yml" />
     <None Include="..\..\.github\workflows\clang-c++14.yml" />
     <None Include="..\..\.github\workflows\clang-c++17.yml" />
     <None Include="..\..\.github\workflows\clang-c++20.yml" />
     <None Include="..\..\.github\workflows\clang-c++23.yml" />
+    <None Include="..\..\.github\workflows\clang-c++26.yml" />
     <None Include="..\..\.github\workflows\clang-format.yaml" />
     <None Include="..\..\.github\workflows\clang-format_update.yaml" />
     <None Include="..\..\.github\workflows\clang-syntax-checks.yml" />
+    <None Include="..\..\.github\workflows\clang-tidy.yaml" />
+    <None Include="..\..\.github\workflows\coverage.yml" />
+    <None Include="..\..\.github\workflows\deploy-etl-documentation.yml" />
     <None Include="..\..\.github\workflows\gcc-c++11.yml" />
     <None Include="..\..\.github\workflows\gcc-c++14.yml" />
     <None Include="..\..\.github\workflows\gcc-c++17.yml" />
     <None Include="..\..\.github\workflows\gcc-c++20.yml" />
+    <None Include="..\..\.github\workflows\gcc-c++23-armhf.yml" />
+    <None Include="..\..\.github\workflows\gcc-c++23-i386.yml" />
+    <None Include="..\..\.github\workflows\gcc-c++23-powerpc.yml" />
+    <None Include="..\..\.github\workflows\gcc-c++23-riscv64.yml" />
+    <None Include="..\..\.github\workflows\gcc-c++23-s390x.yml" />
     <None Include="..\..\.github\workflows\gcc-c++23.yml" />
+    <None Include="..\..\.github\workflows\gcc-c++26.yml" />
+    <None Include="..\..\.github\workflows\generator.yml" />
+    <None Include="..\..\.github\workflows\meson-gcc-c++23-no-stl.yml" />
     <None Include="..\..\.github\workflows\msvc.yml" />
     <None Include="..\..\.github\workflows\gcc-syntax-checks.yml" />
     <None Include="..\..\.github\workflows\platformio-update.yml" />

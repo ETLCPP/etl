@@ -43,6 +43,7 @@ SOFTWARE.
 
 #include "data.h"
 
+#include "etl/char_traits.h"
 #include "etl/hash.h"
 #include "etl/unordered_map.h"
 
@@ -765,6 +766,73 @@ namespace
       DataNDC data;
 
       CHECK_THROW(data.insert(excess_data.begin(), excess_data.end()), etl::unordered_map_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      DataM data;
+
+      data.emplace(std::string("1"), ItemM(1));
+      data.emplace(std::string("2"), ItemM(2));
+      data.emplace(std::string("3"), ItemM(3));
+
+      CHECK_EQUAL(3U, data.size());
+      CHECK(1 == data.at("1").value);
+      CHECK(2 == data.at("2").value);
+      CHECK(3 == data.at("3").value);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_duplicate)
+    {
+      DataM data;
+
+      auto result1 = data.emplace(std::string("1"), ItemM(1));
+      auto result2 = data.emplace(std::string("1"), ItemM(99));
+
+      CHECK(result1.second == true);
+      CHECK(result2.second == false);
+      CHECK_EQUAL(1U, data.size());
+      CHECK(1 == data.at("1").value);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_try_emplace_value)
+    {
+      DataM data;
+
+      auto result1 = data.try_emplace(std::string("1"), ItemM(1));
+      CHECK(result1.second == true);
+      CHECK_EQUAL(1U, data.size());
+      CHECK(1 == data.at("1").value);
+
+      // Duplicate key: value should NOT be constructed
+      auto result2 = data.try_emplace(std::string("1"), ItemM(99));
+      CHECK(result2.second == false);
+      CHECK_EQUAL(1U, data.size());
+      CHECK(1 == data.at("1").value);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_try_emplace_rvalue_key)
+    {
+      DataM data;
+
+      std::string key1("1");
+      std::string key1_dup("1");
+
+      auto result1 = data.try_emplace(etl::move(key1), ItemM(1));
+      CHECK(result1.second == true);
+      CHECK(key1.empty()); // key was moved from
+      CHECK(1 == data.at("1").value);
+
+      // Duplicate key: key should NOT be moved from
+      auto result2 = data.try_emplace(etl::move(key1_dup), ItemM(99));
+      CHECK(result2.second == false);
+      CHECK(!key1_dup.empty()); // key was NOT moved
+      CHECK(1 == data.at("1").value);
+      CHECK_EQUAL(1U, data.size());
     }
 
     //*************************************************************************

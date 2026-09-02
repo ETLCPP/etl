@@ -121,12 +121,18 @@ namespace etl
   {
   private:
 
-    using object_ptr   = void*;
+    /// Type-erased pointer to the bound object instance.
+    using object_ptr = void*;
+
+    /// Pointer type for a runtime-bound free function with the delegate's signature.
     using function_ptr = TReturn (*)(TArgs...);
 
   public:
 
-    using return_type    = TReturn;
+    /// The delegate's return type.
+    using return_type = TReturn;
+
+    /// Type list of the delegate's argument types.
     using argument_types = etl::type_list<TArgs...>;
 
     //*************************************************************************
@@ -137,12 +143,12 @@ namespace etl
     }
 
     //*************************************************************************
-    // Copy constructor.
+    /// Copy constructor.
     //*************************************************************************
     ETL_CONSTEXPR14 delegate(const delegate& other) = default;
 
     //*************************************************************************
-    // Construct from lambda or functor.
+    /// Construct from a lambda or functor.
     //*************************************************************************
     template < typename TLambda, typename = etl::enable_if_t< etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 delegate(TLambda& instance) ETL_NOEXCEPT
@@ -151,7 +157,7 @@ namespace etl
     }
 
     //*************************************************************************
-    // Construct from const lambda or functor.
+    /// Construct from a const lambda or functor.
     //*************************************************************************
     template < typename TLambda, typename = etl::enable_if_t< etl::is_class<TLambda>::value && !is_delegate<TLambda>::value, void>>
     ETL_CONSTEXPR14 delegate(const TLambda& instance) ETL_NOEXCEPT
@@ -160,8 +166,8 @@ namespace etl
     }
 
     //*************************************************************************
-    // Delete construction from rvalue reference lambda or functor.
-    // Excludes non-capturing lambdas convertible to a function pointer.
+    /// Delete construction from an rvalue reference lambda or functor.
+    /// Excludes non-capturing lambdas convertible to a function pointer.
     //*************************************************************************
     template <typename TLambda,
               typename = etl::enable_if_t<etl::is_class<TLambda>::value && !etl::is_same<etl::delegate<TReturn(TArgs...)>, TLambda>::value
@@ -170,11 +176,11 @@ namespace etl
     ETL_CONSTEXPR14 delegate(TLambda&& instance) = delete;
 
     //*************************************************************************
-    // Construct from a function pointer.
+    /// Construct from a function pointer.
     //*************************************************************************
-    delegate(function_ptr fp) ETL_NOEXCEPT
+    explicit ETL_CONSTEXPR14 delegate(function_ptr fp) ETL_NOEXCEPT
+      : invocation(fp, function_ptr_stub)
     {
-      assign(fp, function_ptr_stub);
     }
 
     //*************************************************************************
@@ -208,10 +214,10 @@ namespace etl
     }
 
     //*************************************************************************
-    // Create from a function pointer.
+    /// Create from a function pointer.
     //*************************************************************************
     ETL_NODISCARD
-    static delegate create(function_ptr fp) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 delegate create(function_ptr fp) ETL_NOEXCEPT
     {
       return delegate(fp, function_ptr_stub);
     }
@@ -333,9 +339,9 @@ namespace etl
     }
 
     //*************************************************************************
-    // Set from a function pointer.
+    /// Set from a function pointer.
     //*************************************************************************
-    void set(function_ptr fp) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void set(function_ptr fp) ETL_NOEXCEPT
     {
       assign(fp, function_ptr_stub);
     }
@@ -530,11 +536,18 @@ namespace etl
     }
 
     //*************************************************************************
-    // Create from a function pointer.
+    /// Assign from a function pointer.
     //*************************************************************************
-    delegate& operator=(function_ptr fp) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 delegate& operator=(function_ptr fp) ETL_NOEXCEPT
     {
-      assign(fp, function_ptr_stub);
+      if (fp == ETL_NULLPTR)
+      {
+        invocation.clear();
+      }
+      else
+      {
+        assign(fp, function_ptr_stub);
+      }
       return *this;
     }
 
@@ -559,6 +572,14 @@ namespace etl
     //*************************************************************************
     ETL_NODISCARD ETL_CONSTEXPR14 bool is_valid() const ETL_NOEXCEPT
     {
+      // GCC's UBSan instruments function pointer comparisons, which prevents
+      // constexpr evaluation. Use implicit bool conversion at compile time
+      // to avoid the instrumented != comparison while still checking validity.
+      if (etl::is_constant_evaluated())
+      {
+        return static_cast<bool>(invocation.stub);
+      }
+
       return invocation.stub != ETL_NULLPTR;
     }
 
@@ -608,8 +629,11 @@ namespace etl
     //*************************************************************************
     struct invocation_element
     {
+      /// Signature of the dispatch stub used to invoke the bound callable.
       using stub_type = TReturn (*)(const invocation_element&, TArgs...);
 
+      //***********************************************************************
+      /// Constructs an empty invocation element (no bound callable).
       //***********************************************************************
       ETL_CONSTEXPR14 invocation_element() ETL_NOEXCEPT
         : ptr(object_ptr(ETL_NULLPTR))
@@ -618,12 +642,17 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Constructs an invocation element with only a stub (used for
+      /// compile-time bindings that need no associated object pointer).
+      //***********************************************************************
       ETL_CONSTEXPR14 invocation_element(stub_type stub_) ETL_NOEXCEPT
         : ptr()
         , stub(stub_)
       {
       }
 
+      //***********************************************************************
+      /// Constructs an invocation element bound to an object pointer and stub.
       //***********************************************************************
       ETL_CONSTEXPR14 invocation_element(object_ptr object_, stub_type stub_) ETL_NOEXCEPT
         : ptr(object_)
@@ -632,6 +661,8 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Constructs an invocation element bound to a function pointer and stub.
+      //***********************************************************************
       ETL_CONSTEXPR14 invocation_element(function_ptr fp_, stub_type stub_) ETL_NOEXCEPT
         : ptr(fp_)
         , stub(stub_)
@@ -639,11 +670,15 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Equality compares the stub and the active pointer member.
+      //***********************************************************************
       ETL_CONSTEXPR14 bool operator==(const invocation_element& rhs) const ETL_NOEXCEPT
       {
         return (rhs.stub == stub) && ((stub == function_ptr_stub) ? (rhs.ptr.fp == ptr.fp) : (rhs.ptr.object == ptr.object));
       }
 
+      //***********************************************************************
+      /// Inequality compares the stub and the active pointer member.
       //***********************************************************************
       ETL_CONSTEXPR14 bool operator!=(const invocation_element& rhs) const ETL_NOEXCEPT
       {
@@ -651,24 +686,31 @@ namespace etl
       }
 
       //***********************************************************************
+      /// Resets the invocation element to the empty state.
+      //***********************************************************************
       ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
       {
         stub = ETL_NULLPTR;
       }
 
       //***********************************************************************
+      /// Storage holding either an object pointer or a function pointer.
+      //***********************************************************************
       union ptr_type
       {
+        /// Default-constructs with a null object pointer as the active member.
         ETL_CONSTEXPR14 ptr_type() ETL_NOEXCEPT
           : object(ETL_NULLPTR)
         {
         }
 
+        /// Constructs with the object pointer as the active member.
         ETL_CONSTEXPR14 ptr_type(object_ptr object_) ETL_NOEXCEPT
           : object(object_)
         {
         }
 
+        /// Constructs with the function pointer as the active member.
         ETL_CONSTEXPR14 ptr_type(function_ptr fp_) ETL_NOEXCEPT
           : fp(fp_)
         {
@@ -682,6 +724,7 @@ namespace etl
       stub_type stub;
     };
 
+    /// Function pointer type used to dispatch through the invocation stub.
     using stub_type = typename invocation_element::stub_type;
 
     //*************************************************************************

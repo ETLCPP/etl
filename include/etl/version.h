@@ -39,7 +39,7 @@ SOFTWARE.
 ///\ingroup utilities
 
 #define ETL_VERSION_MAJOR 20
-#define ETL_VERSION_MINOR 47
+#define ETL_VERSION_MINOR 48
 #define ETL_VERSION_PATCH 1
 
 #define ETL_VERSION             \

@@ -118,12 +118,12 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(T())
     {
     }
 
-    atomic(T v)
+    ETL_CONSTEXPR atomic(T v)
       : value(v)
     {
     }
@@ -341,6 +341,68 @@ namespace etl
       return __atomic_fetch_xor(&value, v, order);
     }
 
+    // Fetch max
+    T fetch_max(T v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      T old = load(order);
+
+      while (v > old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    T fetch_max(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      T old = load(order);
+
+      while (v > old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    // Fetch min
+    T fetch_min(T v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      T old = load(order);
+
+      while (v < old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    T fetch_min(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      T old = load(order);
+
+      while (v < old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
     // Exchange
     T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
@@ -410,7 +472,7 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0U)
     {
     }
@@ -656,12 +718,12 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0U)
     {
     }
 
-    atomic(bool v)
+    ETL_CONSTEXPR atomic(bool v)
       : value(char(v))
     {
     }
@@ -997,12 +1059,12 @@ namespace etl
 
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "Only integral types are supported");
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0)
     {
     }
 
-    atomic(T v)
+    ETL_CONSTEXPR atomic(T v)
       : value(v)
     {
     }
@@ -1234,6 +1296,72 @@ namespace etl
       return __sync_fetch_and_xor(&value, v);
     }
 
+    // Fetch max
+    T fetch_max(T v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      (void)order;
+      T old = load(order);
+
+      while (v > old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    T fetch_max(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      (void)order;
+      T old = load(order);
+
+      while (v > old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    // Fetch min
+    T fetch_min(T v, etl::memory_order order = etl::memory_order_seq_cst)
+    {
+      (void)order;
+      T old = load(order);
+
+      while (v < old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
+    T fetch_min(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+    {
+      (void)order;
+      T old = load(order);
+
+      while (v < old)
+      {
+        if (compare_exchange_weak(old, v, order))
+        {
+          break;
+        }
+      }
+
+      return old;
+    }
+
     // Exchange
     T exchange(T v, etl::memory_order order = etl::memory_order_seq_cst)
     {
@@ -1401,7 +1529,7 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0U)
     {
     }
@@ -1711,12 +1839,12 @@ namespace etl
   {
   public:
 
-    atomic()
+    ETL_CONSTEXPR atomic()
       : value(0U)
     {
     }
 
-    atomic(bool v)
+    ETL_CONSTEXPR atomic(bool v)
       : value(char(v))
     {
     }

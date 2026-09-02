@@ -5475,5 +5475,32 @@ namespace
       CHECK(text1 == sstream_view);
     }
 #endif
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_char_pointer_n_shorter_than_strlen)
+    {
+      const value_t haystack_str[] = STR("Hello World");
+
+      TextSTD compare(haystack_str);
+      TextL   text(haystack_str);
+
+      // Haystack is "Hello World" (size 11).
+      // search_str is "Worldly" (strlen 7).
+      // We search for first 5 chars ("World") starting at pos=6.
+      //   Old code: (6 + 7 = 13) > 11 → premature npos (BUG)
+      //   Fixed:    (6 + 5 = 11) <= 11 → proceeds to search → finds at 6
+      const value_t search_str[] = STR("Worldly");
+
+      size_t pos_std = compare.find(search_str, 6, 5);
+      size_t pos_etl = text.find(search_str, 6, 5);
+      CHECK_EQUAL(6U, pos_std);
+      CHECK_EQUAL(pos_std, pos_etl);
+
+      // pos=5 also triggers: (5 + 7 = 12) > 11 with old code
+      pos_std = compare.find(search_str, 5, 5);
+      pos_etl = text.find(search_str, 5, 5);
+      CHECK_EQUAL(6U, pos_std);
+      CHECK_EQUAL(pos_std, pos_etl);
+    }
   }
 } // namespace

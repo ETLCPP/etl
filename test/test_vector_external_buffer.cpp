@@ -46,6 +46,8 @@ namespace
   int buffer4[SIZE];
   int buffer5[SIZE];
 
+  int bufferLarger[SIZE + 1];
+
   SUITE(test_vector_external_buffer)
   {
     typedef etl::vector_ext<int> Data;
@@ -184,6 +186,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_copy_construct_from_larger_vector_ext)
+    {
+      Data data(initial_data.begin(), initial_data.end(), bufferLarger, SIZE + 1);
+      data.resize(SIZE + 1, 0);
+      CHECK_THROW(Data data2(data, buffer1, SIZE), etl::vector_full);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_move_constructor)
     {
       Data data(initial_data.begin(), initial_data.end(), buffer1, SIZE);
@@ -191,6 +201,14 @@ namespace
       CHECK(data.size() == 0);
       CHECK(data2.size() == initial_data.size());
       CHECK(data2 != data);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_move_construct_from_larger_vector_ext)
+    {
+      Data data(initial_data.begin(), initial_data.end(), bufferLarger, SIZE + 1);
+      data.resize(SIZE + 1, 0);
+      CHECK_THROW(Data data2(etl::move(data), buffer1, SIZE), etl::vector_full);
     }
 
     //*************************************************************************

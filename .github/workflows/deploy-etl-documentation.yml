@@ -1,0 +1,44 @@
+name: Deploy documentation via SFTP
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./hugo
+
+    steps:
+      # Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      # Install and set up Hugo
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      # Build the static site
+      - name: Build Hugo Site
+        run: hugo --cleanDestinationDir --minify --baseURL "https://www.etlcpp.com/"
+
+      # Upload the files via rsync.
+      - name: Deploy via rsync
+        uses: burnett01/rsync-deployments@8.0.5
+        with:
+          switches: -avzr --delete
+          path: hugo/public/
+          remote_path: ${{ secrets.DOCS_DEST_DIR }}
+          remote_host: ${{ secrets.DOCS_SSH_SERVER }}
+          remote_port: ${{ secrets.DOCS_SSH_PORT }}
+          remote_user: ${{ secrets.DOCS_SSH_USER }}
+          remote_key: ${{ secrets.DOCS_DEPLOY_KEY }}

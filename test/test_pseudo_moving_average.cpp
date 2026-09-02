@@ -344,5 +344,15 @@ namespace
 
       CHECK_CLOSE(2.82, cma.value(), 0.01);
     }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_pseudo_moving_average_constexpr_ctor)
+    {
+      constexpr etl::pseudo_moving_average<int, 4> pma(0);
+      static_assert(sizeof(pma) > 0, "constexpr ctor");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

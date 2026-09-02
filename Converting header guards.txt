@@ -1,4 +1,4 @@
-How to convert the ETL header beween #include guards and #pragma once.
+How to convert the ETL header between #include guards and #pragma once.
 
 Install
 python3 -m pip install guardonce

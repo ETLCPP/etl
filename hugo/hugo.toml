@@ -1,0 +1,79 @@
+baseURL = 'http://localhost/'
+#baseURL = 'https://www.etlcpp.com/hugo/'
+languageCode = 'en-gb'
+title = 'Embedded Template Library'
+includeFiles = [".htaccess"]
+
+[markup]
+  [markup.highlight]
+    noClasses = false   # Must be false to use external CSS
+    style = "github"
+
+  [markup.goldmark.renderer]
+    unsafe = true
+
+  [markup.goldmark.parser.attribute]
+    block = true
+
+[module]
+  [[module.mounts]]
+    source = "../docs"
+    target = "content/docs"
+
+  [[module.imports]]
+    path = 'github.com/imfing/hextra'
+
+[params]
+  contentDir = "content/docs"
+  
+  [params.theme]
+    customCSS = ["css/custom.css"]
+
+  [params.page]
+    width = "wide"
+
+  [params.navbar]
+    displayTitle = true
+    [params.navbar.logo]
+      path = "images/logo.png"
+      link = "/"
+
+  [params.search]
+    enable = true
+    
+  [params.sidebar]
+    # This stops the sidebar from "drilling down" into H2/H3 headers
+    levels = 1 
+    # Ensure these are also set to prevent auto-expansion
+    defaultOpen = false
+    autoCollapse = true
+
+[[menus.main]]
+  name = "Home"
+  pageRef = "/docs"
+  weight = 1
+
+[[menus.main]]
+  name = "Github"
+  url = "https://github.com/ETLCPP/etl.git"
+  weight = 2
+
+[[menus.main]]
+  name = "Slack"
+  url = "https://slofile.com/slack/etlcpp"
+  weight = 3
+
+[[menus.main]]
+  name = "Arduino"
+  url = "https://github.com/ETLCPP/etl-arduino/archive/master.zip"
+  weight = 4
+
+[[menus.main]]
+  name = "Blog"
+  pageRef = "/docs/blog"
+  weight = 5
+
+[[menus.main]]
+name = "About"
+pageRef = "/docs/about"
+weight = 999

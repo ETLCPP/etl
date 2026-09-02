@@ -286,5 +286,86 @@ namespace
       CHECK_EQUAL(0, time.fractional_width);
       CHECK_TRUE((std::is_same<duration_type, Chrono::hh_mm_ss<duration_type>::precision>::value));
     }
+
+    //*************************************************************************
+    TEST(test_is_am)
+    {
+      for (int h = 0; h <= 11; ++h)
+      {
+        CHECK_TRUE(Chrono::is_am(Chrono::hours(h)));
+      }
+
+      for (int h = 12; h <= 23; ++h)
+      {
+        CHECK_FALSE(Chrono::is_am(Chrono::hours(h)));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_is_pm)
+    {
+      for (int h = 0; h <= 11; ++h)
+      {
+        CHECK_FALSE(Chrono::is_pm(Chrono::hours(h)));
+      }
+
+      for (int h = 12; h <= 23; ++h)
+      {
+        CHECK_TRUE(Chrono::is_pm(Chrono::hours(h)));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_make12)
+    {
+      // Midnight (0h) maps to 12h.
+      CHECK_EQUAL(12, Chrono::make12(Chrono::hours(0)).count());
+
+      // 1h..12h are unchanged.
+      for (int h = 1; h <= 12; ++h)
+      {
+        CHECK_EQUAL(h, Chrono::make12(Chrono::hours(h)).count());
+      }
+
+      // 13h..23h map to 1h..11h.
+      for (int h = 13; h <= 23; ++h)
+      {
+        CHECK_EQUAL(h - 12, Chrono::make12(Chrono::hours(h)).count());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_make24)
+    {
+      // am: 12h maps to 0h, 1h..11h are unchanged.
+      CHECK_EQUAL(0, Chrono::make24(Chrono::hours(12), false).count());
+
+      for (int h = 1; h <= 11; ++h)
+      {
+        CHECK_EQUAL(h, Chrono::make24(Chrono::hours(h), false).count());
+      }
+
+      // pm: 12h stays 12h, 1h..11h map to 13h..23h.
+      CHECK_EQUAL(12, Chrono::make24(Chrono::hours(12), true).count());
+
+      for (int h = 1; h <= 11; ++h)
+      {
+        CHECK_EQUAL(h + 12, Chrono::make24(Chrono::hours(h), true).count());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_make12_make24_round_trip)
+    {
+      // For every 24-hour value, make12 plus its am/pm flag round-trips via make24.
+      for (int h = 0; h <= 23; ++h)
+      {
+        Chrono::hours h24(h);
+        bool          pm  = Chrono::is_pm(h24);
+        Chrono::hours h12 = Chrono::make12(h24);
+
+        CHECK_EQUAL(h, Chrono::make24(h12, pm).count());
+      }
+    }
   }
 } // namespace

@@ -296,6 +296,7 @@ namespace etl
     histogram(const histogram& other)
     {
       this->accumulator = other.accumulator;
+      start_index       = other.start_index;
     }
 
 #if ETL_USING_CPP11
@@ -305,6 +306,7 @@ namespace etl
     histogram(histogram&& other)
     {
       this->accumulator = etl::move(other.accumulator);
+      start_index       = other.start_index;
     }
 #endif
 
@@ -314,6 +316,7 @@ namespace etl
     histogram& operator=(const histogram& rhs)
     {
       this->accumulator = rhs.accumulator;
+      start_index       = rhs.start_index;
 
       return *this;
     }
@@ -325,6 +328,7 @@ namespace etl
     histogram& operator=(histogram&& rhs)
     {
       this->accumulator = etl::move(rhs.accumulator);
+      start_index       = rhs.start_index;
 
       return *this;
     }
@@ -479,7 +483,7 @@ namespace etl
     //*********************************
     const_iterator end() const
     {
-      return accumulator.begin();
+      return accumulator.end();
     }
 
     //*********************************
@@ -487,7 +491,7 @@ namespace etl
     //*********************************
     const_iterator cend() const
     {
-      return accumulator.cbegin();
+      return accumulator.cend();
     }
 
     //*********************************

@@ -1353,6 +1353,51 @@ namespace etl
       }
     }
 
+#if ETL_USING_CPP11 && ETL_NOT_USING_STLPORT
+    //*********************************************************************
+    /// Emplaces a value to the multiset.
+    //*********************************************************************
+    template <typename... Args>
+    iterator emplace(Args&&... args)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(multiset_full));
+
+      // Construct the value
+      Data_Node* p_node = allocate_data_node();
+      ::new ((void*)&p_node->value) value_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      // Obtain the inserted node
+      Node* inserted_node = insert_node(root_node, *p_node);
+
+      return iterator(*this, inserted_node);
+    }
+#else
+    //*********************************************************************
+    /// Emplaces a value to the multiset.
+    //*********************************************************************
+    iterator emplace(const_reference value)
+    {
+      return insert(value);
+    }
+
+    //*********************************************************************
+    /// Emplaces a value to the multiset.
+    //*********************************************************************
+    template <typename T1>
+    iterator emplace(const T1& value1)
+    {
+      ETL_ASSERT(!full(), ETL_ERROR(multiset_full));
+
+      Data_Node* p_node = allocate_data_node();
+      ::new ((void*)&p_node->value) value_type(value1);
+      ETL_INCREMENT_DEBUG_COUNT;
+
+      Node* inserted_node = insert_node(root_node, *p_node);
+      return iterator(*this, inserted_node);
+    }
+#endif
+
     //*********************************************************************
     /// Returns an iterator pointing to the first element in the container
     /// whose key is not considered to go before the key provided or end()

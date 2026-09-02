@@ -44,7 +44,6 @@ SOFTWARE.
 #include "utility.h"
 
 #include <stddef.h>
-#include <stdint.h>
 
 #include "private/minmax_push.h"
 
@@ -458,22 +457,11 @@ namespace etl
         using ETL_OR_STD::swap; // Allow ADL
 
         swap(index, other.index);
+        swap(p_deque, other.p_deque);
+        swap(p_buffer, other.p_buffer);
       }
 
     private:
-
-      //***************************************************
-      difference_type distance(difference_type firstIndex, difference_type index_) const
-      {
-        if (index_ < firstIndex)
-        {
-          return static_cast<difference_type>(p_deque->Buffer_Size) + index_ - firstIndex;
-        }
-        else
-        {
-          return index_ - firstIndex;
-        }
-      }
 
       //***************************************************
       iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)
@@ -619,10 +607,10 @@ namespace etl
       }
 
       //***************************************************
-      reference operator[](size_t i)
+      const_reference operator[](size_t i) const
       {
-        iterator result(*this);
-        result += i;
+        const_iterator result(*this);
+        result += static_cast<difference_type>(i);
 
         return *result;
       }
@@ -717,22 +705,11 @@ namespace etl
       void swap(const_iterator& other)
       {
         ETL_OR_STD::swap(index, other.index);
+        ETL_OR_STD::swap(p_deque, other.p_deque);
+        ETL_OR_STD::swap(p_buffer, other.p_buffer);
       }
 
     private:
-
-      //***************************************************
-      difference_type distance(difference_type firstIndex, difference_type index_) const
-      {
-        if (index_ < firstIndex)
-        {
-          return static_cast<difference_type>(p_deque->Buffer_Size) + index_ - firstIndex;
-        }
-        else
-        {
-          return index_ - firstIndex;
-        }
-      }
 
       //***************************************************
       const_iterator(difference_type index_, ideque& the_deque, pointer p_buffer_)

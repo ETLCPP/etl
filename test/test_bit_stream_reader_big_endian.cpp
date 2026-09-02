@@ -99,7 +99,7 @@ namespace
     {
       char storage = 0x5AU;
 
-      etl::bit_stream_reader bit_stream(&storage, 1, etl::endian::big);
+      etl::bit_stream_reader bit_stream(&storage, 1, etl::bit_order::msb_first);
 
       CHECK_EQUAL(1U, bit_stream.size_bytes());
 
@@ -154,7 +154,7 @@ namespace
     {
       char storage = 0x5AU;
 
-      etl::bit_stream_reader bit_stream(&storage, 1, etl::endian::big);
+      etl::bit_stream_reader bit_stream(&storage, 1, etl::bit_order::msb_first);
 
       CHECK_EQUAL(1U, bit_stream.size_bytes());
 
@@ -210,7 +210,7 @@ namespace
       std::array<char, 4U>   storage  = {char(0x01), char(0x5A), char(0xA5), char(0xFF)};
       std::array<int8_t, 4U> expected = {int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -246,7 +246,7 @@ namespace
       std::array<char, 4U>   storage  = {char(0x01), char(0x5A), char(0xA5), char(0xFF)};
       std::array<int8_t, 4U> expected = {int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -282,7 +282,7 @@ namespace
       std::array<char, 4U>   storage  = {char(0x01), char(0x5A), char(0xA5), char(0xFF)};
       std::array<int8_t, 4U> expected = {int8_t(0x01), int8_t(0x5A), int8_t(0xA5), int8_t(0xFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -307,7 +307,7 @@ namespace
       std::array<char, 3U>   storage  = {char(0x0E), char(0x8B), char(0xF0)};
       std::array<int8_t, 4U> expected = {int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -343,7 +343,7 @@ namespace
       std::array<char, 3U>   storage  = {char(0x0E), char(0x8B), char(0xF0)};
       std::array<int8_t, 4U> expected = {int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -377,7 +377,7 @@ namespace
       std::array<char, 3U>   storage  = {char(0x0E), char(0x8B), char(0xF0)};
       std::array<int8_t, 4U> expected = {int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -413,7 +413,7 @@ namespace
       std::array<char, 3U>   storage  = {char(0x0E), char(0x8B), char(0xF0)};
       std::array<int8_t, 4U> expected = {int8_t(0x01), int8_t(0xFA), int8_t(0x05), int8_t(0xFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -438,7 +438,7 @@ namespace
       std::array<char, 4U>    storage  = {char(0x01), char(0x5A), char(0xA5), char(0xFF)};
       std::array<uint8_t, 4U> expected = {uint8_t(0x01), uint8_t(0x5A), uint8_t(0xA5), uint8_t(0xFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -474,7 +474,7 @@ namespace
       std::array<char, 3U> storage  = {char(0x0E), char(0x8B), char(0xF0)};
       std::array<char, 4U> expected = {uint8_t(0x01), uint8_t(0x1A), uint8_t(0x05), uint8_t(0x1F)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -510,7 +510,7 @@ namespace
       std::array<char, 8U>    storage  = {char(0x00), char(0x01), char(0xA5), char(0x5A), char(0x5A), char(0xA5), char(0xFF), char(0xFF)};
       std::array<int16_t, 4U> expected = {int16_t(0x0001), int16_t(0xA55A), int16_t(0x5AA5), int16_t(0xFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -546,7 +546,7 @@ namespace
       std::array<char, 5U>    storage  = {char(0x00), char(0x55), char(0xAA), char(0x97), char(0xFF)};
       std::array<int16_t, 4U> expected = {int16_t(0x0001), int16_t(0x015A), int16_t(0xFEA5), int16_t(0xFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -582,7 +582,7 @@ namespace
       std::array<char, 8U>     storage  = {char(0x00), char(0x01), char(0xA5), char(0x5A), char(0x5A), char(0xA5), char(0xFF), char(0xFF)};
       std::array<uint16_t, 4U> expected = {uint16_t(0x0001), uint16_t(0xA55A), uint16_t(0x5AA5), uint16_t(0xFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -618,7 +618,7 @@ namespace
       std::array<char, 5U>     storage  = {char(0x00), char(0x55), char(0xAA), char(0x97), char(0xFF)};
       std::array<uint16_t, 4U> expected = {uint16_t(0x0001), uint16_t(0x015A), uint16_t(0x02A5), uint16_t(0x03FF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -655,7 +655,7 @@ namespace
                                           char(0x5A), char(0xA5), char(0x5A), char(0xA5), char(0xFF), char(0xFF), char(0xFF), char(0xFF)};
       std::array<int32_t, 4U> expected = {int32_t(0x00000001), int32_t(0xA55AA55A), int32_t(0x5AA55AA5), int32_t(0xFFFFFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -692,7 +692,7 @@ namespace
                                           char(0x56), char(0xA9), char(0x7F), char(0xFF), char(0xFF)};
       std::array<int32_t, 4U> expected = {int32_t(0x00000001), int32_t(0x001AA55A), int32_t(0xFFE55AA5), int32_t(0xFFFFFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -729,7 +729,7 @@ namespace
                                            char(0x5A), char(0xA5), char(0x5A), char(0xA5), char(0xFF), char(0xFF), char(0xFF), char(0xFF)};
       std::array<uint32_t, 4U> expected = {uint32_t(0x00000001), uint32_t(0xA55AA55A), uint32_t(0x5AA55AA5), uint32_t(0xFFFFFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -766,7 +766,7 @@ namespace
                                            char(0x56), char(0xA9), char(0x7F), char(0xFF), char(0xFF)};
       std::array<uint32_t, 4U> expected = {uint32_t(0x00000001), uint32_t(0x001AA55A), uint32_t(0x00255AA5), uint32_t(0x003FFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -806,7 +806,7 @@ namespace
       std::array<int64_t, 4U> expected = {int64_t(0x0000000000000001), int64_t(0xA55AA55AA55AA55A), int64_t(0x5AA55AA55AA55AA5),
                                           int64_t(0xFFFFFFFFFFFFFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -845,7 +845,7 @@ namespace
       std::array<int64_t, 4U> expected = {int64_t(0x0000000000000001), int64_t(0x0000255AA55AA55A), int64_t(0xFFFFDAA55AA55AA5),
                                           int64_t(0xFFFFFFFFFFFFFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -885,7 +885,7 @@ namespace
       std::array<uint64_t, 4U> expected = {uint64_t(0x0000000000000001), uint64_t(0xA55AA55AA55AA55A), uint64_t(0x5AA55AA55AA55AA5),
                                            uint64_t(0xFFFFFFFFFFFFFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -924,7 +924,7 @@ namespace
       std::array<uint64_t, 4U> expected = {uint64_t(0x0000000000000001), uint64_t(0x0000255AA55AA55A), uint64_t(0x00005AA55AA55AA5),
                                            uint64_t(0x00007FFFFFFFFFFF)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -967,7 +967,7 @@ namespace
       std::array<char, 14U> storage = {char(0x5A), char(0x12), char(0x34), char(0x89), char(0xAB), char(0xCD), char(0xEF),
                                        char(0xFE), char(0xDC), char(0xBA), char(0x98), char(0x56), char(0x78), char(0xA5)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1009,7 +1009,7 @@ namespace
       std::array<char, 11U> storage = {char(0x6A), char(0x46), char(0x8A), char(0xF3), char(0x7B), char(0xDB),
                                        char(0x97), char(0x53), char(0x19), char(0xE1), char(0x28)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1053,7 +1053,7 @@ namespace
 
       auto storage_span = etl::span<char, etl::dynamic_extent>(storage.data(), storage.size());
 
-      etl::bit_stream_reader bit_stream(storage_span, etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage_span, etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1098,7 +1098,7 @@ namespace
 
       auto storage_span = etl::span<unsigned char, etl::dynamic_extent>(storage.data(), storage.size());
 
-      etl::bit_stream_reader bit_stream(storage_span, etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage_span, etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1142,7 +1142,7 @@ namespace
 
       auto storage_span = etl::span<char, 11U>(storage.data(), storage.size());
 
-      etl::bit_stream_reader bit_stream(storage_span, etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage_span, etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1187,7 +1187,7 @@ namespace
 
       auto storage_span = etl::span<unsigned char, 11U>(storage.data(), storage.size());
 
-      etl::bit_stream_reader bit_stream(storage_span, etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage_span, etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1231,7 +1231,7 @@ namespace
 
       auto storage_span = etl::span<const char, etl::dynamic_extent>(storage.data(), storage.size());
 
-      etl::bit_stream_reader bit_stream(storage_span, etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage_span, etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1276,7 +1276,7 @@ namespace
 
       auto storage_span = etl::span<const unsigned char, etl::dynamic_extent>(storage.data(), storage.size());
 
-      etl::bit_stream_reader bit_stream(storage_span, etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage_span, etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1320,7 +1320,7 @@ namespace
 
       auto storage_span = etl::span<const char, 11U>(storage.data(), storage.size());
 
-      etl::bit_stream_reader bit_stream(storage_span, etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage_span, etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1365,7 +1365,7 @@ namespace
 
       auto storage_span = etl::span<const unsigned char, 11U>(storage.data(), storage.size());
 
-      etl::bit_stream_reader bit_stream(storage_span, etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage_span, etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1407,7 +1407,7 @@ namespace
       std::array<char, 11U> storage = {char(0x6A), char(0x46), char(0x8A), char(0xF3), char(0x7B), char(0xDB),
                                        char(0x97), char(0x53), char(0x19), char(0xE1), char(0x28)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1442,7 +1442,7 @@ namespace
       std::array<char, 12U> storage = {char(0xEC), char(0xBA), char(0xDE), char(0x68), char(0xAF), char(0xD2),
                                        char(0xC5), char(0xC8), char(0x65), char(0xD3), char(0xDF), char(0x80)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 
@@ -1470,7 +1470,7 @@ namespace
       std::array<char, 12U> storage = {char(0xEC), char(0xBA), char(0xDE), char(0x68), char(0xAF), char(0xD2),
                                        char(0xC5), char(0xC8), char(0x65), char(0xD3), char(0xDF), char(0x80)};
 
-      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::endian::big);
+      etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
       CHECK_EQUAL(storage.size(), bit_stream.size_bytes());
 

@@ -108,7 +108,7 @@ namespace etl
           if (timer.is_active())
           {
             ++process_semaphore;
-            active_list.remove(timer.id, true);
+            active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
             --process_semaphore;
           }
@@ -466,7 +466,6 @@ namespace etl
       timer_list(timer_data* ptimers_)
         : head(etl::timer::id::NO_TIMER)
         , tail(etl::timer::id::NO_TIMER)
-        , current(etl::timer::id::NO_TIMER)
         , ptimers(ptimers_)
       {
       }
@@ -595,22 +594,13 @@ namespace etl
       //*******************************
       etl::timer::id::type begin()
       {
-        current = head;
-        return current;
-      }
-
-      //*******************************
-      etl::timer::id::type previous(etl::timer::id::type last)
-      {
-        current = ptimers[last].previous;
-        return current;
+        return head;
       }
 
       //*******************************
       etl::timer::id::type next(etl::timer::id::type last)
       {
-        current = ptimers[last].next;
-        return current;
+        return ptimers[last].next;
       }
 
       //*******************************
@@ -625,16 +615,14 @@ namespace etl
           timer.next        = etl::timer::id::NO_TIMER;
         }
 
-        head    = etl::timer::id::NO_TIMER;
-        tail    = etl::timer::id::NO_TIMER;
-        current = etl::timer::id::NO_TIMER;
+        head = etl::timer::id::NO_TIMER;
+        tail = etl::timer::id::NO_TIMER;
       }
 
     private:
 
       etl::timer::id::type head;
       etl::timer::id::type tail;
-      etl::timer::id::type current;
 
       timer_data* const ptimers;
     };

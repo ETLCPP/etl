@@ -47,6 +47,64 @@ SOFTWARE.
 #include <type_traits>
 #include <vector>
 
+//***************************************************************************
+/// A non-trivially-relocatable type that tracks moves and destructions.
+/// Used to exercise the manual move-and-destroy path of etl::relocate.
+//***************************************************************************
+struct relocatable_t
+{
+  int  value;
+  bool was_moved_into; ///< true when this object was constructed via move
+
+  static int destructor_count;
+
+  static void reset_counts()
+  {
+    destructor_count = 0;
+  }
+
+  explicit relocatable_t(int v = 0)
+    : value(v)
+    , was_moved_into(false)
+  {
+  }
+
+  relocatable_t(relocatable_t&& other) ETL_NOEXCEPT
+    : value(other.value)
+    , was_moved_into(true)
+  {
+    other.value = -1; // mark source as moved-from
+  }
+
+  ~relocatable_t()
+  {
+    ++destructor_count;
+  }
+
+  // Non-copyable to make the intent clear.
+  relocatable_t(const relocatable_t&)            = delete;
+  relocatable_t& operator=(const relocatable_t&) = delete;
+  relocatable_t& operator=(relocatable_t&&)      = delete;
+};
+
+int relocatable_t::destructor_count = 0;
+
+// In configurations where etl::is_nothrow_relocatable is a class template
+// (non-STL builds), we must provide an explicit specialisation so that
+// etl::relocate is enabled for relocatable_t.  When the STL is available the
+// trait is a type alias that already evaluates to true for types with a
+// nothrow move constructor and a nothrow destructor, so no specialisation is
+// needed (or even possible).
+#if !(ETL_USING_STL && ETL_USING_CPP11)
+namespace etl
+{
+  template <>
+  struct is_nothrow_relocatable<relocatable_t> : public etl::true_type
+  {
+  };
+} // namespace etl
+#endif
+
 namespace
 {
   typedef std::string    non_trivial_t;
@@ -99,6 +157,33 @@ namespace
     void operator()(U* /*p*/) const
     {
     }
+  };
+
+  //***********************************
+  // A minimal fancy pointer with a nested element_type and a static
+  // pointer_to. Used to exercise etl::pointer_traits' primary template.
+  template <typename T>
+  struct fancy_pointer
+  {
+    typedef T element_type;
+
+    T* raw;
+
+    static fancy_pointer pointer_to(T& r)
+    {
+      fancy_pointer p;
+      p.raw = etl::addressof(r);
+      return p;
+    }
+  };
+
+  //***********************************
+  // A fancy pointer without a nested element_type, so pointer_traits must
+  // deduce the element type from the first template parameter.
+  template <typename T>
+  struct bare_pointer
+  {
+    T* raw;
   };
 } // namespace
 
@@ -866,6 +951,56 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_swap_deleters)
+    {
+      struct Deleter
+      {
+        char id;
+
+        explicit Deleter(const char id_)
+          : id(id_)
+        {
+        }
+
+        Deleter(const Deleter&)            = delete;
+        Deleter& operator=(const Deleter&) = delete;
+
+        Deleter(Deleter&& other) noexcept
+          : id(other.id)
+        {
+          other.id = ' ';
+        }
+
+        Deleter& operator=(Deleter&& other) noexcept
+        {
+          if (&other != this)
+          {
+            id       = other.id;
+            other.id = ' ';
+          }
+
+          return *this;
+        }
+
+        ~Deleter() = default;
+
+        void operator()(int*) const {}
+      };
+
+      int                           a_obj = 1;
+      int                           b_obj = 2;
+      etl::unique_ptr<int, Deleter> up1(&a_obj, Deleter('A'));
+      etl::unique_ptr<int, Deleter> up2(&b_obj, Deleter('B'));
+
+      up1.swap(up2);
+
+      CHECK_EQUAL(2, *up1);
+      CHECK_EQUAL('B', up1.get_deleter().id);
+      CHECK_EQUAL(1, *up2);
+      CHECK_EQUAL('A', up2.get_deleter().id);
+    }
+
+    //*************************************************************************
     TEST(test_unique_ptr_from_nullptr_assignment)
     {
       etl::unique_ptr<int> up(new int);
@@ -1007,6 +1142,56 @@ namespace
       CHECK_EQUAL(1, up2[1]);
       CHECK_EQUAL(2, up2[2]);
       CHECK_EQUAL(3, up2[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_array_swap_deleters)
+    {
+      struct Deleter
+      {
+        char id;
+
+        explicit Deleter(const char id_)
+          : id(id_)
+        {
+        }
+
+        Deleter(const Deleter&)            = delete;
+        Deleter& operator=(const Deleter&) = delete;
+
+        Deleter(Deleter&& other) noexcept
+          : id(other.id)
+        {
+          other.id = ' ';
+        }
+
+        Deleter& operator=(Deleter&& other) noexcept
+        {
+          if (&other != this)
+          {
+            id       = other.id;
+            other.id = ' ';
+          }
+
+          return *this;
+        }
+
+        ~Deleter() = default;
+
+        void operator()(int*) const {}
+      };
+
+      int                             a_obj = 1;
+      int                             b_obj = 2;
+      etl::unique_ptr<int[], Deleter> up1(&a_obj, Deleter('A'));
+      etl::unique_ptr<int[], Deleter> up2(&b_obj, Deleter('B'));
+
+      up1.swap(up2);
+
+      CHECK_EQUAL(2, up1[0]);
+      CHECK_EQUAL('B', up1.get_deleter().id);
+      CHECK_EQUAL(1, up2[0]);
+      CHECK_EQUAL('A', up2.get_deleter().id);
     }
 
     //*************************************************************************
@@ -1648,6 +1833,157 @@ namespace
 
       CHECK_EQUAL(&i, etl::to_address(pi));
       CHECK_EQUAL(plist_item, etl::to_address(itr));
+    }
+
+    //*************************************************************************
+    TEST(test_launder)
+    {
+      int  i = 42;
+      int* p = etl::launder(&i);
+      CHECK_EQUAL(&i, p);
+      CHECK_EQUAL(42, *p);
+
+      // Launder a new object created in reused storage.
+      struct quad_t
+      {
+        uint8_t a;
+        uint8_t b;
+        uint8_t c;
+        uint8_t d;
+      };
+
+      alignas(quad_t) unsigned char buffer[sizeof(quad_t)];
+      quad_t*                       q  = ::new (buffer) quad_t{1, 2, 3, 4};
+      quad_t*                       lq = etl::launder(q);
+      CHECK(reinterpret_cast<unsigned char*>(lq) == buffer);
+      CHECK_EQUAL(1, lq->a);
+      CHECK_EQUAL(2, lq->b);
+      CHECK_EQUAL(3, lq->c);
+      CHECK_EQUAL(4, lq->d);
+    }
+
+    //*************************************************************************
+    TEST(test_start_lifetime_as)
+    {
+      struct quad_t
+      {
+        uint8_t a;
+        uint8_t b;
+        uint8_t c;
+        uint8_t d;
+      };
+
+      alignas(quad_t) unsigned char buffer[sizeof(quad_t)] = {1, 2, 3, 4};
+
+      quad_t* p = etl::start_lifetime_as<quad_t>(buffer);
+      CHECK(reinterpret_cast<unsigned char*>(p) == buffer);
+      CHECK_EQUAL(1, p->a);
+      CHECK_EQUAL(2, p->b);
+      CHECK_EQUAL(3, p->c);
+      CHECK_EQUAL(4, p->d);
+
+      const void*   cbuffer = buffer;
+      const quad_t* cp      = etl::start_lifetime_as<quad_t>(cbuffer);
+      CHECK(reinterpret_cast<const unsigned char*>(cp) == buffer);
+      CHECK_EQUAL(1, cp->a);
+      CHECK_EQUAL(4, cp->d);
+    }
+
+    //*************************************************************************
+    TEST(test_start_lifetime_as_array)
+    {
+      alignas(uint16_t) unsigned char buffer[sizeof(uint16_t) * 3] = {0, 0, 0, 0, 0, 0};
+
+      uint16_t* p = etl::start_lifetime_as_array<uint16_t>(buffer, 3);
+      CHECK(reinterpret_cast<unsigned char*>(p) == buffer);
+      p[0] = 1;
+      p[2] = 2;
+      CHECK_EQUAL(1, p[0]);
+      CHECK_EQUAL(2, p[2]);
+
+      // n == 0 returns a pointer comparing equal to p.
+      uint16_t* p0 = etl::start_lifetime_as_array<uint16_t>(buffer, 0);
+      CHECK(reinterpret_cast<unsigned char*>(p0) == buffer);
+    }
+
+    //*************************************************************************
+    TEST(test_pointer_traits)
+    {
+      typedef etl::pointer_traits<int*> traits;
+
+      CHECK((std::is_same<int*, traits::pointer>::value));
+      CHECK((std::is_same<int, traits::element_type>::value));
+      CHECK((std::is_same<ptrdiff_t, traits::difference_type>::value));
+#if ETL_USING_CPP11
+      CHECK((std::is_same<char*, traits::rebind<char> >::value));
+#endif
+
+      int  i = 42;
+      int* p = traits::pointer_to(i);
+      CHECK_EQUAL(&i, p);
+    }
+
+    //*************************************************************************
+    TEST(test_pointer_traits_fancy_pointer)
+    {
+      typedef etl::pointer_traits<fancy_pointer<int> > traits;
+
+      CHECK((std::is_same<fancy_pointer<int>, traits::pointer>::value));
+      CHECK((std::is_same<int, traits::element_type>::value));
+      CHECK((std::is_same<ptrdiff_t, traits::difference_type>::value));
+      CHECK((std::is_same<fancy_pointer<char>, traits::rebind<char> >::value));
+
+      int                i = 42;
+      fancy_pointer<int> p = traits::pointer_to(i);
+      CHECK_EQUAL(&i, p.raw);
+
+      // element_type and rebind are deduced from the first template parameter
+      // when there is no nested element_type.
+      CHECK((std::is_same<int, etl::pointer_traits<bare_pointer<int> >::element_type>::value));
+      CHECK((std::is_same<bare_pointer<char>, etl::pointer_traits<bare_pointer<int> >::rebind<char> >::value));
+    }
+
+    //*************************************************************************
+    TEST(test_align)
+    {
+      alignas(16) unsigned char buffer[64];
+
+      void*  ptr   = buffer + 1; // Deliberately misaligned.
+      size_t space = sizeof(buffer) - 1;
+
+      void* aligned = etl::align(16, 8, ptr, space);
+
+      // 'buffer' is 16-aligned, so aligning 'buffer + 1' to 16 skips 15 bytes of
+      // padding, landing on 'buffer + 16' and shrinking 'space' by that padding.
+      CHECK(aligned != ETL_NULLPTR);
+      CHECK(reinterpret_cast<unsigned char*>(aligned) == buffer + 16);
+      CHECK(reinterpret_cast<unsigned char*>(ptr) == buffer + 16);
+      CHECK_EQUAL(sizeof(buffer) - 1 - 15, space);
+
+      // Not enough space returns nullptr.
+      void*  small_ptr   = buffer + 1;
+      size_t small_space = 2;
+      CHECK(etl::align(16, 8, small_ptr, small_space) == ETL_NULLPTR);
+    }
+
+    //*************************************************************************
+    TEST(test_assume_aligned)
+    {
+      alignas(16) int data[4] = {1, 2, 3, 4};
+
+      int* p = etl::assume_aligned<16>(&data[0]);
+      CHECK_EQUAL(&data[0], p);
+      CHECK_EQUAL(1, *p);
+    }
+
+    //*************************************************************************
+    TEST(test_is_sufficiently_aligned)
+    {
+      alignas(16) unsigned char buffer[32];
+
+      CHECK(etl::is_sufficiently_aligned<16>(buffer));
+      CHECK(etl::is_sufficiently_aligned<8>(buffer));
+      CHECK(!etl::is_sufficiently_aligned<16>(buffer + 1));
     }
 
 #if ETL_USING_CPP17
@@ -2658,6 +2994,306 @@ namespace
       auto result = etl::ranges::destroy_n(p, 0);
 
       CHECK(result == p);
+    }
+#endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_trivially_relocate_trivial)
+    {
+      alignas(trivial_t) unsigned char src_buffer[sizeof(trivial_t) * SIZE];
+      alignas(trivial_t) unsigned char dst_buffer[sizeof(trivial_t) * SIZE];
+
+      trivial_t* src = reinterpret_cast<trivial_t*>(src_buffer);
+      trivial_t* dst = reinterpret_cast<trivial_t*>(dst_buffer);
+
+      // Initialize source
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        src[i] = test_data_trivial[i];
+      }
+
+      // Relocate
+      trivial_t* result = etl::trivially_relocate(src, src + SIZE, dst);
+
+      // Check result
+      CHECK(result == dst + SIZE);
+
+      // Check destination values
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], dst[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_trivially_relocate_same_location)
+    {
+      alignas(trivial_t) unsigned char buffer[sizeof(trivial_t) * SIZE];
+      trivial_t*                       p = reinterpret_cast<trivial_t*>(buffer);
+
+      // Initialize
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        p[i] = test_data_trivial[i];
+      }
+
+      // Relocate to same location should return last
+      trivial_t* result = etl::trivially_relocate(p, p + SIZE, p);
+
+      CHECK(result == p + SIZE);
+
+      // Values should be unchanged
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], p[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_trivially_relocate_empty_range)
+    {
+      alignas(trivial_t) unsigned char src_buffer[sizeof(trivial_t) * SIZE];
+      alignas(trivial_t) unsigned char dst_buffer[sizeof(trivial_t) * SIZE];
+
+      trivial_t* src = reinterpret_cast<trivial_t*>(src_buffer);
+      trivial_t* dst = reinterpret_cast<trivial_t*>(dst_buffer);
+
+      // Relocate empty range
+      trivial_t* result = etl::trivially_relocate(src, src, dst);
+
+      CHECK(result == dst);
+    }
+
+    //*************************************************************************
+    TEST(test_trivially_relocate_overlapping_forward)
+    {
+      alignas(trivial_t) unsigned char buffer[sizeof(trivial_t) * (SIZE + 2)];
+      trivial_t*                       p = reinterpret_cast<trivial_t*>(buffer);
+
+      // Initialize
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        p[i] = test_data_trivial[i];
+      }
+
+      // Relocate forward (overlapping) - shift elements by 2
+      trivial_t* result = etl::trivially_relocate(p, p + SIZE, p + 2);
+
+      CHECK(result == p + SIZE + 2);
+
+      // Check values
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], p[i + 2]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_trivial)
+    {
+      alignas(trivial_t) unsigned char src_buffer[sizeof(trivial_t) * SIZE];
+      alignas(trivial_t) unsigned char dst_buffer[sizeof(trivial_t) * SIZE];
+
+      trivial_t* src = reinterpret_cast<trivial_t*>(src_buffer);
+      trivial_t* dst = reinterpret_cast<trivial_t*>(dst_buffer);
+
+      // Initialize source
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        src[i] = test_data_trivial[i];
+      }
+
+      // Relocate
+      trivial_t* result = etl::relocate(src, src + SIZE, dst);
+
+      // Check result
+      CHECK(result == dst + SIZE);
+
+      // Check destination values
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], dst[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_same_location)
+    {
+      alignas(trivial_t) unsigned char buffer[sizeof(trivial_t) * SIZE];
+      trivial_t*                       p = reinterpret_cast<trivial_t*>(buffer);
+
+      // Initialize
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        p[i] = test_data_trivial[i];
+      }
+
+      // Relocate to same location should return last
+      trivial_t* result = etl::relocate(p, p + SIZE, p);
+
+      CHECK(result == p + SIZE);
+
+      // Values should be unchanged
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        CHECK_EQUAL(test_data_trivial[i], p[i]);
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_empty_range)
+    {
+      alignas(trivial_t) unsigned char src_buffer[sizeof(trivial_t) * SIZE];
+      alignas(trivial_t) unsigned char dst_buffer[sizeof(trivial_t) * SIZE];
+
+      trivial_t* src = reinterpret_cast<trivial_t*>(src_buffer);
+      trivial_t* dst = reinterpret_cast<trivial_t*>(dst_buffer);
+
+      // Relocate empty range
+      trivial_t* result = etl::relocate(src, src, dst);
+
+      CHECK(result == dst);
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_non_trivial)
+    {
+      const size_t N = 5;
+
+      alignas(relocatable_t) unsigned char src_buffer[sizeof(relocatable_t) * N];
+      alignas(relocatable_t) unsigned char dst_buffer[sizeof(relocatable_t) * N];
+
+      relocatable_t* src = reinterpret_cast<relocatable_t*>(src_buffer);
+      relocatable_t* dst = reinterpret_cast<relocatable_t*>(dst_buffer);
+
+      // Placement-new source objects
+      for (size_t i = 0; i < N; ++i)
+      {
+        ::new (static_cast<void*>(src + i)) relocatable_t(static_cast<int>(i + 1));
+      }
+
+      relocatable_t::reset_counts();
+
+      // Relocate (non-trivial path: move-construct into dst, destroy src)
+      relocatable_t* result = etl::relocate(src, src + N, dst);
+
+      // Returned pointer must be one-past-end of destination
+      CHECK(result == dst + N);
+
+      // Destination objects were move-constructed with correct values
+      for (size_t i = 0; i < N; ++i)
+      {
+        CHECK_EQUAL(static_cast<int>(i + 1), dst[i].value);
+        CHECK(dst[i].was_moved_into);
+      }
+
+      // Destructors were called for the N source objects
+      CHECK_EQUAL(static_cast<int>(N), relocatable_t::destructor_count);
+
+      // Clean up destination objects
+      relocatable_t::reset_counts();
+      for (size_t i = 0; i < N; ++i)
+      {
+        dst[i].~relocatable_t();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_non_trivial_same_location)
+    {
+      const size_t N = 5;
+
+      alignas(relocatable_t) unsigned char buffer[sizeof(relocatable_t) * N];
+      relocatable_t*                       p = reinterpret_cast<relocatable_t*>(buffer);
+
+      // Placement-new objects
+      for (size_t i = 0; i < N; ++i)
+      {
+        ::new (static_cast<void*>(p + i)) relocatable_t(static_cast<int>(i + 1));
+      }
+
+      relocatable_t::reset_counts();
+
+      // Relocating to the same location should be a no-op (early return)
+      relocatable_t* result = etl::relocate(p, p + N, p);
+
+      CHECK(result == p + N);
+
+      // No destructors should have been called (no move-and-destroy performed)
+      CHECK_EQUAL(0, relocatable_t::destructor_count);
+
+      // Values should be unchanged
+      for (size_t i = 0; i < N; ++i)
+      {
+        CHECK_EQUAL(static_cast<int>(i + 1), p[i].value);
+        CHECK(!p[i].was_moved_into);
+      }
+
+      // Clean up
+      relocatable_t::reset_counts();
+      for (size_t i = 0; i < N; ++i)
+      {
+        p[i].~relocatable_t();
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_relocate_non_trivial_empty_range)
+    {
+      alignas(relocatable_t) unsigned char src_buffer[sizeof(relocatable_t)];
+      alignas(relocatable_t) unsigned char dst_buffer[sizeof(relocatable_t)];
+
+      relocatable_t* src = reinterpret_cast<relocatable_t*>(src_buffer);
+      relocatable_t* dst = reinterpret_cast<relocatable_t*>(dst_buffer);
+
+      relocatable_t::reset_counts();
+
+      // Empty range: first == last
+      relocatable_t* result = etl::relocate(src, src, dst);
+
+      CHECK(result == dst);
+
+      // No destructors should have been called
+      CHECK_EQUAL(0, relocatable_t::destructor_count);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_wipe_on_destruct)
+    {
+      struct Data : public etl::wipe_on_destruct<Data>
+      {
+        uint32_t d1;
+        uint32_t d2;
+        char     d3;
+      };
+
+      alignas(Data) unsigned char buffer[sizeof(Data)] = {0};
+
+      // Construct a Data object in the buffer with known non-zero values.
+      Data* p = new (buffer) Data();
+      p->d1   = 0x12345678UL;
+      p->d2   = 0xAABBCCDDUL;
+      p->d3   = char(0xEE);
+
+      // Destroy the object; wipe_on_destruct should zero the memory.
+      p->~Data();
+
+      // Verify the memory occupied by the object has been cleared.
+      unsigned char zeroes[sizeof(Data)] = {0};
+      CHECK(memcmp(buffer, zeroes, sizeof(Data)) == 0);
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_default_delete_constexpr_copy_ctor)
+    {
+      constexpr etl::default_delete<int> d1;
+      constexpr etl::default_delete<int> d2(d1);
+      (void)d2;
+      static_assert(sizeof(d2) > 0, "constexpr default_delete copy ctor");
+      CHECK(true);
     }
 #endif
   }

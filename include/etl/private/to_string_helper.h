@@ -218,20 +218,42 @@ namespace etl
     /// Helper function for floating point nan and inf.
     //***************************************************************************
     template <typename TIString>
-    void add_nan_inf(const bool not_a_number, const bool infinity, TIString& str)
+    void add_nan_inf(const bool not_a_number, const bool infinity, const bool is_negative, TIString& str,
+                     const etl::basic_format_spec<TIString>& format)
     {
       typedef typename TIString::value_type type;
 
-      static const type n[] = {'n', 'a', 'n'};
-      static const type i[] = {'i', 'n', 'f'};
+      static const type nan_lower[] = {'n', 'a', 'n'};
+      static const type nan_upper[] = {'N', 'A', 'N'};
+      static const type inf_lower[] = {'i', 'n', 'f'};
+      static const type inf_upper[] = {'I', 'N', 'F'};
 
       if (not_a_number)
       {
-        str.insert(str.end(), ETL_OR_STD11::begin(n), ETL_OR_STD11::end(n));
+        if (format.is_upper_case())
+        {
+          str.insert(str.end(), ETL_OR_STD11::begin(nan_upper), ETL_OR_STD11::end(nan_upper));
+        }
+        else
+        {
+          str.insert(str.end(), ETL_OR_STD11::begin(nan_lower), ETL_OR_STD11::end(nan_lower));
+        }
       }
       else if (infinity)
       {
-        str.insert(str.end(), ETL_OR_STD11::begin(i), ETL_OR_STD11::end(i));
+        if (is_negative)
+        {
+          str.push_back(type('-'));
+        }
+
+        if (format.is_upper_case())
+        {
+          str.insert(str.end(), ETL_OR_STD11::begin(inf_upper), ETL_OR_STD11::end(inf_upper));
+        }
+        else
+        {
+          str.insert(str.end(), ETL_OR_STD11::begin(inf_lower), ETL_OR_STD11::end(inf_lower));
+        }
       }
     }
 
@@ -276,13 +298,136 @@ namespace etl
 #endif
 
     //***************************************************************************
+    /// Helper function for floating point in scientific format.
+    //***************************************************************************
+    template <typename T, typename TIString>
+    void add_floating_point_scientific(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const uint32_t max_precision)
+    {
+      typedef typename TIString::value_type type;
+
+      const uint32_t requested_precision = format.get_precision();
+      const uint32_t precision           = (requested_precision > max_precision) ? max_precision : requested_precision;
+
+      etl::basic_format_spec<TIString> mantissa_integral_format = format;
+      mantissa_integral_format.decimal().width(0U).precision(0U);
+
+      etl::basic_format_spec<TIString> mantissa_fractional_format = mantissa_integral_format;
+      mantissa_fractional_format.precision(precision).width(precision).fill(type('0')).right();
+
+      T abs_value = etl::absolute(value);
+
+      // Find exponent by iterative scaling
+      int32_t exponent = 0;
+      T       scaled   = abs_value;
+
+      if (scaled >= T(1))
+      {
+        // Scale down for values >= 1
+        while (scaled >= T(10))
+        {
+          scaled /= T(10);
+          ++exponent;
+        }
+      }
+      else if (scaled > T(0))
+      {
+        // Scale up for values < 1
+        while (scaled < T(1))
+        {
+          scaled *= T(10);
+          --exponent;
+        }
+      }
+
+      // Calculate the multiplier for the fractional part.
+      uworkspace_t multiplier = 1U;
+      for (uint32_t i = 0U; i < precision; ++i)
+      {
+        multiplier *= 10U;
+      }
+
+      // Find the integral part of the floating point
+      T            f_integral = ::floor(scaled);
+      uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
+
+      // Find the fractional part of the floating point.
+      uworkspace_t fractional = static_cast<uworkspace_t>(::round((scaled - f_integral) * multiplier));
+
+      // Check for a rounding carry to the integral.
+      if (fractional == multiplier)
+      {
+        ++integral;
+        fractional = 0U;
+
+        if (integral == 10U)
+        {
+          integral = 1U;
+          ++exponent;
+        }
+      }
+
+      etl::private_to_string::add_integral_and_fractional(integral, fractional, str, mantissa_integral_format, mantissa_fractional_format,
+                                                          etl::is_negative(value));
+
+      // Append the exponent.
+      str.push_back(format.is_upper_case() ? type('E') : type('e'));
+      str.push_back((exponent < 0) ? type('-') : type('+'));
+
+      uworkspace_t abs_exponent = static_cast<uworkspace_t>(etl::absolute(exponent));
+
+      etl::basic_format_spec<TIString> exponent_format = format;
+      exponent_format.decimal().width(1U).precision(0U).right();
+
+      etl::private_to_string::add_integral(abs_exponent, str, exponent_format, true, false);
+    }
+
+    //***************************************************************************
+    /// Helper function for floating point in non-scientific format.
+    //***************************************************************************
+    template <typename T, typename TIString>
+    void add_floating_point_non_scientific(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const uint32_t max_precision)
+    {
+      typedef typename TIString::value_type type;
+
+      etl::basic_format_spec<TIString> integral_format = format;
+      integral_format.decimal().width(0).precision(format.get_precision() > max_precision ? max_precision : format.get_precision());
+
+      etl::basic_format_spec<TIString> fractional_format = integral_format;
+      fractional_format.width(integral_format.get_precision()).fill(type('0')).right();
+
+      // Calculate the multiplier for the fractional part.
+      uworkspace_t multiplier = 1U;
+
+      for (uint32_t i = 0U; i < fractional_format.get_precision(); ++i)
+      {
+        multiplier *= 10U;
+      }
+
+      // Find the integral part of the floating point
+      T            f_integral = ::floor(etl::absolute(value));
+      uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
+
+      // Find the fractional part of the floating point.
+      uworkspace_t fractional = static_cast<uworkspace_t>(::round((etl::absolute(value) - f_integral) * multiplier));
+
+      // Check for a rounding carry to the integral.
+      if (fractional == multiplier)
+      {
+        ++integral;
+        fractional = 0U;
+      }
+
+      // Create the string.
+      etl::private_to_string::add_integral_and_fractional(integral, fractional, str, integral_format, fractional_format, etl::is_negative(value));
+    }
+
+    //***************************************************************************
     /// Helper function for floating point.
     //***************************************************************************
     template <typename T, typename TIString>
     void add_floating_point(const T value, TIString& str, const etl::basic_format_spec<TIString>& format, const bool append)
     {
-      typedef typename TIString::iterator   iterator;
-      typedef typename TIString::value_type type;
+      typedef typename TIString::iterator iterator;
 
       if (!append)
       {
@@ -293,7 +438,7 @@ namespace etl
 
       if (isnan(value) || isinf(value))
       {
-        etl::private_to_string::add_nan_inf(isnan(value), isinf(value), str);
+        etl::private_to_string::add_nan_inf(isnan(value), isinf(value), etl::is_negative(value), str, format);
       }
       else
       {
@@ -307,36 +452,19 @@ namespace etl
         }
 #endif
 
-        etl::basic_format_spec<TIString> integral_format = format;
-        integral_format.decimal().width(0).precision(format.get_precision() > max_precision ? max_precision : format.get_precision());
+        bool requires_scientific_form = format.is_scientific() || (etl::absolute(value) > static_cast<T>(etl::numeric_limits<uworkspace_t>::max()));
 
-        etl::basic_format_spec<TIString> fractional_format = integral_format;
-        fractional_format.width(integral_format.get_precision()).fill(type('0')).right();
-
-        uworkspace_t multiplier = 1U;
-
-        for (uint32_t i = 0U; i < fractional_format.get_precision(); ++i)
+        if (requires_scientific_form)
         {
-          multiplier *= 10U;
+          etl::private_to_string::add_floating_point_scientific(value, str, format, max_precision);
         }
-
-        // Find the integral part of the floating point
-        T            f_integral = ::floor(etl::absolute(value));
-        uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
-
-        // Find the fractional part of the floating point.
-        uworkspace_t fractional = static_cast<uworkspace_t>(::round((etl::absolute(value) - f_integral) * multiplier));
-
-        // Check for a rounding carry to the integral.
-        if (fractional == multiplier)
+        else
         {
-          ++integral;
-          fractional = 0U;
+          etl::private_to_string::add_floating_point_non_scientific(value, str, format, max_precision);
         }
-
-        etl::private_to_string::add_integral_and_fractional(integral, fractional, str, integral_format, fractional_format, etl::is_negative(value));
       }
 
+      // Add alignment if necessary.
       etl::private_to_string::add_alignment(str, start, format);
     }
 

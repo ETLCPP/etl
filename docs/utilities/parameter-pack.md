@@ -1,0 +1,93 @@
+---
+title: "parameter_pack"
+---
+
+{{< callout type="info">}}
+  Header: `parameter_pack.h`  
+  For C++11 or above
+{{< /callout >}}
+
+{{< callout type="warning">}}
+**This class is deprecated.**  
+Use `etl::type_list` as a replacement.
+{{< /callout >}}
+
+Compile time mapping of index to type and type to index for a template parameter pack.  
+
+## parameter_pack
+
+```cpp
+template <typename... TTypes>
+class parameter_pack
+```
+
+## Constants
+```cpp
+static constexpr size_t size = sizeof...(TTypes);
+```
+
+## Template alias
+
+```cpp
+template <size_t Index, typename... TTypes>
+using parameter_pack_t 
+    = typename etl::parameter_pack<TTypes...>::template type_from_index_t<Index>;
+```
+Type from index and type list.
+
+**For C++17 or above**  
+```cpp
+template <typename T, typename... TTypes>
+inline constexpr size_t parameter_pack_v 
+    = etl::parameter_pack<TTypes...>::template index_of_type<T>::value;
+```
+Index from type and type list.
+
+**The class contains two nested templates.**  
+
+## index_of_type
+
+```cpp
+template <typename T>
+class index_of_type
+```
+
+**For C++17 or above**  
+```cpp
+template <typename T>
+static constexpr size_t index_of_type_v = index_of_type<T>::value;
+```
+
+## type_from_index
+
+```cpp
+template <size_t Index>
+class type_from_index
+```
+
+---
+
+```cpp
+template <size_t Index>
+using type_from_index_t = typename type_from_index<Index>::type;
+```
+
+## Examples
+
+```cpp
+using Pack = etl::parameter_pack<char, short, int>;
+
+constexpr size_t size = Pack::size; // size == 3
+
+size_t indexChar  = Pack::index_of_type_v<char>;   // indexChar  == 0
+size_t indexShort = Pack::index_of_type_v<short>;  // indexShort == 1
+size_t indexInt   = Pack::index_of_type_v<int>;    // indexInt   == 2
+size_t indexLong  = Pack::index_of_type_v<long>;   // Static assert
+                                                   // "T is not in parameter pack"
+
+using type0 = typename Pack::type_from_index_t<0>; // type0 = char
+using type1 = typename Pack::type_from_index_t<1>; // type1 = short
+using type2 = typename Pack::type_from_index_t<2>; // type2 = int
+using type3 = typename Pack::type_from_index_t<3>; // Static assert 
+                                                   // "Index out of bounds of parameter pack"
+```

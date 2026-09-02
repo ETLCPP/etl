@@ -1077,13 +1077,15 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::iterator const_cdi     = compare_data.begin() + 2U;
-      int                    compare_value = *(const_cdi + 1U);
-      Compare_Data::iterator cdi           = compare_data.erase(const_cdi);
+      Compare_Data::iterator const_cdi = compare_data.begin() + 2U;
+#include "etl/private/diagnostic_null_dereference_push.h"
+      int compare_value = compare_data[3];
+#include "etl/private/diagnostic_pop.h"
+      Compare_Data::iterator cdi = compare_data.erase(const_cdi);
       CHECK_EQUAL(compare_value, *cdi);
 
       Data::iterator const_di   = data.begin() + 2U;
-      int            data_value = *(const_di + 1U);
+      int            data_value = data[3];
       Data::iterator di         = data.erase(const_di);
       CHECK_EQUAL(data_value, *di);
 
@@ -1108,13 +1110,15 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::const_iterator const_cdi     = compare_data.cbegin() + 2U;
-      int                          compare_value = *(const_cdi + 1U);
-      Compare_Data::iterator       cdi           = compare_data.erase(const_cdi);
+      Compare_Data::const_iterator const_cdi = compare_data.cbegin() + 2U;
+#include "etl/private/diagnostic_null_dereference_push.h"
+      int compare_value = compare_data[3];
+#include "etl/private/diagnostic_pop.h"
+      Compare_Data::iterator cdi = compare_data.erase(const_cdi);
       CHECK_EQUAL(compare_value, *cdi);
 
       Data::const_iterator const_di   = data.cbegin() + 2U;
-      int                  data_value = *(const_di + 1U);
+      int                  data_value = data[3];
       Data::iterator       di         = data.erase(const_di);
       CHECK_EQUAL(data_value, *di);
 
@@ -1139,15 +1143,9 @@ namespace
       Compare_Data compare_data(initial_data.begin(), initial_data.end());
       Data         data(initial_data.begin(), initial_data.end());
 
-      Compare_Data::const_iterator const_cdi     = compare_data.cbegin() + 2U;
-      int                          compare_value = *(const_cdi + 2U);
-      Compare_Data::iterator       cdi           = compare_data.erase(const_cdi, const_cdi + 2U);
-      CHECK_EQUAL(compare_value, *cdi);
+      compare_data.erase(compare_data.begin() + 2, compare_data.begin() + 4);
 
-      Data::const_iterator const_di   = data.cbegin() + 2U;
-      int                  data_value = *(const_di + 2U);
-      Data::iterator       di         = data.erase(const_di, const_di + 2U);
-      CHECK_EQUAL(data_value, *di);
+      data.erase(data.begin() + 2, data.begin() + 4);
 
       CHECK_EQUAL(compare_data.size(), data.size());
 
@@ -1682,6 +1680,49 @@ namespace
       CHECK(std::equal(swap_other_data.begin(), swap_other_data.end(), etl_data2.begin()));
       CHECK(etl_data2.size() == swap_other_data.size());
       CHECK(etl_data2.max_size() == other_size);
+    }
+
+    //*************************************************************************
+    template <typename TContainer, typename TIterator, typename = void>
+    struct is_assign_callable : std::false_type
+    {
+    };
+
+    template <typename TContainer, typename TIterator>
+    struct is_assign_callable<TContainer, TIterator,
+                              etl::void_t<decltype(std::declval<TContainer&>().assign(std::declval<TIterator>(), std::declval<TIterator>()))>>
+      : std::true_type
+    {
+    };
+
+    template <typename TContainer, typename TIterator1, typename TIterator2, typename = void>
+    struct is_insert_callable : std::false_type
+    {
+    };
+
+    template <typename TContainer, typename TIterator1, typename TIterator2>
+    struct is_insert_callable<
+      TContainer, TIterator1, TIterator2,
+      etl::void_t<decltype(std::declval<TContainer&>().insert(std::declval<TIterator1>(), std::declval<TIterator2>(), std::declval<TIterator2>()))>>
+      : std::true_type
+    {
+    };
+    TEST_FIXTURE(SetupFixture, test_issue_1464_etl_vector_insert_allows_inserting_an_incompatible_type)
+    {
+      struct SomeStruct
+      {
+        int foo;
+      };
+
+      using ContainerType = etl::vector<SomeStruct*, 4>;
+      using Iterator1Type = etl::vector<SomeStruct*, 4>::iterator;
+      using Iterator2Type = etl::vector<SomeStruct, 4>::const_iterator;
+
+      constexpr bool can_assign = is_assign_callable<ContainerType, Iterator2Type>::value;
+      CHECK_FALSE(can_assign);
+
+      constexpr bool can_insert = is_insert_callable<ContainerType, Iterator1Type, Iterator2Type>::value;
+      CHECK_FALSE(can_insert);
     }
   }
 } // namespace

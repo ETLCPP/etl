@@ -60,7 +60,7 @@ namespace etl
 #endif
 
   // For internal FSM use.
-  typedef typename etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
+  typedef etl::larger_type<etl::message_id_t>::type fsm_internal_id_t;
 
 #if ETL_USING_CPP11 && !defined(ETL_FSM_FORCE_CPP03_IMPLEMENTATION) // For C++11 and above
   template <typename, typename, etl::fsm_state_id_t, typename...>
@@ -189,6 +189,7 @@ namespace etl
     template <typename T>
     ETL_CONSTANT fsm_state_id_t ifsm_state_helper<T>::Self_Transition;
 
+#if ETL_USING_CPP11
     // Compile-time: TState::ID must equal its index in the type list (0..N-1)
     template <size_t Id, typename...>
     struct check_ids : etl::true_type
@@ -200,6 +201,7 @@ namespace etl
       : etl::integral_constant< bool, (TState0::STATE_ID == Id) && private_fsm::check_ids<Id + 1, TRest...>::value>
     {
     };
+#endif
 
     //***************************************************************************
     /// RAII detection mechanism to catch reentrant calls to methods that might

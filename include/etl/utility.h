@@ -228,7 +228,7 @@ namespace etl
     }
 
     /// Copy constructor
-    pair(const pair<T1, T2>& other)
+    ETL_CONSTEXPR pair(const pair<T1, T2>& other)
       : first(other.first)
       , second(other.second)
     {
@@ -254,16 +254,16 @@ namespace etl
 
     /// Constructing from std::pair
     template <typename U1, typename U2>
-    pair(const std::pair<U1, U2>& other)
+    ETL_CONSTEXPR pair(const std::pair<U1, U2>& other)
       : first(other.first)
       , second(other.second)
     {
     }
 
   #if ETL_USING_CPP11
-    /// Constructing to etl::pair
+    /// Constructing from std::pair (move)
     template <typename U1, typename U2>
-    pair(std::pair<U1, U2>&& other)
+    ETL_CONSTEXPR pair(std::pair<U1, U2>&& other)
       : first(etl::forward<U1>(other.first))
       , second(etl::forward<U2>(other.second))
     {
@@ -377,7 +377,7 @@ namespace etl
   inline bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
 #include "private/diagnostic_float_equal_push.h"
-    return (a.first == b.first) && !(a.second < b.second) && !(a.second > b.second);
+    return (a.first == b.first) && (a.second == b.second);
 #include "private/diagnostic_pop.h"
   }
 
@@ -490,6 +490,7 @@ namespace etl
   };
 
 #if ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
+  #if ETL_CPP11_NOT_SUPPORTED
   //***************************************************************************
   /// exchange (const)
   //***************************************************************************
@@ -500,7 +501,6 @@ namespace etl
     object      = new_value;
     return old_value;
   }
-
   template <typename T, typename U>
   T exchange(T& object, const U& new_value)
   {
@@ -508,16 +508,30 @@ namespace etl
     object      = new_value;
     return old_value;
   }
-#else
+  #else
   //***************************************************************************
-  /// exchange (const)
+  /// exchange
   //***************************************************************************
   template <typename T, typename U = T>
-  T exchange(T& object, const U& new_value)
+  ETL_CONSTEXPR14 T exchange(T& object, U&& new_value)
+    ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value && etl::is_nothrow_assignable<T&, U>::value))
   {
-    return std::exchange(object, new_value);
+    T old_value = etl::move(object);
+    object      = etl::forward<U>(new_value);
+    return old_value;
   }
-#endif
+  #endif // ETL_CPP11_NOT_SUPPORTED
+#else
+  //***************************************************************************
+  /// exchange
+  //***************************************************************************
+  template <typename T, typename U = T>
+  ETL_CONSTEXPR14 T exchange(T& object, U&& new_value)
+    ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value && etl::is_nothrow_assignable<T&, U>::value))
+  {
+    return std::exchange(object, etl::forward<U>(new_value));
+  }
+#endif // ETL_NOT_USING_STL || ETL_CPP14_NOT_SUPPORTED
 
   //***************************************************************************
   /// as_const
@@ -892,13 +906,13 @@ namespace etl
   template <typename T>
   struct coordinate_2d
   {
-    coordinate_2d()
+    ETL_CONSTEXPR coordinate_2d()
       : x(T(0))
       , y(T(0))
     {
     }
 
-    coordinate_2d(T x_, T y_)
+    ETL_CONSTEXPR coordinate_2d(T x_, T y_)
       : x(x_)
       , y(y_)
     {

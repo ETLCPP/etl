@@ -650,6 +650,40 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_value)
+    {
+      Compare_Data compare_data;
+      Data         data;
+
+      data.emplace(std::string("0"), 0);
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 0));
+
+      data.emplace(std::string("1"), 1);
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("1"), 1));
+
+      data.emplace(std::string("0"), 2);
+      compare_data.insert(ETL_OR_STD::make_pair(std::string("0"), 2));
+
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+      CHECK(isEqual);
+      CHECK_EQUAL(3U, data.size());
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_moved_value)
+    {
+      DataM data;
+
+      data.emplace(std::string("1"), ItemM(1));
+      data.emplace(std::string("2"), ItemM(2));
+      data.emplace(std::string("3"), ItemM(3));
+
+      CHECK(1 == data.find("1")->second.value);
+      CHECK(2 == data.find("2")->second.value);
+      CHECK(3 == data.find("3")->second.value);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_equal_range)
     {
       Compare_Data compare_data(random_data.begin(), random_data.end());

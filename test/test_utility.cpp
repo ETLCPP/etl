@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/memory.h"
 #include "etl/utility.h"
 
 #include <algorithm>
@@ -313,6 +314,32 @@ namespace
       CHECK_EQUAL(2, a);
       CHECK_EQUAL(2, b);
       CHECK_EQUAL(1, c);
+    }
+
+    //*************************************************************************
+    TEST(test_exchange_unique_ptr)
+    {
+      etl::unique_ptr<int> p1(new int(1));
+      etl::unique_ptr<int> p2 = etl::exchange(p1, nullptr);
+
+      CHECK_FALSE(p1);
+      CHECK_TRUE(p2);
+      CHECK_EQUAL(*p2, 1);
+    }
+
+    //*************************************************************************
+    TEST(test_exchange_unique_ptr_move_in)
+    {
+      etl::unique_ptr<int> a(new int(10));
+      etl::unique_ptr<int> b(new int(20));
+
+      etl::unique_ptr<int> old = etl::exchange(a, etl::move(b));
+
+      CHECK_TRUE(old);
+      CHECK_EQUAL(*old, 10);
+      CHECK_TRUE(a);
+      CHECK_EQUAL(*a, 20);
+      CHECK_FALSE(b);
     }
 
     //*************************************************************************
@@ -1047,5 +1074,75 @@ namespace
       CHECK_EQUAL(expect1c, result1g);
 #endif
     }
+
+    //*************************************************************************
+    TEST(test_pair_equality_uses_equality_operator)
+    {
+      // Basic equality
+      etl::pair<int, int> p1(1, 2);
+      etl::pair<int, int> p2(1, 2);
+      etl::pair<int, int> p3(1, 3);
+      etl::pair<int, int> p4(2, 2);
+
+      CHECK_TRUE(p1 == p2);
+      CHECK_FALSE(p1 == p3); // different second
+      CHECK_FALSE(p1 == p4); // different first
+
+      // Custom type where operator== and operator< can disagree
+      // The old code used !(a<b) && !(a>b), which is NOT equivalent to a==b
+      // for types that don't define a total order consistent with equality.
+      struct WeirdType
+      {
+        int  value;
+        bool equal_flag;
+
+        bool operator==(const WeirdType& other) const
+        {
+          return equal_flag && other.equal_flag;
+        }
+        bool operator<(const WeirdType& other) const
+        {
+          return value < other.value;
+        }
+        bool operator>(const WeirdType& other) const
+        {
+          return value > other.value;
+        }
+      };
+
+      WeirdType w1{1, false};
+      WeirdType w2{1, false}; // same value, but equal_flag is false
+
+      // With proper ==: w1 == w2 should be false (both equal_flags are false)
+      // With old !(w1<w2)&&!(w1>w2): would be true (same value)
+      etl::pair<int, WeirdType> pw1(0, w1);
+      etl::pair<int, WeirdType> pw2(0, w2);
+
+      CHECK_FALSE(pw1 == pw2); // This would FAIL with the old < > based comparison
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_pair_constexpr_copy_ctor)
+    {
+      constexpr etl::pair<int, int> p1(1, 2);
+      constexpr etl::pair<int, int> p2(p1);
+      static_assert(p2.first == 1, "constexpr pair copy ctor first");
+      static_assert(p2.second == 2, "constexpr pair copy ctor second");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_coordinate_2d_constexpr_ctors)
+    {
+      constexpr etl::coordinate_2d<int> c1;
+      constexpr etl::coordinate_2d<int> c2(3, 4);
+      static_assert(c1.x == 0, "constexpr default ctor x");
+      static_assert(c1.y == 0, "constexpr default ctor y");
+      static_assert(c2.x == 3, "constexpr value ctor x");
+      static_assert(c2.y == 4, "constexpr value ctor y");
+      CHECK(true);
+    }
+#endif
   }
 } // namespace

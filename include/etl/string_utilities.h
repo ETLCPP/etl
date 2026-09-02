@@ -39,7 +39,7 @@ SOFTWARE.
 #include "optional.h"
 
 #include <ctype.h>
-#include <stdint.h>
+#include <stddef.h>
 
 #include "private/minmax_push.h"
 
