@@ -2051,6 +2051,9 @@
     <ClCompile Include="..\test_format_spec.cpp">
       <Filter>Tests\Strings</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_semaphore.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_set.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
