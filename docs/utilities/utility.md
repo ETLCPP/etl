@@ -614,7 +614,7 @@ using FortyTwo = etl::nontype_t<42>
 template <typename T>
 ETL_NODISCARD
 ETL_CONSTEXPR14
-typename etl::make_unsigned<T>::type>::type 
+typename etl::make_unsigned<T>::type 
   to_unsigned(T value) ETL_NOEXCEPT
 ```
 
@@ -637,7 +637,7 @@ auto b = etl::to_unsigned(a);
 template <typename T>
 ETL_NODISCARD
 ETL_CONSTEXPR14
-typename etl::make_signed<T>::type>::type 
+typename etl::make_signed<T>::type 
   to_signed(T value) ETL_NOEXCEPT
 ```
 

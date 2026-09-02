@@ -1511,7 +1511,7 @@ namespace
     //*************************************************************************
     TEST(test_to_unsigned_constexpr)
     {
-      const char value = -50;
+      const char value = static_cast<char>(-50);
 
       constexpr auto Size = etl::to_unsigned(value);
 
@@ -1524,7 +1524,7 @@ namespace
     //*************************************************************************
     TEST(test_to_signed_constexpr)
     {
-      const unsigned char value = 50;
+      const unsigned char value = static_cast<unsigned char>(50);
 
       constexpr auto Size = etl::to_signed(value);
 
