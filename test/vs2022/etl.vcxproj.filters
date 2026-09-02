@@ -1101,6 +1101,12 @@
     <ClInclude Include="..\iterators_for_unit_tests.h">
       <Filter>Tests\Test Support</Filter>
     </ClInclude>
+    <ClInclude Include="..\clocks_for_unit_tests.h">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\clocks_for_unit_tests.cpp">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
     <ClInclude Include="..\etl_profile.h">
       <Filter>Tests\Test Support</Filter>
     </ClInclude>
