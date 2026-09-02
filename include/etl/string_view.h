@@ -513,9 +513,9 @@ namespace etl
 
     ETL_CONSTEXPR14 bool starts_with(const T* text) const ETL_NOEXCEPT
     {
-      size_type lengthtext = TTraits::length(text);
+      size_type length_text = TTraits::length(text);
 
-      return (size() >= lengthtext) && (compare(0, lengthtext, text) == 0);
+      return (size() >= length_text) && (compare(0, length_text, text) == 0);
     }
 
     //*************************************************************************
@@ -533,10 +533,10 @@ namespace etl
 
     ETL_CONSTEXPR14 bool ends_with(const T* text) const
     {
-      size_type lengthtext = TTraits::length(text);
-      size_type lengthview = size();
+      size_type length_text = TTraits::length(text);
+      size_type length_view = size();
 
-      return (lengthview >= lengthtext) && (compare(lengthview - lengthtext, lengthtext, text) == 0);
+      return (length_view >= length_text) && (compare(length_view - length_text, length_text, text) == 0);
     }
 
     //*************************************************************************
@@ -620,15 +620,15 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 size_type find_first_of(etl::basic_string_view<T, TTraits> view, size_type position = 0) const ETL_NOEXCEPT
     {
-      const size_type lengthtext = size();
+      const size_type length_text = size();
 
-      if (position < lengthtext)
+      if (position < length_text)
       {
-        for (size_type i = position; i < lengthtext; ++i)
+        for (size_type i = position; i < length_text; ++i)
         {
-          const size_type lengthview = view.size();
+          const size_type length_view = view.size();
 
-          for (size_type j = 0UL; j < lengthview; ++j)
+          for (size_type j = 0UL; j < length_view; ++j)
           {
             if (mbegin[i] == view[j])
             {
@@ -672,9 +672,9 @@ namespace etl
 
       while (it != rend())
       {
-        const size_type viewlength = view.size();
+        const size_type view_length = view.size();
 
-        for (size_type j = 0UL; j < viewlength; ++j)
+        for (size_type j = 0UL; j < view_length; ++j)
         {
           if (mbegin[position] == view[j])
           {
@@ -709,17 +709,17 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 size_type find_first_not_of(etl::basic_string_view<T, TTraits> view, size_type position = 0) const ETL_NOEXCEPT
     {
-      const size_type lengthtext = size();
+      const size_type length_text = size();
 
-      if (position < lengthtext)
+      if (position < length_text)
       {
-        for (size_type i = position; i < lengthtext; ++i)
+        for (size_type i = position; i < length_text; ++i)
         {
           bool found = false;
 
-          const size_type viewlength = view.size();
+          const size_type view_length = view.size();
 
-          for (size_type j = 0UL; j < viewlength; ++j)
+          for (size_type j = 0UL; j < view_length; ++j)
           {
             if (mbegin[i] == view[j])
             {
@@ -771,9 +771,9 @@ namespace etl
       {
         bool found = false;
 
-        const size_type viewlength = view.size();
+        const size_type view_length = view.size();
 
-        for (size_type j = 0UL; j < viewlength; ++j)
+        for (size_type j = 0UL; j < view_length; ++j)
         {
           if (mbegin[position] == view[j])
           {
