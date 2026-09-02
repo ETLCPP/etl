@@ -150,6 +150,29 @@ namespace
     NotDefaultConstructible& operator=(NotDefaultConstructible&&) = delete;
   };
 
+  // The legacy compiler builtin for trivial construction does not test
+  // accessibility, unlike is_trivially_constructible.
+  struct PrivateTrivialDefaultConstructor
+  {
+  private:
+
+    PrivateTrivialDefaultConstructor() = default;
+  };
+
+  // The legacy compiler builtin for trivial destruction does not test
+  // accessibility or deletion, unlike is_trivially_destructible.
+  struct PrivateTrivialDestructor
+  {
+  private:
+
+    ~PrivateTrivialDestructor() = default;
+  };
+
+  struct DeletedTrivialDestructor
+  {
+    ~DeletedTrivialDestructor() = delete;
+  };
+
   // A function to test etl::type_identity.
   template <typename T>
   T type_identity_test_add(T first, typename etl::type_identity<T>::type second)
@@ -2851,7 +2874,8 @@ namespace
     //*************************************************************************
     TEST(test_is_trivially_constructible)
     {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS) || ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE \
+  || ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR
   #if ETL_USING_CPP17
       CHECK((etl::is_trivially_constructible_v<Copyable>) == (std::is_trivially_constructible_v<Copyable>));
       CHECK((etl::is_trivially_constructible_v<Moveable>) == (std::is_trivially_constructible_v<Moveable>));
@@ -2860,6 +2884,11 @@ namespace
       CHECK((etl::is_trivially_constructible<Copyable>::value) == (std::is_trivially_constructible<Copyable>::value));
       CHECK((etl::is_trivially_constructible<Moveable>::value) == (std::is_trivially_constructible<Moveable>::value));
       CHECK((etl::is_trivially_constructible<MoveableCopyable>::value) == (std::is_trivially_constructible<MoveableCopyable>::value));
+  #endif
+  #if ETL_USING_CPP11
+      CHECK(!etl::is_trivially_constructible<PrivateTrivialDefaultConstructor>::value);
+      CHECK((etl::is_trivially_constructible<PrivateTrivialDefaultConstructor>::value)
+            == (std::is_trivially_constructible<PrivateTrivialDefaultConstructor>::value));
   #endif
 #endif
     }
@@ -2919,7 +2948,8 @@ namespace
     //*************************************************************************
     TEST(test_is_trivially_destructible)
     {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS) || ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE \
+  || ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR
   #if ETL_USING_CPP17
       CHECK((etl::is_trivially_destructible_v<Copyable>) == (std::is_trivially_destructible_v<Copyable>));
       CHECK((etl::is_trivially_destructible_v<Moveable>) == (std::is_trivially_destructible_v<Moveable>));
@@ -2928,6 +2958,12 @@ namespace
       CHECK((etl::is_trivially_destructible<Copyable>::value) == (std::is_trivially_destructible<Copyable>::value));
       CHECK((etl::is_trivially_destructible<Moveable>::value) == (std::is_trivially_destructible<Moveable>::value));
       CHECK((etl::is_trivially_destructible<MoveableCopyable>::value) == (std::is_trivially_destructible<MoveableCopyable>::value));
+  #endif
+  #if ETL_USING_CPP11
+      CHECK(!etl::is_trivially_destructible<PrivateTrivialDestructor>::value);
+      CHECK(!etl::is_trivially_destructible<DeletedTrivialDestructor>::value);
+      CHECK((etl::is_trivially_destructible<PrivateTrivialDestructor>::value) == (std::is_trivially_destructible<PrivateTrivialDestructor>::value));
+      CHECK((etl::is_trivially_destructible<DeletedTrivialDestructor>::value) == (std::is_trivially_destructible<DeletedTrivialDestructor>::value));
   #endif
 #endif
     }

@@ -53,12 +53,20 @@ SOFTWARE.
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 1
   #endif
 
+  #if !defined(ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR)
+    #define ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR 1
+  #endif
+
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE 1
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
     #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 1
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR)
+    #define ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR 1
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_DESTRUCTIBLE)
@@ -177,7 +185,14 @@ SOFTWARE.
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
-    #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE (__has_builtin(__has_trivial_constructor) || __has_builtin(__is_trivially_constructible))
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE __has_builtin(__is_trivially_constructible)
+  #endif
+
+  // The legacy __has_trivial_constructor builtin. Deprecated by GCC 12 and
+  // removed by GCC 15, so it must be detected separately from the standard
+  // __is_trivially_constructible builtin.
+  #if !defined(ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR)
+    #define ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR __has_builtin(__has_trivial_constructor)
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
@@ -185,7 +200,14 @@ SOFTWARE.
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
-    #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE (__has_builtin(__has_trivial_destructor) || __has_builtin(__is_trivially_destructible))
+    #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE __has_builtin(__is_trivially_destructible)
+  #endif
+
+  // The legacy __has_trivial_destructor builtin. Deprecated by GCC 12 and
+  // removed by GCC 15, so it must be detected separately from the standard
+  // __is_trivially_destructible builtin.
+  #if !defined(ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR)
+    #define ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR __has_builtin(__has_trivial_destructor)
   #endif
 
   #if !defined(ETL_USING_BUILTIN_IS_DESTRUCTIBLE)
