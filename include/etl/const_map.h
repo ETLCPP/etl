@@ -48,7 +48,7 @@ SOFTWARE.
 
 namespace etl
 {
-  template <typename TKey, typename TMapped, typename TKeyCompare>
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>>
   class iconst_map
   {
   public:
