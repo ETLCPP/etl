@@ -1384,6 +1384,30 @@ namespace etl
     static constexpr T value = Value;
   };
 #endif
+
+  //***************************************************************************
+  /// Returns 'value' cast to an unsigned integer.
+  ///\param value The integer to cast.
+  ///\return The unsigned integer.
+  //***************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, typename etl::make_unsigned<T>::type>::type to_unsigned(T value)
+    ETL_NOEXCEPT
+  {
+    return static_cast<typename etl::make_unsigned<T>::type>(value);
+  }
+
+  //***************************************************************************
+  /// Returns 'value' cast to a signed integer.
+  ///\param value The integer to cast.
+  ///\return The signed integer.
+  //***************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, typename etl::make_signed<T>::type>::type to_signed(T value)
+    ETL_NOEXCEPT
+  {
+    return static_cast<typename etl::make_signed<T>::type>(value);
+  }
 } // namespace etl
 
 #endif
