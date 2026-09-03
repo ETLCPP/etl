@@ -1,5 +1,6 @@
 etl_test_sources = files(
 	'main.cpp',
+  'clocks_for_unit_tests.cpp',
 	'murmurhash3.cpp',
 	'test_algorithm.cpp',
 	'test_algorithm_ranges.cpp',
@@ -284,6 +285,7 @@ etl_test_sources = files(
 	'test_rms.cpp',
 	'test_rounded_integral_division.cpp',
 	'test_scaled_rounding.cpp',
+	'test_semaphore.cpp',
 	'test_set.cpp',
 	'test_shared_message.cpp',
 	'test_signal.cpp',

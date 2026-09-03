@@ -226,6 +226,9 @@
     <Filter Include="Documentation">
       <UniqueIdentifier>{5b809d95-b37c-4011-af5e-b5ea6dcb354e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Utilities\Semaphore">
+      <UniqueIdentifier>{304d989b-df11-403b-8ce9-ea594a66e759}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -553,6 +556,9 @@
       <Filter>ETL\Utilities\Mutex</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\mutex.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\combinations.h">
@@ -1095,6 +1101,12 @@
     <ClInclude Include="..\iterators_for_unit_tests.h">
       <Filter>Tests\Test Support</Filter>
     </ClInclude>
+    <ClInclude Include="..\clocks_for_unit_tests.h">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\clocks_for_unit_tests.cpp">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
     <ClInclude Include="..\etl_profile.h">
       <Filter>Tests\Test Support</Filter>
     </ClInclude>
@@ -1569,6 +1581,21 @@
     <ClInclude Include="..\..\include\etl\format.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_std.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_clang_sync.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_exceptions.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_freertos.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_gcc_sync.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -2023,6 +2050,9 @@
     </ClCompile>
     <ClCompile Include="..\test_format_spec.cpp">
       <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_semaphore.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\test_set.cpp">
       <Filter>Tests\Containers</Filter>

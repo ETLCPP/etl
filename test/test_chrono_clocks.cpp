@@ -30,39 +30,14 @@ SOFTWARE.
 
 #include "etl/platform.h"
 
+#include "clocks_for_unit_tests.h"
 #include "unit_test_framework.h"
 
 #include "etl/chrono.h"
 
 #include <type_traits>
 
-//*****************************************************************************
-// Global clock functions.
-//*****************************************************************************
-namespace
-{
-  int nanoseconds  = 0;
-  int milliseconds = 0;
-  int seconds      = 0;
-} // namespace
-
-extern "C"
-{
-  etl::chrono::system_clock::rep etl_get_system_clock()
-  {
-    return etl::chrono::system_clock::rep(milliseconds);
-  }
-
-  etl::chrono::high_resolution_clock::rep etl_get_high_resolution_clock()
-  {
-    return etl::chrono::high_resolution_clock::rep(nanoseconds);
-  }
-
-  etl::chrono::steady_clock::rep etl_get_steady_clock()
-  {
-    return etl::chrono::steady_clock::rep(seconds);
-  }
-}
+using namespace test::clocks;
 
 namespace
 {
