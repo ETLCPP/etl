@@ -241,6 +241,8 @@ namespace
 
     std::vector<int> int_data;
 
+    static_assert(etl::is_same<etl::iflat_multiset<int>, etl::iflat_multiset<int, etl::less<int>>>::value, "default compare is not less");
+
     //*************************************************************************
     struct SetupFixture
     {

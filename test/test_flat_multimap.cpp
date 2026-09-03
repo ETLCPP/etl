@@ -239,6 +239,8 @@ namespace
     return true;
   }
 
+  static_assert(etl::is_same<etl::iflat_multimap<int, D1>, etl::iflat_multimap<int, D1, etl::less<int>>>::value, "default compare is not less");
+
   SUITE(test_flat_multimap)
   {
     //*************************************************************************
