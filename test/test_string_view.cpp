@@ -1262,5 +1262,23 @@ namespace
         CHECK_EQUAL(std_pos, etl_pos);
       }
     }
+
+    //*************************************************************************
+    TEST(test_npos_type_and_value)
+    {
+      typedef etl::string_view::size_type size_type;
+
+      // npos must have the same type as size_type, not an anonymous enum.
+      CHECK((etl::is_same<const size_type, decltype(etl::string_view::npos)>::value));
+      CHECK_EQUAL(etl::integral_limits<size_type>::max, etl::string_view::npos);
+
+      // npos must compare equal to the equivalent std::string_view constant.
+      CHECK_EQUAL(std::string::npos, etl::string_view::npos);
+
+      // substr with the default count must return the whole remaining view.
+      etl::string_view view("Hello World");
+      CHECK_EQUAL(std::string("World"), std::string(view.substr(6).data(), view.substr(6).size()));
+      CHECK_EQUAL(5U, view.substr(6, etl::string_view::npos).size());
+    }
   }
 } // namespace
