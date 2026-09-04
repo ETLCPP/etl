@@ -144,6 +144,19 @@ namespace
     }
   };
 
+  struct NoMoveValue
+  {
+    explicit NoMoveValue(int v_)
+      : v(v_)
+    {
+    }
+
+    NoMoveValue(const NoMoveValue&) = default;
+    NoMoveValue(NoMoveValue&&)      = delete;
+
+    int v;
+  };
+
   using Expected   = etl::expected<Value, Error>;
   using ExpectedV  = etl::expected<void, Error>;
   using ExpectedM  = etl::expected<ValueM, ErrorM>;
@@ -1765,6 +1778,15 @@ namespace
 
       CHECK_FALSE(result.has_value());
       CHECK_EQUAL("failed", result.error().e);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_from_value_does_not_require_a_move)
+    {
+      const etl::expected<NoMoveValue, Error> result(1);
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(1, result.value().v);
     }
   }
 } // namespace
