@@ -1881,5 +1881,16 @@ namespace
 
       CHECK_TRUE((etl::is_constructible<etl::expected<FromInt, FromInt>, const Source&>::value));
     }
+
+    //*************************************************************************
+    TEST(test_assign_from_value_convertible_to_value_type)
+    {
+      Expected result;
+
+      result = std::string("converted");
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("converted", result.value().v);
+    }
   }
 } // namespace

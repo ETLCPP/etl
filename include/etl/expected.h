@@ -617,6 +617,17 @@ namespace etl
 
       return *this;
     }
+
+    //*******************************************
+    /// Assign from a value convertible to value_type.
+    //*******************************************
+    template <typename U, typename etl::enable_if<private_expected::is_value_constructor_candidate<TValue, TError, U>::value, int>::type = 0>
+    expected& operator=(U&& value)
+    {
+      storage.template emplace<Value_Type>(etl::forward<U>(value));
+
+      return *this;
+    }
 #endif
 
     //*******************************************
