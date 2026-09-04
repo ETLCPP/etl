@@ -1637,5 +1637,67 @@ namespace
       CHECK_FALSE(result.has_value());
       CHECK_EQUAL("original_transformed", result.error().e);
     }
+
+    //*************************************************************************
+    TEST(test_constructor_from_value_convertible_to_value_type)
+    {
+      const Expected result = std::string("converted");
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("converted", result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_from_expected_with_convertible_types)
+    {
+      const etl::expected<std::string, std::string> source(std::string("converted"));
+
+      const Expected result(source);
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("converted", result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_from_expected_with_convertible_types_carries_error)
+    {
+      const etl::expected<std::string, std::string> source(etl::unexpected<std::string>(std::string("failed")));
+
+      const Expected result(source);
+
+      CHECK_FALSE(result.has_value());
+      CHECK_EQUAL("failed", result.error().e);
+    }
+
+    //*************************************************************************
+    TEST(test_value_type_constructible_from_expected_is_not_unwrapped)
+    {
+      struct WrapsExpected
+      {
+        WrapsExpected()
+          : wrapped(false)
+        {
+        }
+
+        WrapsExpected(const etl::expected<int, Error>&)
+          : wrapped(true)
+        {
+        }
+
+        explicit WrapsExpected(int)
+          : wrapped(false)
+        {
+        }
+
+        bool wrapped;
+      };
+
+      const etl::expected<int, Error> source(7);
+
+      const etl::expected<WrapsExpected, Error> result(source);
+
+      CHECK_TRUE(result.has_value());
+      CHECK_TRUE(result.value().wrapped);
+    }
   }
 } // namespace
