@@ -252,6 +252,7 @@ namespace etl
 #if ETL_USING_CPP11
   namespace private_expected
   {
+    // Detects etl::unexpected, which the value constructors must not accept as a value.
     template <typename T>
     struct is_unexpected : etl::false_type
     {
@@ -262,6 +263,8 @@ namespace etl
     {
     };
 
+    // True when TValue can be built from the source expected itself. The converting
+    // constructors stand down in that case so the source is wrapped, not unwrapped.
     template <typename TValue, typename U, typename G>
     struct constructible_from_expected
       : etl::integral_constant<
@@ -273,6 +276,8 @@ namespace etl
     {
     };
 
+    // Constraints shared by the implicit and explicit value constructors, per
+    // [expected.object.ctor]. Convertibility alone chooses between the two.
     template <typename TValue, typename TError, typename U>
     struct is_value_constructor_candidate
       : etl::integral_constant<bool, !etl::is_same<typename etl::decay<U>::type, etl::expected<TValue, TError> >::value
@@ -283,6 +288,7 @@ namespace etl
     {
     };
 
+    // Constraints shared by the implicit and explicit converting constructors.
     template <typename TValue, typename TError, typename U, typename G>
     struct is_expected_constructor_candidate
       : etl::integral_constant<bool, !etl::is_same<etl::expected<U, G>, etl::expected<TValue, TError> >::value
@@ -291,6 +297,8 @@ namespace etl
     {
     };
 
+    // A converting constructor is implicit only when both the value and the error
+    // convert implicitly; if either is explicit-only, so is the constructor.
     template <typename TValue, typename TError, typename U, typename G>
     struct is_expected_conversion_implicit
       : etl::integral_constant<bool, etl::is_convertible<const U&, TValue>::value && etl::is_convertible<const G&, TError>::value>
