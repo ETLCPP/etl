@@ -120,6 +120,30 @@ namespace
     std::string e;
   };
 
+  struct ExplicitValue
+  {
+    std::string v;
+
+    ExplicitValue() {}
+
+    explicit ExplicitValue(const std::string& v_)
+      : v(v_)
+    {
+    }
+  };
+
+  struct ExplicitError
+  {
+    std::string e;
+
+    ExplicitError() = default;
+
+    explicit ExplicitError(const std::string& e_)
+      : e(e_)
+    {
+    }
+  };
+
   using Expected   = etl::expected<Value, Error>;
   using ExpectedV  = etl::expected<void, Error>;
   using ExpectedM  = etl::expected<ValueM, ErrorM>;
@@ -1698,6 +1722,49 @@ namespace
 
       CHECK_TRUE(result.has_value());
       CHECK_TRUE(result.value().wrapped);
+    }
+
+    //*************************************************************************
+    TEST(test_explicit_value_conversion_is_not_implicit)
+    {
+      using ExplicitExpected = etl::expected<ExplicitValue, Error>;
+
+      CHECK_TRUE((etl::is_constructible<ExplicitExpected, std::string>::value));
+      CHECK_FALSE((etl::is_convertible<std::string, ExplicitExpected>::value));
+
+      CHECK_TRUE((etl::is_convertible<std::string, Expected>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_explicit_value_conversion_is_available_by_direct_initialisation)
+    {
+      const etl::expected<ExplicitValue, Error> result(std::string("converted"));
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("converted", result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_explicit_error_conversion_is_not_implicit)
+    {
+      using Source           = etl::expected<std::string, std::string>;
+      using ExplicitExpected = etl::expected<Value, ExplicitError>;
+
+      CHECK_TRUE((etl::is_constructible<ExplicitExpected, const Source&>::value));
+      CHECK_FALSE((etl::is_convertible<const Source&, ExplicitExpected>::value));
+
+      CHECK_TRUE((etl::is_convertible<const Source&, Expected>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_explicit_error_conversion_carries_the_error)
+    {
+      const etl::expected<std::string, std::string> source(etl::unexpected<std::string>(std::string("failed")));
+
+      const etl::expected<Value, ExplicitError> result(source);
+
+      CHECK_FALSE(result.has_value());
+      CHECK_EQUAL("failed", result.error().e);
     }
   }
 } // namespace
