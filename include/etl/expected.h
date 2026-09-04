@@ -280,6 +280,18 @@ namespace etl
     };
 
     //*****************************************************************************
+    // True when TError can be built from the source expected, which must be wrapped rather than unwrapped.
+    //*****************************************************************************
+    template <typename TError, typename U, typename G>
+    struct unexpected_constructible_from_expected
+      : etl::integral_constant<bool, etl::is_constructible<etl::unexpected<TError>, etl::expected<U, G>&>::value
+                                       || etl::is_constructible<etl::unexpected<TError>, etl::expected<U, G> >::value
+                                       || etl::is_constructible<etl::unexpected<TError>, const etl::expected<U, G>&>::value
+                                       || etl::is_constructible<etl::unexpected<TError>, const etl::expected<U, G> >::value>
+    {
+    };
+
+    //*****************************************************************************
     // Constraints shared by the implicit and explicit value constructors.
     //*****************************************************************************
     template <typename TValue, typename TError, typename U>
@@ -298,7 +310,8 @@ namespace etl
     template <typename TValue, typename TError, typename U, typename G>
     struct is_expected_conversion_allowed
       : etl::integral_constant<bool, !etl::is_same<etl::expected<U, G>, etl::expected<TValue, TError> >::value
-                                       && !constructible_from_expected<TValue, U, G>::value>
+                                       && !constructible_from_expected<TValue, U, G>::value
+                                       && !unexpected_constructible_from_expected<TError, U, G>::value>
     {
     };
 

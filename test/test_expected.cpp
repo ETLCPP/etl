@@ -193,6 +193,30 @@ namespace
     int v;
   };
 
+  struct FromInt
+  {
+    FromInt()
+      : v(0)
+    {
+    }
+
+    FromInt(int v_)
+      : v(v_)
+    {
+    }
+
+    int v;
+  };
+
+  struct ErrorFromExpected
+  {
+    ErrorFromExpected() {}
+
+    ErrorFromExpected(int) {}
+
+    ErrorFromExpected(const etl::expected<int, int>&) {}
+  };
+
   using Expected   = etl::expected<Value, Error>;
   using ExpectedV  = etl::expected<void, Error>;
   using ExpectedM  = etl::expected<ValueM, ErrorM>;
@@ -1845,6 +1869,17 @@ namespace
 
       CHECK_TRUE(result.has_value());
       CHECK_EQUAL(1, result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_error_type_constructible_from_expected_is_not_converted)
+    {
+      using Source = etl::expected<int, int>;
+
+      CHECK_FALSE((etl::is_constructible<etl::expected<FromInt, ErrorFromExpected>, const Source&>::value));
+      CHECK_FALSE((etl::is_constructible<etl::expected<FromInt, ErrorFromExpected>, Source&&>::value));
+
+      CHECK_TRUE((etl::is_constructible<etl::expected<FromInt, FromInt>, const Source&>::value));
     }
   }
 } // namespace
