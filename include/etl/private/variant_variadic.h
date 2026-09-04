@@ -180,16 +180,18 @@ namespace etl
       }
 
       // Constructor for head element (index 0).
-      template <typename T>
-      constexpr variadic_union(etl::in_place_index_t<0>, T&& value)
-        : head(etl::forward<T>(value))
+      // The arguments are forwarded directly to the element, so that types that are
+      // neither copyable nor movable can be constructed in place.
+      template <typename... TArgs>
+      constexpr variadic_union(etl::in_place_index_t<0>, TArgs&&... args)
+        : head(etl::forward<TArgs>(args)...)
       {
       }
 
       // Constructor for tail elements (index > 0).
-      template <size_t Index, typename T>
-      constexpr variadic_union(etl::in_place_index_t<Index>, T&& value)
-        : tail(etl::in_place_index_t<Index - 1>{}, etl::forward<T>(value))
+      template <size_t Index, typename... TArgs>
+      constexpr variadic_union(etl::in_place_index_t<Index>, TArgs&&... args)
+        : tail(etl::in_place_index_t<Index - 1>{}, etl::forward<TArgs>(args)...)
       {
       }
     };
@@ -466,11 +468,11 @@ namespace etl
       {
       }
 
-      template <size_t Index, typename T>
-      constexpr variant_base(etl::in_place_index_t<Index>, T&& value,
-                             size_t id) noexcept(etl::is_nothrow_constructible<etl::nth_type_t<Index, TTypes...>, T>::value)
-        : data(etl::in_place_index_t<Index>{}, etl::forward<T>(value))
-        , type_id(id)
+      template <size_t Index, typename... TArgs>
+      constexpr variant_base(etl::in_place_index_t<Index>,
+                             TArgs&&... args) noexcept(etl::is_nothrow_constructible<etl::nth_type_t<Index, TTypes...>, TArgs...>::value)
+        : data(etl::in_place_index_t<Index>{}, etl::forward<TArgs>(args)...)
+        , type_id(Index)
       {
       }
 
@@ -564,7 +566,7 @@ namespace etl
 
     template <bool Trivial = Is_Trivially_Destructible_Suite, etl::enable_if_t<Trivial, int> = 0>
     constexpr variant() noexcept(etl::is_nothrow_default_constructible<type_from_index<0U> >::value)
-      : base_type(etl::in_place_index_t<0>{}, type_from_index<0U>{}, 0U)
+      : base_type(etl::in_place_index_t<0>{}, type_from_index<0U>{})
     {
     }
   #include "diagnostic_pop.h"
@@ -586,7 +588,7 @@ namespace etl
     template <typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
               etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && Trivial_, int> = 0>
     constexpr variant(T&& value)
-      : base_type(etl::in_place_index_t<index_of_type<T>::value>{}, etl::forward<T>(value), index_of_type<T>::value)
+      : base_type(etl::in_place_index_t<index_of_type<T>::value>{}, etl::forward<T>(value))
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
     }
@@ -607,7 +609,7 @@ namespace etl
 
     template <typename T, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite, etl::enable_if_t<Trivial_, int> = 0>
     constexpr explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
-      : base_type(etl::in_place_index_t<index_of_type<T>::value>{}, etl::remove_cvref_t<T>(etl::forward<TArgs>(args)...), index_of_type<T>::value)
+      : base_type(etl::in_place_index_t<index_of_type<T>::value>{}, etl::forward<TArgs>(args)...)
     {
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
     }
@@ -629,7 +631,7 @@ namespace etl
 
     template <size_t Index, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite, etl::enable_if_t<Trivial_, int> = 0>
     constexpr explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
-      : base_type(etl::in_place_index_t<Index>{}, type_from_index<Index>(etl::forward<TArgs>(args)...), Index)
+      : base_type(etl::in_place_index_t<Index>{}, etl::forward<TArgs>(args)...)
     {
       using type = type_from_index<Index>;
       static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");

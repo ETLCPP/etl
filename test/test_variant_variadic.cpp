@@ -955,6 +955,72 @@ namespace
   #endif
 
     //*************************************************************************
+    // The in-place constructors must construct the alternative directly from
+    // the forwarded arguments, without requiring it to be copyable or movable.
+    // The trivially destructible suite previously built a temporary alternative
+    // and moved it into the storage, which does not compile for such types.
+    //
+    // Note that the first block below only exercises the variadic_union storage
+    // when etl::is_trivially_destructible is accurate for class types, i.e. with
+    // the STL or with ETL_USE_TYPE_TRAITS_BUILTINS. Without them the trait is
+    // conservatively false and both blocks take the uninitialized_buffer path,
+    // which always constructed in place.
+    TEST(test_in_place_construct_non_movable_type)
+    {
+      // Trivially destructible suite (variadic_union storage).
+      {
+        etl::variant<TrivialNonMovable, int> by_index(etl::in_place_index_t<0>(), 3, 4);
+        CHECK(etl::holds_alternative<TrivialNonMovable>(by_index));
+        CHECK_EQUAL(0U, by_index.index());
+        CHECK_EQUAL(3, etl::get<0>(by_index).a);
+        CHECK_EQUAL(4, etl::get<0>(by_index).b);
+
+        etl::variant<TrivialNonMovable, int> by_type(etl::in_place_type_t<TrivialNonMovable>(), 5, 6);
+        CHECK(etl::holds_alternative<TrivialNonMovable>(by_type));
+        CHECK_EQUAL(0U, by_type.index());
+        CHECK_EQUAL(5, etl::get<TrivialNonMovable>(by_type).a);
+        CHECK_EQUAL(6, etl::get<TrivialNonMovable>(by_type).b);
+      }
+
+      // Non-trivially destructible suite (uninitialized_buffer storage).
+      {
+        etl::variant<NonTrivialNonMovable, std::string> by_index(etl::in_place_index_t<0>(), 1, 2);
+        CHECK(etl::holds_alternative<NonTrivialNonMovable>(by_index));
+        CHECK_EQUAL(1, etl::get<0>(by_index).a);
+        CHECK_EQUAL(2, etl::get<0>(by_index).b);
+
+        etl::variant<NonTrivialNonMovable, std::string> by_type(etl::in_place_type_t<NonTrivialNonMovable>(), 9, 10);
+        CHECK(etl::holds_alternative<NonTrivialNonMovable>(by_type));
+        CHECK_EQUAL(9, etl::get<NonTrivialNonMovable>(by_type).a);
+        CHECK_EQUAL(10, etl::get<NonTrivialNonMovable>(by_type).b);
+      }
+    }
+
+    //*************************************************************************
+    // The in-place constructors must forward every argument to the selected
+    // alternative, rather than collapsing them into a single value. The
+    // multi-argument forwarding of the trivially destructible suite is covered
+    // by the TrivialNonMovable block above; this test covers the argument
+    // conversion and the alternative selection for a copyable alternative.
+    TEST(test_in_place_construct_with_multiple_arguments)
+    {
+      // A multi-argument alternative that is copyable, so that this test also
+      // covers the argument forwarding independently of the movability fix.
+      etl::variant<std::string, int> by_index(etl::in_place_index_t<0>(), 5U, 'x');
+      CHECK_EQUAL(0U, by_index.index());
+      CHECK_EQUAL(std::string("xxxxx"), etl::get<0>(by_index));
+
+      etl::variant<std::string, int> by_type(etl::in_place_type_t<std::string>(), 3U, 'y');
+      CHECK_EQUAL(0U, by_type.index());
+      CHECK_EQUAL(std::string("yyy"), etl::get<std::string>(by_type));
+
+      // The alternative that is not selected must not be constructed.
+      etl::variant<std::string, int> other(etl::in_place_index_t<1>(), 42);
+      CHECK_EQUAL(1U, other.index());
+      CHECK_EQUAL(42, etl::get<1>(other));
+    }
+
+    //*************************************************************************
     TEST(test_copy_constructor)
     {
       std::string        text("Some Text");
