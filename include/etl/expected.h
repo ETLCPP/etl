@@ -293,22 +293,30 @@ namespace etl
     };
 
     //*****************************************************************************
-    // Constraints shared by the implicit and explicit converting constructors.
+    // Constraints on the source expected that hold whatever its value category.
     //*****************************************************************************
     template <typename TValue, typename TError, typename U, typename G>
-    struct is_expected_constructor_candidate
+    struct is_expected_conversion_allowed
       : etl::integral_constant<bool, !etl::is_same<etl::expected<U, G>, etl::expected<TValue, TError> >::value
-                                       && etl::is_constructible<TValue, const U&>::value && etl::is_constructible<TError, const G&>::value
                                        && !constructible_from_expected<TValue, U, G>::value>
+    {
+    };
+
+    //*****************************************************************************
+    // UArgument and GArgument are the source members as the constructor receives them.
+    //*****************************************************************************
+    template <typename TValue, typename TError, typename UArgument, typename GArgument>
+    struct is_expected_conversion_constructible
+      : etl::integral_constant<bool, etl::is_constructible<TValue, UArgument>::value && etl::is_constructible<TError, GArgument>::value>
     {
     };
 
     //*****************************************************************************
     // A converting constructor is implicit only when both the value and the error convert implicitly.
     //*****************************************************************************
-    template <typename TValue, typename TError, typename U, typename G>
+    template <typename TValue, typename TError, typename UArgument, typename GArgument>
     struct is_expected_conversion_implicit
-      : etl::integral_constant<bool, etl::is_convertible<const U&, TValue>::value && etl::is_convertible<const G&, TError>::value>
+      : etl::integral_constant<bool, etl::is_convertible<UArgument, TValue>::value && etl::is_convertible<GArgument, TError>::value>
     {
     };
   } // namespace private_expected
@@ -382,28 +390,58 @@ namespace etl
     }
 
     //*******************************************
-    /// Constructor from an expected with convertible value and error types.
+    /// Copy constructor from an expected with convertible value and error types.
     //*******************************************
     template <typename U, typename G,
-              typename etl::enable_if<private_expected::is_expected_constructor_candidate<TValue, TError, U, G>::value
-                                        && private_expected::is_expected_conversion_implicit<TValue, TError, U, G>::value,
+              typename etl::enable_if<private_expected::is_expected_conversion_allowed<TValue, TError, U, G>::value
+                                        && private_expected::is_expected_conversion_constructible<TValue, TError, const U&, const G&>::value
+                                        && private_expected::is_expected_conversion_implicit<TValue, TError, const U&, const G&>::value,
                                       int>::type = 0>
     ETL_CONSTEXPR14 expected(const etl::expected<U, G>& other)
-      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), value_type(other.value()))
-                                  : storage_type(etl::in_place_index_t<Error_Type>(), error_type(other.error())))
+      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), other.value())
+                                  : storage_type(etl::in_place_index_t<Error_Type>(), other.error()))
     {
     }
 
     //*******************************************
-    /// Constructor from an expected with explicitly convertible value or error types.
+    /// Copy constructor from an expected with explicitly convertible value or error types.
     //*******************************************
     template <typename U, typename G,
-              typename etl::enable_if<private_expected::is_expected_constructor_candidate<TValue, TError, U, G>::value
-                                        && !private_expected::is_expected_conversion_implicit<TValue, TError, U, G>::value,
+              typename etl::enable_if<private_expected::is_expected_conversion_allowed<TValue, TError, U, G>::value
+                                        && private_expected::is_expected_conversion_constructible<TValue, TError, const U&, const G&>::value
+                                        && !private_expected::is_expected_conversion_implicit<TValue, TError, const U&, const G&>::value,
                                       int>::type = 0>
     ETL_CONSTEXPR14 explicit expected(const etl::expected<U, G>& other)
-      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), value_type(other.value()))
-                                  : storage_type(etl::in_place_index_t<Error_Type>(), error_type(other.error())))
+      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), other.value())
+                                  : storage_type(etl::in_place_index_t<Error_Type>(), other.error()))
+    {
+    }
+
+    //*******************************************
+    /// Move constructor from an expected with convertible value and error types.
+    //*******************************************
+    template <typename U, typename G,
+              typename etl::enable_if<private_expected::is_expected_conversion_allowed<TValue, TError, U, G>::value
+                                        && private_expected::is_expected_conversion_constructible<TValue, TError, U&&, G&&>::value
+                                        && private_expected::is_expected_conversion_implicit<TValue, TError, U&&, G&&>::value,
+                                      int>::type = 0>
+    ETL_CONSTEXPR14 expected(etl::expected<U, G>&& other)
+      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), etl::move(other.value()))
+                                  : storage_type(etl::in_place_index_t<Error_Type>(), etl::move(other.error())))
+    {
+    }
+
+    //*******************************************
+    /// Move constructor from an expected with explicitly convertible value or error types.
+    //*******************************************
+    template <typename U, typename G,
+              typename etl::enable_if<private_expected::is_expected_conversion_allowed<TValue, TError, U, G>::value
+                                        && private_expected::is_expected_conversion_constructible<TValue, TError, U&&, G&&>::value
+                                        && !private_expected::is_expected_conversion_implicit<TValue, TError, U&&, G&&>::value,
+                                      int>::type = 0>
+    ETL_CONSTEXPR14 explicit expected(etl::expected<U, G>&& other)
+      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), etl::move(other.value()))
+                                  : storage_type(etl::in_place_index_t<Error_Type>(), etl::move(other.error())))
     {
     }
 #endif

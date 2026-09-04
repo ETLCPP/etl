@@ -144,6 +144,42 @@ namespace
     }
   };
 
+  struct MoveOnlyValue
+  {
+    MoveOnlyValue()
+      : v(0)
+    {
+    }
+
+    explicit MoveOnlyValue(int v_)
+      : v(v_)
+    {
+    }
+
+    MoveOnlyValue(MoveOnlyValue&&)            = default;
+    MoveOnlyValue& operator=(MoveOnlyValue&&) = default;
+
+    MoveOnlyValue(const MoveOnlyValue&)            = delete;
+    MoveOnlyValue& operator=(const MoveOnlyValue&) = delete;
+
+    int v;
+  };
+
+  struct FromMoveOnlyValue
+  {
+    FromMoveOnlyValue()
+      : v(0)
+    {
+    }
+
+    FromMoveOnlyValue(MoveOnlyValue&& other)
+      : v(other.v)
+    {
+    }
+
+    int v;
+  };
+
   struct NoMoveValue
   {
     explicit NoMoveValue(int v_)
@@ -1775,6 +1811,28 @@ namespace
       const etl::expected<std::string, std::string> source(etl::unexpected<std::string>(std::string("failed")));
 
       const etl::expected<Value, ExplicitError> result(source);
+
+      CHECK_FALSE(result.has_value());
+      CHECK_EQUAL("failed", result.error().e);
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_expected_with_convertible_types)
+    {
+      etl::expected<MoveOnlyValue, Error> source(MoveOnlyValue(1));
+
+      const etl::expected<FromMoveOnlyValue, Error> result(etl::move(source));
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(1, result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_expected_with_convertible_types_carries_error)
+    {
+      etl::expected<MoveOnlyValue, Error> source(etl::unexpected<Error>(Error("failed")));
+
+      const etl::expected<FromMoveOnlyValue, Error> result(etl::move(source));
 
       CHECK_FALSE(result.has_value());
       CHECK_EQUAL("failed", result.error().e);
