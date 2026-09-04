@@ -264,48 +264,39 @@ namespace etl
 
     template <typename TValue, typename U, typename G>
     struct constructible_from_expected
-      : etl::integral_constant<bool,
-          etl::is_constructible<TValue, etl::expected<U, G>&>::value ||
-          etl::is_constructible<TValue, etl::expected<U, G> >::value ||
-          etl::is_constructible<TValue, const etl::expected<U, G>&>::value ||
-          etl::is_constructible<TValue, const etl::expected<U, G> >::value ||
-          etl::is_convertible<etl::expected<U, G>&, TValue>::value ||
-          etl::is_convertible<etl::expected<U, G>&&, TValue>::value ||
-          etl::is_convertible<const etl::expected<U, G>&, TValue>::value ||
-          etl::is_convertible<const etl::expected<U, G>&&, TValue>::value>
+      : etl::integral_constant<
+          bool, etl::is_constructible<TValue, etl::expected<U, G>&>::value || etl::is_constructible<TValue, etl::expected<U, G> >::value
+                  || etl::is_constructible<TValue, const etl::expected<U, G>&>::value
+                  || etl::is_constructible<TValue, const etl::expected<U, G> >::value || etl::is_convertible<etl::expected<U, G>&, TValue>::value
+                  || etl::is_convertible<etl::expected<U, G>&&, TValue>::value || etl::is_convertible<const etl::expected<U, G>&, TValue>::value
+                  || etl::is_convertible<const etl::expected<U, G>&&, TValue>::value>
     {
     };
 
     template <typename TValue, typename TError, typename U>
     struct is_value_constructor_candidate
-      : etl::integral_constant<bool,
-          !etl::is_same<typename etl::decay<U>::type, etl::expected<TValue, TError> >::value &&
-          !etl::is_same<typename etl::decay<U>::type, TValue>::value &&
-          !etl::is_same<typename etl::decay<U>::type, etl::in_place_t>::value &&
-          !etl::is_same<typename etl::decay<U>::type, etl::unexpect_t>::value &&
-          !is_unexpected<typename etl::decay<U>::type>::value &&
-          etl::is_constructible<TValue, U&&>::value>
+      : etl::integral_constant<bool, !etl::is_same<typename etl::decay<U>::type, etl::expected<TValue, TError> >::value
+                                       && !etl::is_same<typename etl::decay<U>::type, TValue>::value
+                                       && !etl::is_same<typename etl::decay<U>::type, etl::in_place_t>::value
+                                       && !etl::is_same<typename etl::decay<U>::type, etl::unexpect_t>::value
+                                       && !is_unexpected<typename etl::decay<U>::type>::value && etl::is_constructible<TValue, U&&>::value>
     {
     };
 
     template <typename TValue, typename TError, typename U, typename G>
     struct is_expected_constructor_candidate
-      : etl::integral_constant<bool,
-          !etl::is_same<etl::expected<U, G>, etl::expected<TValue, TError> >::value &&
-          etl::is_constructible<TValue, const U&>::value &&
-          etl::is_constructible<TError, const G&>::value &&
-          !constructible_from_expected<TValue, U, G>::value>
+      : etl::integral_constant<bool, !etl::is_same<etl::expected<U, G>, etl::expected<TValue, TError> >::value
+                                       && etl::is_constructible<TValue, const U&>::value && etl::is_constructible<TError, const G&>::value
+                                       && !constructible_from_expected<TValue, U, G>::value>
     {
     };
 
     template <typename TValue, typename TError, typename U, typename G>
     struct is_expected_conversion_implicit
-      : etl::integral_constant<bool,
-          etl::is_convertible<const U&, TValue>::value &&
-          etl::is_convertible<const G&, TError>::value>
+      : etl::integral_constant<bool, etl::is_convertible<const U&, TValue>::value && etl::is_convertible<const G&, TError>::value>
     {
     };
-  }
+  } // namespace private_expected
 #endif
 
   //*****************************************************************************
@@ -357,8 +348,8 @@ namespace etl
     /// Constructor from a value convertible to value_type.
     //*******************************************
     template <typename U,
-              typename etl::enable_if<private_expected::is_value_constructor_candidate<TValue, TError, U>::value &&
-                                      etl::is_convertible<U&&, TValue>::value, int>::type = 0>
+              typename etl::enable_if<
+                private_expected::is_value_constructor_candidate<TValue, TError, U>::value && etl::is_convertible<U&&, TValue>::value, int>::type = 0>
     ETL_CONSTEXPR14 expected(U&& value_)
       : storage(etl::in_place_index_t<Value_Type>(), value_type(etl::forward<U>(value_)))
     {
@@ -367,9 +358,9 @@ namespace etl
     //*******************************************
     /// Constructor from a value explicitly convertible to value_type.
     //*******************************************
-    template <typename U,
-              typename etl::enable_if<private_expected::is_value_constructor_candidate<TValue, TError, U>::value &&
-                                      !etl::is_convertible<U&&, TValue>::value, int>::type = 0>
+    template <typename U, typename etl::enable_if<private_expected::is_value_constructor_candidate<TValue, TError, U>::value
+                                                    && !etl::is_convertible<U&&, TValue>::value,
+                                                  int>::type = 0>
     ETL_CONSTEXPR14 explicit expected(U&& value_)
       : storage(etl::in_place_index_t<Value_Type>(), value_type(etl::forward<U>(value_)))
     {
@@ -379,8 +370,9 @@ namespace etl
     /// Constructor from an expected with convertible value and error types.
     //*******************************************
     template <typename U, typename G,
-              typename etl::enable_if<private_expected::is_expected_constructor_candidate<TValue, TError, U, G>::value &&
-                                      private_expected::is_expected_conversion_implicit<TValue, TError, U, G>::value, int>::type = 0>
+              typename etl::enable_if<private_expected::is_expected_constructor_candidate<TValue, TError, U, G>::value
+                                        && private_expected::is_expected_conversion_implicit<TValue, TError, U, G>::value,
+                                      int>::type = 0>
     ETL_CONSTEXPR14 expected(const etl::expected<U, G>& other)
       : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), value_type(other.value()))
                                   : storage_type(etl::in_place_index_t<Error_Type>(), error_type(other.error())))
@@ -391,8 +383,9 @@ namespace etl
     /// Constructor from an expected with explicitly convertible value or error types.
     //*******************************************
     template <typename U, typename G,
-              typename etl::enable_if<private_expected::is_expected_constructor_candidate<TValue, TError, U, G>::value &&
-                                      !private_expected::is_expected_conversion_implicit<TValue, TError, U, G>::value, int>::type = 0>
+              typename etl::enable_if<private_expected::is_expected_constructor_candidate<TValue, TError, U, G>::value
+                                        && !private_expected::is_expected_conversion_implicit<TValue, TError, U, G>::value,
+                                      int>::type = 0>
     ETL_CONSTEXPR14 explicit expected(const etl::expected<U, G>& other)
       : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), value_type(other.value()))
                                   : storage_type(etl::in_place_index_t<Error_Type>(), error_type(other.error())))
