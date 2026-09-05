@@ -420,6 +420,25 @@ namespace
 
     int value;
   };
+
+  //*************************
+  // Counts its own destructions, so that a variant assignment can be checked to
+  // have destroyed the alternative it was holding.
+  struct CountedDestruction
+  {
+    static int destructions;
+
+    CountedDestruction() {}
+    CountedDestruction(const CountedDestruction&) {}
+    CountedDestruction(CountedDestruction&&) {}
+
+    ~CountedDestruction()
+    {
+      ++destructions;
+    }
+  };
+
+  int CountedDestruction::destructions = 0;
 } // namespace
 
   // Moved from the top of the file otherwise clang has issues with
@@ -2319,6 +2338,45 @@ namespace
       CHECK_EQUAL(false, variant_was_signed);
     }
   #endif // ETL_USING_CPP14
+
+  #if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_copy_assign_from_a_valueless_variant_destroys_the_active_alternative)
+    {
+      etl::variant<CountedDestruction, int> active{etl::in_place_index_t<0>{}};
+      etl::variant<CountedDestruction, int> valueless{etl::private_variant::valueless_t()};
+
+      CountedDestruction::destructions = 0;
+
+      active = valueless;
+
+      CHECK_EQUAL(1, CountedDestruction::destructions);
+      CHECK_TRUE(active.valueless_by_exception());
+    }
+
+    //*************************************************************************
+    TEST(test_move_assign_from_a_valueless_variant_destroys_the_active_alternative)
+    {
+      etl::variant<CountedDestruction, int> active{etl::in_place_index_t<0>{}};
+      etl::variant<CountedDestruction, int> valueless{etl::private_variant::valueless_t()};
+
+      CountedDestruction::destructions = 0;
+
+      active = etl::move(valueless);
+
+      CHECK_EQUAL(1, CountedDestruction::destructions);
+      CHECK_TRUE(active.valueless_by_exception());
+    }
+
+    //*************************************************************************
+    TEST(test_a_valueless_variant_holds_no_alternative)
+    {
+      etl::variant<CountedDestruction, int> valueless{etl::private_variant::valueless_t()};
+
+      CHECK_TRUE(valueless.valueless_by_exception());
+      CHECK_EQUAL(etl::variant_npos, valueless.index());
+    }
+  #endif
 
   #if ETL_USING_CPP17
     //*************************************************************************

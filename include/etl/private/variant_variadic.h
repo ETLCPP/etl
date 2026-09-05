@@ -832,6 +832,8 @@ namespace etl
       {
         if (other.index() == variant_npos)
         {
+          do_destroy();
+
           type_id = variant_npos;
         }
         else
@@ -857,6 +859,8 @@ namespace etl
       {
         if (other.index() == variant_npos)
         {
+          do_destroy();
+
           type_id = variant_npos;
         }
         else
