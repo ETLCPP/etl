@@ -348,16 +348,7 @@ namespace etl
       }
 
       //***************************************************
-      reference operator[](size_t i)
-      {
-        iterator result(*this);
-        result += i;
-
-        return *result;
-      }
-
-      //***************************************************
-      const_reference operator[](size_t i) const
+      reference operator[](difference_type i) const
       {
         iterator result(*this);
         result += i;
@@ -607,10 +598,10 @@ namespace etl
       }
 
       //***************************************************
-      const_reference operator[](size_t i) const
+      const_reference operator[](difference_type i) const
       {
         const_iterator result(*this);
-        result += static_cast<difference_type>(i);
+        result += i;
 
         return *result;
       }
@@ -2532,10 +2523,17 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
-  template <typename T, typename... TValues>
-  constexpr auto make_deque(TValues&&... values) -> etl::deque<T, sizeof...(TValues)>
+  template <typename T = void, typename... TValues>
+  constexpr auto make_deque(TValues&&... values) -> etl::deque<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
   {
-    return {etl::forward<T>(values)...};
+    // Library Fundamentals TS make_array design: the element type is T when
+    // supplied explicitly, otherwise the decayed common type of the arguments.
+    // convert forwards arguments that already have the element type and
+    // converts the rest with static_cast, so const-qualified lvalues,
+    // narrowing initialisers such as make_deque<char>(0, 1) and non-movable
+    // element types all work.
+    using TElement = etl::private_make::element_type_t<T, TValues...>;
+    return {etl::private_make::convert<TElement>(etl::forward<TValues>(values))...};
   }
 #endif
 

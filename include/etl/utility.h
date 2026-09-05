@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_UTILITY_INCLUDED
 
 #include "platform.h"
+#include "limits.h"
 #include "type_traits.h"
 
 #include "private/tuple_element.h"
@@ -142,10 +143,228 @@ namespace etl
     return static_cast<typename underlying_type<T>::type>(value);
   }
 
+#if ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_integer_comparison_functions)
+  //***************************************************************************
+  // Safe integer comparison functions.
+  //***************************************************************************
+  using std::cmp_equal;
+  using std::cmp_greater;
+  using std::cmp_greater_equal;
+  using std::cmp_less;
+  using std::cmp_less_equal;
+  using std::cmp_not_equal;
+  using std::in_range;
+#else
+  namespace private_utility
+  {
+    //***********************************
+    /// Determines whether T is one of the standard integer types permitted as
+    /// an argument to the safe integer comparison functions. The permitted
+    /// types are the signed and unsigned standard integer types, including
+    /// signed char and unsigned char. bool, char and the extended character
+    /// types are excluded, matching the C++ standard's constraints on
+    /// etl::cmp_* and etl::in_range.
+    //***********************************
+    template <typename T>
+    struct is_standard_integer : etl::false_type
+    {
+    };
+
+    template <>
+    struct is_standard_integer<signed char> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<short> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<int> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<long> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<long long> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<unsigned char> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<unsigned short> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<unsigned int> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<unsigned long> : etl::true_type
+    {
+    };
+    template <>
+    struct is_standard_integer<unsigned long long> : etl::true_type
+    {
+    };
+
+    template <typename T>
+    struct is_standard_integer<const T> : is_standard_integer<T>
+    {
+    };
+    template <typename T>
+    struct is_standard_integer<volatile T> : is_standard_integer<T>
+    {
+    };
+    template <typename T>
+    struct is_standard_integer<const volatile T> : is_standard_integer<T>
+    {
+    };
+
+    //***********************************
+    /// Enabled when both T and U are permitted comparison types.
+    //***********************************
+    template <typename T, typename U, typename TReturn = void>
+    struct enable_if_comparable : etl::enable_if<is_standard_integer<T>::value && is_standard_integer<U>::value, TReturn>
+    {
+    };
+
+    //***********************************
+    /// cmp_less implementation helpers, selected by SFINAE to avoid
+    /// signed/unsigned comparison warnings in dead code branches.
+    //***********************************
+
+    // Both same signedness.
+    template <typename T, typename U>
+    ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value == etl::is_signed<U>::value, bool>::type cmp_less_impl(T t, U u)
+      ETL_NOEXCEPT
+    {
+      return t < u;
+    }
+
+    // T is signed, U is unsigned.
+    template <typename T, typename U>
+    ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_signed<T>::value && !etl::is_signed<U>::value, bool>::type cmp_less_impl(T t, U u)
+      ETL_NOEXCEPT
+    {
+      return (t < T(0)) || (typename etl::make_unsigned<T>::type(t) < u);
+    }
+
+    // T is unsigned, U is signed.
+    template <typename T, typename U>
+    ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<!etl::is_signed<T>::value && etl::is_signed<U>::value, bool>::type cmp_less_impl(T t, U u)
+      ETL_NOEXCEPT
+    {
+      return (u >= U(0)) && (t < typename etl::make_unsigned<U>::type(u));
+    }
+  } // namespace private_utility
+
+  //***************************************************************************
+  /// Compares the values of two integers.
+  /// Unlike the built-in comparison operators, negative signed integers always
+  /// compare less than (and not equal to) unsigned integers.
+  /// The comparison is safe against value-changing implicit conversions.
+  /// https://en.cppreference.com/w/cpp/utility/intcmp
+  ///\ingroup utility
+  //***************************************************************************
+  template <typename T, typename U>
+  ETL_NODISCARD ETL_CONSTEXPR typename private_utility::enable_if_comparable<T, U, bool>::type cmp_equal(T t, U u) ETL_NOEXCEPT
+  {
+    return (etl::is_signed<T>::value == etl::is_signed<U>::value) ? (t == u)
+           : etl::is_signed<T>::value                             ? ((t >= T(0)) && (typename etl::make_unsigned<T>::type(t) == u))
+                                                                  : ((u >= U(0)) && (t == typename etl::make_unsigned<U>::type(u)));
+  }
+
+  //***************************************************************************
+  /// See @ref cmp_equal.
+  //***************************************************************************
+  template <typename T, typename U>
+  ETL_NODISCARD ETL_CONSTEXPR typename private_utility::enable_if_comparable<T, U, bool>::type cmp_not_equal(T t, U u) ETL_NOEXCEPT
+  {
+    return !etl::cmp_equal(t, u);
+  }
+
+  //***************************************************************************
+  /// See @ref cmp_equal.
+  //***************************************************************************
+  template <typename T, typename U>
+  ETL_NODISCARD ETL_CONSTEXPR typename private_utility::enable_if_comparable<T, U, bool>::type cmp_less(T t, U u) ETL_NOEXCEPT
+  {
+    return etl::private_utility::cmp_less_impl(t, u);
+  }
+
+  //***************************************************************************
+  /// See @ref cmp_equal.
+  //***************************************************************************
+  template <typename T, typename U>
+  ETL_NODISCARD ETL_CONSTEXPR typename private_utility::enable_if_comparable<T, U, bool>::type cmp_greater(T t, U u) ETL_NOEXCEPT
+  {
+    return etl::cmp_less(u, t);
+  }
+
+  //***************************************************************************
+  /// See @ref cmp_equal.
+  //***************************************************************************
+  template <typename T, typename U>
+  ETL_NODISCARD ETL_CONSTEXPR typename private_utility::enable_if_comparable<T, U, bool>::type cmp_less_equal(T t, U u) ETL_NOEXCEPT
+  {
+    return !etl::cmp_less(u, t);
+  }
+
+  //***************************************************************************
+  /// See @ref cmp_equal.
+  //***************************************************************************
+  template <typename T, typename U>
+  ETL_NODISCARD ETL_CONSTEXPR typename private_utility::enable_if_comparable<T, U, bool>::type cmp_greater_equal(T t, U u) ETL_NOEXCEPT
+  {
+    return !etl::cmp_less(t, u);
+  }
+
+  //***************************************************************************
+  /// Returns whether the value of t is in the range of values that can be
+  /// represented by R, that is, whether t can be converted to R without loss
+  /// of its value.
+  /// https://en.cppreference.com/w/cpp/utility/in_range
+  ///\ingroup utility
+  //***************************************************************************
+  template <typename R, typename T>
+  ETL_NODISCARD ETL_CONSTEXPR typename private_utility::enable_if_comparable<R, T, bool>::type in_range(T t) ETL_NOEXCEPT
+  {
+    return etl::cmp_greater_equal(t, etl::numeric_limits<R>::min()) && etl::cmp_less_equal(t, etl::numeric_limits<R>::max());
+  }
+#endif
+
   // We can't have std::swap and etl::swap templates coexisting in the unit
   // tests as the compiler will be unable to decide which one to use, due to
   // ADL.
+  // These are declared in type_traits.h, so that etl::is_swappable can find
+  // them, and defined here.
 #if ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST)
+  #if ETL_USING_CPP11
+  //***************************************************************************
+  // swap
+  template <typename T>
+  ETL_CONSTEXPR14 typename etl::enable_if<etl::is_move_constructible<T>::value && etl::is_move_assignable<T>::value>::type swap(T& a, T& b)
+    ETL_NOEXCEPT_IF(etl::is_nothrow_move_constructible<T>::value&& etl::is_nothrow_move_assignable<T>::value)
+  {
+    T temp(ETL_MOVE(a));
+    a = ETL_MOVE(b);
+    b = ETL_MOVE(temp);
+  }
+
+  template <typename T, size_t Size>
+  ETL_CONSTEXPR14 typename etl::enable_if<private_type_traits::is_swappable_helper<T>::value>::type swap(T (&a)[Size], T (&b)[Size])
+    ETL_NOEXCEPT_IF(private_type_traits::is_nothrow_swappable_helper<T>::value)
+  {
+    for (size_t i = 0UL; i < Size; ++i)
+    {
+      swap(a[i], b[i]);
+    }
+  }
+  #else
   //***************************************************************************
   // swap
   template <typename T>
@@ -156,7 +375,7 @@ namespace etl
     b = ETL_MOVE(temp);
   }
 
-  template < class T, size_t Size >
+  template <typename T, size_t Size>
   ETL_CONSTEXPR14 void swap(T (&a)[Size], T (&b)[Size]) ETL_NOEXCEPT
   {
     for (size_t i = 0UL; i < Size; ++i)
@@ -164,6 +383,7 @@ namespace etl
       swap(a[i], b[i]);
     }
   }
+  #endif
 #endif
 
   //***************************************************************************
@@ -1164,6 +1384,30 @@ namespace etl
     static constexpr T value = Value;
   };
 #endif
+
+  //***************************************************************************
+  /// Returns 'value' cast to an unsigned integer.
+  ///\param value The integer to cast.
+  ///\return The unsigned integer.
+  //***************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, typename etl::make_unsigned<T>::type>::type to_unsigned(T value)
+    ETL_NOEXCEPT
+  {
+    return static_cast<typename etl::make_unsigned<T>::type>(value);
+  }
+
+  //***************************************************************************
+  /// Returns 'value' cast to a signed integer.
+  ///\param value The integer to cast.
+  ///\return The signed integer.
+  //***************************************************************************
+  template <typename T>
+  ETL_NODISCARD ETL_CONSTEXPR typename etl::enable_if<etl::is_integral<T>::value, typename etl::make_signed<T>::type>::type to_signed(T value)
+    ETL_NOEXCEPT
+  {
+    return static_cast<typename etl::make_signed<T>::type>(value);
+  }
 } // namespace etl
 
 #endif

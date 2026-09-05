@@ -39,6 +39,8 @@ SOFTWARE.
 
 #if ETL_USING_CPP11
 
+  #include "private/diagnostic_array_bounds_push.h"
+
 namespace etl
 {
   //****************************************************************************
@@ -386,6 +388,8 @@ namespace etl
   inline constexpr bool is_nothrow_invocable_r_v = is_nothrow_invocable_r<TFunction, TArgs...>::value;
   #endif
 } // namespace etl
+
+  #include "private/diagnostic_pop.h"
 
 #endif // ETL_USING_CPP11
 #endif // ETL_INVOKE_INCLUDED

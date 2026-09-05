@@ -543,6 +543,50 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_remove_prefix_empty)
+    {
+      std::string original = "Hello World";
+      View        view(original.c_str());
+
+      // remove n == size() should result in an empty view
+      view.remove_prefix(original.size());
+      CHECK_EQUAL(view.begin(), view.end());
+      CHECK(view.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_remove_prefix_assert)
+    {
+      std::string original = "Hello World";
+      View        view(original.c_str());
+
+      // remove n > size() should trigger ETL_ASSERT
+      CHECK_THROW(view.remove_prefix(original.size() + 1), etl::string_view_bounds);
+    }
+
+    //*************************************************************************
+    TEST(test_remove_suffix_empty)
+    {
+      std::string original = "Hello World";
+      View        view(original.c_str());
+
+      // remove n == size() should result in an empty view
+      view.remove_suffix(original.size());
+      CHECK_EQUAL(view.begin(), view.end());
+      CHECK(view.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_remove_suffix_assert)
+    {
+      std::string original = "Hello World";
+      View        view(original.c_str());
+
+      // remove n > size() should trigger ETL_ASSERT
+      CHECK_THROW(view.remove_suffix(original.size() + 1), etl::string_view_bounds);
+    }
+
+    //*************************************************************************
     TEST(test_copy)
     {
       View                 view(text.c_str());
@@ -1217,6 +1261,24 @@ namespace
         size_t etl_pos = sv.rfind(etl::string_view("abc"), p);
         CHECK_EQUAL(std_pos, etl_pos);
       }
+    }
+
+    //*************************************************************************
+    TEST(test_npos_type_and_value)
+    {
+      typedef etl::string_view::size_type size_type;
+
+      // npos must have the same type as size_type, not an anonymous enum.
+      CHECK((etl::is_same<const size_type, decltype(etl::string_view::npos)>::value));
+      CHECK_EQUAL(etl::integral_limits<size_type>::max, etl::string_view::npos);
+
+      // npos must compare equal to the equivalent std::string_view constant.
+      CHECK_EQUAL(std::string::npos, etl::string_view::npos);
+
+      // substr with the default count must return the whole remaining view.
+      etl::string_view view("Hello World");
+      CHECK_EQUAL(std::string("World"), std::string(view.substr(6).data(), view.substr(6).size()));
+      CHECK_EQUAL(5U, view.substr(6, etl::string_view::npos).size());
     }
   }
 } // namespace
