@@ -1040,6 +1040,71 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_comparison_operators)
+    {
+      const Text text(STR("123"));
+      const Text bad_text(STR("1X3"));
+      const Text other_bad_text(STR("2X3"));
+      const Text overflow_text(STR("99999999999999999999"));
+
+      const etl::to_arithmetic_result<int> result          = etl::to_arithmetic<int>(text.c_str(), text.size());
+      const etl::to_arithmetic_result<int> same            = etl::to_arithmetic<int>(text.c_str(), text.size());
+      const etl::to_arithmetic_result<int> bad_result      = etl::to_arithmetic<int>(bad_text.c_str(), bad_text.size());
+      const etl::to_arithmetic_result<int> same_bad_result = etl::to_arithmetic<int>(other_bad_text.c_str(), other_bad_text.size());
+      const etl::to_arithmetic_result<int> overflow_result = etl::to_arithmetic<int>(overflow_text.c_str(), overflow_text.size());
+
+      // result <-> result
+      CHECK_TRUE(result == same);
+      CHECK_FALSE(result != same);
+      CHECK_TRUE(result != bad_result);
+      CHECK_FALSE(result == bad_result);
+
+      // Two errored results with the same status compare equal.
+      CHECK_EQUAL(bad_result.error(), same_bad_result.error());
+      CHECK_TRUE(bad_result == same_bad_result);
+      CHECK_FALSE(bad_result != same_bad_result);
+
+      // Two errored results with different statuses do not compare equal.
+      CHECK(bad_result.error() != overflow_result.error());
+      CHECK_TRUE(bad_result != overflow_result);
+      CHECK_FALSE(bad_result == overflow_result);
+
+      // result <-> value
+      CHECK_TRUE(result == 123);
+      CHECK_FALSE(result != 123);
+      CHECK_TRUE(result != 124);
+      CHECK_FALSE(result == 124);
+
+      // value <-> result
+      CHECK_TRUE(123 == result);
+      CHECK_FALSE(123 != result);
+      CHECK_TRUE(124 != result);
+      CHECK_FALSE(124 == result);
+
+      // An errored result never compares equal to a value.
+      CHECK_FALSE(bad_result == 123);
+      CHECK_TRUE(bad_result != 123);
+      CHECK_FALSE(123 == bad_result);
+      CHECK_TRUE(123 != bad_result);
+
+      // Heterogeneous result <-> value, using a different result value type.
+      const etl::to_arithmetic_result<long>   long_result  = etl::to_arithmetic<long>(text.c_str(), text.size());
+      const etl::to_arithmetic_result<int8_t> small_result = etl::to_arithmetic<int8_t>(text.c_str(), text.size());
+
+      CHECK_TRUE(long_result == 123);
+      CHECK_FALSE(long_result != 123);
+      CHECK_TRUE(123 == long_result);
+      CHECK_TRUE(long_result != 124);
+      CHECK_FALSE(123 != long_result);
+      CHECK_TRUE(124 != long_result);
+
+      CHECK_TRUE(small_result == 123);
+      CHECK_FALSE(small_result != 123);
+      CHECK_TRUE(123 == small_result);
+      CHECK_TRUE(small_result != 124);
+    }
+
+    //*************************************************************************
 #if ETL_USING_CPP14
     TEST(test_constexpr_integral)
     {

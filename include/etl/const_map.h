@@ -48,7 +48,7 @@ SOFTWARE.
 
 namespace etl
 {
-  template <typename TKey, typename TMapped, typename TKeyCompare>
+  template <typename TKey, typename TMapped, typename TKeyCompare = etl::less<TKey>>
   class iconst_map
   {
   public:
@@ -449,7 +449,6 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    template <typename... TElements>
     ETL_CONSTEXPR14 explicit iconst_map(const value_type* element_list_, size_type size_, size_type max_elements_) ETL_NOEXCEPT
       : element_list(element_list_)
       , element_list_end{element_list_ + size_}
@@ -508,7 +507,8 @@ namespace etl
 
     //*************************************************************************
     ///\brief Construct a const_map from a variadic list of elements.
-    /// Static asserts if the elements are not of type <code>value_type</code>.
+    /// Static asserts if the elements are not constructible into
+    /// <code>value_type</code>.
     /// Static asserts if the number of elements is greater than the capacity of
     /// the const_map.
     //*************************************************************************
@@ -517,7 +517,8 @@ namespace etl
       : iconst_map<TKey, TMapped, TKeyCompare>(element_list, sizeof...(elements), Size)
       , element_list{etl::forward<TElements>(elements)...}
     {
-      static_assert((etl::are_all_same<value_type, etl::decay_t<TElements>...>::value), "All elements must be value_type");
+      static_assert((etl::conjunction<etl::is_constructible<value_type, etl::decay_t<TElements>>...>::value),
+                    "All elements must be constructible into value_type");
       static_assert(sizeof...(elements) <= Size, "Number of elements exceeds capacity");
     }
 

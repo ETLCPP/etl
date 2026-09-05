@@ -785,6 +785,161 @@ namespace
     }
 #endif
 
+    //*********************************
+    TEST(test_cmp_equal)
+    {
+      // Same signedness.
+      CHECK_TRUE(etl::cmp_equal(1, 1));
+      CHECK_FALSE(etl::cmp_equal(1, 2));
+      CHECK_TRUE(etl::cmp_equal(1U, 1U));
+      CHECK_FALSE(etl::cmp_equal(1U, 2U));
+
+      // Mixed signedness where the built-in operator would give the wrong result.
+      // -1 as unsigned would be a large value, so a naive (a == b) would be false anyway,
+      // but the classic trap is comparing a negative signed with an equal-bit-pattern unsigned.
+      CHECK_FALSE(etl::cmp_equal(-1, static_cast<unsigned int>(-1)));
+      CHECK_FALSE(etl::cmp_equal(static_cast<unsigned int>(-1), -1));
+
+      // Non-negative signed compared with unsigned.
+      CHECK_TRUE(etl::cmp_equal(5, 5U));
+      CHECK_TRUE(etl::cmp_equal(5U, 5));
+      CHECK_FALSE(etl::cmp_equal(-5, 5U));
+      CHECK_FALSE(etl::cmp_equal(5U, -5));
+
+      // Different widths.
+      CHECK_TRUE(etl::cmp_equal(int8_t(100), int64_t(100)));
+      CHECK_FALSE(etl::cmp_equal(int8_t(-1), uint64_t(0xFFFFFFFFFFFFFFFFULL)));
+    }
+
+    //*********************************
+    TEST(test_cmp_not_equal)
+    {
+      CHECK_FALSE(etl::cmp_not_equal(1, 1));
+      CHECK_TRUE(etl::cmp_not_equal(1, 2));
+      CHECK_TRUE(etl::cmp_not_equal(-1, static_cast<unsigned int>(-1)));
+      CHECK_FALSE(etl::cmp_not_equal(5, 5U));
+      CHECK_TRUE(etl::cmp_not_equal(-5, 5U));
+    }
+
+    //*********************************
+    TEST(test_cmp_less)
+    {
+      // Same signedness.
+      CHECK_TRUE(etl::cmp_less(1, 2));
+      CHECK_FALSE(etl::cmp_less(2, 1));
+      CHECK_FALSE(etl::cmp_less(1, 1));
+      CHECK_TRUE(etl::cmp_less(1U, 2U));
+      CHECK_FALSE(etl::cmp_less(2U, 1U));
+
+      // A negative signed value is always less than any unsigned value.
+      CHECK_TRUE(etl::cmp_less(-1, 0U));
+      CHECK_TRUE(etl::cmp_less(-1, static_cast<unsigned int>(-1)));
+      CHECK_FALSE(etl::cmp_less(static_cast<unsigned int>(-1), -1));
+
+      // Non-negative signed with unsigned.
+      CHECK_TRUE(etl::cmp_less(5, 6U));
+      CHECK_FALSE(etl::cmp_less(6, 5U));
+      CHECK_TRUE(etl::cmp_less(5U, 6));
+      CHECK_FALSE(etl::cmp_less(6U, 5));
+
+      // Large unsigned is not less than a small signed.
+      CHECK_FALSE(etl::cmp_less(0xFFFFFFFFU, 1));
+      CHECK_TRUE(etl::cmp_less(1, 0xFFFFFFFFU));
+    }
+
+    //*********************************
+    TEST(test_cmp_greater)
+    {
+      CHECK_TRUE(etl::cmp_greater(2, 1));
+      CHECK_FALSE(etl::cmp_greater(1, 2));
+      CHECK_FALSE(etl::cmp_greater(1, 1));
+
+      CHECK_FALSE(etl::cmp_greater(-1, 0U));
+      CHECK_TRUE(etl::cmp_greater(static_cast<unsigned int>(-1), -1));
+      CHECK_TRUE(etl::cmp_greater(0xFFFFFFFFU, 1));
+      CHECK_FALSE(etl::cmp_greater(1, 0xFFFFFFFFU));
+    }
+
+    //*********************************
+    TEST(test_cmp_less_equal)
+    {
+      CHECK_TRUE(etl::cmp_less_equal(1, 1));
+      CHECK_TRUE(etl::cmp_less_equal(1, 2));
+      CHECK_FALSE(etl::cmp_less_equal(2, 1));
+
+      CHECK_TRUE(etl::cmp_less_equal(-1, static_cast<unsigned int>(-1)));
+      CHECK_FALSE(etl::cmp_less_equal(static_cast<unsigned int>(-1), -1));
+      CHECK_TRUE(etl::cmp_less_equal(5U, 5));
+      CHECK_FALSE(etl::cmp_less_equal(6U, 5));
+    }
+
+    //*********************************
+    TEST(test_cmp_greater_equal)
+    {
+      CHECK_TRUE(etl::cmp_greater_equal(1, 1));
+      CHECK_TRUE(etl::cmp_greater_equal(2, 1));
+      CHECK_FALSE(etl::cmp_greater_equal(1, 2));
+
+      CHECK_FALSE(etl::cmp_greater_equal(-1, static_cast<unsigned int>(-1)));
+      CHECK_TRUE(etl::cmp_greater_equal(static_cast<unsigned int>(-1), -1));
+      CHECK_TRUE(etl::cmp_greater_equal(5, 5U));
+      CHECK_FALSE(etl::cmp_greater_equal(-5, 5U));
+    }
+
+    //*********************************
+    TEST(test_in_range)
+    {
+      // Signed target type.
+      CHECK_TRUE(etl::in_range<int8_t>(0));
+      CHECK_TRUE(etl::in_range<int8_t>(127));
+      CHECK_TRUE(etl::in_range<int8_t>(-128));
+      CHECK_FALSE(etl::in_range<int8_t>(128));
+      CHECK_FALSE(etl::in_range<int8_t>(-129));
+      CHECK_FALSE(etl::in_range<int8_t>(200));
+
+      // Unsigned target type.
+      CHECK_TRUE(etl::in_range<uint8_t>(0));
+      CHECK_TRUE(etl::in_range<uint8_t>(255));
+      CHECK_FALSE(etl::in_range<uint8_t>(256));
+      CHECK_FALSE(etl::in_range<uint8_t>(-1));
+
+      // Unsigned source that would be negative if reinterpreted as signed.
+      CHECK_FALSE(etl::in_range<int8_t>(static_cast<unsigned int>(-1)));
+      CHECK_TRUE(etl::in_range<uint32_t>(static_cast<unsigned int>(-1)));
+
+      // Wider target always contains a narrower value.
+      CHECK_TRUE(etl::in_range<int64_t>(int8_t(-1)));
+      CHECK_TRUE(etl::in_range<int64_t>(uint32_t(0xFFFFFFFFU)));
+    }
+
+#if ETL_USING_CPP14
+    //*********************************
+    TEST(test_cmp_and_in_range_constexpr)
+    {
+      constexpr bool ce0 = etl::cmp_equal(1, 1);
+      constexpr bool ce1 = etl::cmp_not_equal(-1, static_cast<unsigned int>(-1));
+      constexpr bool ce2 = etl::cmp_less(-1, 0U);
+      constexpr bool ce3 = etl::cmp_greater(static_cast<unsigned int>(-1), -1);
+      constexpr bool ce4 = etl::cmp_less_equal(-1, static_cast<unsigned int>(-1));
+      constexpr bool ce5 = etl::cmp_greater_equal(static_cast<unsigned int>(-1), -1);
+      constexpr bool ce6 = etl::in_range<int8_t>(100);
+      constexpr bool ce7 = etl::in_range<int8_t>(200);
+
+      static_assert(ce0, "cmp_equal constexpr");
+      static_assert(ce1, "cmp_not_equal constexpr");
+      static_assert(ce2, "cmp_less constexpr");
+      static_assert(ce3, "cmp_greater constexpr");
+      static_assert(ce4, "cmp_less_equal constexpr");
+      static_assert(ce5, "cmp_greater_equal constexpr");
+      static_assert(ce6, "in_range true constexpr");
+      static_assert(!ce7, "in_range false constexpr");
+
+      CHECK_TRUE(ce0);
+      CHECK_TRUE(ce6);
+      CHECK_FALSE(ce7);
+    }
+#endif
+
 #if ETL_HAS_PACKED
     //*********************************
     TEST(test_packed)
@@ -1144,5 +1299,239 @@ namespace
       CHECK(true);
     }
 #endif
+
+    //*************************************************************************
+    TEST(test_to_unsigned_from_int8_t)
+    {
+      auto umin   = etl::to_unsigned(etl::integral_limits<int8_t>::min);
+      auto umax   = etl::to_unsigned(etl::integral_limits<int8_t>::max);
+      auto uzero  = etl::to_unsigned(int8_t(0));
+      auto uplus  = etl::to_unsigned(int8_t(50));
+      auto uminus = etl::to_unsigned(int8_t(-50));
+
+      auto umin_expected   = static_cast<uint8_t>(etl::integral_limits<int8_t>::min);
+      auto umax_expected   = static_cast<uint8_t>(etl::integral_limits<int8_t>::max);
+      auto uzero_expected  = static_cast<uint8_t>(0);
+      auto uplus_expected  = static_cast<uint8_t>(50);
+      auto uminus_expected = static_cast<uint8_t>(-50);
+
+      CHECK((etl::is_same<decltype(umin), uint8_t>::value));
+      CHECK((etl::is_same<decltype(umax), uint8_t>::value));
+      CHECK((etl::is_same<decltype(uzero), uint8_t>::value));
+      CHECK((etl::is_same<decltype(uplus), uint8_t>::value));
+      CHECK((etl::is_same<decltype(uminus), uint8_t>::value));
+
+      CHECK_EQUAL(int(umin_expected), int(umin));
+      CHECK_EQUAL(int(umax_expected), int(umax));
+      CHECK_EQUAL(int(uzero_expected), int(uzero));
+      CHECK_EQUAL(int(uplus_expected), int(uplus));
+      CHECK_EQUAL(int(uminus_expected), int(uminus));
+    }
+
+    //*************************************************************************
+    TEST(test_to_unsigned_from_int16_t)
+    {
+      auto umin   = etl::to_unsigned(etl::integral_limits<int16_t>::min);
+      auto umax   = etl::to_unsigned(etl::integral_limits<int16_t>::max);
+      auto uzero  = etl::to_unsigned(int16_t(0));
+      auto uplus  = etl::to_unsigned(int16_t(50));
+      auto uminus = etl::to_unsigned(int16_t(-50));
+
+      auto umin_expected   = static_cast<uint16_t>(etl::integral_limits<int16_t>::min);
+      auto umax_expected   = static_cast<uint16_t>(etl::integral_limits<int16_t>::max);
+      auto uzero_expected  = static_cast<uint16_t>(0);
+      auto uplus_expected  = static_cast<uint16_t>(50);
+      auto uminus_expected = static_cast<uint16_t>(-50);
+
+      CHECK((etl::is_same<decltype(umin), uint16_t>::value));
+      CHECK((etl::is_same<decltype(umax), uint16_t>::value));
+      CHECK((etl::is_same<decltype(uzero), uint16_t>::value));
+      CHECK((etl::is_same<decltype(uplus), uint16_t>::value));
+      CHECK((etl::is_same<decltype(uminus), uint16_t>::value));
+
+      CHECK_EQUAL(umin_expected, umin);
+      CHECK_EQUAL(umax_expected, umax);
+      CHECK_EQUAL(uzero_expected, uzero);
+      CHECK_EQUAL(uplus_expected, uplus);
+      CHECK_EQUAL(uminus_expected, uminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_unsigned_from_int32_t)
+    {
+      auto umin   = etl::to_unsigned(etl::integral_limits<int32_t>::min);
+      auto umax   = etl::to_unsigned(etl::integral_limits<int32_t>::max);
+      auto uzero  = etl::to_unsigned(int32_t(0));
+      auto uplus  = etl::to_unsigned(int32_t(50));
+      auto uminus = etl::to_unsigned(int32_t(-50));
+
+      auto umin_expected   = static_cast<uint32_t>(etl::integral_limits<int32_t>::min);
+      auto umax_expected   = static_cast<uint32_t>(etl::integral_limits<int32_t>::max);
+      auto uzero_expected  = static_cast<uint32_t>(0);
+      auto uplus_expected  = static_cast<uint32_t>(50);
+      auto uminus_expected = static_cast<uint32_t>(-50);
+
+      CHECK((etl::is_same<decltype(umin), uint32_t>::value));
+      CHECK((etl::is_same<decltype(umax), uint32_t>::value));
+      CHECK((etl::is_same<decltype(uzero), uint32_t>::value));
+      CHECK((etl::is_same<decltype(uplus), uint32_t>::value));
+      CHECK((etl::is_same<decltype(uminus), uint32_t>::value));
+
+      CHECK_EQUAL(umin_expected, umin);
+      CHECK_EQUAL(umax_expected, umax);
+      CHECK_EQUAL(uzero_expected, uzero);
+      CHECK_EQUAL(uplus_expected, uplus);
+      CHECK_EQUAL(uminus_expected, uminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_unsigned_from_int64_t)
+    {
+      auto umin   = etl::to_unsigned(etl::integral_limits<int64_t>::min);
+      auto umax   = etl::to_unsigned(etl::integral_limits<int64_t>::max);
+      auto uzero  = etl::to_unsigned(int64_t(0));
+      auto uplus  = etl::to_unsigned(int64_t(50));
+      auto uminus = etl::to_unsigned(int64_t(-50));
+
+      auto umin_expected   = static_cast<uint64_t>(etl::integral_limits<int64_t>::min);
+      auto umax_expected   = static_cast<uint64_t>(etl::integral_limits<int64_t>::max);
+      auto uzero_expected  = static_cast<uint64_t>(0);
+      auto uplus_expected  = static_cast<uint64_t>(50);
+      auto uminus_expected = static_cast<uint64_t>(-50);
+
+      CHECK((etl::is_same<decltype(umin), uint64_t>::value));
+      CHECK((etl::is_same<decltype(umax), uint64_t>::value));
+      CHECK((etl::is_same<decltype(uzero), uint64_t>::value));
+      CHECK((etl::is_same<decltype(uplus), uint64_t>::value));
+      CHECK((etl::is_same<decltype(uminus), uint64_t>::value));
+
+      CHECK_EQUAL(umin_expected, umin);
+      CHECK_EQUAL(umax_expected, umax);
+      CHECK_EQUAL(uzero_expected, uzero);
+      CHECK_EQUAL(uplus_expected, uplus);
+      CHECK_EQUAL(uminus_expected, uminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_from_uint8_t)
+    {
+      auto smin   = etl::to_signed(etl::integral_limits<uint8_t>::min);
+      auto smax   = etl::to_signed(etl::integral_limits<uint8_t>::max);
+      auto splus  = etl::to_signed(uint8_t(50));
+      auto sminus = etl::to_signed(uint8_t(206));
+
+      auto smin_expected   = static_cast<int8_t>(etl::integral_limits<uint8_t>::min);
+      auto smax_expected   = static_cast<int8_t>(etl::integral_limits<uint8_t>::max);
+      auto splus_expected  = static_cast<int8_t>(50);
+      auto sminus_expected = static_cast<int8_t>(206);
+
+      CHECK((etl::is_same<decltype(smin), int8_t>::value));
+      CHECK((etl::is_same<decltype(smax), int8_t>::value));
+      CHECK((etl::is_same<decltype(splus), int8_t>::value));
+      CHECK((etl::is_same<decltype(sminus), int8_t>::value));
+
+      CHECK_EQUAL(int(smin_expected), int(smin));
+      CHECK_EQUAL(int(smax_expected), int(smax));
+      CHECK_EQUAL(int(splus_expected), int(splus));
+      CHECK_EQUAL(int(sminus_expected), int(sminus));
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_from_uint16_t)
+    {
+      auto smin   = etl::to_signed(etl::integral_limits<uint16_t>::min);
+      auto smax   = etl::to_signed(etl::integral_limits<uint16_t>::max);
+      auto splus  = etl::to_signed(uint16_t(50));
+      auto sminus = etl::to_signed(uint16_t(65486));
+
+      auto smin_expected   = static_cast<int16_t>(etl::integral_limits<uint16_t>::min);
+      auto smax_expected   = static_cast<int16_t>(etl::integral_limits<uint16_t>::max);
+      auto splus_expected  = static_cast<int16_t>(50);
+      auto sminus_expected = static_cast<int16_t>(65486);
+
+      CHECK((etl::is_same<decltype(smin), int16_t>::value));
+      CHECK((etl::is_same<decltype(smax), int16_t>::value));
+      CHECK((etl::is_same<decltype(splus), int16_t>::value));
+      CHECK((etl::is_same<decltype(sminus), int16_t>::value));
+
+      CHECK_EQUAL(smin_expected, smin);
+      CHECK_EQUAL(smax_expected, smax);
+      CHECK_EQUAL(splus_expected, splus);
+      CHECK_EQUAL(sminus_expected, sminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_from_uint32_t)
+    {
+      auto smin   = etl::to_signed(etl::integral_limits<uint32_t>::min);
+      auto smax   = etl::to_signed(etl::integral_limits<uint32_t>::max);
+      auto splus  = etl::to_signed(uint32_t(50));
+      auto sminus = etl::to_signed(uint32_t(4294967246U));
+
+      auto smin_expected   = static_cast<int32_t>(etl::integral_limits<uint32_t>::min);
+      auto smax_expected   = static_cast<int32_t>(etl::integral_limits<uint32_t>::max);
+      auto splus_expected  = static_cast<int32_t>(50);
+      auto sminus_expected = static_cast<int32_t>(4294967246U);
+
+      CHECK((etl::is_same<decltype(smin), int32_t>::value));
+      CHECK((etl::is_same<decltype(smax), int32_t>::value));
+      CHECK((etl::is_same<decltype(splus), int32_t>::value));
+      CHECK((etl::is_same<decltype(sminus), int32_t>::value));
+
+      CHECK_EQUAL(smin_expected, smin);
+      CHECK_EQUAL(smax_expected, smax);
+      CHECK_EQUAL(splus_expected, splus);
+      CHECK_EQUAL(sminus_expected, sminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_from_uint64_t)
+    {
+      auto smin   = etl::to_signed(etl::integral_limits<uint64_t>::min);
+      auto smax   = etl::to_signed(etl::integral_limits<uint64_t>::max);
+      auto splus  = etl::to_signed(uint64_t(50));
+      auto sminus = etl::to_signed(uint64_t(18446744073709551566ULL));
+
+      auto smin_expected   = static_cast<int64_t>(etl::integral_limits<uint64_t>::min);
+      auto smax_expected   = static_cast<int64_t>(etl::integral_limits<uint64_t>::max);
+      auto splus_expected  = static_cast<int64_t>(50);
+      auto sminus_expected = static_cast<int64_t>(18446744073709551566ULL);
+
+      CHECK((etl::is_same<decltype(smin), int64_t>::value));
+      CHECK((etl::is_same<decltype(smax), int64_t>::value));
+      CHECK((etl::is_same<decltype(splus), int64_t>::value));
+      CHECK((etl::is_same<decltype(sminus), int64_t>::value));
+
+      CHECK_EQUAL(smin_expected, smin);
+      CHECK_EQUAL(smax_expected, smax);
+      CHECK_EQUAL(splus_expected, splus);
+      CHECK_EQUAL(sminus_expected, sminus);
+    }
+
+    //*************************************************************************
+    TEST(test_to_unsigned_constexpr)
+    {
+      const int8_t value = static_cast<int8_t>(-50);
+
+      constexpr auto Size = etl::to_unsigned(value);
+
+      CHECK_EQUAL(static_cast<uint8_t>(value), Size);
+
+      int a[Size] = {0}; // Use Size in a context that requires a constant expression
+      (void)a;           // Avoid unused variable warning
+    }
+
+    //*************************************************************************
+    TEST(test_to_signed_constexpr)
+    {
+      const uint8_t value = static_cast<uint8_t>(50);
+
+      constexpr auto Size = etl::to_signed(value);
+
+      CHECK_EQUAL(static_cast<int8_t>(value), Size);
+
+      int a[Size] = {0}; // Use Size in a context that requires a constant expression
+      (void)a;           // Avoid unused variable warning
+    }
   }
 } // namespace

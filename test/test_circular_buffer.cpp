@@ -67,7 +67,124 @@ namespace
       CHECK(data.crbegin() == data.crend());
     }
 
-#if ETL_USING_STL
+    //*************************************************************************
+    TEST(test_constructor_with_size)
+    {
+      etl::circular_buffer<int, SIZE> data(5U);
+
+      CHECK_EQUAL(5U, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [](int value) { return value == 0; }));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_with_excess_size)
+    {
+      etl::circular_buffer<int, SIZE> data(SIZE + 3U);
+
+      CHECK(data.full());
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [](int value) { return value == 0; }));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_with_size_and_value)
+    {
+      const Ndc value("value");
+      Data      data(5U, value);
+
+      CHECK_EQUAL(5U, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&value](const Ndc& item) { return item == value; }));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_with_excess_size_and_value)
+    {
+      const Ndc value("value");
+      Data      data(SIZE + 3U, value);
+
+      CHECK(data.full());
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&value](const Ndc& item) { return item == value; }));
+    }
+
+    //*************************************************************************
+    TEST(test_assign_size_and_value)
+    {
+      Data data;
+      data.push(Ndc("old"));
+
+      const Ndc value("value");
+      data.assign(5U, value);
+
+      CHECK_EQUAL(5U, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&value](const Ndc& item) { return item == value; }));
+
+      data.assign(0U, value);
+      CHECK(data.empty());
+
+      data.assign(SIZE + 3U, value);
+      CHECK(data.full());
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&value](const Ndc& item) { return item == value; }));
+    }
+
+    //*************************************************************************
+    TEST(test_assign_range)
+    {
+      Compare input{Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"),  Ndc("4"),  Ndc("5"), Ndc("6"),
+                    Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")};
+      Compare expected(input.end() - SIZE, input.end());
+      Data    data;
+      data.push(Ndc("old"));
+
+      data.assign(input.begin(), input.end());
+
+      CHECK(data.full());
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+
+      data.assign(input.begin(), input.begin());
+      CHECK(data.empty());
+    }
+
+    //*************************************************************************
+    TEST(test_assign_self_range)
+    {
+      Compare input{Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"),  Ndc("4"),  Ndc("5"), Ndc("6"),
+                    Ndc("7"), Ndc("8"), Ndc("9"), Ndc("10"), Ndc("11"), Ndc("12")};
+      Compare expected(input.end() - SIZE, input.end());
+      Data    data(input.begin(), input.end());
+
+      data.assign(data.begin(), data.end());
+
+      CHECK(data.full());
+      CHECK_EQUAL(expected.size(), data.size());
+      CHECK(std::equal(expected.begin(), expected.end(), data.begin()));
+
+      Data::const_iterator first = data.cbegin() + 2;
+      Data::const_iterator last  = data.cend() - 2;
+      Compare              partial_expected(expected.begin() + 2, expected.end() - 2);
+
+      data.assign(first, last);
+
+      CHECK_EQUAL(partial_expected.size(), data.size());
+      CHECK(std::equal(partial_expected.begin(), partial_expected.end(), data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_assign_aliased_value)
+    {
+      Compare input{Ndc("0"), Ndc("1"), Ndc("2"), Ndc("3"), Ndc("4")};
+      Data    data(input.begin(), input.end());
+
+      const Ndc expected(data.front());
+      data.assign(7U, data.front());
+
+      CHECK_EQUAL(7U, data.size());
+      CHECK(std::all_of(data.begin(), data.end(), [&expected](const Ndc& item) { return item == expected; }));
+    }
+
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_constructor_from_literal)
     {
