@@ -164,6 +164,7 @@ add_executable(etl_tests
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
 	test_cyclic_value.cpp
+	test_clamped_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
 	test_delegate_cpp03.cpp
