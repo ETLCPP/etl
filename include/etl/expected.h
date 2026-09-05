@@ -410,10 +410,17 @@ namespace etl
                                         && private_expected::is_expected_conversion_constructible<TValue, TError, const U&, const G&>::value
                                         && private_expected::is_expected_conversion_implicit<TValue, TError, const U&, const G&>::value,
                                       int>::type = 0>
-    ETL_CONSTEXPR14 expected(const etl::expected<U, G>& other)
-      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), other.value())
-                                  : storage_type(etl::in_place_index_t<Error_Type>(), other.error()))
+    expected(const etl::expected<U, G>& other)
+      : storage(private_variant::valueless_t())
     {
+      if (other.has_value())
+      {
+        storage.template emplace<Value_Type>(other.value());
+      }
+      else
+      {
+        storage.template emplace<Error_Type>(other.error());
+      }
     }
 
     //*******************************************
@@ -424,10 +431,17 @@ namespace etl
                                         && private_expected::is_expected_conversion_constructible<TValue, TError, const U&, const G&>::value
                                         && !private_expected::is_expected_conversion_implicit<TValue, TError, const U&, const G&>::value,
                                       int>::type = 0>
-    ETL_CONSTEXPR14 explicit expected(const etl::expected<U, G>& other)
-      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), other.value())
-                                  : storage_type(etl::in_place_index_t<Error_Type>(), other.error()))
+    explicit expected(const etl::expected<U, G>& other)
+      : storage(private_variant::valueless_t())
     {
+      if (other.has_value())
+      {
+        storage.template emplace<Value_Type>(other.value());
+      }
+      else
+      {
+        storage.template emplace<Error_Type>(other.error());
+      }
     }
 
     //*******************************************
@@ -438,10 +452,17 @@ namespace etl
                                         && private_expected::is_expected_conversion_constructible<TValue, TError, U&&, G&&>::value
                                         && private_expected::is_expected_conversion_implicit<TValue, TError, U&&, G&&>::value,
                                       int>::type = 0>
-    ETL_CONSTEXPR14 expected(etl::expected<U, G>&& other)
-      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), etl::move(other.value()))
-                                  : storage_type(etl::in_place_index_t<Error_Type>(), etl::move(other.error())))
+    expected(etl::expected<U, G>&& other)
+      : storage(private_variant::valueless_t())
     {
+      if (other.has_value())
+      {
+        storage.template emplace<Value_Type>(etl::move(other.value()));
+      }
+      else
+      {
+        storage.template emplace<Error_Type>(etl::move(other.error()));
+      }
     }
 
     //*******************************************
@@ -452,10 +473,17 @@ namespace etl
                                         && private_expected::is_expected_conversion_constructible<TValue, TError, U&&, G&&>::value
                                         && !private_expected::is_expected_conversion_implicit<TValue, TError, U&&, G&&>::value,
                                       int>::type = 0>
-    ETL_CONSTEXPR14 explicit expected(etl::expected<U, G>&& other)
-      : storage(other.has_value() ? storage_type(etl::in_place_index_t<Value_Type>(), etl::move(other.value()))
-                                  : storage_type(etl::in_place_index_t<Error_Type>(), etl::move(other.error())))
+    explicit expected(etl::expected<U, G>&& other)
+      : storage(private_variant::valueless_t())
     {
+      if (other.has_value())
+      {
+        storage.template emplace<Value_Type>(etl::move(other.value()));
+      }
+      else
+      {
+        storage.template emplace<Error_Type>(etl::move(other.error()));
+      }
     }
 #endif
 

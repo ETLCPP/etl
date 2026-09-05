@@ -217,6 +217,50 @@ namespace
     ErrorFromExpected(const etl::expected<int, int>&) {}
   };
 
+  struct ImmobileValue
+  {
+    static int destructions;
+
+    explicit ImmobileValue(int v_)
+      : v(v_)
+    {
+    }
+
+    ImmobileValue(const ImmobileValue&) = delete;
+    ImmobileValue(ImmobileValue&&)      = delete;
+
+    ~ImmobileValue()
+    {
+      ++destructions;
+    }
+
+    int v;
+  };
+
+  int ImmobileValue::destructions = 0;
+
+  struct ImmobileError
+  {
+    static int destructions;
+
+    ImmobileError(int e_)
+      : e(e_)
+    {
+    }
+
+    ImmobileError(const ImmobileError&) = delete;
+    ImmobileError(ImmobileError&&)      = delete;
+
+    ~ImmobileError()
+    {
+      ++destructions;
+    }
+
+    int e;
+  };
+
+  int ImmobileError::destructions = 0;
+
   using Expected   = etl::expected<Value, Error>;
   using ExpectedV  = etl::expected<void, Error>;
   using ExpectedM  = etl::expected<ValueM, ErrorM>;
@@ -1891,6 +1935,39 @@ namespace
 
       CHECK_TRUE(result.has_value());
       CHECK_EQUAL("converted", result.value().v);
+    }
+    //*************************************************************************
+    TEST(test_conversion_into_an_immobile_value_constructs_in_place)
+    {
+      ImmobileValue::destructions = 0;
+
+      {
+        const etl::expected<int, Error> source(7);
+
+        const etl::expected<ImmobileValue, Error> result(source);
+
+        CHECK_TRUE(result.has_value());
+        CHECK_EQUAL(7, result.value().v);
+      }
+
+      CHECK_EQUAL(1, ImmobileValue::destructions);
+    }
+
+    //*************************************************************************
+    TEST(test_conversion_into_an_immobile_error_constructs_in_place)
+    {
+      ImmobileError::destructions = 0;
+
+      {
+        const etl::expected<int, int> source(etl::unexpected<int>(9));
+
+        const etl::expected<FromInt, ImmobileError> result(source);
+
+        CHECK_FALSE(result.has_value());
+        CHECK_EQUAL(9, result.error().e);
+      }
+
+      CHECK_EQUAL(1, ImmobileError::destructions);
     }
   }
 } // namespace
