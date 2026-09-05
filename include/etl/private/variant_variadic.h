@@ -74,7 +74,7 @@ namespace etl
     //*******************************************
     struct valueless_t
     {
-      explicit valueless_t() {}
+      explicit ETL_CONSTEXPR valueless_t() {}
     };
 
     //*******************************************
