@@ -29,3 +29,8 @@ SOFTWARE.
 ******************************************************************************/
 
 #include <etl/clamped_value.h>
+
+#if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+etl::clamped_value<float, -1.0f, 1.0f> clamped_float_compile_time;
+etl::clamped_value<double>             clamped_double_run_time;
+#endif

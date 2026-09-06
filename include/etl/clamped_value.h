@@ -35,9 +35,18 @@ SOFTWARE.
 #include "algorithm.h"
 #include "error_handler.h"
 #include "limits.h"
+#include "math.h"
 #include "static_assert.h"
 #include "type_traits.h"
 #include "utility.h"
+
+#if !defined(ETL_HAS_FLOATING_POINT_CLAMPED_VALUE)
+  #if ETL_USING_CPP20 && defined(__cpp_nontype_template_args) && (__cpp_nontype_template_args >= 201911L)
+    #define ETL_HAS_FLOATING_POINT_CLAMPED_VALUE 1
+  #else
+    #define ETL_HAS_FLOATING_POINT_CLAMPED_VALUE 0
+  #endif
+#endif
 
 ///\defgroup clamped_value clamped_value
 /// Provides a value that is clamped between two limits.
@@ -48,18 +57,102 @@ namespace etl
   namespace private_clamped_value
   {
     //*************************************************************************
-    /// Common integral types and arithmetic for clamped_value.
+    /// Common types for clamped_value.
     //*************************************************************************
-    template <typename T>
-    struct traits
-    {
-      ETL_STATIC_ASSERT(etl::is_integral<T>::value, "clamped_value requires an integral type");
+    template <typename T, bool IsIntegral = etl::is_integral<T>::value>
+    struct traits;
 
+    template <typename T>
+    struct traits<T, true>
+    {
       typedef typename etl::make_signed<T>::type   difference_type;
       typedef typename etl::make_unsigned<T>::type unsigned_type;
       typedef etl::numeric_limits<T>               limits_type;
       typedef etl::numeric_limits<difference_type> difference_limits_type;
     };
+
+    template <typename T>
+    struct traits<T, false>
+    {
+      ETL_STATIC_ASSERT(ETL_HAS_FLOATING_POINT_CLAMPED_VALUE&& etl::is_floating_point<T>::value,
+                        "clamped_value requires an integral type, or a floating-point type when supported");
+
+      typedef T                      difference_type;
+      typedef etl::numeric_limits<T> limits_type;
+      typedef etl::numeric_limits<T> difference_limits_type;
+    };
+
+    template <typename T, bool IsIntegral = etl::is_integral<T>::value>
+    struct arithmetic;
+
+    template <typename T>
+    struct arithmetic<T, true>
+    {
+      typedef typename traits<T>::unsigned_type unsigned_type;
+
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 T                         advance(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
+      {
+        if ((n > 0) && (value < max_value))
+        {
+          const unsigned_type distance = static_cast<unsigned_type>(max_value) - static_cast<unsigned_type>(value);
+          const unsigned_type step     = static_cast<unsigned_type>(n);
+
+          value = (step >= distance) ? max_value : static_cast<T>(static_cast<unsigned_type>(value) + step);
+        }
+
+        if ((n < 0) && (value > min_value))
+        {
+          const unsigned_type distance = static_cast<unsigned_type>(value) - static_cast<unsigned_type>(min_value);
+          const unsigned_type step     = static_cast<unsigned_type>(-(n + 1)) + 1U;
+
+          value = (step >= distance) ? min_value : static_cast<T>(static_cast<unsigned_type>(value) - step);
+        }
+
+        return value;
+      }
+
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 T subtract(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
+      {
+        if (n == traits<T>::difference_limits_type::lowest()) ETL_UNLIKELY
+        {
+          value = advance(value, min_value, max_value, traits<T>::difference_limits_type::max());
+          return advance(value, min_value, max_value, 1);
+        }
+
+        return advance(value, min_value, max_value, static_cast<typename traits<T>::difference_type>(-n));
+      }
+    };
+
+#if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+    template <typename T>
+    struct arithmetic<T, false>
+    {
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, T n) ETL_NOEXCEPT
+      {
+        if ((n > T(0)) && (value < max_value))
+        {
+          const T distance = max_value - value;
+          value            = (n >= distance) ? max_value : static_cast<T>(value + n);
+        }
+        else if ((n < T(0)) && (value > min_value))
+        {
+          const T distance = value - min_value;
+          value            = (-n >= distance) ? min_value : static_cast<T>(value + n);
+        }
+
+        return value;
+      }
+
+      ETL_NODISCARD
+      static ETL_CONSTEXPR14 T subtract(T value, T min_value, T max_value, T n) ETL_NOEXCEPT
+      {
+        return advance(value, min_value, max_value, -n);
+      }
+    };
+#endif
 
     //*************************************************************************
     /// Advances a value and saturates it at the supplied bounds.
@@ -72,30 +165,36 @@ namespace etl
     template <typename T>
     ETL_NODISCARD ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
     {
-      typedef typename traits<T>::unsigned_type unsigned_type;
+      return arithmetic<T>::advance(value, min_value, max_value, n);
+    }
 
-      if ((n > 0) && (value < max_value))
-      {
-        const unsigned_type distance = static_cast<unsigned_type>(max_value) - static_cast<unsigned_type>(value);
-        const unsigned_type step     = static_cast<unsigned_type>(n);
+    template <typename T>
+    ETL_NODISCARD ETL_CONSTEXPR14 T subtract(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
+    {
+      return arithmetic<T>::subtract(value, min_value, max_value, n);
+    }
 
-        value = (step >= distance) ? max_value : static_cast<T>(static_cast<unsigned_type>(value) + step);
-      }
+    template <typename T>
+    ETL_CONSTEXPR14 void validate(T value) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    {
+      ETL_ASSERT(!etl::is_nan(value), ETL_ERROR_GENERIC("clamped_value: NaN is not supported"));
+    }
 
-      if ((n < 0) && (value > min_value))
-      {
-        const unsigned_type distance = static_cast<unsigned_type>(value) - static_cast<unsigned_type>(min_value);
-        const unsigned_type step     = static_cast<unsigned_type>(-(n + 1)) + 1U;
-
-        value = (step >= distance) ? min_value : static_cast<T>(static_cast<unsigned_type>(value) - step);
-      }
-
-      return value;
+    template <typename T>
+    ETL_NODISCARD ETL_CONSTEXPR14 T validated_clamp(T value, T min_value, T max_value) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    {
+      validate(value);
+      validate(min_value);
+      validate(max_value);
+      ETL_ASSERT(min_value <= max_value, ETL_ERROR_GENERIC("clamped_value: invalid range"));
+      return etl::clamp(value, min_value, max_value);
     }
   } // namespace private_clamped_value
 
-  template <typename T, T Min = 0, T Max = 0, bool RuntimeSpecialisation = ((Min == 0) && (Max == 0))>
+#include "private/diagnostic_float_equal_push.h"
+  template <typename T, T Min = T(), T Max = T(), bool RuntimeSpecialisation = ((Min == T()) && (Max == T()))>
   class clamped_value;
+#include "private/diagnostic_pop.h"
 
   //***************************************************************************
   /// Provides a value that is clamped between two compile-time limits.
@@ -131,8 +230,8 @@ namespace etl
     /// Clamped to the range.
     ///\param initial The initial value.
     //*************************************************************************
-    ETL_CONSTEXPR14 explicit clamped_value(T initial) ETL_NOEXCEPT
-      : value(etl::clamp(initial, Min, Max))
+    ETL_CONSTEXPR14 explicit clamped_value(T initial) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+      : value(private_clamped_value::validated_clamp(initial, Min, Max))
     {
     }
 
@@ -165,9 +264,9 @@ namespace etl
     /// Clamps to the Min/Max range.
     ///\param value_ The value.
     //*************************************************************************
-    ETL_CONSTEXPR14 void set(T value_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void set(T value_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
-      value = etl::clamp(value_, Min, Max);
+      value = private_clamped_value::validated_clamp(value_, Min, Max);
     }
 
     //*************************************************************************
@@ -191,8 +290,9 @@ namespace etl
     /// Saturates at the Min/Max range.
     ///\param n The number of steps.
     //*************************************************************************
-    ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
+      private_clamped_value::validate(n);
       value = private_clamped_value::advance(value, Min, Max, n);
     }
 
@@ -200,7 +300,7 @@ namespace etl
     /// Conversion operator.
     /// \return The value of the underlying type.
     //*************************************************************************
-    ETL_CONSTEXPR14 operator T() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 operator T() const ETL_NOEXCEPT
     {
       return value;
     }
@@ -212,10 +312,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator++() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      if (value < Max)
-      {
-        ++value;
-      }
+      value = private_clamped_value::advance(value, Min, Max, difference_type(1));
       return *this;
     }
 
@@ -238,10 +335,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator--() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      if (value > Min)
-      {
-        --value;
-      }
+      value = private_clamped_value::advance(value, Min, Max, difference_type(-1));
       return *this;
     }
 
@@ -263,7 +357,7 @@ namespace etl
     ///\param value_ The value to assign.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
       set(value_);
       return *this;
@@ -274,7 +368,7 @@ namespace etl
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
       advance(n);
       return *this;
@@ -285,18 +379,10 @@ namespace etl
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
-      if (n == difference_limits_type::lowest()) ETL_UNLIKELY
-      {
-        advance(difference_limits_type::max());
-        ++(*this);
-      }
-      else
-      {
-        advance(static_cast<difference_type>(-n));
-      }
-
+      private_clamped_value::validate(n);
+      value = private_clamped_value::subtract(value, Min, Max, n);
       return *this;
     }
 
@@ -331,7 +417,7 @@ namespace etl
     /// Swaps the values.
     ///\param other The value to swap with.
     //*************************************************************************
-    void swap(clamped_value& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void swap(clamped_value& other) ETL_NOEXCEPT
     {
       using ETL_OR_STD::swap;
       swap(value, other.value);
@@ -342,7 +428,7 @@ namespace etl
     ///\param lhs The first value.
     ///\param rhs The second value.
     //*************************************************************************
-    friend void swap(clamped_value& lhs, clamped_value& rhs) ETL_NOEXCEPT
+    friend ETL_CONSTEXPR14 void swap(clamped_value& lhs, clamped_value& rhs) ETL_NOEXCEPT
     {
       lhs.swap(rhs);
     }
@@ -355,7 +441,9 @@ namespace etl
     //*************************************************************************
     friend ETL_CONSTEXPR bool operator==(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
     {
+#include "private/diagnostic_float_equal_push.h"
       return lhs.value == rhs.value;
+#include "private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -380,15 +468,6 @@ namespace etl
       return lhs.value < rhs.value;
     }
 
-    friend ETL_CONSTEXPR bool operator<(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
-    {
-      return lhs.value < rhs;
-    }
-
-    friend ETL_CONSTEXPR bool operator<(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
-    {
-      return lhs < rhs.value;
-    }
     /// @}
 
     //*************************************************************************
@@ -402,15 +481,6 @@ namespace etl
       return !(rhs < lhs);
     }
 
-    friend ETL_CONSTEXPR bool operator<=(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
-    {
-      return !(rhs < lhs);
-    }
-
-    friend ETL_CONSTEXPR bool operator<=(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
-    {
-      return !(rhs < lhs);
-    }
     /// @}
 
     //*************************************************************************
@@ -424,15 +494,6 @@ namespace etl
       return rhs < lhs;
     }
 
-    friend ETL_CONSTEXPR bool operator>(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
-    {
-      return rhs < lhs;
-    }
-
-    friend ETL_CONSTEXPR bool operator>(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
-    {
-      return rhs < lhs;
-    }
     /// @}
 
     //*************************************************************************
@@ -446,15 +507,6 @@ namespace etl
       return !(lhs < rhs);
     }
 
-    friend ETL_CONSTEXPR bool operator>=(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
-    {
-      return !(lhs < rhs);
-    }
-
-    friend ETL_CONSTEXPR bool operator>=(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
-    {
-      return !(lhs < rhs);
-    }
     /// @}
 
   private:
@@ -466,8 +518,8 @@ namespace etl
   /// Provides a value that is clamped between two runtime limits.
   /// Supports incrementing, decrementing and arbitrary advance.
   ///\tparam T   The type of the value.
-  ///\tparam Min The default minimum value.
-  ///\tparam Max The default maximum value.
+  ///	param Min Ignored for this specialisation.
+  ///	param Max Ignored for this specialisation.
   ///\ingroup clamped_value
   //***************************************************************************
   template <typename T, T Min, T Max>
@@ -502,6 +554,8 @@ namespace etl
       , min_value(min_)
       , max_value(max_)
     {
+      private_clamped_value::validate(min_);
+      private_clamped_value::validate(max_);
       ETL_ASSERT(min_ <= max_, ETL_ERROR_GENERIC("clamped_value: invalid range"));
     }
 
@@ -514,12 +568,10 @@ namespace etl
     ///\param initial The initial value.
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value(T min_, T max_, T initial) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
-      : value(initial)
+      : value(private_clamped_value::validated_clamp(initial, min_, max_))
       , min_value(min_)
       , max_value(max_)
     {
-      ETL_ASSERT(min_ <= max_, ETL_ERROR_GENERIC("clamped_value: invalid range"));
-      set(initial);
     }
 
     //*************************************************************************
@@ -541,6 +593,8 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 void set(T min_, T max_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
+      private_clamped_value::validate(min_);
+      private_clamped_value::validate(max_);
       ETL_ASSERT(min_ <= max_, ETL_ERROR_GENERIC("clamped_value: invalid range"));
       min_value = min_;
       max_value = max_;
@@ -552,9 +606,9 @@ namespace etl
     /// Clamps to the runtime Min/Max range.
     ///\param value_ The value.
     //*************************************************************************
-    ETL_CONSTEXPR14 void set(T value_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void set(T value_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
-      value = etl::clamp(value_, min_value, max_value);
+      value = private_clamped_value::validated_clamp(value_, min_value, max_value);
     }
 
     //*************************************************************************
@@ -578,8 +632,9 @@ namespace etl
     /// Saturates at the runtime Min/Max range.
     ///\param n The number of steps.
     //*************************************************************************
-    ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
+      private_clamped_value::validate(n);
       value = private_clamped_value::advance(value, min_value, max_value, n);
     }
 
@@ -587,7 +642,7 @@ namespace etl
     /// Conversion operator.
     /// \return The value of the underlying type.
     //*************************************************************************
-    ETL_CONSTEXPR14 operator T() const ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 operator T() const ETL_NOEXCEPT
     {
       return value;
     }
@@ -599,10 +654,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator++() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      if (value < max_value)
-      {
-        ++value;
-      }
+      value = private_clamped_value::advance(value, min_value, max_value, difference_type(1));
       return *this;
     }
 
@@ -625,10 +677,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 clamped_value& operator--() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      if (value > min_value)
-      {
-        --value;
-      }
+      value = private_clamped_value::advance(value, min_value, max_value, difference_type(-1));
       return *this;
     }
 
@@ -650,7 +699,7 @@ namespace etl
     ///\param value_ The value to assign.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
       set(value_);
       return *this;
@@ -680,7 +729,7 @@ namespace etl
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
       advance(n);
       return *this;
@@ -691,18 +740,10 @@ namespace etl
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
-      if (n == difference_limits_type::lowest()) ETL_UNLIKELY
-      {
-        advance(difference_limits_type::max());
-        ++(*this);
-      }
-      else
-      {
-        advance(static_cast<difference_type>(-n));
-      }
-
+      private_clamped_value::validate(n);
+      value = private_clamped_value::subtract(value, min_value, max_value, n);
       return *this;
     }
 
@@ -737,7 +778,7 @@ namespace etl
     /// Swaps the values and runtime bounds.
     ///\param other The value to swap with.
     //*************************************************************************
-    void swap(clamped_value& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void swap(clamped_value& other) ETL_NOEXCEPT
     {
       using ETL_OR_STD::swap;
       swap(value, other.value);
@@ -750,7 +791,7 @@ namespace etl
     ///\param lhs The first value.
     ///\param rhs The second value.
     //*************************************************************************
-    friend void swap(clamped_value& lhs, clamped_value& rhs) ETL_NOEXCEPT
+    friend ETL_CONSTEXPR14 void swap(clamped_value& lhs, clamped_value& rhs) ETL_NOEXCEPT
     {
       lhs.swap(rhs);
     }
@@ -763,7 +804,9 @@ namespace etl
     //*************************************************************************
     friend ETL_CONSTEXPR bool operator==(const clamped_value& lhs, const clamped_value& rhs) ETL_NOEXCEPT
     {
+#include "private/diagnostic_float_equal_push.h"
       return lhs.value == rhs.value;
+#include "private/diagnostic_pop.h"
     }
 
     //*************************************************************************
@@ -787,14 +830,6 @@ namespace etl
     {
       return lhs.value < rhs.value;
     }
-    friend ETL_CONSTEXPR bool operator<(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
-    {
-      return lhs.value < rhs;
-    }
-    friend ETL_CONSTEXPR bool operator<(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
-    {
-      return lhs < rhs.value;
-    }
     /// @}
 
     //*************************************************************************
@@ -808,15 +843,6 @@ namespace etl
       return !(rhs < lhs);
     }
 
-    friend ETL_CONSTEXPR bool operator<=(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
-    {
-      return !(rhs < lhs);
-    }
-
-    friend ETL_CONSTEXPR bool operator<=(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
-    {
-      return !(rhs < lhs);
-    }
     /// @}
 
     //*************************************************************************
@@ -830,15 +856,6 @@ namespace etl
       return rhs < lhs;
     }
 
-    friend ETL_CONSTEXPR bool operator>(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
-    {
-      return rhs < lhs;
-    }
-
-    friend ETL_CONSTEXPR bool operator>(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
-    {
-      return rhs < lhs;
-    }
     /// @}
 
     //*************************************************************************
@@ -852,15 +869,6 @@ namespace etl
       return !(lhs < rhs);
     }
 
-    friend ETL_CONSTEXPR bool operator>=(const clamped_value& lhs, T rhs) ETL_NOEXCEPT
-    {
-      return !(lhs < rhs);
-    }
-
-    friend ETL_CONSTEXPR bool operator>=(T lhs, const clamped_value& rhs) ETL_NOEXCEPT
-    {
-      return !(lhs < rhs);
-    }
     /// @}
 
   private:

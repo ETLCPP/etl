@@ -203,6 +203,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_narrow_signed_range_spanning_lowest_value)
+    {
+      etl::clamped_value<int8_t, INT8_MIN, -10> value(-50);
+
+      value += 10;
+      CHECK_EQUAL(-40, value.get());
+      value -= 10;
+      CHECK_EQUAL(-50, value.get());
+      value.advance(INT8_MIN);
+      CHECK_EQUAL(INT8_MIN, value.get());
+      value.advance(INT8_MAX);
+      CHECK_EQUAL(-10, value.get());
+    }
+
+    //*************************************************************************
     TEST(test_runtime_postfix_and_advance)
     {
       etl::clamped_value<int> value(2, 7, 4);
@@ -265,6 +280,19 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_mixed_type_comparisons_are_not_ambiguous)
+    {
+      etl::clamped_value<uint8_t, 0, 200> narrow(10);
+      etl::clamped_value<int, 0, 200>     value(10);
+
+      CHECK(narrow < 20);
+      CHECK(value < 20L);
+      CHECK(20L > value);
+      CHECK(value <= 20L);
+      CHECK(20L >= value);
+    }
+
+    //*************************************************************************
     TEST(test_runtime_comparison_operator_overloads)
     {
       etl::clamped_value<int> value(2, 7, 4);
@@ -295,6 +323,151 @@ namespace
       CHECK_EQUAL(2, run_time.get());
     }
 
+    //*************************************************************************
+    TEST(test_subtract_lowest_difference_saturates)
+    {
+      etl::clamped_value<int, -10, 10> compile_time(0);
+      etl::clamped_value<int>          run_time(-10, 10, 0);
+
+      compile_time -= etl::clamped_value<int, -10, 10>::difference_limits_type::lowest();
+      run_time -= etl::clamped_value<int>::difference_limits_type::lowest();
+
+      CHECK_EQUAL(10, compile_time.get());
+      CHECK_EQUAL(10, run_time.get());
+    }
+
+    //*************************************************************************
+    TEST(test_runtime_compound_assignment_and_swap)
+    {
+      etl::clamped_value<int> value1(-4, 8, 2);
+      etl::clamped_value<int> value2(10, 20, 15);
+
+      value1 += 20;
+      value2 -= 20;
+      value1.swap(value2);
+
+      CHECK_EQUAL(10, value1.get());
+      CHECK_EQUAL(10, value1.min());
+      CHECK_EQUAL(20, value1.max());
+      CHECK_EQUAL(8, value2.get());
+      CHECK_EQUAL(-4, value2.min());
+      CHECK_EQUAL(8, value2.max());
+    }
+
+    //*************************************************************************
+    TEST(test_runtime_reversed_bounds_are_rejected)
+    {
+      CHECK_THROW((etl::clamped_value<int>(7, 2)), etl::exception);
+
+      etl::clamped_value<int> value;
+      CHECK_THROW(value.set(7, 2), etl::exception);
+    }
+
+#if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+    //*************************************************************************
+    TEST(test_compile_time_floating_clamps_and_advances)
+    {
+      etl::clamped_value<float, -1.5f, 2.5f> value(4.0f);
+      CHECK_CLOSE(2.5f, value.get(), 0.0001f);
+
+      value = -4.0f;
+      CHECK_CLOSE(-1.5f, value.get(), 0.0001f);
+
+      value += 0.75f;
+      CHECK_CLOSE(-0.75f, value.get(), 0.0001f);
+      value -= 0.5f;
+      CHECK_CLOSE(-1.25f, value.get(), 0.0001f);
+      value.advance(10.0f);
+      CHECK_CLOSE(2.5f, value.get(), 0.0001f);
+    }
+
+    //*************************************************************************
+    TEST(test_runtime_floating_clamps_and_advances)
+    {
+      etl::clamped_value<double> value(-1.5, 2.5, 4.0);
+      CHECK_CLOSE(2.5, value.get(), 0.0001);
+
+      value = -4.0;
+      value += 0.75;
+      value -= 0.5;
+      CHECK_CLOSE(-1.25, value.get(), 0.0001);
+
+      value.advance(-10.0);
+      CHECK_CLOSE(-1.5, value.get(), 0.0001);
+    }
+
+    //*************************************************************************
+    TEST(test_floating_increment_and_decrement_saturate_at_fractional_bounds)
+    {
+      etl::clamped_value<float, -0.5f, 0.5f> compile_time(0.25f);
+      etl::clamped_value<float>              run_time(-0.5f, 0.5f, -0.25f);
+
+      ++compile_time;
+      --run_time;
+
+      CHECK_CLOSE(0.5f, compile_time.get(), 0.0001f);
+      CHECK_CLOSE(-0.5f, run_time.get(), 0.0001f);
+    }
+
+    //*************************************************************************
+    TEST(test_floating_comparison_and_swap)
+    {
+      etl::clamped_value<double, -2.0, 2.0> compile_time1(-0.5);
+      etl::clamped_value<double, -2.0, 2.0> compile_time2(1.5);
+      etl::clamped_value<double>            run_time1(-3.0, 3.0, -1.0);
+      etl::clamped_value<double>            run_time2(4.0, 8.0, 6.0);
+
+      CHECK(compile_time1 < compile_time2);
+      CHECK(compile_time1 < 1.0);
+      swap(compile_time1, compile_time2);
+      swap(run_time1, run_time2);
+
+      CHECK_CLOSE(1.5, compile_time1.get(), 0.0001);
+      CHECK_CLOSE(6.0, run_time1.get(), 0.0001);
+      CHECK_CLOSE(4.0, run_time1.min(), 0.0001);
+      CHECK_CLOSE(-1.0, run_time2.get(), 0.0001);
+    }
+
+    //*************************************************************************
+    TEST(test_floating_infinity_saturates)
+    {
+      const double                          infinity = etl::numeric_limits<double>::infinity();
+      etl::clamped_value<double, -2.0, 2.0> value(0.0);
+      etl::clamped_value<double>            infinite_range(-infinity, infinity, 0.0);
+
+      value += infinity;
+      CHECK_CLOSE(2.0, value.get(), 0.0001);
+      value -= infinity;
+      CHECK_CLOSE(-2.0, value.get(), 0.0001);
+
+      infinite_range = infinity;
+      CHECK(etl::is_infinity(infinite_range.get()));
+    }
+
+    //*************************************************************************
+    TEST(test_floating_nan_is_rejected)
+    {
+      const double nan = etl::numeric_limits<double>::quiet_NaN();
+      CHECK_THROW((etl::clamped_value<double>(nan, 1.0)), etl::exception);
+      CHECK_THROW((etl::clamped_value<double>(-1.0, 1.0, nan)), etl::exception);
+
+      etl::clamped_value<double> value(-1.0, 1.0, 0.0);
+      CHECK_THROW(value = nan, etl::exception);
+      CHECK_THROW(value.advance(nan), etl::exception);
+      CHECK_THROW(value += nan, etl::exception);
+      CHECK_THROW(value -= nan, etl::exception);
+    }
+
+    //*************************************************************************
+    TEST(test_default_floating_range)
+    {
+      etl::clamped_value<double> value;
+      CHECK_EQUAL(etl::numeric_limits<double>::lowest(), value.min());
+      CHECK_EQUAL(etl::numeric_limits<double>::max(), value.max());
+      CHECK_EQUAL(etl::numeric_limits<double>::lowest(), value.get());
+    }
+#endif
+
 #if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_clamped_value_constexpr_ctor)
@@ -303,6 +476,16 @@ namespace
       static_assert(value.get() == 0, "constexpr clamped_value constructor");
       CHECK(true);
     }
+
+  #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+    //*************************************************************************
+    TEST(test_floating_clamped_value_constexpr)
+    {
+      constexpr etl::clamped_value<double, -1.0, 1.0> value(0.5);
+      static_assert((value.get() > 0.49) && (value.get() < 0.51), "constexpr floating clamped_value constructor");
+      CHECK(true);
+    }
+  #endif
 #endif
   }
 } // namespace

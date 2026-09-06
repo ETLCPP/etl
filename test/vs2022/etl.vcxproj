@@ -3764,8 +3764,8 @@
     <ClInclude Include="..\..\include\etl\bloom_filter.h" />
     <ClInclude Include="..\..\include\etl\char_traits.h" />
     <ClInclude Include="..\..\include\etl\checksum.h" />
-    <ClInclude Include="..\..\include\etl\cyclic_value.h" />
     <ClInclude Include="..\..\include\etl\clamped_value.h" />
+    <ClInclude Include="..\..\include\etl\cyclic_value.h" />
     <ClInclude Include="..\..\include\etl\debounce.h" />
     <ClInclude Include="..\..\include\etl\debug_count.h" />
     <ClInclude Include="..\..\include\etl\deque.h" />
