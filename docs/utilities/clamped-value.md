@@ -14,6 +14,17 @@ supported in all language modes. Floating-point types are supported in C++20
 when `ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is `1`. By default, the macro is
 enabled when `__cpp_nontype_template_args` is at least `201911L`.
 
+## Availability
+
+`ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is always defined by this header as
+either `0` or `1`. It defaults to `1` only when C++20 is enabled and the
+compiler supports floating-point non-type template arguments. A platform
+profile or build may define the macro before including the header to override
+automatic detection.
+
+When the macro is `0`, `T` must be an integral type. When it is `1`, `float`,
+`double`, and `long double` may also be used.
+
 ```cpp
 template <typename T,
           T Min = T(),
@@ -32,6 +43,13 @@ etl::clamped_value<float, -1.5f, 2.5f> float_ct(0.5f);
 etl::clamped_value<double>              float_rt(-1.5, 2.5, 0.5);
 #endif
 ```
+
+## Types
+
+`difference_type` is the signed counterpart of `T` for integral values. For
+floating-point values, `difference_type` is `T`, allowing fractional steps.
+`limits_type` and `difference_limits_type` provide the corresponding
+`etl::numeric_limits` specializations.
 
 ## Constructors
 
@@ -54,6 +72,9 @@ to `min`; the three-argument form clamps `initial` to the range.
 compile-time bound when a fixed compile-time range is needed. NaN bounds and
 initial values are rejected. Infinite bounds and values are permitted.
 
+Because zero-initialized `Min` and `Max` select runtime bounds, a fixed
+compile-time range `[0, 0]` cannot be represented by this dispatch scheme.
+
 ## Modifiers
 
 ```cpp
@@ -61,7 +82,7 @@ void set(T value);
 void set(T min, T max);
 void to_min();
 void to_max();
-void advance(difference_type n) noexcept;
+void advance(difference_type n) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS);
 ```
 
 `set(T)` clamps the current value. The runtime `set(min, max)` changes the
@@ -70,6 +91,16 @@ the value directly to a bound. For integral values, `advance` uses the signed
 counterpart of `T` as its step type. For floating-point values, the step type
 is `T` and may be fractional. Steps saturate in constant time at the minimum
 or maximum rather than wrapping. NaN steps are rejected.
+
+Positive steps move toward `max`; negative steps move toward `min`. Infinite
+steps saturate at a finite bound. Infinite values and bounds remain valid.
+
+```cpp
+etl::clamped_value<float, -1.0f, 1.0f> value(0.25f);
+value.advance(0.5f);  // 0.75f
+value.advance(10.0f); // 1.0f
+value.advance(-0.5f); // 0.5f
+```
 
 Increment and decrement move by one and also saturate, including when a
 floating-point bound is less than one unit away:
@@ -94,14 +125,26 @@ specializations provide these accessors as const-qualified member functions.
 
 ```cpp
 ETL_NODISCARD operator T() const noexcept;
-clamped_value& operator=(T value) & noexcept;
-clamped_value& operator+=(difference_type n) & noexcept;
-clamped_value& operator-=(difference_type n) & noexcept;
+clamped_value& operator++() & noexcept;
+clamped_value operator++(int) noexcept;
+clamped_value& operator--() & noexcept;
+clamped_value operator--(int) noexcept;
+clamped_value& operator=(T value) &
+  ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS);
+clamped_value& operator+=(difference_type n) &
+  ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS);
+clamped_value& operator-=(difference_type n) &
+  ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS);
 ```
 
 Conversion and assignment to the underlying type are supported. Assignment is
 clamped to the configured range. The lvalue reference qualification on
-assignment prevents assignment through temporary values where supported.
+assignment prevents assignment through temporary values where supported. For
+floating-point values, assignment and compound-assignment reject NaN.
+
+Prefix increment and decrement return a reference to the updated object.
+Postfix increment and decrement return a copy of the value before it was
+updated. All four operations move by one and saturate at the applicable bound.
 
 ## Operations
 
@@ -117,3 +160,14 @@ against arithmetic values use the implicit conversion to `T`. Equality
 compares the current values; runtime bounds do not affect equality. Runtime
 ranges must satisfy `min <= max`; invalid ranges trigger an ETL assertion. The
 default runtime specialization uses the full representable range of `T`.
+
+Floating-point comparisons use the underlying values directly; no approximate
+or tolerance-based comparison is applied.
+
+## Error Handling
+
+Runtime ranges with `min > max` trigger an ETL assertion. NaN values, bounds,
+assignments, and steps also trigger an ETL assertion. Depending on the ETL
+error-handler configuration, an assertion may throw `etl::exception`, invoke a
+configured handler, or terminate. Operations that validate input are only
+`noexcept` when exceptions are disabled.

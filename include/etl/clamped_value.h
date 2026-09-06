@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_CLAMPED_VALUE_INCLUDED
 
 #include "platform.h"
+#include "absolute.h"
 #include "algorithm.h"
 #include "error_handler.h"
 #include "limits.h"
@@ -40,6 +41,11 @@ SOFTWARE.
 #include "type_traits.h"
 #include "utility.h"
 
+///\def ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+/// Set to `1` when clamped_value supports floating-point types.
+/// Floating-point support requires C++20 non-type template arguments.
+/// The macro may be defined by the build or platform profile to override
+/// automatic detection.
 #if !defined(ETL_HAS_FLOATING_POINT_CLAMPED_VALUE)
   #if ETL_USING_CPP20 && defined(__cpp_nontype_template_args) && (__cpp_nontype_template_args >= 201911L)
     #define ETL_HAS_FLOATING_POINT_CLAMPED_VALUE 1
@@ -50,14 +56,19 @@ SOFTWARE.
 
 ///\defgroup clamped_value clamped_value
 /// Provides a value that is clamped between two limits.
+/// Integral types are supported in all language modes. Floating-point types
+/// are supported when ETL_HAS_FLOATING_POINT_CLAMPED_VALUE is `1`.
 /// \ingroup utilities
 
 namespace etl
 {
+  /// \cond INTERNAL
   namespace private_clamped_value
   {
     //*************************************************************************
-    /// Common types for clamped_value.
+    /// Type policy for clamped_value.
+    /// Integral values use a signed difference type and unsigned saturation
+    /// arithmetic. Floating-point values use `T` as the difference type.
     //*************************************************************************
     template <typename T, bool IsIntegral = etl::is_integral<T>::value>
     struct traits;
@@ -85,6 +96,9 @@ namespace etl
     template <typename T, bool IsIntegral = etl::is_integral<T>::value>
     struct arithmetic;
 
+    //*************************************************************************
+    /// Saturating arithmetic policy for integral values.
+    //*************************************************************************
     template <typename T>
     struct arithmetic<T, true>
     {
@@ -93,20 +107,25 @@ namespace etl
       ETL_NODISCARD
       static ETL_CONSTEXPR14 T                         advance(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
       {
-        if ((n > 0) && (value < max_value))
+        if (n == 0)
         {
-          const unsigned_type distance = static_cast<unsigned_type>(max_value) - static_cast<unsigned_type>(value);
-          const unsigned_type step     = static_cast<unsigned_type>(n);
-
-          value = (step >= distance) ? max_value : static_cast<T>(static_cast<unsigned_type>(value) + step);
+          return value;
         }
 
-        if ((n < 0) && (value > min_value))
-        {
-          const unsigned_type distance = static_cast<unsigned_type>(value) - static_cast<unsigned_type>(min_value);
-          const unsigned_type step     = static_cast<unsigned_type>(-(n + 1)) + 1U;
+        const unsigned_type current = static_cast<unsigned_type>(value);
+        const unsigned_type step    = etl::absolute_unsigned(n);
 
-          value = (step >= distance) ? min_value : static_cast<T>(static_cast<unsigned_type>(value) - step);
+        if ((n > 0) && (value < max_value))
+        {
+          const unsigned_type distance = static_cast<unsigned_type>(max_value) - current;
+
+          value = (step >= distance) ? max_value : static_cast<T>(current + step);
+        }
+        else if ((n < 0) && (value > min_value))
+        {
+          const unsigned_type distance = current - static_cast<unsigned_type>(min_value);
+
+          value = (step >= distance) ? min_value : static_cast<T>(current - step);
         }
 
         return value;
@@ -126,6 +145,9 @@ namespace etl
     };
 
 #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+    //*************************************************************************
+    /// Saturating arithmetic policy for floating-point values.
+    //*************************************************************************
     template <typename T>
     struct arithmetic<T, false>
     {
@@ -168,18 +190,39 @@ namespace etl
       return arithmetic<T>::advance(value, min_value, max_value, n);
     }
 
+    //*************************************************************************
+    /// Subtracts a value and saturates it at the supplied bounds.
+    /// Handles the lowest integral difference without signed overflow.
+    ///\param value The current value.
+    ///\param min_value The minimum value.
+    ///\param max_value The maximum value.
+    ///\param n The number of steps to subtract.
+    ///\return The value after subtraction.
+    //*************************************************************************
     template <typename T>
     ETL_NODISCARD ETL_CONSTEXPR14 T subtract(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
     {
       return arithmetic<T>::subtract(value, min_value, max_value, n);
     }
 
+    //*************************************************************************
+    /// Verifies that a clamped value, bound, or difference is not NaN.
+    /// Integral values always pass validation.
+    ///\param value The value to validate.
+    //*************************************************************************
     template <typename T>
     ETL_CONSTEXPR14 void validate(T value) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
       ETL_ASSERT(!etl::is_nan(value), ETL_ERROR_GENERIC("clamped_value: NaN is not supported"));
     }
 
+    //*************************************************************************
+    /// Validates a value and its bounds before clamping.
+    ///\param value The value to clamp.
+    ///\param min_value The minimum permitted value.
+    ///\param max_value The maximum permitted value.
+    ///\return The value clamped to the supplied range.
+    //*************************************************************************
     template <typename T>
     ETL_NODISCARD ETL_CONSTEXPR14 T validated_clamp(T value, T min_value, T max_value) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
     {
@@ -190,6 +233,7 @@ namespace etl
       return etl::clamp(value, min_value, max_value);
     }
   } // namespace private_clamped_value
+  /// \endcond
 
 #include "private/diagnostic_float_equal_push.h"
   template <typename T, T Min = T(), T Max = T(), bool RuntimeSpecialisation = ((Min == T()) && (Max == T()))>
@@ -199,9 +243,10 @@ namespace etl
   //***************************************************************************
   /// Provides a value that is clamped between two compile-time limits.
   /// Supports incrementing, decrementing and arbitrary advance.
-  ///\tparam T   The type of the value.
-  ///\tparam Min The minimum value of the range.
-  ///\tparam Max The maximum value of the range.
+  ///@tparam T   An integral type, or a floating-point type when
+  ///            ETL_HAS_FLOATING_POINT_CLAMPED_VALUE is `1`.
+  ///@tparam Min The minimum value of the range.
+  ///@tparam Max The maximum value of the range.
   ///\ingroup clamped_value
   //***************************************************************************
   template <typename T, T Min, T Max>
@@ -209,11 +254,18 @@ namespace etl
   {
   public:
 
-    typedef typename private_clamped_value::traits<T>::difference_type        difference_type;
-    typedef typename private_clamped_value::traits<T>::limits_type            limits_type;
+    /// The type used to advance or subtract from the stored value.
+    typedef typename private_clamped_value::traits<T>::difference_type difference_type;
+
+    /// Numeric limits for the stored value type.
+    typedef typename private_clamped_value::traits<T>::limits_type limits_type;
+
+    /// Numeric limits for difference_type.
     typedef typename private_clamped_value::traits<T>::difference_limits_type difference_limits_type;
 
+    /// \cond INTERNAL
     ETL_STATIC_ASSERT(Min <= Max, "clamped_value minimum must not exceed maximum");
+    /// \endcond
 
     //*************************************************************************
     /// Default constructor.
@@ -228,6 +280,7 @@ namespace etl
     /// Constructor.
     /// Set to an initial value.
     /// Clamped to the range.
+    /// NaN is rejected for floating-point values.
     ///\param initial The initial value.
     //*************************************************************************
     ETL_CONSTEXPR14 explicit clamped_value(T initial) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
@@ -262,6 +315,7 @@ namespace etl
     //*************************************************************************
     /// Sets the value.
     /// Clamps to the Min/Max range.
+    /// NaN is rejected for floating-point values.
     ///\param value_ The value.
     //*************************************************************************
     ETL_CONSTEXPR14 void set(T value_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
@@ -286,8 +340,9 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Advances to value by a number of steps.
+    /// Advances the value by a number of steps.
     /// Saturates at the Min/Max range.
+    /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     //*************************************************************************
     ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
@@ -307,6 +362,7 @@ namespace etl
 
     //*************************************************************************
     /// ++ operator.
+    /// Advances by one.
     /// Saturates at Max.
     ///\return A reference to this value.
     //*************************************************************************
@@ -330,6 +386,7 @@ namespace etl
 
     //*************************************************************************
     /// -- operator.
+    /// Subtracts one.
     /// Saturates at Min.
     ///\return A reference to this value.
     //*************************************************************************
@@ -365,6 +422,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds a number of steps and clamps to the range.
+    /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
@@ -376,6 +434,7 @@ namespace etl
 
     //*************************************************************************
     /// Subtracts a number of steps and clamps to the range.
+    /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
@@ -517,9 +576,10 @@ namespace etl
   //***************************************************************************
   /// Provides a value that is clamped between two runtime limits.
   /// Supports incrementing, decrementing and arbitrary advance.
-  ///\tparam T   The type of the value.
-  ///	param Min Ignored for this specialisation.
-  ///	param Max Ignored for this specialisation.
+  ///@tparam T   An integral type, or a floating-point type when
+  ///            ETL_HAS_FLOATING_POINT_CLAMPED_VALUE is `1`.
+  ///@tparam Min Ignored for this specialisation.
+  ///@tparam Max Ignored for this specialisation.
   ///\ingroup clamped_value
   //***************************************************************************
   template <typename T, T Min, T Max>
@@ -527,8 +587,13 @@ namespace etl
   {
   public:
 
-    typedef typename private_clamped_value::traits<T>::difference_type        difference_type;
-    typedef typename private_clamped_value::traits<T>::limits_type            limits_type;
+    /// The type used to advance or subtract from the stored value.
+    typedef typename private_clamped_value::traits<T>::difference_type difference_type;
+
+    /// Numeric limits for the stored value type.
+    typedef typename private_clamped_value::traits<T>::limits_type limits_type;
+
+    /// Numeric limits for difference_type.
     typedef typename private_clamped_value::traits<T>::difference_limits_type difference_limits_type;
 
     //*************************************************************************
@@ -546,6 +611,7 @@ namespace etl
     //*************************************************************************
     /// Constructor.
     /// Sets the value to the minimum of the range.
+    /// Reversed bounds and NaN bounds are rejected.
     ///\param min_ The minimum value.
     ///\param max_ The maximum value.
     //*************************************************************************
@@ -563,6 +629,7 @@ namespace etl
     /// Constructor.
     /// Set to an initial value.
     /// Clamped to the range.
+    /// Reversed bounds and NaN values or bounds are rejected.
     ///\param min_ The minimum value.
     ///\param max_ The maximum value.
     ///\param initial The initial value.
@@ -588,6 +655,7 @@ namespace etl
     //*************************************************************************
     /// Sets the range.
     /// Sets the value to the minimum of the range.
+    /// Reversed bounds and NaN bounds are rejected.
     ///\param min_ The minimum value.
     ///\param max_ The maximum value.
     //*************************************************************************
@@ -604,6 +672,7 @@ namespace etl
     //*************************************************************************
     /// Sets the value.
     /// Clamps to the runtime Min/Max range.
+    /// NaN is rejected for floating-point values.
     ///\param value_ The value.
     //*************************************************************************
     ETL_CONSTEXPR14 void set(T value_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
@@ -628,8 +697,9 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Advances to value by a number of steps.
+    /// Advances the value by a number of steps.
     /// Saturates at the runtime Min/Max range.
+    /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     //*************************************************************************
     ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
@@ -649,6 +719,7 @@ namespace etl
 
     //*************************************************************************
     /// ++ operator.
+    /// Advances by one.
     /// Saturates at the maximum.
     ///\return A reference to this value.
     //*************************************************************************
@@ -672,6 +743,7 @@ namespace etl
 
     //*************************************************************************
     /// -- operator.
+    /// Subtracts one.
     /// Saturates at the minimum.
     ///\return A reference to this value.
     //*************************************************************************
@@ -726,6 +798,7 @@ namespace etl
 
     //*************************************************************************
     /// Adds a number of steps and clamps to the range.
+    /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
@@ -737,6 +810,7 @@ namespace etl
 
     //*************************************************************************
     /// Subtracts a number of steps and clamps to the range.
+    /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************

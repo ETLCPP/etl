@@ -358,6 +358,7 @@ namespace
     TEST(test_runtime_reversed_bounds_are_rejected)
     {
       CHECK_THROW((etl::clamped_value<int>(7, 2)), etl::exception);
+      CHECK_THROW((etl::clamped_value<int>(7, 2, 4)), etl::exception);
 
       etl::clamped_value<int> value;
       CHECK_THROW(value.set(7, 2), etl::exception);
@@ -445,13 +446,36 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_floating_finite_overflow_is_prevented)
+    {
+      const double               maximum = etl::numeric_limits<double>::max();
+      etl::clamped_value<double> value(-maximum, maximum, maximum / 2.0);
+
+      value += maximum;
+      CHECK_EQUAL(maximum, value.get());
+
+      value = -maximum / 2.0;
+      value -= maximum;
+      CHECK_EQUAL(-maximum, value.get());
+
+      value = -maximum;
+      value += maximum;
+      CHECK_EQUAL(0.0, value.get());
+      value += maximum;
+      CHECK_EQUAL(maximum, value.get());
+    }
+
+    //*************************************************************************
     TEST(test_floating_nan_is_rejected)
     {
       const double nan = etl::numeric_limits<double>::quiet_NaN();
       CHECK_THROW((etl::clamped_value<double>(nan, 1.0)), etl::exception);
+      CHECK_THROW((etl::clamped_value<double>(-1.0, nan)), etl::exception);
       CHECK_THROW((etl::clamped_value<double>(-1.0, 1.0, nan)), etl::exception);
 
       etl::clamped_value<double> value(-1.0, 1.0, 0.0);
+      CHECK_THROW(value.set(nan, 1.0), etl::exception);
+      CHECK_THROW(value.set(-1.0, nan), etl::exception);
       CHECK_THROW(value = nan, etl::exception);
       CHECK_THROW(value.advance(nan), etl::exception);
       CHECK_THROW(value += nan, etl::exception);
