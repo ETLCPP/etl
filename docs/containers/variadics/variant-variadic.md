@@ -59,16 +59,6 @@ Constructor from a value.
 ---
 
 ```cpp
-ETL_CONSTEXPR14 explicit variant(private_variant::valueless_t)
-```
-**Description**  
-Construct with no alternative.
-The variant is valueless until the caller emplaces one, so `valueless_by_exception()` returns `true` and `index()` returns `etl::variant_npos`.
-Lets the alternative be chosen at run time without constructing a temporary variant.
-
----
-
-```cpp
 template <typename T, typename... TArgs>
 ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
 ```
