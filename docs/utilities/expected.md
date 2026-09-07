@@ -237,6 +237,72 @@ Since: C++11
 ---
 
 ```cpp
+template <typename U>
+ETL_CONSTEXPR14 expected(U&& value)
+```
+**Description**  
+Construct the value type from a value implicitly convertible to it.
+Not selected when U is an etl::expected, etl::unexpected, etl::in_place_t, etl::unexpect_t or value_type itself.
+Since: C++11
+
+---
+
+```cpp
+template <typename U>
+ETL_CONSTEXPR14 explicit expected(U&& value)
+```
+**Description**  
+Construct the value type from a value that is only explicitly convertible to it.
+Constrained as above.
+Since: C++11
+
+---
+
+```cpp
+template <typename U, typename G>
+expected(const etl::expected<U, G>& other)
+```
+**Description**  
+Copy construct from an etl::expected<U, G> whose value and error types are both implicitly convertible.
+Not selected when value_type can be constructed from, or etl::unexpected<error_type> built from, the source etl::expected itself.
+Since: C++11
+
+---
+
+```cpp
+template <typename U, typename G>
+explicit expected(const etl::expected<U, G>& other)
+```
+**Description**  
+Copy construct from an etl::expected<U, G> whose value or error type is only explicitly convertible.
+Constrained as above.
+Since: C++11
+
+---
+
+```cpp
+template <typename U, typename G>
+expected(etl::expected<U, G>&& other)
+```
+**Description**  
+Move construct from an etl::expected<U, G> whose value and error types are both implicitly convertible.
+Constrained as above.
+Since: C++11
+
+---
+
+```cpp
+template <typename U, typename G>
+explicit expected(etl::expected<U, G>&& other)
+```
+**Description**  
+Move construct from an etl::expected<U, G> whose value or error type is only explicitly convertible.
+Constrained as above.
+Since: C++11
+
+---
+
+```cpp
 ETL_CONSTEXPR14 expected(const expected& other) ETL_NOEXCEPT
 ```
 **Description**  
@@ -349,6 +415,17 @@ expected& operator =(value_type&& value)
 ```
 **Description**  
 Move assign from value
+Since: C++11
+
+---
+
+```cpp
+template <typename U>
+expected& operator =(U&& value)
+```
+**Description**  
+Assign from a value convertible to value_type.
+Constrained like the value constructor.
 Since: C++11
 
 ---

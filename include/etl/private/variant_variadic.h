@@ -70,6 +70,14 @@ namespace etl
   namespace private_variant
   {
     //*******************************************
+    /// Tag for constructing a variant with no alternative.
+    //*******************************************
+    struct valueless_t
+    {
+      explicit ETL_CONSTEXPR valueless_t() {}
+    };
+
+    //*******************************************
     /// Switch-based dispatch for destroy/copy/move.
     /// Replaces the per-instance function pointer with
     /// an inline if-else chain the compiler can optimise
@@ -1033,6 +1041,16 @@ namespace etl
       static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
     }
   #include "diagnostic_pop.h"
+
+    //***************************************************************************
+    /// Construct with no alternative.
+    /// The caller is expected to emplace one; until it does the variant is valueless.
+    /// Lets a caller choose the alternative at run time without a temporary variant.
+    //***************************************************************************
+    ETL_CONSTEXPR14 explicit variant(private_variant::valueless_t) ETL_NOEXCEPT
+      : base_type()
+    {
+    }
 
     //***************************************************************************
     /// Construct from arguments.
