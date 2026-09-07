@@ -65,19 +65,14 @@ includeFiles = [".htaccess"]
   weight = 3
 
 [[menus.main]]
-  name = "Slack"
-  url = "https://slofile.com/slack/etlcpp"
+  name = "Blog"
+  pageRef = "/docs/blog"
   weight = 4
 
 [[menus.main]]
-  name = "Arduino"
-  url = "https://github.com/ETLCPP/etl-arduino/archive/master.zip"
+  name = "Slack"
+  url = "https://slofile.com/slack/etlcpp"
   weight = 5
-
-[[menus.main]]
-  name = "Blog"
-  pageRef = "/docs/blog"
-  weight = 6
 
 [[menus.main]]
 name = "About"

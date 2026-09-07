@@ -51,6 +51,20 @@ type: hextra-home
 ## Version
 This documents version **{{< version >}}**.
 
+## Get the ETL
+<div>
+  <div>
+    <a href="https://github.com/ETLCPP/etl" alt="Github" target="_blank">Github</a>
+    <br>
+    <a href="https://github.com/ETLCPP/etl-arduino/archive/master.zip" alt="Arduino" target="_blank">Arduino</a>
+    <br>
+    <a href="https://conan.io/center/recipes/etl" alt="Conan" target="_blank">Conan</a>
+    <br>
+    <a href="https://registry.platformio.org/libraries/etlcpp/Embedded%20Template%20Library" target="_blank">PlatformIO</a>
+  </div>
+</div>
+
+
 ## Motivation
 
 C++ is a powerful language for embedded systems development, with templates offering a great deal of flexibility and type safety. While the C++ Standard Library provides a wealth of well-tested functionality, it’s often not well suited to environments with strict deterministic behavior and limited resources.  

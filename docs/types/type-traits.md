@@ -74,7 +74,7 @@ Not all traits have been defined as some rely on compiler intrinsics that are no
 `declvar`       `20.28.0`   
 `common_type`  
 `is_enum`       `20.30.0`  
-`is_scoped_enum` `20.50.0`  
+`is_scoped_enum` `20.49.0`  
 `underlying_type` `20.42.0`  
 &emsp;Unless the ETL is set to use builtins, the user must specialise the template for their enumerations.  
 
@@ -884,7 +884,7 @@ inline constexpr bool is_scalar_v = etl::is_scalar<T>::value;
 C++17
 
 ## is_scoped_enum
-From: `20.50.0`
+From: `20.49.0`
 
 ```cpp
 template <typename T>
@@ -900,7 +900,7 @@ inline constexpr bool is_scoped_enum_v = etl::is_scoped_enum<T>::value;
 C++17
 
 ## is_trivially_default_constructible
-From: `20.50.0`
+From: `20.49.0`
 
 ```cpp
 template <typename T>
@@ -916,7 +916,7 @@ inline constexpr bool is_trivially_default_constructible_v = etl::is_trivially_d
 C++17
 
 ## is_trivially_move_constructible
-From: `20.50.0`
+From: `20.49.0`
 
 ```cpp
 template <typename T>
@@ -932,7 +932,7 @@ inline constexpr bool is_trivially_move_constructible_v = etl::is_trivially_move
 C++17
 
 ## is_trivially_move_assignable
-From: `20.50.0`
+From: `20.49.0`
 
 ```cpp
 template <typename T>
@@ -964,7 +964,7 @@ inline constexpr bool is_trivially_assignable_v = etl::is_trivially_assignable<T
 C++17
 
 ## is_layout_compatible
-From: `20.50.0`
+From: `20.49.0`
 
 ```cpp
 template <typename T, typename U>
@@ -982,7 +982,7 @@ inline constexpr bool is_layout_compatible_v = etl::is_layout_compatible<T, U>::
 C++17
 
 ## is_pointer_interconvertible_base_of
-From: `20.50.0`
+From: `20.49.0`
 
 ```cpp
 template <typename TBase, typename TDerived>
