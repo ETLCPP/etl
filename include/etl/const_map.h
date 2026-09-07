@@ -484,6 +484,11 @@ namespace etl
     size_type         max_elements;
   };
 
+  namespace etl_priv
+  {
+    inline void const_map_elements_are_not_sorted() {} // non-constexpr -> not usable in a constant expression
+  } // namespace etl_priv
+
   //*********************************************************************
   /// Map type designed for constexpr.
   //*********************************************************************
@@ -519,6 +524,12 @@ namespace etl
     {
       static_assert((etl::are_all_same<value_type, etl::decay_t<TElements>...>::value), "All elements must be value_type");
       static_assert(sizeof...(elements) <= Size, "Number of elements exceeds capacity");
+
+      if (!this->is_valid())
+      {
+        etl_priv::const_map_elements_are_not_sorted();
+        // runtime assert here for run time variables?
+      }
     }
 
   private:
