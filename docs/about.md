@@ -1,6 +1,6 @@
 ---
 title: "About"
-weight: 3002
+weight: 3003
 ---
 
 ## About me
@@ -12,41 +12,40 @@ Most systems I have worked on have required high speed and deterministic perform
 Acting as a mentor for colleagues has often been a significant, though unofficial, part of my role.  
 
 ## Why write this library?
-I wrote this library, and all the others I have written over the
-years, because I'm lazy.
+The truth behind this library, and every other tool I've built over the years, is simple: 
 
-Yes, lazy!
+I’m lazy.
 
-One of the things I really hate when writing software is having to do the same, or something almost the same, over and over again. The first thing I think when presented with a problem that requires a specific set of functionality is "Is this a specific case of a more generic problem?". Surprisingly, I can say "yes" more often than you would expect. Even if not all of the problem can be seen as generic, there are almost certainly parts that are. In every job I've had I've left an extensive code library behind me.
+One of my biggest frustrations in software engineering is having to write the same code multiple times. Whenever I'm faced with a new problem, the very first question I ask is: *"Is this just a specific instance of a more generic problem?"*
 
-Reinventing the wheel every time is a bad idea, for many reasons.
+More often than not, it is. Even if the entire problem isn't generic, core pieces of it usually are. I build tools to solve those pieces once and for all. It's a philosophy that has defined my career; at every company I've worked for, I've left behind a legacy of extensive code libraries that teams still use today.
 
-- **Compile-Time Features:**  
-Templated compile-time constants
-Template-based design pattern base classes (e.g., Visitor, Observer)
-Type-safe smart enumerations
-Type-safe typedefs and constants
-- **Code Bloat**  
-Multiple instances of slight variations of a theme results in an increase in code size due to no commonality of functionality.  
-Testing, more testing or no testing.  
-Are all the variants tested to the same degree?  
-Are some tested at all?
-- **Variable functionality**  
-Not all the variants are going to have the same level of functionality, or the same API.
-Ad-hoc solutions are invariably only going to solve the little bit of the problem that was needed at the time.  
-This goes against the YAGNI principle, but...  
-*I think that YAGNI can often be just another way of saying ISEP.*  
-*I believe in GIRFT.*  
-*I have over three decades of empirical proof.*  
-- **No collective knowledge base**  
-Without commonality every new variant has to be learnt. The underlying principles may be understood (i.e. Linked list), but each implementation has to be understood separately, along with its particular caveats and foibles.  
-Documentation is likely to be patchy, if it exists at all.  
-- **Octopus code**  
-The application is liable to have a close coupling with the solution. For example, I've often seen code using linked lists directly accessing the node pointers. Ad-hoc solutions are liable to have lazy (the bad kind) implementations.
+Reinventing the wheel every time is a bad idea. When teams rely on fragmented, ad-hoc solutions, a predictable set of problems always follows:
 
->YAGNI - You Aren't Going To Need It  
->ISEP  - It's Somebody Else's Problem  
->GIRFT - Get It Right First Time
+*   **Code Bloat:** Multiple variations of the same theme increase code size because there is no shared functionality.
+*   **Patchy Testing:** Are all the variants tested to the same degree? Are some tested at all? Usually, it's a roll of the dice.
+*   **Variable Functionality:** Not all variants share the same level of features or even the same API. Ad-hoc solutions invariably only solve the tiny sliver of the problem that was needed at the exact moment they were written.
+
+This directly conflicts with the popular **YAGNI** principle, but I think **YAGNI** can often be just another way of saying **ISEP** (It's Somebody Else's Problem). 
+
+Personally, I believe in **GIRFT** (Get It Right First Time). I have over three decades of empirical proof to back it up.
+
+Without a centralized, generalized library to solve these core problems, you also run into:
+
+*   **No Collective Knowledge Base:** 
+Without commonality, every new variant has to be relearned from scratch. Even if the underlying concepts are understood, each separate implementation brings its own caveats, foibles, and patchy documentation.
+*   **Octopus Code:** 
+Applications end up tightly coupled to the underlying solution. I've often seen code directly accessing the underlying implementation. Ad-hoc solutions are highly vulnerable to this kind of lazy engineering *(the bad kind)*.
+
+### The Antidote
+To prevent this, this library provides robust, centralized building blocks out of the box:
+*   **Compile-Time Features:** Templated compile-time constants.
+*   **Design Patterns:** Template-based design pattern base classes (such as Visitor and Observer).
+*   **Type Safety:** Type-safe smart enumerations, typedefs, and constants.
+
+---
+
+**YAGNI** - *You Aren't Going To Need It*
 
 ## Why not use 'C'?
 **Greenspun's Tenth Rule** has an unofficial C corollary:  

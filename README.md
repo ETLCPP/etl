@@ -8,6 +8,8 @@
 ![GitHub forks](https://img.shields.io/github/forks/ETLCPP/etl?style=flat)
 ![GitHub Repo stars](https://img.shields.io/github/stars/ETLCPP/etl?style=flat)
 
+[![Conan Center](https://img.shields.io/conan/v/etl)](https://conan.io/center/recipes/etl)
+
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/msvc.yml/badge.svg?branch=master)
 
 ![CI](https://github.com/ETLCPP/etl/actions/workflows/gcc-c++11.yml/badge.svg?branch=master)
