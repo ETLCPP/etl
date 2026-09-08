@@ -10,26 +10,27 @@ title: "clamped_value"
 Provides a value constrained between a minimum and maximum value. Values are
 clamped using `etl::clamp`. The type supports compile-time bounds to minimise
 storage and runtime bounds when the range must be changed. Integral types are
-supported in all language modes. Floating-point types are supported in C++20
-when `ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is `1`. By default, the macro is
-enabled when `__cpp_nontype_template_args` is at least `201911L`.
+supported in all language modes. Floating-point types with runtime bounds are
+supported in C++11 and later when `ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is
+`1`. Floating-point compile-time bounds require C++20 support for
+floating-point non-type template arguments.
 
 ## Availability
 
 `ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is always defined by this header as
-either `0` or `1`. It defaults to `1` only when C++20 is enabled and the
-compiler supports floating-point non-type template arguments. A platform
-profile or build may define the macro before including the header to override
-automatic detection.
+either `0` or `1`. It defaults to `1` in C++11 and later. The related
+`ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE` macro defaults to `1` only
+when C++20 is enabled and the compiler supports floating-point non-type
+template arguments. A platform profile or build may define either macro before
+including the header to override automatic detection.
 
-When the macro is `0`, `T` must be an integral type. When it is `1`, `float`,
-`double`, and `long double` may also be used.
+When `ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is `0`, `T` must be an integral
+type. When it is `1`, `float`, `double`, and `long double` may also be used with
+runtime bounds.
 
 ```cpp
-template <typename T,
-          T Min = T(),
-          T Max = T(),
-          bool RuntimeSpecialisation = ((Min == T()) && (Max == T()))>
+// C++11 and later
+template <typename T, T... Limits>
 class clamped_value;
 ```
 
@@ -39,8 +40,11 @@ etl::clamped_value<int, 2, 7> value_ct; // Fixed range [2, 7].
 etl::clamped_value<int> value_rt(2, 7, 5); // Runtime range and initial value.
 
 #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+etl::clamped_value<double> float_rt(-1.5, 2.5, 0.5);
+#endif
+
+#if ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE
 etl::clamped_value<float, -1.5f, 2.5f> float_ct(0.5f);
-etl::clamped_value<double>              float_rt(-1.5, 2.5, 0.5);
 #endif
 ```
 
@@ -67,13 +71,10 @@ clamped_value<int> value(min, max, initial);
 Creates a runtime clamped value. The two-argument form initializes the value
 to `min`; the three-argument form clamps `initial` to the range.
 
-`min` must not be greater than `max`. As with `cyclic_value`, zero-initialized
-`Min` and `Max` select the runtime-bound specialization; use a non-zero
-compile-time bound when a fixed compile-time range is needed. NaN bounds and
-initial values are rejected. Infinite bounds and values are permitted.
-
-Because zero-initialized `Min` and `Max` select runtime bounds, a fixed
-compile-time range `[0, 0]` cannot be represented by this dispatch scheme.
+`min` must not be greater than `max`. Omitting the template bounds selects the
+runtime-bound specialization. Supplying `Min` and `Max` selects fixed
+compile-time bounds. NaN bounds and initial values are rejected. Infinite
+bounds and values are permitted.
 
 ## Modifiers
 

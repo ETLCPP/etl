@@ -61,6 +61,17 @@ namespace
       CHECK_EQUAL(7, value.max());
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_compile_time_zero_range)
+    {
+      etl::clamped_value<int, 0, 0> value(1);
+      CHECK_EQUAL(0, value.get());
+      CHECK_EQUAL(0, value.min());
+      CHECK_EQUAL(0, value.max());
+    }
+#endif
+
     //*************************************************************************
     TEST(test_run_time_initialisation)
     {
@@ -364,7 +375,7 @@ namespace
       CHECK_THROW(value.set(7, 2), etl::exception);
     }
 
-#if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+#if ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE
     //*************************************************************************
     TEST(test_compile_time_floating_clamps_and_advances)
     {
@@ -381,7 +392,9 @@ namespace
       value.advance(10.0f);
       CHECK_CLOSE(2.5f, value.get(), 0.0001f);
     }
+#endif
 
+#if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
     //*************************************************************************
     TEST(test_runtime_floating_clamps_and_advances)
     {
@@ -396,45 +409,52 @@ namespace
       value.advance(-10.0);
       CHECK_CLOSE(-1.5, value.get(), 0.0001);
     }
+#endif
 
+#if ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE
     //*************************************************************************
-    TEST(test_floating_increment_and_decrement_saturate_at_fractional_bounds)
+    TEST(test_compile_time_floating_increment_saturates_at_fractional_bound)
     {
       etl::clamped_value<float, -0.5f, 0.5f> compile_time(0.25f);
-      etl::clamped_value<float>              run_time(-0.5f, 0.5f, -0.25f);
 
       ++compile_time;
-      --run_time;
 
       CHECK_CLOSE(0.5f, compile_time.get(), 0.0001f);
-      CHECK_CLOSE(-0.5f, run_time.get(), 0.0001f);
+    }
+#endif
+
+#if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+    //*************************************************************************
+    TEST(test_runtime_floating_decrement_saturates_at_fractional_bound)
+    {
+      etl::clamped_value<float> value(-0.5f, 0.5f, -0.25f);
+
+      --value;
+
+      CHECK_CLOSE(-0.5f, value.get(), 0.0001f);
     }
 
     //*************************************************************************
-    TEST(test_floating_comparison_and_swap)
+    TEST(test_runtime_floating_comparison_and_swap)
     {
-      etl::clamped_value<double, -2.0, 2.0> compile_time1(-0.5);
-      etl::clamped_value<double, -2.0, 2.0> compile_time2(1.5);
-      etl::clamped_value<double>            run_time1(-3.0, 3.0, -1.0);
-      etl::clamped_value<double>            run_time2(4.0, 8.0, 6.0);
+      etl::clamped_value<double> value1(-3.0, 3.0, -1.0);
+      etl::clamped_value<double> value2(4.0, 8.0, 6.0);
 
-      CHECK(compile_time1 < compile_time2);
-      CHECK(compile_time1 < 1.0);
-      swap(compile_time1, compile_time2);
-      swap(run_time1, run_time2);
+      CHECK(value1 < value2);
+      CHECK(value1 < 1.0);
+      swap(value1, value2);
 
-      CHECK_CLOSE(1.5, compile_time1.get(), 0.0001);
-      CHECK_CLOSE(6.0, run_time1.get(), 0.0001);
-      CHECK_CLOSE(4.0, run_time1.min(), 0.0001);
-      CHECK_CLOSE(-1.0, run_time2.get(), 0.0001);
+      CHECK_CLOSE(6.0, value1.get(), 0.0001);
+      CHECK_CLOSE(4.0, value1.min(), 0.0001);
+      CHECK_CLOSE(-1.0, value2.get(), 0.0001);
     }
 
     //*************************************************************************
-    TEST(test_floating_infinity_saturates)
+    TEST(test_runtime_floating_infinity_saturates)
     {
-      const double                          infinity = etl::numeric_limits<double>::infinity();
-      etl::clamped_value<double, -2.0, 2.0> value(0.0);
-      etl::clamped_value<double>            infinite_range(-infinity, infinity, 0.0);
+      const double               infinity = etl::numeric_limits<double>::infinity();
+      etl::clamped_value<double> value(-2.0, 2.0, 0.0);
+      etl::clamped_value<double> infinite_range(-infinity, infinity, 0.0);
 
       value += infinity;
       CHECK_CLOSE(2.0, value.get(), 0.0001);
@@ -501,7 +521,7 @@ namespace
       CHECK(true);
     }
 
-  #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+  #if ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE
     //*************************************************************************
     TEST(test_floating_clamped_value_constexpr)
     {

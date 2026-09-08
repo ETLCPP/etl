@@ -43,21 +43,32 @@ SOFTWARE.
 
 ///\def ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
 /// Set to `1` when clamped_value supports floating-point types.
-/// Floating-point support requires C++20 non-type template arguments.
+/// Runtime floating-point support requires C++11 variadic templates.
 /// The macro may be defined by the build or platform profile to override
 /// automatic detection.
 #if !defined(ETL_HAS_FLOATING_POINT_CLAMPED_VALUE)
-  #if ETL_USING_CPP20 && defined(__cpp_nontype_template_args) && (__cpp_nontype_template_args >= 201911L)
+  #if ETL_USING_CPP11
     #define ETL_HAS_FLOATING_POINT_CLAMPED_VALUE 1
   #else
     #define ETL_HAS_FLOATING_POINT_CLAMPED_VALUE 0
   #endif
 #endif
 
+///\def ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE
+/// Set to `1` when clamped_value supports floating-point compile-time bounds.
+#if !defined(ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE)
+  #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE && ETL_USING_CPP20 && defined(__cpp_nontype_template_args) && (__cpp_nontype_template_args >= 201911L)
+    #define ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE 1
+  #else
+    #define ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE 0
+  #endif
+#endif
+
 ///\defgroup clamped_value clamped_value
 /// Provides a value that is clamped between two limits.
 /// Integral types are supported in all language modes. Floating-point types
-/// are supported when ETL_HAS_FLOATING_POINT_CLAMPED_VALUE is `1`.
+/// with runtime bounds are supported when
+/// ETL_HAS_FLOATING_POINT_CLAMPED_VALUE is `1`.
 /// \ingroup utilities
 
 namespace etl
@@ -235,22 +246,32 @@ namespace etl
   } // namespace private_clamped_value
   /// \endcond
 
-#include "private/diagnostic_float_equal_push.h"
+#if ETL_USING_CPP11
+  template <typename T, T... Limits>
+  class clamped_value;
+#else // ETL_NOT_USING_CPP11
+  #include "private/diagnostic_float_equal_push.h"
   template <typename T, T Min = T(), T Max = T(), bool RuntimeSpecialisation = ((Min == T()) && (Max == T()))>
   class clamped_value;
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
+#endif
 
   //***************************************************************************
   /// Provides a value that is clamped between two compile-time limits.
   /// Supports incrementing, decrementing and arbitrary advance.
   ///@tparam T   An integral type, or a floating-point type when
-  ///            ETL_HAS_FLOATING_POINT_CLAMPED_VALUE is `1`.
+  ///            ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE is `1`.
   ///@tparam Min The minimum value of the range.
   ///@tparam Max The maximum value of the range.
   ///\ingroup clamped_value
   //***************************************************************************
+#if ETL_USING_CPP11
+  template <typename T, T Min, T Max>
+  class clamped_value<T, Min, Max>
+#else // ETL_NOT_USING_CPP11
   template <typename T, T Min, T Max>
   class clamped_value<T, Min, Max, false>
+#endif
   {
   public:
 
@@ -582,8 +603,13 @@ namespace etl
   ///@tparam Max Ignored for this specialisation.
   ///\ingroup clamped_value
   //***************************************************************************
+#if ETL_USING_CPP11
+  template <typename T>
+  class clamped_value<T>
+#else // ETL_NOT_USING_CPP11
   template <typename T, T Min, T Max>
   class clamped_value<T, Min, Max, true>
+#endif
   {
   public:
 
