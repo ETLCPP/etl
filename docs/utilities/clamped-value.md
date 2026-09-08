@@ -82,7 +82,7 @@ void set(T value);
 void set(T min, T max);
 void to_min();
 void to_max();
-void advance(difference_type n) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS);
+void advance(difference_type n) ETL_NOEXCEPT;
 ```
 
 `set(T)` clamps the current value. The runtime `set(min, max)` changes the
@@ -129,12 +129,9 @@ clamped_value& operator++() & noexcept;
 clamped_value operator++(int) noexcept;
 clamped_value& operator--() & noexcept;
 clamped_value operator--(int) noexcept;
-clamped_value& operator=(T value) &
-  ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS);
-clamped_value& operator+=(difference_type n) &
-  ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS);
-clamped_value& operator-=(difference_type n) &
-  ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS);
+clamped_value& operator=(T value) & noexcept;
+clamped_value& operator+=(difference_type n) &  noexcept;
+clamped_value& operator-=(difference_type n) & noexcept;
 ```
 
 Conversion and assignment to the underlying type are supported. Assignment is
