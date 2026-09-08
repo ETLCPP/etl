@@ -5,6 +5,78 @@ weight: 2002
 
 Click on the links to see the original Github page.
 
+## 20.49.0
+
+**Pull requests:**  
+
+[#1502](https://github.com/ETLCPP/etl/pull/1502) Remove the documentation page for `etl::type_id`
+[#1503](https://github.com/ETLCPP/etl/pull/1503) Add `difference_type` to span
+[#1504](https://github.com/ETLCPP/etl/pull/1504) Add missing `array` `get<>` overloads, and noexcept/constexpr 
+[#1505](https://github.com/ETLCPP/etl/pull/1505) Support structured bindings for array
+[#1506](https://github.com/ETLCPP/etl/pull/1506) Add safe integer comparisons
+[#1507](https://github.com/ETLCPP/etl/pull/1507) Various fixes and cleanup
+[#1508](https://github.com/ETLCPP/etl/pull/1508) Remove redundant `reinterpret_cast`
+[#1509](https://github.com/ETLCPP/etl/pull/1509) Add `etl::apply`
+[#1510](https://github.com/ETLCPP/etl/pull/1510) Fix `variant` `emplace` to be valueless after a throwing construction
+[#1511](https://github.com/ETLCPP/etl/pull/1511) Fix deep const-cast in `ivector` pointer repair for const pointee types
+[#1513](https://github.com/ETLCPP/etl/pull/1513) `string_view`: clamp n in `remove_prefix` and remove_suffix
+[#1514](https://github.com/ETLCPP/etl/pull/1514) Fix `variant` copy operations enabled with non-copyable alternatives
+[#1515](https://github.com/ETLCPP/etl/pull/1515) Clean up the use of type traits by using C++11 forms wherever possible
+[#1516](https://github.com/ETLCPP/etl/pull/1516) Restore .devcontainer/context directory removed by #1422
+[#1517](https://github.com/ETLCPP/etl/pull/1517) Update Github Actions to checkout@v6.0.3
+[#1519](https://github.com/ETLCPP/etl/pull/1519) fix(devcontainer): resolve missing packages in bullseye image
+[#1522](https://github.com/ETLCPP/etl/pull/1522) Fix ODR violation in `optional`
+[#1524](https://github.com/ETLCPP/etl/pull/1524) Fixed signed/unsigned mismatch warnings in VS2022
+[#1525](https://github.com/ETLCPP/etl/pull/1525) Fix `operator[]` for const `iota_view` and repeat_view
+[#1526](https://github.com/ETLCPP/etl/pull/1526) Fix `make_array` and `make_deque` rejecting const-qualified lvalues of the element type
+[#1528](https://github.com/ETLCPP/etl/pull/1528) Change `make_list` to take its arguments by forwarding reference
+[#1529](https://github.com/ETLCPP/etl/pull/1529) Fix `etl::common_type` decaying both arguments to `T2`
+[#1530](https://github.com/ETLCPP/etl/pull/1530) Correct the documented make_xxx factory signatures and examples
+[#1534](https://github.com/ETLCPP/etl/pull/1534) Prevent usage of `N` as template value parameter
+[#1535](https://github.com/ETLCPP/etl/pull/1535) Make `etl_profile` Incompatible by Default
+[#1537](https://github.com/ETLCPP/etl/pull/1537) Fix ambiguous `byte_stream_reader` construction from `etl::span<uint8_t>`
+[#1538](https://github.com/ETLCPP/etl/pull/1538) Fix `expected::operator*() const&` and `&&` failing to compile
+[#1540](https://github.com/ETLCPP/etl/pull/1540) Fix flat_map/reference_flat_map to use random-access iterators in lower_bound
+[#1542](https://github.com/ETLCPP/etl/pull/1542) Remove redundant `noexcept` expr- #1542
+[#1544](https://github.com/ETLCPP/etl/pull/1544) Various cleanup
+[#1545](https://github.com/ETLCPP/etl/pull/1545) Add etl::`is_standard_layout` and other type traits according to std
+[#1546](https://github.com/ETLCPP/etl/pull/1546) Fix `delegate` clear through assignment
+[#1548](https://github.com/ETLCPP/etl/pull/1548) `delegate`: restore argument deduction behaviour- #1548
+[#1550](https://github.com/ETLCPP/etl/pull/1550) Add span deduction guide for types with `data()` and `size()`
+[#1552](https://github.com/ETLCPP/etl/pull/1552) Add Macro for Inline Control
+[#1553](https://github.com/ETLCPP/etl/pull/1553) Adopt the Library Fundamentals TS `make_array` design for the sequence factories
+[#1554](https://github.com/ETLCPP/etl/pull/1554) Fix PowerPC Dockerfile to use Snapshot consistently
+[#1555](https://github.com/ETLCPP/etl/pull/1555) Constexpr for unaligned_type
+[#1556](https://github.com/ETLCPP/etl/pull/1556) `circular_buffer`: add initialization and assignment overloads
+[#1557](https://github.com/ETLCPP/etl/pull/1557) CI: cancel superseded workflow runs
+[#1558](https://github.com/ETLCPP/etl/pull/1558) CI: Filter compiler workflows by path
+[#1559](https://github.com/ETLCPP/etl/pull/1559) Remove redundant `ETL_USING_STL` in tests
+[#1560](https://github.com/ETLCPP/etl/pull/1560) Set default compare for `iconst_map`
+[#1561](https://github.com/ETLCPP/etl/pull/1561) Allow easier construction of const_(multi_)map
+[#1562](https://github.com/ETLCPP/etl/pull/1562) Various cleanup
+[#1563](https://github.com/ETLCPP/etl/pull/1563) Cherry pick the Docker fixes for PowerPC
+[#1564](https://github.com/ETLCPP/etl/pull/1564) Update `etl::expected` documentation
+[#1565](https://github.com/ETLCPP/etl/pull/1565) Implement clamped_value utility
+[#1566](https://github.com/ETLCPP/etl/pull/1566) Fix guards in `array.h` and `test/test_array.h`
+[#1568](https://github.com/ETLCPP/etl/pull/1568) For optional monadic operations, add docs, tests, and complete type
+[#1569](https://github.com/ETLCPP/etl/pull/1569) Add missing `etl::ranges::distance` overload
+[#1570](https://github.com/ETLCPP/etl/pull/1570) Fix `FreeRTOS.h/semphr.h` include paths for ESP-IDF (fixes #1439)
+[#1571](https://github.com/ETLCPP/etl/pull/1571) Drop Debian 11 (bullseye) support
+[#1572](https://github.com/ETLCPP/etl/pull/1572) Fixed building and unit tests run under XCode 2027 Beta 6
+[#1573](https://github.com/ETLCPP/etl/pull/1573) Add missing type traits
+[#1574](https://github.com/ETLCPP/etl/pull/1574) Make `etl::variant` trivially copyable
+[#1576](https://github.com/ETLCPP/etl/pull/1576) Remove spurious link in documentation
+[#1578](https://github.com/ETLCPP/etl/pull/1578) Fix implicit conversion in binary rotations
+[#1579](https://github.com/ETLCPP/etl/pull/1579) Fix sanitizer builds
+[#1580](https://github.com/ETLCPP/etl/pull/1580) Support variable number of arguments to inject at runtime
+[#1581](https://github.com/ETLCPP/etl/pull/1581) Detect builtins
+[#1582](https://github.com/ETLCPP/etl/pull/1582) Fix symbols to be exportable from C++20 named modules
+[#1583](https://github.com/ETLCPP/etl/pull/1583) absolute and casting updates
+[#1586](https://github.com/ETLCPP/etl/pull/1586) Fix size type of `string_view`
+[#1588](https://github.com/ETLCPP/etl/pull/1588) Optimize `format.h`
+[#1589](https://github.com/ETLCPP/etl/pull/1589) Fix MSVC C4244 warning in format specifiers
+[#1591](https://github.com/ETLCPP/etl/pull/1591) Fix false positive warning from GCC 16
+
 ## 20.48.1
 
 **Pull requests:**  

@@ -116,25 +116,26 @@ namespace etl
       typedef typename traits<T>::unsigned_type unsigned_type;
 
       ETL_NODISCARD
-      static ETL_CONSTEXPR14 T                         advance(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
+      static
+      ETL_CONSTEXPR14 T                         advance(T value, T min_value, T max_value, typename traits<T>::difference_type n) ETL_NOEXCEPT
       {
         if (n == 0)
         {
           return value;
         }
 
-        const unsigned_type current = static_cast<unsigned_type>(value);
+        const unsigned_type current = etl::to_unsigned(value); // static_cast<unsigned_type>(value);
         const unsigned_type step    = etl::absolute_unsigned(n);
 
         if ((n > 0) && (value < max_value))
         {
-          const unsigned_type distance = static_cast<unsigned_type>(max_value) - current;
+          const unsigned_type distance = etl::to_unsigned(max_value) - current; // static_cast<unsigned_type>(max_value) - current;
 
           value = (step >= distance) ? max_value : static_cast<T>(current + step);
         }
         else if ((n < 0) && (value > min_value))
         {
-          const unsigned_type distance = current - static_cast<unsigned_type>(min_value);
+          const unsigned_type distance = current - etl::to_unsigned(min_value); // static_cast<unsigned_type>(min_value);
 
           value = (step >= distance) ? min_value : static_cast<T>(current - step);
         }
@@ -222,7 +223,7 @@ namespace etl
     ///\param value The value to validate.
     //*************************************************************************
     template <typename T>
-    ETL_CONSTEXPR14 void validate(T value) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 void validate(T value)
     {
       ETL_ASSERT(!etl::is_nan(value), ETL_ERROR_GENERIC("clamped_value: NaN is not supported"));
     }
@@ -235,7 +236,7 @@ namespace etl
     ///\return The value clamped to the supplied range.
     //*************************************************************************
     template <typename T>
-    ETL_NODISCARD ETL_CONSTEXPR14 T validated_clamp(T value, T min_value, T max_value) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_NODISCARD ETL_CONSTEXPR14 T validated_clamp(T value, T min_value, T max_value)
     {
       validate(value);
       validate(min_value);
@@ -304,7 +305,7 @@ namespace etl
     /// NaN is rejected for floating-point values.
     ///\param initial The initial value.
     //*************************************************************************
-    ETL_CONSTEXPR14 explicit clamped_value(T initial) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 explicit clamped_value(T initial)
       : value(private_clamped_value::validated_clamp(initial, Min, Max))
     {
     }
@@ -339,7 +340,7 @@ namespace etl
     /// NaN is rejected for floating-point values.
     ///\param value_ The value.
     //*************************************************************************
-    ETL_CONSTEXPR14 void set(T value_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 void set(T value_)
     {
       value = private_clamped_value::validated_clamp(value_, Min, Max);
     }
@@ -366,7 +367,7 @@ namespace etl
     /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     //*************************************************************************
-    ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 void advance(difference_type n)
     {
       private_clamped_value::validate(n);
       value = private_clamped_value::advance(value, Min, Max, n);
@@ -435,7 +436,7 @@ namespace etl
     ///\param value_ The value to assign.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER
     {
       set(value_);
       return *this;
@@ -447,7 +448,7 @@ namespace etl
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER
     {
       advance(n);
       return *this;
@@ -459,7 +460,7 @@ namespace etl
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER
     {
       private_clamped_value::validate(n);
       value = private_clamped_value::subtract(value, Min, Max, n);
@@ -641,7 +642,7 @@ namespace etl
     ///\param min_ The minimum value.
     ///\param max_ The maximum value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value(T min_, T max_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 clamped_value(T min_, T max_)
       : value(min_)
       , min_value(min_)
       , max_value(max_)
@@ -660,7 +661,7 @@ namespace etl
     ///\param max_ The maximum value.
     ///\param initial The initial value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value(T min_, T max_, T initial) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 clamped_value(T min_, T max_, T initial)
       : value(private_clamped_value::validated_clamp(initial, min_, max_))
       , min_value(min_)
       , max_value(max_)
@@ -685,7 +686,7 @@ namespace etl
     ///\param min_ The minimum value.
     ///\param max_ The maximum value.
     //*************************************************************************
-    ETL_CONSTEXPR14 void set(T min_, T max_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 void set(T min_, T max_)
     {
       private_clamped_value::validate(min_);
       private_clamped_value::validate(max_);
@@ -701,7 +702,7 @@ namespace etl
     /// NaN is rejected for floating-point values.
     ///\param value_ The value.
     //*************************************************************************
-    ETL_CONSTEXPR14 void set(T value_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 void set(T value_)
     {
       value = private_clamped_value::validated_clamp(value_, min_value, max_value);
     }
@@ -728,7 +729,7 @@ namespace etl
     /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     //*************************************************************************
-    ETL_CONSTEXPR14 void advance(difference_type n) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 void advance(difference_type n)
     {
       private_clamped_value::validate(n);
       value = private_clamped_value::advance(value, min_value, max_value, n);
@@ -797,7 +798,7 @@ namespace etl
     ///\param value_ The value to assign.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER
     {
       set(value_);
       return *this;
@@ -828,7 +829,7 @@ namespace etl
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER
     {
       advance(n);
       return *this;
@@ -840,7 +841,7 @@ namespace etl
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
-    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    ETL_CONSTEXPR14 clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER
     {
       private_clamped_value::validate(n);
       value = private_clamped_value::subtract(value, min_value, max_value, n);
