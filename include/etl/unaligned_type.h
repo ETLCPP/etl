@@ -335,6 +335,48 @@ namespace etl
       return ((Endian == ETL_ENDIAN_LITTLE) ? index : (Size - 1U - index)) * 8U;
     }
 
+    //*************************************************************************
+    /// Gathers the bytes of a store into a value, and scatters a value back out.
+    /// Unrolled at source level, so byte swap recognition sees no loop.
+    //*************************************************************************
+    template <typename TValue, size_t Size, int Endian, size_t Index>
+    struct gather_bytes
+    {
+      static ETL_CONSTEXPR14 TValue from(const unsigned char* store)
+      {
+        return static_cast<TValue>(gather_bytes<TValue, Size, Endian, Index - 1U>::from(store)
+                                   | (static_cast<TValue>(store[Index]) << byte_shift<Size, Endian>(Index)));
+      }
+    };
+
+    template <typename TValue, size_t Size, int Endian>
+    struct gather_bytes<TValue, Size, Endian, 0U>
+    {
+      static ETL_CONSTEXPR14 TValue from(const unsigned char* store)
+      {
+        return static_cast<TValue>(static_cast<TValue>(store[0]) << byte_shift<Size, Endian>(0));
+      }
+    };
+
+    template <typename TValue, size_t Size, int Endian, size_t Index>
+    struct scatter_bytes
+    {
+      static ETL_CONSTEXPR14 void into(TValue value, unsigned char* store)
+      {
+        scatter_bytes<TValue, Size, Endian, Index - 1U>::into(value, store);
+        store[Index] = static_cast<unsigned char>(value >> byte_shift<Size, Endian>(Index));
+      }
+    };
+
+    template <typename TValue, size_t Size, int Endian>
+    struct scatter_bytes<TValue, Size, Endian, 0U>
+    {
+      static ETL_CONSTEXPR14 void into(TValue value, unsigned char* store)
+      {
+        store[0] = static_cast<unsigned char>(value >> byte_shift<Size, Endian>(0));
+      }
+    };
+
 #if ETL_USING_BUILTIN_BIT_CAST
     //*************************************************************************
     /// Unsigned integer type of a given byte size, used as a constexpr-capable
@@ -402,28 +444,23 @@ namespace etl
         // latter is not defined for 'bool'.
         typedef typename etl::unsigned_type<T>::type unsigned_t;
 
-        unsigned_t uvalue = static_cast<unsigned_t>(value);
+        private_unaligned_type::scatter_bytes<unsigned_t, Size_, Endian_, Size_ - 1U>::into(static_cast<unsigned_t>(value), store);
+      }
 
-        for (size_t i = 0UL; i < Size_; ++i)
-        {
-          store[i] = static_cast<storage_type>(uvalue >> private_unaligned_type::byte_shift<Size_, Endian_>(i));
-        }
+      //*******************************
+      template <typename T>
+      static ETL_CONSTEXPR14 T value_from(const_pointer store)
+      {
+        typedef typename etl::unsigned_type<T>::type unsigned_t;
+
+        return static_cast<T>(private_unaligned_type::gather_bytes<unsigned_t, Size_, Endian_, Size_ - 1U>::from(store));
       }
 
       //*******************************
       template <typename T>
       static ETL_CONSTEXPR14 void copy_store_to_value(const_pointer store, T & value)
       {
-        typedef typename etl::unsigned_type<T>::type unsigned_t;
-
-        unsigned_t uvalue = unsigned_t(0);
-
-        for (size_t i = 0UL; i < Size_; ++i)
-        {
-          uvalue = static_cast<unsigned_t>(uvalue | (static_cast<unsigned_t>(store[i]) << private_unaligned_type::byte_shift<Size_, Endian_>(i)));
-        }
-
-        value = static_cast<T>(uvalue);
+        value = value_from<T>(store);
       }
 
       //*******************************
@@ -462,12 +499,9 @@ namespace etl
       {
         typedef typename private_unaligned_type::uint_of_size<sizeof(T)>::type uint_t;
 
-        uint_t uvalue = etl::bit_cast<uint_t>(value);
+        const uint_t uvalue = etl::bit_cast<uint_t>(value);
 
-        for (size_t i = 0UL; i < Size_; ++i)
-        {
-          store[i] = static_cast<storage_type>(uvalue >> private_unaligned_type::byte_shift<Size_, Endian_>(i));
-        }
+        private_unaligned_type::scatter_bytes<uint_t, Size_, Endian_, Size_ - 1U>::into(uvalue, store);
       }
 #endif
 
@@ -492,8 +526,7 @@ namespace etl
 #if ETL_USING_BUILTIN_BIT_CAST
         ETL_CONSTEXPR14
 #endif
-        void
-        copy_value_to_store(const T& value, pointer store)
+        void copy_value_to_store(const T& value, pointer store)
       {
 #if ETL_USING_BUILTIN_BIT_CAST
         typedef typename private_unaligned_type::use_bit_cast<sizeof(T)>::type use_bit_cast_t;
@@ -510,12 +543,7 @@ namespace etl
       {
         typedef typename private_unaligned_type::uint_of_size<sizeof(T)>::type uint_t;
 
-        uint_t uvalue = uint_t(0);
-
-        for (size_t i = 0UL; i < Size_; ++i)
-        {
-          uvalue = static_cast<uint_t>(uvalue | (static_cast<uint_t>(store[i]) << private_unaligned_type::byte_shift<Size_, Endian_>(i)));
-        }
+        const uint_t uvalue = private_unaligned_type::gather_bytes<uint_t, Size_, Endian_, Size_ - 1U>::from(store);
 
         value = etl::bit_cast<T>(uvalue);
       }
@@ -542,8 +570,7 @@ namespace etl
 #if ETL_USING_BUILTIN_BIT_CAST
         ETL_CONSTEXPR14
 #endif
-        void
-        copy_store_to_value(const_pointer store, T & value)
+        void copy_store_to_value(const_pointer store, T & value)
       {
 #if ETL_USING_BUILTIN_BIT_CAST
         typedef typename private_unaligned_type::use_bit_cast<sizeof(T)>::type use_bit_cast_t;
@@ -551,6 +578,21 @@ namespace etl
         typedef etl::false_type use_bit_cast_t;
 #endif
         do_copy_store_to_value(store, value, use_bit_cast_t());
+      }
+
+      //*******************************
+      template <typename T>
+      static
+#if ETL_USING_BUILTIN_BIT_CAST
+        ETL_CONSTEXPR14
+#endif
+        T value_from(const_pointer store)
+      {
+        T value = T();
+
+        copy_store_to_value(store, value);
+
+        return value;
       }
 
       //*******************************
@@ -714,11 +756,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 operator T() const
     {
-      T value = T();
-
-      unaligned_copy::copy_store_to_value(this->storage, value);
-
-      return value;
+      return value_from(this->storage);
     }
 
     //*************************************************************************
@@ -726,11 +764,16 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 T value() const
     {
-      T value = T();
+      return value_from(this->storage);
+    }
 
-      unaligned_copy::copy_store_to_value(this->storage, value);
-
-      return value;
+    //*************************************************************************
+    /// Get the value directly from a byte buffer.
+    /// Unlike construction from an address, the bytes are not copied to storage.
+    //*************************************************************************
+    static ETL_CONSTEXPR14 T value_from(const_pointer address)
+    {
+      return unaligned_copy::template value_from<T>(address);
     }
   };
   ETL_END_PACKED
@@ -898,11 +941,7 @@ namespace etl
     //*************************************************************************
     operator T() const
     {
-      T value = T();
-
-      unaligned_copy::copy_store_to_value(this->storage, value);
-
-      return value;
+      return value_from(this->storage);
     }
 
     //*************************************************************************
@@ -910,11 +949,16 @@ namespace etl
     //*************************************************************************
     T value() const
     {
-      T value = T();
+      return value_from(this->storage);
+    }
 
-      unaligned_copy::copy_store_to_value(this->storage, value);
-
-      return value;
+    //*************************************************************************
+    /// Get the value directly from a byte buffer.
+    /// Unlike construction from an address, the bytes are not copied to storage.
+    //*************************************************************************
+    static T value_from(const_pointer address)
+    {
+      return unaligned_copy::template value_from<T>(address);
     }
 
     //*************************************************************************

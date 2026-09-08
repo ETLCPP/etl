@@ -167,6 +167,50 @@ Constructs with the supplied value.
 ---
 
 ```cpp
+unaligned_type(const void* address)
+```
+**Description**  
+Constructs from the `Size` bytes at the address.  
+From: `20.39.5`
+
+---
+
+```cpp
+unaligned_type(const void* address, size_t buffer_size)
+```
+**Description**  
+Constructs from the `Size` bytes at the address.  
+`buffer_size` must be greater than or equal to `Size`. This is a precondition,
+checked by `ETL_ASSERT`. If checks are disabled then a smaller buffer size
+results in a read beyond the end of the buffer.  
+From: `20.39.5`
+
+---
+
+```cpp
+ETL_CONSTEXPR14 unaligned_type(const unsigned char* address)
+```
+**Description**  
+Constructs from the `Size` bytes at the address.  
+Unlike the `const void*` overload, this requires no `reinterpret_cast` and so
+may be used in a constexpr context.  
+From: `20.48.1`
+
+---
+
+```cpp
+ETL_CONSTEXPR14 unaligned_type(const unsigned char* address, size_t buffer_size)
+```
+**Description**  
+Constructs from the `Size` bytes at the address.  
+`buffer_size` must be greater than or equal to `Size`. This is a precondition,
+checked by `ETL_ASSERT`. If checks are disabled then a smaller buffer size
+results in a read beyond the end of the buffer.  
+From: `20.48.1`
+
+---
+
+```cpp
 template <int Endian_Other>
 unaligned_type(const unaligned_type<T, Endian_Other>& other)
 ```
@@ -176,10 +220,11 @@ The endianness is converted, if necessary.
 
 ## Member types
 ```cpp
-using pointer                = char*;
-using const_pointer          = const char*;
-using iterator               = char*;
-using const_iterator         = const char*;
+using storage_type           = unsigned char;
+using pointer                = unsigned char*;
+using const_pointer          = const unsigned char*;
+using iterator               = unsigned char*;
+using const_iterator         = const unsigned char*;
 using reverse_iterator       = etl::reverse_iterator<iterator>;
 using const_reverse_iterator = etl::reverse_iterator<const_iterator>;
 ```
@@ -306,7 +351,7 @@ Const reverse iterator to the end of the storage.
 ---
 
 ```cpp
-char& operator[](int i)
+storage_type& operator[](int i)
 ```
 **Description**  
 Index operator.
@@ -314,7 +359,7 @@ Index operator.
 ---
 
 ```cpp
-ETL_CONSTEXPR14 const char& operator[](int i) const
+ETL_CONSTEXPR14 const storage_type& operator[](int i) const
 ```
 **Description**  
 Const index operator.
@@ -342,6 +387,15 @@ ETL_CONSTEXPR14 T value() const
 ```
 **Description**  
 Gets the value.
+
+---
+
+```cpp
+static ETL_CONSTEXPR14 T value_from(const_pointer address)
+```
+**Description**  
+Gets the value of the `Size` bytes at the address.  
+Unlike construction from an address, the bytes are not copied to storage first.
 
 ---
 
