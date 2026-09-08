@@ -44,17 +44,17 @@ C++11 and above
 
 ```cpp
 template <typename TKey, 
-          typename TValue, 
-          typename THash       = etl::hash<TKey>, 
-          typename TKeyEqual   = etl::equal_to<TKey>
+          typename T,
+          typename THash      = etl::hash<TKey>,
+          typename TKeyEqual  = etl::equal_to<TKey>,
           typename... TPairs>
-constexpr auto make_unordered_map(TValues&&... values)
+constexpr auto make_unordered_map(TPairs&&... pairs) -> etl::unordered_map<TKey, T, sizeof...(TPairs), sizeof...(TPairs), THash, TKeyEqual>
 ```
 
 ### Example
 ```cpp
-auto data = etl::make_unordered_map<int, int>(etl::pair{0, 1}, etl::pair{2, 3}, 
-                                              etl::pair{4, 5}, etl::pair{6, 7});
+auto data = etl::make_unordered_map<int, int>(etl::pair<int, int>{0, 1}, etl::pair<int, int>{2, 3},
+                                              etl::pair<int, int>{4, 5}, etl::pair<int, int>{6, 7});
 ```
 
 ## Member types

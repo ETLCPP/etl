@@ -39,6 +39,7 @@ SOFTWARE.
   #endif
 
   #include "functional.h"
+  #include "invoke.h"
   #include "nth_type.h"
   #include "type_list.h"
   #include "type_traits.h"
@@ -932,6 +933,35 @@ namespace etl
   ETL_NODISCARD ETL_CONSTEXPR14 etl::tuple<TTypes&&...> forward_as_tuple(TTypes&&... args)
   {
     return tuple<TTypes&&...>(etl::forward<TTypes>(args)...);
+  }
+
+  namespace private_tuple
+  {
+    //**********************************
+    // Helper for apply.
+    // Invokes the callable with the tuple elements expanded via the index sequence.
+    // Uses an unqualified 'get' so that argument-dependent lookup finds the
+    // appropriate overload for etl::tuple, etl::array, std::tuple, std::pair, etc.
+    //**********************************
+    template <typename TFunction, typename TTuple, size_t... Indices>
+    ETL_CONSTEXPR14 auto apply_impl(TFunction&& f, TTuple&& t, etl::index_sequence<Indices...>)
+      -> decltype(etl::invoke(etl::forward<TFunction>(f), get<Indices>(etl::forward<TTuple>(t))...))
+    {
+      return etl::invoke(etl::forward<TFunction>(f), get<Indices>(etl::forward<TTuple>(t))...);
+    }
+  } // namespace private_tuple
+
+  //***************************************************************************
+  /// Invokes the callable object 'f' with the elements of the tuple 't' as
+  /// arguments. Equivalent to std::apply.
+  //***************************************************************************
+  template <typename TFunction, typename TTuple>
+  ETL_CONSTEXPR14 auto apply(TFunction&& f, TTuple&& t)
+    -> decltype(private_tuple::apply_impl(etl::forward<TFunction>(f), etl::forward<TTuple>(t),
+                                          etl::make_index_sequence<etl::tuple_size<etl::remove_reference_t<TTuple>>::value>{}))
+  {
+    return private_tuple::apply_impl(etl::forward<TFunction>(f), etl::forward<TTuple>(t),
+                                     etl::make_index_sequence<etl::tuple_size<etl::remove_reference_t<TTuple>>::value>{});
   }
 
   namespace private_tuple

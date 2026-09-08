@@ -1126,8 +1126,13 @@ namespace etl
     {
     }
 
+  #include "private/diagnostic_uninitialized_push.h"
     //*************************************************************************
     // clone_from
+    //
+    // GCC can emit a false positive -Wmaybe-uninitialized for the source
+    // storage when this is inlined into a copy constructor at high
+    // optimisation levels. The source object is always fully constructed.
     //*************************************************************************
     template <size_t Other_Object_Size, size_t Other_Object_Alignment>
     void clone_from(const etl::inplace_function<TReturn(TArgs...), Other_Object_Size, Other_Object_Alignment>& other)
@@ -1139,6 +1144,7 @@ namespace etl
         vtable->copy(&other.storage, &storage);
       }
     }
+  #include "private/diagnostic_pop.h"
 
     //*************************************************************************
     // move_from

@@ -2272,5 +2272,134 @@ namespace
       CHECK_EQUAL(ItemNDC("F"), *itr++);
     }
 #endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    // Const-qualified lvalue arguments must be accepted and must not affect the
+    // deduced element type (the deduced reference types decay via common_type).
+    TEST(test_make_list_from_const_lvalues_of_element_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_list(static_const_lvalue, local_const_lvalue, mutable_lvalue);
+
+      CHECK((std::is_same<etl::list<char, 3U>, decltype(data)>::value));
+
+      auto itr = data.begin();
+      CHECK_EQUAL(42, *itr++);
+      CHECK_EQUAL(43, *itr++);
+      CHECK_EQUAL(44, *itr++);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    TEST(test_make_list_common_type_from_mixed_types)
+    {
+      auto data = etl::make_list(1, 2L, 3);
+
+      CHECK((std::is_same<etl::list<long, 3U>, decltype(data)>::value));
+
+      auto itr = data.begin();
+      CHECK_EQUAL(1L, *itr++);
+      CHECK_EQUAL(2L, *itr++);
+      CHECK_EQUAL(3L, *itr++);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    struct CopyMoveCounted
+    {
+      explicit CopyMoveCounted(int value_)
+        : value(value_)
+      {
+      }
+
+      CopyMoveCounted(const CopyMoveCounted& other)
+        : value(other.value)
+      {
+        ++copy_count;
+      }
+
+      CopyMoveCounted(CopyMoveCounted&& other)
+        : value(other.value)
+      {
+        ++move_count;
+      }
+
+      int value;
+
+      static size_t copy_count;
+      static size_t move_count;
+    };
+
+    size_t CopyMoveCounted::copy_count = 0;
+    size_t CopyMoveCounted::move_count = 0;
+
+    // The arguments must be forwarded into the initializer list, not taken by
+    // value: a by-value parameter pack costs an extra move per argument.
+    // Each element is then copied from the initializer_list backing array into
+    // its list node, which is why lvalue arguments count two copies.
+    TEST(test_make_list_argument_copy_and_move_counts)
+    {
+      const CopyMoveCounted const_lvalue(1);
+      CopyMoveCounted       mutable_lvalue(2);
+
+      CopyMoveCounted::copy_count = 0;
+      CopyMoveCounted::move_count = 0;
+
+      auto data = etl::make_list(const_lvalue, mutable_lvalue);
+
+      CHECK_EQUAL(4U, CopyMoveCounted::copy_count);
+  #if ETL_USING_CPP17
+      // The exact move counts rely on guaranteed copy elision. Before C++17 the
+      // returned list may be move-constructed once more, which moves each element,
+      // so only the copy counts are checked there.
+      CHECK_EQUAL(0U, CopyMoveCounted::move_count);
+  #endif
+
+      CopyMoveCounted::copy_count = 0;
+      CopyMoveCounted::move_count = 0;
+
+      auto data2 = etl::make_list(CopyMoveCounted(3));
+
+      CHECK_EQUAL(1U, CopyMoveCounted::copy_count);
+  #if ETL_USING_CPP17
+      CHECK_EQUAL(1U, CopyMoveCounted::move_count);
+  #endif
+
+      auto itr = data.begin();
+      CHECK_EQUAL(1, (*itr++).value);
+      CHECK_EQUAL(2, (*itr).value);
+      CHECK_EQUAL(3, data2.begin()->value);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    // An explicit element type selects the element type and converts every
+    // argument (Library Fundamentals TS make_array design), accepting
+    // const-qualified lvalues and narrowing initialisers.
+    TEST(test_make_list_explicit_element_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_list<char>(static_const_lvalue, local_const_lvalue, mutable_lvalue, 45, 46);
+
+      CHECK((std::is_same<etl::list<char, 5U>, decltype(data)>::value));
+
+      auto itr = data.begin();
+      CHECK_EQUAL(42, *itr++);
+      CHECK_EQUAL(43, *itr++);
+      CHECK_EQUAL(44, *itr++);
+      CHECK_EQUAL(45, *itr++);
+      CHECK_EQUAL(46, *itr++);
+    }
+#endif
   }
 } // namespace

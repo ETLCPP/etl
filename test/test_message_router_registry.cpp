@@ -187,7 +187,7 @@ namespace
       CHECK_EQUAL(Registry_Size, registry.max_size());
     }
 
-#if ETL_USING_STL
+#if ETL_HAS_INITIALIZER_LIST
     //*************************************************************************
     TEST(test_initializer_list_construction)
     {

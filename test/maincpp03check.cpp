@@ -46,6 +46,7 @@ SOFTWARE.
 #include "etl/callback_timer.h"
 #include "etl/char_traits.h"
 #include "etl/checksum.h"
+#include "etl/clamped_value.h"
 #include "etl/combinations.h"
 #include "etl/compare.h"
 #include "etl/constant.h"

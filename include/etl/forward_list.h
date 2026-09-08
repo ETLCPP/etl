@@ -1793,10 +1793,14 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_forward_list(T&&... t) -> etl::forward_list<typename etl::common_type_t<T...>, sizeof...(T)>
+  template <typename T = void, typename... TValues>
+  constexpr auto make_forward_list(TValues&&... values) -> etl::forward_list<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
   {
-    return {etl::forward<T>(t)...};
+    // Library Fundamentals TS make_array design: the element type is T when
+    // supplied explicitly, otherwise the decayed common type of the arguments.
+    // convert forwards same-type arguments and static_casts the rest.
+    using TElement = etl::private_make::element_type_t<T, TValues...>;
+    return {etl::private_make::convert<TElement>(etl::forward<TValues>(values))...};
   }
 #endif
 

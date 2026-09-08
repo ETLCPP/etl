@@ -17,7 +17,7 @@ Uses `etl::less` as the default key comparison method.
 etl::const_multiset<typename TKey, size_t Size, TKeyCompare = etl::less>
 ```
 
-**Enternal storage**
+**Internal storage**
 ```cpp
 etl::const_multiset_ext<typename TKey, TKeyCompare = etl::less>
 ```
@@ -333,4 +333,4 @@ operator >=
 
 ## Technical stuff
 
-The const set is implemented as a sorted array key/value pairs.
+The const set is implemented as a sorted array of values.

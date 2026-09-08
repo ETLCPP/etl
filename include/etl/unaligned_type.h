@@ -46,10 +46,7 @@ SOFTWARE.
 #include "iterator.h"
 #include "type_traits.h"
 
-#if ETL_USING_CPP20 && ETL_USING_STL
-  #include <bit>
-#endif
-
+#include <stdint.h>
 #include <string.h>
 
 namespace etl
@@ -102,12 +99,14 @@ namespace etl
       //*************************************************************************
       /// Default constructor
       //*************************************************************************
-      unaligned_type_common() {}
+      ETL_CONSTEXPR14 unaligned_type_common()
+      {
+      }
 
       //*************************************************************************
       /// Size of the storage.
       //*************************************************************************
-      size_t size() const
+      ETL_CONSTEXPR14 size_t size() const
       {
         return Size_;
       }
@@ -115,7 +114,7 @@ namespace etl
       //*************************************************************************
       /// Pointer to the beginning of the storage.
       //*************************************************************************
-      pointer data()
+      ETL_CONSTEXPR14 pointer data()
       {
         return get_storage();
       }
@@ -123,7 +122,7 @@ namespace etl
       //*************************************************************************
       /// Const pointer to the beginning of the storage.
       //*************************************************************************
-      const_pointer data() const
+      ETL_CONSTEXPR14 const_pointer data() const
       {
         return get_storage();
       }
@@ -245,7 +244,7 @@ namespace etl
       //*************************************************************************
       /// Get a pointer to the storage.
       //*************************************************************************
-      pointer get_storage()
+      ETL_CONSTEXPR14 pointer get_storage()
       {
         return static_cast<derived_type*>(this)->storage;
       }
@@ -253,7 +252,7 @@ namespace etl
       //*************************************************************************
       /// Get a const pointer to the storage.
       //*************************************************************************
-      const_pointer get_storage() const
+      ETL_CONSTEXPR14 const_pointer get_storage() const
       {
         return static_cast<const derived_type*>(this)->storage;
       }
@@ -277,7 +276,7 @@ namespace etl
     protected:
 
       //*******************************
-      unaligned_type_storage()
+      ETL_CONSTEXPR14 unaligned_type_storage()
         : storage()
       {
       }
@@ -327,6 +326,52 @@ namespace etl
     ETL_END_PACKED
 
     //*************************************************************************
+    /// The shift, in bits, that positions byte 'index' of a value of 'Size'
+    /// bytes, for the target endianness.
+    //*************************************************************************
+    template <size_t Size, int Endian>
+    ETL_CONSTEXPR size_t byte_shift(size_t index)
+    {
+      return ((Endian == ETL_ENDIAN_LITTLE) ? index : (Size - 1U - index)) * 8U;
+    }
+
+#if ETL_USING_BUILTIN_BIT_CAST
+    //*************************************************************************
+    /// Unsigned integer type of a given byte size, used as a constexpr-capable
+    /// 'proxy' for extracting/inserting the bytes of a floating point value.
+    //*************************************************************************
+    template <size_t Size_>
+    struct uint_of_size;
+
+    template <>
+    struct uint_of_size<2U>
+    {
+      typedef uint16_t type;
+    };
+
+    template <>
+    struct uint_of_size<4U>
+    {
+      typedef uint32_t type;
+    };
+
+    template <>
+    struct uint_of_size<8U>
+    {
+      typedef uint64_t type;
+    };
+
+    //*************************************************************************
+    /// Whether the bit_cast fast path may be used for a type of 'Size' bytes.
+    /// It requires a same-size unsigned integer proxy type to exist.
+    //*************************************************************************
+    template <size_t Size>
+    struct use_bit_cast : etl::conditional<(Size == 2U) || (Size == 4U) || (Size == 8U), etl::true_type, etl::false_type>
+    {
+    };
+#endif
+
+    //*************************************************************************
     /// Unaligned copy
     //*************************************************************************
     template <size_t Size_, int Endian_, bool Is_Integral>
@@ -335,6 +380,10 @@ namespace etl
     //*************************************************************************
     /// Unaligned copy
     /// For integrals.
+    /// Bytes are extracted/inserted directly in the target endianness using
+    /// shifts, rather than a native-endianness memcpy + conditional reverse.
+    /// This makes the conversion independent of the host's endianness and
+    /// usable in a constexpr context (C++14 and later).
     //*************************************************************************
     template <size_t Size_, int Endian_>
     ETL_PACKED_CLASS(unaligned_copy)<Size_, Endian_, true>
@@ -347,44 +396,42 @@ namespace etl
 
       //*******************************
       template <typename T>
-      static void copy_value_to_store(const T& value, pointer store)
+      static ETL_CONSTEXPR14 void copy_value_to_store(const T& value, pointer store)
       {
-        memcpy(store, &value, Size_);
+        // Note: 'etl::unsigned_type' is used rather than 'etl::make_unsigned', as the
+        // latter is not defined for 'bool'.
+        typedef typename etl::unsigned_type<T>::type unsigned_t;
 
-#if ETL_HAS_CONSTEXPR_ENDIANNESS
-        if ETL_IF_CONSTEXPR (Endian_ != etl::endianness::value())
-#else
-        if (Endian_ != etl::endianness::value())
-#endif
+        unsigned_t uvalue = static_cast<unsigned_t>(value);
+
+        for (size_t i = 0UL; i < Size_; ++i)
         {
-          etl::reverse(store, store + Size_);
+          store[i] = static_cast<storage_type>(uvalue >> private_unaligned_type::byte_shift<Size_, Endian_>(i));
         }
       }
 
       //*******************************
       template <typename T>
-      static void copy_store_to_value(const_pointer store, T & value)
+      static ETL_CONSTEXPR14 void copy_store_to_value(const_pointer store, T & value)
       {
-        memcpy(&value, store, Size_);
+        typedef typename etl::unsigned_type<T>::type unsigned_t;
 
-#if ETL_HAS_CONSTEXPR_ENDIANNESS
-        if ETL_IF_CONSTEXPR (Endian_ != etl::endianness::value())
-#else
-        if (Endian_ != etl::endianness::value())
-#endif
+        unsigned_t uvalue = unsigned_t(0);
+
+        for (size_t i = 0UL; i < Size_; ++i)
         {
-          value = etl::reverse_bytes(value);
+          uvalue = static_cast<unsigned_t>(uvalue | (static_cast<unsigned_t>(store[i]) << private_unaligned_type::byte_shift<Size_, Endian_>(i)));
         }
+
+        value = static_cast<T>(uvalue);
       }
 
       //*******************************
-      static void copy_store_to_store(const_pointer src, int endian_src, pointer dst)
+      static ETL_CONSTEXPR14 void copy_store_to_store(const_pointer src, int endian_src, pointer dst)
       {
-        memcpy(dst, src, Size_);
-
-        if (Endian_ != endian_src)
+        for (size_t i = 0UL; i < Size_; ++i)
         {
-          etl::reverse(dst, dst + Size_);
+          dst[i] = (Endian_ == endian_src) ? src[i] : src[Size_ - 1U - i];
         }
       }
     };
@@ -404,8 +451,28 @@ namespace etl
       typedef typename private_unaligned_type::unaligned_type_storage< Size_>::const_pointer const_pointer;
 
       //*******************************
+      // The bit_cast fast path is only valid when a same-size unsigned integer
+      // proxy type exists (currently 2, 4 or 8 bytes, e.g. a 16-bit float, float,
+      // or double). Other sizes (e.g. 80/96/128-bit 'long double') fall back to
+      // memcpy.
+      //*******************************
+#if ETL_USING_BUILTIN_BIT_CAST
       template <typename T>
-      static void copy_value_to_store(const T& value, pointer store)
+      static ETL_CONSTEXPR14 void do_copy_value_to_store(const T& value, pointer store, etl::true_type)
+      {
+        typedef typename private_unaligned_type::uint_of_size<sizeof(T)>::type uint_t;
+
+        uint_t uvalue = etl::bit_cast<uint_t>(value);
+
+        for (size_t i = 0UL; i < Size_; ++i)
+        {
+          store[i] = static_cast<storage_type>(uvalue >> private_unaligned_type::byte_shift<Size_, Endian_>(i));
+        }
+      }
+#endif
+
+      template <typename T>
+      static void do_copy_value_to_store(const T& value, pointer store, etl::false_type)
       {
         memcpy(store, &value, Size_);
 
@@ -421,7 +488,41 @@ namespace etl
 
       //*******************************
       template <typename T>
-      static void copy_store_to_value(const_pointer store, T & value)
+      static
+#if ETL_USING_BUILTIN_BIT_CAST
+        ETL_CONSTEXPR14
+#endif
+        void
+        copy_value_to_store(const T& value, pointer store)
+      {
+#if ETL_USING_BUILTIN_BIT_CAST
+        typedef typename private_unaligned_type::use_bit_cast<sizeof(T)>::type use_bit_cast_t;
+#else
+        typedef etl::false_type use_bit_cast_t;
+#endif
+        do_copy_value_to_store(value, store, use_bit_cast_t());
+      }
+
+      //*******************************
+#if ETL_USING_BUILTIN_BIT_CAST
+      template <typename T>
+      static ETL_CONSTEXPR14 void do_copy_store_to_value(const_pointer store, T & value, etl::true_type)
+      {
+        typedef typename private_unaligned_type::uint_of_size<sizeof(T)>::type uint_t;
+
+        uint_t uvalue = uint_t(0);
+
+        for (size_t i = 0UL; i < Size_; ++i)
+        {
+          uvalue = static_cast<uint_t>(uvalue | (static_cast<uint_t>(store[i]) << private_unaligned_type::byte_shift<Size_, Endian_>(i)));
+        }
+
+        value = etl::bit_cast<T>(uvalue);
+      }
+#endif
+
+      template <typename T>
+      static void do_copy_store_to_value(const_pointer store, T & value, etl::false_type)
       {
         memcpy(&value, store, Size_);
 
@@ -436,13 +537,32 @@ namespace etl
       }
 
       //*******************************
-      static void copy_store_to_store(const_pointer src, int endian_src, pointer dst)
+      template <typename T>
+      static
+#if ETL_USING_BUILTIN_BIT_CAST
+        ETL_CONSTEXPR14
+#endif
+        void
+        copy_store_to_value(const_pointer store, T & value)
       {
-        memcpy(dst, src, Size_);
+#if ETL_USING_BUILTIN_BIT_CAST
+        typedef typename private_unaligned_type::use_bit_cast<sizeof(T)>::type use_bit_cast_t;
+#else
+        typedef etl::false_type use_bit_cast_t;
+#endif
+        do_copy_store_to_value(store, value, use_bit_cast_t());
+      }
 
-        if (Endian_ != endian_src)
+      //*******************************
+      // This is pure byte manipulation (copy + optional reversal), with no
+      // floating point arithmetic involved, so it is always constexpr-capable
+      // (C++14 and later), regardless of bit_cast/builtin availability.
+      //*******************************
+      static ETL_CONSTEXPR14 void copy_store_to_store(const_pointer src, int endian_src, pointer dst)
+      {
+        for (size_t i = 0UL; i < Size_; ++i)
         {
-          etl::reverse(dst, dst + Size_);
+          dst[i] = (Endian_ == endian_src) ? src[i] : src[Size_ - 1U - i];
         }
       }
     };
@@ -486,7 +606,7 @@ namespace etl
     //*************************************************************************
     /// Construct from a value.
     //*************************************************************************
-    unaligned_type(T value)
+    ETL_CONSTEXPR14 unaligned_type(T value)
     {
       unaligned_copy::copy_value_to_store(value, this->storage);
     }
@@ -501,6 +621,10 @@ namespace etl
 
     //*************************************************************************
     /// Construct from an address and buffer size.
+    /// \note 'buffer_size' must be greater than or equal to 'sizeof(T)'.
+    /// This is a precondition, checked by ETL_ASSERT. If the checks are
+    /// disabled (e.g. ETL_NO_CHECKS) then passing a smaller buffer size
+    /// results in a read beyond the end of the buffer.
     //*************************************************************************
     unaligned_type(const void* address, size_t buffer_size)
     {
@@ -510,9 +634,37 @@ namespace etl
     }
 
     //*************************************************************************
+    /// Construct from a byte buffer.
+    /// Unlike the 'const void*' overload above, this does not require a
+    /// reinterpret_cast, so it is usable in a constexpr context (C++14 and
+    /// later), allowing compile time decoding of a byte buffer with an
+    /// explicit endianness.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_type(const unsigned char* address)
+    {
+      etl::copy_n(address, sizeof(T), this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from a byte buffer and buffer size.
+    /// See the note on the 'const unsigned char*' overload above regarding
+    /// constexpr usability.
+    /// \note 'buffer_size' must be greater than or equal to 'sizeof(T)'.
+    /// This is a precondition, checked by ETL_ASSERT. If the checks are
+    /// disabled (e.g. ETL_NO_CHECKS) then passing a smaller buffer size
+    /// results in a read beyond the end of the buffer.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_type(const unsigned char* address, size_t buffer_size)
+    {
+      ETL_ASSERT(sizeof(T) <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
+
+      etl::copy_n(address, sizeof(T), this->storage);
+    }
+
+    //*************************************************************************
     /// Copy constructor
     //*************************************************************************
-    unaligned_type(const unaligned_type<T, Endian>& other)
+    ETL_CONSTEXPR14 unaligned_type(const unaligned_type<T, Endian>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
     }
@@ -521,7 +673,7 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
     template <int Endian_Other>
-    unaligned_type(const unaligned_type<T, Endian_Other>& other)
+    ETL_CONSTEXPR14 unaligned_type(const unaligned_type<T, Endian_Other>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
     }
@@ -529,7 +681,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator
     //*************************************************************************
-    unaligned_type& operator=(T value)
+    ETL_CONSTEXPR14 unaligned_type& operator=(T value)
     {
       unaligned_copy::copy_value_to_store(value, this->storage);
 
@@ -539,7 +691,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    unaligned_type& operator=(const unaligned_type<T, Endian_>& other)
+    ETL_CONSTEXPR14 unaligned_type& operator=(const unaligned_type<T, Endian_>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian_, this->storage);
 
@@ -550,7 +702,7 @@ namespace etl
     /// Assignment operator from other endianness.
     //*************************************************************************
     template <int Endian_Other>
-    unaligned_type& operator=(const unaligned_type<T, Endian_Other>& other)
+    ETL_CONSTEXPR14 unaligned_type& operator=(const unaligned_type<T, Endian_Other>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
 
@@ -560,7 +712,7 @@ namespace etl
     //*************************************************************************
     /// Conversion operator
     //*************************************************************************
-    operator T() const
+    ETL_CONSTEXPR14 operator T() const
     {
       T value = T();
 
@@ -572,7 +724,7 @@ namespace etl
     //*************************************************************************
     /// Get the value.
     //*************************************************************************
-    T value() const
+    ETL_CONSTEXPR14 T value() const
     {
       T value = T();
 
@@ -666,7 +818,7 @@ namespace etl
     unaligned_type_ext(unaligned_type_ext<T, Endian_Other> && other)
       : private_unaligned_type::unaligned_type_storage_ext<Size>(other.storage)
     {
-      // If we're constructing from a different endianess then we need to
+      // If we're constructing from a different endianness then we need to
       // reverse the data order.
       if (Endian != Endian_Other)
       {
@@ -728,7 +880,7 @@ namespace etl
     {
       this->storage = other.storage;
 
-      // If we're assigning from a different endianess then we need to reverse
+      // If we're assigning from a different endianness then we need to reverse
       // the data order.
       if (Endian != Endian_Other)
       {

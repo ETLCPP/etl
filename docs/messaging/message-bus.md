@@ -177,7 +177,7 @@ bus2.subscribe(routerD);
 bus2.subscribe(routerC);
 
 // Subscribe routerE to bus3.
-bus3.subscibe(routerE);
+bus3.subscribe(routerE);
 
 // Assume all routers accept the same messages.
 

@@ -328,7 +328,7 @@ Sets the delegate to call after every write.
 callback_type get_callback() const
 ```
 **Description**  
-Gets the function to call afer every write.
+Gets the function to call after every write.
 
 ---
 
@@ -397,13 +397,13 @@ namespace etl
   void write_unchecked<CustomType>(etl::bit_stream_reader& stream)
   {
     stream.write_unchecked<char, 7U>();
-    stream.write_unchecked<short , 11U>();
+    stream.write_unchecked<short, 11U>();
     stream.write_unchecked<int32_t, 25U>();
   }
 }
 
 std::array<char, 100U> storage; // Assume the buffer gets filled with bit stream data.
-etl::bit_stream_reader bit_stream(storage.data(), storage.size());
+etl::bit_stream_writer bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
 // Write unchecked values to the stream.
 etl::write_unchecked<char>(bit_stream, 6U);

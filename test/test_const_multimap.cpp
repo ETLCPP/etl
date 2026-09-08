@@ -111,6 +111,9 @@ namespace
   using mapped_type    = Data::mapped_type;
   using const_iterator = Data::const_iterator;
 
+  static_assert(etl::is_same<etl::iconst_multimap<key_type, mapped_type>, etl::iconst_multimap<key_type, mapped_type, etl::less<key_type>>>::value,
+                "default compare is not less");
+
   SUITE(test_const_multimap)
   {
     //*************************************************************************
@@ -217,6 +220,28 @@ namespace
       etl::const_multimap<Key, int, 10U> check{value_type{Key('A'), 0}, value_type{Key('B'), 1}, value_type{Key('C'), 2}, value_type{Key('D'), 3},
                                                value_type{Key('E'), 4}, value_type{Key('F'), 5}, value_type{Key('G'), 6}, value_type{Key('H'), 7},
                                                value_type{Key('I'), 8}, value_type{Key('J'), 9}};
+
+      CHECK_TRUE(data.is_valid());
+      CHECK_TRUE(data.size() == Max_Size);
+      CHECK_FALSE(data.empty());
+      CHECK_TRUE(data.full());
+      CHECK_TRUE(data.capacity() == Max_Size);
+      CHECK_TRUE(data.max_size() == Max_Size);
+      CHECK_FALSE(data.begin() == data.end());
+    }
+
+    //*************************************************************************
+    TEST(test_cpp17_deduced_constructor_of_plain_pair)
+    {
+      static const etl::const_multimap data{ETL_OR_STD::pair{Key('A'), 0}, ETL_OR_STD::pair{Key('B'), 1}, ETL_OR_STD::pair{Key('C'), 2},
+                                            ETL_OR_STD::pair{Key('D'), 3}, ETL_OR_STD::pair{Key('E'), 4}, ETL_OR_STD::pair{Key('F'), 5},
+                                            ETL_OR_STD::pair{Key('G'), 6}, ETL_OR_STD::pair{Key('G'), 7}, ETL_OR_STD::pair{Key('G'), 8},
+                                            ETL_OR_STD::pair{Key('J'), 9}};
+
+      etl::const_multimap<Key, int, 10U> check{ETL_OR_STD::pair{Key('A'), 0}, ETL_OR_STD::pair{Key('B'), 1}, ETL_OR_STD::pair{Key('C'), 2},
+                                               ETL_OR_STD::pair{Key('D'), 3}, ETL_OR_STD::pair{Key('E'), 4}, ETL_OR_STD::pair{Key('F'), 5},
+                                               ETL_OR_STD::pair{Key('G'), 6}, ETL_OR_STD::pair{Key('H'), 7}, ETL_OR_STD::pair{Key('I'), 8},
+                                               ETL_OR_STD::pair{Key('J'), 9}};
 
       CHECK_TRUE(data.is_valid());
       CHECK_TRUE(data.size() == Max_Size);

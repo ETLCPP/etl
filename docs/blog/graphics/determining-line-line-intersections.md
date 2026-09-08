@@ -87,7 +87,7 @@ This means you can find intersection points relative to a fixed reference line.
 
 ![LineCross2](images/LineCross2.png)
 
-## Refection
+## Reflection
 
 This describes reflecting a point across a reference line.  
 It uses the intersection method described above.

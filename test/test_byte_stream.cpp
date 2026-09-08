@@ -189,6 +189,59 @@ namespace
     }
 
     //*************************************************************************
+    TEST(byte_stream_writer_construct_from_span)
+    {
+      char storage[8];
+
+      etl::span<char>         char_span(storage, storage + ETL_OR_STD17::size(storage));
+      etl::byte_stream_writer writer_char(char_span, etl::endian::little);
+      CHECK_EQUAL(char_span.size(), writer_char.capacity());
+
+      etl::span<unsigned char> uchar_span(reinterpret_cast<unsigned char*>(storage), ETL_OR_STD17::size(storage));
+      etl::byte_stream_writer  writer_uchar(uchar_span, etl::endian::little);
+      CHECK_EQUAL(uchar_span.size(), writer_uchar.capacity());
+    }
+
+    //*************************************************************************
+    TEST(byte_stream_reader_construct_from_span)
+    {
+      char storage[8] = {0};
+
+      etl::span<char>         char_span(storage, storage + ETL_OR_STD17::size(storage));
+      etl::byte_stream_reader reader_char(char_span, etl::endian::little);
+      CHECK_EQUAL(char_span.size(), reader_char.size_bytes());
+
+      etl::span<const char>   const_char_span(storage, storage + ETL_OR_STD17::size(storage));
+      etl::byte_stream_reader reader_const_char(const_char_span, etl::endian::little);
+      CHECK_EQUAL(const_char_span.size(), reader_const_char.size_bytes());
+
+      etl::span<unsigned char> uchar_span(reinterpret_cast<unsigned char*>(storage), ETL_OR_STD17::size(storage));
+      etl::byte_stream_reader  reader_uchar(uchar_span, etl::endian::little);
+      CHECK_EQUAL(uchar_span.size(), reader_uchar.size_bytes());
+
+      etl::span<const unsigned char> const_uchar_span(reinterpret_cast<const unsigned char*>(storage), ETL_OR_STD17::size(storage));
+      etl::byte_stream_reader        reader_const_uchar(const_uchar_span, etl::endian::little);
+      CHECK_EQUAL(const_uchar_span.size(), reader_const_uchar.size_bytes());
+    }
+
+    //*************************************************************************
+    // https://github.com/ETLCPP/etl/issues/1533
+    // Passing an etl::span<uint8_t> to byte_stream_writer/byte_stream_reader
+    // must not be ambiguous.
+    TEST(byte_stream_reader_writer_construct_from_span_uint8_t_no_ambiguity)
+    {
+      uint8_t storage[8] = {0};
+
+      etl::span<uint8_t> data(storage, ETL_OR_STD17::size(storage));
+
+      etl::byte_stream_writer writer(etl::span<uint8_t>(data), etl::endian::little);
+      etl::byte_stream_reader reader(etl::span<uint8_t>(data), etl::endian::little);
+
+      CHECK_EQUAL(data.size(), writer.capacity());
+      CHECK_EQUAL(data.size(), reader.size_bytes());
+    }
+
+    //*************************************************************************
     TEST(write_bool)
     {
       char storage[8];

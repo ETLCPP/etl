@@ -20,7 +20,7 @@ class month_weekday
 ETL_CONSTEXPR 
 month_weekday()
 ```
-**Decription**  
+**Description**  
 Default constructor.
 
 ---
@@ -31,7 +31,7 @@ month_weekday(const etl::chrono::month&   m,
               const etl::chrono::weekday_indexed& wd) 
 ETL_NOEXCEPT
 ```
-**Decription**  
+**Description**  
 Construct from month and weekday_indexed.
 
 ## Access
@@ -75,7 +75,7 @@ bool operator ==(const etl::chrono::month_weekday& lhs,
                  const etl::chrono::month_weekday& rhs) 
 ETL_NOEXCEPT
 ```
-**Decription**  
+**Description**  
 Equality operator.
 
 ---
@@ -86,7 +86,7 @@ bool operator !=(const etl::chrono::month_weekday& lhs,
                  const etl::chrono::month_weekday& rhs) 
 ETL_NOEXCEPT
 ```
-**Decription**  
+**Description**  
 Inequality operator.
 
 ---
@@ -97,7 +97,7 @@ bool operator <(const etl::chrono::month_weekday& lhs,
                 const etl::chrono::month_weekday& rhs) 
 ETL_NOEXCEPT
 ```
-**Decription**  
+**Description**  
 Less-than operator.
 
 ---
@@ -108,7 +108,7 @@ bool operator <=(const etl::chrono::month_weekday& lhs,
                  const etl::chrono::month_weekday& rhs) 
 ETL_NOEXCEPT
 ```
-**Decription**  
+**Description**  
 Less-than-equal operator.
 
 ---
@@ -119,7 +119,7 @@ bool operator <(const etl::chrono::month_weekday& lhs,
                 const etl::chrono::month_weekday& rhs) 
 ETL_NOEXCEPT
 ```
-**Decription**  
+**Description**  
 Greater-than operator.
 
 ---
@@ -130,7 +130,7 @@ bool operator <=(const etl::chrono::month_weekday& lhs,
                  const etl::chrono::month_weekday& rhs) 
 ETL_NOEXCEPT
 ```
-**Decription**  
+**Description**  
 Greater-than-equal operator.
 
 ---
@@ -141,7 +141,7 @@ auto operator <=>(const etl::chrono::month_weekday& lhs,
                   const etl::chrono::month_weekday& rhs)
 ETL_NOEXCEPT
 ```
-**Decription**  
+**Description**  
 Spaceship operator.  
 C++20
 
@@ -151,6 +151,6 @@ C++20
 template <typename TRep, typename TPeriod>
 struct hash<etl::chrono::month_weekday>
 ```
-**Decription**  
+**Description**  
 Hash function for `etl::chrono::month_weekday`.
 

@@ -713,7 +713,9 @@ namespace etl
             const uvalue_t                                    uvalue = static_cast<uvalue_t>(accumulator_result.value());
 
             // Convert from the accumulator type to the desired type.
-            result = (is_negative ? static_cast<TValue>(static_cast<TValue>(0) - static_cast<TValue>(uvalue)) : etl::bit_cast<TValue>(uvalue));
+            // The negation is performed on the unsigned type to avoid signed overflow
+            // when the value is the most negative value for the type.
+            result = (is_negative ? etl::bit_cast<TValue>(static_cast<uvalue_t>(static_cast<uvalue_t>(0) - uvalue)) : etl::bit_cast<TValue>(uvalue));
           }
         }
       }
@@ -908,7 +910,7 @@ ETL_CONSTEXPR14 bool operator==(const etl::to_arithmetic_result<T>& lhs, const e
   }
   else
   {
-    return (lhs.status() == rhs.status());
+    return (lhs.error() == rhs.error());
   }
 }
 
@@ -952,7 +954,7 @@ ETL_CONSTEXPR14 bool operator!=(const etl::to_arithmetic_result<T>& lhs, const U
 /// Inequality test for etl::to_arithmetic_result
 //***************************************************************************
 template <typename T, typename U>
-ETL_CONSTEXPR14 bool operator!=(const T& lhs, const etl::to_arithmetic_result<T>& rhs)
+ETL_CONSTEXPR14 bool operator!=(const T& lhs, const etl::to_arithmetic_result<U>& rhs)
 {
   return !(lhs == rhs);
 }

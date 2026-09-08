@@ -18,7 +18,7 @@ This may be used to implement a platform abstraction layer that allows an embedd
 | Template          | Description                                                               |
 | ----------------- | ------------------------------------------------------------------------- |
 | etl::function     | Callbacks to free or member functions taking zero or one parameter.<br/>Function pointer at runtime. |
-| etl::function_fv  | Callback to a free function taking no parameters. (Functiion Void).<br/>Function pointer at compile time. |
+| etl::function_fv  | Callback to a free function taking no parameters. (Function Void).<br/>Function pointer at compile time. |
 | etl::function_fp  | Callback to a free function taking one parameter. (Function Parameter).<br/> Function pointer at compile time.
 | etl::function_mv  | Callback to a member function taking no parameters. (Member Void).<br/>Function pointer at compile time. |
 | etl::function_imv | Callback to a member function taking no parameters.  (Instance Member Void ).<br/>Instance reference and function pointer at compile time. |

@@ -151,6 +151,7 @@ etl_test_sources = files(
 	'test_crc8_opensafety.cpp',
 	'test_crc8_rohc.cpp',
 	'test_crc8_wcdma.cpp',
+	'test_clamped_value.cpp',
 	'test_cyclic_value.cpp',
 	'test_debounce.cpp',
 	'test_delegate.cpp',

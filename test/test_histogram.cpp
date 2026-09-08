@@ -270,7 +270,7 @@ namespace
     {
       IntRuntimeOffsetHistogram histogram1(Start, input2.begin(), input2.end());
 
-      IntRuntimeOffsetHistogram histogram2(Start);
+      IntRuntimeOffsetHistogram histogram2(Start + 1);
       histogram2 = histogram1;
 
       for (int key = Start; key < Start + static_cast<int>(Size); ++key)
@@ -300,7 +300,7 @@ namespace
       IntRuntimeOffsetHistogram histogram1(Start, input2.begin(), input2.end());
       IntRuntimeOffsetHistogram histogram_source(Start, input2.begin(), input2.end());
 
-      IntRuntimeOffsetHistogram histogram2(Start);
+      IntRuntimeOffsetHistogram histogram2(Start + 1);
       histogram2 = etl::move(histogram_source);
 
       for (int key = Start; key < Start + static_cast<int>(Size); ++key)

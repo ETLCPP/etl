@@ -305,6 +305,7 @@ namespace etl
       (add_new_message_type<TMessageTypes>(etl::move(msg)) || ...);
     }
 
+  #include "private/diagnostic_array_bounds_push.h"
   #include "private/diagnostic_uninitialized_push.h"
     //********************************************
     /// Only enabled for types that are in the typelist.
@@ -318,6 +319,9 @@ namespace etl
     }
   #include "private/diagnostic_pop.h"
 
+  #include "private/diagnostic_pop.h"
+
+  #include "private/diagnostic_array_bounds_push.h"
   #include "private/diagnostic_uninitialized_push.h"
     //********************************************
     template <typename TType>
@@ -336,6 +340,9 @@ namespace etl
     }
   #include "private/diagnostic_pop.h"
 
+  #include "private/diagnostic_pop.h"
+
+  #include "private/diagnostic_array_bounds_push.h"
   #include "private/diagnostic_uninitialized_push.h"
     //********************************************
     template <typename TType>
@@ -352,6 +359,8 @@ namespace etl
         return false;
       }
     }
+  #include "private/diagnostic_pop.h"
+
   #include "private/diagnostic_pop.h"
 
     typename etl::aligned_storage<SIZE, ALIGNMENT>::type data;

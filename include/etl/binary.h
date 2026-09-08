@@ -2128,7 +2128,7 @@ namespace etl
     s = (s | (s << 2U)) & 0x33333333UL;
     s = (s | (s << 1U)) & 0x55555555UL;
 
-    return (f | (s << 1U));
+    return static_cast<uint32_t>(f | (s << 1U));
   }
 
 #if ETL_USING_64BIT_TYPES
@@ -2156,7 +2156,7 @@ namespace etl
     s = (s | (s << 2U)) & 0x3333333333333333ULL;
     s = (s | (s << 1U)) & 0x5555555555555555ULL;
 
-    return (f | (s << 1U));
+    return static_cast<uint64_t>(f | (s << 1U));
   }
 #endif
 

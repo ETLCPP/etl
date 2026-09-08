@@ -69,10 +69,18 @@ const_reverse_iterator  reverse_iterator<const_iterator>
 ```cpp
 circular_buffer<typename T, size_t SIZE>();
 
+circular_buffer<typename T, size_t SIZE>(size_t initial_size);
+
+circular_buffer<typename T, size_t SIZE>(size_t initial_size, const_reference value);
+
 circular_buffer<typename T, size_t SIZE>(const etl::circular_buffer<typename T, size_t SIZE>& other);
 
 circular_buffer<typename T, size_t SIZE>(etl::circular_buffer<typename T, size_t SIZE>&& other);
 ```
+
+The `initial_size` constructor fills the buffer with default-constructed values.  
+The `initial_size` and `value` constructor fills the buffer with copies of `value`.  
+If `initial_size` exceeds `SIZE`, the buffer is filled to its capacity.
 
 ---
 
@@ -81,6 +89,10 @@ circular_buffer_ext(void* buffer, size_t max_size)
 
 circular_buffer_ext(size_t max_size) 20.32.1
 
+circular_buffer_ext(size_t initial_size, void* buffer, size_t max_size)
+
+circular_buffer_ext(size_t initial_size, const_reference value, void* buffer, size_t max_size)
+
 template <typename TIterator>
 circular_buffer_ext(TIterator first, const TIterator& last, void* buffer, size_t max_size)
 
@@ -88,6 +100,10 @@ circular_buffer_ext(std::initializer_list<T> init, void* buffer, size_t max_size
 
 circular_buffer_ext(const circular_buffer_ext& other, void* buffer, size_t max_size)
 ```
+
+The `initial_size` constructor fills the buffer with default-constructed values.  
+The `initial_size` and `value` constructor fills the buffer with copies of `value`.  
+If `initial_size` exceeds `max_size`, the buffer is filled to its capacity. The external storage must contain at least `max_size + 1` elements.
 
 ## Status
 
@@ -224,6 +240,26 @@ size_t available() const
 Returns the remaining available capacity in the `circular_buffer`.
 
 ## Modifiers
+
+```cpp
+void assign(iterator first, const iterator& last)
+void assign(const_iterator first, const const_iterator& last)
+
+template <typename TIterator>
+void assign(TIterator first, const TIterator& last)
+```
+**Description**  
+Replaces the contents of the circular buffer with the elements in the range `[first, last)`. If the range exceeds the capacity, only the last `capacity()` elements are retained. The range may refer to the circular buffer being assigned.
+
+---
+
+```cpp
+void assign(size_type n, const_reference value)
+```
+**Description**  
+Replaces the contents of the circular buffer with `n` copies of `value`. If `n` exceeds the capacity, the buffer is filled to its capacity. `value` may refer to an element in the circular buffer being assigned.
+
+---
 
 ```cpp
 void set_buffer(void* buffer)

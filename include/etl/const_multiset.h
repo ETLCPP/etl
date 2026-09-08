@@ -354,7 +354,6 @@ namespace etl
     //*************************************************************************
     /// Constructor
     //*************************************************************************
-    template <typename... TElements>
     ETL_CONSTEXPR14 explicit iconst_multiset(const value_type* element_list_, size_type size_, size_type max_elements_) ETL_NOEXCEPT
       : element_list(element_list_)
       , element_list_end{element_list_ + size_}
@@ -410,6 +409,7 @@ namespace etl
 
     static_assert((etl::is_default_constructible<key_type>::value), "key_type must be default constructible");
 
+  #include "private/diagnostic_uninitialized_push.h"
     //*************************************************************************
     ///\brief Construct a const_set from a variadic list of elements.
     /// Static asserts if the element type is not constructible.
@@ -417,6 +417,9 @@ namespace etl
     /// Static asserts if the number of elements is greater than the capacity of
     /// the const_set.
     //*************************************************************************
+    // The base class is passed the address of 'element_list' before that member has been
+    // initialised. The base class only stores the address and never reads through it during
+    // construction, so the compiler's 'may be used uninitialized' warning is a false positive.
     template <typename... TElements>
     ETL_CONSTEXPR14 explicit const_multiset(TElements&&... elements) ETL_NOEXCEPT
       : iconst_multiset<TKey, TKeyCompare>(element_list, sizeof...(elements), Size)
@@ -425,6 +428,7 @@ namespace etl
       static_assert((etl::are_all_same<value_type, etl::decay_t<TElements>...>::value), "All elements must be value_type");
       static_assert(sizeof...(elements) <= Size, "Number of elements exceeds capacity");
     }
+  #include "private/diagnostic_pop.h"
 
   private:
 

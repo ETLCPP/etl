@@ -50,15 +50,22 @@ namespace etl
   //***************************************************************************
   template <typename TDestination, typename TSource>
   ETL_NODISCARD
-  typename etl::enable_if< !(etl::is_integral<TDestination>::value && etl::is_integral<TSource>::value) && (sizeof(TDestination) == sizeof(TSource))
-                             && etl::is_trivially_copyable<TSource>::value && etl::is_trivially_copyable<TDestination>::value,
-                           TDestination>::type bit_cast(const TSource& source) ETL_NOEXCEPT
+#if ETL_USING_BUILTIN_BIT_CAST
+  ETL_CONSTEXPR14
+#endif
+    typename etl::enable_if< !(etl::is_integral<TDestination>::value && etl::is_integral<TSource>::value) && (sizeof(TDestination) == sizeof(TSource))
+                               && etl::is_trivially_copyable<TSource>::value && etl::is_trivially_copyable<TDestination>::value,
+                             TDestination>::type bit_cast(const TSource& source) ETL_NOEXCEPT
   {
+#if ETL_USING_BUILTIN_BIT_CAST
+    return __builtin_bit_cast(TDestination, source);
+#else
     TDestination destination;
 
     memcpy(&destination, &source, sizeof(TDestination));
 
     return destination;
+#endif
   }
 
   //***************************************************************************

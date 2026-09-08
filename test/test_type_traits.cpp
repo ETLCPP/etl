@@ -150,6 +150,29 @@ namespace
     NotDefaultConstructible& operator=(NotDefaultConstructible&&) = delete;
   };
 
+  // The legacy compiler builtin for trivial construction does not test
+  // accessibility, unlike is_trivially_constructible.
+  struct PrivateTrivialDefaultConstructor
+  {
+  private:
+
+    PrivateTrivialDefaultConstructor() = default;
+  };
+
+  // The legacy compiler builtin for trivial destruction does not test
+  // accessibility or deletion, unlike is_trivially_destructible.
+  struct PrivateTrivialDestructor
+  {
+  private:
+
+    ~PrivateTrivialDestructor() = default;
+  };
+
+  struct DeletedTrivialDestructor
+  {
+    ~DeletedTrivialDestructor() = delete;
+  };
+
   // A function to test etl::type_identity.
   template <typename T>
   T type_identity_test_add(T first, typename etl::type_identity<T>::type second)
@@ -421,8 +444,148 @@ struct etl::is_move_assignable<MoveableCopyable> : public etl::true_type
 };
 #endif
 
+#if ETL_USING_CPP11
 namespace
 {
+  //*****************************************************************************
+  // Types for the is_swappable tests.
+  struct Swappable
+  {
+    int a;
+  };
+
+  struct NonSwappable
+  {
+    NonSwappable(const NonSwappable&)            = delete;
+    NonSwappable& operator=(const NonSwappable&) = delete;
+  };
+
+  // Detects whether the compiler allows an rvalue to bind to a non-const lvalue
+  // reference. This is a Microsoft extension, disabled by /permissive-, and it makes
+  // types such as Swappable swappable as rvalues.
+  template <typename T>
+  void takes_lvalue_reference(T&);
+
+  template <typename T, typename = void>
+  struct rvalue_binds_to_lvalue_reference : etl::false_type
+  {
+  };
+
+  template <typename T>
+  struct rvalue_binds_to_lvalue_reference<T, etl::void_t<decltype(takes_lvalue_reference<T>(etl::declval<T>()))> > : etl::true_type
+  {
+  };
+
+  // Types for the is_nothrow_swappable tests.
+  // Swappable, as it is movable, but the move operations may throw.
+  struct ThrowingSwappable
+  {
+    ThrowingSwappable() {}
+    ThrowingSwappable(ThrowingSwappable&&) noexcept(false) {}
+    ThrowingSwappable& operator=(ThrowingSwappable&&) noexcept(false)
+    {
+      return *this;
+    }
+  };
+} // namespace
+
+namespace adl
+{
+  // Not movable, so only the swap found by argument dependent lookup makes
+  // this type swappable.
+  struct AdlSwappable
+  {
+    AdlSwappable(const AdlSwappable&)            = delete;
+    AdlSwappable& operator=(const AdlSwappable&) = delete;
+
+    int a;
+  };
+
+  inline void swap(AdlSwappable&, AdlSwappable&) {}
+
+  // As above, but the swap found by argument dependent lookup cannot throw.
+  struct NothrowAdlSwappable
+  {
+    NothrowAdlSwappable(const NothrowAdlSwappable&)            = delete;
+    NothrowAdlSwappable& operator=(const NothrowAdlSwappable&) = delete;
+
+    int a;
+  };
+
+  inline void swap(NothrowAdlSwappable&, NothrowAdlSwappable&) noexcept {}
+
+  // Types for the is_swappable_with tests.
+  struct SwapLhs
+  {
+    int a;
+  };
+
+  struct SwapRhs
+  {
+    int a;
+  };
+
+  inline void swap(SwapLhs&, SwapRhs&) {}
+  inline void swap(SwapRhs&, SwapLhs&) {}
+
+  // Only swappable in one direction, so is_swappable_with is false.
+  struct SwapOneWay
+  {
+    int a;
+  };
+
+  inline void swap(SwapLhs&, SwapOneWay&) {}
+
+  // Swappable only as rvalues.
+  struct RvalueSwappable
+  {
+    int a;
+  };
+
+  inline void swap(RvalueSwappable&&, RvalueSwappable&&) {}
+
+  // Types for the is_nothrow_swappable_with tests.
+  // Swappable with each other, in both directions, without throwing.
+  struct NothrowSwapLhs
+  {
+    int a;
+  };
+
+  struct NothrowSwapRhs
+  {
+    int a;
+  };
+
+  inline void swap(NothrowSwapLhs&, NothrowSwapRhs&) noexcept {}
+  inline void swap(NothrowSwapRhs&, NothrowSwapLhs&) noexcept {}
+
+  // Swappable with NothrowSwapLhs in both directions, but one of the swaps may throw.
+  struct HalfNothrowSwap
+  {
+    int a;
+  };
+
+  inline void swap(NothrowSwapLhs&, HalfNothrowSwap&) noexcept {}
+  inline void swap(HalfNothrowSwap&, NothrowSwapLhs&) {}
+} // namespace adl
+#endif
+
+namespace
+{
+  //*************************************************************************
+  // std::is_trivial is deprecated in C++26.
+  // Use the suggested replacement when compiling to that standard.
+  //*************************************************************************
+  template <typename T>
+  struct std_is_trivial
+#if ETL_USING_CPP26
+    : std::integral_constant<bool, std::is_trivially_copyable<T>::value && std::is_trivially_default_constructible<T>::value>
+#else
+    : std::integral_constant<bool, std::is_trivial<T>::value>
+#endif
+  {
+  };
+
   SUITE(test_type_traits)
   {
     //*************************************************************************
@@ -554,6 +717,989 @@ namespace
       CHECK(etl::is_pointer<const int*>::value == std::is_pointer<const int*>::value);
       CHECK(etl::is_pointer<volatile int*>::value == std::is_pointer<volatile int*>::value);
       CHECK(etl::is_pointer<const volatile int*>::value == std::is_pointer<const volatile int*>::value);
+    }
+
+    //*************************************************************************
+    TEST(test_is_bounded_array)
+    {
+      CHECK(etl::is_bounded_array<int[3]>::value);
+      CHECK(etl::is_bounded_array<const int[3]>::value);
+      CHECK(etl::is_bounded_array<int[3][4]>::value);
+      CHECK(!etl::is_bounded_array<int[]>::value);
+      CHECK(!etl::is_bounded_array<int>::value);
+      CHECK(!etl::is_bounded_array<int*>::value);
+      CHECK(!etl::is_bounded_array<void>::value);
+
+#if ETL_USING_CPP20 && defined(__cpp_lib_bounded_array_traits)
+      CHECK(etl::is_bounded_array<int[3]>::value == std::is_bounded_array<int[3]>::value);
+      CHECK(etl::is_bounded_array<int[]>::value == std::is_bounded_array<int[]>::value);
+      CHECK(etl::is_bounded_array<int>::value == std::is_bounded_array<int>::value);
+#endif
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_bounded_array_v<int[3]>);
+      CHECK(!etl::is_bounded_array_v<int[]>);
+      CHECK(!etl::is_bounded_array_v<int>);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_unbounded_array)
+    {
+      CHECK(etl::is_unbounded_array<int[]>::value);
+      CHECK(etl::is_unbounded_array<const int[]>::value);
+      CHECK(etl::is_unbounded_array<int[][4]>::value);
+      CHECK(!etl::is_unbounded_array<int[3]>::value);
+      CHECK(!etl::is_unbounded_array<int[3][4]>::value);
+      CHECK(!etl::is_unbounded_array<int>::value);
+      CHECK(!etl::is_unbounded_array<int*>::value);
+      CHECK(!etl::is_unbounded_array<void>::value);
+
+#if ETL_USING_CPP20 && defined(__cpp_lib_bounded_array_traits)
+      CHECK(etl::is_unbounded_array<int[]>::value == std::is_unbounded_array<int[]>::value);
+      CHECK(etl::is_unbounded_array<int[3]>::value == std::is_unbounded_array<int[3]>::value);
+      CHECK(etl::is_unbounded_array<int>::value == std::is_unbounded_array<int>::value);
+#endif
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_unbounded_array_v<int[]>);
+      CHECK(!etl::is_unbounded_array_v<int[3]>);
+      CHECK(!etl::is_unbounded_array_v<int>);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_null_pointer)
+    {
+      CHECK(etl::is_null_pointer<std::nullptr_t>::value);
+      CHECK(!etl::is_null_pointer<int>::value);
+      CHECK(!etl::is_null_pointer<int*>::value);
+      CHECK(!etl::is_null_pointer<void*>::value);
+
+      CHECK(etl::is_null_pointer<const std::nullptr_t>::value);
+      CHECK(etl::is_null_pointer<volatile std::nullptr_t>::value);
+      CHECK(etl::is_null_pointer<const volatile std::nullptr_t>::value);
+
+#if ETL_USING_CPP14
+      CHECK(etl::is_null_pointer<std::nullptr_t>::value == std::is_null_pointer<std::nullptr_t>::value);
+      CHECK(etl::is_null_pointer<int>::value == std::is_null_pointer<int>::value);
+#endif
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_null_pointer_v<std::nullptr_t>);
+      CHECK(!etl::is_null_pointer_v<int>);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_standard_layout)
+    {
+      struct StandardLayout
+      {
+        int a;
+        int b;
+      };
+
+      struct NonStandardLayout
+      {
+        virtual void foo() {}
+        int          a;
+      };
+
+      CHECK(etl::is_standard_layout<int>::value == std::is_standard_layout<int>::value);
+      CHECK(etl::is_standard_layout<int*>::value == std::is_standard_layout<int*>::value);
+      CHECK(etl::is_standard_layout<StandardLayout>::value == std::is_standard_layout<StandardLayout>::value);
+      CHECK(etl::is_standard_layout<NonStandardLayout>::value == std::is_standard_layout<NonStandardLayout>::value);
+      CHECK(etl::is_standard_layout<StandardLayout>::value);
+      CHECK(!etl::is_standard_layout<NonStandardLayout>::value);
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_standard_layout_v<StandardLayout>);
+      CHECK(!etl::is_standard_layout_v<NonStandardLayout>);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivial)
+    {
+      struct Trivial
+      {
+        int a;
+        int b;
+      };
+
+      struct NonTrivialConstructor
+      {
+        NonTrivialConstructor()
+          : a(1)
+        {
+        }
+        int a;
+      };
+
+      struct NonTrivialCopy
+      {
+        NonTrivialCopy(const NonTrivialCopy&) {}
+        int a;
+      };
+
+      struct NonTrivialDestructor
+      {
+        ~NonTrivialDestructor() {}
+        int a;
+      };
+
+      CHECK(etl::is_trivial<int>::value == std_is_trivial<int>::value);
+      CHECK(etl::is_trivial<int*>::value == std_is_trivial<int*>::value);
+      CHECK(etl::is_trivial<int[4]>::value == std_is_trivial<int[4]>::value);
+      CHECK(etl::is_trivial<const Trivial>::value == std_is_trivial<const Trivial>::value);
+      CHECK(etl::is_trivial<Trivial>::value == std_is_trivial<Trivial>::value);
+      CHECK(etl::is_trivial<NonTrivialConstructor>::value == std_is_trivial<NonTrivialConstructor>::value);
+      CHECK(etl::is_trivial<NonTrivialCopy>::value == std_is_trivial<NonTrivialCopy>::value);
+      CHECK(etl::is_trivial<NonTrivialDestructor>::value == std_is_trivial<NonTrivialDestructor>::value);
+
+      CHECK(etl::is_trivial<int>::value);
+      CHECK(etl::is_trivial<Trivial>::value);
+      CHECK(!etl::is_trivial<NonTrivialConstructor>::value);
+      CHECK(!etl::is_trivial<NonTrivialCopy>::value);
+      CHECK(!etl::is_trivial<NonTrivialDestructor>::value);
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_trivial_v<Trivial>);
+      CHECK(!etl::is_trivial_v<NonTrivialConstructor>);
+#endif
+    }
+
+    //*************************************************************************
+#if ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE || (ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_layout_compatible))
+    TEST(test_is_layout_compatible)
+    {
+      struct A
+      {
+        int a;
+      };
+
+      struct B
+      {
+        const int b;
+      };
+
+      struct C
+      {
+        int c1;
+        int c2;
+      };
+
+      struct D
+      {
+        char d;
+      };
+
+      CHECK((etl::is_layout_compatible<int, int>::value));
+      CHECK((etl::is_layout_compatible<int, const int>::value));
+      CHECK((etl::is_layout_compatible<A, A>::value));
+      CHECK((etl::is_layout_compatible<A, B>::value));
+      CHECK((!etl::is_layout_compatible<A, C>::value));
+      CHECK((!etl::is_layout_compatible<A, D>::value));
+      CHECK((!etl::is_layout_compatible<int, char>::value));
+
+  #if ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_layout_compatible)
+      CHECK((etl::is_layout_compatible<A, B>::value == std::is_layout_compatible<A, B>::value));
+      CHECK((etl::is_layout_compatible<A, C>::value == std::is_layout_compatible<A, C>::value));
+  #endif
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_layout_compatible_v<A, B>));
+      CHECK((!etl::is_layout_compatible_v<A, C>));
+  #endif
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF || (ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_pointer_interconvertible))
+    TEST(test_is_pointer_interconvertible_base_of)
+    {
+      struct Base
+      {
+        int b;
+      };
+
+      struct Derived : public Base
+      {
+      };
+
+      struct VirtualDerived : virtual public Base
+      {
+      };
+
+      struct Polymorphic
+      {
+        virtual ~Polymorphic() {}
+
+        int p;
+      };
+
+      struct PolymorphicDerived : public Polymorphic
+      {
+      };
+
+      struct Unrelated
+      {
+        int u;
+      };
+
+      CHECK((etl::is_pointer_interconvertible_base_of<Base, Base>::value));
+      CHECK((etl::is_pointer_interconvertible_base_of<Base, Derived>::value));
+      CHECK((!etl::is_pointer_interconvertible_base_of<Base, VirtualDerived>::value));
+      CHECK((!etl::is_pointer_interconvertible_base_of<Polymorphic, PolymorphicDerived>::value));
+      CHECK((!etl::is_pointer_interconvertible_base_of<Base, Unrelated>::value));
+      CHECK((!etl::is_pointer_interconvertible_base_of<Derived, Base>::value));
+
+  #if ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_pointer_interconvertible)
+      CHECK((etl::is_pointer_interconvertible_base_of<Base, Derived>::value == std::is_pointer_interconvertible_base_of<Base, Derived>::value));
+      CHECK((etl::is_pointer_interconvertible_base_of<Base, VirtualDerived>::value
+             == std::is_pointer_interconvertible_base_of<Base, VirtualDerived>::value));
+  #endif
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_pointer_interconvertible_base_of_v<Base, Derived>));
+      CHECK((!etl::is_pointer_interconvertible_base_of_v<Base, VirtualDerived>));
+  #endif
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_is_destructible)
+    {
+#if ETL_USING_CPP11 || ETL_USING_BUILTIN_IS_DESTRUCTIBLE
+      CHECK(etl::is_destructible<int>::value);
+      CHECK(etl::is_destructible<int*>::value);
+      CHECK(!etl::is_destructible<void>::value);
+#endif
+
+#if ETL_USING_CPP11
+      struct Destructible
+      {
+        int a;
+      };
+
+      struct NonDestructible
+      {
+        ~NonDestructible() = delete;
+      };
+
+      struct ProtectedDestructor
+      {
+      protected:
+
+        ~ProtectedDestructor() {}
+      };
+
+      CHECK(etl::is_destructible<int>::value == std::is_destructible<int>::value);
+      CHECK(etl::is_destructible<void>::value == std::is_destructible<void>::value);
+      CHECK(etl::is_destructible<int[2]>::value == std::is_destructible<int[2]>::value);
+      CHECK(etl::is_destructible<int[]>::value == std::is_destructible<int[]>::value);
+      CHECK(etl::is_destructible<int&>::value == std::is_destructible<int&>::value);
+      CHECK(etl::is_destructible<int(int)>::value == std::is_destructible<int(int)>::value);
+      CHECK(etl::is_destructible<Destructible>::value == std::is_destructible<Destructible>::value);
+      CHECK(etl::is_destructible<NonDestructible>::value == std::is_destructible<NonDestructible>::value);
+      CHECK(etl::is_destructible<ProtectedDestructor>::value == std::is_destructible<ProtectedDestructor>::value);
+
+      CHECK(etl::is_destructible<Destructible>::value);
+      CHECK(etl::is_destructible<Destructible[2]>::value);
+      CHECK(etl::is_destructible<int&>::value);
+      CHECK(!etl::is_destructible<NonDestructible>::value);
+      CHECK(!etl::is_destructible<ProtectedDestructor>::value);
+      CHECK(!etl::is_destructible<int[]>::value);
+      CHECK(!etl::is_destructible<int(int)>::value);
+#endif
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_destructible_v<int>);
+      CHECK(!etl::is_destructible_v<void>);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_destructible)
+    {
+#if ETL_USING_CPP11 || ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE
+      CHECK(etl::is_nothrow_destructible<int>::value);
+      CHECK(etl::is_nothrow_destructible<int*>::value);
+      CHECK(!etl::is_nothrow_destructible<void>::value);
+#endif
+
+#if ETL_USING_CPP11
+      struct NothrowDestructible
+      {
+        int a;
+      };
+
+      struct ThrowingDestructible
+      {
+        ~ThrowingDestructible() noexcept(false) {}
+      };
+
+      struct NotDestructible
+      {
+        ~NotDestructible() = delete;
+      };
+
+      CHECK(etl::is_nothrow_destructible<int>::value == std::is_nothrow_destructible<int>::value);
+      CHECK(etl::is_nothrow_destructible<void>::value == std::is_nothrow_destructible<void>::value);
+      CHECK(etl::is_nothrow_destructible<int[2]>::value == std::is_nothrow_destructible<int[2]>::value);
+      CHECK(etl::is_nothrow_destructible<int[]>::value == std::is_nothrow_destructible<int[]>::value);
+      CHECK(etl::is_nothrow_destructible<int&>::value == std::is_nothrow_destructible<int&>::value);
+      CHECK(etl::is_nothrow_destructible<int(int)>::value == std::is_nothrow_destructible<int(int)>::value);
+      CHECK(etl::is_nothrow_destructible<NothrowDestructible>::value == std::is_nothrow_destructible<NothrowDestructible>::value);
+      CHECK(etl::is_nothrow_destructible<ThrowingDestructible>::value == std::is_nothrow_destructible<ThrowingDestructible>::value);
+      CHECK(etl::is_nothrow_destructible<NotDestructible>::value == std::is_nothrow_destructible<NotDestructible>::value);
+
+      CHECK(etl::is_nothrow_destructible<NothrowDestructible>::value);
+      CHECK(etl::is_nothrow_destructible<NothrowDestructible[2]>::value);
+      CHECK(etl::is_nothrow_destructible<int&>::value);
+      CHECK(!etl::is_nothrow_destructible<ThrowingDestructible>::value);
+      CHECK(!etl::is_nothrow_destructible<ThrowingDestructible[2]>::value);
+      CHECK(!etl::is_nothrow_destructible<NotDestructible>::value);
+      CHECK(!etl::is_nothrow_destructible<int[]>::value);
+      CHECK(!etl::is_nothrow_destructible<int(int)>::value);
+#endif
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_nothrow_destructible_v<int>);
+      CHECK(!etl::is_nothrow_destructible_v<void>);
+#endif
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_swappable)
+    {
+      CHECK(etl::is_swappable<int>::value);
+      CHECK(etl::is_swappable<int*>::value);
+      CHECK(etl::is_swappable<Swappable>::value);
+      CHECK(etl::is_swappable<Swappable[2]>::value);
+      CHECK(etl::is_swappable<Swappable[2][3]>::value);
+
+      // Not movable, so swappable only via the swap found by ADL.
+      CHECK(etl::is_swappable<adl::AdlSwappable>::value);
+      CHECK(etl::is_swappable<adl::AdlSwappable[2]>::value);
+
+      CHECK(!etl::is_swappable<NonSwappable>::value);
+      CHECK(!etl::is_swappable<NonSwappable[2]>::value);
+      CHECK(!etl::is_swappable<void>::value);
+      CHECK(!etl::is_swappable<const int>::value);
+      CHECK(!etl::is_swappable<int(int)>::value);
+      CHECK(!etl::is_swappable<int[]>::value);
+
+  #if ETL_USING_CPP17
+      CHECK(etl::is_swappable<int>::value == std::is_swappable<int>::value);
+      CHECK(etl::is_swappable<int*>::value == std::is_swappable<int*>::value);
+      CHECK(etl::is_swappable<int[2]>::value == std::is_swappable<int[2]>::value);
+      CHECK(etl::is_swappable<int[]>::value == std::is_swappable<int[]>::value);
+      CHECK(etl::is_swappable<int&>::value == std::is_swappable<int&>::value);
+      CHECK(etl::is_swappable<const int>::value == std::is_swappable<const int>::value);
+      CHECK(etl::is_swappable<void>::value == std::is_swappable<void>::value);
+      CHECK(etl::is_swappable<int(int)>::value == std::is_swappable<int(int)>::value);
+      CHECK(etl::is_swappable<Swappable>::value == std::is_swappable<Swappable>::value);
+      CHECK(etl::is_swappable<Swappable[2]>::value == std::is_swappable<Swappable[2]>::value);
+      CHECK(etl::is_swappable<NonSwappable>::value == std::is_swappable<NonSwappable>::value);
+      CHECK(etl::is_swappable<NonSwappable[2]>::value == std::is_swappable<NonSwappable[2]>::value);
+      CHECK(etl::is_swappable<adl::AdlSwappable>::value == std::is_swappable<adl::AdlSwappable>::value);
+
+      CHECK(etl::is_swappable_v<int>);
+      CHECK(!etl::is_swappable_v<void>);
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_swappable_with)
+    {
+      // Note that is_swappable_with does not add references, so the value
+      // categories of the arguments are those of T and U.
+      CHECK((etl::is_swappable_with<int&, int&>::value));
+      CHECK((etl::is_swappable_with<Swappable&, Swappable&>::value));
+      CHECK((etl::is_swappable_with<Swappable(&)[2], Swappable(&)[2]>::value));
+      CHECK((etl::is_swappable_with<adl::AdlSwappable&, adl::AdlSwappable&>::value));
+
+      // Heterogeneous swaps, found by argument dependent lookup.
+      CHECK((etl::is_swappable_with<adl::SwapLhs&, adl::SwapRhs&>::value));
+      CHECK((etl::is_swappable_with<adl::SwapRhs&, adl::SwapLhs&>::value));
+
+      // Swappable in one direction only.
+      CHECK((!etl::is_swappable_with<adl::SwapLhs&, adl::SwapOneWay&>::value));
+      CHECK((!etl::is_swappable_with<adl::SwapOneWay&, adl::SwapLhs&>::value));
+
+      // Swappable as rvalues, via the swap found by ADL.
+      CHECK((etl::is_swappable_with<adl::RvalueSwappable, adl::RvalueSwappable>::value));
+
+      // Rvalues do not bind to the lvalue references taken by swap, unless the
+      // compiler allows it as an extension.
+      CHECK((!etl::is_swappable_with<int, int>::value));
+      CHECK((etl::is_swappable_with<Swappable, Swappable>::value == rvalue_binds_to_lvalue_reference<Swappable>::value));
+
+      CHECK((!etl::is_swappable_with<NonSwappable&, NonSwappable&>::value));
+      CHECK((!etl::is_swappable_with<int&, Swappable&>::value));
+      CHECK((!etl::is_swappable_with<const int&, const int&>::value));
+      CHECK((!etl::is_swappable_with<void, void>::value));
+      CHECK((!etl::is_swappable_with<int (&)(int), int (&)(int)>::value));
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_swappable_with<int&, int&>::value == std::is_swappable_with<int&, int&>::value));
+      CHECK((etl::is_swappable_with<int, int>::value == std::is_swappable_with<int, int>::value));
+      CHECK((etl::is_swappable_with<int&, Swappable&>::value == std::is_swappable_with<int&, Swappable&>::value));
+      CHECK((etl::is_swappable_with<const int&, const int&>::value == std::is_swappable_with<const int&, const int&>::value));
+      CHECK((etl::is_swappable_with<void, void>::value == std::is_swappable_with<void, void>::value));
+      CHECK((etl::is_swappable_with<NonSwappable&, NonSwappable&>::value == std::is_swappable_with<NonSwappable&, NonSwappable&>::value));
+      CHECK((etl::is_swappable_with<adl::SwapLhs&, adl::SwapRhs&>::value == std::is_swappable_with<adl::SwapLhs&, adl::SwapRhs&>::value));
+      CHECK((etl::is_swappable_with<adl::SwapLhs&, adl::SwapOneWay&>::value == std::is_swappable_with<adl::SwapLhs&, adl::SwapOneWay&>::value));
+      CHECK((etl::is_swappable_with<adl::RvalueSwappable, adl::RvalueSwappable>::value
+             == std::is_swappable_with<adl::RvalueSwappable, adl::RvalueSwappable>::value));
+
+      CHECK((etl::is_swappable_with_v<int&, int&>));
+      CHECK((!etl::is_swappable_with_v<int, int>));
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_swappable)
+    {
+      CHECK(etl::is_nothrow_swappable<int>::value);
+      CHECK(etl::is_nothrow_swappable<int*>::value);
+      CHECK(etl::is_nothrow_swappable<Swappable>::value);
+      CHECK(etl::is_nothrow_swappable<Swappable[2]>::value);
+      CHECK(etl::is_nothrow_swappable<Swappable[2][3]>::value);
+
+      // Not movable, so swappable only via the swap found by ADL, which is noexcept.
+      CHECK(etl::is_nothrow_swappable<adl::NothrowAdlSwappable>::value);
+      CHECK(etl::is_nothrow_swappable<adl::NothrowAdlSwappable[2]>::value);
+
+      // Swappable, but the swap may throw.
+      CHECK(!etl::is_nothrow_swappable<ThrowingSwappable>::value);
+      CHECK(!etl::is_nothrow_swappable<ThrowingSwappable[2]>::value);
+
+      // Swappable via the swap found by ADL, which is not noexcept.
+      CHECK(!etl::is_nothrow_swappable<adl::AdlSwappable>::value);
+      CHECK(!etl::is_nothrow_swappable<adl::AdlSwappable[2]>::value);
+
+      // Not swappable at all.
+      CHECK(!etl::is_nothrow_swappable<NonSwappable>::value);
+      CHECK(!etl::is_nothrow_swappable<NonSwappable[2]>::value);
+      CHECK(!etl::is_nothrow_swappable<void>::value);
+      CHECK(!etl::is_nothrow_swappable<const int>::value);
+      CHECK(!etl::is_nothrow_swappable<int(int)>::value);
+      CHECK(!etl::is_nothrow_swappable<int[]>::value);
+
+  #if ETL_USING_CPP17
+      CHECK(etl::is_nothrow_swappable<int>::value == std::is_nothrow_swappable<int>::value);
+      CHECK(etl::is_nothrow_swappable<int*>::value == std::is_nothrow_swappable<int*>::value);
+      CHECK(etl::is_nothrow_swappable<int[2]>::value == std::is_nothrow_swappable<int[2]>::value);
+      CHECK(etl::is_nothrow_swappable<int[]>::value == std::is_nothrow_swappable<int[]>::value);
+      CHECK(etl::is_nothrow_swappable<int&>::value == std::is_nothrow_swappable<int&>::value);
+      CHECK(etl::is_nothrow_swappable<const int>::value == std::is_nothrow_swappable<const int>::value);
+      CHECK(etl::is_nothrow_swappable<void>::value == std::is_nothrow_swappable<void>::value);
+      CHECK(etl::is_nothrow_swappable<int(int)>::value == std::is_nothrow_swappable<int(int)>::value);
+      CHECK(etl::is_nothrow_swappable<Swappable>::value == std::is_nothrow_swappable<Swappable>::value);
+      CHECK(etl::is_nothrow_swappable<Swappable[2]>::value == std::is_nothrow_swappable<Swappable[2]>::value);
+      CHECK(etl::is_nothrow_swappable<ThrowingSwappable>::value == std::is_nothrow_swappable<ThrowingSwappable>::value);
+      CHECK(etl::is_nothrow_swappable<ThrowingSwappable[2]>::value == std::is_nothrow_swappable<ThrowingSwappable[2]>::value);
+      CHECK(etl::is_nothrow_swappable<NonSwappable>::value == std::is_nothrow_swappable<NonSwappable>::value);
+      CHECK(etl::is_nothrow_swappable<adl::AdlSwappable>::value == std::is_nothrow_swappable<adl::AdlSwappable>::value);
+      CHECK(etl::is_nothrow_swappable<adl::NothrowAdlSwappable>::value == std::is_nothrow_swappable<adl::NothrowAdlSwappable>::value);
+
+      CHECK(etl::is_nothrow_swappable_v<int>);
+      CHECK(!etl::is_nothrow_swappable_v<void>);
+  #endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_nothrow_swappable_with)
+    {
+      CHECK((etl::is_nothrow_swappable_with<int&, int&>::value));
+      CHECK((etl::is_nothrow_swappable_with<Swappable&, Swappable&>::value));
+
+      // Swappable with each other, in both directions, without throwing.
+      CHECK((etl::is_nothrow_swappable_with<adl::NothrowSwapLhs&, adl::NothrowSwapRhs&>::value));
+      CHECK((etl::is_nothrow_swappable_with<adl::NothrowSwapRhs&, adl::NothrowSwapLhs&>::value));
+
+      // Swappable in both directions, but one of the swaps may throw.
+      CHECK((!etl::is_nothrow_swappable_with<adl::NothrowSwapLhs&, adl::HalfNothrowSwap&>::value));
+      CHECK((!etl::is_nothrow_swappable_with<adl::HalfNothrowSwap&, adl::NothrowSwapLhs&>::value));
+
+      // Swappable with each other, but the swaps may throw.
+      CHECK((!etl::is_nothrow_swappable_with<adl::SwapLhs&, adl::SwapRhs&>::value));
+
+      // Swappable, but the move operations may throw.
+      CHECK((!etl::is_nothrow_swappable_with<ThrowingSwappable&, ThrowingSwappable&>::value));
+
+      // Rvalues do not bind to the lvalue references taken by swap.
+      CHECK((!etl::is_nothrow_swappable_with<int, int>::value));
+
+      // Not swappable at all.
+      CHECK((!etl::is_nothrow_swappable_with<NonSwappable&, NonSwappable&>::value));
+      CHECK((!etl::is_nothrow_swappable_with<int&, Swappable&>::value));
+      CHECK((!etl::is_nothrow_swappable_with<const int&, const int&>::value));
+      CHECK((!etl::is_nothrow_swappable_with<void, void>::value));
+      CHECK((!etl::is_nothrow_swappable_with<int (&)(int), int (&)(int)>::value));
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_nothrow_swappable_with<int&, int&>::value == std::is_nothrow_swappable_with<int&, int&>::value));
+      CHECK((etl::is_nothrow_swappable_with<int, int>::value == std::is_nothrow_swappable_with<int, int>::value));
+      CHECK((etl::is_nothrow_swappable_with<void, void>::value == std::is_nothrow_swappable_with<void, void>::value));
+      CHECK((etl::is_nothrow_swappable_with<const int&, const int&>::value == std::is_nothrow_swappable_with<const int&, const int&>::value));
+      CHECK(
+        (etl::is_nothrow_swappable_with<NonSwappable&, NonSwappable&>::value == std::is_nothrow_swappable_with<NonSwappable&, NonSwappable&>::value));
+      CHECK((etl::is_nothrow_swappable_with<ThrowingSwappable&, ThrowingSwappable&>::value
+             == std::is_nothrow_swappable_with<ThrowingSwappable&, ThrowingSwappable&>::value));
+      CHECK(
+        (etl::is_nothrow_swappable_with<adl::SwapLhs&, adl::SwapRhs&>::value == std::is_nothrow_swappable_with<adl::SwapLhs&, adl::SwapRhs&>::value));
+      CHECK((etl::is_nothrow_swappable_with<adl::NothrowSwapLhs&, adl::NothrowSwapRhs&>::value
+             == std::is_nothrow_swappable_with<adl::NothrowSwapLhs&, adl::NothrowSwapRhs&>::value));
+      CHECK((etl::is_nothrow_swappable_with<adl::NothrowSwapLhs&, adl::HalfNothrowSwap&>::value
+             == std::is_nothrow_swappable_with<adl::NothrowSwapLhs&, adl::HalfNothrowSwap&>::value));
+
+      CHECK((etl::is_nothrow_swappable_with_v<int&, int&>));
+      CHECK((!etl::is_nothrow_swappable_with_v<int, int>));
+  #endif
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_is_union)
+    {
+      union Union
+      {
+        int   a;
+        float b;
+      };
+
+      struct NonUnion
+      {
+        int a;
+        int b;
+      };
+
+      CHECK(etl::is_union<int>::value == std::is_union<int>::value);
+      CHECK(etl::is_union<int*>::value == std::is_union<int*>::value);
+      CHECK(etl::is_union<Union>::value == std::is_union<Union>::value);
+      CHECK(etl::is_union<NonUnion>::value == std::is_union<NonUnion>::value);
+      CHECK(etl::is_union<Union>::value);
+      CHECK(!etl::is_union<NonUnion>::value);
+      CHECK(!etl::is_union<int>::value);
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_union_v<Union>);
+      CHECK(!etl::is_union_v<NonUnion>);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_empty)
+    {
+      struct Empty
+      {
+      };
+
+      struct EmptyDerived : public Empty
+      {
+      };
+
+      struct NotEmpty
+      {
+        int a;
+      };
+
+      struct Virtual
+      {
+        virtual void foo() {}
+      };
+
+      CHECK(etl::is_empty<Empty>::value == std::is_empty<Empty>::value);
+      CHECK(etl::is_empty<EmptyDerived>::value == std::is_empty<EmptyDerived>::value);
+      CHECK(etl::is_empty<NotEmpty>::value == std::is_empty<NotEmpty>::value);
+      CHECK(etl::is_empty<Virtual>::value == std::is_empty<Virtual>::value);
+      CHECK(etl::is_empty<int>::value == std::is_empty<int>::value);
+      CHECK(etl::is_empty<int*>::value == std::is_empty<int*>::value);
+
+      CHECK(etl::is_empty<Empty>::value);
+      CHECK(etl::is_empty<EmptyDerived>::value);
+      CHECK(!etl::is_empty<NotEmpty>::value);
+      CHECK(!etl::is_empty<Virtual>::value);
+      CHECK(!etl::is_empty<int>::value);
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_empty_v<Empty>);
+      CHECK(!etl::is_empty_v<NotEmpty>);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_polymorphic)
+    {
+      struct NonPolymorphic
+      {
+        int a;
+      };
+
+      struct Polymorphic
+      {
+        virtual ~Polymorphic() {}
+      };
+
+      struct PolymorphicDerived : public Polymorphic
+      {
+      };
+
+      struct AbstractPolymorphic
+      {
+        virtual void foo() = 0;
+      };
+
+      CHECK(etl::is_polymorphic<NonPolymorphic>::value == std::is_polymorphic<NonPolymorphic>::value);
+      CHECK(etl::is_polymorphic<Polymorphic>::value == std::is_polymorphic<Polymorphic>::value);
+      CHECK(etl::is_polymorphic<PolymorphicDerived>::value == std::is_polymorphic<PolymorphicDerived>::value);
+      CHECK(etl::is_polymorphic<AbstractPolymorphic>::value == std::is_polymorphic<AbstractPolymorphic>::value);
+      CHECK(etl::is_polymorphic<int>::value == std::is_polymorphic<int>::value);
+      CHECK(etl::is_polymorphic<int*>::value == std::is_polymorphic<int*>::value);
+
+      CHECK(etl::is_polymorphic<Polymorphic>::value);
+      CHECK(etl::is_polymorphic<PolymorphicDerived>::value);
+      CHECK(etl::is_polymorphic<AbstractPolymorphic>::value);
+      CHECK(!etl::is_polymorphic<NonPolymorphic>::value);
+      CHECK(!etl::is_polymorphic<int>::value);
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_polymorphic_v<Polymorphic>);
+      CHECK(!etl::is_polymorphic_v<NonPolymorphic>);
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_abstract)
+    {
+      struct NonAbstract
+      {
+        int a;
+      };
+
+      struct NonAbstractPolymorphic
+      {
+        virtual ~NonAbstractPolymorphic() {}
+      };
+
+      struct Abstract
+      {
+        virtual ~Abstract() {}
+        virtual void foo() = 0;
+      };
+
+      struct AbstractDerived : public Abstract
+      {
+      };
+
+      struct ConcreteDerived : public Abstract
+      {
+        void foo() ETL_OVERRIDE {}
+      };
+
+      CHECK(etl::is_abstract<NonAbstract>::value == std::is_abstract<NonAbstract>::value);
+      CHECK(etl::is_abstract<NonAbstractPolymorphic>::value == std::is_abstract<NonAbstractPolymorphic>::value);
+      CHECK(etl::is_abstract<Abstract>::value == std::is_abstract<Abstract>::value);
+      CHECK(etl::is_abstract<AbstractDerived>::value == std::is_abstract<AbstractDerived>::value);
+      CHECK(etl::is_abstract<ConcreteDerived>::value == std::is_abstract<ConcreteDerived>::value);
+      CHECK(etl::is_abstract<int>::value == std::is_abstract<int>::value);
+      CHECK(etl::is_abstract<int*>::value == std::is_abstract<int*>::value);
+
+      CHECK(etl::is_abstract<Abstract>::value);
+      CHECK(etl::is_abstract<AbstractDerived>::value);
+      CHECK(!etl::is_abstract<ConcreteDerived>::value);
+      CHECK(!etl::is_abstract<NonAbstract>::value);
+      CHECK(!etl::is_abstract<NonAbstractPolymorphic>::value);
+      CHECK(!etl::is_abstract<int>::value);
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_abstract_v<Abstract>);
+      CHECK(!etl::is_abstract_v<ConcreteDerived>);
+#endif
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP14
+    TEST(test_is_final)
+    {
+      struct NonFinal
+      {
+        int a;
+      };
+
+      struct Final final
+      {
+        int a;
+      };
+
+      struct Base
+      {
+        virtual ~Base() {}
+      };
+
+      struct FinalDerived final : public Base
+      {
+      };
+
+      struct NonFinalDerived : public Base
+      {
+      };
+
+      union FinalUnion final
+      {
+        int a;
+      };
+
+      CHECK(etl::is_final<NonFinal>::value == std::is_final<NonFinal>::value);
+      CHECK(etl::is_final<Final>::value == std::is_final<Final>::value);
+      CHECK(etl::is_final<FinalDerived>::value == std::is_final<FinalDerived>::value);
+      CHECK(etl::is_final<NonFinalDerived>::value == std::is_final<NonFinalDerived>::value);
+      CHECK(etl::is_final<FinalUnion>::value == std::is_final<FinalUnion>::value);
+      CHECK(etl::is_final<int>::value == std::is_final<int>::value);
+      CHECK(etl::is_final<int*>::value == std::is_final<int*>::value);
+      CHECK(etl::is_final<Final*>::value == std::is_final<Final*>::value);
+
+      CHECK(etl::is_final<Final>::value);
+      CHECK(etl::is_final<FinalDerived>::value);
+      CHECK(etl::is_final<FinalUnion>::value);
+      CHECK(!etl::is_final<NonFinal>::value);
+      CHECK(!etl::is_final<NonFinalDerived>::value);
+      CHECK(!etl::is_final<Base>::value);
+      CHECK(!etl::is_final<int>::value);
+      CHECK(!etl::is_final<Final*>::value);
+
+  #if ETL_USING_CPP17
+      CHECK(etl::is_final_v<Final>);
+      CHECK(!etl::is_final_v<NonFinal>);
+  #endif
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST(test_is_aggregate)
+    {
+      struct Aggregate
+      {
+        int    a;
+        double b;
+      };
+
+      struct AggregateDerived : public Aggregate
+      {
+        int c;
+      };
+
+      struct NonAggregate
+      {
+        NonAggregate(int a_)
+          : a(a_)
+        {
+        }
+        int a;
+      };
+
+      struct Virtual
+      {
+        virtual ~Virtual() {}
+        int a;
+      };
+
+      union AggregateUnion
+      {
+        int    a;
+        double b;
+      };
+
+      CHECK(etl::is_aggregate<Aggregate>::value == std::is_aggregate<Aggregate>::value);
+      CHECK(etl::is_aggregate<AggregateDerived>::value == std::is_aggregate<AggregateDerived>::value);
+      CHECK(etl::is_aggregate<NonAggregate>::value == std::is_aggregate<NonAggregate>::value);
+      CHECK(etl::is_aggregate<Virtual>::value == std::is_aggregate<Virtual>::value);
+      CHECK(etl::is_aggregate<AggregateUnion>::value == std::is_aggregate<AggregateUnion>::value);
+      CHECK(etl::is_aggregate<int[4]>::value == std::is_aggregate<int[4]>::value);
+      CHECK(etl::is_aggregate<int>::value == std::is_aggregate<int>::value);
+      CHECK(etl::is_aggregate<int*>::value == std::is_aggregate<int*>::value);
+      CHECK(etl::is_aggregate<const Aggregate>::value == std::is_aggregate<const Aggregate>::value);
+
+      CHECK(etl::is_aggregate<Aggregate>::value);
+      CHECK(etl::is_aggregate<AggregateDerived>::value);
+      CHECK(etl::is_aggregate<AggregateUnion>::value);
+      CHECK(etl::is_aggregate<int[4]>::value);
+      CHECK(etl::is_aggregate<const Aggregate>::value);
+      CHECK(!etl::is_aggregate<NonAggregate>::value);
+      CHECK(!etl::is_aggregate<Virtual>::value);
+      CHECK(!etl::is_aggregate<int>::value);
+      CHECK(!etl::is_aggregate<int*>::value);
+
+      CHECK(etl::is_aggregate_v<Aggregate>);
+      CHECK(!etl::is_aggregate_v<NonAggregate>);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_has_virtual_destructor)
+    {
+      struct NonVirtualDestructor
+      {
+        ~NonVirtualDestructor() {}
+        int a;
+      };
+
+      struct VirtualDestructor
+      {
+        virtual ~VirtualDestructor() {}
+        int a;
+      };
+
+      struct DerivedFromVirtualDestructor : public VirtualDestructor
+      {
+        int b;
+      };
+
+      struct VirtualFunctionOnly
+      {
+        virtual void foo() {}
+        int          a;
+      };
+
+      CHECK(etl::has_virtual_destructor<NonVirtualDestructor>::value == std::has_virtual_destructor<NonVirtualDestructor>::value);
+      CHECK(etl::has_virtual_destructor<VirtualDestructor>::value == std::has_virtual_destructor<VirtualDestructor>::value);
+      CHECK(etl::has_virtual_destructor<DerivedFromVirtualDestructor>::value == std::has_virtual_destructor<DerivedFromVirtualDestructor>::value);
+      CHECK(etl::has_virtual_destructor<VirtualFunctionOnly>::value == std::has_virtual_destructor<VirtualFunctionOnly>::value);
+      CHECK(etl::has_virtual_destructor<int>::value == std::has_virtual_destructor<int>::value);
+      CHECK(etl::has_virtual_destructor<int*>::value == std::has_virtual_destructor<int*>::value);
+      CHECK(etl::has_virtual_destructor<const VirtualDestructor>::value == std::has_virtual_destructor<const VirtualDestructor>::value);
+
+      CHECK(etl::has_virtual_destructor<VirtualDestructor>::value);
+      CHECK(etl::has_virtual_destructor<DerivedFromVirtualDestructor>::value);
+      CHECK(etl::has_virtual_destructor<const VirtualDestructor>::value);
+      CHECK(!etl::has_virtual_destructor<NonVirtualDestructor>::value);
+      CHECK(!etl::has_virtual_destructor<VirtualFunctionOnly>::value);
+      CHECK(!etl::has_virtual_destructor<int>::value);
+      CHECK(!etl::has_virtual_destructor<int*>::value);
+
+#if ETL_USING_CPP17
+      CHECK(etl::has_virtual_destructor_v<VirtualDestructor>);
+      CHECK(!etl::has_virtual_destructor_v<NonVirtualDestructor>);
+#endif
+    }
+
+    //*************************************************************************
+#if ETL_USING_CPP17
+    TEST(test_has_unique_object_representations)
+    {
+      struct NoPadding
+      {
+        int a;
+        int b;
+      };
+
+      struct Padded
+      {
+        char a;
+        int  b;
+      };
+
+      CHECK(etl::has_unique_object_representations<int>::value == std::has_unique_object_representations<int>::value);
+      CHECK(etl::has_unique_object_representations<int*>::value == std::has_unique_object_representations<int*>::value);
+      CHECK(etl::has_unique_object_representations<float>::value == std::has_unique_object_representations<float>::value);
+      CHECK(etl::has_unique_object_representations<NoPadding>::value == std::has_unique_object_representations<NoPadding>::value);
+      CHECK(etl::has_unique_object_representations<Padded>::value == std::has_unique_object_representations<Padded>::value);
+      CHECK(etl::has_unique_object_representations<int[4]>::value == std::has_unique_object_representations<int[4]>::value);
+      CHECK(etl::has_unique_object_representations<const int>::value == std::has_unique_object_representations<const int>::value);
+      CHECK(etl::has_unique_object_representations<const NoPadding>::value == std::has_unique_object_representations<const NoPadding>::value);
+
+      CHECK(etl::has_unique_object_representations<int>::value);
+      CHECK(etl::has_unique_object_representations<const int>::value);
+      CHECK(etl::has_unique_object_representations<int[4]>::value);
+      CHECK(etl::has_unique_object_representations<NoPadding>::value);
+      CHECK(!etl::has_unique_object_representations<Padded>::value);
+
+      CHECK(etl::has_unique_object_representations_v<NoPadding>);
+      CHECK(!etl::has_unique_object_representations_v<Padded>);
+    }
+#endif
+
+    //*************************************************************************
+    TEST(test_is_scalar)
+    {
+      struct Class
+      {
+        int  a;
+        void foo() {}
+      };
+
+      union Union
+      {
+        int   a;
+        float b;
+      };
+
+      enum Enum
+      {
+        e1
+      };
+
+      // Arithmetic types.
+      CHECK(etl::is_scalar<bool>::value == std::is_scalar<bool>::value);
+      CHECK(etl::is_scalar<char>::value == std::is_scalar<char>::value);
+      CHECK(etl::is_scalar<int>::value == std::is_scalar<int>::value);
+      CHECK(etl::is_scalar<double>::value == std::is_scalar<double>::value);
+      CHECK(etl::is_scalar<const int>::value == std::is_scalar<const int>::value);
+      CHECK(etl::is_scalar<volatile int>::value == std::is_scalar<volatile int>::value);
+      CHECK(etl::is_scalar<const volatile int>::value == std::is_scalar<const volatile int>::value);
+
+      // Enumerations.
+      CHECK(etl::is_scalar<Enum>::value == std::is_scalar<Enum>::value);
+      CHECK(etl::is_scalar<const Enum>::value == std::is_scalar<const Enum>::value);
+
+      // Pointers.
+      CHECK(etl::is_scalar<int*>::value == std::is_scalar<int*>::value);
+      CHECK(etl::is_scalar<void*>::value == std::is_scalar<void*>::value);
+      CHECK(etl::is_scalar<const Class*>::value == std::is_scalar<const Class*>::value);
+      CHECK(etl::is_scalar<int* const>::value == std::is_scalar<int* const>::value);
+
+      // Pointers to members.
+      CHECK(etl::is_scalar<int Class::*>::value == std::is_scalar<int Class::*>::value);
+      CHECK(etl::is_scalar<void (Class::*)()>::value == std::is_scalar<void (Class::*)()>::value);
+      CHECK(etl::is_scalar<const int Class::*>::value == std::is_scalar<const int Class::*>::value);
+
+      // Null pointer.
+      CHECK(etl::is_scalar<std::nullptr_t>::value == std::is_scalar<std::nullptr_t>::value);
+      CHECK(etl::is_scalar<const std::nullptr_t>::value == std::is_scalar<const std::nullptr_t>::value);
+
+      // Non-scalars.
+      CHECK(etl::is_scalar<Class>::value == std::is_scalar<Class>::value);
+      CHECK(etl::is_scalar<Union>::value == std::is_scalar<Union>::value);
+      CHECK(etl::is_scalar<void>::value == std::is_scalar<void>::value);
+      CHECK(etl::is_scalar<int&>::value == std::is_scalar<int&>::value);
+      CHECK(etl::is_scalar<int&&>::value == std::is_scalar<int&&>::value);
+      CHECK(etl::is_scalar<int[3]>::value == std::is_scalar<int[3]>::value);
+      CHECK(etl::is_scalar<int[]>::value == std::is_scalar<int[]>::value);
+      CHECK(etl::is_scalar<void(int)>::value == std::is_scalar<void(int)>::value);
+
+      CHECK(etl::is_scalar<int>::value);
+      CHECK(etl::is_scalar<Enum>::value);
+      CHECK(etl::is_scalar<int*>::value);
+      CHECK(etl::is_scalar<int Class::*>::value);
+      CHECK(etl::is_scalar<std::nullptr_t>::value);
+      CHECK(!etl::is_scalar<Class>::value);
+      CHECK(!etl::is_scalar<int&>::value);
+      CHECK(!etl::is_scalar<int[3]>::value);
+
+#if ETL_USING_CPP17
+      CHECK(etl::is_scalar_v<int>);
+      CHECK(etl::is_scalar_v<Enum>);
+      CHECK(etl::is_scalar_v<int*>);
+      CHECK(etl::is_scalar_v<std::nullptr_t>);
+      CHECK(!etl::is_scalar_v<Class>);
+      CHECK(!etl::is_scalar_v<int[3]>);
+#endif
     }
 
     //*************************************************************************
@@ -759,6 +1905,7 @@ namespace
       CHECK(etl::is_fundamental<long double>::value == std::is_fundamental<long double>::value);
       CHECK(etl::is_fundamental<Test>::value == std::is_fundamental<Test>::value);
 #if ETL_USING_STL
+      // etl::is_fundamental does not report std::nullptr_t as fundamental when not using the STL.
       CHECK(etl::is_fundamental<std::nullptr_t>::value == std::is_fundamental<std::nullptr_t>::value);
 #endif
     }
@@ -1353,6 +2500,33 @@ namespace
 #undef CHECK_EQUAL_FOR_TYPE
 
     //*************************************************************************
+    TEST(test_is_scoped_enum)
+    {
+      CHECK_FALSE((etl::is_scoped_enum<void>::value));
+      CHECK_FALSE((etl::is_scoped_enum<int>::value));
+      CHECK_FALSE((etl::is_scoped_enum<int*>::value));
+      CHECK_FALSE((etl::is_scoped_enum<ToAny>::value));
+      CHECK_FALSE((etl::is_scoped_enum<Enum>::value));
+      CHECK_FALSE((etl::is_scoped_enum<const Enum>::value));
+      CHECK_FALSE((etl::is_scoped_enum<Enum*>::value));
+
+      CHECK_TRUE((etl::is_scoped_enum<EnumClass>::value));
+      CHECK_TRUE((etl::is_scoped_enum<const EnumClass>::value));
+      CHECK_FALSE((etl::is_scoped_enum<EnumClass*>::value));
+
+#if ETL_USING_CPP17
+      CHECK_FALSE((etl::is_scoped_enum_v<Enum>));
+      CHECK_TRUE((etl::is_scoped_enum_v<EnumClass>));
+#endif
+
+#if ETL_USING_CPP23 && defined(__cpp_lib_is_scoped_enum)
+      CHECK_EQUAL((std::is_scoped_enum<Enum>::value), (etl::is_scoped_enum<Enum>::value));
+      CHECK_EQUAL((std::is_scoped_enum<EnumClass>::value), (etl::is_scoped_enum<EnumClass>::value));
+      CHECK_EQUAL((std::is_scoped_enum<int>::value), (etl::is_scoped_enum<int>::value));
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_integral_constants)
     {
 #if ETL_USING_CPP17
@@ -1700,7 +2874,8 @@ namespace
     //*************************************************************************
     TEST(test_is_trivially_constructible)
     {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS) || ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE \
+  || ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR
   #if ETL_USING_CPP17
       CHECK((etl::is_trivially_constructible_v<Copyable>) == (std::is_trivially_constructible_v<Copyable>));
       CHECK((etl::is_trivially_constructible_v<Moveable>) == (std::is_trivially_constructible_v<Moveable>));
@@ -1709,6 +2884,11 @@ namespace
       CHECK((etl::is_trivially_constructible<Copyable>::value) == (std::is_trivially_constructible<Copyable>::value));
       CHECK((etl::is_trivially_constructible<Moveable>::value) == (std::is_trivially_constructible<Moveable>::value));
       CHECK((etl::is_trivially_constructible<MoveableCopyable>::value) == (std::is_trivially_constructible<MoveableCopyable>::value));
+  #endif
+  #if ETL_USING_CPP11
+      CHECK(!etl::is_trivially_constructible<PrivateTrivialDefaultConstructor>::value);
+      CHECK((etl::is_trivially_constructible<PrivateTrivialDefaultConstructor>::value)
+            == (std::is_trivially_constructible<PrivateTrivialDefaultConstructor>::value));
   #endif
 #endif
     }
@@ -1730,9 +2910,46 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_is_trivially_default_constructible)
+    {
+#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
+  #if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+      CHECK((etl::is_trivially_default_constructible<int>::value) == (std::is_trivially_default_constructible<int>::value));
+      CHECK((etl::is_trivially_default_constructible<Copyable>::value) == (std::is_trivially_default_constructible<Copyable>::value));
+      CHECK((etl::is_trivially_default_constructible<Moveable>::value) == (std::is_trivially_default_constructible<Moveable>::value));
+      CHECK((etl::is_trivially_default_constructible<MoveableCopyable>::value) == (std::is_trivially_default_constructible<MoveableCopyable>::value));
+
+    #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_default_constructible_v<int>) == (std::is_trivially_default_constructible_v<int>));
+      CHECK((etl::is_trivially_default_constructible_v<Copyable>) == (std::is_trivially_default_constructible_v<Copyable>));
+    #endif
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_move_constructible)
+    {
+#if (!(defined(ETL_COMPILER_GCC) && defined(ETL_USE_TYPE_TRAITS_BUILTINS)))
+  #if ETL_USING_CPP11 && (ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS))
+      CHECK((etl::is_trivially_move_constructible<int>::value) == (std::is_trivially_move_constructible<int>::value));
+      CHECK((etl::is_trivially_move_constructible<Copyable>::value) == (std::is_trivially_move_constructible<Copyable>::value));
+      CHECK((etl::is_trivially_move_constructible<Moveable>::value) == (std::is_trivially_move_constructible<Moveable>::value));
+      CHECK((etl::is_trivially_move_constructible<MoveableCopyable>::value) == (std::is_trivially_move_constructible<MoveableCopyable>::value));
+
+    #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_move_constructible_v<int>) == (std::is_trivially_move_constructible_v<int>));
+      CHECK((etl::is_trivially_move_constructible_v<Moveable>) == (std::is_trivially_move_constructible_v<Moveable>));
+    #endif
+  #endif
+#endif
+    }
+
+    //*************************************************************************
     TEST(test_is_trivially_destructible)
     {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS) || ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE \
+  || ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR
   #if ETL_USING_CPP17
       CHECK((etl::is_trivially_destructible_v<Copyable>) == (std::is_trivially_destructible_v<Copyable>));
       CHECK((etl::is_trivially_destructible_v<Moveable>) == (std::is_trivially_destructible_v<Moveable>));
@@ -1741,6 +2958,31 @@ namespace
       CHECK((etl::is_trivially_destructible<Copyable>::value) == (std::is_trivially_destructible<Copyable>::value));
       CHECK((etl::is_trivially_destructible<Moveable>::value) == (std::is_trivially_destructible<Moveable>::value));
       CHECK((etl::is_trivially_destructible<MoveableCopyable>::value) == (std::is_trivially_destructible<MoveableCopyable>::value));
+  #endif
+  #if ETL_USING_CPP11
+      CHECK(!etl::is_trivially_destructible<PrivateTrivialDestructor>::value);
+      CHECK(!etl::is_trivially_destructible<DeletedTrivialDestructor>::value);
+      CHECK((etl::is_trivially_destructible<PrivateTrivialDestructor>::value) == (std::is_trivially_destructible<PrivateTrivialDestructor>::value));
+      CHECK((etl::is_trivially_destructible<DeletedTrivialDestructor>::value) == (std::is_trivially_destructible<DeletedTrivialDestructor>::value));
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_assignable)
+    {
+#if ETL_USING_CPP11 && !defined(ETL_USER_DEFINED_TYPE_TRAITS) \
+  && (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED || ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+      CHECK((etl::is_trivially_assignable<int&, int>::value) == (std::is_trivially_assignable<int&, int>::value));
+      CHECK((etl::is_trivially_assignable<int, int>::value) == (std::is_trivially_assignable<int, int>::value));
+      CHECK((etl::is_trivially_assignable<Copyable&, const Copyable&>::value) == (std::is_trivially_assignable<Copyable&, const Copyable&>::value));
+      CHECK((etl::is_trivially_assignable<Moveable&, Moveable&&>::value) == (std::is_trivially_assignable<Moveable&, Moveable&&>::value));
+      CHECK((etl::is_trivially_assignable<MoveableCopyable&, const MoveableCopyable&>::value)
+            == (std::is_trivially_assignable<MoveableCopyable&, const MoveableCopyable&>::value));
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_assignable_v<int&, int>) == (std::is_trivially_assignable_v<int&, int>));
+      CHECK((etl::is_trivially_assignable_v<Copyable&, const Copyable&>) == (std::is_trivially_assignable_v<Copyable&, const Copyable&>));
   #endif
 #endif
     }
@@ -1759,6 +3001,23 @@ namespace
       CHECK((etl::is_trivially_copy_assignable<Moveable>::value) == (std::is_trivially_copy_assignable<Moveable>::value));
       CHECK((etl::is_trivially_copy_assignable<MoveableCopyable>::value) == (std::is_trivially_copy_assignable<MoveableCopyable>::value));
     #endif
+  #endif
+#endif
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_move_assignable)
+    {
+#if ETL_USING_CPP11 && !defined(ETL_USER_DEFINED_TYPE_TRAITS) \
+  && (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED || ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+      CHECK((etl::is_trivially_move_assignable<int>::value) == (std::is_trivially_move_assignable<int>::value));
+      CHECK((etl::is_trivially_move_assignable<Copyable>::value) == (std::is_trivially_move_assignable<Copyable>::value));
+      CHECK((etl::is_trivially_move_assignable<Moveable>::value) == (std::is_trivially_move_assignable<Moveable>::value));
+      CHECK((etl::is_trivially_move_assignable<MoveableCopyable>::value) == (std::is_trivially_move_assignable<MoveableCopyable>::value));
+
+  #if ETL_USING_CPP17
+      CHECK((etl::is_trivially_move_assignable_v<int>) == (std::is_trivially_move_assignable_v<int>));
+      CHECK((etl::is_trivially_move_assignable_v<Moveable>) == (std::is_trivially_move_assignable_v<Moveable>));
   #endif
 #endif
     }
@@ -2268,5 +3527,23 @@ namespace
       CHECK_TRUE(etl::is_unsigned<char32_t>::value);
 #endif
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_common_type)
+    {
+      // Reference types must decay to the same result as std::common_type.
+      CHECK((etl::is_same<etl::common_type_t<long&, int&>, long>::value));
+      CHECK((etl::is_same<etl::common_type_t<long&, int&>, std::common_type<long&, int&>::type>::value));
+      CHECK((etl::is_same<etl::common_type_t<int&, long&>, long>::value));
+      CHECK((etl::is_same<etl::common_type_t<int&, long&>, std::common_type<int&, long&>::type>::value));
+      CHECK((etl::is_same<etl::common_type_t<const char&, char&>, char>::value));
+      CHECK((etl::is_same<etl::common_type_t<const char&, char&>, std::common_type<const char&, char&>::type>::value));
+
+      // Already decayed types.
+      CHECK((etl::is_same<etl::common_type_t<int, long, int>, long>::value));
+      CHECK((etl::is_same<etl::common_type_t<int, long, int>, std::common_type<int, long, int>::type>::value));
+    }
+#endif
   }
 } // namespace

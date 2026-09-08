@@ -41,7 +41,7 @@ namespace etl
   //***************************************************************************
   /// Defines a no-position constant.
   //***************************************************************************
-  static ETL_CONSTANT size_t index_of_type_npos = etl::integral_limits<size_t>::max;
+  ETL_INLINE_VAR ETL_CONSTANT size_t index_of_type_npos = etl::integral_limits<size_t>::max;
 
   //***************************************************************************
   /// Finds the index of a type in a variadic type parameter.

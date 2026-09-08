@@ -66,8 +66,8 @@ namespace etl
   {
   };
 #if ETL_USING_STL && ETL_USING_CPP11
-  template <typename T, size_t N>
-  struct is_std_array<std::array<T, N>> : etl::true_type
+  template <typename T, size_t Index>
+  struct is_std_array<std::array<T, Index>> : etl::true_type
   {
   };
 #endif
@@ -88,8 +88,8 @@ namespace etl
   struct is_etl_array : etl::false_type
   {
   };
-  template <typename T, size_t N>
-  struct is_etl_array<etl::array<T, N> > : etl::true_type
+  template <typename T, size_t Index>
+  struct is_etl_array<etl::array<T, Index> > : etl::true_type
   {
   };
   template <typename T>
@@ -211,6 +211,7 @@ namespace etl
     typedef T                                element_type;
     typedef typename etl::remove_cv<T>::type value_type;
     typedef size_t                           size_type;
+    typedef ptrdiff_t                        difference_type;
     typedef T&                               reference;
     typedef const T&                         const_reference;
     typedef T*                               pointer;
@@ -248,7 +249,7 @@ namespace etl
     /// Construct from iterator + size
     //*************************************************************************
     template <typename TIterator>
-    explicit ETL_CONSTEXPR14 span(const TIterator begin_, const size_t size_) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+    explicit ETL_CONSTEXPR14 span(const TIterator begin_, const size_t size_)
       : pbegin(etl::to_address(begin_))
     {
       ETL_ASSERT(size_ == Extent, ETL_ERROR(span_size_mismatch));
@@ -260,7 +261,7 @@ namespace etl
     //*************************************************************************
     template <typename TIteratorBegin, typename TIteratorEnd>
     ETL_CONSTEXPR14 span(const TIteratorBegin begin_, const TIteratorEnd end_,
-                   typename etl::enable_if< !etl::is_integral<TIteratorEnd>::value, void>::type* = 0) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+                   typename etl::enable_if< !etl::is_integral<TIteratorEnd>::value, void>::type* = 0)
       : pbegin(etl::to_address(begin_))
     {
       ETL_ASSERT(etl::distance(begin_, end_) == Extent, ETL_ERROR(span_size_mismatch));
@@ -292,7 +293,7 @@ namespace etl
                        && etl::is_convertible< decltype(etl::declval< typename etl::remove_reference<TContainer>::type&>().data()), pointer>::value
                        && etl::is_same< typename etl::remove_cv<T>::type,
                                         typename etl::remove_cv<typename etl::remove_reference< TContainer>::type::value_type>::type>::value,
-                     void>::type* = 0) ETL_NOEXCEPT_IF(ETL_NOT_USING_EXCEPTIONS)
+                     void>::type* = 0)
       : pbegin(a.data())
     {
       ETL_ASSERT(a.size() == Extent, ETL_ERROR(span_size_mismatch));
@@ -788,6 +789,7 @@ namespace etl
     typedef T                                element_type;
     typedef typename etl::remove_cv<T>::type value_type;
     typedef size_t                           size_type;
+    typedef ptrdiff_t                        difference_type;
     typedef T&                               reference;
     typedef const T&                         const_reference;
     typedef T*                               pointer;
@@ -1507,6 +1509,11 @@ namespace etl
   template <typename T, size_t Size>
   span(const std::array<T, Size>&) -> span<const T, Size>;
   #endif
+
+  // Any other type that supports data() and size() member functions
+  template <typename TContainer, typename = etl::enable_if_t<etl::has_data<TContainer>::value && etl::has_size<TContainer>::value
+                                                             && etl::is_lvalue_reference<TContainer&&>::value>>
+  span(TContainer&&) -> span<etl::remove_pointer_t<decltype(etl::declval<TContainer&>().data())>, etl::dynamic_extent>;
 #endif
 
   //*************************************************************************

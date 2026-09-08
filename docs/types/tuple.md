@@ -249,3 +249,21 @@ template <typename T, typename... Types>
 ETL_CONSTEXPR14
 const T&& get(const tuple<Types...>&&);
 ```
+
+---
+
+```cpp
+template <typename TFunction, typename TTuple>
+ETL_CONSTEXPR14
+auto apply(TFunction&& f, TTuple&& t);
+```
+
+Invokes the callable object `f` (via `etl::invoke`) with the elements of the tuple `t` expanded as its arguments. Equivalent to `std::apply`.
+
+```cpp
+int add(int a, int b, int c) { return a + b + c; }
+
+auto t = etl::make_tuple(1, 2, 3);
+int sum = etl::apply(add, t); // sum == 6
+```
+

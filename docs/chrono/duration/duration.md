@@ -112,7 +112,7 @@ ETL_CONSTEXPR14
 etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
 ```
 
-### Convertion
+### Conversion
 ```cpp
 ETL_CONSTEXPR14 
 TRep count() const 

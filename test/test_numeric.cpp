@@ -135,7 +135,6 @@ namespace
       CHECK_EQUAL(*c, v);
     }
 
-#if ETL_USING_STL
     //*************************************************************************
     TEST(test_midpoint_std_random_access_iterator)
     {
@@ -163,7 +162,6 @@ namespace
 
       CHECK_EQUAL(*c, v);
     }
-#endif
 
     //*************************************************************************
     TEST(test_lerp_floating_point)

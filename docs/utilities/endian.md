@@ -7,11 +7,11 @@ title: "endian"
   Since: `TBC`  
 {{< /callout >}}
 
-Constants & utilities for endianess.  
+Constants & utilities for endianness.  
 
 For endian specific integral types, see `unaligned_type`.  
 
-The values for endianness are dependant on the platform setup.
+The values for endianness are dependent on the platform setup.
 
 If `ETL_ENDIAN_NATIVE` is defined by the user, then  
 &emsp;`etl::endian::little = 0`  

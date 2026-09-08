@@ -1212,8 +1212,6 @@ namespace etl
 
     typedef pvoidvector base_t;
 
-    typedef typename etl::remove_const<typename etl::remove_pointer<T>::type>::type* element_type;
-
     template <typename TIterator>
     struct is_compatible_iterator
       : etl::bool_constant<etl::is_pointer<typename etl::iterator_traits<TIterator>::value_type>::value
@@ -1728,7 +1726,10 @@ namespace etl
     // Convert from pointer to void**
     static ETL_CONSTEXPR14 void** to_void_pptr(pointer p_buffer) ETL_NOEXCEPT
     {
-      return reinterpret_cast<void**>(const_cast<element_type*>(p_buffer));
+      ETL_STATIC_ASSERT(!etl::is_const<typename etl::remove_pointer<pointer>::type>::value,
+                        "to_void_pptr must not remove const from the pointed-to element type");
+
+      return static_cast<void**>(const_cast<void*>(static_cast<const void*>(p_buffer)));
     }
   };
 
@@ -1998,10 +1999,14 @@ namespace etl
   /// Make
   //*************************************************************************
 #if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
-  template <typename... T>
-  constexpr auto make_vector(T&&... t) -> etl::vector<typename etl::common_type_t<T...>, sizeof...(T)>
+  template <typename T = void, typename... TValues>
+  constexpr auto make_vector(TValues&&... values) -> etl::vector<etl::private_make::element_type_t<T, TValues...>, sizeof...(TValues)>
   {
-    return {etl::forward<T>(t)...};
+    // Library Fundamentals TS make_array design: the element type is T when
+    // supplied explicitly, otherwise the decayed common type of the arguments.
+    // convert forwards same-type arguments and static_casts the rest.
+    using TElement = etl::private_make::element_type_t<T, TValues...>;
+    return {etl::private_make::convert<TElement>(etl::forward<TValues>(values))...};
   }
 #endif
 

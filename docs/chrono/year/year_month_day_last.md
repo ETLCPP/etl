@@ -56,7 +56,7 @@ The year.
 
 ---
 
-```coo
+```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14 
 etl::chrono::month month() const 

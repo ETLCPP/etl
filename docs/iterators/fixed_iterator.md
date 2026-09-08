@@ -30,13 +30,13 @@ etl::fixed_iterator(const etl::fixed_iterator&);
 ```cpp
 Titerator get() const;
 ```
-**Decscription**  
+**Description**  
 Get the internal iterator.
 
 ```cpp
 void get(TIterator it);
 ```
-**Decscription**  
+**Description**  
 Set the iterator.
 
 ## Operators
@@ -44,7 +44,7 @@ Set the iterator.
 typename etl::iterator_traits<TIterator>::value_type operator *()
 const typename etl::iterator_traits<TIterator>::value_type operator *() const
 ```
-**Decscription**  
+**Description**  
 Dereference operators
 
 ---
@@ -53,7 +53,7 @@ Dereference operators
 TIterator operator ->()
 const TIterator operator ->() const
 ```
-**Decscription**  
+**Description**  
 Member dereference operators
 
 ---
@@ -61,7 +61,7 @@ Member dereference operators
 ```cpp
 operator TIterator() const
 ```
-**Decscription**  
+**Description**  
 Conversion operator
 
 ## Example

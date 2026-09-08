@@ -327,7 +327,7 @@ Inequality test for etl::to_arithmetic_result
 ```cpp
 template <typename T, typename U>
 ETL_CONSTEXPR14 bool operator !=(const T& lhs, 
-                                 const etl::to_arithmetic_result<T>& rhs)
+                                 const etl::to_arithmetic_result<U>& rhs)
 ```
 Inequality test for etl::to_arithmetic_result
 

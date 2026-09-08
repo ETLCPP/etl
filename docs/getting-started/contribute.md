@@ -30,7 +30,7 @@ Lower case class and function names, separated by an underscore.
 `funky_container`  
 `do_something`
 
-### Nameing convension
+### Naming convention
 Use the same naming convention as the STL.
 If appropriate for the class, a set of `typedef`s should often be present to define types such as...
 
@@ -159,7 +159,7 @@ class my_new_class
 ```
 
 ### Layout
-When possible, try to tabluate the initialisation of multiple variables. It's a lot easier to read.
+When possible, try to tabulate the initialisation of multiple variables. It's a lot easier to read.
 Don't be too strict about it, if it would result in giant amounts of whitespace.
 
 ```cpp
@@ -240,4 +240,4 @@ When opening a new pull request, ensure that you include the following informati
 - Branches should be based on the branch `master`.  
 `development` can change quite frequently, so I will rebase the your PR against it before merging.
 - For formatting help, you can use `clang-format`, or the convenience wrapper `treefmt`. See also [Source formatting]({{% relref "source-formatting.md" %}}).
-- Update the relevent documentation markdown file, found in `etl/docs`.
+- Update the relevant documentation markdown file, found in `etl/docs`.

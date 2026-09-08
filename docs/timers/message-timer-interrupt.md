@@ -193,7 +193,7 @@ Message3 message3;
 
 //***************************************************************************
 // The interrupt guard type.
-// Saves and disables on contruction.
+// Saves and disables on construction.
 // Restores on destruction.
 //***************************************************************************
 struct InterruptGuard

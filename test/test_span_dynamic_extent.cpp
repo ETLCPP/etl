@@ -984,6 +984,51 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_template_deduction_guide_for_std_vector)
+    {
+      std::vector<int>       data  = {1, 2, 3, 4};
+      const std::vector<int> data2 = {1, 2, 3, 4};
+
+      etl::span span  = data;
+      etl::span span2 = data2;
+
+      CHECK_EQUAL(etl::dynamic_extent, span.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data), span.size());
+      CHECK_EQUAL(etl::dynamic_extent, span2.extent);
+      CHECK_EQUAL(ETL_OR_STD17::size(data2), span2.size());
+
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span.front())>>));
+      CHECK((std::is_same_v<const int, std::remove_reference_t<decltype(span2.front())>>));
+    }
+
+    //*************************************************************************
+    TEST(test_template_deduction_guide_for_type_with_data_and_size)
+    {
+      struct DataAndSize
+      {
+        int  buffer[4] = {1, 2, 3, 4};
+        int* data()
+        {
+          return buffer;
+        }
+        size_t size() const
+        {
+          return 4U;
+        }
+
+        using value_type = int;
+      };
+
+      DataAndSize data;
+
+      etl::span span = data;
+
+      CHECK_EQUAL(etl::dynamic_extent, span.extent);
+      CHECK_EQUAL(data.size(), span.size());
+      CHECK((std::is_same_v<int, std::remove_reference_t<decltype(span.front())>>));
+    }
+
+    //*************************************************************************
     TEST(test_template_deduction_guide_for_iterators)
     {
       etl::array<int, 4U> data = {1, 2, 3, 4};

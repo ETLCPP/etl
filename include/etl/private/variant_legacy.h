@@ -468,7 +468,7 @@ namespace etl
       explicit variant(etl::in_place_index_t<Index>, T const& value)
         : type_id(Index)
       {
-        ETL_STATIC_ASSERT(Type_Id_Lookup<T>::type_id == Index, "Missmatched type");
+        ETL_STATIC_ASSERT(Type_Id_Lookup<T>::type_id == Index, "Mismatched type");
         ::new (static_cast<T*>(data)) T(value);
         type_id = Index;
       }

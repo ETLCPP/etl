@@ -15,7 +15,7 @@ struct timer
 {
   // Timer modes.
   struct mode
- {
+  {
     enum
     {
       SINGLE_SHOT = false,

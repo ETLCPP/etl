@@ -120,6 +120,147 @@ namespace
     std::string e;
   };
 
+  struct ExplicitValue
+  {
+    std::string v;
+
+    ExplicitValue() {}
+
+    explicit ExplicitValue(const std::string& v_)
+      : v(v_)
+    {
+    }
+  };
+
+  struct ExplicitError
+  {
+    std::string e;
+
+    ExplicitError() = default;
+
+    explicit ExplicitError(const std::string& e_)
+      : e(e_)
+    {
+    }
+  };
+
+  struct MoveOnlyValue
+  {
+    MoveOnlyValue()
+      : v(0)
+    {
+    }
+
+    explicit MoveOnlyValue(int v_)
+      : v(v_)
+    {
+    }
+
+    MoveOnlyValue(MoveOnlyValue&&)            = default;
+    MoveOnlyValue& operator=(MoveOnlyValue&&) = default;
+
+    MoveOnlyValue(const MoveOnlyValue&)            = delete;
+    MoveOnlyValue& operator=(const MoveOnlyValue&) = delete;
+
+    int v;
+  };
+
+  struct FromMoveOnlyValue
+  {
+    FromMoveOnlyValue()
+      : v(0)
+    {
+    }
+
+    FromMoveOnlyValue(MoveOnlyValue&& other)
+      : v(other.v)
+    {
+    }
+
+    int v;
+  };
+
+  struct NoMoveValue
+  {
+    explicit NoMoveValue(int v_)
+      : v(v_)
+    {
+    }
+
+    NoMoveValue(const NoMoveValue&) = default;
+    NoMoveValue(NoMoveValue&&)      = delete;
+
+    int v;
+  };
+
+  struct FromInt
+  {
+    FromInt()
+      : v(0)
+    {
+    }
+
+    FromInt(int v_)
+      : v(v_)
+    {
+    }
+
+    int v;
+  };
+
+  struct ErrorFromExpected
+  {
+    ErrorFromExpected() {}
+
+    ErrorFromExpected(int) {}
+
+    ErrorFromExpected(const etl::expected<int, int>&) {}
+  };
+
+  struct ImmobileValue
+  {
+    static int destructions;
+
+    explicit ImmobileValue(int v_)
+      : v(v_)
+    {
+    }
+
+    ImmobileValue(const ImmobileValue&) = delete;
+    ImmobileValue(ImmobileValue&&)      = delete;
+
+    ~ImmobileValue()
+    {
+      ++destructions;
+    }
+
+    int v;
+  };
+
+  int ImmobileValue::destructions = 0;
+
+  struct ImmobileError
+  {
+    static int destructions;
+
+    ImmobileError(int e_)
+      : e(e_)
+    {
+    }
+
+    ImmobileError(const ImmobileError&) = delete;
+    ImmobileError(ImmobileError&&)      = delete;
+
+    ~ImmobileError()
+    {
+      ++destructions;
+    }
+
+    int e;
+  };
+
+  int ImmobileError::destructions = 0;
+
   using Expected   = etl::expected<Value, Error>;
   using ExpectedV  = etl::expected<void, Error>;
   using ExpectedM  = etl::expected<ValueM, ErrorM>;
@@ -616,6 +757,20 @@ namespace
           (void)i;
         },
         etl::expected_invalid);
+    }
+
+    //*************************************************************************
+    // See https://github.com/ETLCPP/etl/issues/1532
+    TEST(test_dereference_const_and_rvalue_expected)
+    {
+      typedef etl::expected<int, const char*> Expected1532;
+
+      Expected1532        e  = 42;
+      const Expected1532& ce = e;
+
+      CHECK_EQUAL(42, *e);
+      CHECK_EQUAL(42, *ce);
+      CHECK_EQUAL(42, *Expected1532(42));
     }
 
     //*************************************************************************
@@ -1636,6 +1791,197 @@ namespace
 
       CHECK_FALSE(result.has_value());
       CHECK_EQUAL("original_transformed", result.error().e);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_from_value_convertible_to_value_type)
+    {
+      const Expected result = std::string("converted");
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("converted", result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_from_expected_with_convertible_types)
+    {
+      const etl::expected<std::string, std::string> source(std::string("converted"));
+
+      const Expected result(source);
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("converted", result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_from_expected_with_convertible_types_carries_error)
+    {
+      const etl::expected<std::string, std::string> source(etl::unexpected<std::string>(std::string("failed")));
+
+      const Expected result(source);
+
+      CHECK_FALSE(result.has_value());
+      CHECK_EQUAL("failed", result.error().e);
+    }
+
+    //*************************************************************************
+    TEST(test_value_type_constructible_from_expected_is_not_unwrapped)
+    {
+      struct WrapsExpected
+      {
+        WrapsExpected()
+          : wrapped(false)
+        {
+        }
+
+        WrapsExpected(const etl::expected<int, Error>&)
+          : wrapped(true)
+        {
+        }
+
+        explicit WrapsExpected(int)
+          : wrapped(false)
+        {
+        }
+
+        bool wrapped;
+      };
+
+      const etl::expected<int, Error> source(7);
+
+      const etl::expected<WrapsExpected, Error> result(source);
+
+      CHECK_TRUE(result.has_value());
+      CHECK_TRUE(result.value().wrapped);
+    }
+
+    //*************************************************************************
+    TEST(test_explicit_value_conversion_is_not_implicit)
+    {
+      using ExplicitExpected = etl::expected<ExplicitValue, Error>;
+
+      CHECK_TRUE((etl::is_constructible<ExplicitExpected, std::string>::value));
+      CHECK_FALSE((etl::is_convertible<std::string, ExplicitExpected>::value));
+
+      CHECK_TRUE((etl::is_convertible<std::string, Expected>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_explicit_value_conversion_is_available_by_direct_initialisation)
+    {
+      const etl::expected<ExplicitValue, Error> result(std::string("converted"));
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("converted", result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_explicit_error_conversion_is_not_implicit)
+    {
+      using Source           = etl::expected<std::string, std::string>;
+      using ExplicitExpected = etl::expected<Value, ExplicitError>;
+
+      CHECK_TRUE((etl::is_constructible<ExplicitExpected, const Source&>::value));
+      CHECK_FALSE((etl::is_convertible<const Source&, ExplicitExpected>::value));
+
+      CHECK_TRUE((etl::is_convertible<const Source&, Expected>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_explicit_error_conversion_carries_the_error)
+    {
+      const etl::expected<std::string, std::string> source(etl::unexpected<std::string>(std::string("failed")));
+
+      const etl::expected<Value, ExplicitError> result(source);
+
+      CHECK_FALSE(result.has_value());
+      CHECK_EQUAL("failed", result.error().e);
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_expected_with_convertible_types)
+    {
+      etl::expected<MoveOnlyValue, Error> source(MoveOnlyValue(1));
+
+      const etl::expected<FromMoveOnlyValue, Error> result(etl::move(source));
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(1, result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_move_constructor_from_expected_with_convertible_types_carries_error)
+    {
+      etl::expected<MoveOnlyValue, Error> source(etl::unexpected<Error>(Error("failed")));
+
+      const etl::expected<FromMoveOnlyValue, Error> result(etl::move(source));
+
+      CHECK_FALSE(result.has_value());
+      CHECK_EQUAL("failed", result.error().e);
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_from_value_does_not_require_a_move)
+    {
+      const etl::expected<NoMoveValue, Error> result(1);
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL(1, result.value().v);
+    }
+
+    //*************************************************************************
+    TEST(test_error_type_constructible_from_expected_is_not_converted)
+    {
+      using Source = etl::expected<int, int>;
+
+      CHECK_FALSE((etl::is_constructible<etl::expected<FromInt, ErrorFromExpected>, const Source&>::value));
+      CHECK_FALSE((etl::is_constructible<etl::expected<FromInt, ErrorFromExpected>, Source&&>::value));
+
+      CHECK_TRUE((etl::is_constructible<etl::expected<FromInt, FromInt>, const Source&>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_assign_from_value_convertible_to_value_type)
+    {
+      Expected result;
+
+      result = std::string("converted");
+
+      CHECK_TRUE(result.has_value());
+      CHECK_EQUAL("converted", result.value().v);
+    }
+    //*************************************************************************
+    TEST(test_conversion_into_an_immobile_value_constructs_in_place)
+    {
+      ImmobileValue::destructions = 0;
+
+      {
+        const etl::expected<int, Error> source(7);
+
+        const etl::expected<ImmobileValue, Error> result(source);
+
+        CHECK_TRUE(result.has_value());
+        CHECK_EQUAL(7, result.value().v);
+      }
+
+      CHECK_EQUAL(1, ImmobileValue::destructions);
+    }
+
+    //*************************************************************************
+    TEST(test_conversion_into_an_immobile_error_constructs_in_place)
+    {
+      ImmobileError::destructions = 0;
+
+      {
+        const etl::expected<int, int> source(etl::unexpected<int>(9));
+
+        const etl::expected<FromInt, ImmobileError> result(source);
+
+        CHECK_FALSE(result.has_value());
+        CHECK_EQUAL(9, result.error().e);
+      }
+
+      CHECK_EQUAL(1, ImmobileError::destructions);
     }
   }
 } // namespace

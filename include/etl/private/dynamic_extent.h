@@ -36,7 +36,10 @@ SOFTWARE.
 
 namespace etl
 {
-  static ETL_CONSTANT size_t dynamic_extent = etl::integral_limits<size_t>::max;
+  // ETL_INLINE_VAR gives external linkage in C++17 and later, so that etl::span,
+  // which references dynamic_extent in its public interface, can be exported from
+  // a C++20 named module without exposing a TU-local entity. See issue #1543.
+  ETL_INLINE_VAR ETL_CONSTANT size_t dynamic_extent = etl::integral_limits<size_t>::max;
 }
 
 #endif

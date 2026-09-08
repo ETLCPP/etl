@@ -248,15 +248,15 @@ namespace etl
   etl::optional<CustomType> read_unchecked<CustomType>(etl::bit_stream_reader& stream)
   {
     char c    = stream.read_unchecked<char, 7U>();
-    short s   = stream.read_unchecked<short , 11U>();
-    int32_t i = stream.read_unchecked<int32_t, 25U>();
+    short s   = stream.read_unchecked<short>(11U);
+    int32_t i = stream.read_unchecked<int32_t>(25U);
 
     return CustomType { c, s, i };
   }
 }
 
 std::array<char, 100U> storage; // Assume the buffer gets filled with bit stream data.
-etl::bit_stream_reader bit_stream(storage.data(), storage.size());
+etl::bit_stream_reader bit_stream(storage.data(), storage.size(), etl::bit_order::msb_first);
 
 // Read unchecked values from the stream.
 char c            = etl::read_unchecked<char>(bit_stream, 6U);

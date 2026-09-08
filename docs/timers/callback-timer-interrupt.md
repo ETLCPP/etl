@@ -196,7 +196,7 @@ Test test;
 
 //***************************************************************************
 // The interrupt guard type.
-// Saves and disables on contruction.
+// Saves and disables interrupts on construction.
 // Restores on destruction.
 //***************************************************************************
 struct InterruptGuard

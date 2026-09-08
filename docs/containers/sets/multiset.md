@@ -37,13 +37,13 @@ Defines data as an multiset of `int`, of length 8, containing the supplied data.
 ```cpp
 template <typename TKey, 
           typename TKeyCompare = etl::less<TKey>, 
-          typename... TPairs>
-constexpr auto make_set(TValues&&... values)
+          typename... T>
+constexpr auto make_multiset(T&&... keys) -> etl::multiset<TKey, sizeof...(T), TKeyCompare>
 ```
 
 ### Example
 ```cpp
-auto data = etl::make_set<int>(0, 1, 2, 3, 4, 5, 6, 7);
+auto data = etl::make_multiset<int>(0, 1, 2, 3, 4, 5, 6, 7);
 ```
 
 ## Member types

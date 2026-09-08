@@ -38,13 +38,23 @@ Defines data as an array of 'int', of length '10', containing the supplied data.
 **C++11 and above**
 
 ```cpp
-template <typename T, typename... TValues>
-constexpr auto make_array(TValues&&... values)
+template <typename T = void, typename... TValues>
+constexpr auto make_array(TValues&&... values) -> etl::array</*element-type*/, sizeof...(TValues)>
 ```
+
+The element type is `T` when supplied, otherwise the decayed common type of
+the arguments (the Library Fundamentals TS `make_array` design). An empty
+array requires the element type to be supplied explicitly, e.g.
+`etl::make_array<int>()`; a call with neither an element type nor arguments
+is ill-formed, as there is nothing to deduce the element type from.
 
 ### Example
 ```cpp
-auto data = etl::make_array<int>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+// Deduced element type: etl::array<int, 10>.
+auto data = etl::make_array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+// Explicit element type: etl::array<char, 10>. Each argument is converted.
+auto chars = etl::make_array<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 ```
 
 ## Member types
@@ -314,3 +324,42 @@ operator >=
 ```
 **Description**  
 `true` if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise `false`.
+
+---
+
+```cpp
+template <size_t Index, typename T, size_t Size>
+T& get(etl::array<T, Size>& a)
+
+template <size_t Index, typename T, size_t Size>
+const T& get(const etl::array<T, Size>& a)
+```
+**Description**  
+Gets a reference to the element at `Index` in the array.
+
+## Structured bindings
+`etl::array` provides the tuple-like interface required for C++17 structured bindings.
+
+```cpp
+etl::array<int, 3> a = { 1, 2, 3 };
+
+auto& [x, y, z] = a; // x, y, z are references to a[0], a[1], a[2]
+```
+
+```cpp
+template <typename T, size_t Size>
+struct tuple_size<etl::array<T, Size>>
+```
+**Description**  
+Gets the number of elements in the array.  
+Specialised in namespaces `etl` and `std` (the `std` specialisation allows the use of C++ structured bindings).
+
+---
+
+```cpp
+template <size_t Index, typename T, size_t Size>
+struct tuple_element<Index, etl::array<T, Size>>
+```
+**Description**  
+Gets the type of the element at `Index` in the array.  
+Specialised in namespaces `etl` and `std` (the `std` specialisation allows the use of C++ structured bindings).

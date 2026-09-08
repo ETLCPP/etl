@@ -322,6 +322,26 @@ namespace
   };
 
   //*********************************************
+  // Copy constructible, but copy assignment is deleted.
+  struct CopyConstructibleNonCopyAssignable
+  {
+    CopyConstructibleNonCopyAssignable()                                                     = default;
+    CopyConstructibleNonCopyAssignable(const CopyConstructibleNonCopyAssignable&)            = default;
+    CopyConstructibleNonCopyAssignable& operator=(const CopyConstructibleNonCopyAssignable&) = delete;
+  };
+
+  //*********************************************
+  // Move constructible, but move assignment is deleted.
+  struct MoveConstructibleNonMoveAssignable
+  {
+    MoveConstructibleNonMoveAssignable()                                                     = default;
+    MoveConstructibleNonMoveAssignable(MoveConstructibleNonMoveAssignable&&)                 = default;
+    MoveConstructibleNonMoveAssignable& operator=(MoveConstructibleNonMoveAssignable&&)      = delete;
+    MoveConstructibleNonMoveAssignable(const MoveConstructibleNonMoveAssignable&)            = delete;
+    MoveConstructibleNonMoveAssignable& operator=(const MoveConstructibleNonMoveAssignable&) = delete;
+  };
+
+  //*********************************************
   // Trivially destructible, but non-copyable and non-movable.
   // Exercises the trivially-destructible (variadic_union) emplace path.
   struct TrivialNonMovable
@@ -419,6 +439,109 @@ namespace
     const NonAddressable* operator&() const = delete;
 
     int value;
+  };
+
+  //*********************************************
+  // Non-trivially destructible type whose copy/move ASSIGNMENT has a
+  // distinguishable effect from copy/move CONSTRUCTION. Used to verify that
+  // same-type variant assignment dispatches through the alternative's own
+  // assignment operator (no destroy + reconstruct). Exercises the
+  // uninitialized_buffer (non-trivial) path.
+  struct AssignTracker
+  {
+    AssignTracker(int value_)
+      : value(value_)
+      , constructed(true)
+      , copy_assigned(false)
+      , move_assigned(false)
+    {
+    }
+
+    AssignTracker(const AssignTracker& other)
+      : value(other.value)
+      , constructed(true)
+      , copy_assigned(false)
+      , move_assigned(false)
+    {
+    }
+
+    AssignTracker(AssignTracker&& other)
+      : value(other.value)
+      , constructed(true)
+      , copy_assigned(false)
+      , move_assigned(false)
+    {
+    }
+
+    ~AssignTracker() {}
+
+    AssignTracker& operator=(const AssignTracker& rhs)
+    {
+      value         = rhs.value;
+      copy_assigned = true;
+      move_assigned = false;
+      return *this;
+    }
+
+    AssignTracker& operator=(AssignTracker&& rhs)
+    {
+      value         = rhs.value;
+      copy_assigned = false;
+      move_assigned = true;
+      return *this;
+    }
+
+    int  value;
+    bool constructed;
+    bool copy_assigned;
+    bool move_assigned;
+  };
+
+  //*********************************************
+  // Trivially destructible variant of AssignTracker (no user destructor) that
+  // exercises the trivially-destructible (variadic_union) path.
+  struct TrivialAssignTracker
+  {
+    TrivialAssignTracker(int value_)
+      : value(value_)
+      , copy_assigned(false)
+      , move_assigned(false)
+    {
+    }
+
+    TrivialAssignTracker(const TrivialAssignTracker& other)
+      : value(other.value)
+      , copy_assigned(false)
+      , move_assigned(false)
+    {
+    }
+
+    TrivialAssignTracker(TrivialAssignTracker&& other)
+      : value(other.value)
+      , copy_assigned(false)
+      , move_assigned(false)
+    {
+    }
+
+    TrivialAssignTracker& operator=(const TrivialAssignTracker& rhs)
+    {
+      value         = rhs.value;
+      copy_assigned = true;
+      move_assigned = false;
+      return *this;
+    }
+
+    TrivialAssignTracker& operator=(TrivialAssignTracker&& rhs)
+    {
+      value         = rhs.value;
+      copy_assigned = false;
+      move_assigned = true;
+      return *this;
+    }
+
+    int  value;
+    bool copy_assigned;
+    bool move_assigned;
   };
 } // namespace
 
@@ -559,6 +682,26 @@ struct etl::is_move_constructible<NonTrivialNonMovable> : public etl::false_type
 
 template <>
 struct etl::is_move_constructible<NonAddressable> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_copy_constructible<AssignTracker> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<AssignTracker> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_copy_constructible<TrivialAssignTracker> : public etl::true_type
+{
+};
+
+template <>
+struct etl::is_move_constructible<TrivialAssignTracker> : public etl::true_type
 {
 };
   #endif
@@ -954,6 +1097,71 @@ namespace
     }
   #endif
 
+  #if ETL_USING_EXCEPTIONS
+    //*************************************************************************
+    // A throwing emplace() must leave the variant valueless-after-exception
+    // (index() == variant_npos) rather than reporting the stale old index.
+    struct ThrowOnConstruct
+    {
+      struct exception
+      {
+      };
+
+      ThrowOnConstruct() = default;
+      explicit ThrowOnConstruct(int)
+      {
+        throw exception();
+      }
+    };
+
+    TEST(test_emplace_throwing_is_valueless_by_exception)
+    {
+      // Trivially destructible suite (variadic_union storage).
+      {
+        etl::variant<int, ThrowOnConstruct> v;
+        v.emplace<int>(42);
+        CHECK(!v.valueless_by_exception());
+        CHECK_EQUAL(0U, v.index());
+
+        bool threw = false;
+        try
+        {
+          v.emplace<ThrowOnConstruct>(1);
+        }
+        catch (const ThrowOnConstruct::exception&)
+        {
+          threw = true;
+        }
+
+        CHECK(threw);
+        CHECK(v.valueless_by_exception());
+        CHECK_EQUAL(etl::variant_npos, v.index());
+      }
+
+      // Non-trivially destructible suite (uninitialized_buffer storage).
+      {
+        etl::variant<std::string, ThrowOnConstruct> v;
+        v.emplace<std::string>("Some Text");
+        CHECK(!v.valueless_by_exception());
+        CHECK_EQUAL(0U, v.index());
+
+        bool threw = false;
+        try
+        {
+          v.emplace<1>(1);
+        }
+        catch (const ThrowOnConstruct::exception&)
+        {
+          threw = true;
+        }
+
+        CHECK(threw);
+        CHECK(v.valueless_by_exception());
+        CHECK_EQUAL(etl::variant_npos, v.index());
+      }
+    }
+  #endif
+
     //*************************************************************************
     TEST(test_copy_constructor)
     {
@@ -997,6 +1205,175 @@ namespace
       test_variant_etl_3 variant_2_etl(etl::move(variant_1_etl));
 
       CHECK_EQUAL(variant_1_etl.index(), variant_2_etl.index());
+    }
+
+    //*************************************************************************
+    // Issue #1512: a variant must only be copy constructible / copy assignable
+    // when every alternative is copy constructible. Moveable is move-only
+    // (its copy operations are deleted), so a variant containing it must not
+    // be copyable, while remaining move constructible / move assignable.
+    TEST(test_copy_disabled_with_non_copyable_alternative)
+    {
+      typedef etl::variant<int, Moveable> non_copyable_variant;
+
+      CHECK(!etl::is_copy_constructible<non_copyable_variant>::value);
+      CHECK(!etl::is_copy_assignable<non_copyable_variant>::value);
+      CHECK(etl::is_move_constructible<non_copyable_variant>::value);
+      CHECK(etl::is_move_assignable<non_copyable_variant>::value);
+
+      // A variant of purely copyable alternatives must remain copyable.
+      typedef etl::variant<int, Copyable> copyable_variant;
+
+      CHECK(etl::is_copy_constructible<copyable_variant>::value);
+      CHECK(etl::is_copy_assignable<copyable_variant>::value);
+    }
+
+    //*************************************************************************
+    // A non-copy-assignable alternative must disable the variant's copy
+    // assignment operator, and a non-move-assignable alternative must disable
+    // the variant's move assignment operator, while leaving the corresponding
+    // constructors available.
+    TEST(test_assignment_disabled_with_non_assignable_alternative)
+    {
+      typedef etl::variant<int, CopyConstructibleNonCopyAssignable> copy_non_assignable_variant;
+
+      CHECK(etl::is_copy_constructible<copy_non_assignable_variant>::value);
+      CHECK(!etl::is_copy_assignable<copy_non_assignable_variant>::value);
+
+      typedef etl::variant<int, MoveConstructibleNonMoveAssignable> move_non_assignable_variant;
+
+      CHECK(etl::is_move_constructible<move_non_assignable_variant>::value);
+      CHECK(!etl::is_move_assignable<move_non_assignable_variant>::value);
+    }
+
+    //*************************************************************************
+    // When source and destination hold the SAME alternative, assignment must
+    // dispatch through that alternative's own assignment operator rather than
+    // destroying and reconstructing it. Non-trivially-destructible path.
+    TEST(test_copy_assign_same_type_uses_alternative_assignment)
+    {
+      typedef etl::variant<int, AssignTracker> tracker_variant;
+
+      tracker_variant variant_1(etl::in_place_type_t<AssignTracker>{}, 1);
+      tracker_variant variant_2(etl::in_place_type_t<AssignTracker>{}, 2);
+
+      variant_1 = variant_2;
+
+      CHECK_EQUAL(1U, variant_1.index());
+      CHECK_EQUAL(2, etl::get<AssignTracker>(variant_1).value);
+      CHECK(etl::get<AssignTracker>(variant_1).copy_assigned);
+      CHECK(!etl::get<AssignTracker>(variant_1).move_assigned);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assign_same_type_uses_alternative_assignment)
+    {
+      typedef etl::variant<int, AssignTracker> tracker_variant;
+
+      tracker_variant variant_1(etl::in_place_type_t<AssignTracker>{}, 1);
+      tracker_variant variant_2(etl::in_place_type_t<AssignTracker>{}, 2);
+
+      variant_1 = etl::move(variant_2);
+
+      CHECK_EQUAL(1U, variant_1.index());
+      CHECK_EQUAL(2, etl::get<AssignTracker>(variant_1).value);
+      CHECK(!etl::get<AssignTracker>(variant_1).copy_assigned);
+      CHECK(etl::get<AssignTracker>(variant_1).move_assigned);
+    }
+
+    //*************************************************************************
+    // When source and destination hold DIFFERENT alternatives, assignment must
+    // still destroy and reconstruct.
+    TEST(test_copy_assign_different_type_reconstructs)
+    {
+      typedef etl::variant<int, AssignTracker> tracker_variant;
+
+      tracker_variant variant_1(etl::in_place_type_t<int>{}, 5);
+      tracker_variant variant_2(etl::in_place_type_t<AssignTracker>{}, 2);
+
+      variant_1 = variant_2;
+
+      CHECK_EQUAL(1U, variant_1.index());
+      CHECK_EQUAL(2, etl::get<AssignTracker>(variant_1).value);
+      CHECK(etl::get<AssignTracker>(variant_1).constructed);
+      CHECK(!etl::get<AssignTracker>(variant_1).copy_assigned);
+      CHECK(!etl::get<AssignTracker>(variant_1).move_assigned);
+    }
+
+    //*************************************************************************
+    // Same as above but for the trivially-destructible (variadic_union) path.
+    TEST(test_assign_same_type_uses_alternative_assignment_trivial)
+    {
+      typedef etl::variant<int, TrivialAssignTracker> tracker_variant;
+
+      tracker_variant variant_1(etl::in_place_type_t<TrivialAssignTracker>{}, 1);
+      tracker_variant variant_2(etl::in_place_type_t<TrivialAssignTracker>{}, 2);
+
+      variant_1 = variant_2;
+
+      CHECK_EQUAL(1U, variant_1.index());
+      CHECK_EQUAL(2, etl::get<TrivialAssignTracker>(variant_1).value);
+      CHECK(etl::get<TrivialAssignTracker>(variant_1).copy_assigned);
+      CHECK(!etl::get<TrivialAssignTracker>(variant_1).move_assigned);
+
+      tracker_variant variant_3(etl::in_place_type_t<TrivialAssignTracker>{}, 3);
+      variant_1 = etl::move(variant_3);
+
+      CHECK_EQUAL(1U, variant_1.index());
+      CHECK_EQUAL(3, etl::get<TrivialAssignTracker>(variant_1).value);
+      CHECK(etl::get<TrivialAssignTracker>(variant_1).move_assigned);
+    }
+
+    //*************************************************************************
+    // Issue #1567: the variant propagates trivial copyability from its
+    // alternatives, as required by P0602R4.
+    TEST(test_trivially_copyable)
+    {
+      // Fundamental types are trivially copyable in every ETL configuration.
+      CHECK((std::is_trivially_copyable<etl::variant<char, int, double> >::value));
+      CHECK((std::is_trivially_copy_constructible<etl::variant<char, int, double> >::value));
+      CHECK((std::is_trivially_move_constructible<etl::variant<char, int, double> >::value));
+      CHECK((std::is_trivially_copy_assignable<etl::variant<char, int, double> >::value));
+      CHECK((std::is_trivially_move_assignable<etl::variant<char, int, double> >::value));
+
+      // An alternative that is not trivially copyable prevents propagation.
+      CHECK((!std::is_trivially_copyable<etl::variant<int, AssignTracker> >::value));
+
+      // The variant still copies and moves correctly.
+      typedef etl::variant<char, int, double> trivial_variant;
+
+      trivial_variant variant_1(1.5);
+      trivial_variant variant_2(variant_1);
+      CHECK_EQUAL(2U, variant_2.index());
+      CHECK_EQUAL(1.5, etl::get<double>(variant_2));
+
+      trivial_variant variant_3;
+      variant_3 = variant_2;
+      CHECK_EQUAL(2U, variant_3.index());
+      CHECK_EQUAL(1.5, etl::get<double>(variant_3));
+    }
+
+    //*************************************************************************
+    // Issue #1512: even though the copy operations are disabled at compile
+    // time, a move-only variant must still move construct / move assign
+    // correctly, preserving the active alternative.
+    TEST(test_move_only_variant_moves_correctly)
+    {
+      typedef etl::variant<int, Moveable> non_copyable_variant;
+
+      non_copyable_variant variant_1(etl::in_place_type_t<Moveable>{});
+      CHECK_EQUAL(1U, variant_1.index());
+
+      // Move construction preserves the active alternative.
+      non_copyable_variant variant_2(etl::move(variant_1));
+      CHECK_EQUAL(1U, variant_2.index());
+      CHECK(etl::get<Moveable>(variant_2).moved_to);
+
+      // Move assignment preserves the active alternative.
+      non_copyable_variant variant_3;
+      variant_3 = etl::move(variant_2);
+      CHECK_EQUAL(1U, variant_3.index());
+      CHECK(etl::get<Moveable>(variant_3).moved_to);
     }
 
     //*************************************************************************

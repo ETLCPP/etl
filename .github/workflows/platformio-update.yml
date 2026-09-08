@@ -4,13 +4,17 @@ on:
   release:
     types: [published]  # Trigger only when a GitHub release is published
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
 
       - name: Set up Python
         uses: actions/setup-python@v5

@@ -311,7 +311,7 @@ namespace
       CHECK_EQUAL(0U, data.size());
       CHECK_EQUAL(initial_data.size(), other_data.size());
 
-      bool is_equal = std::equal(data.begin(), data.end(), other_data.begin());
+      bool is_equal = std::equal(initial_data.begin(), initial_data.end(), other_data.begin());
       CHECK(is_equal);
     }
 

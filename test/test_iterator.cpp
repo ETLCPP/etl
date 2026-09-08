@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include <algorithm>
+#include <forward_list>
 #include <list>
 #include <queue>
 #include <string>
@@ -1418,6 +1419,55 @@ namespace
       non_random_sentinel<int> bound(&data[1]);
       non_random_iterator<int> result = etl::ranges::next(itr, -7, bound);
       CHECK_EQUAL(1, *result);
+    }
+
+    //*************************************************************************
+    // etl::ranges::distance(first, last)
+    //*************************************************************************
+    TEST(ranges_distance_iterator_sentinel)
+    {
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      CHECK_EQUAL(10, etl::ranges::distance(&data[0], &data[10]));
+      CHECK_EQUAL(4, etl::ranges::distance(&data[3], &data[7]));
+      CHECK_EQUAL(0, etl::ranges::distance(&data[3], &data[3]));
+
+      non_random_iterator<int> first(&data[0]);
+      non_random_sentinel<int> last(&data[6]);
+      CHECK_EQUAL(6, etl::ranges::distance(first, last));
+    }
+
+    //*************************************************************************
+    // etl::ranges::distance(range)
+    //*************************************************************************
+    TEST(ranges_distance_range_with_size_member)
+    {
+      std::vector<int> data = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      CHECK_EQUAL(10, etl::ranges::distance(data));
+
+      const std::vector<int>& cdata = data;
+      CHECK_EQUAL(10, etl::ranges::distance(cdata));
+
+      std::vector<int> empty_data;
+      CHECK_EQUAL(0, etl::ranges::distance(empty_data));
+    }
+
+    //*************************************************************************
+    TEST(ranges_distance_c_array)
+    {
+      int data[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      CHECK_EQUAL(10, etl::ranges::distance(data));
+    }
+
+    //*************************************************************************
+    TEST(ranges_distance_range_without_size_member)
+    {
+      std::forward_list<int> data = {0, 1, 2, 3, 4};
+
+      CHECK_EQUAL(5, etl::ranges::distance(data));
+      CHECK_EQUAL(etl::ranges::distance(data.begin(), data.end()), etl::ranges::distance(data));
     }
 
     TEST(test_is_range)

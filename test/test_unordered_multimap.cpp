@@ -1243,5 +1243,28 @@ namespace
       CHECK_TRUE(data.contains("FF"));
       CHECK_FALSE(data.contains(not_inserted));
     }
+
+    //*************************************************************************
+#if ETL_USING_CPP11 && ETL_HAS_INITIALIZER_LIST
+    // Arguments that are const-qualified lvalues of the pair type must be
+    // accepted. Guards against the defect fixed for make_array and make_deque,
+    // which forwarded each argument as the element type rather than as its own
+    // deduced type and so rejected const lvalues.
+    TEST(test_make_unordered_multimap_from_const_lvalues_of_pair_type)
+    {
+      using Pair = ETL_OR_STD::pair<const char, int>;
+
+      static const Pair static_const_lvalue('a', 0);
+      const Pair        local_const_lvalue('b', 1);
+      Pair              mutable_lvalue('c', 2);
+
+      auto data = etl::make_unordered_multimap<char, int>(static_const_lvalue, local_const_lvalue, mutable_lvalue);
+
+      CHECK_EQUAL(3U, data.size());
+      CHECK_EQUAL(0, data.find('a')->second);
+      CHECK_EQUAL(1, data.find('b')->second);
+      CHECK_EQUAL(2, data.find('c')->second);
+    }
+#endif
   }
 } // namespace

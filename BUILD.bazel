@@ -20,13 +20,22 @@ package(default_visibility = ["//visibility:public"])
 #         strip_include_prefix = ".",
 #     )
 #
-# The default is empty, so ETL's built-in defaults are used unless overridden.
+# The default of this label_flag is incompatible. This makes sure that the consumer
+# explicitly sets a profile, even if it is the `no_profile` defined below.
+
 label_flag(
     name = "etl_profile",
-    build_setting_default = ":no_profile",
+    build_setting_default = ":incompatible_profile",
 )
 
 cc_library(name = "no_profile")
+
+cc_library(
+    name = "incompatible_profile",
+    target_compatible_with = [
+        "@platforms//:incompatible",
+    ],
+)
 
 cc_library(
     name = "etl",

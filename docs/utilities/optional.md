@@ -222,6 +222,64 @@ bool has_value() const
 Checks whether *this is in a valid state, i.e. whether the contained value is initialised.
 Returns `true` if valid, otherwise `false`.
 
+## Monadic operations
+C++11 and above.
+
+Each operation is supplied as four reference qualified overloads (`&`, `const&`, `&&`, `const&&`),
+so that the contained value is passed to the supplied callable with the value category of `*this`.
+
+```cpp
+template <typename F>
+etl::optional<U> transform(F&& f)
+```
+**Description**  
+If `*this` contains a value, returns an `etl::optional<U>` containing the result of invoking `f`
+with the contained value, otherwise returns an empty `etl::optional<U>`.
+
+`U` is the result type of `f`, with any reference and cv qualification removed.
+
+### Note
+Unlike `std::optional::transform`, which only removes cv qualification, a callable returning a
+reference is accepted, and the referenced value is copied into the resulting optional.
+
+---
+
+```cpp
+template <typename F>
+U and_then(F&& f)
+```
+**Description**  
+If `*this` contains a value, returns the result of invoking `f` with the contained value,
+otherwise returns an empty `U`.
+
+`U` is the result type of `f`, with any reference and cv qualification removed, and must be an
+`etl::optional`. The overload takes no part in overload resolution otherwise.
+
+---
+
+```cpp
+template <typename F>
+U or_else(F&& f)
+```
+**Description**  
+If `*this` contains a value, returns a copy of `*this`, otherwise returns the result of invoking
+`f` with no arguments.
+
+`U` is the result type of `f`, with any reference and cv qualification removed, and must be an
+`etl::optional` whose `value_type` is `T`. The overload takes no part in overload resolution
+otherwise.
+
+### Example
+
+```cpp
+etl::optional<int> opt = 6;
+
+etl::optional<double> result = opt.and_then([](int i) { return i > 0 ? etl::optional<int>(i * 2) : etl::optional<int>(); })
+                                  .or_else([]() { return etl::optional<int>(1); })
+                                  .transform([](int i) { return double(i) / 2.0; });
+// result contains 6.0
+```
+
 ## Non-member functions
 
 ```cpp
@@ -269,3 +327,15 @@ operator >=
 ```
 **Description**  
 `true` if the contents of the lhs are lexicographically greater than or equal to the contents of the rhs, otherwise `false`.
+
+---
+
+```cpp
+template <typename T>
+struct etl::is_optional;
+
+template <typename T>
+inline constexpr bool etl::is_optional_v; // C++17 and above
+```
+**Description**  
+`true` if `T` is an `etl::optional`, otherwise `false`. Any cv qualification on `T` is ignored.

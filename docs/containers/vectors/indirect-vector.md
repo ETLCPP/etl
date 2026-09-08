@@ -42,6 +42,26 @@ etl::indirect_vector data{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 ```
 Defines data as an `indirect_vector` of `int`, of length `10`, containing the supplied data.
 
+## Make template
+**C++11 and above**
+```cpp
+template <typename T = void, typename... TValues>
+constexpr auto make_indirect_vector(TValues&&... values)
+  -> etl::indirect_vector</*element-type*/, sizeof...(TValues)>
+```
+
+The element type is `T` when supplied, otherwise the decayed common type of
+the arguments (the Library Fundamentals TS `make_array` design).
+
+### Example
+```cpp
+// Deduced element type: etl::indirect_vector<int, 10>.
+auto data = etl::make_indirect_vector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+// Explicit element type: etl::indirect_vector<char, 10>. Each argument is converted.
+auto chars = etl::make_indirect_vector<char>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+```
+
 ## Member types
 
 ```cpp

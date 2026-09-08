@@ -13,7 +13,7 @@ This code demonstrates using the delegate service for five example ARM interrupt
 `Timer3` has no entry in the callback service and will therefore trigger execution of the unhandled handler.  
 
 `USART1` and `USART2` interrupts are handled by instances of `Uart`.  
-There callbacks are defined withing the class and are initialised in the `Uart` constructor.  
+Their callbacks are defined within the class and are initialised in the `Uart` constructor.  
 
 ```cpp
 #include <iostream>
@@ -137,7 +137,7 @@ Uart  uart1(0, USART1_IRQ_HANDLER);
 Uart  uart2(1, USART2_IRQ_HANDLER);
 
 // Declare a global callback for the timer.
-// Uses the most efficient callback type for a class, as everthing is known at compile time.
+// Uses the most efficient callback type for a class, as everything is known at compile time.
 etl::delegate<void(size_t)> timer_member_callback = 
     etl::delegate<void(size_t)>::create<Timer, timer, &Timer::InterruptHandler>();
 

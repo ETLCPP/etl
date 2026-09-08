@@ -261,6 +261,8 @@ namespace
       return (lhs.value < rhs.k.value);
     }
 
+    static_assert(etl::is_same<etl::iflat_set<int>, etl::iflat_set<int, etl::less<int>>>::value, "default compare is not less");
+
     //*************************************************************************
     struct SetupFixture
     {
@@ -1289,6 +1291,34 @@ namespace
       CHECK_EQUAL(NDC("E"), *itr);
       ++itr;
       CHECK_EQUAL(NDC("F"), *itr);
+    }
+#endif
+
+    //*************************************************************************
+#if ETL_HAS_INITIALIZER_LIST
+    // Arguments that are const-qualified lvalues of the key type must be
+    // accepted. Guards against the defect fixed for make_array and make_deque,
+    // which forwarded each argument as the element type rather than as its own
+    // deduced type and so rejected const lvalues.
+    TEST_FIXTURE(SetupFixture, test_make_flat_set_from_const_lvalues_of_key_type)
+    {
+      static const char static_const_lvalue = 42;
+      const char        local_const_lvalue  = 43;
+      char              mutable_lvalue      = 44;
+
+      auto data = etl::make_flat_set<char>(static_const_lvalue, local_const_lvalue, mutable_lvalue);
+
+      auto v     = *data.begin();
+      using Type = decltype(v);
+      CHECK((std::is_same<char, Type>::value));
+
+      decltype(data)::const_iterator itr = data.begin();
+
+      CHECK_EQUAL(42, *itr);
+      ++itr;
+      CHECK_EQUAL(43, *itr);
+      ++itr;
+      CHECK_EQUAL(44, *itr);
     }
 #endif
 

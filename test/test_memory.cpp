@@ -138,6 +138,33 @@ namespace
     }
   };
 
+#if ETL_USING_CPP11
+  // A trivially copyable type that can be copy constructed but not copy
+  // assigned. It must use the placement-new uninitialized algorithm path.
+  struct CopyConstructOnly
+  {
+    int value;
+
+    CopyConstructOnly() = default;
+
+    CopyConstructOnly(const CopyConstructOnly&)            = default;
+    CopyConstructOnly& operator=(const CopyConstructOnly&) = delete;
+  };
+
+  // A trivially copyable type that can be move constructed but not move
+  // assigned. It must use the placement-new uninitialized algorithm path.
+  struct MoveConstructOnly
+  {
+    int value;
+
+    MoveConstructOnly() = default;
+
+    MoveConstructOnly(const MoveConstructOnly&)       = delete;
+    MoveConstructOnly(MoveConstructOnly&&)            = default;
+    MoveConstructOnly& operator=(MoveConstructOnly&&) = delete;
+  };
+#endif
+
   //***********************************
   template <typename T>
   struct NoDelete
@@ -545,6 +572,59 @@ namespace
       etl::destroy(p, p + SIZE, count);
       CHECK_EQUAL(0U, count);
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_uninitialized_algorithms_use_construction_when_assignment_is_deleted)
+    {
+      CopyConstructOnly copy_source[2];
+      copy_source[0].value = 1;
+      copy_source[1].value = 2;
+
+      alignas(CopyConstructOnly) unsigned char copy_storage[sizeof(CopyConstructOnly) * 2U];
+      CopyConstructOnly*                       copy_destination = reinterpret_cast<CopyConstructOnly*>(copy_storage);
+
+      etl::uninitialized_copy(copy_source, copy_source + 2, copy_destination);
+      CHECK_EQUAL(1, copy_destination[0].value);
+      CHECK_EQUAL(2, copy_destination[1].value);
+
+      alignas(CopyConstructOnly) unsigned char fill_storage[sizeof(CopyConstructOnly) * 2U];
+      CopyConstructOnly*                       fill_destination = reinterpret_cast<CopyConstructOnly*>(fill_storage);
+
+      etl::uninitialized_fill(fill_destination, fill_destination + 2, copy_source[0]);
+      CHECK_EQUAL(1, fill_destination[0].value);
+      CHECK_EQUAL(1, fill_destination[1].value);
+
+      alignas(CopyConstructOnly) unsigned char value_storage[sizeof(CopyConstructOnly) * 2U];
+      CopyConstructOnly*                       value_destination = reinterpret_cast<CopyConstructOnly*>(value_storage);
+
+      etl::uninitialized_value_construct(value_destination, value_destination + 2);
+      CHECK_EQUAL(0, value_destination[0].value);
+      CHECK_EQUAL(0, value_destination[1].value);
+
+      MoveConstructOnly move_source[2];
+      move_source[0].value = 3;
+      move_source[1].value = 4;
+
+      alignas(MoveConstructOnly) unsigned char move_storage[sizeof(MoveConstructOnly) * 2U];
+      MoveConstructOnly*                       move_destination = reinterpret_cast<MoveConstructOnly*>(move_storage);
+
+      etl::uninitialized_move(move_source, move_source + 2, move_destination);
+      CHECK_EQUAL(3, move_destination[0].value);
+      CHECK_EQUAL(4, move_destination[1].value);
+
+      MoveConstructOnly move_n_source[2];
+      move_n_source[0].value = 5;
+      move_n_source[1].value = 6;
+
+      alignas(MoveConstructOnly) unsigned char move_n_storage[sizeof(MoveConstructOnly) * 2U];
+      MoveConstructOnly*                       move_n_destination = reinterpret_cast<MoveConstructOnly*>(move_n_storage);
+
+      etl::uninitialized_move_n(move_n_source, 2U, move_n_destination);
+      CHECK_EQUAL(5, move_n_destination[0].value);
+      CHECK_EQUAL(6, move_n_destination[1].value);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_uninitialized_default_construct_n_trivial)

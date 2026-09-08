@@ -295,6 +295,47 @@ namespace etl
 
     typedef typename etl::parameter_type<T>::type parameter_t;
 
+    //*********************************************************************
+    /// Compares a pointer to an element (as stored in 'lookup') against a
+    /// key, allowing binary searches directly over the random-access
+    /// 'lookup' container instead of the bidirectional iterator/const_iterator.
+    //*********************************************************************
+    class Compare
+    {
+    public:
+
+      Compare(const TKeyCompare& comp_)
+        : comp(comp_)
+      {
+      }
+
+      bool operator()(const value_type* element, parameter_t key) const
+      {
+        return comp(*element, key);
+      }
+
+      bool operator()(parameter_t key, const value_type* element) const
+      {
+        return comp(key, *element);
+      }
+
+#if ETL_USING_CPP11
+      template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+      bool operator()(const value_type* element, const K& key) const
+      {
+        return comp(*element, key);
+      }
+
+      template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
+      bool operator()(const K& key, const value_type* element) const
+      {
+        return comp(key, *element);
+      }
+#endif
+
+      const TKeyCompare& comp;
+    };
+
   public:
 
     typedef ETL_OR_STD::reverse_iterator<iterator>                   reverse_iterator;
@@ -581,13 +622,14 @@ namespace etl
     //*********************************************************************
     iterator find(parameter_t key)
     {
-      iterator itr = etl::lower_bound(begin(), end(), key, compare);
+      Compare                     ptr_compare(compare);
+      typename lookup_t::iterator itr = etl::lower_bound(lookup.begin(), lookup.end(), key, ptr_compare);
 
-      if (itr != end())
+      if (itr != lookup.end())
       {
-        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
+        if (!compare(**itr, key) && !compare(key, **itr))
         {
-          return itr;
+          return iterator(itr);
         }
         else
         {
@@ -603,13 +645,14 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     iterator find(const K& key)
     {
-      iterator itr = etl::lower_bound(begin(), end(), key, compare);
+      Compare                     ptr_compare(compare);
+      typename lookup_t::iterator itr = etl::lower_bound(lookup.begin(), lookup.end(), key, ptr_compare);
 
-      if (itr != end())
+      if (itr != lookup.end())
       {
-        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
+        if (!compare(**itr, key) && !compare(key, **itr))
         {
-          return itr;
+          return iterator(itr);
         }
         else
         {
@@ -628,13 +671,14 @@ namespace etl
     //*********************************************************************
     const_iterator find(parameter_t key) const
     {
-      const_iterator itr = etl::lower_bound(begin(), end(), key, compare);
+      Compare                           ptr_compare(compare);
+      typename lookup_t::const_iterator itr = etl::lower_bound(lookup.cbegin(), lookup.cend(), key, ptr_compare);
 
-      if (itr != end())
+      if (itr != lookup.cend())
       {
-        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
+        if (!compare(**itr, key) && !compare(key, **itr))
         {
-          return itr;
+          return const_iterator(itr);
         }
         else
         {
@@ -650,13 +694,14 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     const_iterator find(const K& key) const
     {
-      const_iterator itr = etl::lower_bound(begin(), end(), key, compare);
+      Compare                           ptr_compare(compare);
+      typename lookup_t::const_iterator itr = etl::lower_bound(lookup.cbegin(), lookup.cend(), key, ptr_compare);
 
-      if (itr != end())
+      if (itr != lookup.cend())
       {
-        if (!key_compare()(*itr, key) && !key_compare()(key, *itr))
+        if (!compare(**itr, key) && !compare(key, **itr))
         {
-          return itr;
+          return const_iterator(itr);
         }
         else
         {
@@ -694,7 +739,8 @@ namespace etl
     //*********************************************************************
     iterator lower_bound(parameter_t key)
     {
-      return etl::lower_bound(begin(), end(), key, compare);
+      Compare ptr_compare(compare);
+      return iterator(etl::lower_bound(lookup.begin(), lookup.end(), key, ptr_compare));
     }
 
 #if ETL_USING_CPP11
@@ -702,7 +748,8 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     iterator lower_bound(const K& key)
     {
-      return etl::lower_bound(begin(), end(), key, compare);
+      Compare ptr_compare(compare);
+      return iterator(etl::lower_bound(lookup.begin(), lookup.end(), key, ptr_compare));
     }
 #endif
 
@@ -713,7 +760,8 @@ namespace etl
     //*********************************************************************
     const_iterator lower_bound(parameter_t key) const
     {
-      return etl::lower_bound(cbegin(), cend(), key, compare);
+      Compare ptr_compare(compare);
+      return const_iterator(etl::lower_bound(lookup.cbegin(), lookup.cend(), key, ptr_compare));
     }
 
 #if ETL_USING_CPP11
@@ -721,7 +769,8 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     const_iterator lower_bound(const K& key) const
     {
-      return etl::lower_bound(cbegin(), cend(), key, compare);
+      Compare ptr_compare(compare);
+      return const_iterator(etl::lower_bound(lookup.cbegin(), lookup.cend(), key, ptr_compare));
     }
 #endif
 
@@ -732,7 +781,8 @@ namespace etl
     //*********************************************************************
     iterator upper_bound(parameter_t key)
     {
-      return etl::upper_bound(begin(), end(), key, compare);
+      Compare ptr_compare(compare);
+      return iterator(etl::upper_bound(lookup.begin(), lookup.end(), key, ptr_compare));
     }
 
 #if ETL_USING_CPP11
@@ -740,7 +790,8 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     iterator upper_bound(const K& key)
     {
-      return etl::upper_bound(begin(), end(), key, compare);
+      Compare ptr_compare(compare);
+      return iterator(etl::upper_bound(lookup.begin(), lookup.end(), key, ptr_compare));
     }
 #endif
 
@@ -751,7 +802,8 @@ namespace etl
     //*********************************************************************
     const_iterator upper_bound(parameter_t key) const
     {
-      return etl::upper_bound(cbegin(), cend(), key, compare);
+      Compare ptr_compare(compare);
+      return const_iterator(etl::upper_bound(lookup.cbegin(), lookup.cend(), key, ptr_compare));
     }
 
 #if ETL_USING_CPP11
@@ -759,7 +811,8 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     const_iterator upper_bound(const K& key) const
     {
-      return etl::upper_bound(cbegin(), cend(), key, compare);
+      Compare ptr_compare(compare);
+      return const_iterator(etl::upper_bound(lookup.cbegin(), lookup.cend(), key, ptr_compare));
     }
 #endif
 
@@ -770,7 +823,11 @@ namespace etl
     //*********************************************************************
     ETL_OR_STD::pair<iterator, iterator> equal_range(parameter_t key)
     {
-      return etl::equal_range(begin(), end(), key, compare);
+      Compare                     ptr_compare(compare);
+      typename lookup_t::iterator i_lower = etl::lower_bound(lookup.begin(), lookup.end(), key, ptr_compare);
+      typename lookup_t::iterator i_upper = etl::upper_bound(i_lower, lookup.end(), key, ptr_compare);
+
+      return ETL_OR_STD::make_pair(iterator(i_lower), iterator(i_upper));
     }
 
 #if ETL_USING_CPP11
@@ -778,7 +835,11 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_OR_STD::pair<iterator, iterator> equal_range(const K& key)
     {
-      return etl::equal_range(begin(), end(), key, compare);
+      Compare                     ptr_compare(compare);
+      typename lookup_t::iterator i_lower = etl::lower_bound(lookup.begin(), lookup.end(), key, ptr_compare);
+      typename lookup_t::iterator i_upper = etl::upper_bound(i_lower, lookup.end(), key, ptr_compare);
+
+      return ETL_OR_STD::make_pair(iterator(i_lower), iterator(i_upper));
     }
 #endif
 
@@ -789,7 +850,11 @@ namespace etl
     //*********************************************************************
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(parameter_t key) const
     {
-      return etl::upper_bound(cbegin(), cend(), key, compare);
+      Compare                           ptr_compare(compare);
+      typename lookup_t::const_iterator i_lower = etl::lower_bound(lookup.cbegin(), lookup.cend(), key, ptr_compare);
+      typename lookup_t::const_iterator i_upper = etl::upper_bound(i_lower, lookup.cend(), key, ptr_compare);
+
+      return ETL_OR_STD::make_pair(const_iterator(i_lower), const_iterator(i_upper));
     }
 
 #if ETL_USING_CPP11
@@ -797,7 +862,11 @@ namespace etl
     template <typename K, typename KC = TKeyCompare, etl::enable_if_t<comparator_is_transparent<KC>::value, int> = 0>
     ETL_OR_STD::pair<const_iterator, const_iterator> equal_range(const K& key) const
     {
-      return etl::upper_bound(cbegin(), cend(), key, compare);
+      Compare                           ptr_compare(compare);
+      typename lookup_t::const_iterator i_lower = etl::lower_bound(lookup.cbegin(), lookup.cend(), key, ptr_compare);
+      typename lookup_t::const_iterator i_upper = etl::upper_bound(i_lower, lookup.cend(), key, ptr_compare);
+
+      return ETL_OR_STD::make_pair(const_iterator(i_lower), const_iterator(i_upper));
     }
 #endif
 
