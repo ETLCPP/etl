@@ -7,8 +7,7 @@ A special thank you to all of our past and current sponsors. Your generosity dir
 
 While this tool is openly available, keeping it secure and production-ready takes significant time. A portion of our user base includes global enterprise teams using this ETL for mission-critical pipelines. If your organization relies on this tool daily, please consider supporting its sustainability.  
 
-*I know enterprise procurement can be tricky. If your company requires custom invoicing or formal paperwork to approve open-source funding, please visit our  
-[Is the ETL free?](https://www.etlcpp.com/docs/is-the-etl-free) page for hassle-free corporate setup guidelines.*
+*I know enterprise procurement can be tricky. If your company requires custom invoicing or formal paperwork to approve open-source funding, please visit our [Is the ETL free?](https://www.etlcpp.com/docs/is-the-etl-free) page for hassle-free corporate setup guidelines.*
 
 ## Companies
 ### Inspiro
