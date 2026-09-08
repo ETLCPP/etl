@@ -41,7 +41,7 @@ Click on the links to see the original Github page.
 [#1544](https://github.com/ETLCPP/etl/pull/1544) Various cleanup
 [#1545](https://github.com/ETLCPP/etl/pull/1545) Add etl::`is_standard_layout` and other type traits according to std
 [#1546](https://github.com/ETLCPP/etl/pull/1546) Fix `delegate` clear through assignment
-[#1548](https://github.com/ETLCPP/etl/pull/1548) `delegate`: restore argument deduction behaviour- #1548
+[#1548](https://github.com/ETLCPP/etl/pull/1548) `delegate`: restore argument deduction behaviour
 [#1550](https://github.com/ETLCPP/etl/pull/1550) Add span deduction guide for types with `data()` and `size()`
 [#1552](https://github.com/ETLCPP/etl/pull/1552) Add Macro for Inline Control
 [#1553](https://github.com/ETLCPP/etl/pull/1553) Adopt the Library Fundamentals TS `make_array` design for the sequence factories
@@ -76,6 +76,7 @@ Click on the links to see the original Github page.
 [#1588](https://github.com/ETLCPP/etl/pull/1588) Optimize `format.h`
 [#1589](https://github.com/ETLCPP/etl/pull/1589) Fix MSVC C4244 warning in format specifiers
 [#1591](https://github.com/ETLCPP/etl/pull/1591) Fix false positive warning from GCC 16
+[#1595](https://github.com/ETLCPP/etl/pull/1595) Support runtime floating-point clamped_value before C++20
 
 ## 20.48.1
 
