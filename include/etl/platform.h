@@ -113,6 +113,16 @@ SOFTWARE.
 #endif
 
 //*************************************
+// Helper macros for ETL_NO_STD_SEMAPHORE.
+#if defined(ETL_NO_STD_SEMAPHORE)
+  #define ETL_USING_STD_SEMAPHORE     0
+  #define ETL_NOT_USING_STD_SEMAPHORE 1
+#else
+  #define ETL_USING_STD_SEMAPHORE     1
+  #define ETL_NOT_USING_STD_SEMAPHORE 0
+#endif
+
+//*************************************
 // Helper macros for ETL_STLPORT.
 #if defined(ETL_STLPORT)
   #define ETL_USING_STLPORT     1
