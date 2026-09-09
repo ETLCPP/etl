@@ -3764,6 +3764,7 @@
     <ClInclude Include="..\..\include\etl\bloom_filter.h" />
     <ClInclude Include="..\..\include\etl\char_traits.h" />
     <ClInclude Include="..\..\include\etl\checksum.h" />
+    <ClInclude Include="..\..\include\etl\clamped_value.h" />
     <ClInclude Include="..\..\include\etl\cyclic_value.h" />
     <ClInclude Include="..\..\include\etl\debounce.h" />
     <ClInclude Include="..\..\include\etl\debug_count.h" />
@@ -6303,6 +6304,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03 - No virtual messages|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\clamped_value.h.t.cpp" />
     <ClCompile Include="..\syntax_check\cyclic_value.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang C++20|Win32'">true</ExcludedFromBuild>
@@ -10446,6 +10448,7 @@
     <ClCompile Include="..\test_compare.cpp" />
     <ClCompile Include="..\test_constant.cpp" />
     <ClCompile Include="..\test_container.cpp" />
+    <ClCompile Include="..\test_clamped_value.cpp" />
     <ClCompile Include="..\test_cyclic_value.cpp" />
     <ClCompile Include="..\test_debounce.cpp" />
     <ClCompile Include="..\test_deque.cpp">

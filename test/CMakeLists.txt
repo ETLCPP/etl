@@ -163,6 +163,7 @@ add_executable(etl_tests
 	test_crc8_opensafety.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
+	test_clamped_value.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
@@ -497,6 +498,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+#			-fmax-errors=10
 			-pedantic-errors
 			-Wall
 			-Wextra
@@ -517,6 +519,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+#			-ferror-limit=10
 			-pedantic-errors
 			-Wall
 			-Wextra
