@@ -526,7 +526,8 @@ namespace etl
 #if ETL_USING_BUILTIN_BIT_CAST
         ETL_CONSTEXPR14
 #endif
-        void copy_value_to_store(const T& value, pointer store)
+        void
+        copy_value_to_store(const T& value, pointer store)
       {
 #if ETL_USING_BUILTIN_BIT_CAST
         typedef typename private_unaligned_type::use_bit_cast<sizeof(T)>::type use_bit_cast_t;
@@ -570,7 +571,8 @@ namespace etl
 #if ETL_USING_BUILTIN_BIT_CAST
         ETL_CONSTEXPR14
 #endif
-        void copy_store_to_value(const_pointer store, T & value)
+        void
+        copy_store_to_value(const_pointer store, T & value)
       {
 #if ETL_USING_BUILTIN_BIT_CAST
         typedef typename private_unaligned_type::use_bit_cast<sizeof(T)>::type use_bit_cast_t;
@@ -586,7 +588,8 @@ namespace etl
 #if ETL_USING_BUILTIN_BIT_CAST
         ETL_CONSTEXPR14
 #endif
-        T value_from(const_pointer store)
+        T
+        value_from(const_pointer store)
       {
         T value = T();
 
