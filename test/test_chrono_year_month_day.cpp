@@ -98,7 +98,7 @@ namespace
       CHECK_FALSE(ymd.ok()); // Invalid year_month_day
     }
 
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20
     //*************************************************************************
     TEST(test_year_month_day_spaceship_operator)
     {
@@ -107,13 +107,13 @@ namespace
       Chrono::year_month_day ym3{Chrono::year(2000), Chrono::February, Chrono::day(1)};
       Chrono::year_month_day ym4{Chrono::year(2000), Chrono::January, Chrono::day(2)};
 
-      CHECK_TRUE((ym1 <=> ym1) == std::strong_ordering::equal);
-      CHECK_TRUE((ym1 <=> ym2) == std::strong_ordering::less);
-      CHECK_TRUE((ym2 <=> ym1) == std::strong_ordering::greater);
-      CHECK_TRUE((ym1 <=> ym3) == std::strong_ordering::less);
-      CHECK_TRUE((ym3 <=> ym1) == std::strong_ordering::greater);
-      CHECK_TRUE((ym1 <=> ym4) == std::strong_ordering::less);
-      CHECK_TRUE((ym4 <=> ym1) == std::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym1) == etl::strong_ordering::equal);
+      CHECK_TRUE((ym1 <=> ym2) == etl::strong_ordering::less);
+      CHECK_TRUE((ym2 <=> ym1) == etl::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym3) == etl::strong_ordering::less);
+      CHECK_TRUE((ym3 <=> ym1) == etl::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym4) == etl::strong_ordering::less);
+      CHECK_TRUE((ym4 <=> ym1) == etl::strong_ordering::greater);
     }
 #endif
 
