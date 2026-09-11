@@ -89,7 +89,7 @@ namespace
       CHECK_FALSE(md.ok()); // Invalid month_day
     }
 
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20
     //*************************************************************************
     TEST(test_month_day_spaceship_operator)
     {
@@ -97,9 +97,15 @@ namespace
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
       Chrono::month_day md3{Chrono::January, Chrono::day{15}};
 
+  #if ETL_USING_STL
       CHECK_TRUE((md1 <=> md3) == std::strong_ordering::equal);   // Same month and day
       CHECK_TRUE((md1 <=> md2) == std::strong_ordering::less);    // Different month and day
       CHECK_TRUE((md2 <=> md1) == std::strong_ordering::greater); // Same month and day
+  #else
+      CHECK_TRUE((md1 <=> md3) == etl::strong_ordering::equal);   // Same month and day
+      CHECK_TRUE((md1 <=> md2) == etl::strong_ordering::less);    // Different month and day
+      CHECK_TRUE((md2 <=> md1) == etl::strong_ordering::greater); // Same month and day
+  #endif
     }
 #endif
 

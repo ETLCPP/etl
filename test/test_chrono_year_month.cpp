@@ -89,7 +89,7 @@ namespace
       CHECK_FALSE(ym.ok()); // Invalid year_month
     }
 
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20
     //*************************************************************************
     TEST(test_year_month_spaceship_operator)
     {
@@ -97,11 +97,19 @@ namespace
       Chrono::year_month ym2{Chrono::year(2001), Chrono::January};
       Chrono::year_month ym3{Chrono::year(2000), Chrono::February};
 
+  #if ETL_USING_STL
       CHECK_TRUE((ym1 <=> ym1) == std::strong_ordering::equal);
       CHECK_TRUE((ym1 <=> ym2) == std::strong_ordering::less);
       CHECK_TRUE((ym2 <=> ym1) == std::strong_ordering::greater);
       CHECK_TRUE((ym1 <=> ym3) == std::strong_ordering::less);
       CHECK_TRUE((ym3 <=> ym1) == std::strong_ordering::greater);
+  #else
+      CHECK_TRUE((ym1 <=> ym1) == etl::strong_ordering::equal);
+      CHECK_TRUE((ym1 <=> ym2) == etl::strong_ordering::less);
+      CHECK_TRUE((ym2 <=> ym1) == etl::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym3) == etl::strong_ordering::less);
+      CHECK_TRUE((ym3 <=> ym1) == etl::strong_ordering::greater);
+  #endif
     }
 #endif
 
