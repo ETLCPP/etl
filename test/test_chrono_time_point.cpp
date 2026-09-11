@@ -365,7 +365,7 @@ namespace
       CHECK_FALSE(tp10d >= tp20h);
       CHECK_FALSE(tp10h >= tp20d);
 
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20
       CHECK_TRUE((tp10h <=> tp10h) == 0);
       CHECK_TRUE((tp10h <=> tp20h) < 0);
       CHECK_TRUE((tp20h <=> tp10h) > 0);
@@ -377,6 +377,12 @@ namespace
       CHECK_TRUE((tp10d <=> tp10h) == 0);
       CHECK_TRUE((tp10h <=> tp20d) < 0);
       CHECK_TRUE((tp20d <=> tp10h) > 0);
+
+  #if ETL_USING_STL
+      static_assert(etl::is_same<decltype(tp10h <=> tp20d), std::strong_ordering>::value, "Must return std::strong_ordering");
+  #else
+      static_assert(etl::is_same<decltype(tp10h <=> tp20d), etl::strong_ordering>::value, "Must return etl::strong_ordering");
+  #endif
 #endif
     }
 

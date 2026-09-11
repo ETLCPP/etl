@@ -42,6 +42,44 @@ SOFTWARE.
 //*****************************************************************************
 namespace etl
 {
+#if ETL_USING_CPP20 && ETL_NOT_USING_STL
+  //***************************************************************************
+  /// Minimal ordering category for C++20 three-way comparisons when STL is
+  /// unavailable.
+  //***************************************************************************
+  class strong_ordering
+  {
+  public:
+
+    enum value_t
+    {
+      less       = -1,
+      equal      = 0,
+      equivalent = 0,
+      greater    = 1
+    };
+
+    ETL_CONSTEXPR14 strong_ordering(value_t value_) ETL_NOEXCEPT
+      : value(static_cast<int>(value_))
+    {
+    }
+
+    ETL_CONSTEXPR14 operator int() const ETL_NOEXCEPT
+    {
+      return value;
+    }
+
+  private:
+
+    int value;
+  };
+
+  ETL_CONSTEXPR14 inline strong_ordering make_strong_ordering(int value) ETL_NOEXCEPT
+  {
+    return (value < 0) ? strong_ordering::less : (value > 0) ? strong_ordering::greater : strong_ordering::equal;
+  }
+#endif
+
   //***************************************************************************
   /// Defines <=, >, >=, ==, !=, <=> in terms of <
   /// Default implementation of TLess is etl::less
