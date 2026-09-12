@@ -303,7 +303,7 @@ namespace
       CHECK_TRUE(month1 >= month1);
       CHECK_TRUE(month2 >= month1);
 
-#if ETL_USING_CPP20
+#if ETL_USING_CPP20 && ETL_USING_STL
       CHECK_TRUE((month1 <=> month1) == 0);
       CHECK_TRUE((month1 <=> month2) < 0);
       CHECK_TRUE((month2 <=> month1) > 0);

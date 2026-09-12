@@ -284,7 +284,7 @@ namespace
       CHECK_FALSE(year10 == year20);
       CHECK_TRUE(year10 != year20);
 
-#if ETL_USING_CPP20
+#if ETL_USING_CPP20 && ETL_USING_STL
       CHECK_TRUE((year10 <=> year10) == 0);
       CHECK_TRUE((year10 <=> year20) < 0);
       CHECK_TRUE((year20 <=> year10) > 0);
