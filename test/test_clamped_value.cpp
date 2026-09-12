@@ -531,5 +531,157 @@ namespace
     }
   #endif
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_referenced_clamped_value_uses_shared_range)
+    {
+      const etl::clamped_value_range<int> range(2, 7);
+      etl::referenced_clamped_value<int>  value1(range, 1);
+      etl::referenced_clamped_value<int>  value2(range, 8);
+
+      CHECK_EQUAL(2, value1.get());
+      CHECK_EQUAL(7, value2.get());
+      CHECK_EQUAL(2, value1.min());
+      CHECK_EQUAL(7, value1.max());
+      CHECK_EQUAL(&range, &value1.range());
+      CHECK_EQUAL(&range, &value2.range());
+    }
+
+    //*************************************************************************
+    TEST(test_referenced_clamped_value_arithmetic_saturates)
+    {
+      const etl::clamped_value_range<int> range(-2, 3);
+      etl::referenced_clamped_value<int>  value(range, 0);
+
+      value += 2;
+      CHECK_EQUAL(2, value.get());
+      ++value;
+      ++value;
+      CHECK_EQUAL(3, value.get());
+      value -= 4;
+      CHECK_EQUAL(-1, value.get());
+      --value;
+      --value;
+      CHECK_EQUAL(-2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_referenced_clamped_value_modifiers_and_postfix_operators)
+    {
+      const etl::clamped_value_range<int> range(2, 7);
+      etl::referenced_clamped_value<int>  value(range);
+
+      CHECK_EQUAL(2, value.get());
+      value.set(4);
+      CHECK_EQUAL(4, value.get());
+
+      etl::referenced_clamped_value<int> previous = value++;
+      CHECK_EQUAL(4, previous.get());
+      CHECK_EQUAL(5, value.get());
+
+      previous = value--;
+      CHECK_EQUAL(5, previous.get());
+      CHECK_EQUAL(4, value.get());
+
+      value.to_max();
+      CHECK_EQUAL(7, value.get());
+      value.to_min();
+      CHECK_EQUAL(2, value.get());
+
+      value = 100;
+      CHECK_EQUAL(7, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_referenced_clamped_value_default_range_and_comparisons)
+    {
+      const etl::clamped_value_range<int> default_range;
+      const etl::clamped_value_range<int> range(0, 10);
+      etl::referenced_clamped_value<int>  value1(range, 3);
+      etl::referenced_clamped_value<int>  value2(range, 4);
+      const int                           converted = value1;
+
+      CHECK_EQUAL(etl::numeric_limits<int>::lowest(), default_range.min());
+      CHECK_EQUAL(etl::numeric_limits<int>::max(), default_range.max());
+      CHECK_EQUAL(3, converted);
+      CHECK(value1 == value1);
+      CHECK(value1 != value2);
+      CHECK(value1 < value2);
+      CHECK(value1 <= value2);
+      CHECK(value2 > value1);
+      CHECK(value2 >= value1);
+      CHECK(value1 < 4);
+      CHECK(3 == value1);
+    }
+
+    //*************************************************************************
+    TEST(test_referenced_clamped_value_copy_assignment_and_swap_ranges)
+    {
+      const etl::clamped_value_range<int> range1(0, 10);
+      const etl::clamped_value_range<int> range2(20, 30);
+      etl::referenced_clamped_value<int>  value1(range1, 4);
+      etl::referenced_clamped_value<int>  value2(range2, 24);
+
+      etl::referenced_clamped_value<int> copy(value1);
+      CHECK_EQUAL(&range1, &copy.range());
+      CHECK_EQUAL(4, copy.get());
+
+      copy = value2;
+      CHECK_EQUAL(&range2, &copy.range());
+      CHECK_EQUAL(24, copy.get());
+
+      swap(value1, value2);
+      CHECK_EQUAL(&range2, &value1.range());
+      CHECK_EQUAL(24, value1.get());
+      CHECK_EQUAL(&range1, &value2.range());
+      CHECK_EQUAL(4, value2.get());
+    }
+
+    //*************************************************************************
+    TEST(test_referenced_clamped_value_rejects_invalid_range)
+    {
+      CHECK_THROW((etl::clamped_value_range<int>(7, 2)), etl::exception);
+    }
+
+    //*************************************************************************
+    TEST(test_referenced_clamped_value_rejects_temporary_range)
+    {
+      typedef etl::clamped_value_range<int>      range_type;
+      typedef etl::referenced_clamped_value<int> value_type;
+
+      CHECK_FALSE((etl::is_constructible<value_type, range_type&&>::value));
+      CHECK_FALSE((etl::is_constructible<value_type, range_type&&, int>::value));
+    }
+
+  #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+    //*************************************************************************
+    TEST(test_referenced_floating_clamped_value)
+    {
+      const etl::clamped_value_range<float> range(-1.5F, 2.5F);
+      etl::referenced_clamped_value<float>  value(range, 0.5F);
+
+      value += 1.25F;
+      CHECK_CLOSE(1.75F, value.get(), 0.0001F);
+      value.advance(10.0F);
+      CHECK_CLOSE(2.5F, value.get(), 0.0001F);
+    }
+
+    //*************************************************************************
+    TEST(test_referenced_floating_clamped_value_rejects_nan)
+    {
+      const float nan = etl::numeric_limits<float>::quiet_NaN();
+
+      CHECK_THROW((etl::clamped_value_range<float>(nan, 1.0F)), etl::exception);
+
+      const etl::clamped_value_range<float> range(-1.0F, 1.0F);
+      CHECK_THROW((etl::referenced_clamped_value<float>(range, nan)), etl::exception);
+
+      etl::referenced_clamped_value<float> value(range, 0.0F);
+      CHECK_THROW(value = nan, etl::exception);
+      CHECK_THROW(value.advance(nan), etl::exception);
+    }
+  #endif
+#endif
   }
 } // namespace
