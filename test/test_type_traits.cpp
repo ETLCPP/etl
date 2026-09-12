@@ -355,8 +355,8 @@ namespace
 #endif
 } // namespace
 
-// Definitions for when the STL and compiler built-ins are not available.
-#if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+// Definitions for when the STL is not available.
+#if ETL_NOT_USING_STL
 
 using etl::is_assignable;
 using etl::is_constructible;
@@ -2621,7 +2621,7 @@ namespace
     //*************************************************************************
     TEST(test_is_lvalue_assignable)
     {
-#if ETL_USING_STL || defined(ETL_USE_TYPE_TRAITS_BUILTINS) || defined(ETL_USER_DEFINED_TYPE_TRAITS)
+#if ETL_USING_STL || defined(ETL_USER_DEFINED_TYPE_TRAITS)
   #if ETL_USING_CPP17
       CHECK((etl::is_lvalue_assignable_v<Copyable, Copyable>));
       CHECK(!(etl::is_lvalue_assignable_v<Moveable, Moveable>));

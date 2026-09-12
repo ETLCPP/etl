@@ -12,11 +12,6 @@ else()
 	message(STATUS "Compiling for STL")
 endif()
 
-if (ETL_USE_TYPE_TRAITS_BUILTINS)
-	message(STATUS "Compiling for built-in type traits")
-	add_definitions(-DETL_USE_TYPE_TRAITS_BUILTINS)
-endif()
-
 if (ETL_USER_DEFINED_TYPE_TRAITS)
 	message(STATUS "Compiling for user defined type traits")
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)

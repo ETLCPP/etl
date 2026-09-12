@@ -132,14 +132,7 @@ namespace etl
   #endif
     ETL_STATIC_ASSERT(!etl::is_void<T>::value, "etl::launder argument must not be a void type");
 
-  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
-    #if __has_builtin(__builtin_launder)
-    return __builtin_launder(p);
-    #else
-    return p;
-    #endif
-  #elif ETL_USING_GCC_COMPILER && (ETL_COMPILER_FULL_VERSION >= 70000)
-    // GCC 7, 8 and 9 provide __builtin_launder but not __has_builtin.
+  #if ETL_USING_BUILTIN_LAUNDER
     return __builtin_launder(p);
   #else
     return p;
@@ -400,12 +393,8 @@ namespace etl
   template <size_t N, typename T>
   ETL_NODISCARD ETL_CONSTEXPR T* assume_aligned(T* ptr) ETL_NOEXCEPT
   {
-  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
-    #if __has_builtin(__builtin_assume_aligned)
+  #if ETL_USING_BUILTIN_ASSUME_ALIGNED
     return static_cast<T*>(__builtin_assume_aligned(ptr, N));
-    #else
-    return ptr;
-    #endif
   #else
     return ptr;
   #endif
