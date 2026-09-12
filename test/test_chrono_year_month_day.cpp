@@ -98,7 +98,7 @@ namespace
       CHECK_FALSE(ymd.ok()); // Invalid year_month_day
     }
 
-#if ETL_USING_CPP20
+#if ETL_USING_CPP20 && ETL_USING_STL
     //*************************************************************************
     TEST(test_year_month_day_spaceship_operator)
     {
