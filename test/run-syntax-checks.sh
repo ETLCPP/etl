@@ -148,6 +148,7 @@ RunCheck()
 	local msg=$2
 	local no_stl=$3
 	local force_03=$4
+	local build_dir=$5
 	local disable_builtins=$5
 	local build_dir=$6
 
@@ -192,6 +193,21 @@ RunStandard()
 	cxx_standard=$std
 
 	# GCC configurations
+	RunCheck gcc "STL"                   OFF OFF bgcc
+	RunCheck gcc "No STL"                ON  OFF bgcc
+
+	if [ "$has_force_03" = "1" ]; then
+		RunCheck gcc "STL - Force C++03"        OFF ON bgcc
+		RunCheck gcc "No STL - Force C++03"     ON  ON bgcc
+	fi
+
+	# Clang configurations
+	RunCheck clang "STL"                   OFF OFF bclang
+	RunCheck clang "No STL"                ON  OFF bclang
+
+	if [ "$has_force_03" = "1" ]; then
+		RunCheck clang "STL - Force C++03"        OFF ON bclang
+		RunCheck clang "No STL - Force C++03"     ON  ON bclang
 	RunCheck gcc "STL"                   OFF OFF OFF bgcc
 	RunCheck gcc "No STL"                ON  OFF OFF bgcc
 
