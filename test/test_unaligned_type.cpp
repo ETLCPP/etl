@@ -283,6 +283,210 @@ namespace
     }
 
     //*************************************************************************
+    /// Unsigned integers that have no native equivalent, such as 24 bit.
+    //*************************************************************************
+    TEST(test_uint24)
+    {
+      CHECK_EQUAL(3U, sizeof(etl::le_uint24_t));
+      CHECK_EQUAL(3U, sizeof(etl::be_uint24_t));
+      CHECK_EQUAL(3U, size_t(etl::le_uint24_t::Size));
+
+      CHECK((etl::is_same<uint32_t, etl::le_uint24_t::value_type>::value));
+      CHECK_EQUAL(uint32_t(0x00FFFFFF), etl::le_uint24_t::Max_Value);
+
+      etl::le_uint24_t le_v(0x123456U);
+      etl::be_uint24_t be_v(0x123456U);
+
+      CHECK_EQUAL(uint32_t(0x123456), le_v.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v.value());
+
+      // Check the storage byte order.
+      CHECK_EQUAL(0x56, int(le_v.data()[0]));
+      CHECK_EQUAL(0x34, int(le_v.data()[1]));
+      CHECK_EQUAL(0x12, int(le_v.data()[2]));
+
+      CHECK_EQUAL(0x12, int(be_v.data()[0]));
+      CHECK_EQUAL(0x34, int(be_v.data()[1]));
+      CHECK_EQUAL(0x56, int(be_v.data()[2]));
+
+      // Copy construction, including from the other endianness.
+      etl::le_uint24_t le_v2(le_v);
+      etl::be_uint24_t be_v2(be_v);
+      etl::le_uint24_t le_v3(be_v);
+      etl::be_uint24_t be_v3(le_v);
+
+      CHECK_EQUAL(uint32_t(0x123456), le_v2.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v2.value());
+      CHECK_EQUAL(uint32_t(0x123456), le_v3.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v3.value());
+
+      // Assignment.
+      le_v2 = 0xFFFFFFU;
+      be_v2 = 0xFFFFFFU;
+      CHECK_EQUAL(uint32_t(0xFFFFFF), le_v2.value());
+      CHECK_EQUAL(uint32_t(0xFFFFFF), be_v2.value());
+
+      // Boundary values.
+      etl::le_uint24_t le_zero(0U);
+      etl::be_uint24_t be_zero(0U);
+      CHECK_EQUAL(uint32_t(0), le_zero.value());
+      CHECK_EQUAL(uint32_t(0), be_zero.value());
+
+      // Values that do not fit are truncated, like a narrowing cast.
+      etl::le_uint24_t le_truncated(0xAB123456U);
+      etl::be_uint24_t be_truncated(0xAB123456U);
+      CHECK_EQUAL(uint32_t(0x123456), le_truncated.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_truncated.value());
+    }
+
+    //*************************************************************************
+    TEST(test_uint24_decode_buffer)
+    {
+      const std::array<unsigned char, 4> buffer = {0xAA, 0xBB, 0xCC, 0xDD};
+
+      etl::le_uint24_t le_v(buffer.data(), buffer.size());
+      etl::be_uint24_t be_v(buffer.data(), buffer.size());
+
+      CHECK_EQUAL(uint32_t(0xCCBBAA), le_v.value());
+      CHECK_EQUAL(uint32_t(0xAABBCC), be_v.value());
+
+      // One byte short.
+      CHECK_THROW(etl::le_uint24_t le_short(buffer.data(), 2U), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_uint24_t be_short(buffer.data(), 2U), etl::unaligned_type_buffer_size);
+    }
+
+#if ETL_USING_64BIT_TYPES
+    //*************************************************************************
+    TEST(test_uint40_uint48_uint56)
+    {
+      CHECK_EQUAL(5U, sizeof(etl::be_uint40_t));
+      CHECK_EQUAL(6U, sizeof(etl::be_uint48_t));
+      CHECK_EQUAL(7U, sizeof(etl::be_uint56_t));
+
+      etl::be_uint48_t be_v(0x0123456789ABULL);
+      etl::le_uint48_t le_v(0x0123456789ABULL);
+
+      CHECK_EQUAL(uint64_t(0x0123456789AB), be_v.value());
+      CHECK_EQUAL(uint64_t(0x0123456789AB), le_v.value());
+
+      CHECK_EQUAL(0x01, int(be_v.data()[0]));
+      CHECK_EQUAL(0xAB, int(le_v.data()[0]));
+
+      CHECK_EQUAL(uint64_t(0x000000FFFFFFFFFF), etl::be_uint40_t::Max_Value);
+      CHECK_EQUAL(uint64_t(0x00FFFFFFFFFFFFFF), etl::be_uint56_t::Max_Value);
+    }
+#endif
+
+    //*************************************************************************
+    /// Signed integers that have no native equivalent, such as 24 bit.
+    //*************************************************************************
+    TEST(test_int24)
+    {
+      CHECK_EQUAL(3U, sizeof(etl::le_int24_t));
+      CHECK_EQUAL(3U, sizeof(etl::be_int24_t));
+      CHECK_EQUAL(3U, size_t(etl::le_int24_t::Size));
+
+      CHECK((etl::is_same<int32_t, etl::le_int24_t::value_type>::value));
+      CHECK_EQUAL(int32_t(8388607), etl::le_int24_t::Max_Value);
+      CHECK_EQUAL(int32_t(-8388608), etl::le_int24_t::Min_Value);
+
+      etl::le_int24_t le_v(0x123456);
+      etl::be_int24_t be_v(0x123456);
+
+      CHECK_EQUAL(int32_t(0x123456), le_v.value());
+      CHECK_EQUAL(int32_t(0x123456), be_v.value());
+
+      // Check the storage byte order.
+      CHECK_EQUAL(0x56, int(le_v.data()[0]));
+      CHECK_EQUAL(0x12, int(le_v.data()[2]));
+      CHECK_EQUAL(0x12, int(be_v.data()[0]));
+      CHECK_EQUAL(0x56, int(be_v.data()[2]));
+
+      // Negative values are sign extended on reading.
+      etl::le_int24_t le_n(-2);
+      etl::be_int24_t be_n(-2);
+
+      CHECK_EQUAL(int32_t(-2), le_n.value());
+      CHECK_EQUAL(int32_t(-2), be_n.value());
+
+      CHECK_EQUAL(0xFE, int(le_n.data()[0]));
+      CHECK_EQUAL(0xFF, int(le_n.data()[1]));
+      CHECK_EQUAL(0xFF, int(le_n.data()[2]));
+
+      CHECK_EQUAL(0xFF, int(be_n.data()[0]));
+      CHECK_EQUAL(0xFF, int(be_n.data()[1]));
+      CHECK_EQUAL(0xFE, int(be_n.data()[2]));
+
+      // Copy construction, including from the other endianness.
+      etl::le_int24_t le_n2(be_n);
+      etl::be_int24_t be_n2(le_n);
+
+      CHECK_EQUAL(int32_t(-2), le_n2.value());
+      CHECK_EQUAL(int32_t(-2), be_n2.value());
+
+      // Assignment.
+      le_n2 = -1;
+      be_n2 = -1;
+      CHECK_EQUAL(int32_t(-1), le_n2.value());
+      CHECK_EQUAL(int32_t(-1), be_n2.value());
+
+      // Boundary values.
+      etl::le_int24_t le_min(etl::le_int24_t::Min_Value);
+      etl::be_int24_t be_min(etl::be_int24_t::Min_Value);
+      etl::le_int24_t le_max(etl::le_int24_t::Max_Value);
+      etl::be_int24_t be_max(etl::be_int24_t::Max_Value);
+
+      CHECK_EQUAL(int32_t(-8388608), le_min.value());
+      CHECK_EQUAL(int32_t(-8388608), be_min.value());
+      CHECK_EQUAL(int32_t(8388607), le_max.value());
+      CHECK_EQUAL(int32_t(8388607), be_max.value());
+
+      etl::le_int24_t le_zero(0);
+      CHECK_EQUAL(int32_t(0), le_zero.value());
+
+      // Values that do not fit are truncated, like a narrowing cast.
+      etl::be_int24_t be_truncated(0x7F123456);
+      CHECK_EQUAL(int32_t(0x123456), be_truncated.value());
+    }
+
+    //*************************************************************************
+    TEST(test_int24_decode_buffer)
+    {
+      const std::array<unsigned char, 4> buffer = {0x80, 0x00, 0x00, 0xDD};
+
+      etl::le_int24_t le_v(buffer.data(), buffer.size());
+      etl::be_int24_t be_v(buffer.data(), buffer.size());
+
+      CHECK_EQUAL(int32_t(0x000080), le_v.value());
+      CHECK_EQUAL(int32_t(-8388608), be_v.value());
+
+      // One byte short.
+      CHECK_THROW(etl::le_int24_t le_short(buffer.data(), 2U), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_int24_t be_short(buffer.data(), 2U), etl::unaligned_type_buffer_size);
+    }
+
+#if ETL_USING_64BIT_TYPES
+    //*************************************************************************
+    TEST(test_int40_int48_int56)
+    {
+      CHECK_EQUAL(5U, sizeof(etl::be_int40_t));
+      CHECK_EQUAL(6U, sizeof(etl::be_int48_t));
+      CHECK_EQUAL(7U, sizeof(etl::be_int56_t));
+
+      etl::be_int48_t be_v(-1099511627775LL);
+      etl::le_int48_t le_v(-1099511627775LL);
+
+      CHECK_EQUAL(int64_t(-1099511627775LL), be_v.value());
+      CHECK_EQUAL(int64_t(-1099511627775LL), le_v.value());
+
+      CHECK_EQUAL(int64_t(549755813887LL), etl::be_int40_t::Max_Value);
+      CHECK_EQUAL(int64_t(-549755813888LL), etl::be_int40_t::Min_Value);
+      CHECK_EQUAL(int64_t(36028797018963967LL), etl::be_int56_t::Max_Value);
+      CHECK_EQUAL(int64_t(-36028797018963968LL), etl::be_int56_t::Min_Value);
+    }
+#endif
+
+    //*************************************************************************
     // The following tests demonstrate the 'decode' direction: given a raw byte
     // buffer (e.g. as received from a file, network socket or memory-mapped
     // device), interpret it as an explicitly little/big endian unaligned_type

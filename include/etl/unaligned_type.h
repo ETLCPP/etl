@@ -43,6 +43,7 @@ SOFTWARE.
 #include "endianness.h"
 #include "exception.h"
 #include "file_error_numbers.h"
+#include "integral_limits.h"
 #include "iterator.h"
 #include "type_traits.h"
 
@@ -427,11 +428,39 @@ namespace etl
       }
 
       //*******************************
+      /// \note 'src' and 'dst' must either be equal or refer to completely
+      /// separate storage. Partially overlapping storage is undefined
+      /// behaviour.
+      //*******************************
       static ETL_CONSTEXPR14 void copy_store_to_store(const_pointer src, int endian_src, pointer dst)
       {
-        for (size_t i = 0UL; i < Size_; ++i)
+        if (Endian_ == endian_src)
         {
-          dst[i] = (Endian_ == endian_src) ? src[i] : src[Size_ - 1U - i];
+          if (src != dst)
+          {
+            for (size_t i = 0UL; i < Size_; ++i)
+            {
+              dst[i] = src[i];
+            }
+          }
+        }
+        else
+        {
+          // Swap mirrored bytes in pairs, so that the reversal is correct even
+          // when 'src' and 'dst' are the same storage.
+          for (size_t i = 0UL; i < (Size_ / 2UL); ++i)
+          {
+            const storage_type low  = src[i];
+            const storage_type high = src[Size_ - 1UL - i];
+
+            dst[i]               = high;
+            dst[Size_ - 1UL - i] = low;
+          }
+
+          if ((Size_ % 2UL) != 0UL)
+          {
+            dst[Size_ / 2UL] = src[Size_ / 2UL];
+          }
         }
       }
     };
@@ -557,12 +586,39 @@ namespace etl
       // This is pure byte manipulation (copy + optional reversal), with no
       // floating point arithmetic involved, so it is always constexpr-capable
       // (C++14 and later), regardless of bit_cast/builtin availability.
+      /// \note 'src' and 'dst' must either be equal or refer to completely
+      /// separate storage. Partially overlapping storage is undefined
+      /// behaviour.
       //*******************************
       static ETL_CONSTEXPR14 void copy_store_to_store(const_pointer src, int endian_src, pointer dst)
       {
-        for (size_t i = 0UL; i < Size_; ++i)
+        if (Endian_ == endian_src)
         {
-          dst[i] = (Endian_ == endian_src) ? src[i] : src[Size_ - 1U - i];
+          if (src != dst)
+          {
+            for (size_t i = 0UL; i < Size_; ++i)
+            {
+              dst[i] = src[i];
+            }
+          }
+        }
+        else
+        {
+          // Swap mirrored bytes in pairs, so that the reversal is correct even
+          // when 'src' and 'dst' are the same storage.
+          for (size_t i = 0UL; i < (Size_ / 2UL); ++i)
+          {
+            const storage_type low  = src[i];
+            const storage_type high = src[Size_ - 1UL - i];
+
+            dst[i]               = high;
+            dst[Size_ - 1UL - i] = low;
+          }
+
+          if ((Size_ % 2UL) != 0UL)
+          {
+            dst[Size_ / 2UL] = src[Size_ / 2UL];
+          }
         }
       }
     };
@@ -741,6 +797,475 @@ namespace etl
   template <typename T, int Endian_>
   ETL_CONSTANT size_t unaligned_type<T, Endian_>::Size;
 
+  namespace private_unaligned_type
+  {
+    //*************************************************************************
+    /// The unsigned integer type used to interface to an unaligned unsigned
+    /// integer of 'Size' bytes.
+    /// The smallest standard unsigned integer type that can hold all of the
+    /// bytes is selected.
+    //*************************************************************************
+    template <size_t Size_>
+    struct interface_uint;
+
+    template <>
+    struct interface_uint<1U>
+    {
+      typedef uint8_t type;
+    };
+
+    template <>
+    struct interface_uint<2U>
+    {
+      typedef uint16_t type;
+    };
+
+    template <>
+    struct interface_uint<3U>
+    {
+      typedef uint32_t type;
+    };
+
+    template <>
+    struct interface_uint<4U>
+    {
+      typedef uint32_t type;
+    };
+
+#if ETL_USING_64BIT_TYPES
+    template <>
+    struct interface_uint<5U>
+    {
+      typedef uint64_t type;
+    };
+
+    template <>
+    struct interface_uint<6U>
+    {
+      typedef uint64_t type;
+    };
+
+    template <>
+    struct interface_uint<7U>
+    {
+      typedef uint64_t type;
+    };
+
+    template <>
+    struct interface_uint<8U>
+    {
+      typedef uint64_t type;
+    };
+#endif
+
+    //*************************************************************************
+    /// The signed integer type used to interface to an unaligned signed
+    /// integer of 'Size' bytes.
+    /// The smallest standard signed integer type that can hold all of the
+    /// bytes is selected.
+    //*************************************************************************
+    template <size_t Size_>
+    struct interface_int;
+
+    template <>
+    struct interface_int<1U>
+    {
+      typedef int8_t type;
+    };
+
+    template <>
+    struct interface_int<2U>
+    {
+      typedef int16_t type;
+    };
+
+    template <>
+    struct interface_int<3U>
+    {
+      typedef int32_t type;
+    };
+
+    template <>
+    struct interface_int<4U>
+    {
+      typedef int32_t type;
+    };
+
+#if ETL_USING_64BIT_TYPES
+    template <>
+    struct interface_int<5U>
+    {
+      typedef int64_t type;
+    };
+
+    template <>
+    struct interface_int<6U>
+    {
+      typedef int64_t type;
+    };
+
+    template <>
+    struct interface_int<7U>
+    {
+      typedef int64_t type;
+    };
+
+    template <>
+    struct interface_int<8U>
+    {
+      typedef int64_t type;
+    };
+#endif
+
+    //*************************************************************************
+    /// Sign extends the low 'Size_ * 8' bits of an unsigned value into the
+    /// full width of the signed interface type.
+    /// Uses only well defined unsigned arithmetic, so it is usable in a
+    /// constexpr context.
+    //*************************************************************************
+    template <size_t Size_, typename TSigned, typename TUnsigned>
+    ETL_CONSTEXPR TSigned sign_extend(TUnsigned uvalue)
+    {
+      return static_cast<TSigned>(static_cast<TUnsigned>(static_cast<TUnsigned>(uvalue ^ (static_cast<TUnsigned>(1) << ((Size_ * 8U) - 1U)))
+                                                         - (static_cast<TUnsigned>(1) << ((Size_ * 8U) - 1U))));
+    }
+  } // namespace private_unaligned_type
+
+  //*************************************************************************
+  /// unaligned_uint_type
+  ///\brief Allows an unsigned integer of an arbitrary number of bytes to be
+  ///       stored at an unaligned address.
+  ///       Useful for types that have no native equivalent, such as a 24 bit
+  ///       unsigned integer.
+  ///       The value is interfaced to via the smallest standard unsigned
+  ///       integer type that can hold it.
+  ///\tparam Size_   The number of bytes of storage.
+  ///\tparam Endian_ The endianness of the stored integer.
+  ///\note  Values that do not fit in 'Size_' bytes are truncated, in the same
+  ///       way as a narrowing static_cast.
+  //*************************************************************************
+  template <size_t Size_, int Endian_>
+  ETL_PACKED_CLASS(unaligned_uint_type)
+    : public private_unaligned_type::unaligned_type_storage<Size_>
+  {
+  public:
+
+    typedef typename private_unaligned_type::interface_uint<Size_>::type value_type;
+
+    typedef private_unaligned_type::unaligned_copy<Size_, Endian_, true> unaligned_copy;
+
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::storage_type           storage_type;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::pointer                pointer;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::const_pointer          const_pointer;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::iterator               iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::const_iterator         const_iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::reverse_iterator       reverse_iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::const_reverse_iterator const_reverse_iterator;
+
+    static ETL_CONSTANT int        Endian    = Endian_;
+    static ETL_CONSTANT size_t     Size      = Size_;
+    static ETL_CONSTANT value_type Min_Value = static_cast<value_type>(0);
+    static ETL_CONSTANT value_type Max_Value = static_cast<value_type>(etl::integral_limits<value_type>::max >> ((sizeof(value_type) - Size_) * 8U));
+
+    //*************************************************************************
+    /// Default constructor
+    //*************************************************************************
+    unaligned_uint_type() {}
+
+    //*************************************************************************
+    /// Construct from a value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_uint_type(value_type value)
+    {
+      unaligned_copy::copy_value_to_store(value, this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from an address.
+    //*************************************************************************
+    unaligned_uint_type(const void* address)
+    {
+      etl::copy_n(reinterpret_cast<const unsigned char*>(address), Size_, this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from an address and buffer size.
+    /// \note 'buffer_size' must be greater than or equal to 'Size_'.
+    //*************************************************************************
+    unaligned_uint_type(const void* address, size_t buffer_size)
+    {
+      ETL_ASSERT(Size_ <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
+
+      etl::copy_n(reinterpret_cast<const unsigned char*>(address), Size_, this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from a byte buffer.
+    /// Usable in a constexpr context (C++14 and later).
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_uint_type(const unsigned char* address)
+    {
+      etl::copy_n(address, Size_, this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from a byte buffer and buffer size.
+    /// \note 'buffer_size' must be greater than or equal to 'Size_'.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_uint_type(const unsigned char* address, size_t buffer_size)
+    {
+      ETL_ASSERT(Size_ <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
+
+      etl::copy_n(address, Size_, this->storage);
+    }
+
+    //*************************************************************************
+    /// Copy constructor
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_uint_type(const unaligned_uint_type<Size_, Endian>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
+    }
+
+    //*************************************************************************
+    /// Copy constructor from other endianness.
+    //*************************************************************************
+    template <int Endian_Other>
+    ETL_CONSTEXPR14 unaligned_uint_type(const unaligned_uint_type<Size_, Endian_Other>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
+    }
+
+    //*************************************************************************
+    /// Assignment operator
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_uint_type& operator=(value_type value)
+    {
+      unaligned_copy::copy_value_to_store(value, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_uint_type& operator=(const unaligned_uint_type<Size_, Endian_>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator from other endianness.
+    //*************************************************************************
+    template <int Endian_Other>
+    ETL_CONSTEXPR14 unaligned_uint_type& operator=(const unaligned_uint_type<Size_, Endian_Other>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Conversion operator
+    //*************************************************************************
+    ETL_CONSTEXPR14 operator value_type() const
+    {
+      value_type value = value_type();
+
+      unaligned_copy::copy_store_to_value(this->storage, value);
+
+      return value;
+    }
+
+    //*************************************************************************
+    /// Get the value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 value_type value() const
+    {
+      value_type value = value_type();
+
+      unaligned_copy::copy_store_to_value(this->storage, value);
+
+      return value;
+    }
+  };
+  ETL_END_PACKED
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT int unaligned_uint_type<Size_, Endian_>::Endian;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT size_t unaligned_uint_type<Size_, Endian_>::Size;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT typename unaligned_uint_type<Size_, Endian_>::value_type unaligned_uint_type<Size_, Endian_>::Min_Value;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT typename unaligned_uint_type<Size_, Endian_>::value_type unaligned_uint_type<Size_, Endian_>::Max_Value;
+
+  //*************************************************************************
+  /// unaligned_int_type
+  ///\brief Allows a signed, two's complement, integer of an arbitrary number
+  ///       of bytes to be stored at an unaligned address.
+  ///       Useful for types that have no native equivalent, such as a 24 bit
+  ///       signed integer.
+  ///       The value is interfaced to via the smallest standard signed
+  ///       integer type that can hold it, and is sign extended on reading.
+  ///\tparam Size_   The number of bytes of storage.
+  ///\tparam Endian_ The endianness of the stored integer.
+  ///\note  Values that do not fit in 'Size_' bytes are truncated, in the same
+  ///       way as a narrowing static_cast.
+  //*************************************************************************
+  template <size_t Size_, int Endian_>
+  ETL_PACKED_CLASS(unaligned_int_type)
+    : public private_unaligned_type::unaligned_type_storage<Size_>
+  {
+  public:
+
+    typedef typename private_unaligned_type::interface_int<Size_>::type value_type;
+
+    typedef private_unaligned_type::unaligned_copy<Size_, Endian_, true> unaligned_copy;
+
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::storage_type           storage_type;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::pointer                pointer;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::const_pointer          const_pointer;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::iterator               iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::const_iterator         const_iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::reverse_iterator       reverse_iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage<Size_>::const_reverse_iterator const_reverse_iterator;
+
+    static ETL_CONSTANT int        Endian = Endian_;
+    static ETL_CONSTANT size_t     Size   = Size_;
+    static ETL_CONSTANT value_type Max_Value =
+      static_cast<value_type>(etl::integral_limits<typename etl::unsigned_type<value_type>::type>::max >> (((sizeof(value_type) - Size_) * 8U) + 1U));
+    static ETL_CONSTANT value_type Min_Value = static_cast<value_type>(-Max_Value - 1);
+
+    //*************************************************************************
+    /// Default constructor
+    //*************************************************************************
+    unaligned_int_type() {}
+
+    //*************************************************************************
+    /// Construct from a value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_int_type(value_type value)
+    {
+      unaligned_copy::copy_value_to_store(value, this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from an address.
+    //*************************************************************************
+    unaligned_int_type(const void* address)
+    {
+      etl::copy_n(reinterpret_cast<const unsigned char*>(address), Size_, this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from an address and buffer size.
+    /// \note 'buffer_size' must be greater than or equal to 'Size_'.
+    //*************************************************************************
+    unaligned_int_type(const void* address, size_t buffer_size)
+    {
+      ETL_ASSERT(Size_ <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
+
+      etl::copy_n(reinterpret_cast<const unsigned char*>(address), Size_, this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from a byte buffer.
+    /// Usable in a constexpr context (C++14 and later).
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_int_type(const unsigned char* address)
+    {
+      etl::copy_n(address, Size_, this->storage);
+    }
+
+    //*************************************************************************
+    /// Construct from a byte buffer and buffer size.
+    /// \note 'buffer_size' must be greater than or equal to 'Size_'.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_int_type(const unsigned char* address, size_t buffer_size)
+    {
+      ETL_ASSERT(Size_ <= buffer_size, ETL_ERROR(etl::unaligned_type_buffer_size));
+
+      etl::copy_n(address, Size_, this->storage);
+    }
+
+    //*************************************************************************
+    /// Copy constructor
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_int_type(const unaligned_int_type<Size_, Endian>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
+    }
+
+    //*************************************************************************
+    /// Copy constructor from other endianness.
+    //*************************************************************************
+    template <int Endian_Other>
+    ETL_CONSTEXPR14 unaligned_int_type(const unaligned_int_type<Size_, Endian_Other>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
+    }
+
+    //*************************************************************************
+    /// Assignment operator
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_int_type& operator=(value_type value)
+    {
+      unaligned_copy::copy_value_to_store(value, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator.
+    //*************************************************************************
+    ETL_CONSTEXPR14 unaligned_int_type& operator=(const unaligned_int_type<Size_, Endian_>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Assignment operator from other endianness.
+    //*************************************************************************
+    template <int Endian_Other>
+    ETL_CONSTEXPR14 unaligned_int_type& operator=(const unaligned_int_type<Size_, Endian_Other>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Conversion operator
+    //*************************************************************************
+    ETL_CONSTEXPR14 operator value_type() const
+    {
+      return value();
+    }
+
+    //*************************************************************************
+    /// Get the value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 value_type value() const
+    {
+      typedef typename etl::unsigned_type<value_type>::type unsigned_t;
+
+      unsigned_t uvalue = unsigned_t(0);
+
+      unaligned_copy::copy_store_to_value(this->storage, uvalue);
+
+      return private_unaligned_type::sign_extend<Size_, value_type>(uvalue);
+    }
+  };
+  ETL_END_PACKED
+
   //*************************************************************************
   /// unaligned_type_ext
   ///\brief Allows an arithmetic type to be stored at an unaligned address.
@@ -793,6 +1318,9 @@ namespace etl
 
     //*************************************************************************
     /// Copy constructor with storage pointer
+    /// \note 'storage_' must either be the same storage as 'other's, or refer
+    /// to completely separate storage. Partially overlapping storage is
+    /// undefined behaviour.
     //*************************************************************************
     template <int Endian_Other>
     unaligned_type_ext(const unaligned_type_ext<T, Endian_Other>& other, pointer storage_)
@@ -851,6 +1379,9 @@ namespace etl
 
     //*************************************************************************
     /// Copy assignment operator from other endianness.
+    /// \note The storage of 'other' must either be the same storage as this
+    /// object's, or completely separate. Partially overlapping storage is
+    /// undefined behaviour.
     //*************************************************************************
     template <int Endian_Other>
     unaligned_type_ext& operator=(const unaligned_type_ext<T, Endian_Other>& other)
@@ -936,6 +1467,528 @@ namespace etl
 
   template <typename T, int Endian_>
   ETL_CONSTANT size_t unaligned_type_ext<T, Endian_>::Size;
+
+  //*************************************************************************
+  /// unaligned_uint_type_ext
+  ///\brief Allows an unsigned integer of an arbitrary number of bytes to be
+  ///       stored at an unaligned address. Uses an external buffer.
+  ///       The value is interfaced to via the smallest standard unsigned
+  ///       integer type that can hold it.
+  ///\tparam Size_   The number of bytes of storage.
+  ///\tparam Endian_ The endianness of the stored integer.
+  ///\note  Values that do not fit in 'Size_' bytes are truncated, in the same
+  ///       way as a narrowing static_cast.
+  //*************************************************************************
+  template <size_t Size_, int Endian_>
+  ETL_PACKED_CLASS(unaligned_uint_type_ext)
+    : public private_unaligned_type::unaligned_type_storage_ext<Size_>
+  {
+  public:
+
+    template <size_t Size_Other, int Endian_Other>
+    friend class unaligned_uint_type_ext;
+
+    typedef typename private_unaligned_type::interface_uint<Size_>::type value_type;
+
+    typedef private_unaligned_type::unaligned_copy<Size_, Endian_, true> unaligned_copy;
+
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::storage_type           storage_type;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::pointer                pointer;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::const_pointer          const_pointer;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::iterator               iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::const_iterator         const_iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::reverse_iterator       reverse_iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::const_reverse_iterator const_reverse_iterator;
+
+    static ETL_CONSTANT int        Endian    = Endian_;
+    static ETL_CONSTANT size_t     Size      = Size_;
+    static ETL_CONSTANT value_type Min_Value = static_cast<value_type>(0);
+    static ETL_CONSTANT value_type Max_Value = static_cast<value_type>(etl::integral_limits<value_type>::max >> ((sizeof(value_type) - Size_) * 8U));
+
+    //*************************************************************************
+    /// Construct from a storage pointer
+    //*************************************************************************
+    unaligned_uint_type_ext(pointer storage_)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(storage_)
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from a value and storage pointer
+    //*************************************************************************
+    unaligned_uint_type_ext(value_type value, pointer storage_)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(storage_)
+    {
+      unaligned_copy::copy_value_to_store(value, this->storage);
+    }
+
+    //*************************************************************************
+    /// Copy constructor with storage pointer
+    /// \note 'storage_' must either be the same storage as 'other's, or refer
+    /// to completely separate storage. Partially overlapping storage is
+    /// undefined behaviour.
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_uint_type_ext(const unaligned_uint_type_ext<Size_, Endian_Other>& other, pointer storage_)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(storage_)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Move constructor
+    //*************************************************************************
+    unaligned_uint_type_ext(unaligned_uint_type_ext<Size_, Endian> && other)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(other.storage)
+    {
+      other.storage = ETL_NULLPTR;
+    }
+
+    //*************************************************************************
+    /// Move constructor from other endianness
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_uint_type_ext(unaligned_uint_type_ext<Size_, Endian_Other> && other)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(other.storage)
+    {
+      // If we're constructing from a different endianness then we need to
+      // reverse the data order.
+      if (Endian != Endian_Other)
+      {
+        etl::reverse(this->begin(), this->end());
+      }
+
+      other.storage = ETL_NULLPTR;
+    }
+#endif
+
+    //*************************************************************************
+    /// Assignment operator
+    //*************************************************************************
+    unaligned_uint_type_ext& operator=(value_type value)
+    {
+      unaligned_copy::copy_value_to_store(value, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Copy assignment operator.
+    //*************************************************************************
+    unaligned_uint_type_ext& operator=(const unaligned_uint_type_ext<Size_, Endian>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Copy assignment operator from other endianness.
+    /// \note The storage of 'other' must either be the same storage as this
+    /// object's, or completely separate. Partially overlapping storage is
+    /// undefined behaviour.
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_uint_type_ext& operator=(const unaligned_uint_type_ext<Size_, Endian_Other>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
+
+      return *this;
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    unaligned_uint_type_ext& operator=(unaligned_uint_type_ext<Size_, Endian>&& other)
+    {
+      this->storage = other.storage;
+      other.storage = ETL_NULLPTR;
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Move assignment operator from other endianness.
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_uint_type_ext& operator=(unaligned_uint_type_ext<Size_, Endian_Other>&& other)
+    {
+      this->storage = other.storage;
+
+      // If we're assigning from a different endianness then we need to reverse
+      // the data order.
+      if (Endian != Endian_Other)
+      {
+        etl::reverse(this->begin(), this->end());
+      }
+
+      other.storage = ETL_NULLPTR;
+
+      return *this;
+    }
+#endif
+
+    //*************************************************************************
+    /// Conversion operator
+    //*************************************************************************
+    operator value_type() const
+    {
+      return value();
+    }
+
+    //*************************************************************************
+    /// Get the value.
+    //*************************************************************************
+    value_type value() const
+    {
+      value_type v = value_type();
+
+      unaligned_copy::copy_store_to_value(this->storage, v);
+
+      return v;
+    }
+
+    //*************************************************************************
+    /// Sets the storage for the type.
+    //*************************************************************************
+    void set_storage(pointer storage_)
+    {
+      this->storage = storage_;
+    }
+
+  private:
+
+    unaligned_uint_type_ext() ETL_DELETE;
+  };
+  ETL_END_PACKED
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT int unaligned_uint_type_ext<Size_, Endian_>::Endian;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT size_t unaligned_uint_type_ext<Size_, Endian_>::Size;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT typename unaligned_uint_type_ext<Size_, Endian_>::value_type unaligned_uint_type_ext<Size_, Endian_>::Min_Value;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT typename unaligned_uint_type_ext<Size_, Endian_>::value_type unaligned_uint_type_ext<Size_, Endian_>::Max_Value;
+
+  //*************************************************************************
+  /// unaligned_int_type_ext
+  ///\brief Allows a signed, two's complement, integer of an arbitrary number
+  ///       of bytes to be stored at an unaligned address. Uses an external
+  ///       buffer.
+  ///       The value is interfaced to via the smallest standard signed
+  ///       integer type that can hold it, and is sign extended on reading.
+  ///\tparam Size_   The number of bytes of storage.
+  ///\tparam Endian_ The endianness of the stored integer.
+  ///\note  Values that do not fit in 'Size_' bytes are truncated, in the same
+  ///       way as a narrowing static_cast.
+  //*************************************************************************
+  template <size_t Size_, int Endian_>
+  ETL_PACKED_CLASS(unaligned_int_type_ext)
+    : public private_unaligned_type::unaligned_type_storage_ext<Size_>
+  {
+  public:
+
+    template <size_t Size_Other, int Endian_Other>
+    friend class unaligned_int_type_ext;
+
+    typedef typename private_unaligned_type::interface_int<Size_>::type value_type;
+
+    typedef private_unaligned_type::unaligned_copy<Size_, Endian_, true> unaligned_copy;
+
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::storage_type           storage_type;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::pointer                pointer;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::const_pointer          const_pointer;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::iterator               iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::const_iterator         const_iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::reverse_iterator       reverse_iterator;
+    typedef typename private_unaligned_type::unaligned_type_storage_ext<Size_>::const_reverse_iterator const_reverse_iterator;
+
+    static ETL_CONSTANT int        Endian = Endian_;
+    static ETL_CONSTANT size_t     Size   = Size_;
+    static ETL_CONSTANT value_type Max_Value =
+      static_cast<value_type>(etl::integral_limits<typename etl::unsigned_type<value_type>::type>::max >> (((sizeof(value_type) - Size_) * 8U) + 1U));
+    static ETL_CONSTANT value_type Min_Value = static_cast<value_type>(-Max_Value - 1);
+
+    //*************************************************************************
+    /// Construct from a storage pointer
+    //*************************************************************************
+    unaligned_int_type_ext(pointer storage_)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(storage_)
+    {
+    }
+
+    //*************************************************************************
+    /// Construct from a value and storage pointer
+    //*************************************************************************
+    unaligned_int_type_ext(value_type value, pointer storage_)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(storage_)
+    {
+      unaligned_copy::copy_value_to_store(value, this->storage);
+    }
+
+    //*************************************************************************
+    /// Copy constructor with storage pointer
+    /// \note 'storage_' must either be the same storage as 'other's, or refer
+    /// to completely separate storage. Partially overlapping storage is
+    /// undefined behaviour.
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_int_type_ext(const unaligned_int_type_ext<Size_, Endian_Other>& other, pointer storage_)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(storage_)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Move constructor
+    //*************************************************************************
+    unaligned_int_type_ext(unaligned_int_type_ext<Size_, Endian> && other)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(other.storage)
+    {
+      other.storage = ETL_NULLPTR;
+    }
+
+    //*************************************************************************
+    /// Move constructor from other endianness
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_int_type_ext(unaligned_int_type_ext<Size_, Endian_Other> && other)
+      : private_unaligned_type::unaligned_type_storage_ext<Size_>(other.storage)
+    {
+      // If we're constructing from a different endianness then we need to
+      // reverse the data order.
+      if (Endian != Endian_Other)
+      {
+        etl::reverse(this->begin(), this->end());
+      }
+
+      other.storage = ETL_NULLPTR;
+    }
+#endif
+
+    //*************************************************************************
+    /// Assignment operator
+    //*************************************************************************
+    unaligned_int_type_ext& operator=(value_type value)
+    {
+      unaligned_copy::copy_value_to_store(value, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Copy assignment operator.
+    //*************************************************************************
+    unaligned_int_type_ext& operator=(const unaligned_int_type_ext<Size_, Endian>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Copy assignment operator from other endianness.
+    /// \note The storage of 'other' must either be the same storage as this
+    /// object's, or completely separate. Partially overlapping storage is
+    /// undefined behaviour.
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_int_type_ext& operator=(const unaligned_int_type_ext<Size_, Endian_Other>& other)
+    {
+      unaligned_copy::copy_store_to_store(other.data(), Endian_Other, this->storage);
+
+      return *this;
+    }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Move assignment operator.
+    //*************************************************************************
+    unaligned_int_type_ext& operator=(unaligned_int_type_ext<Size_, Endian>&& other)
+    {
+      this->storage = other.storage;
+      other.storage = ETL_NULLPTR;
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Move assignment operator from other endianness.
+    //*************************************************************************
+    template <int Endian_Other>
+    unaligned_int_type_ext& operator=(unaligned_int_type_ext<Size_, Endian_Other>&& other)
+    {
+      this->storage = other.storage;
+
+      // If we're assigning from a different endianness then we need to reverse
+      // the data order.
+      if (Endian != Endian_Other)
+      {
+        etl::reverse(this->begin(), this->end());
+      }
+
+      other.storage = ETL_NULLPTR;
+
+      return *this;
+    }
+#endif
+
+    //*************************************************************************
+    /// Conversion operator
+    //*************************************************************************
+    operator value_type() const
+    {
+      return value();
+    }
+
+    //*************************************************************************
+    /// Get the value.
+    //*************************************************************************
+    value_type value() const
+    {
+      typedef typename etl::unsigned_type<value_type>::type unsigned_t;
+
+      unsigned_t uvalue = unsigned_t(0);
+
+      unaligned_copy::copy_store_to_value(this->storage, uvalue);
+
+      return private_unaligned_type::sign_extend<Size_, value_type>(uvalue);
+    }
+
+    //*************************************************************************
+    /// Sets the storage for the type.
+    //*************************************************************************
+    void set_storage(pointer storage_)
+    {
+      this->storage = storage_;
+    }
+
+  private:
+
+    unaligned_int_type_ext() ETL_DELETE;
+  };
+  ETL_END_PACKED
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT int unaligned_int_type<Size_, Endian_>::Endian;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT size_t unaligned_int_type<Size_, Endian_>::Size;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT typename unaligned_int_type<Size_, Endian_>::value_type unaligned_int_type<Size_, Endian_>::Min_Value;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT typename unaligned_int_type<Size_, Endian_>::value_type unaligned_int_type<Size_, Endian_>::Max_Value;
+
+  // 24 bit integers.
+  typedef unaligned_uint_type<3U, etl::endian::little> le_uint24_t;
+  typedef unaligned_uint_type<3U, etl::endian::big>    be_uint24_t;
+  typedef be_uint24_t                                  net_uint24_t;
+  typedef unaligned_int_type<3U, etl::endian::little>  le_int24_t;
+  typedef unaligned_int_type<3U, etl::endian::big>     be_int24_t;
+  typedef be_int24_t                                   net_int24_t;
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+  typedef unaligned_uint_type<3U, etl::endianness::value()> host_uint24_t;
+  typedef unaligned_int_type<3U, etl::endianness::value()>  host_int24_t;
+#endif
+
+#if ETL_USING_64BIT_TYPES
+  // 40, 48 and 56 bit integers.
+  typedef unaligned_uint_type<5U, etl::endian::little> le_uint40_t;
+  typedef unaligned_uint_type<5U, etl::endian::big>    be_uint40_t;
+  typedef be_uint40_t                                  net_uint40_t;
+  typedef unaligned_int_type<5U, etl::endian::little>  le_int40_t;
+  typedef unaligned_int_type<5U, etl::endian::big>     be_int40_t;
+  typedef be_int40_t                                   net_int40_t;
+
+  typedef unaligned_uint_type<6U, etl::endian::little> le_uint48_t;
+  typedef unaligned_uint_type<6U, etl::endian::big>    be_uint48_t;
+  typedef be_uint48_t                                  net_uint48_t;
+  typedef unaligned_int_type<6U, etl::endian::little>  le_int48_t;
+  typedef unaligned_int_type<6U, etl::endian::big>     be_int48_t;
+  typedef be_int48_t                                   net_int48_t;
+
+  typedef unaligned_uint_type<7U, etl::endian::little> le_uint56_t;
+  typedef unaligned_uint_type<7U, etl::endian::big>    be_uint56_t;
+  typedef be_uint56_t                                  net_uint56_t;
+  typedef unaligned_int_type<7U, etl::endian::little>  le_int56_t;
+  typedef unaligned_int_type<7U, etl::endian::big>     be_int56_t;
+  typedef be_int56_t                                   net_int56_t;
+
+  #if ETL_HAS_CONSTEXPR_ENDIANNESS
+  typedef unaligned_uint_type<5U, etl::endianness::value()> host_uint40_t;
+  typedef unaligned_uint_type<6U, etl::endianness::value()> host_uint48_t;
+  typedef unaligned_uint_type<7U, etl::endianness::value()> host_uint56_t;
+  typedef unaligned_int_type<5U, etl::endianness::value()>  host_int40_t;
+  typedef unaligned_int_type<6U, etl::endianness::value()>  host_int48_t;
+  typedef unaligned_int_type<7U, etl::endianness::value()>  host_int56_t;
+  #endif
+#endif
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT int unaligned_int_type_ext<Size_, Endian_>::Endian;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT size_t unaligned_int_type_ext<Size_, Endian_>::Size;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT typename unaligned_int_type_ext<Size_, Endian_>::value_type unaligned_int_type_ext<Size_, Endian_>::Min_Value;
+
+  template <size_t Size_, int Endian_>
+  ETL_CONSTANT typename unaligned_int_type_ext<Size_, Endian_>::value_type unaligned_int_type_ext<Size_, Endian_>::Max_Value;
+
+  // 24 bit integers, external buffer.
+  typedef unaligned_uint_type_ext<3U, etl::endian::little> le_uint24_ext_t;
+  typedef unaligned_uint_type_ext<3U, etl::endian::big>    be_uint24_ext_t;
+  typedef be_uint24_ext_t                                  net_uint24_ext_t;
+  typedef unaligned_int_type_ext<3U, etl::endian::little>  le_int24_ext_t;
+  typedef unaligned_int_type_ext<3U, etl::endian::big>     be_int24_ext_t;
+  typedef be_int24_ext_t                                   net_int24_ext_t;
+#if ETL_HAS_CONSTEXPR_ENDIANNESS
+  typedef unaligned_uint_type_ext<3U, etl::endianness::value()> host_uint24_ext_t;
+  typedef unaligned_int_type_ext<3U, etl::endianness::value()>  host_int24_ext_t;
+#endif
+
+#if ETL_USING_64BIT_TYPES
+  // 40, 48 and 56 bit integers, external buffer.
+  typedef unaligned_uint_type_ext<5U, etl::endian::little> le_uint40_ext_t;
+  typedef unaligned_uint_type_ext<5U, etl::endian::big>    be_uint40_ext_t;
+  typedef be_uint40_ext_t                                  net_uint40_ext_t;
+  typedef unaligned_int_type_ext<5U, etl::endian::little>  le_int40_ext_t;
+  typedef unaligned_int_type_ext<5U, etl::endian::big>     be_int40_ext_t;
+  typedef be_int40_ext_t                                   net_int40_ext_t;
+
+  typedef unaligned_uint_type_ext<6U, etl::endian::little> le_uint48_ext_t;
+  typedef unaligned_uint_type_ext<6U, etl::endian::big>    be_uint48_ext_t;
+  typedef be_uint48_ext_t                                  net_uint48_ext_t;
+  typedef unaligned_int_type_ext<6U, etl::endian::little>  le_int48_ext_t;
+  typedef unaligned_int_type_ext<6U, etl::endian::big>     be_int48_ext_t;
+  typedef be_int48_ext_t                                   net_int48_ext_t;
+
+  typedef unaligned_uint_type_ext<7U, etl::endian::little> le_uint56_ext_t;
+  typedef unaligned_uint_type_ext<7U, etl::endian::big>    be_uint56_ext_t;
+  typedef be_uint56_ext_t                                  net_uint56_ext_t;
+  typedef unaligned_int_type_ext<7U, etl::endian::little>  le_int56_ext_t;
+  typedef unaligned_int_type_ext<7U, etl::endian::big>     be_int56_ext_t;
+  typedef be_int56_ext_t                                   net_int56_ext_t;
+
+  #if ETL_HAS_CONSTEXPR_ENDIANNESS
+  typedef unaligned_uint_type_ext<5U, etl::endianness::value()> host_uint40_ext_t;
+  typedef unaligned_uint_type_ext<6U, etl::endianness::value()> host_uint48_ext_t;
+  typedef unaligned_uint_type_ext<7U, etl::endianness::value()> host_uint56_ext_t;
+  typedef unaligned_int_type_ext<5U, etl::endianness::value()>  host_int40_ext_t;
+  typedef unaligned_int_type_ext<6U, etl::endianness::value()>  host_int48_ext_t;
+  typedef unaligned_int_type_ext<7U, etl::endianness::value()>  host_int56_ext_t;
+  #endif
+#endif
 
 #if ETL_HAS_CONSTEXPR_ENDIANNESS
   // Host order
