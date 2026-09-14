@@ -54,6 +54,34 @@ namespace etl
     };
 
     //*************************************************************************
+    /// Increments a value and wraps it at the supplied limits.
+    ///\param value The current value.
+    ///\param min_value The minimum value.
+    ///\param max_value The maximum value.
+    ///\return The new value.
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD
+      static ETL_CONSTEXPR14 T increment(T value, T min_value, T max_value) ETL_NOEXCEPT
+    {
+      return value == max_value ? min_value : static_cast<T>(etl::to_unsigned(value) + 1U);
+    }
+
+    //*************************************************************************
+    /// Decrements a value and wraps it at the supplied limits.
+    ///\param value The current value.
+    ///\param min_value The minimum value.
+    ///\param max_value The maximum value.
+    ///\return The new value.
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD
+      static ETL_CONSTEXPR14 T decrement(T value, T min_value, T max_value) ETL_NOEXCEPT
+    {
+      return value == min_value ? max_value : static_cast<T>(etl::to_unsigned(value) - 1U);
+    }
+
+    //*************************************************************************
     /// Advances a value and wraps it at the supplied limits.
     ///\param value The current value.
     ///\param min_value The minimum value.
@@ -63,14 +91,21 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_NODISCARD
-    static ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::unsigned_type unsigned_abs_value,
-                              typename traits<T>::unsigned_type unsigned_value, bool is_negative) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::unsigned_type unsigned_abs_step,
+                              typename traits<T>::unsigned_type unsigned_step, bool is_negative) ETL_NOEXCEPT
     {
       typedef typename traits<T>::unsigned_type unsigned_type;
 
-      if (unsigned_abs_value == 0)
+      // No change if the step is zero.
+      if (unsigned_abs_step == 0)
       {
         return value;
+      }
+
+      // Use the increment/decrement functions for a single step.
+      if (unsigned_abs_step == 1)
+      {
+        return is_negative ? decrement(value, min_value, max_value) : increment(value, min_value, max_value);
       }
 
       // Check for full range limits.
@@ -79,7 +114,7 @@ namespace etl
       if (is_full_range)
       {
         // This is safe as the type's own overflow behaviour is modulo wrap-around.
-        return static_cast<T>(etl::to_unsigned(value) + unsigned_value);
+        return static_cast<T>(etl::to_unsigned(value) + unsigned_step);
       }
       else
       {
@@ -90,7 +125,7 @@ namespace etl
         const unsigned_type current = etl::to_unsigned(value) - etl::to_unsigned(min_value);
 
         // Reduce the step to something within a single lap of the range.
-        const unsigned_type step = unsigned_abs_value % range;
+        const unsigned_type step = unsigned_abs_step % range;
 
         // Direction-corrected offset to add, always in [0, range).
         const unsigned_type offset = is_negative ? (range - step) % range : step;
@@ -182,11 +217,12 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 cyclic_value& operator-=(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      const unsigned_type unsigned_abs_value = etl::absolute_unsigned(n);
-      const unsigned_type unsigned_value     = static_cast<unsigned_type>(n);
-      const bool          is_negative        = etl::is_negative(-n);
+      // Prepare the parameters for the advance function.
+      const unsigned_type unsigned_abs_step = etl::absolute_unsigned(n);
+      const unsigned_type unsigned_step     = etl::to_unsigned(n);
+      const bool          is_negative       = etl::is_negative(-n);
 
-      value = private_cyclic_value::advance(value, First, Last, unsigned_abs_value, unsigned_value, is_negative);
+      value = private_cyclic_value::advance(value, First, Last, unsigned_abs_step, unsigned_step, is_negative);
       return *this;
     }
 
@@ -223,11 +259,12 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 void advance(TStep n) ETL_NOEXCEPT
     {
-      const unsigned_type unsigned_abs_value = etl::absolute_unsigned(n);
-      const unsigned_type unsigned_value     = static_cast<unsigned_type>(n);
-      const bool          is_negative        = etl::is_negative(n);
+      // Prepare the parameters for the advance function.
+      const unsigned_type unsigned_abs_step = etl::absolute_unsigned(n);
+      const unsigned_type unsigned_step     = etl::to_unsigned(n);
+      const bool          is_negative       = etl::is_negative(n);
 
-      value = private_cyclic_value::advance(value, First, Last, unsigned_abs_value, unsigned_value, is_negative);
+      value = private_cyclic_value::advance(value, First, Last, unsigned_abs_step, unsigned_step, is_negative);
     }
 
     //*************************************************************************
@@ -244,7 +281,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 cyclic_value& operator++() ETL_NOEXCEPT
     {
-      value = private_cyclic_value::advance(value, First, Last, static_cast<unsigned_type>(1), static_cast<unsigned_type>(1), false);
+      value = private_cyclic_value::increment(value, First, Last);
 
       return *this;
     }
@@ -266,7 +303,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 cyclic_value& operator--() ETL_NOEXCEPT
     {
-      value = private_cyclic_value::advance(value, First, Last, static_cast<unsigned_type>(1), static_cast<unsigned_type>(1), true);
+      value = private_cyclic_value::decrement(value, First, Last);
 
       return *this;
     }
@@ -476,11 +513,12 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 void advance(TStep n) ETL_NOEXCEPT
     {
-      const unsigned_type unsigned_abs_value = etl::absolute_unsigned(n);
-      const unsigned_type unsigned_value     = static_cast<unsigned_type>(n);
-      const bool          is_negative        = etl::is_negative(n);
+      // Prepare the parameters for the advance function.
+      const unsigned_type unsigned_abs_step = etl::absolute_unsigned(n);
+      const unsigned_type unsigned_step     = etl::to_unsigned(n);
+      const bool          is_negative       = etl::is_negative(n);
 
-      value = private_cyclic_value::advance(value, first_value, last_value, unsigned_abs_value, unsigned_value, is_negative);
+      value = private_cyclic_value::advance(value, first_value, last_value, unsigned_abs_step, unsigned_step, is_negative);
     }
 
     //*************************************************************************
@@ -497,7 +535,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 cyclic_value& operator++() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      value = private_cyclic_value::advance(value, first_value, last_value, static_cast<unsigned_type>(1), static_cast<unsigned_type>(1), false);
+      value = private_cyclic_value::increment(value, first_value, last_value);
 
       return *this;
     }
@@ -519,7 +557,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 cyclic_value& operator--() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      value = private_cyclic_value::advance(value, first_value, last_value, static_cast<unsigned_type>(1), static_cast<unsigned_type>(1), true);
+      value = private_cyclic_value::decrement(value, first_value, last_value);
 
       return *this;
     }
@@ -578,11 +616,12 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 cyclic_value& operator-=(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      const unsigned_type unsigned_abs_value = etl::absolute_unsigned(n);
-      const unsigned_type unsigned_value     = static_cast<unsigned_type>(n);
-      const bool          is_negative        = etl::is_negative(-n);
+      // Prepare the parameters for the advance function.
+      const unsigned_type unsigned_abs_step = etl::absolute_unsigned(n);
+      const unsigned_type unsigned_step     = etl::to_unsigned(n);
+      const bool          is_negative       = etl::is_negative(-n);
 
-      value = private_cyclic_value::advance(value, first_value, last_value, unsigned_abs_value, unsigned_value, is_negative);
+      value = private_cyclic_value::advance(value, first_value, last_value, unsigned_abs_step, unsigned_step, is_negative);
 
       return *this;
     }

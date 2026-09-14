@@ -336,7 +336,7 @@ namespace
     {
       etl::cyclic_value<int, 2, 7> value;
 
-      value.advance(14);
+      value.advance(20);
 
       CHECK_EQUAL(4, value);
     }
@@ -347,7 +347,7 @@ namespace
       etl::cyclic_value<int> value;
 
       value.set(2, 7);
-      value.advance(14);
+      value.advance(20);
 
       CHECK_EQUAL(4, value);
     }
@@ -358,7 +358,7 @@ namespace
       etl::cyclic_value<int, 2, 7> value;
 
       value.to_last();
-      value.advance(-14);
+      value.advance(-20);
 
       CHECK_EQUAL(5, value);
     }
@@ -370,7 +370,7 @@ namespace
 
       value.set(2, 7);
       value.to_last();
-      value.advance(-14);
+      value.advance(-20);
 
       CHECK_EQUAL(5, value);
     }
@@ -406,6 +406,180 @@ namespace
       value.advance(-2);
 
       CHECK_EQUAL(1U, value);
+    }
+
+    //*************************************************************************
+    TEST(test_add_positive_n_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value += 2;
+
+      CHECK_EQUAL(4, value);
+    }
+
+    //*************************************************************************
+    TEST(test_add_positive_n_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value += 2;
+
+      CHECK_EQUAL(4, value);
+    }
+
+    //*************************************************************************
+    TEST(test_add_positive_n_large_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value += 20;
+
+      CHECK_EQUAL(4, value);
+    }
+
+    //*************************************************************************
+    TEST(test_add_positive_n_large_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value += 20;
+
+      CHECK_EQUAL(4, value);
+    }
+
+    //*************************************************************************
+    TEST(test_add_negative_n_large_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value.to_last();
+      value += -20;
+
+      CHECK_EQUAL(5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_add_negative_n_large_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.to_last();
+      value += -20;
+
+      CHECK_EQUAL(5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_add_negative_n_unsigned_compile_time)
+    {
+      etl::cyclic_value<size_t, 0U, 2U> value;
+
+      value += -2;
+
+      CHECK_EQUAL(1U, value);
+    }
+
+    //*************************************************************************
+    TEST(test_add_negative_n_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.to_last();
+      value += -20;
+
+      CHECK_EQUAL(5, value);
+    }
+
+    //*************************************************************************
+    TEST(test_decrease_positive_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value -= 2;
+
+      CHECK_EQUAL(6, value);
+    }
+
+    //*************************************************************************
+    TEST(test_subtract_positive_n_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value -= 2;
+
+      CHECK_EQUAL(6, value);
+    }
+
+    //*************************************************************************
+    TEST(test_subtract_positive_n_large_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value -= 20;
+
+      CHECK_EQUAL(6, value);
+    }
+
+    //*************************************************************************
+    TEST(test_subtract_positive_n_large_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value -= 20;
+
+      CHECK_EQUAL(6, value);
+    }
+
+    //*************************************************************************
+    TEST(test_subtract_negative_n_large_compile_time)
+    {
+      etl::cyclic_value<int, 2, 7> value;
+
+      value.to_last();
+      value -= -20;
+
+      CHECK_EQUAL(3, value);
+    }
+
+    //*************************************************************************
+    TEST(test_subtract_negative_n_large_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.to_last();
+      value -= -20;
+
+      CHECK_EQUAL(3, value);
+    }
+
+    //*************************************************************************
+    TEST(test_subtract_negative_n_unsigned_compile_time)
+    {
+      etl::cyclic_value<size_t, 0U, 2U> value;
+
+      value -= -2;
+
+      CHECK_EQUAL(2U, value);
+    }
+
+    //*************************************************************************
+    TEST(test_subtract_negative_n_run_time)
+    {
+      etl::cyclic_value<int> value;
+
+      value.set(2, 7);
+      value.to_last();
+      value -= -20;
+
+      CHECK_EQUAL(3, value);
     }
 
     //*************************************************************************
@@ -493,7 +667,50 @@ namespace
       CHECK(data2 == compare1);
     }
 
-#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_comparison_operators)
+    {
+      etl::cyclic_value<int, 0, 9>  cv1(3);
+      etl::cyclic_value<int, 0, 9>  cv2(3);
+      etl::cyclic_value<int, 0, 9>  cv3(5);
+      etl::cyclic_value<int, -1, 8> cv4(3);
+
+      CHECK_TRUE(cv1 == cv2);
+      CHECK_FALSE(cv1 == cv3);
+
+      CHECK_FALSE(cv1 != cv2);
+      CHECK_TRUE(cv1 != cv3);
+
+      CHECK_FALSE(cv1 < cv2);
+      CHECK_FALSE(cv2 < cv1);
+      CHECK_TRUE(cv1 < cv3);
+      CHECK_FALSE(cv3 < cv1);
+      CHECK_FALSE(cv1 < cv4);
+      CHECK_FALSE(cv4 < cv1);
+
+      CHECK_FALSE(cv1 > cv2);
+      CHECK_FALSE(cv2 > cv1);
+      CHECK_FALSE(cv1 > cv3);
+      CHECK_TRUE(cv3 > cv1);
+      CHECK_FALSE(cv1 > cv4);
+      CHECK_FALSE(cv4 > cv1);
+
+      CHECK_TRUE(cv1 <= cv2);
+      CHECK_TRUE(cv2 <= cv1);
+      CHECK_TRUE(cv1 <= cv3);
+      CHECK_FALSE(cv3 <= cv1);
+      CHECK_TRUE(cv1 <= cv4);
+      CHECK_TRUE(cv4 <= cv1);
+
+      CHECK_TRUE(cv1 >= cv2);
+      CHECK_TRUE(cv2 >= cv1);
+      CHECK_FALSE(cv1 >= cv3);
+      CHECK_TRUE(cv3 >= cv1);
+      CHECK_TRUE(cv1 >= cv4);
+      CHECK_TRUE(cv4 >= cv1);
+    }
+
+#if ETL_USING_CPP11
     //*************************************************************************
     TEST(test_cyclic_value_constexpr_ctor)
     {
@@ -519,6 +736,91 @@ namespace
       static_assert(cv2.get() == 0, "constexpr copy ctor");
       CHECK(true);
     }
+
+    //*************************************************************************
+    TEST(test_constexpr_comparison_operators)
+    {
+      constexpr etl::cyclic_value<int, 0, 9>  cv1(3);
+      constexpr etl::cyclic_value<int, 0, 9>  cv2(3);
+      constexpr etl::cyclic_value<int, 0, 9>  cv3(5);
+      constexpr etl::cyclic_value<int, -1, 8> cv4(3);
+
+      static_assert((cv1 == cv2), "(cv1 == cv2) failed");
+      static_assert(!(cv1 == cv3), "!(cv1 == cv3) failed");
+
+      static_assert(!(cv1 != cv2), "!(cv1 != cv2) failed");
+      static_assert((cv1 != cv3), "(cv1 != cv3) failed");
+
+      static_assert(!(cv1 < cv2), "!(cv1 < cv2) failed");
+      static_assert(!(cv2 < cv1), "!(cv2 < cv1) failed");
+      static_assert((cv1 < cv3), "(cv1 < cv3) failed");
+      static_assert(!(cv3 < cv1), "!(cv3 < cv1) failed");
+      static_assert(!(cv1 < cv4), "!(cv1 < cv4) failed");
+      static_assert(!(cv4 < cv1), "!(cv4 < cv1) failed");
+
+      static_assert(!(cv1 > cv2), "!(cv1 > cv2) failed");
+      static_assert(!(cv2 > cv1), "!(cv2 > cv1) failed");
+      static_assert(!(cv1 > cv3), "!(cv1 > cv3) failed");
+      static_assert((cv3 > cv1), "(cv3 > cv1) failed");
+      static_assert(!(cv1 > cv4), "!(cv1 > cv4) failed");
+      static_assert(!(cv4 > cv1), "!(cv4 > cv1) failed");
+
+      static_assert((cv1 <= cv2), "(cv1 <= cv2) failed");
+      static_assert((cv2 <= cv1), "(cv2 <= cv1) failed");
+      static_assert((cv1 <= cv3), "(cv1 <= cv3) failed");
+      static_assert(!(cv3 <= cv1), "!(cv3 <= cv1) failed");
+      static_assert((cv1 <= cv4), "(cv1 <= cv4) failed");
+      static_assert((cv4 <= cv1), "(cv4 <= cv1) failed");
+
+      static_assert((cv1 >= cv2), "(cv1 >= cv2) failed");
+      static_assert((cv2 >= cv1), "(cv2 >= cv1) failed");
+      static_assert(!(cv1 >= cv3), "!(cv1 >= cv3) failed");
+      static_assert((cv3 >= cv1), "(cv3 >= cv1) failed");
+      static_assert((cv1 >= cv4), "(cv1 >= cv4) failed");
+      static_assert((cv4 >= cv1), "(cv4 >= cv1) failed");
+    }
 #endif
+
+    //*************************************************************************
+    TEST(test_maximum_unsigned_range_wrap_with_large_step_type)
+    {
+      etl::cyclic_value<uint8_t, 0, 255> value(0);
+
+      value.advance(static_cast<int32_t>(255));
+      CHECK_EQUAL(255, value);
+
+      value.advance(static_cast<int32_t>(1));
+      CHECK_EQUAL(0, value);
+
+      value.advance(static_cast<int32_t>(256));
+      CHECK_EQUAL(0, value);
+
+      value.advance(static_cast<int32_t>(-256));
+      CHECK_EQUAL(0, value);
+
+      value.advance(static_cast<int32_t>(-1));
+      CHECK_EQUAL(255, value);
+    }
+
+    //*************************************************************************
+    TEST(test_maximum_signed_range_wrap_with_large_step_type)
+    {
+      etl::cyclic_value<int8_t, -128, 127> value(0);
+
+      value.advance(static_cast<int32_t>(127));
+      CHECK_EQUAL(127, int(value));
+
+      value.advance(static_cast<int32_t>(1));
+      CHECK_EQUAL(-128, int(value));
+
+      value.advance(static_cast<int32_t>(256));
+      CHECK_EQUAL(-128, int(value));
+
+      value.advance(static_cast<int32_t>(-256));
+      CHECK_EQUAL(-128, int(value));
+
+      value.advance(static_cast<int32_t>(-1));
+      CHECK_EQUAL(127, int(value));
+    }
   }
 } // namespace
