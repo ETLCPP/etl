@@ -62,7 +62,7 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_NODISCARD
-      static ETL_CONSTEXPR14 T increment(T value, T min_value, T max_value) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 T increment(T value, T min_value, T max_value) ETL_NOEXCEPT
     {
       return value == max_value ? min_value : static_cast<T>(etl::to_unsigned(value) + 1U);
     }
@@ -76,7 +76,7 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_NODISCARD
-      static ETL_CONSTEXPR14 T decrement(T value, T min_value, T max_value) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 T decrement(T value, T min_value, T max_value) ETL_NOEXCEPT
     {
       return value == min_value ? max_value : static_cast<T>(etl::to_unsigned(value) - 1U);
     }
@@ -157,6 +157,8 @@ namespace etl
     typedef typename private_cyclic_value::traits<T>::unsigned_type unsigned_type;
 
   public:
+
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "T must be an integral type");
 
     //*************************************************************************
     /// Default constructor.
@@ -373,30 +375,6 @@ namespace etl
       swap(value, other.value);
     }
 
-    //*************************************************************************
-    /// Swaps the values.
-    //*************************************************************************
-    friend ETL_CONSTEXPR14 void swap(cyclic_value<T, First, Last>& lhs, cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
-    {
-      lhs.swap(rhs);
-    }
-
-    //*************************************************************************
-    /// Operator ==.
-    //*************************************************************************
-    friend ETL_CONSTEXPR bool operator==(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
-    {
-      return lhs.value == rhs.value;
-    }
-
-    //*************************************************************************
-    /// Operator !=.
-    //*************************************************************************
-    friend ETL_CONSTEXPR bool operator!=(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
-    {
-      return !(lhs == rhs);
-    }
-
   private:
 
     T value; ///< The current value.
@@ -418,6 +396,8 @@ namespace etl
     typedef typename private_cyclic_value::traits<T>::unsigned_type unsigned_type;
 
   public:
+
+    ETL_STATIC_ASSERT(etl::is_integral<T>::value, "T must be an integral type");
 
     //*************************************************************************
     /// Constructor.
@@ -662,74 +642,6 @@ namespace etl
       swap(value, other.value);
     }
 
-    //*************************************************************************
-    /// Swaps the values.
-    //*************************************************************************
-    friend ETL_CONSTEXPR14 void swap(cyclic_value<T, First, Last>& lhs, cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
-    {
-      lhs.swap(rhs);
-    }
-
-    //*************************************************************************
-    /// Operator ==
-    //*************************************************************************
-    friend ETL_CONSTEXPR bool operator==(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
-    {
-      return (lhs.value == rhs.value);
-    }
-
-    //*************************************************************************
-    /// Operator !=
-    //*************************************************************************
-    friend ETL_CONSTEXPR bool operator!=(const cyclic_value<T, First, Last>& lhs, const cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
-    {
-      return !(lhs == rhs);
-    }
-
-    //*************************************************************************
-    /// Operator <
-    ///\param lhs The left-hand operand.
-    ///\param rhs The right-hand operand.
-    ///\return `true` if lhs is less than rhs.
-    //*************************************************************************
-    friend ETL_CONSTEXPR bool operator<(const cyclic_value& lhs, const cyclic_value& rhs) ETL_NOEXCEPT
-    {
-      return lhs.value < rhs.value;
-    }
-
-    //*************************************************************************
-    /// Operator <=
-    ///\param lhs The left-hand operand.
-    ///\param rhs The right-hand operand.
-    ///\return `true` if lhs is less than or equal to rhs.
-    //*************************************************************************
-    friend ETL_CONSTEXPR bool operator<=(const cyclic_value& lhs, const cyclic_value& rhs) ETL_NOEXCEPT
-    {
-      return !(rhs < lhs);
-    }
-
-    //*************************************************************************
-    /// Operator >
-    ///\param lhs The left-hand operand.
-    ///\param rhs The right-hand operand.
-    ///\return `true` if lhs is greater than rhs.
-    //*************************************************************************
-    friend ETL_CONSTEXPR bool operator>(const cyclic_value& lhs, const cyclic_value& rhs) ETL_NOEXCEPT
-    {
-      return rhs < lhs;
-    }
-
-    //*************************************************************************
-    /// Operator >=
-    ///\param lhs The left-hand operand.
-    ///\param rhs The right-hand operand.
-    ///\return `true` if lhs is greater than or equal to rhs.
-    //*************************************************************************
-    friend ETL_CONSTEXPR bool operator>=(const cyclic_value& lhs, const cyclic_value& rhs) ETL_NOEXCEPT
-    {
-      return !(lhs < rhs);
-    }
-
   private:
 
     T value;       ///< The current value.
@@ -737,5 +649,86 @@ namespace etl
     T last_value;  ///< The last value in the range.
   };
 } // namespace etl
+
+//*************************************************************************
+/// Swaps the values.
+//*************************************************************************
+template <typename T, T First, T Last>
+ETL_CONSTEXPR14 void swap(etl::cyclic_value<T, First, Last>& lhs, etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
+{
+  lhs.swap(rhs);
+}
+
+//*************************************************************************
+/// Operator ==
+///\param lhs The left-hand operand.
+///\param rhs The right-hand operand.
+///\return `true` if lhs == rhs.
+//*************************************************************************
+template <typename T, T First, T Last>
+ETL_CONSTEXPR bool operator==(const etl::cyclic_value<T, First, Last>& lhs, const etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
+{
+  return (lhs.get() == rhs.get());
+}
+
+//*************************************************************************
+/// Operator !=
+///\param lhs The left-hand operand.
+///\param rhs The right-hand operand.
+///\return `true` if lhs != rhs.
+//*************************************************************************
+template <typename T, T First, T Last>
+ETL_CONSTEXPR bool operator!=(const etl::cyclic_value<T, First, Last>& lhs, const etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
+{
+  return !(lhs == rhs);
+}
+
+//*************************************************************************
+/// Operator <
+///\param lhs The left-hand operand.
+///\param rhs The right-hand operand.
+///\return `true` if lhs is less than rhs.
+//*************************************************************************
+template <typename T, T First, T Last>
+ETL_CONSTEXPR bool operator<(const etl::cyclic_value<T, First, Last>& lhs, const etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
+{
+  return lhs.get() < rhs.get();
+}
+
+//*************************************************************************
+/// Operator <=
+///\param lhs The left-hand operand.
+///\param rhs The right-hand operand.
+///\return `true` if lhs is less than or equal to rhs.
+//*************************************************************************
+template <typename T, T First, T Last>
+ETL_CONSTEXPR bool operator<=(const etl::cyclic_value<T, First, Last>& lhs, const etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
+{
+  return !(rhs < lhs);
+}
+
+//*************************************************************************
+/// Operator >
+///\param lhs The left-hand operand.
+///\param rhs The right-hand operand.
+///\return `true` if lhs is greater than rhs.
+//*************************************************************************
+template <typename T, T First, T Last>
+ETL_CONSTEXPR bool operator>(const etl::cyclic_value<T, First, Last>& lhs, const etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
+{
+  return rhs < lhs;
+}
+
+//*************************************************************************
+/// Operator >=
+///\param lhs The left-hand operand.
+///\param rhs The right-hand operand.
+///\return `true` if lhs is greater than or equal to rhs.
+//*************************************************************************
+template <typename T, T First, T Last>
+ETL_CONSTEXPR bool operator>=(const etl::cyclic_value<T, First, Last>& lhs, const etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
+{
+  return !(lhs < rhs);
+}
 
 #endif
