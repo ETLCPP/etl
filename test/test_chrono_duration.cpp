@@ -1045,16 +1045,26 @@ namespace
       CHECK_EQUAL(1, s1.count()); // 10 seconds % (-3) seconds = 1 second
     }
 
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20
     //*************************************************************************
     TEST(test_duration_spaceship_operator)
     {
       Chrono::seconds      s1(2);     // 2 seconds
       Chrono::milliseconds ms1(1500); // 1500 milliseconds
 
+  #if ETL_USING_STL
       CHECK_TRUE(s1 <=> s1 == std::strong_ordering::equal);
       CHECK_TRUE(ms1 <=> s1 == std::strong_ordering::less);
       CHECK_TRUE(s1 <=> ms1 == std::strong_ordering::greater);
+
+      static_assert(etl::is_same<decltype(s1 <=> ms1), std::strong_ordering>::value, "Must return std::strong_ordering");
+  #else
+      CHECK_TRUE(s1 <=> s1 == etl::strong_ordering::equal);
+      CHECK_TRUE(ms1 <=> s1 == etl::strong_ordering::less);
+      CHECK_TRUE(s1 <=> ms1 == etl::strong_ordering::greater);
+
+      static_assert(etl::is_same<decltype(s1 <=> ms1), etl::strong_ordering>::value, "Must return etl::strong_ordering");
+  #endif
     }
 #endif
 
