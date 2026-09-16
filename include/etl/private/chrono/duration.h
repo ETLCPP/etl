@@ -482,7 +482,7 @@ namespace etl
   //***********************************************************************
   /// Spaceship operator
   //***********************************************************************
-#if ETL_USING_CPP20
+#if ETL_USING_CPP20 && ETL_USING_STL
   template <typename TRep1, typename TPeriod1, typename TRep2, typename TPeriod2>
   [[nodiscard]]
   constexpr auto operator<=>(const etl::chrono::duration<TRep1, TPeriod1>& lhs, const etl::chrono::duration<TRep2, TPeriod2>& rhs) ETL_NOEXCEPT

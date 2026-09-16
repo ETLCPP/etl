@@ -278,7 +278,7 @@ namespace
       CHECK_TRUE(day10 >= day10);
       CHECK_TRUE(day20 >= day10);
 
-#if ETL_USING_CPP20
+#if ETL_USING_CPP20 && ETL_USING_STL
       CHECK_TRUE((day10 <=> day10) == 0);
       CHECK_TRUE((day10 <=> day20) < 0);
       CHECK_TRUE((day20 <=> day10) > 0);
