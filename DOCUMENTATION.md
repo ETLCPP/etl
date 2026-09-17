@@ -120,6 +120,30 @@ The documentation is written in [Goldmark](https://github.com/teekennedy/goldmar
 Hugo uses [Goldmark](https://github.com/teekennedy/goldmark-markdown) as its default Markdown processor for versions 0.60.0 and newer.  
 It is built into Hugo, providing high-performance and fully [CommonMark](https://commonmark.org/)-compliant rendering, along with support for [GitHub](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) Markdown.
 
+### Documenting Algorithmic Complexity
+
+When documenting the complexity of an operation, use the `complexity` shortcode instead of writing raw Big-O text.
+Place it on its own `**Complexity:**` line, right after the `**Description**` line/paragraph, for example:
+
+```markdown
+**Description**  
+Returns the number of linked items.
+
+**Complexity:** {{< complexity "constant" "1" >}}
+```
+
+The shortcode takes two arguments: a complexity class (used to color and label it) and the expression to show
+inside `O(...)`. The supported classes are:
+
+```markdown
+Complexity: {{< complexity "constant" "1" >}}
+Complexity: {{< complexity "logarithmic" "log N" >}}, where N is number of items in the tree.
+Complexity: {{< complexity "linear" "N" >}}, where N is number of items in the tree, and assuming comparator is {{< complexity "constant" "1" >}}.
+Complexity: {{< complexity "linearithmic" "N log N" >}}, where N is number of items in the tree.
+Complexity: {{< complexity "polynomial" "N²" >}}, where N is number of items in the tree.
+Complexity: {{< complexity "exponential" "2ᴺ" >}}, where N is number of items in the tree.
+```
+
 ### Starting a New Page
 
 A template file is provided at `docs/page-template.md` to use as a starting point. Copy it to the

@@ -13,6 +13,11 @@ A quick introduction to containers.
 
 ---
 
+[Intrusive AVL Tree](./intrusive-avl-tree-tutorial)  
+Ordering objects that already exist, without a second container.  
+
+---
+
 [observer](./observer-tutorial)  
 A templated set of classes to allow easier implementation of the observer pattern.  
 
