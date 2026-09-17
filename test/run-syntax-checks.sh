@@ -194,8 +194,6 @@ RunStandard()
 	# GCC configurations
 	RunCheck gcc "STL"                   OFF OFF OFF bgcc
 	RunCheck gcc "No STL"                ON  OFF OFF bgcc
-	RunCheck gcc "STL - Built-in traits" OFF OFF OFF bgcc
-	RunCheck gcc "No STL - Built-in traits" ON OFF OFF bgcc
 
 	if [ "$has_force_03" = "1" ]; then
 		RunCheck gcc "STL - Force C++03"        OFF OFF ON bgcc
@@ -205,8 +203,6 @@ RunStandard()
 	# Clang configurations
 	RunCheck clang "STL"                   OFF OFF OFF bclang
 	RunCheck clang "No STL"                ON  OFF OFF bclang
-	RunCheck clang "STL - Built-in traits" OFF OFF OFF bclang
-	RunCheck clang "No STL - Built-in traits" ON OFF OFF bclang
 
 	if [ "$has_force_03" = "1" ]; then
 		RunCheck clang "STL - Force C++03"        OFF OFF ON bclang
