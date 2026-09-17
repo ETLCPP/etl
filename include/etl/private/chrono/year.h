@@ -240,11 +240,11 @@ namespace etl
     //***********************************************************************
     /// Spaceship operator
     //***********************************************************************
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20
     [[nodiscard]]
     inline constexpr auto operator<=>(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
-      return (static_cast<int>(y1) <=> static_cast<int>(y2));
+      return etl::make_strong_ordering(y1.compare(y2));
     }
 #endif
 

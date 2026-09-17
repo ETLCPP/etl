@@ -211,11 +211,11 @@ namespace etl
     //***********************************************************************
     /// Spaceship operator
     //***********************************************************************
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20
     [[nodiscard]]
     inline constexpr auto operator<=>(const etl::chrono::day& d1, const etl::chrono::day& d2) ETL_NOEXCEPT
     {
-      return (static_cast<unsigned>(d1) <=> static_cast<unsigned>(d2));
+      return etl::make_strong_ordering(d1.compare(d2));
     }
 #endif
 
