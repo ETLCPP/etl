@@ -1045,16 +1045,41 @@ namespace
       CHECK_EQUAL(1, s1.count()); // 10 seconds % (-3) seconds = 1 second
     }
 
-#if ETL_USING_CPP20 && ETL_USING_STL
+#if ETL_USING_CPP20
     //*************************************************************************
     TEST(test_duration_spaceship_operator)
     {
       Chrono::seconds      s1(2);     // 2 seconds
       Chrono::milliseconds ms1(1500); // 1500 milliseconds
 
-      CHECK_TRUE(s1 <=> s1 == std::strong_ordering::equal);
-      CHECK_TRUE(ms1 <=> s1 == std::strong_ordering::less);
-      CHECK_TRUE(s1 <=> ms1 == std::strong_ordering::greater);
+      CHECK_TRUE(s1 <=> s1 == etl::strong_ordering::equal);
+      CHECK_TRUE(ms1 <=> s1 == etl::strong_ordering::less);
+      CHECK_TRUE(s1 <=> ms1 == etl::strong_ordering::greater);
+
+      static_assert(etl::is_same<decltype(s1 <=> ms1), etl::strong_ordering>::value, "Must return etl::strong_ordering");
+    }
+
+    //*************************************************************************
+    TEST(test_duration_spaceship_operator_floating_point_representation)
+    {
+      typedef Chrono::duration<double> fp_seconds;
+
+      fp_seconds fs1(1.5);
+      fp_seconds fs2(2.5);
+
+      // A floating point representation is only partially ordered.
+      static_assert(etl::is_same<decltype(fs1 <=> fs2), etl::partial_ordering>::value, "Must return etl::partial_ordering");
+
+      CHECK_TRUE((fs1 <=> fs1) == etl::partial_ordering::equivalent);
+      CHECK_TRUE((fs1 <=> fs2) == etl::partial_ordering::less);
+      CHECK_TRUE((fs2 <=> fs1) == etl::partial_ordering::greater);
+
+      fp_seconds nan_seconds(etl::numeric_limits<double>::quiet_NaN());
+
+      CHECK_TRUE((nan_seconds <=> fs1) == etl::partial_ordering::unordered);
+      CHECK_FALSE((nan_seconds <=> fs1) < 0);
+      CHECK_FALSE((nan_seconds <=> fs1) == 0);
+      CHECK_FALSE((nan_seconds <=> fs1) > 0);
     }
 #endif
 
