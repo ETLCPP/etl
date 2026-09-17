@@ -2,9 +2,9 @@
 title: "Intrusive AVL Tree"
 ---
 
-A tutorial on how `etl::intrusive_avl_tree` can give ordered, O(log(N)) access
-to objects that already exist elsewhere, without a second container to track
-them.
+A tutorial on how `etl::intrusive_avl_tree` can give ordered,
+{{< complexity "logarithmic" "log N" >}} access to objects that already
+exist elsewhere, without a second container to track them.
 
 ## Overview
 
@@ -17,9 +17,9 @@ deadline order, on every tick.
 A normal fixed-capacity ordered container (`etl::set`/`etl::map`) would need
 a second, separately-sized place to store pointers to these tasks. Instead,
 embedding an `etl::intrusive_avl_tree` link directly into each task object
-gives the scheduler ordered, O(log(N)) access to exactly the tasks that
-exist right now - nothing more is allocated, and nothing needs to be kept
-in sync by hand. That's the payoff of "intrusive": the tree links the
+gives the scheduler ordered, {{< complexity "logarithmic" "log N" >}}
+access to exactly the tasks that exist right now - nothing more is
+allocated, and nothing needs to be kept in sync by hand. That's the payoff of "intrusive": the tree links the
 objects that already exist, rather than storing copies of them.
 
 The example below also demonstrates two things that fall out of the design
@@ -27,10 +27,13 @@ for free:
 - **Move support.** When the `std::vector` that owns the tasks reallocates,
   every task is moved into new storage - and each move takes over its
   task's exact tree position, with no rebalancing and no code of its own.
-- **Automatic removal on destruction.** When a task object is destroyed
-  while still linked to the tree - e.g. because its module was unplugged -
-  the tree unlinks it automatically. No explicit `erase()` call is needed,
-  and no dangling entry is left behind.
+- **Safe removal without an explicit `erase()` call.** Removing a task's
+  owning object removes it from the schedule too, with no dangling entry
+  left behind - whether that's because the object is destroyed while still
+  linked (`link_type`'s destructor unlinks it automatically), or, as in
+  this example, because `std::vector::erase` move-assigns another task over
+  it (`link_type`'s move assignment unlinks `this` before taking over the
+  moved-from tree position).
 
 ## Example
 
@@ -65,9 +68,13 @@ public:
     {
       if (target_deadline != node.deadline)
       {
-        return int(target_deadline) - int(node.deadline);
+        return (target_deadline < node.deadline) ? -1 : 1;
       }
-      return int(target_id) - int(node.id);
+      if (target_id != node.id)
+      {
+        return (target_id < node.id) ? -1 : 1;
+      }
+      return 0;
     }
   };
 
@@ -151,14 +158,22 @@ int main()
   std::cout << "\nSchedule after servicing:\n";
   print_schedule(schedule);
 
-  // Unplugging a module destroys its SensorTask. The link_type destructor
-  // notices it is still linked and unlinks + rebalances the tree
-  // automatically - no explicit schedule.erase() call is made here.
+  // Unplugging a module removes its SensorTask from driver_registry. Task 2
+  // isn't the last element, so std::vector::erase() doesn't just destroy it
+  // in place: it move-assigns the following element (task 3) into task 2's
+  // slot, then destroys the now-duplicate last slot. That move-assignment
+  // is SensorTask's (implicitly-generated) one, which calls
+  // link_type::operator=(link_type&&): it first unlinks *this* - task 2's
+  // slot, still linked at deadline 300 - from the tree, then takes over
+  // task 3's tree position. The destructor that runs afterwards, on the
+  // vacated last slot, fires on an already-unlinked, moved-from object, so
+  // it has nothing left to do - no explicit schedule.erase() call is made
+  // here, and no dangling entry is left behind.
   std::cout << "\nschedule.size() before unplugging task 2: " << schedule.size() << "\n";
 
   auto pos = std::find_if(driver_registry.begin(), driver_registry.end(),
                            [](const SensorTask& t) { return t.id == 2; });
-  driver_registry.erase(pos); // ~SensorTask() -> ~link_type() auto-unlinks
+  driver_registry.erase(pos); // move-assigns task 3 over task 2, unlinking task 2
 
   std::cout << "schedule.size() after unplugging task 2:  " << schedule.size() << "\n";
 

@@ -468,7 +468,7 @@ html:not(.dark) .complexity {
   }
 
   &.logarithmic {
-    color: #0891B2;
+    color: #0E7490;
     background: rgba(6,182,212,0.10);
     border-color: rgba(6,182,212,0.22);
   }
