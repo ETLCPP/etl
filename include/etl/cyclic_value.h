@@ -94,7 +94,7 @@ namespace etl
     ETL_NODISCARD
     static ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::unsigned_type step, bool subtract) ETL_NOEXCEPT
     {
-      typedef typename traits<T>::unsigned_type   unsigned_type;
+      typedef typename traits<T>::unsigned_type unsigned_type;
 
       switch (step)
       {
