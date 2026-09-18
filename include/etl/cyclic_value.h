@@ -39,6 +39,7 @@ SOFTWARE.
 #include "algorithm.h"
 #include "exception.h"
 #include "integral_limits.h"
+#include "largest.h"
 #include "negative.h"
 #include "static_assert.h"
 #include "type_traits.h"
@@ -91,46 +92,59 @@ namespace etl
     //*************************************************************************
     template <typename T>
     ETL_NODISCARD
-    static ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::unsigned_type unsigned_abs_step,
-                              typename traits<T>::unsigned_type unsigned_step, bool is_negative) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::unsigned_type step, bool subtract) ETL_NOEXCEPT
     {
-      typedef typename traits<T>::unsigned_type unsigned_type;
+      typedef typename traits<T>::unsigned_type   unsigned_type;
 
-      // No change if the step is zero.
-      if (unsigned_abs_step == 0)
+      switch (step)
       {
-        return value;
-      }
+        case 0:
+          {
+            return value;
+          }
 
-      // Use the increment/decrement functions for a single step.
-      if (unsigned_abs_step == 1)
-      {
-        return is_negative ? decrement(value, min_value, max_value) : increment(value, min_value, max_value);
-      }
+        case 1:
+          {
+            return subtract ? decrement(value, min_value, max_value) : increment(value, min_value, max_value);
+          }
 
-      // Check for full range limits.
-      const bool is_full_range = (min_value == etl::integral_limits<T>::min) && (max_value == etl::integral_limits<T>::max);
+        default:
+          {
+            if (subtract)
+            {
+              unsigned_type range_to_first = static_cast<unsigned_type>(etl::to_unsigned(value) - etl::to_unsigned(min_value)) + 1U;
 
-      if (is_full_range)
-      {
-        // This is safe as the type's own overflow behaviour is modulo wrap-around.
-        return static_cast<T>(etl::to_unsigned(value) + unsigned_step);
-      }
-      else
-      {
-        // Size of the wrap-around range.
-        const unsigned_type range = (etl::to_unsigned(max_value) - etl::to_unsigned(min_value)) + 1U;
+              if (step < range_to_first)
+              {
+                // Room to add the step.
+                value = static_cast<T>(etl::to_unsigned(value) - step);
+              }
+              else
+              {
+                // Step would roll over.
+                step -= range_to_first;
+                value = static_cast<T>(etl::to_unsigned(max_value) - step);
+              }
+            }
+            else
+            {
+              unsigned_type range_to_last = static_cast<unsigned_type>(etl::to_unsigned(max_value) - etl::to_unsigned(value)) + 1U;
 
-        // Value expressed as an offset from min_value (0 .. range - 1).
-        const unsigned_type current = etl::to_unsigned(value) - etl::to_unsigned(min_value);
+              if (step < range_to_last)
+              {
+                // Room to add the step.
+                value = static_cast<T>(etl::to_unsigned(value) + step);
+              }
+              else
+              {
+                // Step would roll over.
+                step -= range_to_last;
+                value = static_cast<T>(etl::to_unsigned(min_value) + step);
+              }
+            }
 
-        // Reduce the step to something within a single lap of the range.
-        const unsigned_type step = unsigned_abs_step % range;
-
-        // Direction-corrected offset to add, always in [0, range).
-        const unsigned_type offset = is_negative ? (range - step) % range : step;
-
-        return static_cast<T>(etl::to_unsigned(min_value) + (current + offset) % range);
+            return value;
+          }
       }
     }
   } // namespace private_cyclic_value
@@ -219,12 +233,8 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 cyclic_value& operator-=(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      // Prepare the parameters for the advance function.
-      const unsigned_type unsigned_abs_step = etl::absolute_unsigned(n);
-      const unsigned_type unsigned_step     = etl::to_unsigned(n);
-      const bool          is_negative       = etl::is_negative(-n);
+      do_advance(n, !etl::is_negative(n));
 
-      value = private_cyclic_value::advance(value, First, Last, unsigned_abs_step, unsigned_step, is_negative);
       return *this;
     }
 
@@ -259,14 +269,11 @@ namespace etl
     ///\param n The number of steps to advance.
     //*************************************************************************
     template <typename TStep>
-    ETL_CONSTEXPR14 void advance(TStep n) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 T advance(TStep n) ETL_NOEXCEPT
     {
-      // Prepare the parameters for the advance function.
-      const unsigned_type unsigned_abs_step = etl::absolute_unsigned(n);
-      const unsigned_type unsigned_step     = etl::to_unsigned(n);
-      const bool          is_negative       = etl::is_negative(n);
+      do_advance(n, etl::is_negative(n));
 
-      value = private_cyclic_value::advance(value, First, Last, unsigned_abs_step, unsigned_step, is_negative);
+      return value;
     }
 
     //*************************************************************************
@@ -376,6 +383,23 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    template <typename TStep>
+    void do_advance(TStep n, bool subtract) ETL_NOEXCEPT
+    {
+      // Determine the widest unsigned type of the two to use for limiting the step count.
+      typedef typename etl::largest<typename etl::make_unsigned<TStep>::type, unsigned_type>::type wide_unsigned_type;
+
+      // Force the step to be within the range of the cyclic value.
+      const wide_unsigned_type range              = static_cast<wide_unsigned_type>(Last - First) + 1U;
+      const wide_unsigned_type wide_unsigned_step = static_cast<wide_unsigned_type>(etl::absolute_unsigned(n)) % range;
+
+      // This is safe as wide_unsigned_step is now within the range of the cyclic value.
+      const unsigned_type step = static_cast<unsigned_type>(wide_unsigned_step);
+
+      value = private_cyclic_value::advance(value, First, Last, step, subtract);
+    }
 
     T value; ///< The current value.
   };
@@ -493,12 +517,7 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 void advance(TStep n) ETL_NOEXCEPT
     {
-      // Prepare the parameters for the advance function.
-      const unsigned_type unsigned_abs_step = etl::absolute_unsigned(n);
-      const unsigned_type unsigned_step     = etl::to_unsigned(n);
-      const bool          is_negative       = etl::is_negative(n);
-
-      value = private_cyclic_value::advance(value, first_value, last_value, unsigned_abs_step, unsigned_step, is_negative);
+      do_advance(n, etl::is_negative(n));
     }
 
     //*************************************************************************
@@ -596,12 +615,7 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 cyclic_value& operator-=(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
-      // Prepare the parameters for the advance function.
-      const unsigned_type unsigned_abs_step = etl::absolute_unsigned(n);
-      const unsigned_type unsigned_step     = etl::to_unsigned(n);
-      const bool          is_negative       = etl::is_negative(-n);
-
-      value = private_cyclic_value::advance(value, first_value, last_value, unsigned_abs_step, unsigned_step, is_negative);
+      do_advance(n, !etl::is_negative(n));
 
       return *this;
     }
@@ -643,6 +657,23 @@ namespace etl
     }
 
   private:
+
+    //*************************************************************************
+    template <typename TStep>
+    void do_advance(TStep n, bool subtract) ETL_NOEXCEPT
+    {
+      // Determine the widest unsigned type of the two to use for limiting the step count.
+      typedef typename etl::largest<typename etl::make_unsigned<TStep>::type, unsigned_type>::type wide_unsigned_type;
+
+      // Force the step to be within the range of the cyclic value.
+      const wide_unsigned_type range              = static_cast<wide_unsigned_type>(last_value - first_value) + 1U;
+      const wide_unsigned_type wide_unsigned_step = static_cast<wide_unsigned_type>(etl::absolute_unsigned(n)) % range;
+
+      // This is safe as wide_unsigned_step is now within the range of the cyclic value.
+      const unsigned_type step = static_cast<unsigned_type>(wide_unsigned_step);
+
+      value = private_cyclic_value::advance(value, first_value, last_value, step, subtract);
+    }
 
     T value;       ///< The current value.
     T first_value; ///< The first value in the range.
