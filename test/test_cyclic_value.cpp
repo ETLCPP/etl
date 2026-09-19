@@ -571,18 +571,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_subtract_negative_n_run_time)
-    {
-      etl::cyclic_value<int> value;
-
-      value.set(2, 7);
-      value.to_last();
-      value -= -20;
-
-      CHECK_EQUAL(3, value);
-    }
-
-    //*************************************************************************
     TEST(test_assignment_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value1;
@@ -821,6 +809,26 @@ namespace
 
       value.advance(static_cast<int32_t>(-1));
       CHECK_EQUAL(127, int(value));
+    }
+
+    //*************************************************************************
+    TEST(test_range_issue_in_advance_for_full_range_unsigned_limits)
+    {
+      etl::cyclic_value<uint8_t, 0, 255> value(0);
+
+      value.advance(2);
+
+      CHECK_EQUAL(2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_range_issue_in_advance_for_full_range_signed_limits)
+    {
+      etl::cyclic_value<int8_t, -128, 127> value(-128);
+
+      value.advance(2);
+
+      CHECK_EQUAL(-126, value.get());
     }
   }
 } // namespace

@@ -112,9 +112,9 @@ namespace etl
           {
             if (subtract)
             {
-              unsigned_type range_to_first = static_cast<unsigned_type>(etl::to_unsigned(value) - etl::to_unsigned(min_value)) + 1U;
+              unsigned_type distance_to_first = static_cast<unsigned_type>(etl::to_unsigned(value) - etl::to_unsigned(min_value));
 
-              if (step < range_to_first)
+              if (step <= distance_to_first)
               {
                 // Room to subtract the step.
                 value = static_cast<T>(etl::to_unsigned(value) - step);
@@ -122,23 +122,29 @@ namespace etl
               else
               {
                 // Step would roll over.
-                step -= range_to_first;
+                // Note: 'distance_to_first + 1U' can overflow to 0 when 'distance_to_first' is the maximum value of 'unsigned_type',
+                // which only happens when the range spans the type's full width. This is safe and expected: unsigned overflow is
+                // well-defined modular arithmetic, so 'step -= (distance_to_first + 1U)' remains correct modulo 2^N in that case.
+                step -= distance_to_first + 1U;
                 value = static_cast<T>(etl::to_unsigned(max_value) - step);
               }
             }
             else
             {
-              unsigned_type range_to_last = static_cast<unsigned_type>(etl::to_unsigned(max_value) - etl::to_unsigned(value)) + 1U;
+              unsigned_type distance_to_last = static_cast<unsigned_type>(etl::to_unsigned(max_value) - etl::to_unsigned(value));
 
-              if (step < range_to_last)
+              if (step <= distance_to_last)
               {
-                // Room to subtract the step.
+                // Room to add the step.
                 value = static_cast<T>(etl::to_unsigned(value) + step);
               }
               else
               {
                 // Step would roll over.
-                step -= range_to_last;
+                // Note: 'distance_to_first + 1U' can overflow to 0 when 'distance_to_first' is the maximum value of 'unsigned_type',
+                // which only happens when the range spans the type's full width. This is safe and expected: unsigned overflow is
+                // well-defined modular arithmetic, so 'step -= (distance_to_first + 1U)' remains correct modulo 2^N in that case.
+                step -= distance_to_last + 1U;
                 value = static_cast<T>(etl::to_unsigned(min_value) + step);
               }
             }
