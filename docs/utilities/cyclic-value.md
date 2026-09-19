@@ -26,46 +26,51 @@ value_rt.set(3, 8);
 ```
 
 ## Constructor
+
+### Run time limits
+
 ```cpp
 cyclic_value<T>() noexcept;
 ```
-Creates a *run time* cyclic value of type `T` default constructed with the `first` limit.  
+Constructs a cyclic value of type `T` with an initial value of `first`.  
 `constexpr` from C++11.
 
 ---
 
 ```cpp
-cyclic_value<T>(T initial) noexcept;
+cyclic_value<T>(T first, T last) noexcept;
 ```
-Creates a *run time* cyclic value of type `T` default constructed with the `initial`.  
-`initial` will be clamped to be in the range `(First, Last)`.  
+Constructs a *run time* cyclic value of type `T` with limits of `first` and `fast` and an initial value of `first`.  
 `constexpr` from C++11.
 
 ---
 
 ```cpp
-cyclic_value<T, First, Last>(T first, T last) noexcept;
+cyclic_value<T>(T first, T last, T initial) noexcept;
 ```
-Creates a *compile time* cyclic value of type `T` with limits of `first` and `fast` and default constructed with `first`.    
+Constructs a cyclic value of type `T` with limits of `first` and `fast` and an initial value of `initial`.  
+`initial` will be clamped to be in the range `(first, last)`.  
 `constexpr` from C++11.
 
----
-
-```cpp
-cyclic_value<T, First, Last>(T first, T last, T initial) noexcept;
-```
-Creates a *run time* cyclic value of type `T` with limits of `first` and `fast` and default constructed with `initial`.    
-`constexpr` from C++11.
-
----
+### Compile time limits
 
 ```cpp
 cyclic_value<T, First, Last>() noexcept;
 ```
-Creates a *compile time* cyclic value of type `T` with fixed limits of `First` and `Last` and default constructed with `First`.    
+Constructs a cyclic value of type `T` default constructed with an initial value of `First`.  
+`constexpr` from C++11.
+
+---
+
+```cpp
+cyclic_value<T, First, Last>(T initial) noexcept;
+```
+Constructs a cyclic value of type `T` constructed with an `initial`.  
+`initial` will be clamped to be in the range `(First, Last)`.  
 `constexpr` from C++11.
 
 ## Modifiers
+
 ```cpp
 cyclic_value& operator ++() noexcept;
 cyclic_value& operator ++(int) noexcept;
@@ -95,7 +100,7 @@ Advances the value by the specified amount, wrapping if necessary.
 
 ```cpp
 template <typename TStep>
-cyclic_value& operator +=(TSTep n) noexcept;
+cyclic_value& operator +=(TStep n) noexcept;
 ```
 Advances the value by the specified amount, wrapping if necessary.  
 `constexpr` from C++14.
@@ -104,12 +109,13 @@ Advances the value by the specified amount, wrapping if necessary.
 
 ```cpp
 template <typename TStep>
-cyclic_value& operator -=(TSTep n) noexcept;
+cyclic_value& operator -=(TStep n) noexcept;
 ```
 Decrements the value by the specified amount, wrapping if necessary.  
 `constexpr` from C++14.
 
 ## Access
+
 ```cpp
 T get() const;
 ```
@@ -174,6 +180,7 @@ Swaps with another cyclic value.
 
 
 ## Operators
+
 ```cpp
 operator T() noexcept;
 operator const T() const noexcept;
@@ -204,6 +211,17 @@ bool operator == (cyclic_value<T, FIRST, LAST>& lhs, cyclic_value<T, FIRST, LAST
 ```
 Checks equality of two cyclic values.  
 `constexpr` from C++11.
+
+{{< callout type="warning">}}
+  After version `20.49.0` equality is judged only by the current value.  
+  Previously the first and last limits were also considered.
+
+  <= 20.49.0  
+  `etl::cyclic_value<2, 7>(3) != etl::cyclic_value<2, 6>(3)`  
+  
+  &gt; 20.49.0  
+  `etl::cyclic_value<2, 7>(3) == etl::cyclic_value<2, 6>(3)`
+{{< /callout >}}
 
 ---
 
