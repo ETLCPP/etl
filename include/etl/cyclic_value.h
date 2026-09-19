@@ -116,7 +116,7 @@ namespace etl
 
               if (step < range_to_first)
               {
-                // Room to add the step.
+                // Room to subtract the step.
                 value = static_cast<T>(etl::to_unsigned(value) - step);
               }
               else
@@ -132,7 +132,7 @@ namespace etl
 
               if (step < range_to_last)
               {
-                // Room to add the step.
+                // Room to subtract the step.
                 value = static_cast<T>(etl::to_unsigned(value) + step);
               }
               else
