@@ -716,7 +716,7 @@ namespace
       CHECK(true);
     }
 
-#if ETL_USING_CPP14
+  #if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_cyclic_value_constexpr_ctor_with_range)
     {
@@ -725,7 +725,7 @@ namespace
       static_assert(cv.last() == 9, "constexpr range ctor last");
       CHECK(true);
     }
-#endif
+  #endif
 
     //*************************************************************************
     TEST(test_cyclic_value_constexpr_copy_ctor)
