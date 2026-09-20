@@ -15,6 +15,7 @@ Supports compile time and runtime variants.
 template <typename T, const T First = 0, const T Last = 0>
 class cyclic_value
 ```
+Static asserts if `Last` < `First`.  
 
 **Example**
 
@@ -38,18 +39,20 @@ Constructs a cyclic value of type `T` with an initial value of `first`.
 ---
 
 ```cpp
-cyclic_value<T>(T first, T last) noexcept;
+cyclic_value<T>(T first, T last);
 ```
 Constructs a *run time* cyclic value of type `T` with limits of `first` and `fast` and an initial value of `first`.  
+Asserts an `etl::cyclic_value_reversed_limits` if `last` < `first`.  
 `constexpr` from C++11.
 
 ---
 
 ```cpp
-cyclic_value<T>(T first, T last, T initial) noexcept;
+cyclic_value<T>(T first, T last, T initial);
 ```
 Constructs a cyclic value of type `T` with limits of `first` and `fast` and an initial value of `initial`.  
 `initial` will be clamped to be in the range `(first, last)`.  
+Asserts an `etl::cyclic_value_reversed_limits` if `last` < `first`.  
 `constexpr` from C++11.
 
 ### Compile time limits
@@ -144,6 +147,7 @@ Gets the last value.
 void set(T first, T last) noexcept;
 ```
 Sets the new *run time* `first` and `last` values. Sets the current value to `first`.  
+Asserts an `etl::cyclic_value_reversed_limits` if `last` < `first`.  
 `constexpr` from C++14.
 
 ---

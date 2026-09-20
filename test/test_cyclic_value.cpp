@@ -57,6 +57,15 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_reversed_run_time_initialisation)
+    {
+      etl::cyclic_value<int> value(1, 2);
+
+      CHECK_THROW(etl::cyclic_value<int>(7, 2), etl::cyclic_value_reversed_limits);
+      CHECK_THROW(value.set(7, 2), etl::cyclic_value_reversed_limits);
+    }
+
+    //*************************************************************************
     TEST(test_copy_constructor_compile_time)
     {
       etl::cyclic_value<int, 2, 7> value;
@@ -707,6 +716,7 @@ namespace
       CHECK(true);
     }
 
+#if ETL_USING_CPP14
     //*************************************************************************
     TEST(test_cyclic_value_constexpr_ctor_with_range)
     {
@@ -715,6 +725,7 @@ namespace
       static_assert(cv.last() == 9, "constexpr range ctor last");
       CHECK(true);
     }
+#endif
 
     //*************************************************************************
     TEST(test_cyclic_value_constexpr_copy_ctor)

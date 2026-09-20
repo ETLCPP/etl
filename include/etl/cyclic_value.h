@@ -155,6 +155,22 @@ namespace etl
     }
   } // namespace private_cyclic_value
 
+  struct cyclic_value_exception : etl::exception
+  {
+    cyclic_value_exception(string_type reason_, string_type file_, numeric_type line_)
+      : etl::exception(reason_, file_, line_)
+    {
+    }
+  };
+
+  struct cyclic_value_reversed_limits : cyclic_value_exception
+  {
+    cyclic_value_reversed_limits(string_type file_, numeric_type line_)
+      : cyclic_value_exception(ETL_ERROR_TEXT("cyclic_value_exception:reversed limits", ETL_CYCLIC_VALUE_FILE_ID"A"), file_, line_)
+    {
+    }
+  };
+
   //***************************************************************************
   /// Provides a value that cycles between two limits.
   //***************************************************************************
@@ -179,6 +195,7 @@ namespace etl
   public:
 
     ETL_STATIC_ASSERT(etl::is_integral<T>::value, "T must be an integral type");
+    ETL_STATIC_ASSERT(First <= Last, "First is not <= Last");
 
     //*************************************************************************
     /// Default constructor.
@@ -431,7 +448,7 @@ namespace etl
 
     //*************************************************************************
     /// Constructor.
-    /// Sets 'first' and 'last' to the template parameter values.
+    /// Sets 'first' and 'last' to the template parameter values which will be zero.
     /// The initial value is set to the first value.
     //*************************************************************************
     ETL_CONSTEXPR cyclic_value() ETL_NOEXCEPT
@@ -447,11 +464,12 @@ namespace etl
     ///\param first The first value in the range.
     ///\param last  The last value in the range.
     //*************************************************************************
-    ETL_CONSTEXPR cyclic_value(T first_, T last_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value(T first_, T last_)
       : value(first_)
       , first_value(first_)
       , last_value(last_)
     {
+      ETL_ASSERT(first_ <= last_, ETL_ERROR(cyclic_value_reversed_limits));
     }
 
     //*************************************************************************
@@ -461,11 +479,12 @@ namespace etl
     ///\param first The first value in the range.
     ///\param last  The last value in the range.
     //*************************************************************************
-    ETL_CONSTEXPR cyclic_value(T first_, T last_, T initial) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value(T first_, T last_, T initial)
       : value(etl::clamp(initial, first_, last_))
       , first_value(first_)
       , last_value(last_)
     {
+      ETL_ASSERT(first_ <= last_, ETL_ERROR(cyclic_value_reversed_limits));
     }
 
     //*************************************************************************
@@ -484,8 +503,10 @@ namespace etl
     ///\param first The first value in the range.
     ///\param last  The last value in the range.
     //*************************************************************************
-    ETL_CONSTEXPR14 void set(T first_, T last_) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void set(T first_, T last_)
     {
+      ETL_ASSERT(first_ <= last_, ETL_ERROR(cyclic_value_reversed_limits));
+
       first_value = first_;
       last_value  = last_;
       value       = first_;
