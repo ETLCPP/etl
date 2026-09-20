@@ -34,7 +34,7 @@ SOFTWARE.
 #include "error_handler.h"
 #include "exception.h"
 #include "message.h"
-#include "message_router.h"
+#include "message_processor.h"
 #include "message_types.h"
 #include "vector.h"
 
@@ -73,36 +73,36 @@ namespace etl
   //***************************************************************************
   /// Interface for message bus
   //***************************************************************************
-  class imessage_bus : public etl::imessage_router
+  class imessage_bus : public etl::message_processor
   {
   private:
 
-    typedef etl::ivector<etl::imessage_router*> router_list_t;
+    typedef etl::ivector<etl::message_processor*> processor_list_t;
 
   public:
 
-    using etl::imessage_router::receive;
+    using etl::message_processor::receive;
 
     //*******************************************
     /// Subscribe to the bus.
     //*******************************************
-    bool subscribe(etl::imessage_router& router)
+    bool subscribe(etl::message_processor& processor)
     {
       bool ok = true;
 
-      // There's no point adding routers that don't consume messages.
-      if (router.is_consumer())
+      // There's no point adding processors that don't consume messages.
+      if (processor.is_consumer())
       {
-        ok = !router_list.full();
+        ok = !processor_list.full();
 
         ETL_ASSERT(ok, ETL_ERROR(etl::message_bus_too_many_subscribers));
 
         if (ok)
         {
-          router_list_t::iterator irouter =
-            etl::upper_bound(router_list.begin(), router_list.end(), router.get_message_router_id(), compare_router_id());
+          processor_list_t::iterator iprocessor =
+            etl::upper_bound(processor_list.begin(), processor_list.end(), processor.get_message_processor_id(), compare_processor_id());
 
-          router_list.insert(irouter, &router);
+          processor_list.insert(iprocessor, &processor);
         }
       }
 
@@ -112,7 +112,7 @@ namespace etl
     //*******************************************
     /// Unsubscribe from the bus.
     //*******************************************
-    void unsubscribe(etl::message_router_id_t id)
+    void unsubscribe(etl::message_processor_id_t id)
     {
       if (id == etl::imessage_bus::ALL_MESSAGE_ROUTERS)
       {
@@ -120,58 +120,58 @@ namespace etl
       }
       else
       {
-        ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range =
-          etl::equal_range(router_list.begin(), router_list.end(), id, compare_router_id());
+        ETL_OR_STD::pair<processor_list_t::iterator, processor_list_t::iterator> range =
+          etl::equal_range(processor_list.begin(), processor_list.end(), id, compare_processor_id());
 
-        router_list.erase(range.first, range.second);
+        processor_list.erase(range.first, range.second);
       }
     }
 
     //*******************************************
-    void unsubscribe(etl::imessage_router& router)
+    void unsubscribe(etl::message_processor& processor)
     {
-      router_list_t::iterator irouter = etl::find(router_list.begin(), router_list.end(), &router);
+      processor_list_t::iterator iprocessor = etl::find(processor_list.begin(), processor_list.end(), &processor);
 
-      if (irouter != router_list.end())
+      if (iprocessor != processor_list.end())
       {
-        router_list.erase(irouter);
+        processor_list.erase(iprocessor);
       }
     }
 
     //*******************************************
     virtual void receive(const etl::imessage& message) ETL_OVERRIDE
     {
-      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, message);
+      receive(etl::message_processor::ALL_MESSAGE_ROUTERS, message);
     }
 
     //*******************************************
     virtual void receive(etl::shared_message shared_msg) ETL_OVERRIDE
     {
-      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, shared_msg);
+      receive(etl::message_processor::ALL_MESSAGE_ROUTERS, shared_msg);
     }
 
     //*******************************************
-    virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& message) ETL_OVERRIDE
+    virtual void receive(etl::message_processor_id_t destination_processor_id, const etl::imessage& message) ETL_OVERRIDE
     {
-      switch (destination_router_id)
+      switch (destination_processor_id)
       {
         //*****************************
-        // Broadcast to all routers.
-        case etl::imessage_router::ALL_MESSAGE_ROUTERS:
+        // Broadcast to all processors.
+        case etl::message_processor::ALL_MESSAGE_ROUTERS:
           {
-            router_list_t::iterator irouter = router_list.begin();
+            processor_list_t::iterator iprocessor = processor_list.begin();
 
             // Broadcast to everyone.
-            while (irouter != router_list.end())
+            while (iprocessor != processor_list.end())
             {
-              etl::imessage_router& router = **irouter;
+              etl::message_processor& processor = **iprocessor;
 
-              if (router.accepts(message.get_message_id()))
+              if (processor.accepts(message.get_message_id()))
               {
-                router.receive(message);
+                processor.receive(message);
               }
 
-              ++irouter;
+              ++iprocessor;
             }
 
             break;
@@ -181,11 +181,11 @@ namespace etl
         // Must be an addressed message.
         default:
           {
-            router_list_t::iterator irouter = router_list.begin();
+            processor_list_t::iterator iprocessor = processor_list.begin();
 
-            // Find routers with the id.
-            ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range =
-              etl::equal_range(router_list.begin(), router_list.end(), destination_router_id, compare_router_id());
+            // Find processors with the id.
+            ETL_OR_STD::pair<processor_list_t::iterator, processor_list_t::iterator> range =
+              etl::equal_range(processor_list.begin(), processor_list.end(), destination_processor_id, compare_processor_id());
 
             // Call all of them.
             while (range.first != range.second)
@@ -200,14 +200,14 @@ namespace etl
 
             // Do any message buses.
             // These are always at the end of the list.
-            irouter = etl::lower_bound(router_list.begin(), router_list.end(), etl::imessage_bus::MESSAGE_BUS, compare_router_id());
+            iprocessor = etl::lower_bound(processor_list.begin(), processor_list.end(), etl::imessage_bus::MESSAGE_BUS, compare_processor_id());
 
-            while (irouter != router_list.end())
+            while (iprocessor != processor_list.end())
             {
               // So pass it on.
-              (*irouter)->receive(destination_router_id, message);
+              (*iprocessor)->receive(destination_processor_id, message);
 
-              ++irouter;
+              ++iprocessor;
             }
 
             break;
@@ -218,33 +218,33 @@ namespace etl
       {
         if (get_successor().accepts(message.get_message_id()))
         {
-          get_successor().receive(destination_router_id, message);
+          get_successor().receive(destination_processor_id, message);
         }
       }
     }
 
     //********************************************
-    virtual void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg) ETL_OVERRIDE
+    virtual void receive(etl::message_processor_id_t destination_processor_id, etl::shared_message shared_msg) ETL_OVERRIDE
     {
-      switch (destination_router_id)
+      switch (destination_processor_id)
       {
           //*****************************
-          // Broadcast to all routers.
-        case etl::imessage_router::ALL_MESSAGE_ROUTERS:
+          // Broadcast to all processors.
+        case etl::message_processor::ALL_MESSAGE_ROUTERS:
           {
-            router_list_t::iterator irouter = router_list.begin();
+            processor_list_t::iterator iprocessor = processor_list.begin();
 
             // Broadcast to everyone.
-            while (irouter != router_list.end())
+            while (iprocessor != processor_list.end())
             {
-              etl::imessage_router& router = **irouter;
+              etl::message_processor& processor = **iprocessor;
 
-              if (router.accepts(shared_msg.get_message().get_message_id()))
+              if (processor.accepts(shared_msg.get_message().get_message_id()))
               {
-                router.receive(shared_msg);
+                processor.receive(shared_msg);
               }
 
-              ++irouter;
+              ++iprocessor;
             }
 
             break;
@@ -254,9 +254,9 @@ namespace etl
         // Must be an addressed message.
         default:
           {
-            // Find routers with the id.
-            ETL_OR_STD::pair<router_list_t::iterator, router_list_t::iterator> range =
-              etl::equal_range(router_list.begin(), router_list.end(), destination_router_id, compare_router_id());
+            // Find processors with the id.
+            ETL_OR_STD::pair<processor_list_t::iterator, processor_list_t::iterator> range =
+              etl::equal_range(processor_list.begin(), processor_list.end(), destination_processor_id, compare_processor_id());
 
             // Call all of them.
             while (range.first != range.second)
@@ -271,15 +271,15 @@ namespace etl
 
             // Do any message buses.
             // These are always at the end of the list.
-            router_list_t::iterator irouter =
-              etl::lower_bound(router_list.begin(), router_list.end(), etl::imessage_bus::MESSAGE_BUS, compare_router_id());
+            processor_list_t::iterator iprocessor =
+              etl::lower_bound(processor_list.begin(), processor_list.end(), etl::imessage_bus::MESSAGE_BUS, compare_processor_id());
 
-            while (irouter != router_list.end())
+            while (iprocessor != processor_list.end())
             {
               // So pass it on.
-              (*irouter)->receive(destination_router_id, shared_msg);
+              (*iprocessor)->receive(destination_processor_id, shared_msg);
 
-              ++irouter;
+              ++iprocessor;
             }
 
             break;
@@ -290,32 +290,32 @@ namespace etl
       {
         if (get_successor().accepts(shared_msg.get_message().get_message_id()))
         {
-          get_successor().receive(destination_router_id, shared_msg);
+          get_successor().receive(destination_processor_id, shared_msg);
         }
       }
     }
 
-    using imessage_router::accepts;
+    using message_processor::accepts;
 
     //*******************************************
     /// Does this message bus accept the message id?
-    /// Returns <b>true</b> on the first router that does.
+    /// Returns <b>true</b> on the first processor that does.
     //*******************************************
     bool accepts(etl::message_id_t id) const ETL_OVERRIDE
     {
-      // Check the list of subscribed routers.
-      router_list_t::iterator irouter = router_list.begin();
+      // Check the list of subscribed processors.
+      processor_list_t::iterator iprocessor = processor_list.begin();
 
-      while (irouter != router_list.end())
+      while (iprocessor != processor_list.end())
       {
-        etl::imessage_router& router = **irouter;
+        etl::message_processor& processor = **iprocessor;
 
-        if (router.accepts(id))
+        if (processor.accepts(id))
         {
           return true;
         }
 
-        ++irouter;
+        ++iprocessor;
       }
 
       // Check any successor.
@@ -333,13 +333,13 @@ namespace etl
     //*******************************************
     size_t size() const
     {
-      return router_list.size();
+      return processor_list.size();
     }
 
     //*******************************************
     void clear()
     {
-      router_list.clear();
+      processor_list.clear();
     }
 
     //********************************************
@@ -366,40 +366,40 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    imessage_bus(router_list_t& list)
-      : imessage_router(etl::imessage_router::MESSAGE_BUS)
-      , router_list(list)
+    imessage_bus(processor_list_t& list)
+      : message_processor(etl::message_processor::MESSAGE_BUS)
+      , processor_list(list)
     {
     }
 
     //*******************************************
     /// Constructor.
     //*******************************************
-    imessage_bus(router_list_t& router_list_, etl::imessage_router& successor_)
-      : imessage_router(etl::imessage_router::MESSAGE_BUS, successor_)
-      , router_list(router_list_)
+    imessage_bus(processor_list_t& processor_list_, etl::message_processor& successor_)
+      : message_processor(etl::message_processor::MESSAGE_BUS, successor_)
+      , processor_list(processor_list_)
     {
     }
 
   private:
 
     //*******************************************
-    // How to compare routers to router ids.
+    // How to compare processors to processor ids.
     //*******************************************
-    struct compare_router_id
+    struct compare_processor_id
     {
-      bool operator()(const etl::imessage_router* prouter, etl::message_router_id_t id) const
+      bool operator()(const etl::message_processor* pprocessor, etl::message_processor_id_t id) const
       {
-        return prouter->get_message_router_id() < id;
+        return pprocessor->get_message_processor_id() < id;
       }
 
-      bool operator()(etl::message_router_id_t id, const etl::imessage_router* prouter) const
+      bool operator()(etl::message_processor_id_t id, const etl::message_processor* pprocessor) const
       {
-        return id < prouter->get_message_router_id();
+        return id < pprocessor->get_message_processor_id();
       }
     };
 
-    router_list_t& router_list;
+    processor_list_t& processor_list;
   };
 
   //***************************************************************************
@@ -414,21 +414,21 @@ namespace etl
     /// Constructor.
     //*******************************************
     message_bus()
-      : imessage_bus(router_list)
+      : imessage_bus(processor_list)
     {
     }
 
     //*******************************************
     /// Constructor.
     //*******************************************
-    message_bus(etl::imessage_router& successor_)
-      : imessage_bus(router_list, successor_)
+    message_bus(etl::message_processor& successor_)
+      : imessage_bus(processor_list, successor_)
     {
     }
 
   private:
 
-    etl::vector<etl::imessage_router*, MAX_ROUTERS_> router_list;
+    etl::vector<etl::message_processor*, MAX_ROUTERS_> processor_list;
   };
 } // namespace etl
 

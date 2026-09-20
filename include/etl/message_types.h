@@ -42,7 +42,8 @@ namespace etl
   typedef ETL_MESSAGE_ID_TYPE message_id_t;
 #endif
 
-  typedef uint_least8_t message_router_id_t;
+  typedef uint_least8_t       message_router_id_t;
+  typedef message_router_id_t message_processor_id_t;
 } // namespace etl
 
 #endif

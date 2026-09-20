@@ -1572,6 +1572,9 @@
     <ClInclude Include="..\..\include\etl\format.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\message_processor.h">
+      <Filter>ETL\Messaging</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">

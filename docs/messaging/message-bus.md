@@ -12,30 +12,39 @@ Message Bus
 
 This page documents version `20.0.0` and above.  
 
-A variant of the observer pattern in that message routers and derived types are be able to subscribe to messages on a bus. The messages can be either broadcast, to be automatically picked up by any router that has a handler, or addressed to a particular router or router id. Message buses may be nested  by setting a successor.  
+A variant of the observer pattern in that message routers and derived types are be able to subscribe to messages on a bus. The messages can be either broadcast, to be automatically picked up by any router that has a handler, or addressed to a particular router or router id. Message buses may be chained by setting a successor.  
 
-## imessage_bus
-Derived from imessage_router.  
+```mermaid
+classDiagram
+    direction TB
+  
+    class message_processor
+    class message_bus
+
+    message_processor <|-- message_bus
+```
+
+## imessage_bus 
 
 The base for all message buses.  
-Inherits publicly from `etl::imessage_router`.  
+Inherits publicly from `etl::message_processor`.  
 Message buses are therefore also a type of  router.  
 Objects of type `etl::imessage_bus` cannot be directly constructed.  
 
 ## Member functions
 
 ```cpp
-bool subscribe(etl::imessage_router& router)
+bool subscribe(etl::message_processor& router)
 ```
-Subscribes an `etl::imessage_router` derived class to the bus.  
+Subscribes an `etl::message_processor` derived class to the bus.  
 Returns `true` on success.
 
 ---
 
 ```cpp
-void unsubscribe(etl::imessage_router& router)
+void unsubscribe(etl::message_processor& router)
 ```
-Unsubscribes the specified `etl::imessage_router` derived class from the bus.  
+Unsubscribes the specified `etl::message_processor` derived class from the bus.  
 Does not unsubscribe from nested buses.
 
 ---
@@ -100,7 +109,7 @@ void clear()
 ```
 Clears the bus of all subscribers.  
 
-Message buses inherit all of the public functions of `etl::imessage_router`.
+Message buses inherit all of the public functions of `etl::message_processor`.
 
 ## Errors
 
@@ -134,7 +143,7 @@ Constructs a message bus.
 Message buses always have a router id of `etl::imessage::MESSAGE_BUS`.
 
 ```cpp
-message_bus(etl::imessage_router& successor)
+message_bus(etl::message_processor& successor)
 ```
 Constructs a message bus and sets the successor.  
 Message buses always have a router id of `etl::imessage::MESSAGE_BUS`.

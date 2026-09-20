@@ -5,25 +5,57 @@ weight: 3
 
 A class that will automatically route incoming messages to specific handlers based on the message types declared in the template parameter list. Messages are passed to the receive member function which will static cast it to its real type and call the matching `on_receive` function in the derived class. A compilation error will occur if the matching `on_receive` does not exist.  
 
-The `on_receive` functions are not virtual. The template base class uses `CRTP` to directly call the derived class's functions.  
+The `on_receive` functions are not virtual. The template base class uses [CRTP](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern) to directly call the derived class's functions.  
 
-**Defines the following classes**  
-```cpp
-etl::imessage_router
-etl::message_router
-etl::null_message_router
-```
 
 Note: This C++03 portion of this header is a generated from `message_router_generator.h`. To handle more than the standard 16 message types then a new one must be generated.  
 See [Generators](./generators-tutorial)
 
+**Defines the following classes**  
+```cpp
+etl::message_processor
+etl::message_router
+etl::null_message_router
+etl::message_producer
+etl::message_router_from_type_list
+etl::message_router_from_type_list_t
+```
+## Class diagram
+
+```mermaid
+classDiagram
+    class successor~TDerived~
+
+    class message_processor_tag {
+        All_Message_Processors
+        Null_Message_Router
+        Message_Bus
+        Message_Broker
+        Message_Router
+        Max_Message_Router
+    }
+    
+    class message_processor
+    class message_router~TDerived, TMessageTypes...~
+    class null_message_router
+    class message_producer
+
+    successor <|-- message_processor
+    message_processor_tag <|-- message_processor
+
+    message_processor <|-- message_router
+
+    message_router <|-- null_message_router
+    message_router <|-- message_producer
+```
+
 ## Message router ID
-Allowable router IDs run from `0` to `MAX_MESSAGE_ROUTER` (`249`) inclusive.  
+Allowable router IDs run from `0` to `Max_Message_Router` (`249`) inclusive.  
 
 Each message router is given an ID. Whether this ID is unique or not depends on how you are using and identifying message routers.  
 
-Note: A message router 'group' is deemed to be a set of routers with identical IDs.  
-The default router id is `etl::imessage_router::MESSAGE_ROUTER`.
+Note: A message router *group* is deemed to be a set of routers with identical IDs.  
+The default router id is `etl::message_processor::Message_Router`.
 
 ### Scenario 1
 - You never send a message to a router using it's ID.  
@@ -48,12 +80,12 @@ Router IDs will be assigned in groups. i.e. Some routers may share IDs.
 
 All router IDs are unique  
 
-## imessage_router
+## message_processor
 The base class for all routers.
 
 #### Member functions
 ```cpp
-virtual ~imessage_router() {}
+virtual ~message_processor() {}
 ```
 
 ---
@@ -137,7 +169,7 @@ Returns `true` if the router is a consumer of messages, otherwise `false`.
 ---
 
 ```cpp
-void set_successor(etl::imessage_router& successor);
+void set_successor(etl::message_processor& successor);
 ```
 Sets the successor router. Any unhandled message will be sent here.  
 Allows the router to implement the Chain Of Responsibility design pattern.  
@@ -147,14 +179,14 @@ Allows the router to implement the Chain Of Responsibility design pattern.
 NULL_MESSAGE_ROUTER
 MESSAGE_BUS
 ALL_MESSAGE_ROUTERS
-MAX_MESSAGE_ROUTER
+Max_Message_Router
 ```
 
 ---
 
 ## message_router
 User defined message routers are derived from this class.  
-Derived from `imessage_router`.
+Derived from `message_processor`.
 
 ---
 
@@ -223,15 +255,15 @@ See [etl::message_packet](./message-packet)
 message_router()
 ```
 Constructs the router.  
-The router id is set to `etl::imassage_router::MESSAGE_ROUTER`.
+The router id is set to `etl::imassage_router::Message_Router`.
 
 ---
 
 ```cpp
-message_router(etl::imessage_router& successor)
+message_router(etl::message_processor& successor)
 ```
 Constructs the router.  
-The router id must be between `0` and `MAX_MESSAGE_ROUTER` (`249`). Other IDs are reserved for ETL use.  
+The router id must be between `0` and `Max_Message_Router` (`249`). Other IDs are reserved for ETL use.  
 Emits an error if the id is outside the legal range.  
 Routers may have duplicate ids.  
 Sets the successor router to this one. Any unhandled message will be sent here.  
@@ -249,10 +281,10 @@ Routers may have duplicate ids.
 ---
 
 ```cpp
-message_router(etl::message_router_id_t id, etl::imessage_router& successor)
+message_router(etl::message_router_id_t id, etl::message_processor& successor)
 ```
 Constructs the router.  
-The router id must be between 0 and MAX_MESSAGE_ROUTER (249) . Other IDs are reserved for ETL use.  
+The router id must be between 0 and Max_Message_Router (249) . Other IDs are reserved for ETL use.  
 Sets the successor router to this one. Any unhandled message will be sent here.
 
 ---
@@ -301,7 +333,7 @@ Derived from `etl::message_router_exception`.
 
 ### null_message_router
 This router can be used as a sink for messages or a 'null source' router.  
-Derived from `etl::imessage_router`.
+Derived from `etl::message_processor`.
 
 ---
 
@@ -309,7 +341,7 @@ Derived from `etl::imessage_router`.
 null_message_router()
 ```
 Constructs a null message router.  
-The router id will be `etl::imessage_router::NULL_MESSAGE_ROUTER`.
+The router id will be `etl::message_processor::NULL_MESSAGE_ROUTER`.
 
 ---
 
@@ -336,7 +368,7 @@ Returns an instance of `etl::null_message_router`.
 
 ## message_producer
 This router can be used as a producer-only of messages, such an interrupt routine.  
-Derived from `etl::imessage_router`.
+Derived from `etl::message_processor`.
 
 ---
 
@@ -376,7 +408,7 @@ Returns an instance of `etl::null_message_router`.
 ## Global functions
 
 ```cpp
-void send_message(etl::imessage_router& router,
+void send_message(etl::message_processor& router,
                   const etl::imessage&  message)
 ```
 Send the message to the router.
@@ -384,7 +416,7 @@ Send the message to the router.
 ---
 
 ```cpp
-void send_message(etl::imessage_router&    router,
+void send_message(etl::message_processor&    router,
                   etl::message_router_id_t id,
                   const etl::imessage&     message)
 ```
@@ -393,7 +425,7 @@ Send the message to the router if it has the specified id.
 ---
 
 ```cpp
-void send_message(etl::imessage_router& router,
+void send_message(etl::message_processor& router,
                   etl::shared_message&  message)
 ```
 Send the shared message to the router.
@@ -401,7 +433,7 @@ Send the shared message to the router.
 ---
 
 ```cpp
-void send_message(etl::imessage_router&    router,
+void send_message(etl::message_processor&    router,
                   etl::message_router_id_t id,
                   etl::shared_message&     message)
 ```
@@ -451,7 +483,7 @@ public:
   }
 
   // Received a start message.
-  void on_receive(etl::imessage_router& sender, const Start& msg)
+  void on_receive(const Start& msg)
   {
     std::cout << "Start message received\n";
   }
@@ -459,7 +491,7 @@ public:
   // Received a stop message.
   void on_receive(const Stop& msg)
   {
-    std::cout << "Start message received\n";
+    std::cout << "Stop message received\n";
   }
 
   // Received a set speed message.

@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "message.h"
-#include "message_router.h"
+#include "message_processor.h"
 #include "message_types.h"
 #include "nullptr.h"
 #include "span.h"
@@ -41,7 +41,7 @@ namespace etl
   //***************************************************************************
   /// Message broker
   //***************************************************************************
-  class message_broker : public etl::imessage_router
+  class message_broker : public etl::message_processor
   {
   private:
 
@@ -101,7 +101,7 @@ namespace etl
       friend class message_broker;
 
       //*******************************
-      subscription(etl::imessage_router& router_)
+      subscription(etl::message_processor& router_)
         : p_router(&router_)
       {
       }
@@ -112,7 +112,7 @@ namespace etl
       virtual message_id_span_t message_id_list() const = 0;
 
       //*******************************
-      etl::imessage_router* get_router() const
+      etl::message_processor* get_router() const
       {
         return p_router;
       }
@@ -123,16 +123,16 @@ namespace etl
         return static_cast<subscription*>(get_next());
       }
 
-      etl::imessage_router* const p_router;
+      etl::message_processor* const p_router;
     };
 
-    using etl::imessage_router::receive;
+    using etl::message_processor::receive;
 
     //*******************************************
     /// Constructor.
     //*******************************************
     message_broker()
-      : imessage_router(etl::imessage_router::MESSAGE_BROKER)
+      : message_processor(etl::message_processor::MESSAGE_BROKER)
       , head()
     {
     }
@@ -140,8 +140,8 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    message_broker(etl::imessage_router& successor_)
-      : imessage_router(etl::imessage_router::MESSAGE_BROKER, successor_)
+    message_broker(etl::message_processor& successor_)
+      : message_processor(etl::message_processor::MESSAGE_BROKER, successor_)
       , head()
     {
     }
@@ -150,21 +150,21 @@ namespace etl
     /// Constructor.
     //*******************************************
     message_broker(etl::message_router_id_t id_)
-      : imessage_router(id_)
+      : message_processor(id_)
       , head()
     {
-      ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER),
+      ETL_ASSERT((id_ <= etl::message_processor::MAX_MESSAGE_ROUTER) || (id_ == etl::message_processor::MESSAGE_BROKER),
                  ETL_ERROR(etl::message_router_illegal_id));
     }
 
     //*******************************************
     /// Constructor.
     //*******************************************
-    message_broker(etl::message_router_id_t id_, etl::imessage_router& successor_)
-      : imessage_router(id_, successor_)
+    message_broker(etl::message_router_id_t id_, etl::message_processor& successor_)
+      : message_processor(id_, successor_)
       , head()
     {
-      ETL_ASSERT((id_ <= etl::imessage_router::MAX_MESSAGE_ROUTER) || (id_ == etl::imessage_router::MESSAGE_BROKER),
+      ETL_ASSERT((id_ <= etl::message_processor::MAX_MESSAGE_ROUTER) || (id_ == etl::message_processor::MESSAGE_BROKER),
                  ETL_ERROR(etl::message_router_illegal_id));
     }
 
@@ -177,7 +177,7 @@ namespace etl
     }
 
     //*******************************************
-    void unsubscribe(etl::imessage_router& router)
+    void unsubscribe(etl::message_processor& router)
     {
       initialise_insertion_point(&router, ETL_NULLPTR);
     }
@@ -185,16 +185,16 @@ namespace etl
     //*******************************************
     virtual void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
-      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, msg);
+      receive(etl::message_processor::ALL_MESSAGE_ROUTERS, msg);
     }
 
     virtual void receive(etl::shared_message shared_msg) ETL_OVERRIDE
     {
-      receive(etl::imessage_router::ALL_MESSAGE_ROUTERS, shared_msg);
+      receive(etl::message_processor::ALL_MESSAGE_ROUTERS, shared_msg);
     }
 
     //*******************************************
-    virtual void receive(etl::message_router_id_t destination_router_id, const etl::imessage& msg) ETL_OVERRIDE
+    virtual void receive(etl::message_router_id_t destination_processor_id, const etl::imessage& msg) ETL_OVERRIDE
     {
       const etl::message_id_t id = msg.get_message_id();
 
@@ -211,9 +211,9 @@ namespace etl
 
           if (itr != message_ids.end())
           {
-            etl::imessage_router* router = sub->get_router();
+            etl::message_processor* router = sub->get_router();
 
-            if (destination_router_id == etl::imessage_router::ALL_MESSAGE_ROUTERS || destination_router_id == router->get_message_router_id())
+            if (destination_processor_id == etl::message_processor::ALL_MESSAGE_ROUTERS || destination_processor_id == router->get_message_processor_id())
             {
               router->receive(msg);
             }
@@ -226,12 +226,12 @@ namespace etl
       // Always pass the message on to the successor.
       if (has_successor())
       {
-        get_successor().receive(destination_router_id, msg);
+        get_successor().receive(destination_processor_id, msg);
       }
     }
 
     //*******************************************
-    virtual void receive(etl::message_router_id_t destination_router_id, etl::shared_message shared_msg) ETL_OVERRIDE
+    virtual void receive(etl::message_router_id_t destination_processor_id, etl::shared_message shared_msg) ETL_OVERRIDE
     {
       const etl::message_id_t id = shared_msg.get_message().get_message_id();
 
@@ -248,9 +248,9 @@ namespace etl
 
           if (itr != message_ids.end())
           {
-            etl::imessage_router* router = sub->get_router();
+            etl::message_processor* router = sub->get_router();
 
-            if (destination_router_id == etl::imessage_router::ALL_MESSAGE_ROUTERS || destination_router_id == router->get_message_router_id())
+            if (destination_processor_id == etl::message_processor::ALL_MESSAGE_ROUTERS || destination_processor_id == router->get_message_processor_id())
             {
               router->receive(shared_msg);
             }
@@ -263,11 +263,11 @@ namespace etl
       // Always pass the message on to a successor.
       if (has_successor())
       {
-        get_successor().receive(destination_router_id, shared_msg);
+        get_successor().receive(destination_processor_id, shared_msg);
       }
     }
 
-    using imessage_router::accepts;
+    using message_processor::accepts;
 
     //*******************************************
     /// Message brokers accept messages determined
@@ -288,7 +288,7 @@ namespace etl
 
           if (itr != message_ids.end())
           {
-            etl::imessage_router* router = sub->get_router();
+            etl::message_processor* router = sub->get_router();
 
             if (router->accepts(id))
             {
@@ -348,9 +348,9 @@ namespace etl
   private:
 
     //*******************************************
-    void initialise_insertion_point(const etl::imessage_router* p_router, etl::message_broker::subscription* p_new_sub)
+    void initialise_insertion_point(const etl::message_processor* p_router, etl::message_broker::subscription* p_new_sub)
     {
-      const etl::imessage_router* p_target_router = p_router;
+      const etl::message_processor* p_target_router = p_router;
 
       subscription_node* p_sub          = head.get_next();
       subscription_node* p_sub_previous = &head;

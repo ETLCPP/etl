@@ -9,10 +9,17 @@ weight: 6
 
 Message Broker  
 
-A variant of the observer pattern in that message routers and derived types are be able to subscribe to selected sets of messages. The message_broker is similar to the message_bus, but it provides more control over the routing of messages.  While the message_bus simply broadcasts every message to all subscribers, the message_broker allows you to specify which subscribers should receive each message.  
+A variant of the observer pattern in that message routers and derived types are be able to subscribe to selected sets of messages. The `message_broker` is similar to the `message_bus`, but it provides more control over the routing of messages.  While `message_bus` simply broadcasts every message to all subscribers, `message_broker` allows you to specify which subscribers should receive each message.  
 
-Derived from `imessage_router`.
+```mermaid
+classDiagram
+    direction TB
+  
+    class message_processor
+    class message_broker
 
+    message_processor <|-- message_broker
+```
 ## Types
 
 ```cpp

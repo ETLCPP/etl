@@ -3563,6 +3563,7 @@
     <ClInclude Include="..\..\include\etl\lcm.h" />
     <ClInclude Include="..\..\include\etl\math.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
+    <ClInclude Include="..\..\include\etl\message_processor.h" />
     <ClInclude Include="..\..\include\etl\monostate.h" />
     <ClInclude Include="..\..\include\etl\not_null.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
