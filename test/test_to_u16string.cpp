@@ -41,32 +41,35 @@ namespace
 {
   typedef etl::u16format_spec Format;
 
+  using String20 = etl::u16string<20>;
+  using String64 = etl::u16string<64>;
+
   SUITE(test_to_u16string)
   {
     //*************************************************************************
     TEST(test_default_format_no_append)
     {
-      etl::u16string<20> str;
+      String20 str;
 
-      CHECK(etl::u16string<20>(STR("0")) == etl::to_string(uint8_t(0), str));
-      CHECK(etl::u16string<20>(STR("0")) == etl::to_string(uint16_t(0), str));
-      CHECK(etl::u16string<20>(STR("0")) == etl::to_string(uint32_t(0), str));
-      CHECK(etl::u16string<20>(STR("0")) == etl::to_string(uint64_t(0), str));
+      CHECK(String20(STR("0")) == etl::to_string(uint8_t(0), str));
+      CHECK(String20(STR("0")) == etl::to_string(uint16_t(0), str));
+      CHECK(String20(STR("0")) == etl::to_string(uint32_t(0), str));
+      CHECK(String20(STR("0")) == etl::to_string(uint64_t(0), str));
 
-      CHECK(etl::u16string<20>(STR("128")) == etl::to_string(uint8_t(128), str));
-      CHECK(etl::u16string<20>(STR("32768")) == etl::to_string(uint16_t(32768), str));
-      CHECK(etl::u16string<20>(STR("2147483648")) == etl::to_string(uint32_t(2147483648ul), str));
-      CHECK(etl::u16string<20>(STR("9223372036854775808")) == etl::to_string(uint64_t(9223372036854775808ull), str));
+      CHECK(String20(STR("128")) == etl::to_string(uint8_t(128), str));
+      CHECK(String20(STR("32768")) == etl::to_string(uint16_t(32768), str));
+      CHECK(String20(STR("2147483648")) == etl::to_string(uint32_t(2147483648ul), str));
+      CHECK(String20(STR("9223372036854775808")) == etl::to_string(uint64_t(9223372036854775808ull), str));
 
-      CHECK(etl::u16string<20>(STR("127")) == etl::to_string(INT8_MAX, str));
-      CHECK(etl::u16string<20>(STR("32767")) == etl::to_string(INT16_MAX, str));
-      CHECK(etl::u16string<20>(STR("2147483647")) == etl::to_string(INT32_MAX, str));
-      CHECK(etl::u16string<20>(STR("9223372036854775807")) == etl::to_string(INT64_MAX, str));
+      CHECK(String20(STR("127")) == etl::to_string(INT8_MAX, str));
+      CHECK(String20(STR("32767")) == etl::to_string(INT16_MAX, str));
+      CHECK(String20(STR("2147483647")) == etl::to_string(INT32_MAX, str));
+      CHECK(String20(STR("9223372036854775807")) == etl::to_string(INT64_MAX, str));
 
-      CHECK(etl::u16string<20>(STR("-128")) == etl::to_string(INT8_MIN, str));
-      CHECK(etl::u16string<20>(STR("-32768")) == etl::to_string(INT16_MIN, str));
-      CHECK(etl::u16string<20>(STR("-2147483648")) == etl::to_string(INT32_MIN, str));
-      CHECK(etl::u16string<20>(STR("-9223372036854775808")) == etl::to_string(INT64_MIN, str));
+      CHECK(String20(STR("-128")) == etl::to_string(INT8_MIN, str));
+      CHECK(String20(STR("-32768")) == etl::to_string(INT16_MIN, str));
+      CHECK(String20(STR("-2147483648")) == etl::to_string(INT32_MIN, str));
+      CHECK(String20(STR("-9223372036854775808")) == etl::to_string(INT64_MIN, str));
     }
 
     //*************************************************************************
@@ -104,88 +107,87 @@ namespace
     //*************************************************************************
     TEST(test_format_right_justified_no_append)
     {
-      etl::u16string<20> str;
+      String20 str;
 
       Format format = Format().base(10).width(20).fill(STR('#'));
 
-      CHECK(etl::u16string<20>(STR("###################0")) == etl::to_string(uint8_t(0), str, format));
-      CHECK(etl::u16string<20>(STR("###################0")) == etl::to_string(uint16_t(0), str, format));
-      CHECK(etl::u16string<20>(STR("###################0")) == etl::to_string(uint32_t(0), str, format));
-      CHECK(etl::u16string<20>(STR("###################0")) == etl::to_string(uint64_t(0), str, format));
+      CHECK(String20(STR("###################0")) == etl::to_string(uint8_t(0), str, format));
+      CHECK(String20(STR("###################0")) == etl::to_string(uint16_t(0), str, format));
+      CHECK(String20(STR("###################0")) == etl::to_string(uint32_t(0), str, format));
+      CHECK(String20(STR("###################0")) == etl::to_string(uint64_t(0), str, format));
 
-      CHECK(etl::u16string<20>(STR("#################128")) == etl::to_string(uint8_t(128), str, format));
-      CHECK(etl::u16string<20>(STR("###############32768")) == etl::to_string(uint16_t(32768), str, format));
-      CHECK(etl::u16string<20>(STR("##########2147483648")) == etl::to_string(uint32_t(2147483648ul), str, format));
-      CHECK(etl::u16string<20>(STR("#9223372036854775808")) == etl::to_string(uint64_t(9223372036854775808ull), str, format));
+      CHECK(String20(STR("#################128")) == etl::to_string(uint8_t(128), str, format));
+      CHECK(String20(STR("###############32768")) == etl::to_string(uint16_t(32768), str, format));
+      CHECK(String20(STR("##########2147483648")) == etl::to_string(uint32_t(2147483648ul), str, format));
+      CHECK(String20(STR("#9223372036854775808")) == etl::to_string(uint64_t(9223372036854775808ull), str, format));
 
-      CHECK(etl::u16string<20>(STR("#################127")) == etl::to_string(INT8_MAX, str, format));
-      CHECK(etl::u16string<20>(STR("###############32767")) == etl::to_string(INT16_MAX, str, format));
-      CHECK(etl::u16string<20>(STR("##########2147483647")) == etl::to_string(INT32_MAX, str, format));
-      CHECK(etl::u16string<20>(STR("#9223372036854775807")) == etl::to_string(INT64_MAX, str, format));
+      CHECK(String20(STR("#################127")) == etl::to_string(INT8_MAX, str, format));
+      CHECK(String20(STR("###############32767")) == etl::to_string(INT16_MAX, str, format));
+      CHECK(String20(STR("##########2147483647")) == etl::to_string(INT32_MAX, str, format));
+      CHECK(String20(STR("#9223372036854775807")) == etl::to_string(INT64_MAX, str, format));
 
-      CHECK(etl::u16string<20>(STR("################-128")) == etl::to_string(INT8_MIN, str, format));
-      CHECK(etl::u16string<20>(STR("##############-32768")) == etl::to_string(INT16_MIN, str, format));
-      CHECK(etl::u16string<20>(STR("#########-2147483648")) == etl::to_string(INT32_MIN, str, format));
-      CHECK(etl::u16string<20>(STR("-9223372036854775808")) == etl::to_string(INT64_MIN, str, format));
+      CHECK(String20(STR("################-128")) == etl::to_string(INT8_MIN, str, format));
+      CHECK(String20(STR("##############-32768")) == etl::to_string(INT16_MIN, str, format));
+      CHECK(String20(STR("#########-2147483648")) == etl::to_string(INT32_MIN, str, format));
+      CHECK(String20(STR("-9223372036854775808")) == etl::to_string(INT64_MIN, str, format));
     }
 
     //*************************************************************************
     TEST(test_format_left_justified_no_append)
     {
-      etl::u16string<20> str;
+      String20 str;
 
       Format format = Format().base(10).width(20).fill(STR('#')).left();
 
-      CHECK(etl::u16string<20>(STR("0###################")) == etl::to_string(uint8_t(0), str, format));
-      CHECK(etl::u16string<20>(STR("0###################")) == etl::to_string(uint16_t(0), str, format));
-      CHECK(etl::u16string<20>(STR("0###################")) == etl::to_string(uint32_t(0), str, format));
-      CHECK(etl::u16string<20>(STR("0###################")) == etl::to_string(uint64_t(0), str, format));
+      CHECK(String20(STR("0###################")) == etl::to_string(uint8_t(0), str, format));
+      CHECK(String20(STR("0###################")) == etl::to_string(uint16_t(0), str, format));
+      CHECK(String20(STR("0###################")) == etl::to_string(uint32_t(0), str, format));
+      CHECK(String20(STR("0###################")) == etl::to_string(uint64_t(0), str, format));
 
-      CHECK(etl::u16string<20>(STR("128#################")) == etl::to_string(uint8_t(128), str, format));
-      CHECK(etl::u16string<20>(STR("32768###############")) == etl::to_string(uint16_t(32768), str, format));
-      CHECK(etl::u16string<20>(STR("2147483648##########")) == etl::to_string(uint32_t(2147483648ul), str, format));
-      CHECK(etl::u16string<20>(STR("9223372036854775808#")) == etl::to_string(uint64_t(9223372036854775808ull), str, format));
+      CHECK(String20(STR("128#################")) == etl::to_string(uint8_t(128), str, format));
+      CHECK(String20(STR("32768###############")) == etl::to_string(uint16_t(32768), str, format));
+      CHECK(String20(STR("2147483648##########")) == etl::to_string(uint32_t(2147483648ul), str, format));
+      CHECK(String20(STR("9223372036854775808#")) == etl::to_string(uint64_t(9223372036854775808ull), str, format));
 
-      CHECK(etl::u16string<20>(STR("127#################")) == etl::to_string(INT8_MAX, str, format));
-      CHECK(etl::u16string<20>(STR("32767###############")) == etl::to_string(INT16_MAX, str, format));
-      CHECK(etl::u16string<20>(STR("2147483647##########")) == etl::to_string(INT32_MAX, str, format));
-      CHECK(etl::u16string<20>(STR("9223372036854775807#")) == etl::to_string(INT64_MAX, str, format));
+      CHECK(String20(STR("127#################")) == etl::to_string(INT8_MAX, str, format));
+      CHECK(String20(STR("32767###############")) == etl::to_string(INT16_MAX, str, format));
+      CHECK(String20(STR("2147483647##########")) == etl::to_string(INT32_MAX, str, format));
+      CHECK(String20(STR("9223372036854775807#")) == etl::to_string(INT64_MAX, str, format));
 
-      CHECK(etl::u16string<20>(STR("-128################")) == etl::to_string(INT8_MIN, str, format));
-      CHECK(etl::u16string<20>(STR("-32768##############")) == etl::to_string(INT16_MIN, str, format));
-      CHECK(etl::u16string<20>(STR("-2147483648#########")) == etl::to_string(INT32_MIN, str, format));
-      CHECK(etl::u16string<20>(STR("-9223372036854775808")) == etl::to_string(INT64_MIN, str, format));
+      CHECK(String20(STR("-128################")) == etl::to_string(INT8_MIN, str, format));
+      CHECK(String20(STR("-32768##############")) == etl::to_string(INT16_MIN, str, format));
+      CHECK(String20(STR("-2147483648#########")) == etl::to_string(INT32_MIN, str, format));
+      CHECK(String20(STR("-9223372036854775808")) == etl::to_string(INT64_MIN, str, format));
     }
 
     //*************************************************************************
     TEST(test_binary_format_no_append)
     {
-      etl::u16string<64> str;
+      String64 str;
 
-      CHECK(etl::u16string<64>(STR("00000000")) == etl::to_string(uint8_t(0), str, Format().base(2).width(8).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("0000000000000000")) == etl::to_string(uint16_t(0), str, Format().base(2).width(16).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("00000000000000000000000000000000"))
-            == etl::to_string(uint32_t(0), str, Format().base(2).width(32).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("0000000000000000000000000000000000000000000000000000000000000000"))
+      CHECK(String64(STR("00000000")) == etl::to_string(uint8_t(0), str, Format().base(2).width(8).fill(STR('0'))));
+      CHECK(String64(STR("0000000000000000")) == etl::to_string(uint16_t(0), str, Format().base(2).width(16).fill(STR('0'))));
+      CHECK(String64(STR("00000000000000000000000000000000")) == etl::to_string(uint32_t(0), str, Format().base(2).width(32).fill(STR('0'))));
+      CHECK(String64(STR("0000000000000000000000000000000000000000000000000000000000000000"))
             == etl::to_string(uint64_t(0), str, Format().base(2).width(64).fill(STR('0'))));
 
-      CHECK(etl::u16string<64>(STR("10000000")) == etl::to_string(uint8_t(128), str, Format().base(2).width(8).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("1000000000000000")) == etl::to_string(uint16_t(32768), str, Format().base(2).width(16).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("10000000000000000000000000000000"))
+      CHECK(String64(STR("10000000")) == etl::to_string(uint8_t(128), str, Format().base(2).width(8).fill(STR('0'))));
+      CHECK(String64(STR("1000000000000000")) == etl::to_string(uint16_t(32768), str, Format().base(2).width(16).fill(STR('0'))));
+      CHECK(String64(STR("10000000000000000000000000000000"))
             == etl::to_string(uint32_t(2147483648ul), str, Format().base(2).width(32).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("1000000000000000000000000000000000000000000000000000000000000000"))
+      CHECK(String64(STR("1000000000000000000000000000000000000000000000000000000000000000"))
             == etl::to_string(uint64_t(9223372036854775808ull), str, Format().base(2).width(64).fill(STR('0'))));
 
-      CHECK(etl::u16string<64>(STR("01111111")) == etl::to_string(INT8_MAX, str, Format().base(2).width(8).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("0111111111111111")) == etl::to_string(INT16_MAX, str, Format().base(2).width(16).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("01111111111111111111111111111111")) == etl::to_string(INT32_MAX, str, Format().base(2).width(32).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("0111111111111111111111111111111111111111111111111111111111111111"))
+      CHECK(String64(STR("01111111")) == etl::to_string(INT8_MAX, str, Format().base(2).width(8).fill(STR('0'))));
+      CHECK(String64(STR("0111111111111111")) == etl::to_string(INT16_MAX, str, Format().base(2).width(16).fill(STR('0'))));
+      CHECK(String64(STR("01111111111111111111111111111111")) == etl::to_string(INT32_MAX, str, Format().base(2).width(32).fill(STR('0'))));
+      CHECK(String64(STR("0111111111111111111111111111111111111111111111111111111111111111"))
             == etl::to_string(INT64_MAX, str, Format().base(2).width(64).fill(STR('0'))));
 
-      CHECK(etl::u16string<64>(STR("10000000")) == etl::to_string(INT8_MIN, str, Format().base(2).width(8).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("1000000000000000")) == etl::to_string(INT16_MIN, str, Format().base(2).width(16).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("10000000000000000000000000000000")) == etl::to_string(INT32_MIN, str, Format().base(2).width(32).fill(STR('0'))));
-      CHECK(etl::u16string<64>(STR("1000000000000000000000000000000000000000000000000000000000000000"))
+      CHECK(String64(STR("10000000")) == etl::to_string(INT8_MIN, str, Format().base(2).width(8).fill(STR('0'))));
+      CHECK(String64(STR("1000000000000000")) == etl::to_string(INT16_MIN, str, Format().base(2).width(16).fill(STR('0'))));
+      CHECK(String64(STR("10000000000000000000000000000000")) == etl::to_string(INT32_MIN, str, Format().base(2).width(32).fill(STR('0'))));
+      CHECK(String64(STR("1000000000000000000000000000000000000000000000000000000000000000"))
             == etl::to_string(INT64_MIN, str, Format().base(2).width(64).fill(STR('0'))));
     }
 
@@ -257,328 +259,328 @@ namespace
     //*************************************************************************
     TEST(test_floating_point_no_append)
     {
-      etl::u16string<20> str;
+      String20 str;
 
-      CHECK(etl::u16string<20>(STR("  0.000000")) == etl::to_string(0.0, str, Format().precision(6).width(10).right()));
-      CHECK(etl::u16string<20>(STR("0.000000  ")) == etl::to_string(0.0, str, Format().precision(6).width(10).left()));
+      CHECK(String20(STR("  0.000000")) == etl::to_string(0.0, str, Format().precision(6).width(10).right()));
+      CHECK(String20(STR("0.000000  ")) == etl::to_string(0.0, str, Format().precision(6).width(10).left()));
 
-      CHECK(etl::u16string<20>(STR("  0.000001")) == etl::to_string(0.000001, str, Format().precision(6).width(10).right()));
-      CHECK(etl::u16string<20>(STR("0.000001  ")) == etl::to_string(0.000001, str, Format().precision(6).width(10).left()));
+      CHECK(String20(STR("  0.000001")) == etl::to_string(0.000001, str, Format().precision(6).width(10).right()));
+      CHECK(String20(STR("0.000001  ")) == etl::to_string(0.000001, str, Format().precision(6).width(10).left()));
 
-      CHECK(etl::u16string<20>(STR("  1.000000")) == etl::to_string(1.0, str, Format().precision(6).width(10).right()));
-      CHECK(etl::u16string<20>(STR("1.000000  ")) == etl::to_string(1.0, str, Format().precision(6).width(10).left()));
+      CHECK(String20(STR("  1.000000")) == etl::to_string(1.0, str, Format().precision(6).width(10).right()));
+      CHECK(String20(STR("1.000000  ")) == etl::to_string(1.0, str, Format().precision(6).width(10).left()));
 
-      CHECK(etl::u16string<20>(STR("  1.000001")) == etl::to_string(1.000001, str, Format().precision(6).width(10).right()));
-      CHECK(etl::u16string<20>(STR("1.000001  ")) == etl::to_string(1.000001, str, Format().precision(6).width(10).left()));
+      CHECK(String20(STR("  1.000001")) == etl::to_string(1.000001, str, Format().precision(6).width(10).right()));
+      CHECK(String20(STR("1.000001  ")) == etl::to_string(1.000001, str, Format().precision(6).width(10).left()));
 
-      CHECK(etl::u16string<20>(STR(" 12.345678")) == etl::to_string(12.345678, str, Format().precision(6).width(10).right()));
-      CHECK(etl::u16string<20>(STR("12.345678 ")) == etl::to_string(12.345678, str, Format().precision(6).width(10).left()));
+      CHECK(String20(STR(" 12.345678")) == etl::to_string(12.345678, str, Format().precision(6).width(10).right()));
+      CHECK(String20(STR("12.345678 ")) == etl::to_string(12.345678, str, Format().precision(6).width(10).left()));
 
-      CHECK(etl::u16string<20>(STR(" -12.345678")) == etl::to_string(-12.345678, str, Format().precision(6).width(11).right()));
-      CHECK(etl::u16string<20>(STR("-12.345678 ")) == etl::to_string(-12.345678, str, Format().precision(6).width(11).left()));
+      CHECK(String20(STR(" -12.345678")) == etl::to_string(-12.345678, str, Format().precision(6).width(11).right()));
+      CHECK(String20(STR("-12.345678 ")) == etl::to_string(-12.345678, str, Format().precision(6).width(11).left()));
 
-      CHECK(etl::u16string<20>(STR(" -0.123456")) == etl::to_string(-0.123456, str, Format().precision(6).width(10).right()));
-      CHECK(etl::u16string<20>(STR("-0.123456 ")) == etl::to_string(-0.123456, str, Format().precision(6).width(10).left()));
+      CHECK(String20(STR(" -0.123456")) == etl::to_string(-0.123456, str, Format().precision(6).width(10).right()));
+      CHECK(String20(STR("-0.123456 ")) == etl::to_string(-0.123456, str, Format().precision(6).width(10).left()));
     }
 
     //*************************************************************************
     TEST(test_floating_point_append)
     {
-      etl::u16string<20> str;
+      String20 str;
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result  12.345678")) == etl::to_string(12.345678, str, Format().precision(6).width(10).right(), true));
+      CHECK(String20(STR("Result  12.345678")) == etl::to_string(12.345678, str, Format().precision(6).width(10).right(), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result 12.345678 ")) == etl::to_string(12.345678, str, Format().precision(6).width(10).left(), true));
+      CHECK(String20(STR("Result 12.345678 ")) == etl::to_string(12.345678, str, Format().precision(6).width(10).left(), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result  -12.345678")) == etl::to_string(-12.345678, str, Format().precision(6).width(11).right(), true));
+      CHECK(String20(STR("Result  -12.345678")) == etl::to_string(-12.345678, str, Format().precision(6).width(11).right(), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result -12.345678 ")) == etl::to_string(-12.345678, str, Format().precision(6).width(11).left(), true));
+      CHECK(String20(STR("Result -12.345678 ")) == etl::to_string(-12.345678, str, Format().precision(6).width(11).left(), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result -0.123456 ")) == etl::to_string(-0.123456, str, Format().precision(6).width(10).left(), true));
+      CHECK(String20(STR("Result -0.123456 ")) == etl::to_string(-0.123456, str, Format().precision(6).width(10).left(), true));
     }
 
     //*************************************************************************
     TEST(test_floating_point_rounding)
     {
-      etl::u16string<20> str;
+      String20 str;
 
-      CHECK(etl::u16string<20>(STR("0.00001")) == etl::to_string(0.000009, str, Format().precision(5).width(7).right()));
-      CHECK(etl::u16string<20>(STR("0.0001")) == etl::to_string(0.000099, str, Format().precision(4).width(6).right()));
-      CHECK(etl::u16string<20>(STR("0.001")) == etl::to_string(0.000999, str, Format().precision(3).width(5).right()));
-      CHECK(etl::u16string<20>(STR("0.01")) == etl::to_string(0.009999, str, Format().precision(2).width(4).right()));
-      CHECK(etl::u16string<20>(STR("0.1")) == etl::to_string(0.099999, str, Format().precision(1).width(3).right()));
-      CHECK(etl::u16string<20>(STR("1.0")) == etl::to_string(0.999999, str, Format().precision(1).width(3).right()));
-      CHECK(etl::u16string<20>(STR("1")) == etl::to_string(0.999999, str, Format().precision(0).width(1).right()));
-      CHECK(etl::u16string<20>(STR("2")) == etl::to_string(1.999999, str, Format().precision(0).width(1).right()));
-      CHECK(etl::u16string<20>(STR("10.0")) == etl::to_string(9.999999, str, Format().precision(1).width(4).right()));
-      CHECK(etl::u16string<20>(STR("20.0")) == etl::to_string(19.999999, str, Format().precision(1).width(4).right()));
+      CHECK(String20(STR("0.00001")) == etl::to_string(0.000009, str, Format().precision(5).width(7).right()));
+      CHECK(String20(STR("0.0001")) == etl::to_string(0.000099, str, Format().precision(4).width(6).right()));
+      CHECK(String20(STR("0.001")) == etl::to_string(0.000999, str, Format().precision(3).width(5).right()));
+      CHECK(String20(STR("0.01")) == etl::to_string(0.009999, str, Format().precision(2).width(4).right()));
+      CHECK(String20(STR("0.1")) == etl::to_string(0.099999, str, Format().precision(1).width(3).right()));
+      CHECK(String20(STR("1.0")) == etl::to_string(0.999999, str, Format().precision(1).width(3).right()));
+      CHECK(String20(STR("1")) == etl::to_string(0.999999, str, Format().precision(0).width(1).right()));
+      CHECK(String20(STR("2")) == etl::to_string(1.999999, str, Format().precision(0).width(1).right()));
+      CHECK(String20(STR("10.0")) == etl::to_string(9.999999, str, Format().precision(1).width(4).right()));
+      CHECK(String20(STR("20.0")) == etl::to_string(19.999999, str, Format().precision(1).width(4).right()));
     }
 
     //*************************************************************************
     TEST(test_bool_no_append)
     {
-      etl::u16string<20> str;
+      String20 str;
 
-      CHECK(etl::u16string<20>(STR("         0")) == to_string(false, str, Format().precision(6).width(10).right().boolalpha(false)));
-      CHECK(etl::u16string<20>(STR("         1")) == to_string(true, str, Format().precision(6).width(10).right().boolalpha(false)));
-      CHECK(etl::u16string<20>(STR("0         ")) == to_string(false, str, Format().precision(6).width(10).left().boolalpha(false)));
-      CHECK(etl::u16string<20>(STR("1         ")) == to_string(true, str, Format().precision(6).width(10).left().boolalpha(false)));
+      CHECK(String20(STR("         0")) == to_string(false, str, Format().precision(6).width(10).right().boolalpha(false)));
+      CHECK(String20(STR("         1")) == to_string(true, str, Format().precision(6).width(10).right().boolalpha(false)));
+      CHECK(String20(STR("0         ")) == to_string(false, str, Format().precision(6).width(10).left().boolalpha(false)));
+      CHECK(String20(STR("1         ")) == to_string(true, str, Format().precision(6).width(10).left().boolalpha(false)));
 
-      CHECK(etl::u16string<20>(STR("     false")) == to_string(false, str, Format().precision(6).width(10).right().boolalpha(true)));
-      CHECK(etl::u16string<20>(STR("      true")) == to_string(true, str, Format().precision(6).width(10).right().boolalpha(true)));
-      CHECK(etl::u16string<20>(STR("false     ")) == to_string(false, str, Format().precision(6).width(10).left().boolalpha(true)));
-      CHECK(etl::u16string<20>(STR("true      ")) == to_string(true, str, Format().precision(6).width(10).left().boolalpha(true)));
+      CHECK(String20(STR("     false")) == to_string(false, str, Format().precision(6).width(10).right().boolalpha(true)));
+      CHECK(String20(STR("      true")) == to_string(true, str, Format().precision(6).width(10).right().boolalpha(true)));
+      CHECK(String20(STR("false     ")) == to_string(false, str, Format().precision(6).width(10).left().boolalpha(true)));
+      CHECK(String20(STR("true      ")) == to_string(true, str, Format().precision(6).width(10).left().boolalpha(true)));
     }
 
     //*************************************************************************
     TEST(test_bool_append)
     {
-      etl::u16string<20> str;
+      String20 str;
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result          0")) == to_string(false, str, Format().precision(6).width(10).right().boolalpha(false), true));
+      CHECK(String20(STR("Result          0")) == to_string(false, str, Format().precision(6).width(10).right().boolalpha(false), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result          1")) == to_string(true, str, Format().precision(6).width(10).right().boolalpha(false), true));
+      CHECK(String20(STR("Result          1")) == to_string(true, str, Format().precision(6).width(10).right().boolalpha(false), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result 0         ")) == to_string(false, str, Format().precision(6).width(10).left().boolalpha(false), true));
+      CHECK(String20(STR("Result 0         ")) == to_string(false, str, Format().precision(6).width(10).left().boolalpha(false), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result 1         ")) == to_string(true, str, Format().precision(6).width(10).left().boolalpha(false), true));
+      CHECK(String20(STR("Result 1         ")) == to_string(true, str, Format().precision(6).width(10).left().boolalpha(false), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result      false")) == to_string(false, str, Format().precision(6).width(10).right().boolalpha(true), true));
+      CHECK(String20(STR("Result      false")) == to_string(false, str, Format().precision(6).width(10).right().boolalpha(true), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result       true")) == to_string(true, str, Format().precision(6).width(10).right().boolalpha(true), true));
+      CHECK(String20(STR("Result       true")) == to_string(true, str, Format().precision(6).width(10).right().boolalpha(true), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result false     ")) == to_string(false, str, Format().precision(6).width(10).left().boolalpha(true), true));
+      CHECK(String20(STR("Result false     ")) == to_string(false, str, Format().precision(6).width(10).left().boolalpha(true), true));
 
       str.assign(STR("Result "));
-      CHECK(etl::u16string<20>(STR("Result true      ")) == to_string(true, str, Format().precision(6).width(10).left().boolalpha(true), true));
+      CHECK(String20(STR("Result true      ")) == to_string(true, str, Format().precision(6).width(10).left().boolalpha(true), true));
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_default_format)
     {
-      etl::u16string<20> result;
-      int                value = -1234567;
+      String20 result;
+      int      value = -1234567;
 
       etl::to_string(value, 6U, result);
 
-      CHECK(etl::u16string<20>(STR("-1")) == result);
+      CHECK(String20(STR("-1")) == result);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_huge_precision)
     {
-      etl::u16string<20> result;
-      int                value = -1234560;
+      String20 result;
+      int      value = -1234560;
 
       Format format = Format().precision(100);
 
       etl::to_string(value, 6U, result, format);
 
-      CHECK(etl::u16string<20>(STR("-1.234560")) == result);
+      CHECK(String20(STR("-1.234560")) == result);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_huge_precision_64bit)
     {
-      etl::u16string<20> result;
-      int64_t            value = INT64_MIN;
+      String20 result;
+      int64_t  value = INT64_MIN;
 
       Format format = Format().precision(100);
 
       etl::to_string(value, 12U, result, format);
 
-      CHECK(etl::u16string<20>(STR("-9223372.036854775808")) == result);
+      CHECK(String20(STR("-9223372.036854775808")) == result);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_zero_fractional)
     {
-      etl::u16string<20> result_i;
-      int                value_i = -1000000;
+      String20 result_i;
+      int      value_i = -1000000;
 
-      etl::u16string<20> result_d;
-      double             value_d = -1.000000;
+      String20 result_d;
+      double   value_d = -1.000000;
 
       Format format = Format().precision(4);
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("-1.0000")) == result_i);
+      CHECK(String20(STR("-1.0000")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_zero_value)
     {
-      etl::u16string<20> result_i;
-      int                value_i = 0;
+      String20 result_i;
+      int      value_i = 0;
 
-      etl::u16string<20> result_d;
-      double             value_d = -0.000000;
+      String20 result_d;
+      double   value_d = -0.000000;
 
       Format format = Format().precision(4);
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("0.0000")) == result_i);
+      CHECK(String20(STR("0.0000")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_zero_integral_small_fractional)
     {
-      etl::u16string<20> result_i;
-      int                value_i = -400;
+      String20 result_i;
+      int      value_i = -400;
 
-      etl::u16string<20> result_d;
-      double             value_d = -0.000400;
+      String20 result_d;
+      double   value_d = -0.000400;
 
       Format format = Format().precision(4);
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("-0.0004")) == result_i);
+      CHECK(String20(STR("-0.0004")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_small_fractional)
     {
-      etl::u16string<20> result_i;
-      int                value_i = -123000400;
+      String20 result_i;
+      int      value_i = -123000400;
 
-      etl::u16string<20> result_d;
-      double             value_d = -123.000400;
+      String20 result_d;
+      double   value_d = -123.000400;
 
       Format format = Format().precision(4);
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("-123.0004")) == result_i);
+      CHECK(String20(STR("-123.0004")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_very_small_fractional)
     {
-      etl::u16string<20> result_i;
-      int                value_i = -123000004;
+      String20 result_i;
+      int      value_i = -123000004;
 
-      etl::u16string<20> result_d;
-      double             value_d = -123.000004;
+      String20 result_d;
+      double   value_d = -123.000004;
 
       Format format = Format().precision(4);
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("-123.0000")) == result_i);
+      CHECK(String20(STR("-123.0000")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_very_small_fractional_rounded_up)
     {
-      etl::u16string<20> result_i;
-      int                value_i = -123000050;
+      String20 result_i;
+      int      value_i = -123000050;
 
-      etl::u16string<20> result_d;
-      double             value_d = -123.000050;
+      String20 result_d;
+      double   value_d = -123.000050;
 
       Format format = Format().precision(4);
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("-123.0001")) == result_i);
+      CHECK(String20(STR("-123.0001")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_shorter_width)
     {
-      etl::u16string<20> result_i;
-      int                value_i = -123456780;
+      String20 result_i;
+      int      value_i = -123456780;
 
-      etl::u16string<20> result_d;
-      double             value_d = -123.456780;
+      String20 result_d;
+      double   value_d = -123.456780;
 
       Format format = Format().precision(4).width(6).right();
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("-123.4568")) == result_i);
+      CHECK(String20(STR("-123.4568")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_larger_width)
     {
-      etl::u16string<20> result_i;
-      int                value_i = -123456780;
+      String20 result_i;
+      int      value_i = -123456780;
 
-      etl::u16string<20> result_d;
-      double             value_d = -123.456780;
+      String20 result_d;
+      double   value_d = -123.456780;
 
       Format format = Format().precision(4).width(15).right();
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("      -123.4568")) == result_i);
+      CHECK(String20(STR("      -123.4568")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_positive_rollover)
     {
-      etl::u16string<20> result_i;
-      int                value_i = 123999990;
+      String20 result_i;
+      int      value_i = 123999990;
 
-      etl::u16string<20> result_d;
-      double             value_d = 123.999990;
+      String20 result_d;
+      double   value_d = 123.999990;
 
       Format format = Format().precision(4).right();
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("124.0000")) == result_i);
+      CHECK(String20(STR("124.0000")) == result_i);
       CHECK(result_d == result_i);
     }
 
     //*************************************************************************
     TEST(test_integer_denominator_negative_rollover)
     {
-      etl::u16string<20> result_i;
-      int                value_i = -123999990;
+      String20 result_i;
+      int      value_i = -123999990;
 
-      etl::u16string<20> result_d;
-      double             value_d = -123.999990;
+      String20 result_d;
+      double   value_d = -123.999990;
 
       Format format = Format().precision(4).right();
 
       etl::to_string(value_i, 6U, result_i, format);
       etl::to_string(value_d, result_d, format);
 
-      CHECK(etl::u16string<20>(STR("-124.0000")) == result_i);
+      CHECK(String20(STR("-124.0000")) == result_i);
       CHECK(result_d == result_i);
     }
 
@@ -588,48 +590,48 @@ namespace
       if (std::numeric_limits<double>::is_iec559)
       {
         // Check forced scientific formatting for smaller numbers.
-        etl::u16string<64> s0;
+        String64 s0;
         etl::to_string(1000.0, s0, Format().precision(5).width(15).right().scientific(true));
-        CHECK(etl::u16string<64>(STR("     1.00000e+3")) == s0);
+        CHECK(String64(STR("     1.00000e+3")) == s0);
 
         etl::to_string(1000.0, s0, Format().precision(5).width(15).right().scientific(true).upper_case(true));
-        CHECK(etl::u16string<64>(STR("     1.00000E+3")) == s0);
+        CHECK(String64(STR("     1.00000E+3")) == s0);
 
         // Maximum double value is 1.7976931348623157e+308, which rounds to 1.79769e+308 with 5 digits of precision.
-        etl::u16string<64> s1;
+        String64 s1;
         etl::to_string(std::numeric_limits<double>::max(), s1, Format().precision(5).width(15).right());
-        CHECK(etl::u16string<64>(STR("   1.79769e+308")) == s1);
+        CHECK(String64(STR("   1.79769e+308")) == s1);
 
         // Negative maximum double value is -1.7976931348623157e+308, which rounds to -1.79769e+308 with 5 digits of precision.
-        etl::u16string<64> s2;
+        String64 s2;
         etl::to_string(-std::numeric_limits<double>::max(), s2, Format().precision(5).width(15).right());
-        CHECK(etl::u16string<64>(STR("  -1.79769e+308")) == s2);
+        CHECK(String64(STR("  -1.79769e+308")) == s2);
       }
 
 #if ETL_USING_64BIT_TYPES
       using workspace_t = etl::private_to_string::workspace_t;
 
       // Maximum workspace_t value is 9223372036854775807.
-      etl::u16string<64> s3;
+      String64 s3;
       etl::to_string(std::numeric_limits<workspace_t>::max(), s3, Format().precision(5).width(21).right());
-      CHECK(etl::u16string<64>(STR("  9223372036854775807")) == s3);
+      CHECK(String64(STR("  9223372036854775807")) == s3);
 
       // Minimum workspace_t value is -9223372036854775808.
-      etl::u16string<64> s4;
+      String64 s4;
       etl::to_string(std::numeric_limits<workspace_t>::min(), s4, Format().precision(5).width(21).right());
-      CHECK(etl::u16string<64>(STR(" -9223372036854775808")) == s4);
+      CHECK(String64(STR(" -9223372036854775808")) == s4);
 
       using uworkspace_t = etl::private_to_string::uworkspace_t;
 
       // Maximum uworkspace_t value is 18446744073709551615.
-      etl::u16string<64> s5;
+      String64 s5;
       etl::to_string(std::numeric_limits<uworkspace_t>::max(), s5, Format().precision(5).width(21).right());
-      CHECK(etl::u16string<64>(STR(" 18446744073709551615")) == s5);
+      CHECK(String64(STR(" 18446744073709551615")) == s5);
 
       // Minimum uworkspace_t value is 0.
-      etl::u16string<64> s6;
+      String64 s6;
       etl::to_string(std::numeric_limits<uworkspace_t>::min(), s6, Format().precision(5).width(21).right());
-      CHECK(etl::u16string<64>(STR("                    0")) == s6);
+      CHECK(String64(STR("                    0")) == s6);
 #endif
     }
 
@@ -638,30 +640,48 @@ namespace
     {
       if (std::numeric_limits<double>::is_iec559)
       {
-        etl::u16string<64> s1;
+        String64 s1;
         etl::to_string(std::numeric_limits<double>::quiet_NaN(), s1, Format().precision(5).width(15).right().scientific(true).upper_case(false));
-        CHECK(etl::u16string<64>(STR("            nan")) == s1);
+        CHECK(String64(STR("            nan")) == s1);
 
-        etl::u16string<64> s2;
+        String64 s2;
         etl::to_string(std::numeric_limits<double>::infinity(), s2, Format().precision(5).width(15).right().scientific(true).upper_case(false));
-        CHECK(etl::u16string<64>(STR("            inf")) == s2);
+        CHECK(String64(STR("            inf")) == s2);
 
-        etl::u16string<64> s3;
+        String64 s3;
         etl::to_string(-std::numeric_limits<double>::infinity(), s3, Format().precision(5).width(15).right().scientific(true).upper_case(false));
-        CHECK(etl::u16string<64>(STR("           -inf")) == s3);
+        CHECK(String64(STR("           -inf")) == s3);
 
-        etl::u16string<64> s4;
+        String64 s4;
         etl::to_string(std::numeric_limits<double>::quiet_NaN(), s4, Format().precision(5).width(15).right().scientific(true).upper_case(true));
-        CHECK(etl::u16string<64>(STR("            NAN")) == s4);
+        CHECK(String64(STR("            NAN")) == s4);
 
-        etl::u16string<64> s5;
+        String64 s5;
         etl::to_string(std::numeric_limits<double>::infinity(), s5, Format().precision(5).width(15).right().scientific(true).upper_case(true));
-        CHECK(etl::u16string<64>(STR("            INF")) == s5);
+        CHECK(String64(STR("            INF")) == s5);
 
-        etl::u16string<64> s6;
+        String64 s6;
         etl::to_string(-std::numeric_limits<double>::infinity(), s6, Format().precision(5).width(15).right().scientific(true).upper_case(true));
-        CHECK(etl::u16string<64>(STR("           -INF")) == s6);
+        CHECK(String64(STR("           -INF")) == s6);
       }
+    }
+
+    //*************************************************************************
+    TEST(test_issue_1593_to_string_float_uses_double_math)
+    {
+      String64 s1;
+
+      // Float
+      etl::to_string(3.1415927f, s1, Format().precision(4));
+      CHECK_TRUE(String64(STR("3.1416")) == s1);
+
+      // Double
+      etl::to_string(3.1415927, s1, Format().precision(4));
+      CHECK_TRUE(String64(STR("3.1416")) == s1);
+
+      // Long double
+      etl::to_string(3.1415927l, s1, Format().precision(4));
+      CHECK_TRUE(String64(STR("3.1416")) == s1);
     }
   }
 } // namespace

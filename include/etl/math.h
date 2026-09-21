@@ -131,6 +131,48 @@ namespace etl
     return value1 == value2;
   }
 #include "private/diagnostic_pop.h"
+
+  //***************************************************************************
+  // floor
+  //***************************************************************************
+  ETL_NODISCARD
+  inline float floor(float value) ETL_NOEXCEPT
+  {
+    return ::floorf(value);
+  }
+
+  ETL_NODISCARD
+  inline double floor(double value) ETL_NOEXCEPT
+  {
+    return ::floor(value);
+  }
+
+  ETL_NODISCARD
+  inline long double floor(long double value) ETL_NOEXCEPT
+  {
+    return ::floorl(value);
+  }
+
+  //***************************************************************************
+  // ceil
+  //***************************************************************************
+  ETL_NODISCARD
+  inline float ceil(float value) ETL_NOEXCEPT
+  {
+    return ::ceilf(value);
+  }
+
+  ETL_NODISCARD
+  inline double ceil(double value) ETL_NOEXCEPT
+  {
+    return ::ceil(value);
+  }
+
+  ETL_NODISCARD
+  inline long double ceil(long double value) ETL_NOEXCEPT
+  {
+    return ::ceill(value);
+  }
 } // namespace etl
 
 #endif
