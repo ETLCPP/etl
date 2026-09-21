@@ -41,7 +41,7 @@ Constructs a cyclic value of type `T` with an initial value of `first`.
 ```cpp
 cyclic_value<T>(T first, T last);
 ```
-Constructs a *run time* cyclic value of type `T` with limits of `first` and `fast` and an initial value of `first`.  
+Constructs a *run time* cyclic value of type `T` with limits of `first` and `last` and an initial value of `first`.  
 Asserts an `etl::cyclic_value_reversed_limits` if `last` < `first`.  
 `constexpr` from C++11.
 
@@ -50,7 +50,7 @@ Asserts an `etl::cyclic_value_reversed_limits` if `last` < `first`.
 ```cpp
 cyclic_value<T>(T first, T last, T initial);
 ```
-Constructs a cyclic value of type `T` with limits of `first` and `fast` and an initial value of `initial`.  
+Constructs a cyclic value of type `T` with limits of `first` and `last` and an initial value of `initial`.  
 `initial` will be clamped to be in the range `(first, last)`.  
 Asserts an `etl::cyclic_value_reversed_limits` if `last` < `first`.  
 `constexpr` from C++11.
