@@ -347,7 +347,7 @@ namespace etl
       }
 
       // Find the integral part of the floating point
-      T            f_integral = etl::floor(scaled);
+      T            f_integral = etl::clib::floor(scaled);
       uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
 
       // Find the fractional part of the floating point.
@@ -404,7 +404,7 @@ namespace etl
       }
 
       // Find the integral part of the floating point
-      T            f_integral = etl::floor(etl::absolute(value));
+      T            f_integral = etl::clib::floor(etl::absolute(value));
       uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
 
       // Find the fractional part of the floating point.

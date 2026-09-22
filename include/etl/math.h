@@ -132,47 +132,215 @@ namespace etl
   }
 #include "private/diagnostic_pop.h"
 
-  //***************************************************************************
-  // floor
-  //***************************************************************************
-  ETL_NODISCARD
-  inline float floor(float value) ETL_NOEXCEPT
+  namespace clib
   {
-    return ::floorf(value);
-  }
+    //***************************************************************************
+    // floor
+    //***************************************************************************
+    ETL_NODISCARD
+    inline float floor(float value) ETL_NOEXCEPT
+    {
+      return ::floorf(value);
+    }
 
-  ETL_NODISCARD
-  inline double floor(double value) ETL_NOEXCEPT
-  {
-    return ::floor(value);
-  }
+    ETL_NODISCARD
+    inline double floor(double value) ETL_NOEXCEPT
+    {
+      return ::floor(value);
+    }
 
-  ETL_NODISCARD
-  inline long double floor(long double value) ETL_NOEXCEPT
-  {
-    return ::floorl(value);
-  }
+#if ETL_USING_LONG_DOUBLE_MATH
+    ETL_NODISCARD
+      inline long double floor(long double value) ETL_NOEXCEPT
+    {
+      return ::floorl(value);
+    }
+#else
+    ETL_NODISCARD
+      inline long double floor(long double value) ETL_NOEXCEPT
+    {
+      return static_cast<long double>(::floor(static_cast<double>(value)));
+    }
+#endif
 
-  //***************************************************************************
-  // ceil
-  //***************************************************************************
-  ETL_NODISCARD
-  inline float ceil(float value) ETL_NOEXCEPT
-  {
-    return ::ceilf(value);
-  }
+    //***************************************************************************
+    // ceil
+    //***************************************************************************
+    ETL_NODISCARD
+    inline float ceil(float value) ETL_NOEXCEPT
+    {
+      return ::ceilf(value);
+    }
 
-  ETL_NODISCARD
-  inline double ceil(double value) ETL_NOEXCEPT
-  {
-    return ::ceil(value);
-  }
+    ETL_NODISCARD
+    inline double ceil(double value) ETL_NOEXCEPT
+    {
+      return ::ceil(value);
+    }
 
-  ETL_NODISCARD
-  inline long double ceil(long double value) ETL_NOEXCEPT
-  {
-    return ::ceill(value);
-  }
+#if ETL_USING_LONG_DOUBLE_MATH
+    ETL_NODISCARD
+      inline long double ceil(long double value) ETL_NOEXCEPT
+    {
+      return ::ceill(value);
+    }
+#else
+    ETL_NODISCARD
+      inline long double ceil(long double value) ETL_NOEXCEPT
+    {
+      return static_cast<long double>(::ceil(static_cast<double>(value)));
+    }
+#endif
+
+    //***************************************************************************
+    // log10
+    //***************************************************************************
+    ETL_NODISCARD
+    inline float log10(float value) ETL_NOEXCEPT
+    {
+      return ::log10f(value);
+    }
+
+    ETL_NODISCARD
+    inline double log10(double value) ETL_NOEXCEPT
+    {
+      return ::log10(value);
+    }
+
+#if ETL_USING_LONG_DOUBLE_MATH
+    ETL_NODISCARD
+      inline long double log10(long double value) ETL_NOEXCEPT
+    {
+      return ::log10l(value);
+    }
+#else
+    ETL_NODISCARD
+      inline long double log10(long double value) ETL_NOEXCEPT
+    {
+      return static_cast<long double>(::log10(static_cast<double>(value)));
+    }
+#endif
+
+    //***************************************************************************
+    // round
+    //***************************************************************************
+    ETL_NODISCARD
+    inline float round(float value) ETL_NOEXCEPT
+    {
+      return ::roundf(value);
+    }
+
+    ETL_NODISCARD
+    inline double round(double value) ETL_NOEXCEPT
+    {
+      return ::round(value);
+    }
+
+#if ETL_USING_LONG_DOUBLE_MATH
+    ETL_NODISCARD
+      inline long double round(long double value) ETL_NOEXCEPT
+    {
+      return ::roundl(value);
+    }
+#else
+    ETL_NODISCARD
+      inline long double round(long double value) ETL_NOEXCEPT
+    {
+      return static_cast<long double>(::round(static_cast<double>(value)));
+    }
+#endif
+
+    //***************************************************************************
+    // fabs
+    //***************************************************************************
+    ETL_NODISCARD
+    inline float fabs(float value) ETL_NOEXCEPT
+    {
+      return ::fabsf(value);
+    }
+
+    ETL_NODISCARD
+    inline double fabs(double value) ETL_NOEXCEPT
+    {
+      return ::fabs(value);
+    }
+
+#if ETL_USING_LONG_DOUBLE_MATH
+    ETL_NODISCARD
+      inline long double fabs(long double value) ETL_NOEXCEPT
+    {
+      return ::fabsl(value);
+    }
+#else
+    ETL_NODISCARD
+      inline long double fabs(long double value) ETL_NOEXCEPT
+    {
+      return static_cast<long double>(::fabs(static_cast<double>(value)));
+    }
+#endif
+
+    //***************************************************************************
+    // power
+    //***************************************************************************
+    ETL_NODISCARD
+    inline float pow(float base, float exponent) ETL_NOEXCEPT
+    {
+      return ::powf(base, exponent);
+    }
+
+    ETL_NODISCARD
+    inline double pow(double base, double exponent) ETL_NOEXCEPT
+    {
+      return ::pow(base, exponent);
+    }
+
+#if ETL_USING_LONG_DOUBLE_MATH
+    ETL_NODISCARD
+      inline long double pow(long double base, long double exponent) ETL_NOEXCEPT
+    {
+      return ::powl(base, exponent);
+    }
+#else
+    ETL_NODISCARD
+      inline long double power(long double base, long double exponent) ETL_NOEXCEPT
+    {
+      return static_cast<long double>(::pow(static_cast<double>(base), static_cast<double>(exponent)));
+    }
+#endif
+
+    //***************************************************************************
+    // modf
+    //***************************************************************************
+    ETL_NODISCARD
+    inline float modf(float value, float* intpart) ETL_NOEXCEPT
+    {
+      return ::modff(value, intpart);
+    }
+
+    ETL_NODISCARD
+    inline double modf(double value, double* intpart) ETL_NOEXCEPT
+    {
+      return ::modf(value, intpart);
+    }
+
+#if ETL_USING_LONG_DOUBLE_MATH
+    ETL_NODISCARD
+      inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
+    {
+      return ::modfl(value, intpart);
+    }
+#else
+    ETL_NODISCARD
+      inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
+    {
+      double d_iptr;
+      double result = ::modf(static_cast<double>(value), &d_iptr);
+      *intpart      = static_cast<long double>(d_iptr);
+
+      return static_cast<long double>(result);
+    }
+#endif
+  } // namespace clib
 } // namespace etl
 
 #endif
