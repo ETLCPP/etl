@@ -63,16 +63,16 @@ Defines data as an `const_map` of `int`/`int` pairs, of length 4, containing the
 
 ## Member types
 
-|  Type             | Maps to                           | Description                                                      |
-| ----------------- | --------------------------------- | ---------------------------------------------------------------- | 
-| `key_type`        | TKey                              | Must be default constructible.                                   |
-| `mapped_type`     | TMapped                           | Must be default constructible.                                   |
-| `value_type`      | pair<const key_type, mapped_type> | The type is either std::pair (default) or etl::pair (ETL_NO_STL) |
-| `size_type`       | std::size_t                       |                                                                  |
-| `difference_type` | std::ptrdiff_t                    |                                                                  |
-| `const_reference` | const T&                          |                                                                  |
-| `const_pointer`   | const T*                          |                                                                  |
-|` const_iterator`  |                                   | Constant random access iterator                                  |
+|  Type             | Maps to                           | Description                                                                            |
+| ----------------- | --------------------------------- | -------------------------------------------------------------------------------------- |
+| `key_type`        | TKey                              | Must be default constructible, if passing less then `Size` elements to the constructor |
+| `mapped_type`     | TMapped                           | Must be default constructible, if passing less then `Size` elements to the constructor |
+| `value_type`      | pair<const key_type, mapped_type> | The type is either std::pair (default) or etl::pair (ETL_NO_STL)                       |
+| `size_type`       | std::size_t                       |                                                                                        |
+| `difference_type` | std::ptrdiff_t                    |                                                                                        |
+| `const_reference` | const T&                          |                                                                                        |
+| `const_pointer`   | const T*                          |                                                                                        |
+|` const_iterator`  |                                   | Constant random access iterator                                                        |
 
 ## Constructor
 ```cpp

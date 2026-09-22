@@ -1381,5 +1381,22 @@ namespace
       CHECK_TRUE(greater_than_equal11);
 #endif
     }
+
+    //*************************************************************************
+    TEST(test_construct_from_not_default_constuctible)
+    {
+      struct F : Key
+      {
+        constexpr explicit F(char c)
+          : Key(c)
+        {
+        }
+      };
+
+      using Set = etl::const_set<F, 3>;
+
+      static const Set set{F('1'), F('2'), F('3')};
+      CHECK_TRUE(set.is_valid());
+    }
   }
 } // namespace
