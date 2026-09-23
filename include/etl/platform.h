@@ -192,7 +192,7 @@ SOFTWARE.
 // Define ETL_NO_LONG_DOUBLE_MATH if the toolchain does not provide
 // long double math functions (log10l, floorl, powl, modfl, roundl).
 // When defined, long double arguments are cast to double for math operations.
-#if defined(ETL_NO_LONG_DOUBLE_MATH)
+#if defined(ETL_NO_LONG_DOUBLE_MATH) || defined(ETL_FORMAT_NO_LONG_DOUBLE_MATH)
   #define ETL_USING_LONG_DOUBLE_MATH     0
   #define ETL_NOT_USING_LONG_DOUBLE_MATH 1
 #else

@@ -44,8 +44,6 @@ SOFTWARE.
 #include "../negative.h"
 #include "../type_traits.h"
 
-#include <math.h>
-
 #if ETL_USING_STL && ETL_USING_CPP11
   #include <iterator> // For std::begin, std::end and std::size
 #endif
@@ -351,7 +349,7 @@ namespace etl
       uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
 
       // Find the fractional part of the floating point.
-      uworkspace_t fractional = static_cast<uworkspace_t>(::round((scaled - f_integral) * multiplier));
+      uworkspace_t fractional = static_cast<uworkspace_t>(etl::clib::round((scaled - f_integral) * multiplier));
 
       // Check for a rounding carry to the integral.
       if (fractional == multiplier)

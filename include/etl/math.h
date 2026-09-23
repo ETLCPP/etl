@@ -132,6 +132,14 @@ namespace etl
   }
 #include "private/diagnostic_pop.h"
 
+  //***************************************************************************
+  // These functions wrap the C library math functions.
+  // The functions are overloaded for the different floating point types.
+  // They provide a consistent interface for float, double and long double.
+  // They are in the clib namespace to avoid conflicts with the C library and ETL functions.
+  // These take the place of std::floor, std::ceil etc which may not be available `No STL` environments.
+  // Avoids	unpredictable behaviour for global calls of ::floor, ::ceil etc when both <math.h> and <cmath> are included.
+  //***************************************************************************
   namespace clib
   {
     //***************************************************************************
@@ -143,6 +151,7 @@ namespace etl
       return ::floorf(value);
     }
 
+    //*********************************
     ETL_NODISCARD
     inline double floor(double value) ETL_NOEXCEPT
     {
@@ -150,12 +159,14 @@ namespace etl
     }
 
 #if ETL_USING_LONG_DOUBLE_MATH
+    //*********************************
     ETL_NODISCARD
       inline long double floor(long double value) ETL_NOEXCEPT
     {
       return ::floorl(value);
     }
 #else
+    //*********************************
     ETL_NODISCARD
       inline long double floor(long double value) ETL_NOEXCEPT
     {
@@ -172,6 +183,7 @@ namespace etl
       return ::ceilf(value);
     }
 
+    //*********************************
     ETL_NODISCARD
     inline double ceil(double value) ETL_NOEXCEPT
     {
@@ -179,12 +191,14 @@ namespace etl
     }
 
 #if ETL_USING_LONG_DOUBLE_MATH
+    //*********************************
     ETL_NODISCARD
       inline long double ceil(long double value) ETL_NOEXCEPT
     {
       return ::ceill(value);
     }
 #else
+    //*********************************
     ETL_NODISCARD
       inline long double ceil(long double value) ETL_NOEXCEPT
     {
@@ -201,6 +215,7 @@ namespace etl
       return ::log10f(value);
     }
 
+    //*********************************
     ETL_NODISCARD
     inline double log10(double value) ETL_NOEXCEPT
     {
@@ -208,12 +223,14 @@ namespace etl
     }
 
 #if ETL_USING_LONG_DOUBLE_MATH
+    //*********************************
     ETL_NODISCARD
       inline long double log10(long double value) ETL_NOEXCEPT
     {
       return ::log10l(value);
     }
 #else
+    //*********************************
     ETL_NODISCARD
       inline long double log10(long double value) ETL_NOEXCEPT
     {
@@ -230,6 +247,7 @@ namespace etl
       return ::roundf(value);
     }
 
+    //*********************************
     ETL_NODISCARD
     inline double round(double value) ETL_NOEXCEPT
     {
@@ -237,45 +255,18 @@ namespace etl
     }
 
 #if ETL_USING_LONG_DOUBLE_MATH
+    //*********************************
     ETL_NODISCARD
       inline long double round(long double value) ETL_NOEXCEPT
     {
       return ::roundl(value);
     }
 #else
+    //*********************************
     ETL_NODISCARD
       inline long double round(long double value) ETL_NOEXCEPT
     {
       return static_cast<long double>(::round(static_cast<double>(value)));
-    }
-#endif
-
-    //***************************************************************************
-    // fabs
-    //***************************************************************************
-    ETL_NODISCARD
-    inline float fabs(float value) ETL_NOEXCEPT
-    {
-      return ::fabsf(value);
-    }
-
-    ETL_NODISCARD
-    inline double fabs(double value) ETL_NOEXCEPT
-    {
-      return ::fabs(value);
-    }
-
-#if ETL_USING_LONG_DOUBLE_MATH
-    ETL_NODISCARD
-      inline long double fabs(long double value) ETL_NOEXCEPT
-    {
-      return ::fabsl(value);
-    }
-#else
-    ETL_NODISCARD
-      inline long double fabs(long double value) ETL_NOEXCEPT
-    {
-      return static_cast<long double>(::fabs(static_cast<double>(value)));
     }
 #endif
 
@@ -288,6 +279,7 @@ namespace etl
       return ::powf(base, exponent);
     }
 
+    //*********************************
     ETL_NODISCARD
     inline double pow(double base, double exponent) ETL_NOEXCEPT
     {
@@ -295,12 +287,14 @@ namespace etl
     }
 
 #if ETL_USING_LONG_DOUBLE_MATH
+    //*********************************
     ETL_NODISCARD
       inline long double pow(long double base, long double exponent) ETL_NOEXCEPT
     {
       return ::powl(base, exponent);
     }
 #else
+    //*********************************
     ETL_NODISCARD
       inline long double power(long double base, long double exponent) ETL_NOEXCEPT
     {
@@ -317,6 +311,7 @@ namespace etl
       return ::modff(value, intpart);
     }
 
+    //*********************************
     ETL_NODISCARD
     inline double modf(double value, double* intpart) ETL_NOEXCEPT
     {
@@ -324,12 +319,14 @@ namespace etl
     }
 
 #if ETL_USING_LONG_DOUBLE_MATH
+    //*********************************
     ETL_NODISCARD
       inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
     {
       return ::modfl(value, intpart);
     }
 #else
+    //*********************************
     ETL_NODISCARD
       inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
     {

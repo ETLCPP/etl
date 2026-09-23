@@ -180,24 +180,6 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_fabs)
-    {
-      float       f1  = -1.5f;
-      float       f2  = 1.5f;
-      double      d1  = -2.5;
-      double      d2  = 2.5;
-      long double ld1 = -3.5L;
-      long double ld2 = 3.5L;
-
-      CHECK_CLOSE(1.5f, etl::clib::fabs(f1), 0.0001f);
-      CHECK_CLOSE(1.5f, etl::clib::fabs(f2), 0.0001f);
-      CHECK_CLOSE(2.5, etl::clib::fabs(d1), 0.0001);
-      CHECK_CLOSE(2.5, etl::clib::fabs(d2), 0.0001);
-      CHECK_CLOSE(3.5L, etl::clib::fabs(ld1), 0.0001L);
-      CHECK_CLOSE(3.5L, etl::clib::fabs(ld2), 0.0001L);
-    }
-
-    //*************************************************************************
     TEST(test_pow)
     {
       float       fb  = 2.0f;
