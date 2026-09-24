@@ -161,14 +161,14 @@ namespace etl
 #if ETL_USING_LONG_DOUBLE_MATH
     //*********************************
     ETL_NODISCARD
-      inline long double floor(long double value) ETL_NOEXCEPT
+    inline long double floor(long double value) ETL_NOEXCEPT
     {
       return ::floorl(value);
     }
 #else
     //*********************************
     ETL_NODISCARD
-      inline long double floor(long double value) ETL_NOEXCEPT
+    inline long double floor(long double value) ETL_NOEXCEPT
     {
       return static_cast<long double>(::floor(static_cast<double>(value)));
     }
@@ -193,14 +193,14 @@ namespace etl
 #if ETL_USING_LONG_DOUBLE_MATH
     //*********************************
     ETL_NODISCARD
-      inline long double ceil(long double value) ETL_NOEXCEPT
+    inline long double ceil(long double value) ETL_NOEXCEPT
     {
       return ::ceill(value);
     }
 #else
     //*********************************
     ETL_NODISCARD
-      inline long double ceil(long double value) ETL_NOEXCEPT
+    inline long double ceil(long double value) ETL_NOEXCEPT
     {
       return static_cast<long double>(::ceil(static_cast<double>(value)));
     }
@@ -225,14 +225,14 @@ namespace etl
 #if ETL_USING_LONG_DOUBLE_MATH
     //*********************************
     ETL_NODISCARD
-      inline long double log10(long double value) ETL_NOEXCEPT
+    inline long double log10(long double value) ETL_NOEXCEPT
     {
       return ::log10l(value);
     }
 #else
     //*********************************
     ETL_NODISCARD
-      inline long double log10(long double value) ETL_NOEXCEPT
+    inline long double log10(long double value) ETL_NOEXCEPT
     {
       return static_cast<long double>(::log10(static_cast<double>(value)));
     }
@@ -257,14 +257,14 @@ namespace etl
 #if ETL_USING_LONG_DOUBLE_MATH
     //*********************************
     ETL_NODISCARD
-      inline long double round(long double value) ETL_NOEXCEPT
+    inline long double round(long double value) ETL_NOEXCEPT
     {
       return ::roundl(value);
     }
 #else
     //*********************************
     ETL_NODISCARD
-      inline long double round(long double value) ETL_NOEXCEPT
+    inline long double round(long double value) ETL_NOEXCEPT
     {
       return static_cast<long double>(::round(static_cast<double>(value)));
     }
@@ -289,14 +289,14 @@ namespace etl
 #if ETL_USING_LONG_DOUBLE_MATH
     //*********************************
     ETL_NODISCARD
-      inline long double pow(long double base, long double exponent) ETL_NOEXCEPT
+    inline long double pow(long double base, long double exponent) ETL_NOEXCEPT
     {
       return ::powl(base, exponent);
     }
 #else
     //*********************************
     ETL_NODISCARD
-      inline long double power(long double base, long double exponent) ETL_NOEXCEPT
+    inline long double power(long double base, long double exponent) ETL_NOEXCEPT
     {
       return static_cast<long double>(::pow(static_cast<double>(base), static_cast<double>(exponent)));
     }
@@ -321,14 +321,14 @@ namespace etl
 #if ETL_USING_LONG_DOUBLE_MATH
     //*********************************
     ETL_NODISCARD
-      inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
+    inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
     {
       return ::modfl(value, intpart);
     }
 #else
     //*********************************
     ETL_NODISCARD
-      inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
+    inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
     {
       double d_iptr;
       double result = ::modf(static_cast<double>(value), &d_iptr);
