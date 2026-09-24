@@ -823,23 +823,211 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_range_issue_in_advance_for_full_range_unsigned_limits)
+    TEST(test_compile_time_range_issue_in_advance_for_full_range_unsigned_limits_where_step_is_same_size_type)
     {
-      etl::cyclic_value<uint8_t, 0, 255> value(0);
+      const auto minimum = etl::integral_limits<uint8_t>::min;
+      const auto maximum = etl::integral_limits<uint8_t>::max;
 
-      value.advance(2);
+      etl::cyclic_value<uint8_t> value(minimum, maximum);
 
-      CHECK_EQUAL(2, value.get());
+      value.advance(int8_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
     }
 
     //*************************************************************************
-    TEST(test_range_issue_in_advance_for_full_range_signed_limits)
+    TEST(test_compile_time_range_issue_in_advance_for_full_range_signed_limits_where_step_is_same_size_type)
     {
-      etl::cyclic_value<int8_t, -128, 127> value(-128);
+      const auto minimum = etl::integral_limits<int8_t>::min;
+      const auto maximum = etl::integral_limits<int8_t>::max;
 
-      value.advance(2);
+      etl::cyclic_value<int8_t> value(minimum, maximum);
 
-      CHECK_EQUAL(-126, value.get());
+      value.advance(int8_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_compile_time_range_issue_in_advance_for_full_range_unsigned_limits_where_step_is_larger_type)
+    {
+      const auto minimum = etl::integral_limits<uint8_t>::min;
+      const auto maximum = etl::integral_limits<uint8_t>::max;
+
+      etl::cyclic_value<uint8_t, minimum, maximum> value(0);
+
+      value.advance(int16_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_compile_time_range_issue_in_advance_for_full_range_signed_limits_where_step_is_larger_type)
+    {
+      const auto minimum = etl::integral_limits<int8_t>::min;
+      const auto maximum = etl::integral_limits<int8_t>::max;
+
+      etl::cyclic_value<int8_t> value(minimum, maximum);
+
+      value.advance(uint16_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_compile_time_range_issue_in_advance_for_full_range_unsigned_limits_where_step_is_smaller_type)
+    {
+      const auto minimum = etl::integral_limits<uint16_t>::min;
+      const auto maximum = etl::integral_limits<uint16_t>::max;
+
+      etl::cyclic_value<uint16_t, minimum, maximum> value(0);
+
+      value.advance(int8_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_compile_time_range_issue_in_advance_for_full_range_signed_limits_where_step_is_smaller_type)
+    {
+      const auto minimum = etl::integral_limits<int16_t>::min;
+      const auto maximum = etl::integral_limits<int16_t>::max;
+
+      etl::cyclic_value<int16_t> value(minimum, maximum);
+
+      value.advance(int8_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_compile_time_range_issue_in_advance_for_full_range_unsigned_limits_where_the_types_are_64bit)
+    {
+      const auto minimum = etl::integral_limits<uint64_t>::min;
+      const auto maximum = etl::integral_limits<uint64_t>::max;
+
+      etl::cyclic_value<uint64_t, minimum, maximum> value(0);
+
+      value.advance(int64_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_compile_time_range_issue_in_advance_for_full_range_signed_limits_where_the_types_are_64bit)
+    {
+      const auto minimum = etl::integral_limits<int64_t>::min;
+      const auto maximum = etl::integral_limits<int64_t>::max;
+
+      etl::cyclic_value<int64_t> value(minimum, maximum);
+
+      value.advance(int64_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_range_issue_in_advance_for_full_range_unsigned_limits_where_step_is_same_size_type)
+    {
+      const auto minimum = etl::integral_limits<uint8_t>::min;
+      const auto maximum = etl::integral_limits<uint8_t>::max;
+
+      etl::cyclic_value<uint8_t> value(minimum, maximum);
+
+      value.advance(int8_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_range_issue_in_advance_for_full_range_signed_limits_where_step_is_same_size_type)
+    {
+      const auto minimum = etl::integral_limits<int8_t>::min;
+      const auto maximum = etl::integral_limits<int8_t>::max;
+
+      etl::cyclic_value<int8_t> value(minimum, maximum);
+
+      value.advance(int8_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_range_issue_in_advance_for_full_range_unsigned_limits_where_step_is_larger_type)
+    {
+      const auto minimum = etl::integral_limits<uint8_t>::min;
+      const auto maximum = etl::integral_limits<uint8_t>::max;
+
+      etl::cyclic_value<uint8_t, minimum, maximum> value(0);
+
+      value.advance(int16_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_range_issue_in_advance_for_full_range_signed_limits_where_step_is_larger_type)
+    {
+      const auto minimum = etl::integral_limits<int8_t>::min;
+      const auto maximum = etl::integral_limits<int8_t>::max;
+
+      etl::cyclic_value<int8_t> value(minimum, maximum);
+
+      value.advance(uint16_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_range_issue_in_advance_for_full_range_unsigned_limits_where_step_is_smaller_type)
+    {
+      const auto minimum = etl::integral_limits<uint16_t>::min;
+      const auto maximum = etl::integral_limits<uint16_t>::max;
+
+      etl::cyclic_value<uint16_t, minimum, maximum> value(0);
+
+      value.advance(int8_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_range_issue_in_advance_for_full_range_signed_limits_where_step_is_smaller_type)
+    {
+      const auto minimum = etl::integral_limits<int16_t>::min;
+      const auto maximum = etl::integral_limits<int16_t>::max;
+
+      etl::cyclic_value<int16_t> value(minimum, maximum);
+
+      value.advance(int8_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_range_issue_in_advance_for_full_range_unsigned_limits_where_the_types_are_64bit)
+    {
+      const auto minimum = etl::integral_limits<uint64_t>::min;
+      const auto maximum = etl::integral_limits<uint64_t>::max;
+
+      etl::cyclic_value<uint64_t, minimum, maximum> value(0);
+
+      value.advance(int64_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
+    }
+
+    //*************************************************************************
+    TEST(test_run_time_range_issue_in_advance_for_full_range_signed_limits_where_the_types_are_64bit)
+    {
+      const auto minimum = etl::integral_limits<int64_t>::min;
+      const auto maximum = etl::integral_limits<int64_t>::max;
+
+      etl::cyclic_value<int64_t> value(minimum, maximum);
+
+      value.advance(int64_t(2));
+
+      CHECK_EQUAL(minimum + 2, value.get());
     }
   }
 } // namespace

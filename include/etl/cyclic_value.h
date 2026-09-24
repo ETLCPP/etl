@@ -62,8 +62,7 @@ namespace etl
     ///\return The new value.
     //*************************************************************************
     template <typename T>
-    ETL_NODISCARD
-    static ETL_CONSTEXPR14 T increment(T value, T min_value, T max_value) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 T increment(T value, T min_value, T max_value) ETL_NOEXCEPT
     {
       return value == max_value ? min_value : static_cast<T>(etl::to_unsigned(value) + 1U);
     }
@@ -76,23 +75,23 @@ namespace etl
     ///\return The new value.
     //*************************************************************************
     template <typename T>
-    ETL_NODISCARD
-    static ETL_CONSTEXPR14 T decrement(T value, T min_value, T max_value) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 T decrement(T value, T min_value, T max_value) ETL_NOEXCEPT
     {
       return value == min_value ? max_value : static_cast<T>(etl::to_unsigned(value) - 1U);
     }
 
     //*************************************************************************
     /// Advances a value and wraps it at the supplied limits.
+    /// Called for the case where the range is not the full width of the type.
     ///\param value The current value.
     ///\param min_value The minimum value.
     ///\param max_value The maximum value.
-    ///\param n The number of steps.
+    ///\param step The number of steps.
+    ///\param subtract True if the value is to be decremented, false if it is to be incremented.
     ///\return The advanced value.
     //*************************************************************************
     template <typename T>
-    ETL_NODISCARD
-    static ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::unsigned_type step, bool subtract) ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 T advance(T value, T min_value, T max_value, typename traits<T>::unsigned_type step, bool subtract) ETL_NOEXCEPT
     {
       typedef typename traits<T>::unsigned_type unsigned_type;
 
@@ -122,9 +121,6 @@ namespace etl
               else
               {
                 // Step would roll over.
-                // Note: 'distance_to_first + 1U' can overflow to 0 when 'distance_to_first' is the maximum value of 'unsigned_type',
-                // which only happens when the range spans the type's full width. This is safe and expected: unsigned overflow is
-                // well-defined modular arithmetic, so 'step -= (distance_to_first + 1U)' remains correct modulo 2^N in that case.
                 step -= distance_to_first + 1U;
                 value = static_cast<T>(etl::to_unsigned(max_value) - step);
               }
@@ -141,9 +137,6 @@ namespace etl
               else
               {
                 // Step would roll over.
-                // Note: 'distance_to_first + 1U' can overflow to 0 when 'distance_to_first' is the maximum value of 'unsigned_type',
-                // which only happens when the range spans the type's full width. This is safe and expected: unsigned overflow is
-                // well-defined modular arithmetic, so 'step -= (distance_to_first + 1U)' remains correct modulo 2^N in that case.
                 step -= distance_to_last + 1U;
                 value = static_cast<T>(etl::to_unsigned(min_value) + step);
               }
@@ -153,6 +146,72 @@ namespace etl
           }
       }
     }
+
+    //*************************************************************************
+    /// Advances a value and wraps it at the supplied limits.
+    /// Called for the case where the range is the full width of the type.
+    ///\param value The current value.
+    ///\param step The number of steps.
+    ///\param subtract True if the value is to be decremented, false if it is to be incremented.
+    ///\return The advanced value.
+    //*************************************************************************
+    template <typename T>
+    ETL_NODISCARD ETL_CONSTEXPR14 T advance(T value, typename traits<T>::unsigned_type step, bool subtract) ETL_NOEXCEPT
+    {
+      if (subtract)
+      {
+        value = static_cast<T>(etl::to_unsigned(value) - step);
+      }
+      else
+      {
+        value = static_cast<T>(etl::to_unsigned(value) + step);
+      }
+
+      return value;
+    }
+
+    //*************************************************************************
+    // Provides information about a range.
+    // Ensures that Last - First + 1 is only calculated for when the range is not the full width of the type, to avoid overflow errors.
+    //*************************************************************************
+    template <typename T, T First, T Last, bool Full_Range = ((First == etl::integral_limits<T>::min) && (Last == etl::integral_limits<T>::max))>
+    struct range_traits;
+
+    //*************************************************************************
+    // Specialisation for when the range is the full width of the type.
+    template <typename T, T First, T Last>
+    struct range_traits<T, First, Last, true>
+    {
+      typedef typename traits<T>::unsigned_type unsigned_type;
+
+      static const bool          is_full_range = true;
+      static const unsigned_type value         = 0; // Unused, but required for template specialisation.
+    };
+
+    //*************************************************************************
+    // Specialisation for when the range is not the full width of the type.
+    template <typename T, T First, T Last>
+    struct range_traits<T, First, Last, false>
+    {
+      typedef typename traits<T>::unsigned_type unsigned_type;
+
+      static const bool          is_full_range = false;
+      static const unsigned_type value         = static_cast<unsigned_type>(static_cast<unsigned_type>(Last) - static_cast<unsigned_type>(First)) + 1U;
+    };
+
+    // Out-of-class definitions (required pre-C++17 for ODR-use of static const members).
+    template <typename T, T First, T Last>
+    ETL_CONSTANT bool range_traits<T, First, Last, true>::is_full_range;
+
+    template <typename T, T First, T Last>
+    ETL_CONSTANT typename range_traits<T, First, Last, true>::unsigned_type range_traits<T, First, Last, true>::value;
+
+    template <typename T, T First, T Last>
+    ETL_CONSTANT bool range_traits<T, First, Last, false>::is_full_range;
+
+    template <typename T, T First, T Last>
+    ETL_CONSTANT typename range_traits<T, First, Last, false>::unsigned_type range_traits<T, First, Last, false>::value;
+
   } // namespace private_cyclic_value
 
   struct cyclic_value_exception : etl::exception
@@ -227,7 +286,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value<T, First, Last>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value<T, First, Last>& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       value = other.value;
 
@@ -236,13 +295,14 @@ namespace etl
 
     //*************************************************************************
     /// Adds a number of steps and clamps to the range.
-    /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
     template <typename TStep>
     ETL_CONSTEXPR14 cyclic_value& operator+=(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(etl::is_integral<TStep>::value, "TStep must be an integral type");
+
       advance(n);
       return *this;
     }
@@ -256,6 +316,8 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 cyclic_value& operator-=(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(etl::is_integral<TStep>::value, "TStep must be an integral type");
+
       do_advance(n, !etl::is_negative(n));
 
       return *this;
@@ -294,6 +356,8 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 T advance(TStep n) ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(etl::is_integral<TStep>::value, "TStep must be an integral type");
+
       do_advance(n, etl::is_negative(n));
 
       return value;
@@ -311,7 +375,7 @@ namespace etl
     //*************************************************************************
     /// ++ operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 cyclic_value& operator++() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value& operator++() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       value = private_cyclic_value::increment(value, First, Last);
 
@@ -333,7 +397,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 cyclic_value& operator--() ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value& operator--() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       value = private_cyclic_value::decrement(value, First, Last);
 
@@ -343,7 +407,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 cyclic_value operator--(int) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value operator--(int) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       cyclic_value temp(*this);
 
@@ -355,7 +419,7 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 cyclic_value& operator=(T t) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value& operator=(T t) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       set(t);
       return *this;
@@ -365,7 +429,7 @@ namespace etl
     /// = operator.
     //*************************************************************************
     template <T FIRST2, T LAST2>
-    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value<T, FIRST2, LAST2>& other) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value<T, FIRST2, LAST2>& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       set(other.get());
       return *this;
@@ -409,19 +473,26 @@ namespace etl
 
     //*************************************************************************
     template <typename TStep>
-    void do_advance(TStep n, bool subtract) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void do_advance(TStep n, bool subtract) ETL_NOEXCEPT
     {
-      // Determine the widest unsigned type of the two to use for limiting the step count.
-      typedef typename etl::largest<typename etl::make_unsigned<TStep>::type, unsigned_type>::type wide_unsigned_type;
+      ETL_STATIC_ASSERT(etl::is_integral<TStep>::value, "TStep must be an integral type");
 
-      // Force the step to be within the range of the cyclic value.
-      const wide_unsigned_type range              = static_cast<wide_unsigned_type>(Last - First) + 1U;
-      const wide_unsigned_type wide_unsigned_step = static_cast<wide_unsigned_type>(etl::absolute_unsigned(n)) % range;
+      typedef private_cyclic_value::range_traits<T, First, Last> range_info;
 
-      // This is safe as wide_unsigned_step is now within the range of the cyclic value.
-      const unsigned_type step = static_cast<unsigned_type>(wide_unsigned_step);
+      // Are the limits the full width of the type? If so, we can do a simpler calculation.
+      if ETL_IF_CONSTEXPR (range_info::is_full_range)
+      {
+        unsigned_type step = static_cast<unsigned_type>(etl::absolute_unsigned(n));
 
-      value = private_cyclic_value::advance(value, First, Last, step, subtract);
+        value = private_cyclic_value::advance(value, step, subtract);
+      }
+      else
+      {
+        unsigned_type range = range_info::value;
+        unsigned_type step  = static_cast<unsigned_type>(etl::absolute_unsigned(n) % range);
+
+        value = private_cyclic_value::advance(value, First, Last, step, subtract);
+      }
     }
 
     T value; ///< The current value.
@@ -542,9 +613,13 @@ namespace etl
     ///\param n The number of steps to advance.
     //*************************************************************************
     template <typename TStep>
-    ETL_CONSTEXPR14 void advance(TStep n) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 T advance(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(etl::is_integral<TStep>::value, "TStep must be an integral type");
+
       do_advance(n, etl::is_negative(n));
+
+      return value;
     }
 
     //*************************************************************************
@@ -591,7 +666,7 @@ namespace etl
     //*************************************************************************
     /// -- operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 cyclic_value operator--(int) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value operator--(int) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       cyclic_value temp(*this);
 
@@ -603,7 +678,7 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 cyclic_value& operator=(T t) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 cyclic_value& operator=(T t) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       set(t);
       return *this;
@@ -629,6 +704,8 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 cyclic_value& operator+=(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(etl::is_integral<TStep>::value, "TStep must be an integral type");
+
       advance(n);
       return *this;
     }
@@ -642,6 +719,8 @@ namespace etl
     template <typename TStep>
     ETL_CONSTEXPR14 cyclic_value& operator-=(TStep n) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(etl::is_integral<TStep>::value, "TStep must be an integral type");
+
       do_advance(n, !etl::is_negative(n));
 
       return *this;
@@ -687,35 +766,42 @@ namespace etl
 
     //*************************************************************************
     template <typename TStep>
-    void do_advance(TStep n, bool subtract) ETL_NOEXCEPT
+    ETL_CONSTEXPR14 void do_advance(TStep n, bool subtract) ETL_NOEXCEPT
     {
-      // Determine the widest unsigned type of the two to use for limiting the step count.
-      typedef typename etl::largest<typename etl::make_unsigned<TStep>::type, unsigned_type>::type wide_unsigned_type;
+      ETL_STATIC_ASSERT(etl::is_integral<TStep>::value, "TStep must be an integral type");
 
-      // Force the step to be within the range of the cyclic value.
-      const wide_unsigned_type range              = static_cast<wide_unsigned_type>(last_value - first_value) + 1U;
-      const wide_unsigned_type wide_unsigned_step = static_cast<wide_unsigned_type>(etl::absolute_unsigned(n)) % range;
+      const bool Is_Full_Range = (first_value == etl::integral_limits<T>::min) && (last_value == etl::integral_limits<T>::max);
 
-      // This is safe as wide_unsigned_step is now within the range of the cyclic value.
-      const unsigned_type step = static_cast<unsigned_type>(wide_unsigned_step);
+      // Are the limits the full width of the type? If so, we can do a simpler calculation.
+      if (Is_Full_Range)
+      {
+        unsigned_type step = static_cast<unsigned_type>(etl::absolute_unsigned(n));
 
-      value = private_cyclic_value::advance(value, first_value, last_value, step, subtract);
+        value = private_cyclic_value::advance(value, step, subtract);
+      }
+      else
+      {
+        unsigned_type range = static_cast<unsigned_type>(etl::to_unsigned(last_value) - etl::to_unsigned(first_value)) + 1U;
+        unsigned_type step  = static_cast<unsigned_type>(etl::absolute_unsigned(n) % range);
+
+        value = private_cyclic_value::advance(value, first_value, last_value, step, subtract);
+      }
     }
 
     T value;       ///< The current value.
     T first_value; ///< The first value in the range.
     T last_value;  ///< The last value in the range.
   };
-} // namespace etl
 
-//*************************************************************************
-/// Swaps the values.
-//*************************************************************************
-template <typename T, T First, T Last>
-ETL_CONSTEXPR14 void swap(etl::cyclic_value<T, First, Last>& lhs, etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
-{
-  lhs.swap(rhs);
-}
+  //*************************************************************************
+  /// Swaps the values.
+  //*************************************************************************
+  template <typename T, T First, T Last>
+  ETL_CONSTEXPR14 void swap(etl::cyclic_value<T, First, Last>& lhs, etl::cyclic_value<T, First, Last>& rhs) ETL_NOEXCEPT
+  {
+    lhs.swap(rhs);
+  }
+} // namespace etl
 
 //*************************************************************************
 /// Operator ==
