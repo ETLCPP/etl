@@ -183,7 +183,15 @@ namespace
       CHECK_EQUAL(String(STR("0 1 false true")), ss.str());
 
       ss.str().clear();
+      ss << etl::setprecision(4) << 3.1415927f;
+      CHECK_EQUAL(String(STR("3.1416")), ss.str());
+
+      ss.str().clear();
       ss << etl::setprecision(4) << 3.1415927;
+      CHECK_EQUAL(String(STR("3.1416")), ss.str());
+
+      ss.str().clear();
+      ss << etl::setprecision(4) << 3.1415927l;
       CHECK_EQUAL(String(STR("3.1416")), ss.str());
 
       ss.str().clear();
