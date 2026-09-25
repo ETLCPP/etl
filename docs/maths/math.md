@@ -49,7 +49,7 @@ ETL_CONSTEXPR bool is_exactly_equal(T value1, T value2)
 
 ## floor
 
-Defined in the `etl::clib` namespace.
+Defined in the `etl::math` namespace.
 
 ---
 
@@ -58,7 +58,7 @@ ETL_NODISCARD
 float floor(float value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::floorf`.  
+A wrapper around `::floorf` in `<math.h>`.  
 
 **Returns**  
 `::floorf(value)`
@@ -70,7 +70,7 @@ ETL_NODISCARD
 double floor(double value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::floor`.  
+A wrapper around `::floor` in `<math.h>`.  
 
 **Returns**  
 `::floor(value)`
@@ -82,7 +82,7 @@ ETL_NODISCARD
 long double floor(long double value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::floorl`.  
+A wrapper around `::floorl` in `<math.h>`.  
 
 **Returns**  
 If `ETL_NO_LONG_DOUBLE_MATH` is defined then returns  
@@ -92,7 +92,7 @@ otherwise
 
 ## ceil
 
-Defined in the `etl::clib` namespace.
+Defined in the `etl::math` namespace.
 
 ---
 
@@ -101,7 +101,7 @@ ETL_NODISCARD
 float ceil(float value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::ceilf`.  
+A wrapper around `::ceilf` in `<math.h>`.  
 
 **Returns**  
 `::ceilf(value)`
@@ -113,7 +113,7 @@ ETL_NODISCARD
 double ceil(double value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::ceil`.  
+A wrapper around `::ceil` in `<math.h>`.  
 
 **Returns**  
 `::ceil(value)`
@@ -125,7 +125,7 @@ ETL_NODISCARD
 long double ceil(long double value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::ceill`.  
+A wrapper around `::ceill` in `<math.h>`.  
 
 **Returns**  
 If `ETL_NO_LONG_DOUBLE_MATH` is defined then returns  
@@ -135,7 +135,7 @@ otherwise
 
 ## log10
 
-Defined in the `etl::clib` namespace.
+Defined in the `etl::math` namespace.
 
 ---
 
@@ -144,7 +144,7 @@ ETL_NODISCARD
 float log10(float value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::log10f`.  
+A wrapper around `::log10f` in `<math.h>`.  
 
 **Returns**  
 `::log10f(value)`
@@ -156,7 +156,7 @@ ETL_NODISCARD
 double log10(double value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::log10`.  
+A wrapper around `::log10` in `<math.h>`.  
 
 **Returns**  
 `::log10(value)`
@@ -168,7 +168,7 @@ ETL_NODISCARD
 long double log10(long double value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::log10l`.  
+A wrapper around `::log10l` in `<math.h>`.  
 
 **Returns**  
 If `ETL_NO_LONG_DOUBLE_MATH` is defined then returns  
@@ -178,7 +178,7 @@ otherwise
 
 ## round
 
-Defined in the `etl::clib` namespace.
+Defined in the `etl::math` namespace.
 
 ---
 
@@ -187,7 +187,7 @@ ETL_NODISCARD
 float round(float value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::roundf`.  
+A wrapper around `::roundf` in `<math.h>`.  
 
 **Returns**  
 `::roundf(value)`
@@ -199,7 +199,7 @@ ETL_NODISCARD
 double round(double value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::round`.  
+A wrapper around `::round` in `<math.h>`.  
 
 **Returns**  
 `::round(value)`
@@ -211,7 +211,7 @@ ETL_NODISCARD
 long double round(long double value) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::roundl`.  
+A wrapper around `::roundl` in `<math.h>`.  
 
 **Returns**  
 If `ETL_NO_LONG_DOUBLE_MATH` is defined then returns  
@@ -221,7 +221,7 @@ otherwise
 
 ## pow
 
-Defined in the `etl::clib` namespace.
+Defined in the `etl::math` namespace.
 
 ---
 
@@ -230,7 +230,7 @@ ETL_NODISCARD
 float pow(float base, float exponent) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::powf`.  
+A wrapper around `::powf` in `<math.h>`.  
 
 **Returns**  
 `::powf(base, exponent)`
@@ -242,7 +242,7 @@ ETL_NODISCARD
 double pow(double base, double exponent) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::pow`.  
+A wrapper around `::pow` in `<math.h>`.  
 
 **Returns**  
 `::pow(base, exponent)`
@@ -254,7 +254,7 @@ ETL_NODISCARD
 long double pow(long double base, long double exponent) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::powl`.  
+A wrapper around `::powl` in `<math.h>`.  
 
 **Returns**  
 If `ETL_NO_LONG_DOUBLE_MATH` is defined then returns  
@@ -264,7 +264,7 @@ otherwise
 
 ## modf
 
-Defined in the `etl::clib` namespace.
+Defined in the `etl::math` namespace.
 
 ---
 
@@ -273,7 +273,7 @@ ETL_NODISCARD
 float modf(float value, float* intpart) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::modff`.  
+A wrapper around `::modff` in `<math.h>`.  
 
 **Returns**  
 `::modff(value, intpart)`
@@ -285,7 +285,7 @@ ETL_NODISCARD
 double modf(double value, double* intpart) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::modf`.  
+A wrapper around `::modf` in `<math.h>`.  
 
 **Returns**  
 `::modf(value, intpart)`
@@ -297,7 +297,7 @@ ETL_NODISCARD
 long double modf(long double value, long double* intpart) ETL_NOEXCEPT
 ```
 **Description**  
-A wrapper around `::modfl`.  
+A wrapper around `::modfl` in `<math.h>`.  
 
 **Returns**  
 If `ETL_NO_LONG_DOUBLE_MATH` is defined then returns  

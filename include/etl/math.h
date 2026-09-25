@@ -133,14 +133,14 @@ namespace etl
 #include "private/diagnostic_pop.h"
 
   //***************************************************************************
-  // These functions wrap the C library math functions.
+  // These functions wrap the C math.h functions.
   // The functions are overloaded for the different floating point types.
   // They provide a consistent interface for float, double and long double.
-  // They are in the clib namespace to avoid conflicts with the C library and ETL functions.
+  // They are in the `math` namespace to avoid conflicts with the C library and ETL functions.
   // These take the place of std::floor, std::ceil etc which may not be available `No STL` environments.
   // Avoids	unpredictable behaviour for global calls of ::floor, ::ceil etc when both <math.h> and <cmath> are included.
   //***************************************************************************
-  namespace clib
+  namespace math
   {
     //***************************************************************************
     // floor
@@ -296,7 +296,7 @@ namespace etl
 #else
     //*********************************
     ETL_NODISCARD
-    inline long double power(long double base, long double exponent) ETL_NOEXCEPT
+    inline long double pow(long double base, long double exponent) ETL_NOEXCEPT
     {
       return static_cast<long double>(::pow(static_cast<double>(base), static_cast<double>(exponent)));
     }
@@ -305,14 +305,12 @@ namespace etl
     //***************************************************************************
     // modf
     //***************************************************************************
-    ETL_NODISCARD
     inline float modf(float value, float* intpart) ETL_NOEXCEPT
     {
       return ::modff(value, intpart);
     }
 
     //*********************************
-    ETL_NODISCARD
     inline double modf(double value, double* intpart) ETL_NOEXCEPT
     {
       return ::modf(value, intpart);
@@ -320,14 +318,12 @@ namespace etl
 
 #if ETL_USING_LONG_DOUBLE_MATH
     //*********************************
-    ETL_NODISCARD
     inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
     {
       return ::modfl(value, intpart);
     }
 #else
     //*********************************
-    ETL_NODISCARD
     inline long double modf(long double value, long double* intpart) ETL_NOEXCEPT
     {
       double d_iptr;
@@ -337,7 +333,7 @@ namespace etl
       return static_cast<long double>(result);
     }
 #endif
-  } // namespace clib
+  } // namespace math
 } // namespace etl
 
 #endif

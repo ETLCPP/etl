@@ -1756,7 +1756,7 @@ namespace etl
       }
 
       T integral;
-      T fractional = etl::clib::modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1766,7 +1766,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::clib::round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1793,20 +1793,20 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = etl::clib::modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       while (value >= 0x10 || value <= -0x10)
       {
         ++exponent_int;
         value /= 0x10;
-        fractional = etl::clib::modf(value, &integral);
+        fractional = etl::math::modf(value, &integral);
       }
 
       while ((value > 0.0000000000001 && value < 1) || (value < -0.0000000000001 && value > -1))
       {
         --exponent_int;
         value *= 0x10;
-        fractional = etl::clib::modf(value, &integral);
+        fractional = etl::math::modf(value, &integral);
       }
 
       // Take absolute values to avoid casting negative values to unsigned
@@ -1817,7 +1817,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(0x10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::clib::round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1861,8 +1861,8 @@ namespace etl
 
       if (abs_value > static_cast<T>(0))
       {
-        exponent_int = static_cast<long long int>(etl::clib::floor(etl::clib::log10(abs_value)));
-        value        = abs_value / etl::clib::pow(static_cast<T>(10), static_cast<T>(exponent_int));
+        exponent_int = static_cast<long long int>(etl::math::floor(etl::math::log10(abs_value)));
+        value        = abs_value / etl::math::pow(static_cast<T>(10), static_cast<T>(exponent_int));
         // Correct for floating-point rounding in log10/pow
         if (value >= static_cast<T>(10))
         {
@@ -1881,10 +1881,10 @@ namespace etl
       }
 
       T integral;
-      T fractional = etl::clib::modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::clib::round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1922,7 +1922,7 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = etl::clib::modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1932,7 +1932,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::clib::round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)

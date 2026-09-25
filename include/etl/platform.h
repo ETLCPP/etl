@@ -175,23 +175,11 @@ SOFTWARE.
 #endif
 
 //*************************************
-// Helper macro for ETL_FORMAT_NO_LONG_DOUBLE_MATH.
-// Define ETL_FORMAT_NO_LONG_DOUBLE_MATH if the toolchain does not provide
-// long double math functions (log10l, floorl, powl, modfl, roundl).
-// When defined, long double arguments are cast to double for math operations.
-#if defined(ETL_FORMAT_NO_LONG_DOUBLE_MATH)
-  #define ETL_USING_FORMAT_LONG_DOUBLE_MATH     0
-  #define ETL_NOT_USING_FORMAT_LONG_DOUBLE_MATH 1
-#else
-  #define ETL_USING_FORMAT_LONG_DOUBLE_MATH     1
-  #define ETL_NOT_USING_FORMAT_LONG_DOUBLE_MATH 0
-#endif
-
-//*************************************
 // Helper macro for ETL_NO_LONG_DOUBLE_MATH.
 // Define ETL_NO_LONG_DOUBLE_MATH if the toolchain does not provide
 // long double math functions (log10l, floorl, powl, modfl, roundl).
 // When defined, long double arguments are cast to double for math operations.
+// ETL_FORMAT_NO_LONG_DOUBLE_MATH is deprecated, but still supported for backwards compatibility.
 #if defined(ETL_NO_LONG_DOUBLE_MATH) || defined(ETL_FORMAT_NO_LONG_DOUBLE_MATH)
   #define ETL_USING_LONG_DOUBLE_MATH     0
   #define ETL_NOT_USING_LONG_DOUBLE_MATH 1

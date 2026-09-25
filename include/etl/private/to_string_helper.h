@@ -345,11 +345,11 @@ namespace etl
       }
 
       // Find the integral part of the floating point
-      T            f_integral = etl::clib::floor(scaled);
+      T            f_integral = etl::math::floor(scaled);
       uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
 
       // Find the fractional part of the floating point.
-      uworkspace_t fractional = static_cast<uworkspace_t>(etl::clib::round((scaled - f_integral) * multiplier));
+      uworkspace_t fractional = static_cast<uworkspace_t>(etl::math::round((scaled - f_integral) * multiplier));
 
       // Check for a rounding carry to the integral.
       if (fractional == multiplier)
@@ -402,7 +402,7 @@ namespace etl
       }
 
       // Find the integral part of the floating point
-      T            f_integral = etl::clib::floor(etl::absolute(value));
+      T            f_integral = etl::math::floor(etl::absolute(value));
       uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
 
       // Find the fractional part of the floating point.

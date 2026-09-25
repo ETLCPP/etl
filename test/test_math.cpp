@@ -141,12 +141,12 @@ namespace
       long double ld1 = 1.7L;
       long double ld2 = -1.7L;
 
-      CHECK_CLOSE(1.0f, etl::clib::floor(f1), 0.0001f);
-      CHECK_CLOSE(-2.0f, etl::clib::floor(f2), 0.0001f);
-      CHECK_CLOSE(1.0, etl::clib::floor(d1), 0.0001);
-      CHECK_CLOSE(-2.0, etl::clib::floor(d2), 0.0001);
-      CHECK_CLOSE(1.0L, etl::clib::floor(ld1), 0.0001L);
-      CHECK_CLOSE(-2.0L, etl::clib::floor(ld2), 0.0001L);
+      CHECK_CLOSE(1.0f, etl::math::floor(f1), 0.0001f);
+      CHECK_CLOSE(-2.0f, etl::math::floor(f2), 0.0001f);
+      CHECK_CLOSE(1.0, etl::math::floor(d1), 0.0001);
+      CHECK_CLOSE(-2.0, etl::math::floor(d2), 0.0001);
+      CHECK_CLOSE(1.0L, etl::math::floor(ld1), 0.0001L);
+      CHECK_CLOSE(-2.0L, etl::math::floor(ld2), 0.0001L);
     }
 
     //*************************************************************************
@@ -159,12 +159,12 @@ namespace
       long double ld1 = 1.2L;
       long double ld2 = -1.2L;
 
-      CHECK_CLOSE(2.0f, etl::clib::ceil(f1), 0.0001f);
-      CHECK_CLOSE(-1.0f, etl::clib::ceil(f2), 0.0001f);
-      CHECK_CLOSE(2.0, etl::clib::ceil(d1), 0.0001);
-      CHECK_CLOSE(-1.0, etl::clib::ceil(d2), 0.0001);
-      CHECK_CLOSE(2.0L, etl::clib::ceil(ld1), 0.0001L);
-      CHECK_CLOSE(-1.0L, etl::clib::ceil(ld2), 0.0001L);
+      CHECK_CLOSE(2.0f, etl::math::ceil(f1), 0.0001f);
+      CHECK_CLOSE(-1.0f, etl::math::ceil(f2), 0.0001f);
+      CHECK_CLOSE(2.0, etl::math::ceil(d1), 0.0001);
+      CHECK_CLOSE(-1.0, etl::math::ceil(d2), 0.0001);
+      CHECK_CLOSE(2.0L, etl::math::ceil(ld1), 0.0001L);
+      CHECK_CLOSE(-1.0L, etl::math::ceil(ld2), 0.0001L);
     }
 
     //*************************************************************************
@@ -174,9 +174,39 @@ namespace
       double      d1  = 1000.0;
       long double ld1 = 10000.0L;
 
-      CHECK_CLOSE(2.0f, etl::clib::log10(f1), 0.0001f);
-      CHECK_CLOSE(3.0, etl::clib::log10(d1), 0.0001);
-      CHECK_CLOSE(4.0L, etl::clib::log10(ld1), 0.0001L);
+      CHECK_CLOSE(2.0f, etl::math::log10(f1), 0.0001f);
+      CHECK_CLOSE(3.0, etl::math::log10(d1), 0.0001);
+      CHECK_CLOSE(4.0L, etl::math::log10(ld1), 0.0001L);
+    }
+
+    //*************************************************************************
+    TEST(test_round)
+    {
+      float       f1  = 1.5f;
+      float       f2  = -1.5f;
+      float       f3  = 1.4f;
+      float       f4  = -1.4f;
+      double      d1  = 2.5;
+      double      d2  = -2.5;
+      double      d3  = 2.4;
+      double      d4  = -2.4;
+      long double ld1 = 3.5L;
+      long double ld2 = -3.5L;
+      long double ld3 = 3.4L;
+      long double ld4 = -3.4L;
+
+      CHECK_CLOSE(2.0f, etl::math::round(f1), 0.0001f);
+      CHECK_CLOSE(-2.0f, etl::math::round(f2), 0.0001f);
+      CHECK_CLOSE(1.0f, etl::math::round(f3), 0.0001f);
+      CHECK_CLOSE(-1.0f, etl::math::round(f4), 0.0001f);
+      CHECK_CLOSE(3.0, etl::math::round(d1), 0.0001);
+      CHECK_CLOSE(-3.0, etl::math::round(d2), 0.0001);
+      CHECK_CLOSE(2.0, etl::math::round(d3), 0.0001);
+      CHECK_CLOSE(-2.0, etl::math::round(d4), 0.0001);
+      CHECK_CLOSE(4.0L, etl::math::round(ld1), 0.0001L);
+      CHECK_CLOSE(-4.0L, etl::math::round(ld2), 0.0001L);
+      CHECK_CLOSE(3.0L, etl::math::round(ld3), 0.0001L);
+      CHECK_CLOSE(-3.0L, etl::math::round(ld4), 0.0001L);
     }
 
     //*************************************************************************
@@ -189,9 +219,9 @@ namespace
       long double ldb = 2.0L;
       long double lde = 4.0L;
 
-      CHECK_CLOSE(8.0f, etl::clib::pow(fb, fe), 0.0001f);
-      CHECK_CLOSE(1024.0, etl::clib::pow(db, de), 0.0001);
-      CHECK_CLOSE(16.0L, etl::clib::pow(ldb, lde), 0.0001L);
+      CHECK_CLOSE(8.0f, etl::math::pow(fb, fe), 0.0001f);
+      CHECK_CLOSE(1024.0, etl::math::pow(db, de), 0.0001);
+      CHECK_CLOSE(16.0L, etl::math::pow(ldb, lde), 0.0001L);
     }
 
     //*************************************************************************
@@ -204,9 +234,9 @@ namespace
       long double ld1        = 3.75L;
       long double ld_intpart = 0.0L;
 
-      float       f_frac  = etl::clib::modf(f1, &f_intpart);
-      double      d_frac  = etl::clib::modf(d1, &d_intpart);
-      long double ld_frac = etl::clib::modf(ld1, &ld_intpart);
+      float       f_frac  = etl::math::modf(f1, &f_intpart);
+      double      d_frac  = etl::math::modf(d1, &d_intpart);
+      long double ld_frac = etl::math::modf(ld1, &ld_intpart);
 
       CHECK_CLOSE(3.0f, f_intpart, 0.0001f);
       CHECK_CLOSE(0.75f, f_frac, 0.0001f);
