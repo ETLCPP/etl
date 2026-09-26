@@ -309,7 +309,6 @@ namespace etl
 
     //*************************************************************************
     /// Subtracts a number of steps and clamps to the range.
-    /// Floating-point steps may be fractional. NaN is rejected.
     ///\param n The number of steps.
     ///\return A reference to this value.
     //*************************************************************************
