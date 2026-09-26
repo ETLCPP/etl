@@ -142,12 +142,14 @@ inside `O(...)`. The supported classes are:
 **Complexity**  
 {{< complexity "linear" "N" >}}, where N is number of items in the tree, and assuming comparator is {{< complexity "constant" "1" >}}.
 **Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where N is number of items in the tree.
+**Complexity**  
 {{< complexity "linearithmic" "N log N" >}}, where N is number of items in the tree.
 **Complexity**  
 {{< complexity "polynomial" "N²" >}}, where N is number of items in the tree.
 **Complexity**  
 {{< complexity "constant" "1" >}} when something, or  
-{{< complexity "exponential" "2ᴺ" >}}, where N is number of items in the tree.
+{{< complexity "exponential" "2ᴺ" >}} some alternative, where N is number of items in the tree.
 ```
 
 ### Starting a New Page
