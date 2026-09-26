@@ -123,13 +123,14 @@ It is built into Hugo, providing high-performance and fully [CommonMark](https:/
 ### Documenting Algorithmic Complexity
 
 When documenting the complexity of an operation, use the `complexity` shortcode instead of writing raw Big-O text.
-Place it on its own `**Complexity:**` line, right after the `**Description**` line/paragraph, for example:
+Place it on its own `**Complexity**` lines, right after the `**Description**` line/paragraph, for example:
 
 ```markdown
 **Description**  
 Returns the number of linked items.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**
+{{< complexity "constant" "1" >}}
 ```
 
 The shortcode takes two arguments: a complexity class (used to color and label it) and the expression to show

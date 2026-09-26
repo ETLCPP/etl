@@ -91,7 +91,8 @@ C++11. Constructs a new item by moving `other` into `this`. After
 construction, `this` replaces `other` in the same tree position that
 `other` occupied, so no tree balancing is needed. `other` becomes unlinked.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ---
 
@@ -104,10 +105,9 @@ self-assignment. After assignment, `this` replaces `other` in the same tree
 position that `other` occupied; `other` becomes unlinked. `this` might end
 up in a different tree than it started in.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}} if `this` is
-already linked to a tree (it has to be erased first, with rebalancing), or
-{{< complexity "constant" "1" >}} if `this` is not linked, where `N` is
-number of items in the tree.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}} if `this` is already linked to a tree (it has to be erased first, with rebalancing), or  
+{{< complexity "constant" "1" >}} if `this` is not linked, where `N` is number of items in the tree.
 
 ---
 
@@ -133,8 +133,8 @@ dangling pointers to it, breaking the tree and leading to undefined
 behaviour. This is what makes it safe to embed a tree node in an object
 whose lifetime is managed elsewhere.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree.
 
 ## Constructors
 
@@ -162,8 +162,8 @@ Returning `0` for equal items keeps only the first of each run of duplicates
 in the range; the rest are left unlinked. `etl::compare<value_type>::cmp`
 can be used directly as `binary_comp`.
 
-**Complexity:** {{< complexity "linearithmic" "N log N" >}}, where `N` is
-number of items in the range.
+**Complexity**  
+{{< complexity "linearithmic" "N log N" >}}, where `N` is number of items in the range.
 
 ---
 
@@ -173,7 +173,8 @@ intrusive_avl_tree(intrusive_avl_tree&&) = default;
 **Description**  
 C++11. Move constructor.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ---
 
@@ -192,8 +193,8 @@ C++11. Copy construction is disabled.
 Every remaining node is unlinked; none of the value objects are destroyed,
 since the tree never owns their memory.
 
-**Complexity:** {{< complexity "linear" "N" >}}, where `N` is number of
-items in the tree.
+**Complexity**  
+{{< complexity "linear" "N" >}}, where `N` is number of items in the tree.
 
 ## Assignment
 
@@ -204,8 +205,8 @@ intrusive_avl_tree& operator=(intrusive_avl_tree&&) = default;
 C++11. Move assignment. Does nothing on self-assignment. All of `this`
 tree's former items have to be unlinked.
 
-**Complexity:** {{< complexity "linear" "N" >}}, where `N` is the size of
-`this` tree before assignment.
+**Complexity**  
+{{< complexity "linear" "N" >}}, where `N` is the size of `this` tree before assignment.
 
 ---
 
@@ -223,7 +224,8 @@ bool empty() const
 **Description**  
 Returns `true` if the tree has no linked items.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ---
 
@@ -233,7 +235,8 @@ size_t size() const
 **Description**  
 Returns the number of linked items.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ## Iterators
 
@@ -254,8 +257,8 @@ const_iterator cbegin() const
 Returns an iterator to the smallest item. Returns `end()` if the tree is
 empty.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree.
 
 ---
 
@@ -267,7 +270,8 @@ const_iterator cend() const
 **Description**  
 Returns an iterator to the terminal sentinel.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ---
 
@@ -278,8 +282,8 @@ const_iterator min() const
 **Description**  
 Equivalent to `begin()`.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree.
 
 ---
 
@@ -290,8 +294,8 @@ const_iterator max() const
 **Description**  
 Equivalent to `--end()`.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree.
 
 ---
 
@@ -302,9 +306,9 @@ iterator operator++(int)
 **Description**  
 Advances the iterator to the next ("greater") item.
 
-**Complexity:** amortized {{< complexity "constant" "1" >}}, worst-case
-{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in
-the tree.
+**Complexity**  
+{{< complexity "constant" "1" >}} amortized,  
+{{< complexity "logarithmic" "log N" >}} worst-case, where `N` is number of items in the tree.
 
 ---
 
@@ -315,9 +319,9 @@ iterator operator--(int)
 **Description**  
 Moves the iterator to the previous ("smaller") item.
 
-**Complexity:** amortized {{< complexity "constant" "1" >}}, worst-case
-{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in
-the tree.
+**Complexity**  
+{{< complexity "constant" "1" >}} amortized,  
+{{< complexity "logarithmic" "log N" >}} worst-case, where `N` is number of items in the tree.
 
 ---
 
@@ -352,7 +356,8 @@ const_iterator get_root() const
 Returns an iterator to the root node. Valueless (`has_value() == false`) if
 the tree is empty.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ---
 
@@ -362,7 +367,8 @@ int_fast8_t get_balance_factor() const
 **Description**  
 Returns the node's AVL balance factor: `-1`, `0` or `+1`.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ---
 
@@ -372,7 +378,8 @@ iterator get_parent() const
 **Description**  
 Returns an iterator to the node's parent. Valueless if there is no parent.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ---
 
@@ -383,7 +390,8 @@ iterator get_child(bool is_right) const
 Returns an iterator to the node's left (`is_right == false`) or right
 (`is_right == true`) child. Valueless if there is no such child.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ## Lookup
 
@@ -397,9 +405,9 @@ const_iterator find(TCompare comp) const
 Finds an item using the unary comparator `comp`. Returns `end()` if there
 is no matching item.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree, and assuming `comp` is
-{{< complexity "constant" "1" >}}.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree,
+and assuming `comp` is {{< complexity "constant" "1" >}}.
 
 ---
 
@@ -413,9 +421,9 @@ const_iterator lower_bound(TCompare comp) const
 Returns an iterator to the first item that compares as "not less" than the
 target of `comp`. Returns `end()` if no such item exists.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree, and assuming `comp` is
-{{< complexity "constant" "1" >}}.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree,
+and assuming `comp` is {{< complexity "constant" "1" >}}.
 
 ---
 
@@ -429,9 +437,9 @@ const_iterator upper_bound(TCompare comp) const
 Returns an iterator to the first item that compares as "greater" than the
 target of `comp`. Returns `end()` if no such item exists.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree, and assuming `comp` is
-{{< complexity "constant" "1" >}}.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree,
+and assuming `comp` is {{< complexity "constant" "1" >}}.
 
 ## Modifiers
 
@@ -455,9 +463,9 @@ If duplicates are wanted, `comp` should return a non-zero result even for
 "equal" items - `+1` appends after existing duplicates, `-1` prepends
 before them.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree, and assuming `comp` and `factory` are
-{{< complexity "constant" "1" >}}.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree,
+and assuming `comp` and `factory` are {{< complexity "constant" "1" >}}.
 
 ---
 
@@ -474,8 +482,8 @@ item, but no others. Returns an iterator to the next node.
 Use `clear()` instead if every item needs to be erased - no rebalancing is
 involved.
 
-**Complexity:** {{< complexity "logarithmic" "log N" >}}, where `N` is
-number of items in the tree.
+**Complexity**  
+{{< complexity "logarithmic" "log N" >}}, where `N` is number of items in the tree.
 
 ---
 
@@ -488,8 +496,8 @@ iterators. This is cheaper than calling `erase` on every item, which would
 cost {{< complexity "linearithmic" "N log N" >}} once intermediate
 rebalancing is taken into account.
 
-**Complexity:** {{< complexity "linear" "N" >}}, where `N` is number of
-items in the tree.
+**Complexity**  
+{{< complexity "linear" "N" >}}, where `N` is number of items in the tree.
 
 ---
 
@@ -500,7 +508,8 @@ friend void swap(intrusive_avl_tree& lhs, intrusive_avl_tree& rhs)
 **Description**  
 Swaps the contents of two trees. Does nothing on self-swap.
 
-**Complexity:** {{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "constant" "1" >}}
 
 ## Traversal
 
@@ -515,8 +524,8 @@ void visit_in_order(bool is_reverse, Visitor visitor)
 Visits every item in sorted order. `is_reverse` selects ascending (`false`)
 or descending (`true`) order.
 
-**Complexity:** {{< complexity "linear" "N" >}}, where `N` is number of
-items in the tree.
+**Complexity**  
+{{< complexity "linear" "N" >}}, where `N` is number of items in the tree.
 
 ---
 
@@ -527,8 +536,8 @@ void visit_pre_order(bool is_reverse, Visitor visitor)
 **Description**  
 Visits every item in pre-order (parent before children).
 
-**Complexity:** {{< complexity "linear" "N" >}}, where `N` is number of
-items in the tree.
+**Complexity**  
+{{< complexity "linear" "N" >}}, where `N` is number of items in the tree.
 
 ---
 
@@ -539,8 +548,8 @@ void visit_post_order(bool is_reverse, Visitor visitor)
 **Description**  
 Visits every item in post-order (children before parent).
 
-**Complexity:** {{< complexity "linear" "N" >}}, where `N` is number of
-items in the tree.
+**Complexity**  
+{{< complexity "linear" "N" >}}, where `N` is number of items in the tree.
 
 ## Exceptions
 
