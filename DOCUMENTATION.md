@@ -129,7 +129,7 @@ Place it on its own `**Complexity**` lines, right after the `**Description**` li
 **Description**  
 Returns the number of linked items.
 
-**Complexity**
+**Complexity**  
 {{< complexity "constant" "1" >}}
 ```
 
@@ -137,12 +137,17 @@ The shortcode takes two arguments: a complexity class (used to color and label i
 inside `O(...)`. The supported classes are:
 
 ```markdown
-Complexity: {{< complexity "constant" "1" >}}
-Complexity: {{< complexity "logarithmic" "log N" >}}, where N is number of items in the tree.
-Complexity: {{< complexity "linear" "N" >}}, where N is number of items in the tree, and assuming comparator is {{< complexity "constant" "1" >}}.
-Complexity: {{< complexity "linearithmic" "N log N" >}}, where N is number of items in the tree.
-Complexity: {{< complexity "polynomial" "N²" >}}, where N is number of items in the tree.
-Complexity: {{< complexity "exponential" "2ᴺ" >}}, where N is number of items in the tree.
+**Complexity**  
+{{< complexity "constant" "1" >}}
+**Complexity**  
+{{< complexity "linear" "N" >}}, where N is number of items in the tree, and assuming comparator is {{< complexity "constant" "1" >}}.
+**Complexity**  
+{{< complexity "linearithmic" "N log N" >}}, where N is number of items in the tree.
+**Complexity**  
+{{< complexity "polynomial" "N²" >}}, where N is number of items in the tree.
+**Complexity**  
+{{< complexity "constant" "1" >}} when something, or  
+{{< complexity "exponential" "2ᴺ" >}}, where N is number of items in the tree.
 ```
 
 ### Starting a New Page
