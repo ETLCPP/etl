@@ -196,7 +196,7 @@ namespace etl
       typedef typename traits<T>::unsigned_type unsigned_type;
 
       static const bool          is_full_range = false;
-      static const unsigned_type value         = static_cast<unsigned_type>(static_cast<unsigned_type>(Last) - static_cast<unsigned_type>(First)) + 1U;
+      static const unsigned_type value = static_cast<unsigned_type>(static_cast<unsigned_type>(Last) - static_cast<unsigned_type>(First)) + 1U;
     };
 
     // Out-of-class definitions (required pre-C++17 for ODR-use of static const members).
