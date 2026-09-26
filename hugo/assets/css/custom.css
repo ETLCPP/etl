@@ -420,4 +420,80 @@ tr td code{
   font-size: 0.8rem !important;
 }
 
+.complexity {
+  padding: 3px 6px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
 
+html.dark .complexity {
+  &.constant {
+    color: #7CFFB2;
+    background: rgba(0,255,120,0.08);
+    border-color: rgba(0,255,120,0.25);
+  }
+  &.logarithmic {
+    color: #7CE7FF;
+    background: rgba(0,200,255,0.08);
+    border-color: rgba(0,200,255,0.18);
+  }
+  &.linear {
+    color: #6AB7FF;
+    background: rgba(80,140,255,0.08);
+    border-color: rgba(80,140,255,0.18);
+  }
+  &.linearithmic {
+    color: #B78CFF;
+    background: rgba(140,80,255,0.08);
+    border-color: rgba(140,80,255,0.18);
+  }
+  &.polynomial {
+    color: #FFD36A;
+    background: rgba(255,190,0,0.08);
+    border-color: rgba(255,190,0,0.18);
+  }
+  &.exponential {
+    color: #ff7d9c;
+    background: rgba(255,0,80,0.08);
+    border-color: rgba(255,0,80,0.2);
+  }
+}
+html:not(.dark) .complexity {
+  &.constant {
+    color: #15803D;
+    background: rgba(34,197,94,0.10);
+    border-color: rgba(34,197,94,0.22);
+  }
+
+  &.logarithmic {
+    color: #0E7490;
+    background: rgba(6,182,212,0.10);
+    border-color: rgba(6,182,212,0.22);
+  }
+
+  &.linear {
+    color: #2563EB;
+    background: rgba(59,130,246,0.10);
+    border-color: rgba(59,130,246,0.22);
+  }
+
+  &.linearithmic {
+    color: #7C3AED;
+    background: rgba(139,92,246,0.10);
+    border-color: rgba(139,92,246,0.22);
+  }
+
+  &.polynomial {
+    color: #CA8A04;
+    background: rgba(234,179,8,0.12);
+    border-color: rgba(234,179,8,0.24);
+  }
+
+  &.exponential {
+    color: #DC2626;
+    background: rgba(239,68,68,0.10);
+    border-color: rgba(239,68,68,0.22);
+  }
+}
