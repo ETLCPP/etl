@@ -2093,8 +2093,8 @@ namespace etl
   //***************************************************************************
   namespace private_variant
   {
-    template <typename TRet, typename TCallable, typename TVariant, size_t tIndex, typename TNext, typename... TVariants>
-    static ETL_CONSTEXPR14 TRet do_visit_single(TCallable&& f, TVariant&& v, TNext&&, TVariants&&... vs);
+    template <typename TReturn, typename TCallable, typename TVariant, size_t tIndex, typename TNext, typename... TVariants>
+    static ETL_CONSTEXPR14 TReturn do_visit_single(TCallable&& f, TVariant&& v, TNext&&, TVariants&&... vs);
 
     //***************************************************************************
     /// Dummy-struct used to indicate that the return type should be auto-deduced
@@ -2145,8 +2145,8 @@ namespace etl
       using type = common_type_t<TToInject<var_type<tAltIndices> >...>;
     };
 
-    template <template <typename...> class TToInject, size_t... tAltIndices, typename TCur, typename TNext, typename... TVs>
-    struct visit_result_helper<TToInject, index_sequence<tAltIndices...>, TCur, TNext, TVs...>
+    template <template <typename...> class TToInject, size_t... tAltIndices, typename TCur, typename TNext, typename... TVarRest>
+    struct visit_result_helper<TToInject, index_sequence<tAltIndices...>, TCur, TNext, TVarRest...>
     {
       template <size_t tIndex>
       using var_type = rlref_copy<TCur, variant_alternative_t<tIndex, remove_reference_t<TCur> > >;
@@ -2157,7 +2157,7 @@ namespace etl
         template <typename... TNextInj>
         using next_inject = TToInject<var_type<tIndex>, TNextInj...>;
         using recursive_result =
-          typename visit_result_helper<next_inject, make_index_sequence<variant_size<remove_reference_t<TNext> >::value>, TNext, TVs...>::type;
+          typename visit_result_helper<next_inject, make_index_sequence<variant_size<remove_reference_t<TNext> >::value>, TNext, TVarRest...>::type;
       };
 
       using type = common_type_t<typename next_inject_wrap<tAltIndices>::recursive_result...>;
@@ -2168,10 +2168,10 @@ namespace etl
     /// type from calls to function object with all possible permutations of variant
     /// alternatives. Shortcuts to first argument unless it is 'visit_auto_return'.
     //***************************************************************************
-    template <typename TRet, typename...>
+    template <typename TReturn, typename...>
     struct visit_result
     {
-      using type = TRet;
+      using type = TReturn;
     };
 
     template <typename TCallable, typename T1, typename... Ts>
@@ -2190,58 +2190,72 @@ namespace etl
     /// Makes a call to TCallable using tIndex alternative to the variant.
     /// Instantiated as function pointer in the `do_visit` function.
     //***************************************************************************
-    template <typename TRet, typename TCallable, typename TVariant, size_t tIndex>
-    constexpr TRet do_visit_single(TCallable&& f, TVariant&& v)
+    template <typename TReturn, typename TCallable, typename TVariant, size_t tIndex>
+    constexpr TReturn do_visit_single(TCallable&& f, TVariant&& v)
     {
       return static_cast<TCallable&&>(f)(etl::get<tIndex>(static_cast<TVariant&&>(v)));
     }
 
     //***************************************************************************
-    /// Helper to instantiate the function pointers needed for the "jump table".
-    /// Embeds the 'TVarRest' (remaining variants) into its type to come around
-    /// the "double expansion" otherwise needed in "do_visit".
+    /// Recursive dispatch: compares the runtime index against each candidate in
+    /// turn and calls do_visit_single directly - no function-pointer table.
+    /// Base case: exactly one index remains, so it's assumed to be the match
+    /// (the ETL_ASSERT in do_visit guarantees v.index() is valid).
     //***************************************************************************
-    template <typename TRet, typename TCallable, typename TCurVariant, typename... TVarRest>
-    struct do_visit_helper
+    template <typename TReturn, typename TCallable, typename TVariant, size_t tIndex, typename... TVarRest>
+    static ETL_CONSTEXPR14 TReturn do_visit_at(TCallable&& f, TVariant&& v, index_sequence<tIndex>, TVarRest&&... variants)
     {
-      using function_pointer = add_pointer_t<TRet(TCallable&&, TCurVariant&&, TVarRest&&...)>;
+      return do_visit_single<TReturn, TCallable, TVariant, tIndex, TVarRest...>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v),
+                                                                                static_cast<TVarRest&&>(variants)...);
+    }
 
-      template <size_t tIndex>
-      static constexpr function_pointer fptr() ETL_NOEXCEPT
+    //***************************************************************************
+    /// Recursive case: check tIndex against v.index(), otherwise defer to the
+    /// rest of the sequence.
+    //***************************************************************************
+    template <typename TReturn, typename TCallable, typename TVariant, size_t tIndex, size_t tIndex2, size_t... tRest, typename... TVarRest>
+    static ETL_CONSTEXPR14 TReturn do_visit_at(TCallable&& f, TVariant&& v, index_sequence<tIndex, tIndex2, tRest...>, TVarRest&&... variants)
+    {
+      if (v.index() == tIndex)
       {
-        return &do_visit_single<TRet, TCallable, TCurVariant, tIndex, TVarRest...>;
+        return do_visit_single<TReturn, TCallable, TVariant, tIndex, TVarRest...>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v),
+                                                                                  static_cast<TVarRest&&>(variants)...);
       }
-    };
+      else
+      {
+        return do_visit_at<TReturn, TCallable, TVariant>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), index_sequence<tIndex2, tRest...>{},
+                                                         static_cast<TVarRest&&>(variants)...);
+      }
+    }
 
     //***************************************************************************
     /// Dispatch current variant into recursive calls to dispatch the rest.
     //***************************************************************************
-    template <typename TRet, typename TCallable, typename TVariant, size_t... tIndices, typename... TVarRest>
-    static ETL_CONSTEXPR14 TRet do_visit(TCallable&& f, TVariant&& v, index_sequence<tIndices...>, TVarRest&&... variants)
+    template <typename TReturn, typename TCallable, typename TVariant, size_t... tIndices, typename... TVarRest>
+    static ETL_CONSTEXPR14 TReturn do_visit(TCallable&& f, TVariant&& v, index_sequence<tIndices...> seq, TVarRest&&... variants)
     {
       ETL_ASSERT(!v.valueless_by_exception(), ETL_ERROR(bad_variant_access));
 
-      using helper_t = do_visit_helper<TRet, TCallable, TVariant, TVarRest...>;
-      using func_ptr = typename helper_t::function_pointer;
-
-      constexpr func_ptr jmp_table[]{helper_t::template fptr<tIndices>()...};
-
-      return jmp_table[v.index()](static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), static_cast<TVarRest&&>(variants)...);
+      return do_visit_at<TReturn, TCallable, TVariant>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), seq,
+                                                       static_cast<TVarRest&&>(variants)...);
     }
 
-    template <typename TRet, typename TCallable, typename TVariant, typename... TVs>
-    static ETL_CONSTEXPR14 TRet visit(TCallable&& f, TVariant&& v, TVs&&... vs)
+    //***************************************************************************
+    ///
+    //***************************************************************************
+    template <typename TReturn, typename TCallable, typename TVariant, typename... TVarRest>
+    static ETL_CONSTEXPR14 TReturn visit(TCallable&& f, TVariant&& v, TVarRest&&... vs)
     {
       constexpr size_t variants = etl::variant_size<typename remove_reference<TVariant>::type>::value;
-      return private_variant::do_visit<TRet>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), make_index_sequence<variants>{},
-                                             static_cast<TVs&&>(vs)...);
+      return do_visit<TReturn>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), make_index_sequence<variants>{},
+                               static_cast<TVarRest&&>(vs)...);
     }
 
     //***************************************************************************
     /// Allows constexpr operation in c++14, otherwise acts like a lambda to
     /// bind a variant "get" to an argument for "TCallable".
     //***************************************************************************
-    template <typename TRet, typename TCallable, typename TVariant, size_t tIndex>
+    template <typename TReturn, typename TCallable, typename TVariant, size_t tIndex>
     class constexpr_visit_closure
     {
       add_pointer_t<TCallable> callable_;
@@ -2256,17 +2270,17 @@ namespace etl
       }
 
       template <typename... Ts>
-      ETL_CONSTEXPR14 TRet operator()(Ts&&... args) const
+      ETL_CONSTEXPR14 TReturn operator()(Ts&&... args) const
       {
         return static_cast<TCallable&&>(*callable_)(get<tIndex>(static_cast<TVariant&&>(*variant_)), static_cast<Ts&&>(args)...);
       }
     };
 
-    template <typename TRet, typename TCallable, typename TVariant, size_t tIndex, typename TNext, typename... TVariants>
-    static ETL_CONSTEXPR14 TRet do_visit_single(TCallable&& f, TVariant&& v, TNext&& next, TVariants&&... vs)
+    template <typename TReturn, typename TCallable, typename TVariant, size_t tIndex, typename TNext, typename... TVariants>
+    static ETL_CONSTEXPR14 TReturn do_visit_single(TCallable&& f, TVariant&& v, TNext&& next, TVariants&&... vs)
     {
-      return private_variant::visit<TRet>(
-        constexpr_visit_closure<TRet, TCallable, TVariant, tIndex>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v)),
+      return private_variant::visit<TReturn>(
+        constexpr_visit_closure<TReturn, TCallable, TVariant, tIndex>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v)),
         static_cast<TNext&&>(next), static_cast<TVariants&&>(vs)...);
     }
 
@@ -2276,8 +2290,8 @@ namespace etl
   /// C++11/14 compatible etl::visit for etl::variant. Supports both c++17
   /// "auto return type" signature and c++20 explicit template return type.
   //***************************************************************************
-  template <typename TRet           = private_variant::visit_auto_return, typename... TVariants, typename TCallable,
-            typename TDeducedReturn = private_variant::visit_result_t<TRet, TCallable, TVariants...> >
+  template <typename TReturn        = private_variant::visit_auto_return, typename... TVariants, typename TCallable,
+            typename TDeducedReturn = private_variant::visit_result_t<TReturn, TCallable, TVariants...> >
   static ETL_CONSTEXPR14 TDeducedReturn visit(TCallable&& f, TVariants&&... vs)
   {
     return private_variant::visit<TDeducedReturn>(static_cast<TCallable&&>(f), static_cast<TVariants&&>(vs)...);
