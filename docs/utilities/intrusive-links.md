@@ -297,6 +297,8 @@ template <const size_t ID_>
 struct tree_link
 ```
 
+`etl::intrusive_avl_tree` is built on top of `tree_link` - see [intrusive_avl_tree]({{% relref "../containers/trees/intrusive-avl-tree.md" %}}).
+
 ### Template parameters
 ```cpp
 const size_t ID_
