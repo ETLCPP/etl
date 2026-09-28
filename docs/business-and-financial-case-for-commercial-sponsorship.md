@@ -2,7 +2,7 @@
 title: "Why CFOs should care about Open Source"
 description: "The business and financial case for commercially sponsoring the Embedded Template Library (ETL)."
 date: 2026-09-12
-weight: 3003
+weight: 2
 ---
 
 If your engineering team is using the **Embedded Template Library (ETL)** in commercial products, your company is benefiting from a critical piece of software infrastructure. 
