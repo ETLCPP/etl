@@ -1060,6 +1060,10 @@ namespace
         timer_controller.tick(step);
       }
 
+      // Detect a duplicated entry in the active list directly, rather than
+      // relying on the resulting circular reference hanging the test.
+      CHECK_FALSE(timer_controller.duplicate_insert_detected());
+
       // The timer must still be active (alive, not corrupted) and scheduled at
       // the new period. A circular reference would corrupt the active list.
       CHECK_TRUE(timer_controller.is_active(id));
