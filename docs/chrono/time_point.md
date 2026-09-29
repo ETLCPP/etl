@@ -191,7 +191,7 @@ ETL_NOEXCEPT
 ```
 **Description**  
 Rounds a duration to the nearest precision.
-If the duration is exactly halfway, it rounds away from zero.
+If the duration is exactly halfway, it rounds to even.
 
 ## Casting
 ```cpp

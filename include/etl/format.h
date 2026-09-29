@@ -47,10 +47,6 @@ SOFTWARE.
 #include "variant.h"
 #include "visitor.h"
 
-#if ETL_USING_FORMAT_FLOATING_POINT
-  #include <cmath>
-#endif
-
 #if ETL_USING_CPP11
 
 namespace etl
@@ -1761,24 +1757,24 @@ namespace etl
     //***********************************
     inline long double format_log10(long double value)
     {
-      return static_cast<long double>(::log10(static_cast<double>(value)));
+      return static_cast<long double>(etl::private_math::log10(static_cast<double>(value)));
     }
     inline long double format_floor(long double value)
     {
-      return static_cast<long double>(::floor(static_cast<double>(value)));
+      return static_cast<long double>(etl::private_math::floor(static_cast<double>(value)));
     }
     inline long double format_pow(long double base, long double exp)
     {
-      return static_cast<long double>(::pow(static_cast<double>(base), static_cast<double>(exp)));
+      return static_cast<long double>(etl::private_math::pow(static_cast<double>(base), static_cast<double>(exp)));
     }
     inline long double format_round(long double value)
     {
-      return static_cast<long double>(::round(static_cast<double>(value)));
+      return static_cast<long double>(etl::private_math::round(static_cast<double>(value)));
     }
     inline long double format_modf(long double value, long double* iptr)
     {
       double d_iptr;
-      double result = ::modf(static_cast<double>(value), &d_iptr);
+      double result = etl::private_math::modf(static_cast<double>(value), &d_iptr);
       *iptr         = static_cast<long double>(d_iptr);
       return static_cast<long double>(result);
     }
@@ -1787,27 +1783,27 @@ namespace etl
     template <typename T>
     T format_log10(T value)
     {
-      return ::log10(value);
+      return etl::private_math::log10(value);
     }
     template <typename T>
     T format_floor(T value)
     {
-      return ::floor(value);
+      return etl::private_math::floor(value);
     }
     template <typename T>
     T format_pow(T base, T exp)
     {
-      return ::pow(base, exp);
+      return etl::private_math::pow(base, exp);
     }
     template <typename T>
     T format_round(T value)
     {
-      return ::round(value);
+      return etl::private_math::round(value);
     }
     template <typename T>
     T format_modf(T value, T* iptr)
     {
-      return ::modf(value, iptr);
+      return etl::private_math::modf(value, iptr);
     }
 
     template <typename OutputIt, typename T>
@@ -1816,7 +1812,7 @@ namespace etl
       const size_t fractional_decimals = 6; // default
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign      = signbit(value);
+      bool sign      = etl::private_math::sign_bit(value);
       T    abs_value = sign ? -value : value;
 
       // Use scientific notation for values that would overflow unsigned long long
@@ -1864,7 +1860,7 @@ namespace etl
       long long int       exponent_int        = 0;
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = signbit(value);
+      bool sign = etl::private_math::sign_bit(value);
 
       T integral;
       T fractional = format_modf(value, &integral);
@@ -1929,7 +1925,7 @@ namespace etl
       long long int       exponent_int        = 0;
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = signbit(value);
+      bool sign = etl::private_math::sign_bit(value);
 
       T abs_value = sign ? -value : value;
 
@@ -1993,7 +1989,7 @@ namespace etl
       const size_t fractional_decimals = 6; // default
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = signbit(value);
+      bool sign = etl::private_math::sign_bit(value);
 
       T integral;
       T fractional = format_modf(value, &integral);
@@ -2173,7 +2169,7 @@ namespace etl
     template <typename OutputIt, typename T>
     void format_floating(OutputIt& it, T value, const format_spec_t& spec)
     {
-      if (isnan(value))
+      if (etl::is_nan(value))
       {
         if (spec.type.has_value() && (is_uppercase(spec.type.value())))
         {
@@ -2184,7 +2180,7 @@ namespace etl
           format_sequence(it, "nan");
         }
       }
-      else if (isinf(value))
+      else if (etl::is_infinity(value))
       {
         if (spec.type.has_value() && (is_uppercase(spec.type.value())))
         {
@@ -2438,7 +2434,7 @@ namespace etl
       if (fmt_ctx.format_spec.zero && fmt_ctx.format_spec.align == spec_align_t::NONE)
       {
         // Output sign first, then zero-fill, then the unsigned part
-        bool sign = signbit(arg);
+        bool sign = etl::private_math::sign_bit(arg);
         if (sign || fmt_ctx.format_spec.sign != spec_sign_t::MINUS)
         {
           // Output the sign character
