@@ -83,42 +83,34 @@ namespace
 
   using event_callback_type = etl::icallback_timer::event_callback_type;
 
-  Object                                                object;
+  Object        object;
+
   etl::function_imv<Object, object, &Object::callback>  member_callback;
   etl::function_imv<Object, object, &Object::callback2> member_callback2;
 
-  class TimerInsertRemoveTest
+  class TimerTimeToNextTest
   {
   public:
 
-    uint32_t inserted;
-    uint32_t removed;
-    TimerInsertRemoveTest()
-      : inserted(0)
-      , removed(0)
+    uint32_t time_to_next;
+
+    TimerTimeToNextTest()
+      : time_to_next(0)
     {
     }
 
-    void insert_handler(etl::timer::id::type id_)
+    void time_to_next_handler(uint32_t time_to_next_)
     {
-      (void)id_;
-      inserted++;
-    }
-
-    void remove_handler(etl::timer::id::type id_)
-    {
-      (void)id_;
-      removed++;
+      time_to_next = time_to_next_;
     }
 
     void clear(void)
     {
-      inserted = 0;
-      removed  = 0;
+      time_to_next = 0;
     }
   };
 
-  TimerInsertRemoveTest timerInsertRemoveTest;
+  TimerTimeToNextTest timerTimeToNextTest;
 
   //***************************************************************************
   // Free function callback via etl::function
@@ -137,7 +129,7 @@ namespace
   //***************************************************************************
   std::vector<uint64_t> free_tick_list2;
 
-  void free_callback2()
+  void free_funcrion_callback2()
   {
     free_tick_list2.push_back(ticks);
   }
@@ -151,14 +143,14 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Single_Shot);
 
       CHECK(id1 != etl::timer::id::NO_TIMER);
       CHECK(id2 != etl::timer::id::NO_TIMER);
       CHECK(id3 == etl::timer::id::NO_TIMER);
 
       timer_controller.clear();
-      id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Single_Shot);
+      id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Single_Shot);
       CHECK(id3 != etl::timer::id::NO_TIMER);
     }
 
@@ -169,7 +161,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Single_Shot);
 
       object.tick_list.clear();
       free_tick_list1.clear();
@@ -257,7 +249,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Repeating);
 
       object.tick_list.clear();
       free_tick_list1.clear();
@@ -299,7 +291,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Repeating);
 
       object.tick_list.clear();
       free_tick_list1.clear();
@@ -345,7 +337,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Repeating);
 
       object.tick_list.clear();
       free_tick_list1.clear();
@@ -472,7 +464,7 @@ namespace
 
       etl::timer::id::type id1;
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Repeating);
 
       object.tick_list.clear();
       free_tick_list1.clear();
@@ -521,7 +513,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Repeating);
 
       object.tick_list.clear();
       free_tick_list1.clear();
@@ -569,7 +561,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Repeating);
 
       object.tick_list.clear();
       free_tick_list1.clear();
@@ -611,7 +603,7 @@ namespace
       etl::callback_timer<3> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(free_callback1, 15, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id2 = timer_controller.register_timer(free_callback2, 5, etl::timer::mode::Repeating);
+      etl::timer::id::type id2 = timer_controller.register_timer(free_funcrion_callback2, 5, etl::timer::mode::Repeating);
 
       free_tick_list1.clear();
       free_tick_list2.clear();
@@ -688,7 +680,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Repeating);
 
       timer_controller.start(id1);
       timer_controller.start(id3);
@@ -736,7 +728,7 @@ namespace
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 11, etl::timer::mode::Single_Shot);
 
       timer_controller.start(id1);
       timer_controller.start(id3);
@@ -795,26 +787,63 @@ namespace
     }
 
     //*************************************************************************
-    TEST(callback_timer_is_active)
+    // Tick	ID1	ID2	ID3
+    //   0   .   .   .
+    //   1	 .   .   .
+    //   2	 .   .   .
+    //   3	 .   .   .
+    //   4	 .   .   .
+    //   5	 .   .   .
+    //   6	 .   .   .
+    //   7	 .   .   .
+    //   8	 .   .   .
+    //   9	 .   .   O
+    //  10	 .   .   .
+    //  11	 .   .   .
+    //  12	 .   .   .
+    //  13	 .   .   .
+    //  14	 .   .   .
+    //  15	 .   .   .
+    //  16	 .   .   .
+    //  17	 .   .   .
+    //  18	 .   .   O
+    //  19	 .   .   .
+    //  20	 .   .   .
+    //  21	 .   .   .
+    //  22	 .   .   .
+    //  23	 .   O   .
+    //  24	 .   .   .
+    //  25	 .   .   .
+    //  26	 .   .   .
+    //  27	 .   .   O
+    //  28	 .   .   .
+    //  29	 .   .   .
+    //  30	 .   .   .
+    //  31	 .   .   .
+    //  32	 .   .   .
+    //  33	 .   .   .
+    //  34	 .   .   .
+    //  35	 .   .   .
+    //  36	 .   .   O
+    //  37	 O   .   .
+    //
+    TEST(callback_timer_is_active_and_time_to_next)
     {
-      timerInsertRemoveTest.clear();
-      etl::callback_timer<4> timer_controller;
+      timerTimeToNextTest.clear();
+      etl::callback_timer<3> timer_controller;
 
       etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Single_Shot);
-      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Single_Shot);
+      etl::timer::id::type id3 = timer_controller.register_timer(free_funcrion_callback2, 9, etl::timer::mode::Repeating);
 
-      timer_controller.set_insert_callback(
-        event_callback_type::create<TimerInsertRemoveTest, timerInsertRemoveTest, &TimerInsertRemoveTest::insert_handler>());
-      timer_controller.set_remove_callback(
-        event_callback_type::create<TimerInsertRemoveTest, timerInsertRemoveTest, &TimerInsertRemoveTest::remove_handler>());
+      timer_controller.set_time_to_next_callback(
+        event_callback_type::create<TimerTimeToNextTest, timerTimeToNextTest, &TimerTimeToNextTest::time_to_next_handler>());
 
       timer_controller.start(id1);
       timer_controller.start(id3);
       timer_controller.start(id2);
 
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(0, timerInsertRemoveTest.removed);
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next); // The time to next should be the interval for id3.
 
       timer_controller.enable(true);
 
@@ -822,32 +851,71 @@ namespace
       CHECK_TRUE(timer_controller.is_active(id2));
       CHECK_TRUE(timer_controller.is_active(id3));
 
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(0, timerInsertRemoveTest.removed);
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next); // The time to next should be the interval for id3.
 
-      timer_controller.tick(11);
+      // Tick the time for id3 to expire.
+      timer_controller.tick(9);
       CHECK_TRUE(timer_controller.is_active(id1));
       CHECK_TRUE(timer_controller.is_active(id2));
-      CHECK_FALSE(timer_controller.is_active(id3));
+      CHECK_TRUE(timer_controller.is_active(id3));
 
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(1, timerInsertRemoveTest.removed);
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next); // The time to next should be the what's left of the interval for id3.
 
-      timer_controller.tick(23 - 11);
+      // Stop the timer and check that the time to next is updated to that of id2.
+      timer_controller.stop(id3);
+      CHECK_EQUAL(14, timerTimeToNextTest.time_to_next); // The time to next should be the what's left of the interval for id2.
+
+      // Start the timer again and check that the time to next is updated to the interval for id3.
+      timer_controller.start(id3);
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);
+
+      // Tick the time for id3 to expire.
+      timer_controller.tick(9);
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_TRUE(timer_controller.is_active(id2));
+      CHECK_TRUE(timer_controller.is_active(id3));
+
+      // The time to next should be the what's left of the interval for id2.
+      CHECK_EQUAL(5, timerTimeToNextTest.time_to_next);
+
+      // Tick the remaining time for id2 to expire.
+      timer_controller.tick(5);
       CHECK_TRUE(timer_controller.is_active(id1));
       CHECK_FALSE(timer_controller.is_active(id2));
-      CHECK_FALSE(timer_controller.is_active(id3));
+      CHECK_TRUE(timer_controller.is_active(id3));
 
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(2, timerInsertRemoveTest.removed);
+      // The time to next should be the what's left of the interval for id3.
+      CHECK_EQUAL(4, timerTimeToNextTest.time_to_next);
 
-      timer_controller.tick(37 - 23);
+      // Tick the remaining time for id3 to expire.
+      timer_controller.tick(4);
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_FALSE(timer_controller.is_active(id2));
+      CHECK_TRUE(timer_controller.is_active(id3));
+
+      // The time to next should be the what's left of the interval for id3.
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);
+
+      // Tick the remaining time for id3 to expire.
+      timer_controller.tick(9);
+      CHECK_TRUE(timer_controller.is_active(id1));
+      CHECK_FALSE(timer_controller.is_active(id2));
+      CHECK_TRUE(timer_controller.is_active(id3));
+
+      // The time to next should be the what's left of the interval for id1.
+      CHECK_EQUAL(1, timerTimeToNextTest.time_to_next);
+
+      // Stop timer id3 so that id1 is the last timeout.
+      timer_controller.stop(id3);
+
+      // Tick the remaining time for id1 to expire.
+      timer_controller.tick(1);
       CHECK_FALSE(timer_controller.is_active(id1));
       CHECK_FALSE(timer_controller.is_active(id2));
       CHECK_FALSE(timer_controller.is_active(id3));
 
-      CHECK_EQUAL(3, timerInsertRemoveTest.inserted);
-      CHECK_EQUAL(3, timerInsertRemoveTest.removed);
+      // There are no active timers so the time to next should be No_Active_Interval.
+      CHECK_EQUAL(etl::timer::interval::No_Active_Interval, timerTimeToNextTest.time_to_next);
     }
 
     //*************************************************************************
@@ -896,7 +964,7 @@ namespace
 
       etl::timer::id::type id1 = controller.register_timer(member_callback, 400, etl::timer::mode::Single_Shot);
       etl::timer::id::type id2 = controller.register_timer(free_function_callback, 100, etl::timer::mode::Repeating);
-      etl::timer::id::type id3 = controller.register_timer(free_callback2, 10, etl::timer::mode::Repeating);
+      etl::timer::id::type id3 = controller.register_timer(free_funcrion_callback2, 10, etl::timer::mode::Repeating);
 
       object.tick_list.clear();
       free_tick_list1.clear();
