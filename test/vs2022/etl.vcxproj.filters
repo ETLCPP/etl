@@ -3593,6 +3593,9 @@
     <ClCompile Include="..\test_function_traits.cpp">
       <Filter>Tests\Types</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_future.cpp">
+      <Filter>Tests\Misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_singleton_base.cpp">
       <Filter>Tests\Patterns</Filter>
     </ClCompile>

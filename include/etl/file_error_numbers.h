@@ -112,4 +112,5 @@ SOFTWARE.
 #define ETL_FORMAT_FILE_ID                         "79"
 #define ETL_INPLACE_FUNCTION_FILE_ID               "80"
 #define ETL_INTRUSIVE_AVL_TREE_FILE_ID             "81"
+#define ETL_FUTURE_FILE_ID                         "82"
 #endif
