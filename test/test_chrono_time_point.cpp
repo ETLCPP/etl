@@ -377,6 +377,8 @@ namespace
       CHECK_TRUE((tp10d <=> tp10h) == 0);
       CHECK_TRUE((tp10h <=> tp20d) < 0);
       CHECK_TRUE((tp20d <=> tp10h) > 0);
+
+      static_assert(etl::is_same<decltype(tp10h <=> tp20d), etl::strong_ordering>::value, "Must return etl::strong_ordering");
 #endif
     }
 
