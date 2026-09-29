@@ -244,7 +244,7 @@ namespace etl
     [[nodiscard]]
     inline constexpr auto operator<=>(const etl::chrono::year& y1, const etl::chrono::year& y2) ETL_NOEXCEPT
     {
-      return (static_cast<int>(y1) <=> static_cast<int>(y2));
+      return etl::make_strong_ordering(y1.compare(y2));
     }
 #endif
 
