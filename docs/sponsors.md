@@ -1,6 +1,6 @@
 ---
 title: "Sponsors of the ETL"
-weight: 3002
+weight: 3
 ---
 
 A special thank you to all of our past and current sponsors. Your generosity directly funds the continuous development and maintenance of the ETL.  
