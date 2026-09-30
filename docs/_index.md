@@ -40,7 +40,7 @@ type: hextra-home
 
   <div>
     <a href="https://etlcpp.github.io/etl/"><img src="https://github.com/ETLCPP/etl/actions/workflows/coverage.yml/badge.svg" alt="coverage"></a>
-    <a href="https://www.codacy.com/manual/jwellbelove/etl"><img src="https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946" alt="Codacy"></a>
+<a href="https://app.codacy.com/gh/ETLCPP/etl/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade"><img src="https://app.codacy.com/project/badge/Grade/c0c29f7b84554166b577e8a98fc18d0b" alt="Codacy Badge"></a>
   </div>
 
   <div>
