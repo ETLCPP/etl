@@ -97,7 +97,6 @@ namespace etl
               count -= timer.delta;
 
               active_list.remove(timer.id, true);
-              remove_callback.call_if(timer.id);
 
               if (timer.callback.is_valid())
               {
@@ -112,8 +111,9 @@ namespace etl
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
-                insert_callback.call_if(timer.id);
               }
+
+              time_to_next_callback.call_if(time_to_next());
 
               has_active = !active_list.empty();
             }

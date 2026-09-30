@@ -53,7 +53,7 @@ namespace etl
     typedef etl::delegate<void(void)> lock_type;
     typedef etl::delegate<void(void)> unlock_type;
 
-    typedef etl::delegate<void(etl::timer::id::type)> event_callback_type;
+    typedef etl::delegate<void(uint32_t)> event_callback_type;
 
     //*******************************************
     /// Register a timer.
@@ -102,7 +102,7 @@ namespace etl
           {
             lock();
             active_list.remove(timer.id, false);
-            remove_callback.call_if(timer.id);
+            time_to_next_callback.call_if(time_to_next());
             unlock();
           }
 
@@ -180,12 +180,11 @@ namespace etl
             if (timer.is_active())
             {
               active_list.remove(timer.id, false);
-              remove_callback.call_if(timer.id);
             }
 
             timer.delta = immediate_ ? 0U : timer.period;
             active_list.insert(timer.id);
-            insert_callback.call_if(timer.id);
+            time_to_next_callback.call_if(time_to_next());
             unlock();
 
             result = true;
@@ -215,7 +214,7 @@ namespace etl
           {
             lock();
             active_list.remove(timer.id, false);
-            remove_callback.call_if(timer.id);
+            time_to_next_callback.call_if(time_to_next());
             unlock();
           }
 
@@ -324,31 +323,17 @@ namespace etl
     }
 
     //*******************************************
-    /// Set a callback when a timer is inserted on list
+    /// Set a callback when the time to the next timer changes
     //*******************************************
-    void set_insert_callback(event_callback_type insert_)
+    void set_time_to_next_callback(event_callback_type callback_)
     {
-      insert_callback = insert_;
+      time_to_next_callback = callback_;
     }
 
     //*******************************************
-    /// Set a callback when a timer is removed from list
-    //*******************************************
-    void set_remove_callback(event_callback_type remove_)
+    void clear_time_to_next_callback()
     {
-      remove_callback = remove_;
-    }
-
-    //*******************************************
-    void clear_insert_callback()
-    {
-      insert_callback.clear();
-    }
-
-    //*******************************************
-    void clear_remove_callback()
-    {
-      remove_callback.clear();
+      time_to_next_callback.clear();
     }
 
   protected:
@@ -641,8 +626,7 @@ namespace etl
     lock_type     lock;     ///< The callback that locks.
     unlock_type   unlock;   ///< The callback that unlocks.
 
-    event_callback_type insert_callback;
-    event_callback_type remove_callback;
+    event_callback_type time_to_next_callback;
 
   public:
 
@@ -714,7 +698,6 @@ namespace etl
               count -= timer.delta;
 
               active_list.remove(timer.id, true);
-              remove_callback.call_if(timer.id);
 
               if (timer.callback.is_valid())
               {
@@ -726,8 +709,9 @@ namespace etl
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
-                insert_callback.call_if(timer.id);
               }
+
+              time_to_next_callback.call_if(time_to_next());
 
               has_active = !active_list.empty();
             }
