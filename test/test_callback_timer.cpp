@@ -93,20 +93,24 @@ namespace
   public:
 
     uint32_t time_to_next;
+    etl::timer::id::type next_timer_id;
 
     TimerTimeToNextTest()
       : time_to_next(0)
+      , next_timer_id(etl::timer::id::NO_TIMER)
     {
     }
 
-    void time_to_next_handler(uint32_t time_to_next_)
+    void time_to_next_handler(etl::timer::id::type next_timer_id_, uint32_t time_to_next_)
     {
-      time_to_next = time_to_next_;
+      time_to_next  = time_to_next_;
+      next_timer_id = next_timer_id_;
     }
 
     void clear(void)
     {
-      time_to_next = 0;
+      time_to_next  = 0;
+      next_timer_id = etl::timer::id::NO_TIMER;
     }
   };
 
@@ -843,15 +847,21 @@ namespace
       timer_controller.start(id3);
       timer_controller.start(id2);
 
-      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next); // The time to next should be the interval for id3.
-
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);    // The time to next should be the interval for id3.
+      CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id)); // The next timer should be id3.
       timer_controller.enable(true);
+
+      CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id)); // The next timer should be id3.
+      CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id)); // The next timer should be id3.
 
       CHECK_TRUE(timer_controller.is_active(id1));
       CHECK_TRUE(timer_controller.is_active(id2));
       CHECK_TRUE(timer_controller.is_active(id3));
 
-      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next); // The time to next should be the interval for id3.
+      // The time to next should be the interval for id3.
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);
+      // The next timer should be id3.
+      CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id));
 
       // Tick the time for id3 to expire.
       timer_controller.tick(9);
@@ -859,15 +869,23 @@ namespace
       CHECK_TRUE(timer_controller.is_active(id2));
       CHECK_TRUE(timer_controller.is_active(id3));
 
-      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next); // The time to next should be the what's left of the interval for id3.
+      // The time to next should be the what's left of the interval for id3.
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);
+      // The next timer should be id3.
+      CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id));
 
       // Stop the timer and check that the time to next is updated to that of id2.
       timer_controller.stop(id3);
-      CHECK_EQUAL(14, timerTimeToNextTest.time_to_next); // The time to next should be the what's left of the interval for id2.
+      // The time to next should be the what's left of the interval for id2.
+      CHECK_EQUAL(14, timerTimeToNextTest.time_to_next);
+      // The next timer should be id2.
+      CHECK_EQUAL(int(id2), int(timerTimeToNextTest.next_timer_id));
 
       // Start the timer again and check that the time to next is updated to the interval for id3.
       timer_controller.start(id3);
       CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);
+      // The next timer should be id3.
+      CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id));
 
       // Tick the time for id3 to expire.
       timer_controller.tick(9);
@@ -877,6 +895,8 @@ namespace
 
       // The time to next should be the what's left of the interval for id2.
       CHECK_EQUAL(5, timerTimeToNextTest.time_to_next);
+      // The next timer should be id2.
+      CHECK_EQUAL(int(id2), int(timerTimeToNextTest.next_timer_id));
 
       // Tick the remaining time for id2 to expire.
       timer_controller.tick(5);
@@ -886,6 +906,8 @@ namespace
 
       // The time to next should be the what's left of the interval for id3.
       CHECK_EQUAL(4, timerTimeToNextTest.time_to_next);
+      // The next timer should be id3.
+      CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id));
 
       // Tick the remaining time for id3 to expire.
       timer_controller.tick(4);
@@ -895,6 +917,8 @@ namespace
 
       // The time to next should be the what's left of the interval for id3.
       CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);
+      // The next timer should be id3.
+      CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id));
 
       // Tick the remaining time for id3 to expire.
       timer_controller.tick(9);
@@ -904,6 +928,8 @@ namespace
 
       // The time to next should be the what's left of the interval for id1.
       CHECK_EQUAL(1, timerTimeToNextTest.time_to_next);
+      // The next timer should be id1.
+      CHECK_EQUAL(int(id1), int(timerTimeToNextTest.next_timer_id));
 
       // Stop timer id3 so that id1 is the last timeout.
       timer_controller.stop(id3);
@@ -916,6 +942,8 @@ namespace
 
       // There are no active timers so the time to next should be No_Active_Interval.
       CHECK_EQUAL(etl::timer::interval::No_Active_Interval, timerTimeToNextTest.time_to_next);
+      // The next timer should be NO_TIMER.
+      CHECK_EQUAL(int(etl::timer::id::NO_TIMER), int(timerTimeToNextTest.next_timer_id));
     }
 
     //*************************************************************************

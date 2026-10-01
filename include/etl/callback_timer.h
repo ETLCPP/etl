@@ -86,7 +86,7 @@ namespace etl
 
     typedef etl::delegate<void(void)> callback_type;
 
-    typedef etl::delegate<void(uint32_t)> event_callback_type;
+    typedef etl::delegate<void(etl::timer::id::type, uint32_t)> event_callback_type;
 
     //*******************************************
     /// Register a timer.
@@ -197,7 +197,7 @@ namespace etl
           {
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
-            time_to_next_callback.call_if(time_to_next());
+            time_to_next_callback.call_if(next_timer(), time_to_next());
             ETL_ENABLE_TIMER_UPDATES;
           }
 
@@ -296,7 +296,7 @@ namespace etl
                 }
               }
 
-              time_to_next_callback.call_if(time_to_next());
+              time_to_next_callback.call_if(next_timer(), time_to_next());
 
               has_active = !active_list.empty();
             }
@@ -341,7 +341,7 @@ namespace etl
 
             timer.delta = immediate_ ? 0 : timer.period;
             active_list.insert(timer.id);
-            time_to_next_callback.call_if(time_to_next());
+            time_to_next_callback.call_if(next_timer(), time_to_next());
             ETL_ENABLE_TIMER_UPDATES;
 
             result = true;
@@ -371,7 +371,7 @@ namespace etl
           {
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
-            time_to_next_callback.call_if(time_to_next());
+            time_to_next_callback.call_if(next_timer(), time_to_next());
             ETL_ENABLE_TIMER_UPDATES;
           }
 
@@ -433,6 +433,23 @@ namespace etl
       }
 
       return delta;
+    }
+
+    //*******************************************
+    /// Get the ID of the next timer event.
+    /// Returns etl::timer::id::No_Timer if there is no active
+    /// timer.
+    //*******************************************
+    uint32_t next_timer() const
+    {
+      etl::timer::id::type id = etl::timer::id::No_Timer;
+
+      if (has_active_timer())
+      {
+        id = active_list.front().id;
+      }
+
+      return id;
     }
 
     //*******************************************
