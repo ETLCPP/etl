@@ -367,7 +367,6 @@ namespace etl
         {                                 \
           etl::error_handler::error((e)); \
           throw((e));                     \
-          return;                         \
         }                                 \
       } while (false) // If the condition fails, calls the error handler then
                       // throws an exception.
@@ -377,7 +376,6 @@ namespace etl
         {                                       \
           etl::error_handler::error((e));       \
           throw((e));                           \
-          return (v);                           \
         }                                       \
       } while (false) // If the condition fails, calls the error handler then
                       // throws an exception.
@@ -391,13 +389,11 @@ namespace etl
       do {                                \
         etl::error_handler::error((e));   \
         throw((e));                       \
-        return;                           \
       } while (false) // Calls the error handler then throws an exception.
     #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) \
       do {                                         \
         etl::error_handler::error((e));            \
         throw((e));                                \
-        return (v);                                \
       } while (false) // Calls the error handler then throws an exception.
   #else
     #define ETL_ASSERT(b, e)   \
