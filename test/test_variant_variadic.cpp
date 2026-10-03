@@ -2933,6 +2933,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_variant_implicit_conversion_constraints)
+    {
+      struct overloaded
+      {
+        overloaded(etl::variant<char, int>&&) {}
+        overloaded(etl::variant<float, NonTrivialNonMovable>&&) {}
+      };
+
+      /* Construct from value, trivially destructible suite */
+      overloaded(1);
+      /* Construct from value, non-trivially destructible suite */
+      overloaded(1.0f);
+    }
+
+    //*************************************************************************
     // Tests for noexcept properties of etl::variant
     // The noexcept specs only take effect when ETL_USING_EXCEPTIONS is enabled,
     // because ETL_NOEXCEPT_IF expands to nothing otherwise.
