@@ -328,8 +328,6 @@ namespace etl
 
       if (!active_list.empty())
       {
-        const timer_data& timer = active_list.front();
-
         delta = active_list.front().delta;
       }
 

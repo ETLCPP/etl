@@ -83,7 +83,7 @@ namespace
 
   using event_callback_type = etl::icallback_timer::event_callback_type;
 
-  Object        object;
+  Object object;
 
   etl::function_imv<Object, object, &Object::callback>  member_callback;
   etl::function_imv<Object, object, &Object::callback2> member_callback2;
@@ -92,7 +92,7 @@ namespace
   {
   public:
 
-    uint32_t time_to_next;
+    uint32_t             time_to_next;
     etl::timer::id::type next_timer_id;
 
     TimerTimeToNextTest()
@@ -847,7 +847,7 @@ namespace
       timer_controller.start(id3);
       timer_controller.start(id2);
 
-      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);    // The time to next should be the interval for id3.
+      CHECK_EQUAL(9, timerTimeToNextTest.time_to_next);              // The time to next should be the interval for id3.
       CHECK_EQUAL(int(id3), int(timerTimeToNextTest.next_timer_id)); // The next timer should be id3.
       timer_controller.enable(true);
 
