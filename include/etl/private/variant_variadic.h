@@ -417,7 +417,7 @@ namespace etl
   }
   #endif
 
-  #if ETL_NOT_USING_STL && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+  #if ETL_NOT_USING_STL
   template <>
   struct is_copy_constructible<etl::monostate> : public etl::true_type
   {
