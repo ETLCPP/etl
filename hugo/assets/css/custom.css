@@ -1,222 +1,6 @@
-/* Definitions for light mode */
-html:not(.dark) .highlight .chroma .c1
-{
-  color: forestgreen !important;
-}
-
-html:not(.dark) .highlight .chroma .cp,
-html:not(.dark) .highlight .chroma .cpf {
-  color: mediumslateblue !important;
-}
-
-html:not(.dark) h1 { 
-  color: white !important;
-  width: 100%;
-  background-color: coral !important;
-  border: width 0.15rem solid rgb(163, 81, 51) !important;
-  padding: 0.5rem 0.5rem !important;
-}
-
-html:not(.dark) h2 { 
-  color: royalblue !important;
-  border-bottom: 3px solid black !important; 
-}
-
-html:not(.dark) h3, 
-html:not(.dark) h4 
-{ 
-  color: darkgoldenrod !important;
-  border-bottom: 2px solid darkgrey !important; 
-}
-
-html:not(.dark) p { 
-  color: black !important; 
-}
-
-html:not(.dark) dl,
-html:not(.dark) dl dt code,
-html:not(.dark) dl dd {
-  color: black !important;
-  background-color: #eeeeee !important;
-}
-
-html:not(.dark) code,
-html:not(.dark) pre,
-html:not(.dark) pre code {
-  color: black !important;
-  background-color: #eeeeee !important;
-}
-
-html:not(.dark) hr {
-  background-color: #eeeeee !important;
-}
-
-html:not(.dark) .hx\:font-extrabold {
-  font-family: Roboto, sans-serif !important;
-  font-size: 1.6rem !important;
-  color: royalblue !important;
-}
-
-/* inactive */
-html:not(.dark) .hx\:text-gray-500 {
-  color: black !important;
-}
-
-/* active */
-html:not(.dark) .hextra-sidebar-active-item {
-  color: black !important;
-}
-
-html:not(.dark) .content p.label-text {
-  color: darkgoldenrod !important;
-}
-
-/* Regular item hover */
-html:not(.dark) .hextra-sidebar-item a:hover,
-html:not(.dark) .hextra-sidebar-item a:hover span {
-  background-color: rgb(250, 195, 175) !important;
-  color: black !important;
-}
-
-/* Active item default + hover - must come AFTER regular hover */
-html:not(.dark) .hextra-sidebar-item[data-active="true"] a,
-html:not(.dark) .hextra-sidebar-item[data-active="true"] a span,
-html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover,
-html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover span {
-  background-color: coral !important;
-  color: white !important;
-}
-
-
-/* Definitions for dark mode */
-html.dark .highlight .chroma .c1
-{
-  color: lightgreen !important;
-}
-
-html.dark .highlight .chroma .cp,
-html.dark.highlight .chroma .cpf {
-  color: lightsteelblue !important;
-}
-
-html.dark body {
-  background-color: #1e1e1e !important;
-}
-
-html.dark main {
-  background-color: #252525 !important;
-}
-
-html.dark .hx\:dark\:shadow-\[0_-12px_16px_\#111\] {
-  box-shadow: 0 -12px 16px #1e1e1e !important;
-}
-
-html.dark .hx\:dark\:bg-dark {
-  background-color: #1e1e1e !important;
-  border-color: grey !important;
-}
-
-html.dark h1 
-{ 
-  color: white !important;
-  width: 100%;
-  background-color: rgb(177, 87, 54) !important;
-  padding: 0.5rem 0.5rem !important;
-}
-
-html.dark h2 { 
-  color: #7099c7 !important; 
-  border-bottom: 2px solid #c0c0c0 !important; 
-}
-
-html.dark h3, 
-html.dark h4 { 
-  color: lightgreen !important;
-  border-bottom: 2px solid #505050 !important; 
-}
-
-html.dark p { 
-  color: #c0c0c0 !important; 
-}
-
-html.dark p strong {
-  color: #c4c3a6;
-}
-
-html.dark dl,
-html.dark dl dt code,
-html.dark dl dd {
-  color: #c0c0c0 !important;
-  background-color: #444444 !important;
-}
-
-html.dark code, 
-html.dark pre,
-html.dark pre code {
-  color: #c0c0c0 !important;
-  background-color: #444444 !important;
-}
-
-html.dark hr {
-  background-color: #505050 !important;
-}
-
-html.dark .hx\:font-extrabold {
-  font-family: Roboto, sans-serif !important;
-  font-size: 1.6rem !important;
-  color: #7099c7 !important;
-}
-
-/* inactive */
-html.dark .hx\:text-gray-500 {
-  color: #c0c0c0 !important;
-}
-
-/* active */
-html.dark .hextra-sidebar-active-item {
-  color: #c0c0c0 !important;
-}
-
-html.dark .hextra-code-block .highlight .chroma span.p {
-  color: #c0c0c0;
-}
-
-html.dark .content p.label-text {
-  color: salmon !important;
-}
-
-/* Regular item hover */
-html.dark .hextra-sidebar-item a:hover,
-html.dark .hextra-sidebar-item a:hover span {
-  background-color: rgb(250, 195, 175) !important;
-  color: black !important;
-}
-
-/* Active item default + hover - must come AFTER regular hover */
-html.dark .hextra-sidebar-item[data-active="true"] a,
-html.dark .hextra-sidebar-item[data-active="true"] a span,
-html.dark .hextra-sidebar-item[data-active="true"] a:hover,
-html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
-  background-color: rgb(177, 87, 54) !important;
-  color: #e0e0e0 !important;
-}
-
-/* Common definitions */
-
-@font-face {
-  font-family: Roboto;
-  src: url('/fonts/roboto-v51-latin-regular.woff2') format('woff2');
-  font-weight:500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Roboto Mono';
-  src: url('/fonts/roboto-mono-v31-latin-500.woff2') format('woff2');
-  font-weight: nornal;
-  font-style: normal;
-}
-
+/**********************/
+/* .highlight .chroma */
+/**********************/
 .highlight .chroma .k,
 .highlight .chroma .kc,
 .highlight .chroma .kd,
@@ -233,64 +17,21 @@ html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
   font-style: normal !important;
 }
 
-.hx\:mb-0 {
-  display: block;
-  width: 100%;
+html.dark .highlight .chroma .cp,
+html.dark.highlight .chroma .cpf {
+  color: lightgreen !important;
+  color: lightsteelblue !important;
 }
 
-.hextra-code-block {
-  margin-top: 0.5rem !important;
-
-}
-
-/* .highlight .chroma .c1
-{
+html:not(.dark) .highlight .chroma .cp,
+html:not(.dark) .highlight .chroma .cpf {
   color: forestgreen !important;
-}
-
-.highlight .chroma .cp,
-.highlight .chroma .cpf {
   color: mediumslateblue !important;
-} */
-
-html.dark .hextra-code-block .highlight .chroma .cs,
-html.dark .hextra-code-block .highlight .chroma .cp,
-html.dark .hextra-code-block .highlight .chroma .cpf {
-  font-weight: normal;
 }
 
-.badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  justify-content: flex-start;
-  margin-top: 1rem;
-}
-
-.badges p {
-  display: contents;
-  margin: 0;
-}
-
-.badges div {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.content ul li {
-  font-family: Roboto, sans-serif !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-size: 1.1rem !important;
-}
-
-.err {
-  background-color: transparent !important;
-  color: inherit !important;
-}
-
+/***********************/
+/* h1                  */
+/***********************/
 h1 {
   font-family: Roboto, sans-serif !important;
   font-style: i !important;
@@ -301,6 +42,25 @@ h1 {
   border-radius: 0.5rem !important;
 }
 
+html.dark h1 
+{ 
+  color: white !important;
+  width: 100%;
+  background-color: rgb(177, 87, 54) !important;
+  padding: 0.5rem 0.5rem !important;
+}
+
+html:not(.dark) h1 { 
+  color: white !important;
+  width: 100%;
+  background-color: coral !important;
+  border: width 0.15rem solid rgb(163, 81, 51) !important;
+  padding: 0.5rem 0.5rem !important;
+}
+
+/***********************/
+/* h2                  */
+/***********************/
 h2 {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
@@ -310,6 +70,19 @@ h2 {
   margin-bottom: 0.5em !important;
 }
 
+html.dark h2 { 
+  color: #7099c7 !important; 
+  border-bottom: 2px solid #c0c0c0 !important; 
+}
+
+html:not(.dark) h2 { 
+  color: royalblue !important;
+  border-bottom: 3px solid black !important; 
+}
+
+/***********************/
+/* h3                  */
+/***********************/
 h3 {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
@@ -321,6 +94,20 @@ h3 {
   #display: inline-block;
 }
 
+html.dark h3 { 
+  color: lightgreen !important;
+  border-bottom: 2px solid #505050 !important; 
+}
+
+html:not(.dark) h3
+{ 
+  color: darkgoldenrod !important;
+  border-bottom: 2px solid darkgrey !important; 
+}
+
+/***********************/
+/* h4                  */
+/***********************/
 h4 {
   font-family: Roboto, sans-serif !important;
   font-style: normal !important;
@@ -331,6 +118,43 @@ h4 {
   display: inline-block;
 }
 
+html.dark h4 { 
+  color: lightgreen !important;
+  border-bottom: 2px solid #505050 !important; 
+}
+
+html:not(.dark) h4 
+{ 
+  color: darkgoldenrod !important;
+  border-bottom: 2px solid darkgrey !important; 
+}
+
+/***********************/
+/* p                   */
+/***********************/
+p {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1.1rem !important;
+  margin-top: 0.5em !important;
+}
+
+html.dark p { 
+  color: #c0c0c0 !important; 
+}
+
+html.dark p strong {
+  color: #c4c3a6;
+}
+
+html:not(.dark) p { 
+  color: black !important; 
+}
+
+/***********************/
+/* dl                  */
+/***********************/
 dl {
   font-family: 'Roboto Mono', monospace !important;
   font-style: normal !important;
@@ -352,41 +176,28 @@ dl dd {
   font-size: 1rem !important;
 }
 
-ol {
-  font-family: 'Roboto Mono', monospace !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-size: 1rem !important;
+html.dark dl,
+html.dark dl dt code,
+html.dark dl dd {
+  color: #c0c0c0 !important;
+  background-color: #444444 !important;
 }
 
-ol li {
-  font-family: Roboto, sans-serif !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-size: 1rem !important;
+html:not(.dark) dl,
+html:not(.dark) dl dt code,
+html:not(.dark) dl dd {
+  color: black !important;
+  background-color: #eeeeee !important;
 }
 
-ol li code {
-  font-family: 'Roboto Mono', monospace !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-size: 1rem !important;
-}
-
+/***********************/
+/* pre & code          */
+/***********************/
 code {
   font-family: 'Roboto Mono', monospace !important;
   font-weight: normal !important;
   font-style: normal !important;
   font-size: 0.9rem !important;
-  border: none !important;
-}
-
-pre code {
-  font-family: 'Roboto Mono', monospace !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-size: 0.9rem !important;
-  margin-left: 0 !important;
   border: none !important;
 }
 
@@ -400,6 +211,32 @@ pre {
   border: none !important;
 }
 
+pre code {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 0.9rem !important;
+  margin-left: 0 !important;
+  border: none !important;
+}
+
+html.dark code, 
+html.dark pre,
+html.dark pre code {
+  color: #c0c0c0 !important;
+  background-color: #444444 !important;
+}
+
+html:not(.dark) code,
+html:not(.dark) pre,
+html:not(.dark) pre code {
+  color: black !important;
+  background-color: #eeeeee !important;
+}
+
+/***********************/
+/* hr                  */
+/***********************/
 hr {
     height: 2px !important;
     border: none !important;
@@ -407,23 +244,154 @@ hr {
     margin-bottom: 1em !important;
 }
 
-p {
+html.dark hr {
+  background-color: #505050 !important;
+}
+
+html:not(.dark) hr {
+  background-color: #eeeeee !important;
+}
+
+/***********************/
+/* body                */
+/***********************/
+html.dark body {
+  background-color: #1e1e1e !important;
+}
+
+/***********************/
+/* .hx\:font-extrabold */
+/***********************/
+html.dark .hx\:font-extrabold {
   font-family: Roboto, sans-serif !important;
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-size: 1.1rem !important;
-  margin-top: 0.5em !important;
+  font-size: 1.6rem !important;
+  color: #7099c7 !important;
 }
 
-tr td code{
-  font-family: 'Roboto Mono', monospace !important;
-  font-size: 0.8rem !important;
+html:not(.dark) .hx\:font-extrabold {
+  font-family: Roboto, sans-serif !important;
+  font-size: 1.6rem !important;
+  color: royalblue !important;
 }
 
+/***********************/
+/* .hx\:text-gray-500  */
+/* inactive            */
+/***********************/
+html.dark .hx\:text-gray-500 {
+  color: #c0c0c0 !important;
+}
+
+html:not(.dark) .hx\:text-gray-500 {
+  color: black !important;
+}
+
+/*******************************/
+/* .hextra-sidebar-active-item */
+/* active                      */ 
+/*******************************/
+html.dark .hextra-sidebar-active-item {
+  color: #c0c0c0 !important;
+}
+
+html:not(.dark) .hextra-sidebar-active-item {
+  color: black !important;
+}
+
+/*************************/
+/* .content p.label-text */
+/*************************/
+html.dark .content p.label-text {
+  color: salmon !important;
+}
+
+html:not(.dark) .content p.label-text {
+  color: darkgoldenrod !important;
+}
+
+/********************************/
+/* .hextra-sidebar-item a:hover */
+/********************************/
+html.dark .hextra-sidebar-item a:hover,
+html.dark .hextra-sidebar-item a:hover span {
+  background-color: rgb(250, 195, 175) !important;
+  color: black !important;
+}
+
+html:not(.dark) .hextra-sidebar-item a:hover,
+html:not(.dark) .hextra-sidebar-item a:hover span {
+  background-color: rgb(250, 195, 175) !important;
+  color: black !important;
+}
+
+/*********************************/
+/* .hextra-sidebar-item          */
+/* Active item default + hover   */
+/* Must come AFTER regular hover */
+/*********************************/
+html.dark .hextra-sidebar-item[data-active="true"] a,
+html.dark .hextra-sidebar-item[data-active="true"] a span,
+html.dark .hextra-sidebar-item[data-active="true"] a:hover,
+html.dark .hextra-sidebar-item[data-active="true"] a:hover span {
+  background-color: rgb(177, 87, 54) !important;
+  color: #e0e0e0 !important;
+}
+
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a span,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover,
+html:not(.dark) .hextra-sidebar-item[data-active="true"] a:hover span {
+  background-color: coral !important;
+  color: white !important;
+}
+
+/***********************/
+/* main                */
+/***********************/
+html.dark main {
+  background-color: #252525 !important;
+}
+
+/***********************/
+/* .hx\:dark\:shadow   */
+/***********************/
+html.dark .hx\:dark\:shadow-\[0_-12px_16px_\#111\] {
+  box-shadow: 0 -12px 16px #1e1e1e !important;
+}
+
+/***********************/
+/* .hx\:dark\:bg-dark  */
+/***********************/
+html.dark .hx\:dark\:bg-dark {
+  background-color: #1e1e1e !important;
+  border-color: grey !important;
+}
+
+/***********************/
+/* hextra-code-block   */
+/***********************/
+.hextra-code-block {
+  margin-top: 0.5rem !important;
+}
+
+html.dark .hextra-code-block .highlight .chroma span.p {
+  color: #c0c0c0;
+}
+
+html.dark .hextra-code-block .highlight .chroma .cs,
+html.dark .hextra-code-block .highlight .chroma .cp,
+html.dark .hextra-code-block .highlight .chroma .cpf {
+  font-weight: normal;
+}
+
+/***********************/
+/* complexity          */
+/***********************/
 .complexity {
   padding: 3px 6px;
-  border-radius: 999px;
+  border-radius: 0.5rem !important;
   font-weight: 600;
+  font-size: 0.9rem !important;
   letter-spacing: 0.04em;
   border: 1px solid transparent;
 }
@@ -460,6 +428,7 @@ html.dark .complexity {
     border-color: rgba(255,0,80,0.2);
   }
 }
+
 html:not(.dark) .complexity {
   &.constant {
     color: #15803D;
@@ -496,4 +465,102 @@ html:not(.dark) .complexity {
     background: rgba(239,68,68,0.10);
     border-color: rgba(239,68,68,0.22);
   }
+}
+
+/***********************/
+/* font-face           */
+/***********************/
+@font-face {
+  font-family: Roboto;
+  src: url('/fonts/roboto-v51-latin-regular.woff2') format('woff2');
+  font-weight:500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('/fonts/roboto-mono-v31-latin-500.woff2') format('woff2');
+  font-weight: nornal;
+  font-style: normal;
+}
+
+/***********************/
+/* .hx\:mb             */
+/***********************/
+.hx\:mb-0 {
+  display: block;
+  width: 100%;
+}
+
+/***********************/
+/* .badges             */
+/***********************/
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+.badges p {
+  display: contents;
+  margin: 0;
+}
+
+.badges div {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/***********************/
+/* .content            */
+/***********************/
+.content ul li {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1.1rem !important;
+}
+
+/***********************/
+/* .err                */
+/***********************/
+.err {
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+/***********************/
+/* ol                  */
+/***********************/
+ol {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+ol li {
+  font-family: Roboto, sans-serif !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+ol li code {
+  font-family: 'Roboto Mono', monospace !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+}
+
+/***********************/
+/* tr                  */
+/***********************/
+tr td code{
+  font-family: 'Roboto Mono', monospace !important;
+  font-size: 0.8rem !important;
 }
