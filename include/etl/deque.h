@@ -2200,8 +2200,7 @@ namespace etl
 
       iterator item = _begin;
 
-      do
-      {
+      do {
         ::new (&(*item)) T(*from);
         ++item;
         ++from;
