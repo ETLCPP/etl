@@ -94,8 +94,8 @@ namespace etl
       static void destroy(char*, size_t) {}
       static void copy(char*, const char*, size_t) {}
       static void move(char*, const char*, size_t) {}
-      static void copy_assign(char*, const char*, size_t) {}
-      static void move_assign(char*, const char*, size_t) {}
+      static void copy_assign_or_construct(char*, const char*, size_t, bool) {}
+      static void move_assign_or_construct(char*, const char*, size_t, bool) {}
     };
 
     // Recursive case.
@@ -148,27 +148,49 @@ namespace etl
         }
       }
 
-      static void copy_assign(char* dst, const char* src, size_t type_id)
+      //*************************************************************************
+      // copy_assign_or_construct / move_assign_or_construct
+      //
+      // One dispatch on the source alternative serves both halves of variant
+      // assignment: the alternative is assigned when the destination already
+      // holds it, otherwise it is constructed into storage the caller has
+      // already emptied. Sharing the dispatch keeps variant assignment small.
+      //*************************************************************************
+      static void copy_assign_or_construct(char* dst, const char* src, size_t type_id, bool construct)
       {
         if (type_id == Index)
         {
-          copy_assign_impl(dst, src, etl::integral_constant<bool, etl::is_copy_assignable<THead>::value>{});
+          if (construct)
+          {
+            copy_impl(dst, src, etl::integral_constant<bool, etl::is_copy_constructible<THead>::value>{});
+          }
+          else
+          {
+            copy_assign_impl(dst, src, etl::integral_constant<bool, etl::is_copy_assignable<THead>::value>{});
+          }
         }
         else
         {
-          variant_operations<Index + 1, TRest...>::copy_assign(dst, src, type_id);
+          variant_operations<Index + 1, TRest...>::copy_assign_or_construct(dst, src, type_id, construct);
         }
       }
 
-      static void move_assign(char* dst, const char* src, size_t type_id)
+      static void move_assign_or_construct(char* dst, const char* src, size_t type_id, bool construct)
       {
         if (type_id == Index)
         {
-          move_assign_impl(dst, src, etl::integral_constant<bool, etl::is_move_assignable<THead>::value>{});
+          if (construct)
+          {
+            move_impl(dst, src, etl::integral_constant<bool, etl::is_move_constructible<THead>::value>{});
+          }
+          else
+          {
+            move_assign_impl(dst, src, etl::integral_constant<bool, etl::is_move_assignable<THead>::value>{});
+          }
         }
         else
         {
-          variant_operations<Index + 1, TRest...>::move_assign(dst, src, type_id);
+          variant_operations<Index + 1, TRest...>::move_assign_or_construct(dst, src, type_id, construct);
         }
       }
 
@@ -521,23 +543,16 @@ namespace etl
       {
         if (this != &other)
         {
-          if ((type_id != variant_npos) && (type_id == other.type_id))
+          if ((type_id != variant_npos) && (type_id != other.type_id))
           {
-            variant_operations<0, TTypes...>::copy_assign(data, other.data, type_id);
+            variant_operations<0, TTypes...>::destroy(data, type_id);
+            type_id = variant_npos;
           }
-          else
-          {
-            if (type_id != variant_npos)
-            {
-              variant_operations<0, TTypes...>::destroy(data, type_id);
-              type_id = variant_npos;
-            }
 
-            if (other.type_id != variant_npos)
-            {
-              variant_operations<0, TTypes...>::copy(data, other.data, other.type_id);
-              type_id = other.type_id;
-            }
+          if (other.type_id != variant_npos)
+          {
+            variant_operations<0, TTypes...>::copy_assign_or_construct(data, other.data, other.type_id, type_id == variant_npos);
+            type_id = other.type_id;
           }
         }
 
@@ -549,23 +564,16 @@ namespace etl
       {
         if (this != &other)
         {
-          if ((type_id != variant_npos) && (type_id == other.type_id))
+          if ((type_id != variant_npos) && (type_id != other.type_id))
           {
-            variant_operations<0, TTypes...>::move_assign(data, other.data, type_id);
+            variant_operations<0, TTypes...>::destroy(data, type_id);
+            type_id = variant_npos;
           }
-          else
-          {
-            if (type_id != variant_npos)
-            {
-              variant_operations<0, TTypes...>::destroy(data, type_id);
-              type_id = variant_npos;
-            }
 
-            if (other.type_id != variant_npos)
-            {
-              variant_operations<0, TTypes...>::move(data, other.data, other.type_id);
-              type_id = other.type_id;
-            }
+          if (other.type_id != variant_npos)
+          {
+            variant_operations<0, TTypes...>::move_assign_or_construct(data, other.data, other.type_id, type_id == variant_npos);
+            type_id = other.type_id;
           }
         }
 
@@ -687,13 +695,7 @@ namespace etl
 
       void copy_assign_from(const variant_trivially_destructible_base& other)
       {
-        if ((type_id != variant_npos) && (type_id == other.type_id))
-        {
-          variant_operations<0, TTypes...>::copy_assign(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), type_id);
-          return;
-        }
-
-        if (type_id != variant_npos)
+        if ((type_id != variant_npos) && (type_id != other.type_id))
         {
           variant_operations<0, TTypes...>::destroy(reinterpret_cast<char*>(&data), type_id);
           type_id = variant_npos;
@@ -701,20 +703,15 @@ namespace etl
 
         if (other.type_id != variant_npos)
         {
-          variant_operations<0, TTypes...>::copy(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), other.type_id);
+          variant_operations<0, TTypes...>::copy_assign_or_construct(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data),
+                                                                     other.type_id, type_id == variant_npos);
           type_id = other.type_id;
         }
       }
 
       void move_assign_from(variant_trivially_destructible_base& other)
       {
-        if ((type_id != variant_npos) && (type_id == other.type_id))
-        {
-          variant_operations<0, TTypes...>::move_assign(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), type_id);
-          return;
-        }
-
-        if (type_id != variant_npos)
+        if ((type_id != variant_npos) && (type_id != other.type_id))
         {
           variant_operations<0, TTypes...>::destroy(reinterpret_cast<char*>(&data), type_id);
           type_id = variant_npos;
@@ -722,7 +719,8 @@ namespace etl
 
         if (other.type_id != variant_npos)
         {
-          variant_operations<0, TTypes...>::move(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data), other.type_id);
+          variant_operations<0, TTypes...>::move_assign_or_construct(reinterpret_cast<char*>(&data), reinterpret_cast<const char*>(&other.data),
+                                                                     other.type_id, type_id == variant_npos);
           type_id = other.type_id;
         }
       }

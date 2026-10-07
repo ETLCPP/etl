@@ -543,6 +543,30 @@ namespace
     bool copy_assigned;
     bool move_assigned;
   };
+
+  //*********************************************
+  // Counts destructor calls, to verify that variant assignment destroys the
+  // previous alternative only when the alternative changes.
+  struct DestructorCounter
+  {
+    DestructorCounter() {}
+
+    DestructorCounter(const DestructorCounter&) {}
+
+    ~DestructorCounter()
+    {
+      ++destructor_calls;
+    }
+
+    DestructorCounter& operator=(const DestructorCounter&)
+    {
+      return *this;
+    }
+
+    static int destructor_calls;
+  };
+
+  int DestructorCounter::destructor_calls = 0;
 } // namespace
 
   // Moved from the top of the file otherwise clang has issues with
@@ -1160,6 +1184,73 @@ namespace
         CHECK_EQUAL(etl::variant_npos, v.index());
       }
     }
+
+    //*************************************************************************
+    // Assigning a different alternative whose copy constructor throws must
+    // leave the variant valueless-after-exception.
+    struct ThrowOnCopy
+    {
+      struct exception
+      {
+      };
+
+      ThrowOnCopy() {}
+
+      ThrowOnCopy(const ThrowOnCopy&)
+      {
+        throw exception();
+      }
+
+      ThrowOnCopy& operator=(const ThrowOnCopy&)
+      {
+        return *this;
+      }
+    };
+
+    TEST(test_copy_assign_throwing_different_type_is_valueless_by_exception)
+    {
+      // Trivially destructible suite (variadic_union storage).
+      {
+        etl::variant<int, ThrowOnCopy> v1(etl::in_place_type_t<int>{}, 42);
+        etl::variant<int, ThrowOnCopy> v2;
+        v2.emplace<ThrowOnCopy>();
+
+        bool threw = false;
+        try
+        {
+          v1 = v2;
+        }
+        catch (const ThrowOnCopy::exception&)
+        {
+          threw = true;
+        }
+
+        CHECK(threw);
+        CHECK(v1.valueless_by_exception());
+        CHECK_EQUAL(etl::variant_npos, v1.index());
+      }
+
+      // Non-trivially destructible suite (uninitialized_buffer storage).
+      {
+        etl::variant<std::string, ThrowOnCopy> v1(etl::in_place_type_t<std::string>{}, "Some Text");
+        etl::variant<std::string, ThrowOnCopy> v2;
+        v2.emplace<ThrowOnCopy>();
+
+        bool threw = false;
+        try
+        {
+          v1 = v2;
+        }
+        catch (const ThrowOnCopy::exception&)
+        {
+          threw = true;
+        }
+
+        CHECK(threw);
+        CHECK(v1.valueless_by_exception());
+        CHECK_EQUAL(etl::variant_npos, v1.index());
+      }
+    }
   #endif
 
     //*************************************************************************
@@ -1322,6 +1413,71 @@ namespace
       CHECK_EQUAL(1U, variant_1.index());
       CHECK_EQUAL(3, etl::get<TrivialAssignTracker>(variant_1).value);
       CHECK(etl::get<TrivialAssignTracker>(variant_1).move_assigned);
+    }
+
+    //*************************************************************************
+    TEST(test_move_assign_different_type_reconstructs)
+    {
+      typedef etl::variant<int, AssignTracker> tracker_variant;
+
+      tracker_variant variant_1(etl::in_place_type_t<int>{}, 5);
+      tracker_variant variant_2(etl::in_place_type_t<AssignTracker>{}, 2);
+
+      variant_1 = etl::move(variant_2);
+
+      CHECK_EQUAL(1U, variant_1.index());
+      CHECK_EQUAL(2, etl::get<AssignTracker>(variant_1).value);
+      CHECK(etl::get<AssignTracker>(variant_1).constructed);
+      CHECK(!etl::get<AssignTracker>(variant_1).copy_assigned);
+      CHECK(!etl::get<AssignTracker>(variant_1).move_assigned);
+    }
+
+    //*************************************************************************
+    TEST(test_assign_different_type_reconstructs_trivial)
+    {
+      typedef etl::variant<int, TrivialAssignTracker> tracker_variant;
+
+      tracker_variant variant_1(etl::in_place_type_t<int>{}, 5);
+      tracker_variant variant_2(etl::in_place_type_t<TrivialAssignTracker>{}, 2);
+
+      variant_1 = variant_2;
+
+      CHECK_EQUAL(1U, variant_1.index());
+      CHECK_EQUAL(2, etl::get<TrivialAssignTracker>(variant_1).value);
+      CHECK(!etl::get<TrivialAssignTracker>(variant_1).copy_assigned);
+      CHECK(!etl::get<TrivialAssignTracker>(variant_1).move_assigned);
+
+      tracker_variant variant_3(etl::in_place_type_t<int>{}, 6);
+      tracker_variant variant_4(etl::in_place_type_t<TrivialAssignTracker>{}, 4);
+
+      variant_3 = etl::move(variant_4);
+
+      CHECK_EQUAL(1U, variant_3.index());
+      CHECK_EQUAL(4, etl::get<TrivialAssignTracker>(variant_3).value);
+      CHECK(!etl::get<TrivialAssignTracker>(variant_3).copy_assigned);
+      CHECK(!etl::get<TrivialAssignTracker>(variant_3).move_assigned);
+    }
+
+    //*************************************************************************
+    TEST(test_assign_destroys_previous_alternative_only_when_it_changes)
+    {
+      typedef etl::variant<DestructorCounter, int> counter_variant;
+
+      counter_variant variant_1(etl::in_place_type_t<DestructorCounter>{});
+      counter_variant variant_2(etl::in_place_type_t<DestructorCounter>{});
+      counter_variant variant_3(etl::in_place_type_t<int>{}, 3);
+
+      DestructorCounter::destructor_calls = 0;
+      variant_1                           = variant_2;
+
+      CHECK_EQUAL(0, DestructorCounter::destructor_calls);
+      CHECK_EQUAL(0U, variant_1.index());
+
+      variant_1 = variant_3;
+
+      CHECK_EQUAL(1, DestructorCounter::destructor_calls);
+      CHECK_EQUAL(1U, variant_1.index());
+      CHECK_EQUAL(3, etl::get<int>(variant_1));
     }
 
     //*************************************************************************
