@@ -8,12 +8,72 @@ if ETL
 
 config ETL_DEBUG
   bool "Build ETL with debugging checks"
-  default y if DEBUG
+  default y if ASSERT
+
+choice ETL_ERROR_MODE
+  prompt "ETL error handling mode"
+  help
+    What ETL does when one of its checks fails.
+
+config ETL_ASSERT_ERRORS
+  bool "Assert in ETL_DEBUG builds, otherwise ignore"
+  help
+    With ETL_DEBUG, a failed check calls assert(). Without it, nothing
+    is reported, but checks that guard an operation still skip it.
+
+config ETL_LOG_ERRORS
+  bool "Call the ETL error handler"
+  help
+    A failed check calls the callback registered with
+    etl::error_handler::set_callback(), then skips the operation it
+    guards. With no callback registered, errors are discarded.
+
+config ETL_USE_ASSERT_FUNCTION
+  bool "Call a user assert function"
+  help
+    A failed check calls the function registered with
+    etl::set_assert_function(), then skips the operation it guards.
+    Until one is registered, it calls assert(false).
+
+config ETL_THROW_EXCEPTIONS
+  bool "Throw an exception"
+  depends on CPP_EXCEPTIONS
+  help
+    A failed check throws an etl::exception.
+
+config ETL_NO_CHECKS
+  bool "No checks"
+  help
+    Check conditions are not evaluated.
+
+endchoice # ETL_ERROR_MODE
+
+choice ETL_ERROR_DETAIL
+  prompt "ETL error detail level"
+  help
+    What information an etl::exception carries.
+
+config ETL_TERSE_ERRORS
+  bool "Short error code only"
+
+config ETL_VERBOSE_ERRORS
+  bool "Message, file and line"
+
+config ETL_MINIMAL_ERRORS
+  bool "Nothing"
+
+endchoice # ETL_ERROR_DETAIL
 
 config ETL_CHECK_PUSH_POP
   bool "Enable push/pop checks in ETL"
+  depends on !ETL_NO_CHECKS
 
-config ETL_LOG_ERRORS
-  bool "Call ETL error handler instead of assert"
+config ETL_CHECK_INDEX_OPERATOR
+  bool "Enable bounds checks on ETL operator[]"
+  depends on !ETL_NO_CHECKS
+
+config ETL_CHECK_EXTRA
+  bool "Enable extra bounds and empty checks in ETL containers"
+  depends on !ETL_NO_CHECKS
 
 endif # ETL

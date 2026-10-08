@@ -3,6 +3,16 @@ if(CONFIG_ETL)
   zephyr_link_libraries(etl::etl)
 
   zephyr_compile_definitions_ifdef(CONFIG_ETL_DEBUG ETL_DEBUG)
-  zephyr_compile_definitions_ifdef(CONFIG_ETL_CHECK_PUSH_POP ETL_CHECK_PUSH_POP)
+
   zephyr_compile_definitions_ifdef(CONFIG_ETL_LOG_ERRORS ETL_LOG_ERRORS)
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_USE_ASSERT_FUNCTION ETL_USE_ASSERT_FUNCTION)
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_THROW_EXCEPTIONS ETL_THROW_EXCEPTIONS)
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_NO_CHECKS ETL_NO_CHECKS)
+
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_VERBOSE_ERRORS ETL_VERBOSE_ERRORS)
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_MINIMAL_ERRORS ETL_MINIMAL_ERRORS)
+
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_CHECK_PUSH_POP ETL_CHECK_PUSH_POP)
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_CHECK_INDEX_OPERATOR ETL_CHECK_INDEX_OPERATOR)
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_CHECK_EXTRA ETL_CHECK_EXTRA)
 endif()
