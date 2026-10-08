@@ -4,5 +4,7 @@ if(CONFIG_ETL)
 
   zephyr_compile_definitions_ifdef(CONFIG_ETL_DEBUG ETL_DEBUG)
   zephyr_compile_definitions_ifdef(CONFIG_ETL_CHECK_PUSH_POP ETL_CHECK_PUSH_POP)
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_CHECK_INDEX_OPERATOR ETL_CHECK_INDEX_OPERATOR)
+  zephyr_compile_definitions_ifdef(CONFIG_ETL_CHECK_EXTRA ETL_CHECK_EXTRA)
   zephyr_compile_definitions_ifdef(CONFIG_ETL_LOG_ERRORS ETL_LOG_ERRORS)
 endif()

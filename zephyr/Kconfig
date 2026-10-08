@@ -13,6 +13,12 @@ config ETL_DEBUG
 config ETL_CHECK_PUSH_POP
   bool "Enable push/pop checks in ETL"
 
+config ETL_CHECK_INDEX_OPERATOR
+  bool "Enable bounds checks on ETL operator[]"
+
+config ETL_CHECK_EXTRA
+  bool "Enable extra bounds and empty checks in ETL containers"
+
 config ETL_LOG_ERRORS
   bool "Call ETL error handler instead of assert"
 
