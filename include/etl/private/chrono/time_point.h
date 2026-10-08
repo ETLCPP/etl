@@ -224,7 +224,7 @@ namespace etl
 
     //***********************************************************************
     /// Rounds a duration to the nearest precision.
-    /// If the duration is exactly halfway, it rounds away from zero.
+    /// If the duration is exactly halfway, it rounds to even.
     //***********************************************************************
     template <typename TToDuration, typename TClock, typename TDuration>
     ETL_NODISCARD ETL_CONSTEXPR14 etl::chrono::time_point<TClock, TToDuration> round(const etl::chrono::time_point<TClock, TDuration>& tp)

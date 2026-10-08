@@ -46,8 +46,6 @@ SOFTWARE.
 #include "string_view.h"
 #include "type_traits.h"
 
-#include <math.h>
-
 namespace etl
 {
   //***************************************************************************
@@ -847,7 +845,7 @@ namespace etl
         TValue value    = static_cast<TValue>(accumulator.value());
         int    exponent = accumulator.exponent();
 
-        value *= pow(static_cast<TValue>(10.0), static_cast<TValue>(exponent));
+        value *= etl::private_math::pow(static_cast<TValue>(10.0), static_cast<TValue>(exponent));
 
         // Check that the result is a valid floating point number.
         if (etl::is_infinity(value))

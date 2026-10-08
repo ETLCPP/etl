@@ -33,9 +33,8 @@ SOFTWARE.
 
 #include "platform.h"
 #include "functional.h"
+#include "math.h"
 #include "type_traits.h"
-
-#include <math.h>
 
 namespace etl
 {
@@ -64,7 +63,7 @@ namespace etl
     {
       // Calculate intermediate result because rounding + optimization
       // lead to wrong values when returning directly (test on i386)
-      const double result = maximum * pow(double(value) / maximum, one_over_gamma);
+      const double result = maximum * etl::private_math::pow(double(value) / maximum, one_over_gamma);
 
       return TInput(result);
     }
@@ -100,7 +99,7 @@ namespace etl
     {
       // Calculate intermediate result because rounding + optimization
       // lead to wrong values when returning directly (test on i386)
-      const double result = maximum * pow(double(value) / maximum, gamma);
+      const double result = maximum * etl::private_math::pow(double(value) / maximum, gamma);
       return TInput(result);
     }
 
