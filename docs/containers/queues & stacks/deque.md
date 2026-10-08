@@ -92,7 +92,7 @@ const T& at(size_t i) const
 ```
 **Description**  
 Returns a reference or const reference to the indexed element.  
-Emits an `etl::deque_out_of_bounds` if the index is out of range of the array. Undefined behaviour if asserts or exceptions are not enabled.
+Emits an `etl::deque_out_of_bounds` if the index is out of range of the deque. Undefined behaviour if asserts or exceptions are not enabled.
 
 ---
 
@@ -102,7 +102,7 @@ const T& operator[](size_t i) const
 ```
 **Description**  
 Returns a reference or const reference to the indexed element.
-Emits an `etl::deque_out_of_bounds` if ETL_CHECK_INDEX_OPERATOR is defined and the index is out of range of the array. Undefined behaviour if asserts or exceptions are not enabled.
+Emits an `etl::deque_out_of_bounds` if ETL_CHECK_INDEX_OPERATOR is defined and the index is out of range of the deque. Undefined behaviour if asserts or exceptions are not enabled.
 
 ---
 
