@@ -8,7 +8,7 @@ if ETL
 
 config ETL_DEBUG
   bool "Build ETL with debugging checks"
-  default y if DEBUG
+  default y if ASSERT
 
 config ETL_CHECK_PUSH_POP
   bool "Enable push/pop checks in ETL"
