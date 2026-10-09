@@ -509,7 +509,8 @@ namespace etl
   struct basic_format_string
   {
     inline ETL_CONSTEVAL basic_format_string(const char* fmt)
-      : _sv(fmt)
+      : _str(fmt)
+      , _length(etl::char_traits<char>::length(fmt))
     {
   #if ETL_USING_CPP20
       // Compile-time validation: check_format runs at compile time via consteval.
@@ -527,12 +528,22 @@ namespace etl
 
     ETL_CONSTEXPR string_view get() const
     {
-      return _sv;
+      return string_view(_str, _length);
     }
 
   private:
 
-    string_view _sv;
+    // The format string is deliberately stored as a pointer plus a length, and
+    // not as a string_view.
+    //
+    // A string_view holds a pair of pointers, so constructing one here would
+    // initialise a member with the pointer arithmetic 'fmt + length(fmt)'.
+    // Microsoft's compiler (19.44) miscompiles exactly that case in a consteval
+    // constructor in debug builds: the resulting end pointer, and therefore the
+    // size of the view, is wrong. Storing the length as an integer instead
+    // computes correctly, and the view is formed on demand in get().
+    const char* _str;
+    size_t      _length;
   };
 
   template <class... Args>
