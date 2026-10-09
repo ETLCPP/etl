@@ -814,10 +814,10 @@ namespace
       CHECK(etl::is_standard_layout<StandardLayout>::value);
       CHECK(!etl::is_standard_layout<NonStandardLayout>::value);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK(etl::is_standard_layout_v<StandardLayout>);
       CHECK(!etl::is_standard_layout_v<NonStandardLayout>);
-#endif
+  #endif
     }
 #endif
 
@@ -867,10 +867,10 @@ namespace
       CHECK(!etl::is_trivial<NonTrivialCopy>::value);
       CHECK(!etl::is_trivial<NonTrivialDestructor>::value);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK(etl::is_trivial_v<Trivial>);
       CHECK(!etl::is_trivial_v<NonTrivialConstructor>);
-#endif
+  #endif
     }
 #endif
 
@@ -1292,10 +1292,10 @@ namespace
       CHECK(!etl::is_union<NonUnion>::value);
       CHECK(!etl::is_union<int>::value);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK(etl::is_union_v<Union>);
       CHECK(!etl::is_union_v<NonUnion>);
-#endif
+  #endif
     }
 #endif
 
@@ -1334,10 +1334,10 @@ namespace
       CHECK(!etl::is_empty<Virtual>::value);
       CHECK(!etl::is_empty<int>::value);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK(etl::is_empty_v<Empty>);
       CHECK(!etl::is_empty_v<NotEmpty>);
-#endif
+  #endif
     }
 #endif
 
@@ -1377,10 +1377,10 @@ namespace
       CHECK(!etl::is_polymorphic<NonPolymorphic>::value);
       CHECK(!etl::is_polymorphic<int>::value);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK(etl::is_polymorphic_v<Polymorphic>);
       CHECK(!etl::is_polymorphic_v<NonPolymorphic>);
-#endif
+  #endif
     }
 #endif
 
@@ -1428,10 +1428,10 @@ namespace
       CHECK(!etl::is_abstract<NonAbstractPolymorphic>::value);
       CHECK(!etl::is_abstract<int>::value);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK(etl::is_abstract_v<Abstract>);
       CHECK(!etl::is_abstract_v<ConcreteDerived>);
-#endif
+  #endif
     }
 #endif
 
@@ -1596,10 +1596,10 @@ namespace
       CHECK(!etl::has_virtual_destructor<int>::value);
       CHECK(!etl::has_virtual_destructor<int*>::value);
 
-#if ETL_USING_CPP17
+  #if ETL_USING_CPP17
       CHECK(etl::has_virtual_destructor_v<VirtualDestructor>);
       CHECK(!etl::has_virtual_destructor_v<NonVirtualDestructor>);
-#endif
+  #endif
     }
 #endif
 
@@ -2984,13 +2984,13 @@ namespace
 
     //*************************************************************************
 #if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED || ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE
-      template <typename T1, typename T2>
+    template <typename T1, typename T2>
     using is_trivially_assignable = std::is_trivially_assignable<T1, T2>;
 #elif ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE
     TEST(test_is_trivially_assignable)
     {
-#if ETL_USING_CPP11 && !defined(ETL_USER_DEFINED_TYPE_TRAITS) \
-  && (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED || ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
+  #if ETL_USING_CPP11 && !defined(ETL_USER_DEFINED_TYPE_TRAITS) \
+    && (ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED || ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
       CHECK((etl::is_trivially_assignable<int&, int>::value) == (std::is_trivially_assignable<int&, int>::value));
       CHECK((etl::is_trivially_assignable<int, int>::value) == (std::is_trivially_assignable<int, int>::value));
       CHECK((etl::is_trivially_assignable<Copyable&, const Copyable&>::value) == (std::is_trivially_assignable<Copyable&, const Copyable&>::value));
@@ -2998,11 +2998,11 @@ namespace
       CHECK((etl::is_trivially_assignable<MoveableCopyable&, const MoveableCopyable&>::value)
             == (std::is_trivially_assignable<MoveableCopyable&, const MoveableCopyable&>::value));
 
-  #if ETL_USING_CPP17
+    #if ETL_USING_CPP17
       CHECK((etl::is_trivially_assignable_v<int&, int>) == (std::is_trivially_assignable_v<int&, int>));
       CHECK((etl::is_trivially_assignable_v<Copyable&, const Copyable&>) == (std::is_trivially_assignable_v<Copyable&, const Copyable&>));
+    #endif
   #endif
-#endif
     }
 #endif
 
@@ -3362,7 +3362,7 @@ namespace
     TEST(test_is_constant_evaluated)
     {
       constexpr bool c0 = etl::is_constant_evaluated();
-#if (!ETL_USING_CPP23 && (defined(ETL_COMPILER_MICROSOFT) || !ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED))
+  #if (!ETL_USING_CPP23 && (defined(ETL_COMPILER_MICROSOFT) || !ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED))
       // Not supported on MSVC via __has_builtin, see
       // determine_builtin_support.h
       CHECK_FALSE(c0);
