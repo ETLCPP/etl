@@ -447,6 +447,11 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	target_compile_definitions(etl_tests PRIVATE -DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
+if (ETL_DISABLE_BUILTIN_FUNCTIONS)
+	message(STATUS "Compiling with builtin functions disabled")
+	target_compile_definitions(etl_tests PRIVATE -DETL_DISABLE_BUILTIN_FUNCTIONS)
+endif()
+
 if (ETL_MESSAGES_ARE_NOT_VIRTUAL)
 	message(STATUS "Compiling for non-virtual messages")
 	target_compile_definitions(etl_tests PRIVATE -DETL_MESSAGES_ARE_NOT_VIRTUAL)

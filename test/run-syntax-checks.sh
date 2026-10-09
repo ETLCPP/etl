@@ -148,7 +148,8 @@ RunCheck()
 	local msg=$2
 	local no_stl=$3
 	local force_03=$4
-	local build_dir=$5
+	local disable_builtins=$5
+	local build_dir=$6
 
 	if [ "$compiler_enabled" != "$cc_name" ] && [ "$compiler_enabled" != "All compilers" ]; then
 		return
@@ -169,7 +170,7 @@ RunCheck()
 	rm -rdf bgcc
 	rm -rdf bclang
 	cmake -E make_directory bgcc bclang
-	CC=$cc CXX=$cxx cmake -E chdir $build_dir cmake -DNO_STL=$no_stl -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=$force_03 -DETL_CXX_STANDARD=$cxx_standard ..
+	CC=$cc CXX=$cxx cmake -E chdir $build_dir cmake -DNO_STL=$no_stl -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=$force_03 -DETL_DISABLE_BUILTIN_FUNCTIONS=$disable_builtins -DETL_CXX_STANDARD=$cxx_standard ..
 	cmake --build $build_dir
 	if [ $? -eq 0 ]; then
 		PassedCompilation
@@ -191,21 +192,27 @@ RunStandard()
 	cxx_standard=$std
 
 	# GCC configurations
-	RunCheck gcc "STL"                   OFF OFF bgcc
-	RunCheck gcc "No STL"                ON  OFF bgcc
+	RunCheck gcc "STL"                   OFF OFF OFF bgcc
+	RunCheck gcc "No STL"                ON  OFF OFF bgcc
+
+	RunCheck gcc "STL - Disable builtins"     OFF ON ON bgcc
+    RunCheck gcc "No STL - Disable builtins"  ON  ON ON bgcc
 
 	if [ "$has_force_03" = "1" ]; then
-		RunCheck gcc "STL - Force C++03"        OFF ON bgcc
-		RunCheck gcc "No STL - Force C++03"     ON  ON bgcc
+		RunCheck gcc "STL - Force C++03"        OFF ON OFF bgcc
+		RunCheck gcc "No STL - Force C++03"     ON  ON OFF bgcc
 	fi
 
 	# Clang configurations
-	RunCheck clang "STL"                   OFF OFF bclang
-	RunCheck clang "No STL"                ON  OFF bclang
+	RunCheck clang "STL"                            OFF OFF OFF bclang
+	RunCheck clang "No STL"                         ON  OFF OFF bclang
+
+    RunCheck clang "STL - Disable builtins"     OFF ON ON bclang
+	RunCheck clang "No STL - Disable builtins"  ON  ON ON bclang
 
 	if [ "$has_force_03" = "1" ]; then
-		RunCheck clang "STL - Force C++03"        OFF ON bclang
-		RunCheck clang "No STL - Force C++03"     ON  ON bclang
+		RunCheck clang "STL - Force C++03"          OFF ON OFF bclang
+		RunCheck clang "No STL - Force C++03"       ON  ON OFF bclang
 	fi
 }
 

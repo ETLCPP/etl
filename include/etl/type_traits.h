@@ -4946,7 +4946,7 @@ namespace etl
     {
       return false;
     }
-#elif ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1
+#elif ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED
     // Fallback for C++20 on supported compilers
     return __builtin_is_constant_evaluated();
 #else

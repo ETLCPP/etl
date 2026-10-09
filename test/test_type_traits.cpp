@@ -792,6 +792,7 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_USING_CPP17 && ETL_USING_STL || ETL_USING_BUILTIN_IS_STANDARD_LAYOUT
     TEST(test_is_standard_layout)
     {
       struct StandardLayout
@@ -818,8 +819,10 @@ namespace
       CHECK(!etl::is_standard_layout_v<NonStandardLayout>);
 #endif
     }
+#endif
 
     //*************************************************************************
+#if (ETL_USING_CPP17 && ETL_USING_STL) || ETL_USING_BUILTIN_IS_TRIVIAL
     TEST(test_is_trivial)
     {
       struct Trivial
@@ -869,6 +872,7 @@ namespace
       CHECK(!etl::is_trivial_v<NonTrivialConstructor>);
 #endif
     }
+#endif
 
     //*************************************************************************
 #if ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE || (ETL_USING_STL && ETL_USING_CPP20 && defined(__cpp_lib_is_layout_compatible))
@@ -1265,6 +1269,7 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_USING_STL || ETL_USING_BUILTIN_IS_UNION
     TEST(test_is_union)
     {
       union Union
@@ -1292,8 +1297,10 @@ namespace
       CHECK(!etl::is_union_v<NonUnion>);
 #endif
     }
+#endif
 
     //*************************************************************************
+#if ETL_USING_STL || ETL_USING_BUILTIN_IS_EMPTY
     TEST(test_is_empty)
     {
       struct Empty
@@ -1332,8 +1339,10 @@ namespace
       CHECK(!etl::is_empty_v<NotEmpty>);
 #endif
     }
+#endif
 
     //*************************************************************************
+#if ETL_USING_STL || ETL_USING_BUILTIN_IS_POLYMORPHIC
     TEST(test_is_polymorphic)
     {
       struct NonPolymorphic
@@ -1373,8 +1382,10 @@ namespace
       CHECK(!etl::is_polymorphic_v<NonPolymorphic>);
 #endif
     }
+#endif
 
     //*************************************************************************
+#if ETL_USING_STL || ETL_USING_BUILTIN_IS_ABSTRACT
     TEST(test_is_abstract)
     {
       struct NonAbstract
@@ -1422,9 +1433,10 @@ namespace
       CHECK(!etl::is_abstract_v<ConcreteDerived>);
 #endif
     }
+#endif
 
     //*************************************************************************
-#if ETL_USING_CPP14
+#if ETL_USING_CPP14 && (ETL_USING_STL || ETL_USING_BUILTIN_IS_FINAL)
     TEST(test_is_final)
     {
       struct NonFinal
@@ -1481,7 +1493,7 @@ namespace
 #endif
 
     //*************************************************************************
-#if ETL_USING_CPP17
+#if ETL_USING_CPP17 && (ETL_USING_STL || ETL_USING_BUILTIN_IS_AGGREGATE)
     TEST(test_is_aggregate)
     {
       struct Aggregate
@@ -1542,6 +1554,7 @@ namespace
 #endif
 
     //*************************************************************************
+#if ETL_USING_STL || ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR
     TEST(test_has_virtual_destructor)
     {
       struct NonVirtualDestructor
@@ -1588,9 +1601,10 @@ namespace
       CHECK(!etl::has_virtual_destructor_v<NonVirtualDestructor>);
 #endif
     }
+#endif
 
     //*************************************************************************
-#if ETL_USING_CPP17
+#if ETL_USING_CPP17 && (ETL_USING_STL || ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS)
     TEST(test_has_unique_object_representations)
     {
       struct NoPadding
@@ -2969,6 +2983,10 @@ namespace
     }
 
     //*************************************************************************
+#if ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED || ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE
+      template <typename T1, typename T2>
+    using is_trivially_assignable = std::is_trivially_assignable<T1, T2>;
+#elif ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE
     TEST(test_is_trivially_assignable)
     {
 #if ETL_USING_CPP11 && !defined(ETL_USER_DEFINED_TYPE_TRAITS) \
@@ -2986,6 +3004,7 @@ namespace
   #endif
 #endif
     }
+#endif
 
     //*************************************************************************
     TEST(test_is_trivially_copy_assignable)
@@ -3343,11 +3362,12 @@ namespace
     TEST(test_is_constant_evaluated)
     {
       constexpr bool c0 = etl::is_constant_evaluated();
-  #if !ETL_USING_CPP23 && defined(ETL_COMPILER_MICROSOFT)
+#if (!ETL_USING_CPP23 && (defined(ETL_COMPILER_MICROSOFT) || !ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED))
       // Not supported on MSVC via __has_builtin, see
       // determine_builtin_support.h
       CHECK_FALSE(c0);
   #else
+
       CHECK_TRUE(c0);
   #endif
 

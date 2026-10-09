@@ -46,9 +46,9 @@ SOFTWARE.
   #endif
 #endif
 
-#if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for
-                                                               // existence of builtin functions?
-                                                               // Fix VS2022 intellisense issue.
+#if defined(__has_builtin) && !defined(ETL_DISABLE_BUILTIN_FUNCTIONS) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for
+                                                                                                          // existence of builtin functions?
+                                                                                                          // Fix VS2022 intellisense issue.
   #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_ASSIGNABLE __has_builtin(__is_assignable)
   #endif

@@ -17,6 +17,11 @@ if (ETL_USER_DEFINED_TYPE_TRAITS)
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
 endif()
 
+if (ETL_DISABLE_BUILTIN_FUNCTIONS)
+	message(STATUS "Compiling with builtin functions disabled")
+	add_definitions(-DETL_DISABLE_BUILTIN_FUNCTIONS)
+endif()
+
 if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
 	message(STATUS "Force C++03 implementations")
 	add_definitions(-DETL_FORCE_TEST_CPP03_IMPLEMENTATION)
