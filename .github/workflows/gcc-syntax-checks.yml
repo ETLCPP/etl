@@ -49,7 +49,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=03 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=03 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -67,7 +67,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=03 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=03 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -85,7 +85,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=11 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=11 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -103,7 +103,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=11 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=11 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -121,7 +121,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=11 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=11 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -139,7 +139,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=11 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=11 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -157,7 +157,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -175,7 +175,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=14 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -193,7 +193,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=14 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=14 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -211,7 +211,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=14 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=14 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -229,7 +229,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=17 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=17 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -247,7 +247,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=17 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=17 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -265,7 +265,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=17 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=17 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -283,7 +283,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=17 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=17 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -301,7 +301,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -319,7 +319,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=20 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -337,7 +337,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=20 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=20 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -355,7 +355,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=20 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=20 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -373,7 +373,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=23 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=23 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -391,7 +391,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=23 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=23 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -409,7 +409,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=23 ./test/syntax_check
+        cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=23 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -427,7 +427,7 @@ jobs:
       run: |
         export CC=gcc
         export CXX=g++
-        cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=23 ./test/syntax_check
+        cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=23 ./test/syntax_check
         gcc --version
         make -j "$(getconf _NPROCESSORS_ONLN)"
 
@@ -447,7 +447,7 @@ jobs:
           cd /workspaces/etl && \
           export CC=gcc && \
           export CXX=g++ && \
-          cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./test/syntax_check && \
+          cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./test/syntax_check && \
           gcc --version && \
           make -j \$(getconf _NPROCESSORS_ONLN)"
 
@@ -467,7 +467,7 @@ jobs:
           cd /workspaces/etl && \
           export CC=gcc && \
           export CXX=g++ && \
-          cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./test/syntax_check && \
+          cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./test/syntax_check && \
           gcc --version && \
           make -j \$(getconf _NPROCESSORS_ONLN)"
 
@@ -487,7 +487,7 @@ jobs:
           cd /workspaces/etl && \
           export CC=gcc && \
           export CXX=g++ && \
-          cmake -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./test/syntax_check && \
+          cmake -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./test/syntax_check && \
           gcc --version && \
           make -j \$(getconf _NPROCESSORS_ONLN)"
 
@@ -507,6 +507,6 @@ jobs:
           cd /workspaces/etl && \
           export CC=gcc && \
           export CXX=g++ && \
-          cmake -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./test/syntax_check && \
+          cmake -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./test/syntax_check && \
           gcc --version && \
           make -j \$(getconf _NPROCESSORS_ONLN)"
