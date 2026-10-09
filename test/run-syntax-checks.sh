@@ -11,14 +11,14 @@ TitleColour=$'\033[38;2;107;210;255m'
 HelpColour=$'\033[38;2;250;180;250m'
 NoColour=$'\033[0m'
 
-ParseGitBranch() 
+ParseGitBranch()
 {
     git rev-parse --abbrev-ref HEAD
 }
 
 SetConfigurationName()
 {
-	configuration_name=$1 
+	configuration_name=$1
 }
 
 PrintHeader()
@@ -147,10 +147,9 @@ RunCheck()
 	local cc_name=$1
 	local msg=$2
 	local no_stl=$3
-	local builtins=$4
-	local user_defined=$5
-	local force_03=$6
-	local build_dir=$7
+	local user_defined=$4
+	local force_03=$5
+	local build_dir=$6
 
 	if [ "$compiler_enabled" != "$cc_name" ] && [ "$compiler_enabled" != "All compilers" ]; then
 		return
@@ -171,7 +170,7 @@ RunCheck()
 	rm -rdf bgcc
 	rm -rdf bclang
 	cmake -E make_directory bgcc bclang
-	CC=$cc CXX=$cxx cmake -E chdir $build_dir cmake -DNO_STL=$no_stl -DETL_USE_TYPE_TRAITS_BUILTINS=$builtins -DETL_USER_DEFINED_TYPE_TRAITS=$user_defined -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=$force_03 -DETL_CXX_STANDARD=$cxx_standard ..
+	CC=$cc CXX=$cxx cmake -E chdir $build_dir cmake -DNO_STL=$no_stl -DETL_USER_DEFINED_TYPE_TRAITS=$user_defined -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=$force_03 -DETL_CXX_STANDARD=$cxx_standard ..
 	cmake --build $build_dir
 	if [ $? -eq 0 ]; then
 		PassedCompilation
@@ -193,25 +192,21 @@ RunStandard()
 	cxx_standard=$std
 
 	# GCC configurations
-	RunCheck gcc "STL"                   OFF OFF OFF OFF bgcc
-	RunCheck gcc "No STL"                ON  OFF OFF OFF bgcc
-	RunCheck gcc "STL - Built-in traits" OFF ON  OFF OFF bgcc
-	RunCheck gcc "No STL - Built-in traits" ON ON OFF OFF bgcc
+	RunCheck gcc "STL"                   OFF OFF OFF bgcc
+	RunCheck gcc "No STL"                ON  OFF OFF bgcc
 
 	if [ "$has_force_03" = "1" ]; then
-		RunCheck gcc "STL - Force C++03"        OFF OFF OFF ON bgcc
-		RunCheck gcc "No STL - Force C++03"     ON  OFF OFF ON bgcc
+		RunCheck gcc "STL - Force C++03"        OFF OFF ON bgcc
+		RunCheck gcc "No STL - Force C++03"     ON  OFF ON bgcc
 	fi
 
 	# Clang configurations
-	RunCheck clang "STL"                   OFF OFF OFF OFF bclang
-	RunCheck clang "No STL"                ON  OFF OFF OFF bclang
-	RunCheck clang "STL - Built-in traits" OFF ON  OFF OFF bgcc
-	RunCheck clang "No STL - Built-in traits" ON ON OFF OFF bgcc
+	RunCheck clang "STL"                   OFF OFF OFF bclang
+	RunCheck clang "No STL"                ON  OFF OFF bclang
 
 	if [ "$has_force_03" = "1" ]; then
-		RunCheck clang "STL - Force C++03"        OFF OFF OFF ON bclang
-		RunCheck clang "No STL - Force C++03"     ON  OFF OFF ON bclang
+		RunCheck clang "STL - Force C++03"        OFF OFF ON bclang
+		RunCheck clang "No STL - Force C++03"     ON  OFF ON bclang
 	fi
 }
 
