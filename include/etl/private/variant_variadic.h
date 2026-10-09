@@ -381,11 +381,6 @@ namespace etl
   template <typename T, typename... VTypes>
   ETL_CONSTEXPR14 const T&& get(const etl::variant<VTypes...>&& v);
 
-  #if ETL_NOT_USING_CPP17
-    #include "variant_select_do_operator.h"
-    #include "variant_select_do_visitor.h"
-  #endif
-
   constexpr bool operator>(etl::monostate, etl::monostate) ETL_NOEXCEPT
   {
     return false;
@@ -1573,25 +1568,6 @@ namespace etl
     {
       (attempt_visitor<I>(visitor) || ...);
     }
-  #else
-    //***************************************************************************
-    /// Call the relevant visitor.
-    //***************************************************************************
-    template <size_t NTypes, typename TVisitor>
-    void do_visitor(TVisitor& visitor)
-    {
-      etl::private_variant::select_do_visitor<NTypes>::do_visitor(*this, visitor);
-    }
-
-    //***************************************************************************
-    /// Call the relevant visitor.
-    //***************************************************************************
-    template <size_t NTypes, typename TVisitor>
-    void do_visitor(TVisitor& visitor) const
-    {
-      etl::private_variant::select_do_visitor<NTypes>::do_visitor(*this, visitor);
-    }
-  #endif
 
     //***************************************************************************
     /// Attempt to call a visitor.
@@ -1635,6 +1611,74 @@ namespace etl
       }
     }
 
+  #else
+
+    //***************************************************************************
+    /// Call the relevant visitor.
+    //***************************************************************************
+    template <size_t NTypes, typename TVisitor>
+    void do_visitor(TVisitor& visitor)
+    {
+      do_visitor_at(visitor, etl::make_index_sequence<NTypes>{});
+    }
+
+    //***************************************************************************
+    /// Call the relevant visitor.
+    //***************************************************************************
+    template <size_t NTypes, typename TVisitor>
+    void do_visitor(TVisitor& visitor) const
+    {
+      do_visitor_at(visitor, etl::make_index_sequence<NTypes>{});
+    }
+
+    //***************************************************************************
+    /// Base case: exactly one index remains, so it's assumed to be the match.
+    //***************************************************************************
+    template <typename TVisitor, size_t Index>
+    void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index>)
+    {
+      visitor.visit(etl::get<Index>(*this));
+    }
+
+    template <typename TVisitor, size_t Index>
+    void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index>) const
+    {
+      visitor.visit(etl::get<Index>(*this));
+    }
+
+    //***************************************************************************
+    /// Recursive case: check Index against this->index(), otherwise defer.
+    //***************************************************************************
+    template <typename TVisitor, size_t Index, size_t Index2, size_t... Rest>
+    void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index, Index2, Rest...>)
+    {
+      if (this->index() == Index)
+      {
+        visitor.visit(etl::get<Index>(*this));
+      }
+      else
+      {
+        do_visitor_at(visitor, etl::index_sequence<Index2, Rest...>{});
+      }
+    }
+
+    //***************************************************************************
+    /// Recursive case: check Index against this->index(), otherwise defer.
+    //***************************************************************************
+    template <typename TVisitor, size_t Index, size_t Index2, size_t... Rest>
+    void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index, Index2, Rest...>) const
+    {
+      if (this->index() == Index)
+      {
+        visitor.visit(etl::get<Index>(*this));
+      }
+      else
+      {
+        do_visitor_at(visitor, etl::index_sequence<Index2, Rest...>{});
+      }
+    }
+  #endif
+
   #if ETL_USING_CPP17 && !defined(ETL_VARIANT_FORCE_CPP11)
     //***************************************************************************
     /// Call the relevant visitor by attempting each one.
@@ -1653,53 +1697,6 @@ namespace etl
     {
       (attempt_operator<I>(visitor) || ...);
     }
-  #else
-    //***************************************************************************
-    /// Call the relevant operator.
-    //***************************************************************************
-    template <size_t NTypes, typename TVisitor>
-    void do_operator(TVisitor& visitor)
-    {
-    #if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 8U, "ETL_VARIANT_CPP11_MAX_8_TYPES - Only a maximum of 8 types are allowed in this variant");
-    #endif
-
-    #if defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 16U, "ETL_VARIANT_CPP11_MAX_16_TYPES - Only a maximum of 16 types are allowed in this variant");
-    #endif
-
-    #if defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 24U, "ETL_VARIANT_CPP11_MAX_24_TYPES - Only a maximum of 24 types are allowed in this variant");
-    #endif
-
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "A maximum of 32 types are allowed in this variant");
-
-      etl::private_variant::select_do_operator<NTypes>::do_operator(*this, visitor);
-    }
-
-    //***************************************************************************
-    /// Call the relevant operator.
-    //***************************************************************************
-    template <size_t NTypes, typename TVisitor>
-    void do_operator(TVisitor& visitor) const
-    {
-    #if defined(ETL_VARIANT_CPP11_MAX_8_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 8U, "ETL_VARIANT_CPP11_MAX_8_TYPES - Only a maximum of 8 types are allowed in this variant");
-    #endif
-
-    #if defined(ETL_VARIANT_CPP11_MAX_16_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 16U, "ETL_VARIANT_CPP11_MAX_16_TYPES - Only a maximum of 16 types are allowed in this variant");
-    #endif
-
-    #if defined(ETL_VARIANT_CPP11_MAX_24_TYPES)
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 24U, "ETL_VARIANT_CPP11_MAX_24_TYPES - Only a maximum of 24 types are allowed in this variant");
-    #endif
-
-      ETL_STATIC_ASSERT(sizeof...(TTypes) <= 32U, "A maximum of 32 types are allowed in this variant");
-
-      etl::private_variant::select_do_operator<NTypes>::do_operator(*this, visitor);
-    }
-  #endif
 
     //***************************************************************************
     /// Attempt to call a visitor.
@@ -1736,6 +1733,74 @@ namespace etl
         return false;
       }
     }
+
+  #else
+
+    //***************************************************************************
+    /// Call the relevant visitor.
+    //***************************************************************************
+    template <size_t NTypes, typename TVisitor>
+    void do_operator(TVisitor& visitor)
+    {
+      do_operator_at(visitor, etl::make_index_sequence<NTypes>{});
+    }
+
+    //***************************************************************************
+    /// Call the relevant visitor.
+    //***************************************************************************
+    template <size_t NTypes, typename TVisitor>
+    void do_operator(TVisitor& visitor) const
+    {
+      do_operator_at(visitor, etl::make_index_sequence<NTypes>{});
+    }
+
+    //***************************************************************************
+    /// Base case: exactly one index remains, so it's assumed to be the match.
+    //***************************************************************************
+    template <typename TVisitor, size_t Index>
+    void do_operator_at(TVisitor& visitor, etl::index_sequence<Index>)
+    {
+      visitor(etl::get<Index>(*this));
+    }
+
+    template <typename TVisitor, size_t Index>
+    void do_operator_at(TVisitor& visitor, etl::index_sequence<Index>) const
+    {
+      visitor(etl::get<Index>(*this));
+    }
+
+    //***************************************************************************
+    /// Recursive case: check Index against this->index(), otherwise defer.
+    //***************************************************************************
+    template <typename TVisitor, size_t Index, size_t Index2, size_t... Rest>
+    void do_operator_at(TVisitor& visitor, etl::index_sequence<Index, Index2, Rest...>)
+    {
+      if (this->index() == Index)
+      {
+        visitor(etl::get<Index>(*this));
+      }
+      else
+      {
+        do_operator_at(visitor, etl::index_sequence<Index2, Rest...>{});
+      }
+    }
+
+    //***************************************************************************
+    /// Recursive case: check Index against this->index(), otherwise defer.
+    //***************************************************************************
+    template <typename TVisitor, size_t Index, size_t Index2, size_t... Rest>
+    void do_operator_at(TVisitor& visitor, etl::index_sequence<Index, Index2, Rest...>) const
+    {
+      if (this->index() == Index)
+      {
+        visitor(etl::get<Index>(*this));
+      }
+      else
+      {
+        do_operator_at(visitor, etl::index_sequence<Index2, Rest...>{});
+      }
+    }
+  #endif
 
     //***************************************************************************
     /// Get a reference to the stored value by index.
@@ -2206,7 +2271,7 @@ namespace etl
     static ETL_CONSTEXPR14 TReturn do_visit_at(TCallable&& f, TVariant&& v, index_sequence<tIndex>, TVarRest&&... variants)
     {
       return do_visit_single<TReturn, TCallable, TVariant, tIndex, TVarRest...>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v),
-                                                                                static_cast<TVarRest&&>(variants)...);
+                                                                             static_cast<TVarRest&&>(variants)...);
     }
 
     //***************************************************************************
@@ -2219,12 +2284,12 @@ namespace etl
       if (v.index() == tIndex)
       {
         return do_visit_single<TReturn, TCallable, TVariant, tIndex, TVarRest...>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v),
-                                                                                  static_cast<TVarRest&&>(variants)...);
+                                                                               static_cast<TVarRest&&>(variants)...);
       }
       else
       {
         return do_visit_at<TReturn, TCallable, TVariant>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), index_sequence<tIndex2, tRest...>{},
-                                                         static_cast<TVarRest&&>(variants)...);
+                                                      static_cast<TVarRest&&>(variants)...);
       }
     }
 
@@ -2237,18 +2302,17 @@ namespace etl
       ETL_ASSERT(!v.valueless_by_exception(), ETL_ERROR(bad_variant_access));
 
       return do_visit_at<TReturn, TCallable, TVariant>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), seq,
-                                                       static_cast<TVarRest&&>(variants)...);
+                                                    static_cast<TVarRest&&>(variants)...);
     }
 
     //***************************************************************************
     ///
     //***************************************************************************
-    template <typename TReturn, typename TCallable, typename TVariant, typename... TVarRest>
-    static ETL_CONSTEXPR14 TReturn visit(TCallable&& f, TVariant&& v, TVarRest&&... vs)
+    template <typename TReturn, typename TCallable, typename TVariant, typename... TVs>
+    static ETL_CONSTEXPR14 TReturn visit(TCallable&& f, TVariant&& v, TVs&&... vs)
     {
       constexpr size_t variants = etl::variant_size<typename remove_reference<TVariant>::type>::value;
-      return do_visit<TReturn>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), make_index_sequence<variants>{},
-                               static_cast<TVarRest&&>(vs)...);
+      return do_visit<TReturn>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), make_index_sequence<variants>{}, static_cast<TVs&&>(vs)...);
     }
 
     //***************************************************************************

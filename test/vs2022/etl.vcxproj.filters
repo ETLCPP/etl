@@ -1407,12 +1407,6 @@
     <ClInclude Include="..\..\include\etl\index_of_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\variant_select_do_visitor.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\variant_select_do_operator.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\monostate.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
