@@ -2271,7 +2271,7 @@ namespace etl
     static ETL_CONSTEXPR14 TReturn do_visit_at(TCallable&& f, TVariant&& v, index_sequence<tIndex>, TVarRest&&... variants)
     {
       return do_visit_single<TReturn, TCallable, TVariant, tIndex, TVarRest...>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v),
-                                                                             static_cast<TVarRest&&>(variants)...);
+                                                                                static_cast<TVarRest&&>(variants)...);
     }
 
     //***************************************************************************
@@ -2284,12 +2284,12 @@ namespace etl
       if (v.index() == tIndex)
       {
         return do_visit_single<TReturn, TCallable, TVariant, tIndex, TVarRest...>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v),
-                                                                               static_cast<TVarRest&&>(variants)...);
+                                                                                  static_cast<TVarRest&&>(variants)...);
       }
       else
       {
         return do_visit_at<TReturn, TCallable, TVariant>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), index_sequence<tIndex2, tRest...>{},
-                                                      static_cast<TVarRest&&>(variants)...);
+                                                         static_cast<TVarRest&&>(variants)...);
       }
     }
 
@@ -2302,7 +2302,7 @@ namespace etl
       ETL_ASSERT(!v.valueless_by_exception(), ETL_ERROR(bad_variant_access));
 
       return do_visit_at<TReturn, TCallable, TVariant>(static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), seq,
-                                                    static_cast<TVarRest&&>(variants)...);
+                                                       static_cast<TVarRest&&>(variants)...);
     }
 
     //***************************************************************************
