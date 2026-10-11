@@ -95,84 +95,76 @@ SOFTWARE.
 // With this macro we can use '#if ETL_USING_STL' instead of '#if !ETL_NO_STL'
 // in the code.
 #if defined(ETL_NO_STL)
-  #define ETL_USING_STL     0
-  #define ETL_NOT_USING_STL 1
+  #define ETL_USING_STL 0
 #else
-  #define ETL_USING_STL     1
-  #define ETL_NOT_USING_STL 0
+  #define ETL_USING_STL 1
 #endif
+#define ETL_NOT_USING_STL (1 - ETL_USING_STL)
 
 //*************************************
 // Helper macros for ETL_NO_STD_MUTEX.
 #if defined(ETL_NO_STD_MUTEX)
-  #define ETL_USING_STD_MUTEX     0
-  #define ETL_NOT_USING_STD_MUTEX 1
+  #define ETL_USING_STD_MUTEX 0
 #else
-  #define ETL_USING_STD_MUTEX     1
-  #define ETL_NOT_USING_STD_MUTEX 0
+  #define ETL_USING_STD_MUTEX 1
 #endif
+#define ETL_NOT_USING_STD_MUTEX (1 - ETL_USING_STD_MUTEX)
 
 //*************************************
 // Helper macros for ETL_STLPORT.
 #if defined(ETL_STLPORT)
-  #define ETL_USING_STLPORT     1
-  #define ETL_NOT_USING_STLPORT 0
+  #define ETL_USING_STLPORT 1
 #else
-  #define ETL_USING_STLPORT     0
-  #define ETL_NOT_USING_STLPORT 1
+  #define ETL_USING_STLPORT 0
 #endif
+#define ETL_NOT_USING_STLPORT (1 - ETL_USING_STLPORT)
 
 //*************************************
 // Some targets do not support 8bit types.
 #if (CHAR_BIT == 8)
-  #define ETL_USING_8BIT_TYPES     1
-  #define ETL_NOT_USING_8BIT_TYPES 0
+  #define ETL_USING_8BIT_TYPES 1
 #else
-  #define ETL_USING_8BIT_TYPES     0
-  #define ETL_NOT_USING_8BIT_TYPES 1
+  #define ETL_USING_8BIT_TYPES 0
 #endif
+#define ETL_NOT_USING_8BIT_TYPES (1 - ETL_USING_8BIT_TYPES)
 
 #define ETL_8BIT_SUPPORT (CHAR_BIT == 8) // Deprecated
 
 //*************************************
 // Some targets support 20bit types.
 #if defined(ETL_USE_20BIT_TYPES)
-  #define ETL_USING_20BIT_TYPES     1
-  #define ETL_NOT_USING_20BIT_TYPES 0
+  #define ETL_USING_20BIT_TYPES 1
 #else
-  #define ETL_USING_20BIT_TYPES     0
-  #define ETL_NOT_USING_20BIT_TYPES 1
+  #define ETL_USING_20BIT_TYPES 0
 #endif
+#define ETL_NOT_USING_20BIT_TYPES (1 - ETL_USING_20BIT_TYPES)
 
 //*************************************
 // Helper macro for ETL_NO_64BIT_TYPES.
 #if defined(ETL_NO_64BIT_TYPES)
-  #define ETL_USING_64BIT_TYPES     0
-  #define ETL_NOT_USING_64BIT_TYPES 1
+  #define ETL_USING_64BIT_TYPES 0
 #else
-  #define ETL_USING_64BIT_TYPES     1
-  #define ETL_NOT_USING_64BIT_TYPES 0
+  #define ETL_USING_64BIT_TYPES 1
 #endif
+#define ETL_NOT_USING_64BIT_TYPES (1 - ETL_USING_64BIT_TYPES)
 
 //*************************************
 // For when the runtime library is compiled without wchar_t support.
 #if defined(ETL_NO_WIDE_CHARACTERS)
-  #define ETL_USING_WIDE_CHARACTERS     0
-  #define ETL_NOT_USING_WIDE_CHARACTERS 1
+  #define ETL_USING_WIDE_CHARACTERS 0
 #else
-  #define ETL_USING_WIDE_CHARACTERS     1
-  #define ETL_NOT_USING_WIDE_CHARACTERS 0
+  #define ETL_USING_WIDE_CHARACTERS 1
 #endif
+#define ETL_NOT_USING_WIDE_CHARACTERS (1 - ETL_USING_WIDE_CHARACTERS)
 
 //*************************************
 // Helper macro for ETL_FORMAT_NO_FLOATING_POINT.
 #if defined(ETL_FORMAT_NO_FLOATING_POINT)
-  #define ETL_USING_FORMAT_FLOATING_POINT     0
-  #define ETL_NOT_USING_FORMAT_FLOATING_POINT 1
+  #define ETL_USING_FORMAT_FLOATING_POINT 0
 #else
-  #define ETL_USING_FORMAT_FLOATING_POINT     1
-  #define ETL_NOT_USING_FORMAT_FLOATING_POINT 0
+  #define ETL_USING_FORMAT_FLOATING_POINT 1
 #endif
+#define ETL_NOT_USING_FORMAT_FLOATING_POINT (1 - ETL_USING_FORMAT_FLOATING_POINT)
 
 //*************************************
 // Helper macro for ETL_NO_LONG_DOUBLE_MATH.
@@ -181,12 +173,11 @@ SOFTWARE.
 // When defined, long double arguments are cast to double for math operations.
 // ETL_FORMAT_NO_LONG_DOUBLE_MATH is deprecated, but still supported for backwards compatibility.
 #if defined(ETL_NO_LONG_DOUBLE_MATH) || defined(ETL_FORMAT_NO_LONG_DOUBLE_MATH)
-  #define ETL_USING_LONG_DOUBLE_MATH     0
-  #define ETL_NOT_USING_LONG_DOUBLE_MATH 1
+  #define ETL_USING_LONG_DOUBLE_MATH 0
 #else
-  #define ETL_USING_LONG_DOUBLE_MATH     1
-  #define ETL_NOT_USING_LONG_DOUBLE_MATH 0
+  #define ETL_USING_LONG_DOUBLE_MATH 1
 #endif
+#define ETL_NOT_USING_LONG_DOUBLE_MATH (1 - ETL_USING_LONG_DOUBLE_MATH)
 
 //*************************************
 // Figure out things about the compiler, if haven't already done so in
@@ -202,12 +193,11 @@ SOFTWARE.
 //*************************************
 // Helper macro for choosing the variant type.
 #if !ETL_USING_CPP11 || defined(ETL_USE_LEGACY_VARIANT)
-  #define ETL_USING_LEGACY_VARIANT     1
-  #define ETL_NOT_USING_LEGACY_VARIANT 0
+  #define ETL_USING_LEGACY_VARIANT 1
 #else
-  #define ETL_USING_LEGACY_VARIANT     0
-  #define ETL_NOT_USING_LEGACY_VARIANT 1
+  #define ETL_USING_LEGACY_VARIANT 0
 #endif
+#define ETL_NOT_USING_LEGACY_VARIANT (1 - ETL_USING_LEGACY_VARIANT)
 
 //*************************************
 // Check WCHAR_MIN and WCHAR_MAX
@@ -286,22 +276,20 @@ SOFTWARE.
 //*************************************
 // Indicate if C++ exceptions within the ETL are enabled.
 #if defined(ETL_THROW_EXCEPTIONS)
-  #define ETL_USING_EXCEPTIONS     1
-  #define ETL_NOT_USING_EXCEPTIONS 0
+  #define ETL_USING_EXCEPTIONS 1
 #else
-  #define ETL_USING_EXCEPTIONS     0
-  #define ETL_NOT_USING_EXCEPTIONS 1
+  #define ETL_USING_EXCEPTIONS 0
 #endif
+#define ETL_NOT_USING_EXCEPTIONS (1 - ETL_USING_EXCEPTIONS)
 
 //*************************************
 // Indicate if C++ exceptions are enabled for debug asserts.
 #if ETL_IS_DEBUG_BUILD && defined(ETL_DEBUG_THROW_EXCEPTIONS)
-  #define ETL_DEBUG_USING_EXCEPTIONS     1
-  #define ETL_DEBUG_NOT_USING_EXCEPTIONS 0
+  #define ETL_DEBUG_USING_EXCEPTIONS 1
 #else
-  #define ETL_DEBUG_USING_EXCEPTIONS     0
-  #define ETL_DEBUG_NOT_USING_EXCEPTIONS 1
+  #define ETL_DEBUG_USING_EXCEPTIONS 0
 #endif
+#define ETL_DEBUG_NOT_USING_EXCEPTIONS (1 - ETL_DEBUG_USING_EXCEPTIONS)
 
 //*************************************
 // Indicate if nullptr is used.
@@ -585,12 +573,11 @@ typedef uint_least32_t char32_t;
 #endif
 
 #if defined(ETL_NO_LIBC_WCHAR_H)
-  #define ETL_USING_LIBC_WCHAR_H     0
-  #define ETL_NOT_USING_LIBC_WCHAR_H 1
+  #define ETL_USING_LIBC_WCHAR_H 0
 #else
-  #define ETL_USING_LIBC_WCHAR_H     1
-  #define ETL_NOT_USING_LIBC_WCHAR_H 0
+  #define ETL_USING_LIBC_WCHAR_H 1
 #endif
+#define ETL_NOT_USING_LIBC_WCHAR_H (1 - ETL_USING_LIBC_WCHAR_H)
 
 //*************************************
 // Determine if the ETL can use STL ostream
@@ -603,12 +590,11 @@ typedef uint_least32_t char32_t;
 #endif
 
 #if defined(ETL_NO_STD_OSTREAM) || (ETL_NOT_USING_STL && !defined(ETL_IN_UNIT_TEST))
-  #define ETL_USING_STD_OSTREAM     0
-  #define ETL_NOT_USING_STD_OSTREAM 1
+  #define ETL_USING_STD_OSTREAM 0
 #else
-  #define ETL_USING_STD_OSTREAM     1
-  #define ETL_NOT_USING_STD_OSTREAM 0
+  #define ETL_USING_STD_OSTREAM 1
 #endif
+#define ETL_NOT_USING_STD_OSTREAM (1 - ETL_USING_STD_OSTREAM)
 
 //*************************************
 // Determine if the ETL should support atomics.
