@@ -55,7 +55,8 @@ namespace etl
   #elif defined(ETL_COMPILER_MICROSOFT)
       _ReadWriteBarrier();
   #else
-    #error "Infinite loop not supported for this compiler and platform"
+      volatile bool prevent_optimisation = true;
+      static_cast<void>(prevent_optimisation);
   #endif
 #endif
     }

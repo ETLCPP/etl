@@ -33,6 +33,7 @@ SOFTWARE.
 #include "../compare.h"
 #include "../error_handler.h"
 #include "../exception.h"
+#include "../infinite_loop.h"
 #include "../initializer_list.h"
 #include "../integral_limits.h"
 #include "../largest.h"
@@ -473,6 +474,17 @@ namespace etl
 
   namespace private_variant
   {
+    //***************************************************************************
+    /// Reports an invalid visit and prevents execution from continuing if the
+    /// configured error policy returns or runtime checks are disabled.
+    //***************************************************************************
+    ETL_NORETURN
+    inline void invalid_visit()
+    {
+      ETL_ASSERT_FAIL(ETL_ERROR(bad_variant_access));
+      etl::infinite_loop();
+    }
+
     //***************************************************************************
     /// variant_base for non-trivially destructible types.
     /// Uses uninitialized_buffer (char array) storage and switch-based
@@ -2188,7 +2200,6 @@ namespace etl
 
     //***************************************************************************
     /// Makes a call to TCallable using tIndex alternative to the variant.
-    /// Instantiated as function pointer in the `do_visit` function.
     //***************************************************************************
     template <typename TRet, typename TCallable, typename TVariant, size_t tIndex>
     constexpr TRet do_visit_single(TCallable&& f, TVariant&& v)
@@ -2219,14 +2230,19 @@ namespace etl
     template <typename TRet, typename TCallable, typename TVariant, size_t... tIndices, typename... TVarRest>
     static ETL_CONSTEXPR14 TRet do_visit(TCallable&& f, TVariant&& v, index_sequence<tIndices...>, TVarRest&&... variants)
     {
-      ETL_ASSERT(!v.valueless_by_exception(), ETL_ERROR(bad_variant_access));
+      const size_t index = v.index();
+
+      if (index >= sizeof...(tIndices)) ETL_UNLIKELY
+      {
+        invalid_visit();
+      }
 
       using helper_t = do_visit_helper<TRet, TCallable, TVariant, TVarRest...>;
       using func_ptr = typename helper_t::function_pointer;
 
       constexpr func_ptr jmp_table[]{helper_t::template fptr<tIndices>()...};
 
-      return jmp_table[v.index()](static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), static_cast<TVarRest&&>(variants)...);
+      return jmp_table[index](static_cast<TCallable&&>(f), static_cast<TVariant&&>(v), static_cast<TVarRest&&>(variants)...);
     }
 
     template <typename TRet, typename TCallable, typename TVariant, typename... TVs>

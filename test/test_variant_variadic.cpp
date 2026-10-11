@@ -2549,6 +2549,31 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_variant_visit_dispatches_every_alternative)
+    {
+      etl::variant<int8_t, uint8_t, int16_t> variant;
+      variant_test_visit_dispatcher          visitor;
+
+      variant = int8_t{};
+      CHECK_EQUAL(5, etl::visit(visitor, variant));
+
+      variant = uint8_t{};
+      CHECK_EQUAL(6, etl::visit(visitor, variant));
+
+      variant = int16_t{};
+      CHECK_EQUAL(7, etl::visit(visitor, variant));
+    }
+
+    //*************************************************************************
+    TEST(test_variant_visit_rejects_valueless_variant)
+    {
+      etl::variant<int8_t, uint8_t> variant(etl::private_variant::valueless_t{});
+      variant_test_visit_dispatcher visitor;
+
+      CHECK_THROW(etl::visit(visitor, variant), etl::bad_variant_access);
+    }
+
+    //*************************************************************************
     struct test_variant_multiple_visit_helper
     {
       template <typename T1, typename T2>
@@ -2588,6 +2613,15 @@ namespace
       variant2 = uint8_t{};
       res      = etl::visit<int16_t>(test_variant_multiple_visit_helper{}, variant1, variant2);
       CHECK_EQUAL(32, res);
+    }
+
+    //*************************************************************************
+    TEST(test_variant_multiple_visit_rejects_valueless_later_variant)
+    {
+      etl::variant<int8_t, uint8_t>           variant1;
+      etl::variant<int8_t, uint16_t, uint8_t> variant2(etl::private_variant::valueless_t{});
+
+      CHECK_THROW(etl::visit<int16_t>(test_variant_multiple_visit_helper{}, variant1, variant2), etl::bad_variant_access);
     }
 
   #if ETL_USING_CPP14
