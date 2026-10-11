@@ -196,7 +196,7 @@ RunStandard()
 	RunCheck gcc "No STL"                ON  OFF OFF bgcc
 
 	RunCheck gcc "STL - Disable builtins"     OFF ON ON bgcc
-    RunCheck gcc "No STL - Disable builtins"  ON  ON ON bgcc
+  RunCheck gcc "No STL - Disable builtins"  ON  ON ON bgcc
 
 	if [ "$has_force_03" = "1" ]; then
 		RunCheck gcc "STL - Force C++03"        OFF ON OFF bgcc
@@ -213,7 +213,6 @@ RunStandard()
 	if [ "$has_force_03" = "1" ]; then
 		RunCheck clang "STL - Force C++03"          OFF ON OFF bclang
 		RunCheck clang "No STL - Force C++03"       ON  ON OFF bclang
-	fi
 }
 
 ###############################################################################
