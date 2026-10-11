@@ -1632,18 +1632,25 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Base case: exactly one index remains, so it's assumed to be the match.
+    /// Base case: exactly one index remains.
+    /// Check Index against this->index() to see if it's actually the match.
     //***************************************************************************
     template <typename TVisitor, size_t Index>
     void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index>)
     {
-      visitor.visit(etl::get<Index>(*this));
+      if (this->index() == Index)
+      {
+        visitor.visit(etl::get<Index>(*this));
+      }
     }
 
     template <typename TVisitor, size_t Index>
     void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index>) const
     {
-      visitor.visit(etl::get<Index>(*this));
+      if (this->index() == Index)
+      {
+        visitor.visit(etl::get<Index>(*this));
+      }
     }
 
     //***************************************************************************
@@ -1755,18 +1762,25 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Base case: exactly one index remains, so it's assumed to be the match.
+    /// Base case: exactly one index remains.
+    /// Check Index against this->index() to see if it's actually the match.
     //***************************************************************************
     template <typename TVisitor, size_t Index>
     void do_operator_at(TVisitor& visitor, etl::index_sequence<Index>)
     {
-      visitor(etl::get<Index>(*this));
+      if (this->index() == Index)
+      {
+        visitor(etl::get<Index>(*this));
+      }
     }
 
     template <typename TVisitor, size_t Index>
     void do_operator_at(TVisitor& visitor, etl::index_sequence<Index>) const
     {
-      visitor(etl::get<Index>(*this));
+      if (this->index() == Index)
+      {
+        visitor(etl::get<Index>(*this));
+      }
     }
 
     //***************************************************************************
