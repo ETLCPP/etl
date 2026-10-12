@@ -1638,7 +1638,7 @@ namespace etl
     template <typename TVisitor, size_t Index>
     void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index>)
     {
-      if (this->index() == Index)
+      if (Index == index())
       {
         visitor.visit(etl::get<Index>(*this));
       }
@@ -1647,7 +1647,7 @@ namespace etl
     template <typename TVisitor, size_t Index>
     void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index>) const
     {
-      if (this->index() == Index)
+      if (Index == index())
       {
         visitor.visit(etl::get<Index>(*this));
       }
@@ -1659,7 +1659,7 @@ namespace etl
     template <typename TVisitor, size_t Index, size_t Index2, size_t... Rest>
     void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index, Index2, Rest...>)
     {
-      if (this->index() == Index)
+      if (Index == index())
       {
         visitor.visit(etl::get<Index>(*this));
       }
@@ -1675,7 +1675,7 @@ namespace etl
     template <typename TVisitor, size_t Index, size_t Index2, size_t... Rest>
     void do_visitor_at(TVisitor& visitor, etl::index_sequence<Index, Index2, Rest...>) const
     {
-      if (this->index() == Index)
+      if (Index == index())
       {
         visitor.visit(etl::get<Index>(*this));
       }
@@ -1768,7 +1768,7 @@ namespace etl
     template <typename TVisitor, size_t Index>
     void do_operator_at(TVisitor& visitor, etl::index_sequence<Index>)
     {
-      if (this->index() == Index)
+      if (Index == index())
       {
         visitor(etl::get<Index>(*this));
       }
@@ -1777,7 +1777,7 @@ namespace etl
     template <typename TVisitor, size_t Index>
     void do_operator_at(TVisitor& visitor, etl::index_sequence<Index>) const
     {
-      if (this->index() == Index)
+      if (Index == index())
       {
         visitor(etl::get<Index>(*this));
       }
@@ -1789,7 +1789,7 @@ namespace etl
     template <typename TVisitor, size_t Index, size_t Index2, size_t... Rest>
     void do_operator_at(TVisitor& visitor, etl::index_sequence<Index, Index2, Rest...>)
     {
-      if (this->index() == Index)
+      if (Index == index())
       {
         visitor(etl::get<Index>(*this));
       }
@@ -1805,7 +1805,7 @@ namespace etl
     template <typename TVisitor, size_t Index, size_t Index2, size_t... Rest>
     void do_operator_at(TVisitor& visitor, etl::index_sequence<Index, Index2, Rest...>) const
     {
-      if (this->index() == Index)
+      if (Index == index())
       {
         visitor(etl::get<Index>(*this));
       }
