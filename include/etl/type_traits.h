@@ -4310,13 +4310,53 @@ namespace etl
   #endif
 
   #if ETL_USING_CPP11
+    //*********************************************
+    // Builtin-free noexcept-constructibility/assignability detection. Used when
+    // the __is_nothrow_constructible/__is_nothrow_assignable builtins are
+    // unavailable. Mirrors the void_t-based is_constructible/is_assignable
+    // fallbacks above so that (e.g.) a class with implicit noexcept move
+    // operations is correctly reported nothrow-(move-)constructible/assignable,
+    // and a const-qualified type is correctly reported NOT nothrow-assignable
+    // (the old is_arithmetic||is_pointer fallback ignored const-qualification).
+    #if !ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE
+  namespace private_type_traits
+  {
+    template <typename, typename T, typename... TArgs>
+    struct is_nothrow_constructible_ : etl::false_type
+    {
+    };
+
+    template <typename T, typename... TArgs>
+    struct is_nothrow_constructible_<etl::void_t<decltype(T(etl::declval<TArgs>()...))>, T, TArgs...>
+      : etl::bool_constant<noexcept(T(etl::declval<TArgs>()...))>
+    {
+    };
+  } // namespace private_type_traits
+    #endif
+
+    #if !ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE
+  namespace private_type_traits
+  {
+    template <typename, typename T, typename U>
+    struct is_nothrow_assignable_ : etl::false_type
+    {
+    };
+
+    template <typename T, typename U>
+    struct is_nothrow_assignable_<etl::void_t<decltype(etl::declval<T>() = etl::declval<U>())>, T, U>
+      : etl::bool_constant<noexcept(etl::declval<T>() = etl::declval<U>())>
+    {
+    };
+  } // namespace private_type_traits
+    #endif
+
   //*********************************************
   // is_nothrow_constructible
   template <typename T, typename... TArgs>
     #if ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE
   struct is_nothrow_constructible : public etl::bool_constant<__is_nothrow_constructible(T, TArgs...)>
     #else
-  struct is_nothrow_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_constructible : public private_type_traits::is_nothrow_constructible_<etl::void_t<>, T, TArgs...>
     #endif
   {
   };
@@ -4324,33 +4364,21 @@ namespace etl
   //*********************************************
   // is_nothrow_default_constructible
   template <typename T>
-    #if ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE
   struct is_nothrow_default_constructible : public etl::is_nothrow_constructible<T>
-    #else
-  struct is_nothrow_default_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-    #endif
   {
   };
 
   //*********************************************
   // is_nothrow_copy_constructible
   template <typename T>
-    #if ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE
   struct is_nothrow_copy_constructible : public etl::is_nothrow_constructible<T, typename etl::add_lvalue_reference<const T>::type>
-    #else
-  struct is_nothrow_copy_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-    #endif
   {
   };
 
   //*********************************************
   // is_nothrow_move_constructible
   template <typename T>
-    #if ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE
   struct is_nothrow_move_constructible : public etl::is_nothrow_constructible<T, typename etl::add_rvalue_reference<T>::type>
-    #else
-  struct is_nothrow_move_constructible : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-    #endif
   {
   };
 
@@ -4360,7 +4388,7 @@ namespace etl
     #if ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE
   struct is_nothrow_assignable : public etl::bool_constant<__is_nothrow_assignable(T, U)>
     #else
-  struct is_nothrow_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
+  struct is_nothrow_assignable : public private_type_traits::is_nothrow_assignable_<etl::void_t<>, T, U>
     #endif
   {
   };
@@ -4368,24 +4396,16 @@ namespace etl
   //*********************************************
   // is_nothrow_copy_assignable
   template <typename T>
-    #if ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE
   struct is_nothrow_copy_assignable
     : public etl::is_nothrow_assignable<typename etl::add_lvalue_reference<T>::type, typename etl::add_lvalue_reference<const T>::type>
-    #else
-  struct is_nothrow_copy_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-    #endif
   {
   };
 
   //*********************************************
   // is_nothrow_move_assignable
   template <typename T>
-    #if ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE
   struct is_nothrow_move_assignable
     : public etl::is_nothrow_assignable<typename etl::add_lvalue_reference<T>::type, typename etl::add_rvalue_reference<T>::type>
-    #else
-  struct is_nothrow_move_assignable : public etl::bool_constant<etl::is_arithmetic<T>::value || etl::is_pointer<T>::value>
-    #endif
   {
   };
   #endif
@@ -5175,20 +5195,26 @@ namespace etl
 #elif ETL_USING_CPP11
   namespace private_type_traits
   {
+    template <typename T>
+    struct is_swappable_helper;
+
     namespace swap_detect
     {
-  // Bring std::swap into scope, if it is available, so that the unqualified
-  // call below finds it in those configurations that do not define etl::swap.
-  // Otherwise etl::swap is found by ordinary lookup in the enclosing
-  // namespace. Either way, a swap found by argument dependent lookup takes
-  // part in overload resolution.
-  #if ETL_USING_STL || defined(ETL_IN_UNIT_TEST)
-      using std::swap;
-  #endif
+      // A dummy declaration that can never be selected, as it takes no
+      // arguments, but which makes the name visible to ordinary lookup so that
+      // the unqualified calls below are well formed.
+      // Ordinary lookup stops here, so only a swap found by argument dependent
+      // lookup takes part in overload resolution.
+      // The generic swap that the standard library (or etl) provides is not
+      // detected this way, because not every implementation constrains it
+      // (Microsoft's C++14 std::swap does not), which would make every type
+      // appear to be swappable. Its viability is determined by the
+      // is_default_swappable traits below instead.
+      void swap();
 
       // Selected only if 'swap(declval<T&>(), declval<T&>())' is a valid expression.
       template <typename T>
-      struct is_swappable_test
+      struct is_adl_swappable_test
       {
       private:
 
@@ -5206,7 +5232,7 @@ namespace etl
       // Selected only if both 'swap(declval<T>(), declval<U>())' and
       // 'swap(declval<U>(), declval<T>())' are valid expressions.
       template <typename T, typename U>
-      struct is_swappable_with_test
+      struct is_adl_swappable_with_test
       {
       private:
 
@@ -5221,15 +5247,61 @@ namespace etl
 
         static ETL_CONSTANT bool value = decltype(test<T, U>(0))::value;
       };
+
+      // Determines whether an expression of type T can be bound to a non-const
+      // lvalue reference to its referenced type.
+      // This is not simply 'is_lvalue_reference', because some compilers offer
+      // an extension that binds a class rvalue to a non-const lvalue reference.
+      template <typename T>
+      void binds_to_lvalue_reference_test(T&);
+
+      template <typename T, typename = void>
+      struct binds_to_lvalue_reference : etl::false_type
+      {
+      };
+
+      template <typename T>
+      struct binds_to_lvalue_reference<
+        T, etl::void_t<decltype(binds_to_lvalue_reference_test<typename etl::remove_reference<T>::type>(etl::declval<T>()))>> : etl::true_type
+      {
+      };
     } // namespace swap_detect
 
+    // Determines whether the generic swap(T&, T&) is viable for T.
     template <typename T>
-    struct is_swappable_helper : etl::bool_constant<swap_detect::is_swappable_test<T>::value>
+    struct is_default_swappable : etl::bool_constant<etl::is_move_constructible<T>::value && etl::is_move_assignable<T>::value>
+    {
+    };
+
+    // The generic swap for arrays requires the element type to be swappable.
+    template <typename T, size_t Size>
+    struct is_default_swappable<T[Size]> : is_swappable_helper<T>
+    {
+    };
+
+    // An array of unknown bound cannot be swapped.
+    template <typename T>
+    struct is_default_swappable<T[]> : etl::false_type
+    {
+    };
+
+    // The generic swap only participates when both arguments are lvalues of
+    // the same type.
+    template <typename T, typename U>
+    struct is_default_swappable_with
+      : etl::bool_constant<swap_detect::binds_to_lvalue_reference<T>::value && etl::is_same<T, U>::value
+                           && is_default_swappable<typename etl::remove_reference<T>::type>::value>
+    {
+    };
+
+    template <typename T>
+    struct is_swappable_helper : etl::bool_constant<swap_detect::is_adl_swappable_test<T>::value || is_default_swappable<T>::value>
     {
     };
 
     template <typename T, typename U>
-    struct is_swappable_with_helper : etl::bool_constant<swap_detect::is_swappable_with_test<T, U>::value>
+    struct is_swappable_with_helper
+      : etl::bool_constant<swap_detect::is_adl_swappable_with_test<T, U>::value || is_default_swappable_with<T, U>::value>
     {
     };
   } // namespace private_type_traits
@@ -5271,43 +5343,75 @@ namespace etl
 #elif ETL_USING_CPP11
   namespace private_type_traits
   {
+    template <typename T>
+    struct is_nothrow_swappable_helper;
+
     namespace swap_detect
     {
-      // Only 'true' if the type is swappable and the swap expression is noexcept.
-      template <typename T, bool Is_Swappable = is_swappable_test<T>::value>
-      struct is_nothrow_swappable_test
+      // Only 'true' if the type has an ADL found swap and the swap expression is noexcept.
+      template <typename T, bool Is_Adl_Swappable = is_adl_swappable_test<T>::value>
+      struct is_nothrow_adl_swappable_test
       {
         static ETL_CONSTANT bool value = false;
       };
 
       template <typename T>
-      struct is_nothrow_swappable_test<T, true>
+      struct is_nothrow_adl_swappable_test<T, true>
       {
         static ETL_CONSTANT bool value = noexcept(swap(etl::declval<T&>(), etl::declval<T&>()));
       };
 
-      // Only 'true' if the types are swappable with each other and both of the
-      // swap expressions are noexcept.
-      template <typename T, typename U, bool Is_Swappable_With = is_swappable_with_test<T, U>::value>
-      struct is_nothrow_swappable_with_test
+      // Only 'true' if the types have ADL found swaps for each other and both of
+      // the swap expressions are noexcept.
+      template <typename T, typename U, bool Is_Adl_Swappable_With = is_adl_swappable_with_test<T, U>::value>
+      struct is_nothrow_adl_swappable_with_test
       {
         static ETL_CONSTANT bool value = false;
       };
 
       template <typename T, typename U>
-      struct is_nothrow_swappable_with_test<T, U, true>
+      struct is_nothrow_adl_swappable_with_test<T, U, true>
       {
         static ETL_CONSTANT bool value = noexcept(swap(etl::declval<T>(), etl::declval<U>())) && noexcept(swap(etl::declval<U>(), etl::declval<T>()));
       };
     } // namespace swap_detect
 
+    // Determines whether the generic swap(T&, T&) is viable for T and cannot throw.
     template <typename T>
-    struct is_nothrow_swappable_helper : etl::bool_constant<swap_detect::is_nothrow_swappable_test<T>::value>
+    struct is_nothrow_default_swappable
+      : etl::bool_constant<etl::is_nothrow_move_constructible<T>::value && etl::is_nothrow_move_assignable<T>::value>
+    {
+    };
+
+    template <typename T, size_t Size>
+    struct is_nothrow_default_swappable<T[Size]> : is_nothrow_swappable_helper<T>
+    {
+    };
+
+    template <typename T>
+    struct is_nothrow_default_swappable<T[]> : etl::false_type
     {
     };
 
     template <typename T, typename U>
-    struct is_nothrow_swappable_with_helper : etl::bool_constant<swap_detect::is_nothrow_swappable_with_test<T, U>::value>
+    struct is_nothrow_default_swappable_with
+      : etl::bool_constant<swap_detect::binds_to_lvalue_reference<T>::value && etl::is_same<T, U>::value
+                           && is_nothrow_default_swappable<typename etl::remove_reference<T>::type>::value>
+    {
+    };
+
+    // An ADL found swap hides the generic one, so it decides the result.
+    template <typename T>
+    struct is_nothrow_swappable_helper
+      : etl::bool_constant<swap_detect::is_adl_swappable_test<T>::value ? swap_detect::is_nothrow_adl_swappable_test<T>::value
+                                                                        : is_nothrow_default_swappable<T>::value>
+    {
+    };
+
+    template <typename T, typename U>
+    struct is_nothrow_swappable_with_helper
+      : etl::bool_constant<swap_detect::is_adl_swappable_with_test<T, U>::value ? swap_detect::is_nothrow_adl_swappable_with_test<T, U>::value
+                                                                                : is_nothrow_default_swappable_with<T, U>::value>
     {
     };
   } // namespace private_type_traits

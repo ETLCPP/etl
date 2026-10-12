@@ -492,7 +492,37 @@ namespace etl
     common_t l = etl::chrono::duration_cast<common_t>(lhs);
     common_t r = etl::chrono::duration_cast<common_t>(rhs);
 
+  #if ETL_USING_STL
     return (l.count() <=> r.count());
+  #else
+    // The STL returns the ordering category of the representation type.
+    // Mirror that: a floating point representation is only partially ordered.
+    if constexpr (etl::is_floating_point<typename common_t::rep>::value)
+    {
+      if (l.count() < r.count())
+      {
+        return etl::partial_ordering::less;
+      }
+      else if (r.count() < l.count())
+      {
+        return etl::partial_ordering::greater;
+      }
+      else if ((l.count() <= r.count()) && (r.count() <= l.count()))
+      {
+        // Equivalent. Expressed without '==' so that -Wfloat-equal is not triggered.
+        return etl::partial_ordering::equivalent;
+      }
+      else
+      {
+        // At least one of the values is NaN.
+        return etl::partial_ordering::unordered;
+      }
+    }
+    else
+    {
+      return etl::make_strong_ordering((l.count() < r.count()) ? -1 : (r.count() < l.count()) ? 1 : 0);
+    }
+  #endif
   }
 #endif
 

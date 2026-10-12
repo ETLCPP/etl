@@ -158,6 +158,7 @@ namespace etl
         : head(etl::timer::id::NO_TIMER)
         , tail(etl::timer::id::NO_TIMER)
         , ptimers(ptimers_)
+        , duplicate_insert(false)
       {
       }
 
@@ -168,11 +169,30 @@ namespace etl
       }
 
       //*******************************
+      /// Returns true if an attempt was ever made to insert a timer that was
+      /// already in the list.
+      //*******************************
+      bool duplicate_insert_detected() const
+      {
+        return duplicate_insert;
+      }
+
+      //*******************************
       // Inserts the timer at the correct delta position
       //*******************************
       void insert(etl::timer::id::type id_)
       {
         etl::message_timer_data& timer = ptimers[id_];
+
+        // A timer is in this list exactly when it is the head or has a previous
+        // link, as remove() clears both links. Inserting one that is already
+        // here would link it to itself and create a circular reference, so
+        // record the attempt and abandon the insert to keep the list intact.
+        if ((head == id_) || (timer.previous != etl::timer::id::NO_TIMER))
+        {
+          duplicate_insert = true;
+          return;
+        }
 
         if (head == etl::timer::id::NO_TIMER)
         {
@@ -316,6 +336,10 @@ namespace etl
       etl::timer::id::type tail;
 
       etl::message_timer_data* const ptimers;
+
+      // Set if an attempt was ever made to insert a timer that was already
+      // in the list.
+      bool duplicate_insert;
     };
   } // namespace private_message_timer
 
@@ -577,6 +601,16 @@ namespace etl
       }
 
       return false;
+    }
+
+    //*******************************************
+    /// Returns true if an attempt was ever made to insert a timer into the
+    /// active list when it was already there. Such an insert is rejected, as
+    /// it would create a circular reference in the list.
+    //*******************************************
+    bool duplicate_insert_detected() const
+    {
+      return active_list.duplicate_insert_detected();
     }
 
     //*******************************************

@@ -302,7 +302,7 @@ namespace etl
     [[nodiscard]]
     inline constexpr auto operator<=>(const etl::chrono::month_day_last& mdl1, const etl::chrono::month_day_last& mdl2) ETL_NOEXCEPT
     {
-      return (static_cast<unsigned>(mdl1.month()) <=> static_cast<unsigned>(mdl2.month()));
+      return mdl1.month() <=> mdl2.month();
     }
 #endif
   } // namespace chrono
