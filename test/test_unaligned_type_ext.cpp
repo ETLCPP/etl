@@ -49,6 +49,8 @@ namespace
   using storage_i16_t = std::array<unsigned char, sizeof(int16_t)>;
   using storage_i32_t = std::array<unsigned char, sizeof(int32_t)>;
   using storage_i64_t = std::array<unsigned char, sizeof(int64_t)>;
+  using storage_24_t  = std::array<unsigned char, 3U>;
+  using storage_48_t  = std::array<unsigned char, 6U>;
 
   SUITE(test_unaligned_type_ext)
   {
@@ -505,6 +507,148 @@ namespace
       CHECK_EQUAL(sizeof(int64_t), etl::net_int64_ext_t::Size);
       CHECK_EQUAL(sizeof(uint64_t), etl::net_uint64_ext_t::Size);
     }
+
+    //*************************************************************************
+    /// Integers that have no native equivalent, such as 24 bit.
+    //*************************************************************************
+    TEST(test_uint24)
+    {
+      storage_24_t store_le1;
+      storage_24_t store_be1;
+      storage_24_t store_le2;
+      storage_24_t store_be2;
+
+      CHECK_EQUAL(3U, size_t(etl::le_uint24_ext_t::Size));
+      CHECK((etl::is_same<uint32_t, etl::le_uint24_ext_t::value_type>::value));
+      CHECK_EQUAL(uint32_t(0x00FFFFFF), etl::le_uint24_ext_t::Max_Value);
+      CHECK_EQUAL(uint32_t(0), etl::le_uint24_ext_t::Min_Value);
+
+      etl::le_uint24_ext_t le_v1(store_le1.data());
+      le_v1 = 0x123456U;
+      etl::be_uint24_ext_t be_v1(0x123456U, store_be1.data());
+
+      CHECK_EQUAL(uint32_t(0x123456), le_v1.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v1.value());
+
+      // The external buffers hold the requested byte order.
+      CHECK_EQUAL(0x56, int(store_le1[0]));
+      CHECK_EQUAL(0x12, int(store_le1[2]));
+      CHECK_EQUAL(0x12, int(store_be1[0]));
+      CHECK_EQUAL(0x56, int(store_be1[2]));
+
+      // Copy construct from the other endianness.
+      etl::le_uint24_ext_t le_v2(be_v1, store_le2.data());
+      etl::be_uint24_ext_t be_v2(le_v1, store_be2.data());
+
+      CHECK_EQUAL(uint32_t(0x123456), le_v2.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v2.value());
+
+      // Assignment.
+      le_v2 = le_v1;
+      be_v2 = le_v1;
+      CHECK_EQUAL(uint32_t(0x123456), le_v2.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v2.value());
+
+      // Values that do not fit are truncated.
+      be_v2 = 0xABCDEF12U;
+      CHECK_EQUAL(uint32_t(0xCDEF12), be_v2.value());
+    }
+
+    //*************************************************************************
+    TEST(test_move_construction_uint24)
+    {
+      storage_24_t store_le1;
+      storage_24_t store_be1;
+
+      etl::le_uint24_ext_t le_v1(0x123456U, store_le1.data());
+      etl::be_uint24_ext_t be_v1(0x123456U, store_be1.data());
+
+      etl::le_uint24_ext_t le_v2(etl::move(le_v1));
+      etl::be_uint24_ext_t be_v2(etl::move(be_v1));
+
+      CHECK_TRUE(nullptr == le_v1.data());
+      CHECK_TRUE(nullptr == be_v1.data());
+      CHECK_EQUAL(uint32_t(0x123456), le_v2.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v2.value());
+    }
+
+    //*************************************************************************
+    TEST(test_int24)
+    {
+      storage_24_t store_le1;
+      storage_24_t store_be1;
+      storage_24_t store_le2;
+      storage_24_t store_be2;
+
+      CHECK_EQUAL(3U, size_t(etl::le_int24_ext_t::Size));
+      CHECK((etl::is_same<int32_t, etl::le_int24_ext_t::value_type>::value));
+      CHECK_EQUAL(int32_t(8388607), etl::le_int24_ext_t::Max_Value);
+      CHECK_EQUAL(int32_t(-8388608), etl::le_int24_ext_t::Min_Value);
+
+      etl::le_int24_ext_t le_v1(store_le1.data());
+      le_v1 = -2;
+      etl::be_int24_ext_t be_v1(-2, store_be1.data());
+
+      // Negative values are sign extended on reading.
+      CHECK_EQUAL(int32_t(-2), le_v1.value());
+      CHECK_EQUAL(int32_t(-2), be_v1.value());
+
+      CHECK_EQUAL(0xFE, int(store_le1[0]));
+      CHECK_EQUAL(0xFF, int(store_le1[2]));
+      CHECK_EQUAL(0xFF, int(store_be1[0]));
+      CHECK_EQUAL(0xFE, int(store_be1[2]));
+
+      // Copy construct from the other endianness.
+      etl::le_int24_ext_t le_v2(be_v1, store_le2.data());
+      etl::be_int24_ext_t be_v2(le_v1, store_be2.data());
+
+      CHECK_EQUAL(int32_t(-2), le_v2.value());
+      CHECK_EQUAL(int32_t(-2), be_v2.value());
+
+      // Boundary values.
+      le_v2 = etl::le_int24_ext_t::Min_Value;
+      be_v2 = etl::be_int24_ext_t::Max_Value;
+
+      CHECK_EQUAL(int32_t(-8388608), le_v2.value());
+      CHECK_EQUAL(int32_t(8388607), be_v2.value());
+
+      le_v2 = 0;
+      CHECK_EQUAL(int32_t(0), le_v2.value());
+    }
+
+    //*************************************************************************
+    TEST(test_move_construction_int24)
+    {
+      storage_24_t store_le1;
+      storage_24_t store_be1;
+
+      etl::le_int24_ext_t le_v1(-1234567, store_le1.data());
+      etl::be_int24_ext_t be_v1(-1234567, store_be1.data());
+
+      etl::le_int24_ext_t le_v2(etl::move(le_v1));
+      etl::be_int24_ext_t be_v2(etl::move(be_v1));
+
+      CHECK_TRUE(nullptr == le_v1.data());
+      CHECK_TRUE(nullptr == be_v1.data());
+      CHECK_EQUAL(int32_t(-1234567), le_v2.value());
+      CHECK_EQUAL(int32_t(-1234567), be_v2.value());
+    }
+
+#if ETL_USING_64BIT_TYPES
+    //*************************************************************************
+    TEST(test_uint48_int48)
+    {
+      storage_48_t store_u;
+      storage_48_t store_i;
+
+      etl::be_uint48_ext_t be_u(0x0123456789ABULL, store_u.data());
+      etl::be_int48_ext_t  be_i(-1099511627775LL, store_i.data());
+
+      CHECK_EQUAL(6U, size_t(etl::be_uint48_ext_t::Size));
+      CHECK_EQUAL(uint64_t(0x0123456789AB), be_u.value());
+      CHECK_EQUAL(int64_t(-1099511627775LL), be_i.value());
+    }
+#endif
 
 #if ETL_HAS_CONSTEXPR_ENDIANNESS
     //*************************************************************************
@@ -1527,6 +1671,106 @@ namespace
       CHECK_EQUAL(0x12, lev1);
       CHECK_EQUAL(0x12, bev0);
       CHECK_EQUAL(0x34, bev1);
+    }
+
+    //*************************************************************************
+    TEST(test_shared_storage_copy_construction_uint24)
+    {
+      storage_24_t store;
+
+      etl::be_uint24_ext_t be_v(0x123456, store.data());
+
+      // Reinterpret the same buffer with the opposite endianness.
+      etl::le_uint24_ext_t le_v(be_v, store.data());
+
+      CHECK_EQUAL(0x56, int(store[0]));
+      CHECK_EQUAL(0x34, int(store[1]));
+      CHECK_EQUAL(0x12, int(store[2]));
+      CHECK_EQUAL(0x123456, le_v.value());
+    }
+
+    //*************************************************************************
+    TEST(test_shared_storage_copy_construction_int24)
+    {
+      storage_24_t store;
+
+      etl::be_int24_ext_t be_v(-0x123456, store.data());
+
+      etl::le_int24_ext_t le_v(be_v, store.data());
+
+      CHECK_EQUAL(-0x123456, le_v.value());
+    }
+
+    //*************************************************************************
+    TEST(test_shared_storage_copy_assignment_uint24)
+    {
+      storage_24_t store;
+
+      etl::be_uint24_ext_t be_v(0x123456, store.data());
+      etl::le_uint24_ext_t le_v(store.data());
+
+      le_v = be_v;
+
+      CHECK_EQUAL(0x56, int(store[0]));
+      CHECK_EQUAL(0x34, int(store[1]));
+      CHECK_EQUAL(0x12, int(store[2]));
+      CHECK_EQUAL(0x123456, le_v.value());
+    }
+
+    //*************************************************************************
+    TEST(test_shared_storage_copy_assignment_int24)
+    {
+      storage_24_t store;
+
+      etl::be_int24_ext_t be_v(-0x123456, store.data());
+      etl::le_int24_ext_t le_v(store.data());
+
+      le_v = be_v;
+
+      CHECK_EQUAL(-0x123456, le_v.value());
+    }
+
+    //*************************************************************************
+    TEST(test_shared_storage_copy_assignment_uint32)
+    {
+      storage_i32_t store;
+
+      etl::be_uint32_ext_t be_v(0x12345678, store.data());
+      etl::le_uint32_ext_t le_v(store.data());
+
+      le_v = be_v;
+
+      CHECK_EQUAL(0x78, int(store[0]));
+      CHECK_EQUAL(0x56, int(store[1]));
+      CHECK_EQUAL(0x34, int(store[2]));
+      CHECK_EQUAL(0x12, int(store[3]));
+      CHECK_EQUAL(0x12345678, le_v.value());
+    }
+
+    //*************************************************************************
+    TEST(test_shared_storage_copy_assignment_same_endianness)
+    {
+      storage_i32_t store;
+
+      etl::le_uint32_ext_t le_v1(0x12345678, store.data());
+      etl::le_uint32_ext_t le_v2(store.data());
+
+      le_v2 = le_v1;
+
+      CHECK_EQUAL(0x12345678, le_v2.value());
+    }
+
+    //*************************************************************************
+    TEST(test_shared_storage_copy_assignment_float)
+    {
+      storage_f_t store;
+
+      etl::be_float_ext_t be_v(3.1415927f, store.data());
+      etl::le_float_ext_t le_v(store.data());
+
+      le_v = be_v;
+
+      CHECK_EQUAL(3.1415927f, le_v.value());
     }
   }
 } // namespace
