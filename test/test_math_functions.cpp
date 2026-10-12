@@ -556,7 +556,28 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_absolute_unsigned)
+    TEST(test_absolute_unsigned_int8_t)
+    {
+      // Edge cases for int8_t : min is -128, which has no positive int8_t
+      // counterpart, but is representable in uint8_t (128).
+      CHECK_EQUAL(uint8_t(0), etl::absolute_unsigned(int8_t(0)));
+      CHECK_EQUAL(uint8_t(127), etl::absolute_unsigned(int8_t(127)));
+      CHECK_EQUAL(uint8_t(127), etl::absolute_unsigned(int8_t(-127)));
+      CHECK_EQUAL(uint8_t(128), etl::absolute_unsigned(int8_t(-128))); // INT8_MIN edge case
+
+      CHECK_EQUAL(uint8_t(0), etl::absolute_unsigned(uint8_t(0)));
+      CHECK_EQUAL(uint8_t(255), etl::absolute_unsigned(uint8_t(255)));
+    }
+
+    //*************************************************************************
+    TEST(test_absolute_unsigned_uint8_t)
+    {
+      CHECK_EQUAL(uint8_t(0), etl::absolute_unsigned(uint8_t(0)));
+      CHECK_EQUAL(uint8_t(255), etl::absolute_unsigned(uint8_t(255)));
+    }
+
+    //*************************************************************************
+    TEST(test_absolute_unsigned_int16_t)
     {
       CHECK_EQUAL(uint16_t(0), etl::absolute_unsigned(int16_t(0)));
       CHECK_EQUAL(uint16_t(32767), etl::absolute_unsigned(int16_t(32767)));
@@ -568,23 +589,72 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_absolute_unsigned_constexpr)
+    TEST(test_absolute_unsigned_uint16_t)
     {
-      constexpr uint16_t absolute1 = etl::absolute(int16_t(0));
-      constexpr uint16_t absolute2 = etl::absolute(int16_t(32767));
-      constexpr uint16_t absolute3 = etl::absolute(int16_t(-32767));
-      // constexpr uint16_t absolute4 = etl::absolute(int16_t(-32768)); //
-      // Compile error
-
-      CHECK_EQUAL(uint16_t(0), absolute1);
-      CHECK_EQUAL(uint16_t(32767), absolute2);
-      CHECK_EQUAL(uint16_t(32767), absolute3);
-
-      constexpr uint16_t absolute5 = etl::absolute(uint16_t(0));
-      constexpr uint16_t absolute6 = etl::absolute(uint16_t(65535));
-
-      CHECK_EQUAL(uint16_t(0), absolute5);
-      CHECK_EQUAL(uint16_t(65535), absolute6);
+      CHECK_EQUAL(uint16_t(0), etl::absolute_unsigned(uint16_t(0)));
+      CHECK_EQUAL(uint16_t(65535), etl::absolute_unsigned(uint16_t(65535)));
     }
+
+    //*************************************************************************
+    TEST(test_absolute_unsigned_int32_t)
+    {
+      CHECK_EQUAL(uint32_t(0), etl::absolute_unsigned(int32_t(0)));
+      CHECK_EQUAL(uint32_t(2147483647), etl::absolute_unsigned(int32_t(2147483647)));
+      CHECK_EQUAL(uint32_t(2147483647), etl::absolute_unsigned(int32_t(-2147483647)));
+      CHECK_EQUAL(uint32_t(2147483648u), etl::absolute_unsigned(int32_t(-2147483647 - 1))); // INT32_MIN edge case
+
+      CHECK_EQUAL(uint32_t(0), etl::absolute_unsigned(uint32_t(0)));
+      CHECK_EQUAL(uint32_t(4294967295u), etl::absolute_unsigned(uint32_t(4294967295u)));
+    }
+
+    //*************************************************************************
+    TEST(test_absolute_unsigned_uint32_t)
+    {
+      CHECK_EQUAL(uint32_t(0), etl::absolute_unsigned(uint32_t(0)));
+      CHECK_EQUAL(uint32_t(4294967295u), etl::absolute_unsigned(uint32_t(4294967295u)));
+    }
+
+    //*************************************************************************
+    TEST(test_absolute_unsigned_int64_t)
+    {
+      CHECK_EQUAL(uint64_t(0), etl::absolute_unsigned(int64_t(0)));
+      CHECK_EQUAL(uint64_t(9223372036854775807LL), etl::absolute_unsigned(int64_t(9223372036854775807LL)));
+      CHECK_EQUAL(uint64_t(9223372036854775807LL), etl::absolute_unsigned(int64_t(-9223372036854775807LL)));
+      CHECK_EQUAL(uint64_t(9223372036854775808ULL), etl::absolute_unsigned(int64_t(-9223372036854775807LL - 1))); // INT64_MIN edge case
+
+      CHECK_EQUAL(uint64_t(0), etl::absolute_unsigned(uint64_t(0)));
+      CHECK_EQUAL(uint64_t(18446744073709551615ULL), etl::absolute_unsigned(uint64_t(18446744073709551615ULL)));
+    }
+
+    //*************************************************************************
+    TEST(test_absolute_unsigned_uint64_t)
+    {
+      CHECK_EQUAL(uint64_t(0), etl::absolute_unsigned(uint64_t(0)));
+      CHECK_EQUAL(uint64_t(18446744073709551615ULL), etl::absolute_unsigned(uint64_t(18446744073709551615ULL)));
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_absolute_unsigned_constexpr14)
+    {
+      // Unlike etl::absolute, absolute_unsigned can represent INT_MIN safely,
+      // so this should be usable at compile time even for the minimum value.
+      constexpr uint16_t r1 = etl::absolute_unsigned(int16_t(0));
+      constexpr uint16_t r2 = etl::absolute_unsigned(int16_t(32767));
+      constexpr uint16_t r3 = etl::absolute_unsigned(int16_t(-32767));
+      constexpr uint16_t r4 = etl::absolute_unsigned(int16_t(-32768)); // No compile error, unlike etl::absolute
+
+      CHECK_EQUAL(uint16_t(0), r1);
+      CHECK_EQUAL(uint16_t(32767), r2);
+      CHECK_EQUAL(uint16_t(32767), r3);
+      CHECK_EQUAL(uint16_t(32768), r4);
+
+      constexpr uint16_t r5 = etl::absolute_unsigned(uint16_t(0));
+      constexpr uint16_t r6 = etl::absolute_unsigned(uint16_t(65535));
+
+      CHECK_EQUAL(uint16_t(0), r5);
+      CHECK_EQUAL(uint16_t(65535), r6);
+    }
+#endif
   }
 } // namespace

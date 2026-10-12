@@ -44,7 +44,7 @@ namespace etl
   //***************************************************************************
   /// Defines a no-position constant.
   //***************************************************************************
-  static ETL_CONSTANT size_t type_list_npos = etl::integral_limits<size_t>::max;
+  ETL_INLINE_VAR ETL_CONSTANT size_t type_list_npos = etl::integral_limits<size_t>::max;
 
   //***************************************************************************
   // Type list forward declaration.

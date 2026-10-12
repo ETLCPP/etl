@@ -35,7 +35,6 @@ SOFTWARE.
 
 #include "algorithm.h"
 #include "array.h"
-#include "array_view.h"
 #include "error_handler.h"
 #include "limits.h"
 #include "math.h"
@@ -47,10 +46,6 @@ SOFTWARE.
 #include "utility.h"
 #include "variant.h"
 #include "visitor.h"
-
-#if ETL_USING_FORMAT_FLOATING_POINT
-  #include <cmath>
-#endif
 
 #if ETL_USING_CPP11
 
@@ -510,7 +505,8 @@ namespace etl
   struct basic_format_string
   {
     inline ETL_CONSTEVAL basic_format_string(const char* fmt)
-      : _sv(fmt)
+      : _str(fmt)
+      , _length(etl::char_traits<char>::length(fmt))
     {
   #if ETL_USING_CPP20
       // Compile-time validation: check_format runs at compile time via consteval.
@@ -528,12 +524,22 @@ namespace etl
 
     ETL_CONSTEXPR string_view get() const
     {
-      return _sv;
+      return string_view(_str, _length);
     }
 
   private:
 
-    string_view _sv;
+    // The format string is deliberately stored as a pointer plus a length, and
+    // not as a string_view.
+    //
+    // A string_view holds a pair of pointers, so constructing one here would
+    // initialise a member with the pointer arithmetic 'fmt + length(fmt)'.
+    // Microsoft's compiler (19.44) miscompiles exactly that case in a consteval
+    // constructor in debug builds: the resulting end pointer, and therefore the
+    // size of the view, is wrong. Storing the length as an integer instead
+    // computes correctly, and the view is formed on demand in get().
+    const char* _str;
+    size_t      _length;
   };
 
   template <class... Args>
@@ -627,7 +633,7 @@ namespace etl
     };
 
     template <typename T>
-    struct has_formatter_parse<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().parse(etl::declval<format_parse_context&>()))> >
+    struct has_formatter_parse<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().parse(etl::declval<format_parse_context&>()))>>
       : etl::true_type
     {
     };
@@ -642,7 +648,7 @@ namespace etl
 
     template <typename T>
     struct has_formatter_format<T, etl::void_t<decltype(etl::declval<etl::formatter<T>&>().format(
-                                     etl::declval<const T&>(), etl::declval<etl::basic_format_context<char*, char>&>()))> > : etl::true_type
+                                     etl::declval<const T&>(), etl::declval<etl::basic_format_context<char*, char>&>()))>> : etl::true_type
     {
     };
 
@@ -652,6 +658,197 @@ namespace etl
     template <typename T>
     struct is_formattable : etl::bool_constant<has_formatter_parse<T>::value && has_formatter_format<T>::value>
     {
+    };
+
+    //*************************************************************************
+    // Compile-time argument mask.
+    //
+    // basic_format_arg stores its value in a variant with a fixed set of
+    // alternatives, and etl::visit dispatches over every one of them. That
+    // would instantiate etl::formatter for all alternatives - including the
+    // whole floating point formatting chain - even for a call that only ever
+    // passes an int.
+    //
+    // The mask records which alternatives can actually occur for a given pack
+    // of argument types. format_visitor turns the unreachable alternatives into
+    // empty functions, so their formatters are never instantiated and the
+    // linker never sees the code.
+    //
+    // A single table, arg_type_mask, drives both halves: it builds the mask
+    // from the argument pack, and it tells the visitor which bit an alternative
+    // corresponds to.
+    //
+    // Soundness: the mask is only ever narrowed for argument types that are
+    // recognised explicitly below. Anything else - including user-defined types
+    // and pointers other than void* - falls back to mask_all, which reproduces
+    // the unmasked behaviour exactly.
+    //*************************************************************************
+    typedef unsigned int arg_mask_t;
+
+    static ETL_CONSTANT arg_mask_t mask_monostate   = 1U << 0;
+    static ETL_CONSTANT arg_mask_t mask_bool        = 1U << 1;
+    static ETL_CONSTANT arg_mask_t mask_char        = 1U << 2;
+    static ETL_CONSTANT arg_mask_t mask_int         = 1U << 3;
+    static ETL_CONSTANT arg_mask_t mask_uint        = 1U << 4;
+    static ETL_CONSTANT arg_mask_t mask_llong       = 1U << 5;
+    static ETL_CONSTANT arg_mask_t mask_ullong      = 1U << 6;
+    static ETL_CONSTANT arg_mask_t mask_float       = 1U << 7;
+    static ETL_CONSTANT arg_mask_t mask_double      = 1U << 8;
+    static ETL_CONSTANT arg_mask_t mask_ldouble     = 1U << 9;
+    static ETL_CONSTANT arg_mask_t mask_cstring     = 1U << 10;
+    static ETL_CONSTANT arg_mask_t mask_string_view = 1U << 11;
+    static ETL_CONSTANT arg_mask_t mask_voidp       = 1U << 12;
+    static ETL_CONSTANT arg_mask_t mask_all         = ~static_cast<arg_mask_t>(0);
+
+    // Maps a type onto the set of alternatives a value of that type can be
+    // stored as. Mirrors the converting constructors of basic_format_arg.
+    //
+    // This serves both directions of the problem. For a user argument type it
+    // gives the alternatives that argument may end up in, which is how the
+    // per-call mask is built. For a variant alternative it degenerates to that
+    // alternative's own bit, which is how format_visitor tests reachability.
+    //
+    // The primary template is deliberately conservative: an unrecognised type
+    // yields mask_all, so it is never wrongly excluded.
+    template <typename T, typename Enable = void>
+    struct arg_type_mask
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_all;
+    };
+
+    // Not constructible as a user argument; listed so that the table covers
+    // every variant alternative. Every mask contains this bit regardless, as
+    // the args_mask recursion bottoms out at mask_monostate.
+    template <>
+    struct arg_type_mask<etl::monostate, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_monostate;
+    };
+
+    template <>
+    struct arg_type_mask<bool, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_bool;
+    };
+    template <>
+    struct arg_type_mask<char, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_char;
+    };
+    template <>
+    struct arg_type_mask<signed char, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_int;
+    };
+    template <>
+    struct arg_type_mask<unsigned char, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_uint;
+    };
+    template <>
+    struct arg_type_mask<short, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_int;
+    };
+    template <>
+    struct arg_type_mask<unsigned short, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_uint;
+    };
+    template <>
+    struct arg_type_mask<int, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_int;
+    };
+    template <>
+    struct arg_type_mask<unsigned int, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_uint;
+    };
+    template <>
+    struct arg_type_mask<long int, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_llong;
+    };
+    template <>
+    struct arg_type_mask<unsigned long int, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_ullong;
+    };
+    template <>
+    struct arg_type_mask<long long int, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_llong;
+    };
+    template <>
+    struct arg_type_mask<unsigned long long int, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_ullong;
+    };
+  #if ETL_USING_FORMAT_FLOATING_POINT
+    template <>
+    struct arg_type_mask<float, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_float;
+    };
+    template <>
+    struct arg_type_mask<double, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_double;
+    };
+    template <>
+    struct arg_type_mask<long double, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_ldouble;
+    };
+  #endif
+    template <>
+    struct arg_type_mask<char*, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_cstring;
+    };
+    template <>
+    struct arg_type_mask<const char*, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_cstring;
+    };
+    template <>
+    struct arg_type_mask<etl::string_view, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_string_view;
+    };
+    template <>
+    struct arg_type_mask<void*, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_voidp;
+    };
+    template <>
+    struct arg_type_mask<const void*, void>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_voidp;
+    };
+
+    // etl::string<N>, etl::istring and friends are stored as a string_view.
+    template <typename T>
+    struct arg_type_mask<T, etl::enable_if_t<etl::is_base_of<etl::ibasic_string<char>, T>::value>>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_string_view;
+    };
+
+    // The empty alternative is always reachable, so monostate is always set.
+    template <typename... Ts>
+    struct args_mask;
+
+    template <>
+    struct args_mask<>
+    {
+      static ETL_CONSTANT arg_mask_t value = mask_monostate;
+    };
+
+    template <typename T, typename... Rest>
+    struct args_mask<T, Rest...>
+    {
+      static ETL_CONSTANT arg_mask_t value = arg_type_mask<etl::decay_t<T>>::value | args_mask<Rest...>::value;
     };
   } // namespace private_format
 
@@ -806,7 +1003,7 @@ namespace etl
     // Converting constructor for user-defined types that provide an
     // etl::formatter<T> specialisation. The value is stored type-erased in a
     // handle, matching the std::basic_format_arg behaviour for custom types.
-    template <typename T, typename = etl::enable_if_t<private_format::is_formattable<T>::value> >
+    template <typename T, typename = etl::enable_if_t<private_format::is_formattable<T>::value>>
     basic_format_arg(const T& v)
       : data(handle(v))
     {
@@ -863,7 +1060,7 @@ namespace etl
       return _args.get(i);
     }
 
-    etl::array_view<basic_format_arg<Context>> get()
+    etl::span<basic_format_arg<Context>> get()
     {
       return _args;
     }
@@ -881,6 +1078,15 @@ namespace etl
     template <class... Args>
     basic_format_args(format_arg_store<Context, Args...>& store)
       : _args(store.get())
+    {
+    }
+
+    // non-standard
+    // Constructs from externally owned storage, for cases where the number of
+    // arguments is only known at runtime and so no format_arg_store<Context, Args...>
+    // can be formed. The referenced storage must outlive this object.
+    explicit basic_format_args(etl::span<basic_format_arg<Context>> args_)
+      : _args(args_)
     {
     }
 
@@ -908,7 +1114,7 @@ namespace etl
 
   private:
 
-    etl::array_view<basic_format_arg<Context>> _args;
+    etl::span<basic_format_arg<Context>> _args;
   };
 
   namespace private_format
@@ -1198,11 +1404,11 @@ namespace etl
       return false;
     }
 
-    template <class OutputIt>
-    void parse_format_spec(format_parse_context& parse_ctx, format_context<OutputIt>& fmt_context)
+    // Not templated on the output iterator: the parse phase only reads the
+    // parse context and writes the format spec, so a single instantiation is
+    // shared by every output iterator type.
+    inline void parse_format_spec(format_parse_context& parse_ctx, format_spec_t& format_spec)
     {
-      auto& format_spec = fmt_context.format_spec;
-
       format_spec = format_spec_t(); // reset format_spec to defaults
 
       format_spec.index = parse_num(parse_ctx); // optional explicit index
@@ -1528,64 +1734,18 @@ namespace etl
     }
 
   #if ETL_USING_FORMAT_FLOATING_POINT
-    #if ETL_NOT_USING_FORMAT_LONG_DOUBLE_MATH
     //***********************************
-    // Math function wrappers to handle toolchains that don't provide
-    // long double math functions (log10l, floorl, powl, modfl, roundl).
-    // When ETL_FORMAT_NO_LONG_DOUBLE_MATH is defined, long double overloads
-    // cast through double. For float and double, the standard functions are
-    // called directly via the template versions.
-    //***********************************
-    inline long double format_log10(long double value)
-    {
-      return static_cast<long double>(::log10(static_cast<double>(value)));
-    }
-    inline long double format_floor(long double value)
-    {
-      return static_cast<long double>(::floor(static_cast<double>(value)));
-    }
-    inline long double format_pow(long double base, long double exp)
-    {
-      return static_cast<long double>(::pow(static_cast<double>(base), static_cast<double>(exp)));
-    }
-    inline long double format_round(long double value)
-    {
-      return static_cast<long double>(::round(static_cast<double>(value)));
-    }
-    inline long double format_modf(long double value, long double* iptr)
-    {
-      double d_iptr;
-      double result = ::modf(static_cast<double>(value), &d_iptr);
-      *iptr         = static_cast<long double>(d_iptr);
-      return static_cast<long double>(result);
-    }
-    #endif
-
-    template <typename T>
-    T format_log10(T value)
-    {
-      return ::log10(value);
-    }
-    template <typename T>
-    T format_floor(T value)
-    {
-      return ::floor(value);
-    }
-    template <typename T>
-    T format_pow(T base, T exp)
-    {
-      return ::pow(base, exp);
-    }
-    template <typename T>
-    T format_round(T value)
-    {
-      return ::round(value);
-    }
-    template <typename T>
-    T format_modf(T value, T* iptr)
-    {
-      return ::modf(value, iptr);
-    }
+    // On many targets (e.g. ARM EABI, MSVC) 'long double' has exactly the same
+    // representation as 'double'. There, formatting a long double through the
+    // 'double' instantiation is value-preserving, and avoids emitting a second,
+    // byte-identical copy of the whole floating point formatting chain.
+    // On targets where the two differ (e.g. x86 80-bit) 'long double' is kept.
+    typedef etl::conditional_t<(sizeof(long double) == sizeof(double))
+                                 && (etl::numeric_limits<long double>::digits == etl::numeric_limits<double>::digits)
+                                 && (etl::numeric_limits<long double>::max_exponent == etl::numeric_limits<double>::max_exponent)
+                                 && (etl::numeric_limits<long double>::min_exponent == etl::numeric_limits<double>::min_exponent),
+                               double, long double>
+      long_double_format_type;
 
     template <typename OutputIt, typename T>
     void format_floating_default(OutputIt& it, T value, const format_spec_t& spec)
@@ -1607,7 +1767,7 @@ namespace etl
       }
 
       T integral;
-      T fractional = format_modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1617,7 +1777,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1644,20 +1804,20 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = format_modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       while (value >= 0x10 || value <= -0x10)
       {
         ++exponent_int;
         value /= 0x10;
-        fractional = format_modf(value, &integral);
+        fractional = etl::math::modf(value, &integral);
       }
 
       while ((value > 0.0000000000001 && value < 1) || (value < -0.0000000000001 && value > -1))
       {
         --exponent_int;
         value *= 0x10;
-        fractional = format_modf(value, &integral);
+        fractional = etl::math::modf(value, &integral);
       }
 
       // Take absolute values to avoid casting negative values to unsigned
@@ -1668,7 +1828,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(0x10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1712,8 +1872,8 @@ namespace etl
 
       if (abs_value > static_cast<T>(0))
       {
-        exponent_int = static_cast<long long int>(format_floor(format_log10(abs_value)));
-        value        = abs_value / format_pow(static_cast<T>(10), static_cast<T>(exponent_int));
+        exponent_int = static_cast<long long int>(etl::math::floor(etl::math::log10(abs_value)));
+        value        = abs_value / etl::math::pow(static_cast<T>(10), static_cast<T>(exponent_int));
         // Correct for floating-point rounding in log10/pow
         if (value >= static_cast<T>(10))
         {
@@ -1732,10 +1892,10 @@ namespace etl
       }
 
       T integral;
-      T fractional = format_modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1773,7 +1933,7 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = format_modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1783,7 +1943,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1996,7 +2156,7 @@ namespace etl
     }
   #endif
 
-    template <class OutputIt>
+    template <class OutputIt, arg_mask_t Mask = mask_all>
     struct format_visitor
     {
       using output_iterator = OutputIt;
@@ -2011,6 +2171,28 @@ namespace etl
       template <typename T>
       void operator()(T value)
       {
+        // T is a variant alternative here, so arg_type_mask<T> is that
+        // alternative's own bit.
+        // Tag dispatch rather than 'if constexpr' so that the formatter for an
+        // unreachable alternative is not instantiated in C++11/14 either.
+        typedef etl::conditional_t<(arg_type_mask<T>::value & Mask) != 0, etl::true_type, etl::false_type> reachable;
+        dispatch(value, reachable());
+      }
+
+      // for user-defined types routed through basic_format_arg::handle
+      void operator()(typename basic_format_arg<format_context<OutputIt>>::handle h)
+      {
+        h.format(parse_ctx, fmt_ctx);
+      }
+
+      format_parse_context&     parse_ctx;
+      format_context<OutputIt>& fmt_ctx;
+
+    private:
+
+      template <typename T>
+      void dispatch(T value, etl::true_type)
+      {
         formatter<T>                   f;
         format_parse_context::iterator it = f.parse(parse_ctx);
         parse_ctx.advance_to(it);
@@ -2018,14 +2200,12 @@ namespace etl
         fmt_ctx.advance_to(fit);
       }
 
-      // for user-defined types routed through basic_format_arg::handle
-      void operator()(typename basic_format_arg<format_context<OutputIt> >::handle h)
+      // This alternative cannot be reached for the argument types of this call,
+      // so no formatter is instantiated for it.
+      template <typename T>
+      void dispatch(T, etl::false_type)
       {
-        h.format(parse_ctx, fmt_ctx);
       }
-
-      format_parse_context&     parse_ctx;
-      format_context<OutputIt>& fmt_ctx;
     };
 
     template <class OutputIt>
@@ -2637,7 +2817,8 @@ namespace etl
     template <class OutputIt>
     typename format_context<OutputIt>::iterator format(long double arg, format_context<OutputIt>& fmt_ctx)
     {
-      return private_format::format_aligned_floating<OutputIt, long double>(arg, fmt_ctx);
+      typedef private_format::long_double_format_type type;
+      return private_format::format_aligned_floating<OutputIt, type>(static_cast<type>(arg), fmt_ctx);
     }
   };
   #endif
@@ -2707,12 +2888,15 @@ namespace etl
     }
   };
 
-  template <class OutputIt>
+  // Mask is a compile-time set of the basic_format_arg alternatives that the
+  // caller can actually supply. It only removes unreachable code paths; the
+  // default of mask_all formats every alternative, as before.
+  template <class OutputIt, private_format::arg_mask_t Mask = private_format::mask_all>
   OutputIt vformat_to(OutputIt out, etl::string_view fmt, format_args<OutputIt> args)
   {
-    format_parse_context                     parse_context(fmt, args.size());
-    format_context<OutputIt>                 fmt_context(out, args);
-    private_format::format_visitor<OutputIt> v(parse_context, fmt_context);
+    format_parse_context                           parse_context(fmt, args.size());
+    format_context<OutputIt>                       fmt_context(out, args);
+    private_format::format_visitor<OutputIt, Mask> v(parse_context, fmt_context);
 
     while (parse_context.begin() != parse_context.end())
     {
@@ -2728,7 +2912,7 @@ namespace etl
         }
         else
         {
-          private_format::parse_format_spec<OutputIt>(parse_context, fmt_context);
+          private_format::parse_format_spec(parse_context, fmt_context.format_spec);
 
           // Resolve nested replacement fields for width/precision
           private_format::resolve_nested_replacements<OutputIt>(fmt_context.format_spec, args);
@@ -2766,14 +2950,14 @@ namespace etl
   OutputIt format_to(OutputIt out, format_string<Args...> fmt, Args&&... args)
   {
     auto the_args{make_format_args<OutputIt>(args...)};
-    return vformat_to(etl::move(out), fmt.get(), format_args<OutputIt>(the_args));
+    return vformat_to<OutputIt, private_format::args_mask<Args...>::value>(etl::move(out), fmt.get(), format_args<OutputIt>(the_args));
   }
 
   template <typename OutputIt, class WrapperIt = private_format::limit_iterator<OutputIt>, class... Args>
   OutputIt format_to_n(OutputIt out, size_t n, format_string<Args...> fmt, Args&&... args)
   {
     auto the_args{make_format_args<WrapperIt>(args...)};
-    return vformat_to(WrapperIt(out, n), fmt.get(), format_args<WrapperIt>(the_args)).get();
+    return vformat_to<WrapperIt, private_format::args_mask<Args...>::value>(WrapperIt(out, n), fmt.get(), format_args<WrapperIt>(the_args)).get();
   }
 
   // non std in the following, specific to etl

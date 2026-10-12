@@ -53,6 +53,44 @@ SOFTWARE.
 
 namespace etl
 {
+  namespace private_memory
+  {
+    //*************************************************************************
+    /// Checks whether a type can be copied to uninitialised storage by using
+    /// assignment instead of placement new.
+    //*************************************************************************
+    template <typename T>
+    struct is_trivially_copy_assignable_to_uninitialised_storage
+      : etl::bool_constant<etl::is_trivially_copyable<T>::value && etl::is_trivially_copy_constructible<T>::value
+                           && etl::is_trivially_copy_assignable<T>::value>
+    {
+    };
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    /// Checks whether a type can be moved to uninitialised storage by using
+    /// assignment instead of placement new.
+    //*************************************************************************
+    template <typename T>
+    struct is_trivially_move_assignable_to_uninitialised_storage
+      : etl::bool_constant<etl::is_trivially_copyable<T>::value && etl::is_trivially_move_constructible<T>::value
+                           && etl::is_trivially_move_assignable<T>::value>
+    {
+    };
+#endif
+
+    //*************************************************************************
+    /// Checks whether a value-initialised type can be copied to uninitialised
+    /// storage by using assignment instead of placement new.
+    //*************************************************************************
+    template <typename T>
+    struct is_trivially_value_assignable_to_uninitialised_storage
+      : etl::bool_constant<etl::is_trivially_constructible<T>::value && etl::is_trivially_copyable<T>::value
+                           && etl::is_trivially_copy_assignable<T>::value>
+    {
+    };
+  } // namespace private_memory
+
   //*****************************************************************************
   /// Obtain the address represented by p without forming a reference to the
   /// object pointed to by p. Defined when not using the STL or C++20
@@ -94,14 +132,7 @@ namespace etl
   #endif
     ETL_STATIC_ASSERT(!etl::is_void<T>::value, "etl::launder argument must not be a void type");
 
-  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
-    #if __has_builtin(__builtin_launder)
-    return __builtin_launder(p);
-    #else
-    return p;
-    #endif
-  #elif ETL_USING_GCC_COMPILER && (ETL_COMPILER_FULL_VERSION >= 70000)
-    // GCC 7, 8 and 9 provide __builtin_launder but not __has_builtin.
+  #if ETL_USING_BUILTIN_LAUNDER
     return __builtin_launder(p);
   #else
     return p;
@@ -362,12 +393,8 @@ namespace etl
   template <size_t N, typename T>
   ETL_NODISCARD ETL_CONSTEXPR T* assume_aligned(T* ptr) ETL_NOEXCEPT
   {
-  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
-    #if __has_builtin(__builtin_assume_aligned)
+  #if ETL_USING_BUILTIN_ASSUME_ALIGNED
     return static_cast<T*>(__builtin_assume_aligned(ptr, N));
-    #else
-    return ptr;
-    #endif
   #else
     return ptr;
   #endif
@@ -428,7 +455,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename T>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_copy_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value)
   {
     etl::fill(o_begin, o_end, value);
@@ -442,8 +471,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename T>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value,
-                           TOutputIterator>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_copy_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value)
   {
     typedef typename etl::iterator_traits<TOutputIterator>::value_type value_type;
@@ -464,7 +494,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename T, typename TCounter>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_copy_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
     count += static_cast<TCounter>(etl::distance(o_begin, o_end));
@@ -481,8 +513,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator, typename T, typename TCounter>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value,
-                           TOutputIterator>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_copy_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_fill(TOutputIterator o_begin, TOutputIterator o_end, const T& value, TCounter& count)
   {
     count += static_cast<TCounter>(etl::distance(o_begin, o_end));
@@ -577,7 +610,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_copy_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
     return etl::copy(i_begin, i_end, o_begin);
@@ -589,8 +624,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value,
-                           TOutputIterator>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_copy_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
     typedef typename etl::iterator_traits<TOutputIterator>::value_type value_type;
@@ -614,7 +650,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_copy_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::copy(i_begin, i_end, o_begin);
@@ -630,8 +668,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value,
-                           TOutputIterator>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_copy_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_copy(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::uninitialized_copy(i_begin, i_end, o_begin);
@@ -910,7 +949,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_move_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
     return etl::move(i_begin, i_end, o_begin);
@@ -922,8 +963,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value,
-                           TOutputIterator>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_move_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
     typedef typename etl::iterator_traits<TOutputIterator>::value_type value_type;
@@ -947,7 +989,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_move_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::move(i_begin, i_end, o_begin);
@@ -963,8 +1007,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TOutputIterator, typename TCounter>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value,
-                           TOutputIterator>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_move_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::uninitialized_move(i_begin, i_end, o_begin);
@@ -1037,7 +1082,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TSize, typename TOutputIterator>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_move_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
   {
     return etl::move(i_begin, i_begin + n, o_begin);
@@ -1049,8 +1096,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TSize, typename TOutputIterator>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value,
-                           TOutputIterator>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_move_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin)
   {
     typedef typename etl::iterator_traits<TOutputIterator>::value_type value_type;
@@ -1074,7 +1122,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, TOutputIterator>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_move_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::move(i_begin, i_begin + n, o_begin);
@@ -1090,8 +1140,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TInputIterator, typename TSize, typename TOutputIterator, typename TCounter>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value,
-                           TOutputIterator>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_move_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    TOutputIterator>::type
     uninitialized_move_n(TInputIterator i_begin, TSize n, TOutputIterator o_begin, TCounter& count)
   {
     TOutputIterator o_end = etl::uninitialized_move(i_begin, i_begin + n, o_begin);
@@ -1527,7 +1578,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator>
-  typename etl::enable_if< etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, void>::type
+  typename etl::enable_if<
+    etl::private_memory::is_trivially_value_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    void>::type
     uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end)
   {
     typedef typename etl::iterator_traits<TOutputIterator>::value_type value_type;
@@ -1541,7 +1594,9 @@ namespace etl
   ///\ingroup memory
   //*****************************************************************************
   template <typename TOutputIterator>
-  typename etl::enable_if< !etl::is_trivially_constructible< typename etl::iterator_traits<TOutputIterator>::value_type>::value, void>::type
+  typename etl::enable_if<
+    !etl::private_memory::is_trivially_value_assignable_to_uninitialised_storage<typename etl::iterator_traits<TOutputIterator>::value_type>::value,
+    void>::type
     uninitialized_value_construct(TOutputIterator o_begin, TOutputIterator o_end)
   {
     typedef typename etl::iterator_traits<TOutputIterator>::value_type value_type;

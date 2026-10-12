@@ -264,6 +264,9 @@
     <ClInclude Include="..\..\include\etl\numeric.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\clamped_value.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\include\etl\cyclic_value.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -1416,12 +1419,6 @@
     <ClInclude Include="..\..\include\etl\index_of_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\variant_select_do_visitor.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\variant_select_do_operator.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\monostate.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -2115,6 +2112,9 @@
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="..\test_pseudo_moving_average.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_clamped_value.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="..\test_cyclic_value.cpp">
@@ -2937,6 +2937,9 @@
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\crc64_ecma.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\clamped_value.h.t.cpp">
       <Filter>Tests\Syntax Checks\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\syntax_check\cyclic_value.h.t.cpp">

@@ -135,65 +135,65 @@ namespace etl
   //***************************************************************************
   // Stream formatting manipulators.
   //***************************************************************************
-  static ETL_CONSTEXPR private_basic_format_spec::base_spec setbase(uint32_t base)
+  inline ETL_CONSTEXPR private_basic_format_spec::base_spec setbase(uint32_t base)
   {
-    return private_basic_format_spec::base_spec(base);
+    return private_basic_format_spec::base_spec(static_cast<uint_least8_t>(base));
   }
 
   //*********************************
-  static ETL_CONSTEXPR private_basic_format_spec::width_spec setw(uint32_t width)
+  inline ETL_CONSTEXPR private_basic_format_spec::width_spec setw(uint32_t width)
   {
-    return private_basic_format_spec::width_spec(width);
+    return private_basic_format_spec::width_spec(static_cast<uint_least8_t>(width));
   }
 
   //*********************************
   template <typename TChar>
-  static ETL_CONSTEXPR private_basic_format_spec::fill_spec<TChar> setfill(TChar fill)
+  ETL_CONSTEXPR private_basic_format_spec::fill_spec<TChar> setfill(TChar fill)
   {
     return private_basic_format_spec::fill_spec<TChar>(fill);
   }
 
   //*********************************
-  static ETL_CONSTEXPR private_basic_format_spec::precision_spec setprecision(uint32_t precision)
+  inline ETL_CONSTEXPR private_basic_format_spec::precision_spec setprecision(uint32_t precision)
   {
-    return private_basic_format_spec::precision_spec(precision);
+    return private_basic_format_spec::precision_spec(static_cast<uint_least8_t>(precision));
   }
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::base_spec bin(2U);
+  static ETL_CONSTANT private_basic_format_spec::base_spec bin(static_cast<uint_least8_t>(2U));
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::base_spec oct(8U);
+  static ETL_CONSTANT private_basic_format_spec::base_spec oct(static_cast<uint_least8_t>(8U));
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::base_spec dec(10U);
+  static ETL_CONSTANT private_basic_format_spec::base_spec dec(static_cast<uint_least8_t>(10U));
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::base_spec hex(16U);
+  static ETL_CONSTANT private_basic_format_spec::base_spec hex(static_cast<uint_least8_t>(16U));
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::left_spec left = private_basic_format_spec::left_spec();
+  ETL_INLINE_VAR ETL_CONSTANT private_basic_format_spec::left_spec left = private_basic_format_spec::left_spec();
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::right_spec right = private_basic_format_spec::right_spec();
+  ETL_INLINE_VAR ETL_CONSTANT private_basic_format_spec::right_spec right = private_basic_format_spec::right_spec();
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::boolalpha_spec boolalpha(true);
+  ETL_INLINE_VAR ETL_CONSTANT private_basic_format_spec::boolalpha_spec boolalpha(true);
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::boolalpha_spec noboolalpha(false);
+  ETL_INLINE_VAR ETL_CONSTANT private_basic_format_spec::boolalpha_spec noboolalpha(false);
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::uppercase_spec uppercase(true);
+  ETL_INLINE_VAR ETL_CONSTANT private_basic_format_spec::uppercase_spec uppercase(true);
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::uppercase_spec nouppercase(false);
+  ETL_INLINE_VAR ETL_CONSTANT private_basic_format_spec::uppercase_spec nouppercase(false);
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::showbase_spec showbase(true);
+  ETL_INLINE_VAR ETL_CONSTANT private_basic_format_spec::showbase_spec showbase(true);
 
   //*********************************
-  static ETL_CONSTANT private_basic_format_spec::showbase_spec noshowbase(false);
+  ETL_INLINE_VAR ETL_CONSTANT private_basic_format_spec::showbase_spec noshowbase(false);
 
   //***************************************************************************
   /// basic_format_spec

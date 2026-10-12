@@ -1,0 +1,18 @@
+{{ $email := .Get "email" | base64Encode }}
+<a class="obfuscated-email" href="#" data-email="{{ $email }}">Contact Me</a>
+
+<script>
+(function() {
+  // Run once when the script loads to handle clicks safely
+  document.addEventListener("DOMContentLoaded", function() {
+    const links = document.querySelectorAll('.obfuscated-email');
+    links.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const decoded = atob(this.getAttribute('data-email'));
+        window.location.href = 'mailto:' + decoded;
+      });
+    });
+  });
+})();
+</script>

@@ -40,7 +40,7 @@ type: hextra-home
 
   <div>
     <a href="https://etlcpp.github.io/etl/"><img src="https://github.com/ETLCPP/etl/actions/workflows/coverage.yml/badge.svg" alt="coverage"></a>
-    <a href="https://www.codacy.com/manual/jwellbelove/etl"><img src="https://api.codacy.com/project/badge/Grade/3c14cd918ccf40008d0bcd7b083d5946" alt="Codacy"></a>
+<a href="https://app.codacy.com/gh/ETLCPP/etl/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade"><img src="https://app.codacy.com/project/badge/Grade/c0c29f7b84554166b577e8a98fc18d0b" alt="Codacy Badge"></a>
   </div>
 
   <div>
@@ -50,6 +50,20 @@ type: hextra-home
 
 ## Version
 This documents version **{{< version >}}**.
+
+## Get the ETL
+<div>
+  <div>
+    <a href="https://github.com/ETLCPP/etl" alt="Github" target="_blank">Github</a>
+    <br>
+    <a href="https://github.com/ETLCPP/etl-arduino/archive/master.zip" alt="Arduino" target="_blank">Arduino</a>
+    <br>
+    <a href="https://conan.io/center/recipes/etl" alt="Conan" target="_blank">Conan</a>
+    <br>
+    <a href="https://registry.platformio.org/libraries/etlcpp/Embedded%20Template%20Library" target="_blank">PlatformIO</a>
+  </div>
+</div>
+
 
 ## Motivation
 
@@ -104,9 +118,9 @@ CRC calculations (8, 16, 32 & 64-bit)
 Checksums and hash functions
 - Variants (type-safe unions)
 - Extensive template support utilities
-- Robust Error Handling: Configurable error checking using asserts, exceptions, error handlers, or no checks; user’s choice.
+- Robust Error Handling: Configurable error checking using asserts, exceptions, error handlers, or no checks; user's choice.
 - Thoroughly Tested:  
-Over 10,000 unit tests
+Over **14,000** tests
 Tested with Visual Studio 2022, GCC 12, and Clang 14
 Continuous integration via GitHub Actions.
 - Readable and Well-Documented: Clean, maintainable source code with clear documentation.
@@ -114,6 +128,7 @@ Continuous integration via GitHub Actions.
 - Archived: A snapshot of the ETL is preserved in the Arctic Code Vault for long-term digital preservation.
 
 ## Support the ETL
+
 Maintaining the ETL can take a lot of man-hours of work, but unfortunately it doesn't pay the bills. When I have to take on paying work, the ETL gets a lot less attention. So if you have found the library is an important component in your work and you would like to help out, then please consider by supporting the project.
 
 ---

@@ -12,14 +12,14 @@ else()
 	message(STATUS "Compiling for STL")
 endif()
 
-if (ETL_USE_TYPE_TRAITS_BUILTINS)
-	message(STATUS "Compiling for built-in type traits")
-	add_definitions(-DETL_USE_TYPE_TRAITS_BUILTINS)
-endif()
-
 if (ETL_USER_DEFINED_TYPE_TRAITS)
 	message(STATUS "Compiling for user defined type traits")
 	add_definitions(-DETL_USER_DEFINED_TYPE_TRAITS)
+endif()
+
+if (ETL_DISABLE_BUILTIN_FUNCTIONS)
+	message(STATUS "Compiling with builtin functions disabled")
+	add_definitions(-DETL_DISABLE_BUILTIN_FUNCTIONS)
 endif()
 
 if (ETL_FORCE_TEST_CPP03_IMPLEMENTATION)
@@ -202,6 +202,7 @@ target_sources(tests PRIVATE
 		crc8_nrsc5.h.t.cpp
 		crc8_rohc.h.t.cpp
 		crc8_wcdma.h.t.cpp
+		clamped_value.h.t.cpp
 		cyclic_value.h.t.cpp
 		debounce.h.t.cpp
 		debug_count.h.t.cpp

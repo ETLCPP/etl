@@ -261,6 +261,8 @@ namespace
       return (lhs.value < rhs.k.value);
     }
 
+    static_assert(etl::is_same<etl::iflat_set<int>, etl::iflat_set<int, etl::less<int>>>::value, "default compare is not less");
+
     //*************************************************************************
     struct SetupFixture
     {

@@ -111,6 +111,9 @@ namespace
   using mapped_type    = Data::mapped_type;
   using const_iterator = Data::const_iterator;
 
+  static_assert(etl::is_same<etl::iconst_multimap<key_type, mapped_type>, etl::iconst_multimap<key_type, mapped_type, etl::less<key_type>>>::value,
+                "default compare is not less");
+
   SUITE(test_const_multimap)
   {
     //*************************************************************************

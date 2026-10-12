@@ -164,6 +164,7 @@ add_executable(etl_tests
 	test_crc8_opensafety.cpp
 	test_crc8_rohc.cpp
 	test_crc8_wcdma.cpp
+	test_clamped_value.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
 	test_delegate.cpp
@@ -443,14 +444,14 @@ else()
 	message(STATUS "Compiling for STL")
 endif()
 
-if (ETL_USE_TYPE_TRAITS_BUILTINS)
-	message(STATUS "Compiling for built-in type traits")
-	target_compile_definitions(etl_tests PRIVATE -DETL_USE_TYPE_TRAITS_BUILTINS)
-endif()
-
 if (ETL_USER_DEFINED_TYPE_TRAITS)
 	message(STATUS "Compiling for user defined type traits")
 	target_compile_definitions(etl_tests PRIVATE -DETL_USER_DEFINED_TYPE_TRAITS)
+endif()
+
+if (ETL_DISABLE_BUILTIN_FUNCTIONS)
+	message(STATUS "Compiling with builtin functions disabled")
+	target_compile_definitions(etl_tests PRIVATE -DETL_DISABLE_BUILTIN_FUNCTIONS)
 endif()
 
 if (ETL_MESSAGES_ARE_NOT_VIRTUAL)
@@ -499,6 +500,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+#			-fmax-errors=10
 			-pedantic-errors
 			-Wall
 			-Wextra
@@ -519,6 +521,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 			PRIVATE
 			-fno-omit-frame-pointer
 			-fno-common
+#			-ferror-limit=10
 			-pedantic-errors
 			-Wall
 			-Wextra
