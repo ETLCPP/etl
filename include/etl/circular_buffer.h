@@ -84,6 +84,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// circular_buffer out of bounds exception.
+  //***************************************************************************
+  class circular_buffer_out_of_bounds : public etl::circular_buffer_exception
+  {
+  public:
+
+    circular_buffer_out_of_bounds(string_type file_name_, numeric_type line_number_)
+      : etl::circular_buffer_exception(ETL_ERROR_TEXT("circular_buffer:bounds", ETL_CIRCULAR_BUFFER_FILE_ID"C"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   ///
   //***************************************************************************
   class circular_buffer_base
@@ -888,6 +901,8 @@ namespace etl
     //*************************************************************************
     reference operator[](size_t index)
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(index < size(), ETL_ERROR(circular_buffer_out_of_bounds));
+
       return pbuffer[(out + index) % buffer_size];
     }
 
@@ -897,6 +912,8 @@ namespace etl
     //*************************************************************************
     const_reference operator[](size_t index) const
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(index < size(), ETL_ERROR(circular_buffer_out_of_bounds));
+
       return pbuffer[(out + index) % buffer_size];
     }
 
