@@ -47,10 +47,6 @@ SOFTWARE.
 #include "variant.h"
 #include "visitor.h"
 
-#if ETL_USING_FORMAT_FLOATING_POINT
-  #include <cmath>
-#endif
-
 #if ETL_USING_CPP11
 
 namespace etl
@@ -1751,65 +1747,6 @@ namespace etl
                                double, long double>
       long_double_format_type;
 
-    #if ETL_NOT_USING_FORMAT_LONG_DOUBLE_MATH
-    //***********************************
-    // Math function wrappers to handle toolchains that don't provide
-    // long double math functions (log10l, floorl, powl, modfl, roundl).
-    // When ETL_FORMAT_NO_LONG_DOUBLE_MATH is defined, long double overloads
-    // cast through double. For float and double, the standard functions are
-    // called directly via the template versions.
-    //***********************************
-    inline long double format_log10(long double value)
-    {
-      return static_cast<long double>(::log10(static_cast<double>(value)));
-    }
-    inline long double format_floor(long double value)
-    {
-      return static_cast<long double>(::floor(static_cast<double>(value)));
-    }
-    inline long double format_pow(long double base, long double exp)
-    {
-      return static_cast<long double>(::pow(static_cast<double>(base), static_cast<double>(exp)));
-    }
-    inline long double format_round(long double value)
-    {
-      return static_cast<long double>(::round(static_cast<double>(value)));
-    }
-    inline long double format_modf(long double value, long double* iptr)
-    {
-      double d_iptr;
-      double result = ::modf(static_cast<double>(value), &d_iptr);
-      *iptr         = static_cast<long double>(d_iptr);
-      return static_cast<long double>(result);
-    }
-    #endif
-
-    template <typename T>
-    T format_log10(T value)
-    {
-      return ::log10(value);
-    }
-    template <typename T>
-    T format_floor(T value)
-    {
-      return ::floor(value);
-    }
-    template <typename T>
-    T format_pow(T base, T exp)
-    {
-      return ::pow(base, exp);
-    }
-    template <typename T>
-    T format_round(T value)
-    {
-      return ::round(value);
-    }
-    template <typename T>
-    T format_modf(T value, T* iptr)
-    {
-      return ::modf(value, iptr);
-    }
-
     template <typename OutputIt, typename T>
     void format_floating_default(OutputIt& it, T value, const format_spec_t& spec)
     {
@@ -1830,7 +1767,7 @@ namespace etl
       }
 
       T integral;
-      T fractional = format_modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -1840,7 +1777,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1867,20 +1804,20 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = format_modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       while (value >= 0x10 || value <= -0x10)
       {
         ++exponent_int;
         value /= 0x10;
-        fractional = format_modf(value, &integral);
+        fractional = etl::math::modf(value, &integral);
       }
 
       while ((value > 0.0000000000001 && value < 1) || (value < -0.0000000000001 && value > -1))
       {
         --exponent_int;
         value *= 0x10;
-        fractional = format_modf(value, &integral);
+        fractional = etl::math::modf(value, &integral);
       }
 
       // Take absolute values to avoid casting negative values to unsigned
@@ -1891,7 +1828,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(0x10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1935,8 +1872,8 @@ namespace etl
 
       if (abs_value > static_cast<T>(0))
       {
-        exponent_int = static_cast<long long int>(format_floor(format_log10(abs_value)));
-        value        = abs_value / format_pow(static_cast<T>(10), static_cast<T>(exponent_int));
+        exponent_int = static_cast<long long int>(etl::math::floor(etl::math::log10(abs_value)));
+        value        = abs_value / etl::math::pow(static_cast<T>(10), static_cast<T>(exponent_int));
         // Correct for floating-point rounding in log10/pow
         if (value >= static_cast<T>(10))
         {
@@ -1955,10 +1892,10 @@ namespace etl
       }
 
       T integral;
-      T fractional = format_modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
@@ -1996,7 +1933,7 @@ namespace etl
       bool sign = signbit(value);
 
       T integral;
-      T fractional = format_modf(value, &integral);
+      T fractional = etl::math::modf(value, &integral);
 
       // Take absolute values to avoid casting negative values to unsigned
       if (sign)
@@ -2006,7 +1943,7 @@ namespace etl
       }
 
       unsigned long long int scale          = int_pow<unsigned long long int>(10, fractional_decimals);
-      unsigned long long int fractional_int = static_cast<unsigned long long int>(format_round(fractional * scale));
+      unsigned long long int fractional_int = static_cast<unsigned long long int>(etl::math::round(fractional * scale));
       unsigned long long int integral_int   = static_cast<unsigned long long int>(integral);
 
       if (fractional_int == scale)
