@@ -92,6 +92,7 @@ bool write(bool value)
 **Description**  
 Write a boolean value to the stream.
 Returns `true` if successful, otherwise `false`.
+If a callback is set, it receives the one-byte boolean value after a successful write.
 
 ---
 
