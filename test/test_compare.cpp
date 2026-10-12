@@ -91,6 +91,20 @@ namespace
     }
   };
 
+  struct ComparatorOnlyObject
+  {
+    int a;
+    int b;
+  };
+
+  struct LessBySecond
+  {
+    bool constexpr operator()(const ComparatorOnlyObject& lhs, const ComparatorOnlyObject& rhs) const
+    {
+      return lhs.b < rhs.b;
+    }
+  };
+
   typedef etl::compare<Object, LessTest> CompareTest;
 
   SUITE(test_compare)
@@ -191,5 +205,139 @@ namespace
       CHECK_EQUAL(CompareInt::Greater, cmp_test_greater);
       CHECK_EQUAL(CompareInt::Equal, cmp_test_equal);
     }
+
+#if ETL_USING_CPP20
+    //*************************************************************************
+    TEST(test_strong_ordering)
+    {
+      constexpr etl::strong_ordering ordering_less(etl::strong_ordering::less);
+      constexpr etl::strong_ordering ordering_equal(etl::strong_ordering::equal);
+      constexpr etl::strong_ordering ordering_greater(etl::strong_ordering::greater);
+
+      CHECK(ordering_less < 0);
+      CHECK(ordering_less <= 0);
+      CHECK(!(ordering_less == 0));
+      CHECK(!(ordering_less > 0));
+      CHECK(ordering_equal == 0);
+      CHECK(ordering_equal <= 0);
+      CHECK(ordering_equal >= 0);
+      CHECK(ordering_greater > 0);
+      CHECK(ordering_greater >= 0);
+      CHECK(!(ordering_greater == 0));
+
+      // Reversed operands.
+      CHECK(0 > ordering_less);
+      CHECK(0 < ordering_greater);
+
+      static_assert(etl::strong_ordering::equivalent == etl::strong_ordering::equal, "Equivalent must alias equal");
+      static_assert(etl::is_same<etl::weak_ordering, decltype(etl::weak_ordering(etl::strong_ordering::less))>::value,
+                    "Must convert to weak_ordering");
+      CHECK(etl::weak_ordering(etl::strong_ordering::less) < 0);
+      CHECK(etl::partial_ordering(etl::strong_ordering::greater) > 0);
+    }
+
+    //*************************************************************************
+    TEST(test_make_strong_ordering)
+    {
+      constexpr etl::strong_ordering ordering_less    = etl::make_strong_ordering(-1);
+      constexpr etl::strong_ordering ordering_equal   = etl::make_strong_ordering(0);
+      constexpr etl::strong_ordering ordering_greater = etl::make_strong_ordering(1);
+
+      CHECK(ordering_less < 0);
+      CHECK(ordering_equal == 0);
+      CHECK(ordering_greater > 0);
+
+      static_assert(etl::is_same<decltype(etl::make_strong_ordering(0)), etl::strong_ordering>::value, "Must return etl::strong_ordering");
+    }
+
+    //*************************************************************************
+    TEST(test_weak_ordering)
+    {
+      constexpr etl::weak_ordering ordering_less(etl::weak_ordering::less);
+      constexpr etl::weak_ordering ordering_equivalent(etl::weak_ordering::equivalent);
+      constexpr etl::weak_ordering ordering_greater(etl::weak_ordering::greater);
+
+      CHECK(ordering_less < 0);
+      CHECK(ordering_equivalent == 0);
+      CHECK(ordering_greater > 0);
+
+      CHECK(0 > ordering_less);
+      CHECK(0 < ordering_greater);
+
+      static_assert(etl::weak_ordering::equivalent == 0, "Equivalent must be zero");
+      CHECK(etl::partial_ordering(etl::weak_ordering::less) < 0);
+    }
+
+    //*************************************************************************
+    TEST(test_make_weak_ordering)
+    {
+      constexpr etl::weak_ordering ordering_less       = etl::make_weak_ordering(-1);
+      constexpr etl::weak_ordering ordering_equivalent = etl::make_weak_ordering(0);
+      constexpr etl::weak_ordering ordering_greater    = etl::make_weak_ordering(1);
+
+      CHECK(ordering_less < 0);
+      CHECK(ordering_equivalent == 0);
+      CHECK(ordering_greater > 0);
+
+      static_assert(etl::is_same<decltype(etl::make_weak_ordering(0)), etl::weak_ordering>::value, "Must return etl::weak_ordering");
+    }
+
+    //*************************************************************************
+    TEST(test_partial_ordering)
+    {
+      constexpr etl::partial_ordering ordering_less(etl::partial_ordering::less);
+      constexpr etl::partial_ordering ordering_equivalent(etl::partial_ordering::equivalent);
+      constexpr etl::partial_ordering ordering_greater(etl::partial_ordering::greater);
+      constexpr etl::partial_ordering ordering_unordered(etl::partial_ordering::unordered);
+
+      CHECK(ordering_less < 0);
+      CHECK(ordering_equivalent == 0);
+      CHECK(ordering_greater > 0);
+
+      // An unordered result compares false against zero in every direction.
+      CHECK(!(ordering_unordered < 0));
+      CHECK(!(ordering_unordered <= 0));
+      CHECK(!(ordering_unordered == 0));
+      CHECK(!(ordering_unordered >= 0));
+      CHECK(!(ordering_unordered > 0));
+      CHECK(ordering_unordered != 0);
+
+      static_assert(etl::partial_ordering::equivalent == 0, "Equivalent must be zero");
+    }
+
+    //*************************************************************************
+    TEST(test_make_partial_ordering)
+    {
+      constexpr etl::partial_ordering ordering_less       = etl::make_partial_ordering(-1);
+      constexpr etl::partial_ordering ordering_equivalent = etl::make_partial_ordering(0);
+      constexpr etl::partial_ordering ordering_greater    = etl::make_partial_ordering(1);
+
+      CHECK(ordering_less < 0);
+      CHECK(ordering_equivalent == 0);
+      CHECK(ordering_greater > 0);
+
+      static_assert(etl::is_same<decltype(etl::make_partial_ordering(0)), etl::partial_ordering>::value, "Must return etl::partial_ordering");
+    }
+
+    //*************************************************************************
+    TEST(test_three_way_compare_custom_less)
+    {
+      constexpr ComparatorOnlyObject lhs = {5, 1};
+      constexpr ComparatorOnlyObject rhs = {1, 2};
+      constexpr ComparatorOnlyObject eq  = {9, 1};
+
+      constexpr int cmp_less    = etl::three_way_compare<ComparatorOnlyObject, LessBySecond>(lhs, rhs);
+      constexpr int cmp_greater = etl::three_way_compare<ComparatorOnlyObject, LessBySecond>(rhs, lhs);
+      constexpr int cmp_equal   = etl::three_way_compare<ComparatorOnlyObject, LessBySecond>(lhs, eq);
+
+      CHECK_EQUAL(-1, cmp_less);
+      CHECK_EQUAL(1, cmp_greater);
+      CHECK_EQUAL(0, cmp_equal);
+
+      CHECK(etl::make_strong_ordering(cmp_less) < 0);
+      CHECK(etl::make_strong_ordering(cmp_greater) > 0);
+      CHECK(etl::make_strong_ordering(cmp_equal) == 0);
+    }
+#endif
   }
 } // namespace

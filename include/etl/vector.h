@@ -393,7 +393,7 @@ namespace etl
     typename etl::enable_if<!etl::is_integral<TIterator>::value
                               && etl::is_convertible<typename etl::iterator_traits<TIterator>::value_type, T>::value,
                             typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type>::type
-      assign(TIterator first, TIterator last) ETL_NOEXCEPT_IF((etl::is_nothrow_copy_constructible<T>::value && ETL_NOT_USING_EXCEPTIONS))
+      assign(TIterator first, TIterator last)
     {
 #if ETL_USING_CPP11
       ETL_STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type,
@@ -2082,7 +2082,6 @@ namespace etl
     /// Copy constructor.
     //*************************************************************************
     vector_ext(const vector_ext& other, void* buffer, size_t max_size)
-      ETL_NOEXCEPT_IF((etl::is_nothrow_copy_constructible<T>::value && ETL_NOT_USING_EXCEPTIONS))
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       if (&other != this)
@@ -2094,7 +2093,7 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    vector_ext& operator=(const vector_ext& rhs) ETL_NOEXCEPT_IF((etl::is_nothrow_copy_constructible<T>::value && ETL_NOT_USING_EXCEPTIONS))
+    vector_ext& operator=(const vector_ext& rhs)
     {
       if (&rhs != this)
       {
@@ -2109,7 +2108,6 @@ namespace etl
     /// Move constructor.
     //*************************************************************************
     vector_ext(vector_ext&& other, void* buffer, size_t max_size)
-      ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value && ETL_NOT_USING_EXCEPTIONS))
       : etl::ivector<T>(reinterpret_cast<T*>(buffer), max_size)
     {
       if (&other != this)
@@ -2123,7 +2121,7 @@ namespace etl
     //*************************************************************************
     /// Move assignment operator.
     //*************************************************************************
-    vector_ext& operator=(vector_ext&& rhs) ETL_NOEXCEPT_IF((etl::is_nothrow_move_constructible<T>::value && ETL_NOT_USING_EXCEPTIONS))
+    vector_ext& operator=(vector_ext&& rhs)
     {
       if (&rhs != this)
       {

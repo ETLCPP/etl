@@ -423,3 +423,4 @@ include/etl/iterator.h~RFfd5eda.TMP
 test/vs2022/Build
 docs/Messaging
 test/vs2026/Build
+test/include
