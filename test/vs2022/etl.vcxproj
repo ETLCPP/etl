@@ -3596,8 +3596,6 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_unused_function_push.h" />
     <ClInclude Include="..\..\include\etl\private\tuple_element.h" />
     <ClInclude Include="..\..\include\etl\private\tuple_size.h" />
-    <ClInclude Include="..\..\include\etl\private\variant_select_do_operator.h" />
-    <ClInclude Include="..\..\include\etl\private\variant_select_do_visitor.h" />
     <ClInclude Include="..\..\include\etl\pseudo_moving_average.h" />
     <ClInclude Include="..\..\include\etl\delegate.h" />
     <ClInclude Include="..\..\include\etl\delegate_service.h" />
