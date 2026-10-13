@@ -234,6 +234,7 @@ target_sources(tests PRIVATE
 		function.h.t.cpp
 		functional.h.t.cpp
 		function_traits.h.t.cpp
+		future.h.t.cpp
 		gamma.h.t.cpp
 		gcd.h.t.cpp
 		generic_pool.h.t.cpp

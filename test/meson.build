@@ -185,6 +185,7 @@ etl_test_sources = files(
 	'test_function.cpp',
 	'test_function_traits.cpp',
 	'test_functional.cpp',
+	'test_future.cpp',
 	'test_gamma.cpp',
 	'test_hash.cpp',
 	'test_hfsm.cpp',
