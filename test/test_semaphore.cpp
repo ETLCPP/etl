@@ -35,6 +35,8 @@ SOFTWARE.
 
 using namespace test::clocks;
 
+#if ETL_USING_ATOMIC
+
 namespace
 {
   SUITE(test_semaphore)
@@ -187,3 +189,5 @@ namespace
     }
   }
 } // namespace
+
+#endif
