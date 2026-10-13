@@ -54,7 +54,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=${{ matrix.cxx_standard }} ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=${{ matrix.cxx_standard }} ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
         
@@ -79,7 +79,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=${{ matrix.cxx_standard }} ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=${{ matrix.cxx_standard }} ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
         
@@ -105,7 +105,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=${{ matrix.cxx_standard }} ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=${{ matrix.cxx_standard }} ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
 
@@ -131,7 +131,7 @@ jobs:
 
     - name: Build
       run: |
-        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=${{ matrix.cxx_standard }} ./
+        cmake -G "Visual Studio 17 2022" -AWin32 -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=${{ matrix.cxx_standard }} ./
         MSBuild.exe -version
         MSBuild.exe .\etl.sln
 

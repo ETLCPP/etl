@@ -395,6 +395,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_at_out_of_bounds)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.at(data.size()), etl::deque_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST(test_at_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -406,6 +414,14 @@ namespace
       CHECK_EQUAL(compare_data.at(3), data.at(3));
       CHECK_EQUAL(compare_data.at(4), data.at(4));
       CHECK_EQUAL(compare_data.at(5), data.at(5));
+    }
+
+    //*************************************************************************
+    TEST(test_at_const_out_of_bounds)
+    {
+      const DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.at(data.size()), etl::deque_out_of_bounds);
     }
 
     //*************************************************************************
@@ -423,6 +439,14 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_index_operator_out_of_bounds)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data[data.size()], etl::deque_out_of_bounds);
+    }
+
+    //*************************************************************************
     TEST(test_index_operator_const)
     {
       const Compare_Data compare_data(initial_data.begin(), initial_data.end());
@@ -434,6 +458,14 @@ namespace
       CHECK_EQUAL(compare_data[3], data[3]);
       CHECK_EQUAL(compare_data[4], data[4]);
       CHECK_EQUAL(compare_data[5], data[5]);
+    }
+
+    //*************************************************************************
+    TEST(test_index_operator_const_out_of_bounds)
+    {
+      const DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data[data.size()], etl::deque_out_of_bounds);
     }
 
     //*************************************************************************
