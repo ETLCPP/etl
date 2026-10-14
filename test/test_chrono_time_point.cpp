@@ -399,11 +399,11 @@ namespace
       using TimePoint = Chrono::time_point<test_clock, Chrono::milliseconds>;
 
       TimePoint tp(Chrono::milliseconds(1234)); // 1234 milliseconds
-      auto      floored_tp = floor<Chrono::seconds>(tp);
+      auto      floored_tp = Chrono::floor<Chrono::seconds>(tp);
       CHECK_EQUAL(1, floored_tp.time_since_epoch().count());
 
       TimePoint negative_tp(Chrono::milliseconds(-1234)); // -1234 milliseconds
-      auto      floored_negative_tp = floor<Chrono::seconds>(negative_tp);
+      auto      floored_negative_tp = Chrono::floor<Chrono::seconds>(negative_tp);
       CHECK_EQUAL(-2, floored_negative_tp.time_since_epoch().count());
     }
 
@@ -413,11 +413,11 @@ namespace
       using TimePoint = Chrono::time_point<test_clock, Chrono::milliseconds>;
 
       TimePoint tp(Chrono::milliseconds(1234)); // 1234 milliseconds
-      auto      ceil_tp = ceil<Chrono::seconds>(tp);
+      auto      ceil_tp = Chrono::ceil<Chrono::seconds>(tp);
       CHECK_EQUAL(2, ceil_tp.time_since_epoch().count());
 
       TimePoint negative_tp(Chrono::milliseconds(-1234)); // -1234 milliseconds
-      auto      ceil_negative_tp = ceil<Chrono::seconds>(negative_tp);
+      auto      ceil_negative_tp = Chrono::ceil<Chrono::seconds>(negative_tp);
       CHECK_EQUAL(-1, ceil_negative_tp.time_since_epoch().count());
     }
 
@@ -426,16 +426,16 @@ namespace
     {
       using TimePoint = Chrono::time_point<test_clock, Chrono::milliseconds>;
 
-      TimePoint tp1(Chrono::milliseconds(1500));      // 1500 milliseconds
-      auto      round1 = round<Chrono::seconds>(tp1); // Round to seconds
+      TimePoint tp1(Chrono::milliseconds(1500));              // 1500 milliseconds
+      auto      round1 = Chrono::round<Chrono::seconds>(tp1); // Round to seconds
       CHECK_EQUAL(2, round1.time_since_epoch().count());
 
-      TimePoint tp2(Chrono::milliseconds(2500));      // 2500 milliseconds
-      auto      round2 = round<Chrono::seconds>(tp2); // Round to seconds
+      TimePoint tp2(Chrono::milliseconds(2500));              // 2500 milliseconds
+      auto      round2 = Chrono::round<Chrono::seconds>(tp2); // Round to seconds
       CHECK_EQUAL(2, round2.time_since_epoch().count());
 
-      TimePoint tp3(Chrono::milliseconds(-1500));     // -1500 milliseconds
-      auto      round3 = round<Chrono::seconds>(tp3); // Round to seconds
+      TimePoint tp3(Chrono::milliseconds(-1500));             // -1500 milliseconds
+      auto      round3 = Chrono::round<Chrono::seconds>(tp3); // Round to seconds
       CHECK_EQUAL(-2, round3.time_since_epoch().count());
     }
 

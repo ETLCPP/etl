@@ -406,7 +406,7 @@ namespace etl
       uworkspace_t integral   = static_cast<uworkspace_t>(f_integral);
 
       // Find the fractional part of the floating point.
-      uworkspace_t fractional = static_cast<uworkspace_t>(::round((etl::absolute(value) - f_integral) * multiplier));
+      uworkspace_t fractional = static_cast<uworkspace_t>(etl::math::round((etl::absolute(value) - f_integral) * multiplier));
 
       // Check for a rounding carry to the integral.
       if (fractional == multiplier)
@@ -434,9 +434,9 @@ namespace etl
 
       iterator start = str.end();
 
-      if (isnan(value) || isinf(value))
+      if (etl::is_nan(value) || etl::is_infinity(value))
       {
-        etl::private_to_string::add_nan_inf(isnan(value), isinf(value), etl::is_negative(value), str, format);
+        etl::private_to_string::add_nan_inf(etl::is_nan(value), etl::is_infinity(value), etl::is_negative(value), str, format);
       }
       else
       {

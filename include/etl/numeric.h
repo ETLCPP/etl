@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_NUMERIC_INCLUDED
 
 #include "platform.h"
+#include "absolute.h"
 #include "iterator.h"
 #include "limits.h"
 #include "type_traits.h"
@@ -74,10 +75,10 @@ namespace etl
     T lo = etl::numeric_limits<T>::min() * T(2);
     T hi = etl::numeric_limits<T>::max() * T(2);
 
-    return ((abs(a) <= hi) && (abs(b) <= hi)) ? (a + b) / T(2)
-           : (abs(a) < lo)                    ? a + (b / T(2))
-           : (abs(b) < lo)                    ? ((a / T(2)) + b)
-                                              : (a / T(2)) + (b / T(2));
+    return ((etl::absolute(a) <= hi) && (etl::absolute(b) <= hi)) ? (a + b) / T(2)
+           : (etl::absolute(a) < lo)                              ? a + (b / T(2))
+           : (etl::absolute(b) < lo)                              ? ((a / T(2)) + b)
+                                                                  : (a / T(2)) + (b / T(2));
   }
 
   //***************************************************************************
