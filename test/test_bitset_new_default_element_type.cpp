@@ -310,6 +310,8 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+
+      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -325,6 +327,8 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+
+      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -340,6 +344,8 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+
+      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -355,54 +361,29 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+
+      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
-    TEST(test_construct_from_nullptr_char_string)
+    TEST(test_construct_from_64_bit_char_string_where_the_bitset_size_is_60)
     {
-      const char* s = nullptr;
+      std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data("110001001000110100010101100111001100010010001101000101011001");
 
-      etl::bitset<60> data(s);
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
 
-      CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0, data.count());
+      for (size_t i = 0UL; i < data.size(); ++i)
+      {
+        CHECK_EQUAL(compare.test(i), data.test(i));
+      }
+
+      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
-    TEST(test_construct_from_nullptr_wchar_t_string)
-    {
-      const wchar_t* s = nullptr;
-
-      etl::bitset<60> data(s);
-
-      CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0, data.count());
-    }
-
-    //*************************************************************************
-    TEST(test_construct_from_nullptr_char16_t_string)
-    {
-      const char16_t* s = nullptr;
-
-      etl::bitset<60> data(s);
-
-      CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0, data.count());
-    }
-
-    //*************************************************************************
-    TEST(test_construct_from_nullptr_char32_t_string)
-    {
-      const char32_t* s = nullptr;
-
-      etl::bitset<60> data(s);
-
-      CHECK_EQUAL(60, data.size());
-      CHECK_EQUAL(0, data.count());
-    }
-
-    //*************************************************************************
-    TEST(test_construct_from_excess_string)
+    TEST(test_construct_from_69_bit_char_string_where_the_bitset_size_is_64)
     {
       std::bitset<64> compare("110001001000110100010101100111001100010010001101000101011001111100001");
       etl::bitset<64> data("110001001000110100010101100111001100010010001101000101011001111100001");
@@ -419,6 +400,56 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
+
+      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_char_string)
+    {
+      const char* s = nullptr;
+
+      etl::bitset<60> data(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+      CHECK_EQUAL(0, data.to_ullong());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_wchar_t_string)
+    {
+      const wchar_t* s = nullptr;
+
+      etl::bitset<60> data(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+      CHECK_EQUAL(0, data.to_ullong());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_char16_t_string)
+    {
+      const char16_t* s = nullptr;
+
+      etl::bitset<60> data(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+      CHECK_EQUAL(0, data.to_ullong());
+    }
+
+    //*************************************************************************
+    TEST(test_construct_from_nullptr_char32_t_string)
+    {
+      const char32_t* s = nullptr;
+
+      etl::bitset<60> data(s);
+
+      CHECK_EQUAL(60, data.size());
+      CHECK_EQUAL(0, data.count());
+      CHECK_EQUAL(0, data.to_ullong());
     }
 
     //*************************************************************************
@@ -2709,6 +2740,43 @@ namespace
       etl::bitset<32> b(0x12345678UL);
 
       CHECK_EQUAL(32, ETL_OR_STD17::size(b));
+    }
+
+    //*************************************************************************
+    TEST(test_issue_497)
+    {
+      etl::bitset<11, uint8_t> bits;
+
+      // Check the initial state of the bitset.
+      size_t count_set  = bits.count();
+      size_t count_size = bits.size();
+      bool   all_set    = bits.all();
+
+      CHECK_EQUAL(0, count_set);
+      CHECK_EQUAL(11, count_size);
+      CHECK_EQUAL(false, all_set);
+
+      // Copy flipped bits to a new bitset.
+      etl::bitset<11, uint8_t> negated_bits = ~bits;
+
+      count_set  = negated_bits.count();
+      count_size = negated_bits.size();
+      all_set    = negated_bits.all();
+
+      CHECK_EQUAL(11, count_set);
+      CHECK_EQUAL(11, count_size);
+      CHECK_EQUAL(true, all_set);
+
+      // Flip the bits in the original bitset.
+      bits.flip();
+
+      count_set  = bits.count();
+      count_size = bits.size();
+      all_set    = bits.all();
+
+      CHECK_EQUAL(11, count_set);
+      CHECK_EQUAL(11, count_size);
+      CHECK_EQUAL(true, all_set);
     }
   }
 } // namespace

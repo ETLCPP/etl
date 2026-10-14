@@ -554,18 +554,18 @@ namespace etl
     //*************************************************************************
     /// Flip all of the bits.
     //*************************************************************************
-    static ETL_CONSTEXPR14 void flip_all(pointer pbuffer, size_t /*number_of_elements*/) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void flip_all(pointer pbuffer, size_t /*number_of_elements*/, element_type top_mask) ETL_NOEXCEPT
     {
-      *pbuffer = ~*pbuffer;
+      *pbuffer = (~*pbuffer) & top_mask;
     }
 
     //*************************************************************************
     /// Flip some of the bits.
     //*************************************************************************
-    static ETL_CONSTEXPR14 void flip_bits(pointer pbuffer, element_type mask = etl::integral_limits<element_type>::max) ETL_NOEXCEPT
-    {
-      *pbuffer ^= mask;
-    }
+    // static ETL_CONSTEXPR14 void flip_bits(pointer pbuffer, element_type mask = etl::integral_limits<element_type>::max) ETL_NOEXCEPT
+    //{
+    //  *pbuffer ^= mask;
+    //}
 
     //*************************************************************************
     /// Flip the bit at the position.
@@ -1253,9 +1253,9 @@ namespace etl
     //*************************************************************************
     /// Flip all of the bits.
     //*************************************************************************
-    static ETL_CONSTEXPR14 void flip_all(pointer pbuffer, size_t number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void flip_all(pointer pbuffer, size_t number_of_elements, element_type top_mask) ETL_NOEXCEPT
     {
-      operator_not(pbuffer, number_of_elements);
+      operator_not(pbuffer, number_of_elements, top_mask);
     }
 
     //*************************************************************************
@@ -1398,13 +1398,16 @@ namespace etl
     //*************************************************************************
     /// operator not
     //*************************************************************************
-    static ETL_CONSTEXPR14 void operator_not(pointer pbuffer, size_t number_of_elements) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_not(pointer pbuffer, size_t number_of_elements, element_type top_mask) ETL_NOEXCEPT
     {
       while (number_of_elements-- != 0)
       {
         *pbuffer = ~*pbuffer;
         ++pbuffer;
       }
+
+      --pbuffer;            // Step back to the last element.
+      *pbuffer &= top_mask; // Clear unused bits.
     }
 
     //*************************************************************************
@@ -2248,7 +2251,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset<Active_Bits, TElement>& flip() ETL_NOEXCEPT
     {
-      implementation::flip_all(buffer, Number_Of_Elements);
+      implementation::flip_all(buffer, Number_Of_Elements, Top_Mask);
 
       return *this;
     }
@@ -2389,7 +2392,7 @@ namespace etl
     {
       etl::bitset<Active_Bits, TElement> temp(*this);
 
-      implementation::flip_all(temp.buffer, Number_Of_Elements);
+      implementation::flip_all(temp.buffer, Number_Of_Elements, Top_Mask);
 
       return temp;
     }
@@ -3245,7 +3248,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& flip() ETL_NOEXCEPT
     {
-      implementation::flip_all(pbuffer, Number_Of_Elements);
+      implementation::flip_all(pbuffer, Number_Of_Elements, Top_Mask);
 
       return *this;
     }
