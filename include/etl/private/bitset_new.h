@@ -560,14 +560,6 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Flip some of the bits.
-    //*************************************************************************
-    // static ETL_CONSTEXPR14 void flip_bits(pointer pbuffer, element_type mask = etl::integral_limits<element_type>::max) ETL_NOEXCEPT
-    //{
-    //  *pbuffer ^= mask;
-    //}
-
-    //*************************************************************************
     /// Flip the bit at the position.
     //*************************************************************************
     static ETL_CONSTEXPR14 void flip_position(pointer pbuffer, size_t position)
