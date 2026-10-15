@@ -403,11 +403,13 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_construct_from_nullptr_char_string)
+    TEST(test_construct_from_64_bit_char_string_where_the_bitset_size_is_60)
     {
-      const char* s = nullptr;
+      std::bitset<60> compare("110001001000110100010101100111001100010010001101000101011001");
+      etl::bitset<60> data("110001001000110100010101100111001100010010001101000101011001");
 
-      etl::bitset<60> data(s);
+      CHECK_EQUAL(compare.size(), data.size());
+      CHECK_EQUAL(compare.count(), data.count());
 
       CHECK_EQUAL(60, data.size());
       CHECK_EQUAL(0, data.count());
