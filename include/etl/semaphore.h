@@ -34,16 +34,16 @@ SOFTWARE.
 #include "semaphore/semaphore_exceptions.h"
 
 #if defined(ETL_TARGET_OS_FREERTOS)
-  #include "semaphore/semaphore_freertos.h"
+  #include "semaphore/semaphore_freertos.h" // IWYU pragma: export
   #define ETL_HAS_SEMAPHORE 1
 #elif ETL_USING_STL && ETL_USING_CPP20 && ETL_USING_STD_SEMAPHORE
-  #include "semaphore/semaphore_std.h"
+  #include "semaphore/semaphore_std.h" // IWYU pragma: export
   #define ETL_HAS_SEMAPHORE 1
 #elif defined(ETL_COMPILER_GCC) && ETL_USING_CPP11
-  #include "semaphore/semaphore_gcc_sync.h"
+  #include "semaphore/semaphore_gcc_sync.h" // IWYU pragma: export
   #define ETL_HAS_SEMAPHORE 1
 #elif defined(ETL_COMPILER_CLANG) && ETL_USING_CPP11
-  #include "semaphore/semaphore_clang_sync.h"
+  #include "semaphore/semaphore_clang_sync.h" // IWYU pragma: export
   #define ETL_HAS_SEMAPHORE 1
 #else
   #define ETL_HAS_SEMAPHORE 0
