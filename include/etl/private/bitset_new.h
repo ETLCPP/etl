@@ -666,18 +666,10 @@ namespace etl
     }
 
     //*************************************************************************
-    /// operator ~
-    /// NOT the value in the buffer
-    //*************************************************************************
-    static ETL_CONSTEXPR14 void operator_not(pointer pbuffer, size_t /*number_of_elements*/) ETL_NOEXCEPT
-    {
-      *pbuffer = ~*pbuffer;
-    }
-
-    //*************************************************************************
     /// operator_shift_left
     //*************************************************************************
-    static ETL_CONSTEXPR14 void operator_shift_left(pointer pbuffer, size_t /*number_of_elements*/, size_t active_bits, size_t shift) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_shift_left(pointer pbuffer, size_t /*number_of_elements*/, size_t active_bits, size_t shift,
+                                             element_type top_mask) ETL_NOEXCEPT
     {
       if (shift >= active_bits)
       {
@@ -686,6 +678,7 @@ namespace etl
       else
       {
         *pbuffer <<= shift;
+        *pbuffer &= top_mask;
       }
     }
 
@@ -716,9 +709,10 @@ namespace etl
     /// Initialise from an unsigned long long.
     //*************************************************************************
     template <typename TElementType>
-    static ETL_CONSTEXPR14 void initialise(pointer pbuffer, size_t /*number_of_elements*/, unsigned long long value) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void initialise(pointer pbuffer, size_t /*number_of_elements*/, unsigned long long value, TElementType top_mask)
+      ETL_NOEXCEPT
     {
-      *pbuffer = static_cast<TElementType>(value);
+      *pbuffer = static_cast<TElementType>(value) & top_mask;
     }
 
     //*************************************************************************
@@ -1405,7 +1399,8 @@ namespace etl
     //*************************************************************************
     /// operator_shift_left
     //*************************************************************************
-    static ETL_CONSTEXPR14 void operator_shift_left(pointer pbuffer, size_t number_of_elements, size_t active_bits, size_t shift) ETL_NOEXCEPT
+    static ETL_CONSTEXPR14 void operator_shift_left(pointer pbuffer, size_t number_of_elements, size_t active_bits, size_t shift,
+                                             element_type top_mask) ETL_NOEXCEPT
     {
       if (shift >= active_bits)
       {
@@ -1458,6 +1453,8 @@ namespace etl
         {
           pbuffer[i] = 0;
         }
+
+        pbuffer[(number_of_elements - 1U)] &= top_mask;
       }
     }
 
@@ -1538,7 +1535,7 @@ namespace etl
     template <typename TElementType>
     static
       ETL_CONSTEXPR14 typename etl::enable_if< etl::integral_limits<TElementType>::bits == etl::integral_limits<unsigned long long>::bits, void>::type
-      initialise(pointer pbuffer, size_t number_of_elements, unsigned long long value) ETL_NOEXCEPT
+      initialise(pointer pbuffer, size_t number_of_elements, unsigned long long value, TElementType top_mask) ETL_NOEXCEPT
     {
       size_t i = 0UL;
 
@@ -1550,6 +1547,8 @@ namespace etl
       {
         pbuffer[i++] = All_Clear_Element;
       }
+
+      pbuffer[number_of_elements - 1] &= top_mask;
     }
 
     //*************************************************************************
@@ -1560,7 +1559,7 @@ namespace etl
     template <typename TElementType>
     static
       ETL_CONSTEXPR14 typename etl::enable_if< etl::integral_limits<TElementType>::bits != etl::integral_limits<unsigned long long>::bits, void>::type
-      initialise(pointer pbuffer, size_t number_of_elements, unsigned long long value) ETL_NOEXCEPT
+      initialise(pointer pbuffer, size_t number_of_elements, unsigned long long value, element_type top_mask) ETL_NOEXCEPT
     {
       size_t i = 0UL;
 
@@ -1578,6 +1577,8 @@ namespace etl
       {
         pbuffer[i++] = All_Clear_Element;
       }
+
+      pbuffer[number_of_elements - 1] &= top_mask;
     }
 
     //*************************************************************************
@@ -1810,7 +1811,7 @@ namespace etl
     ETL_CONSTEXPR14 bitset(TValue value, typename etl::enable_if<is_integral<TValue>::value>::type* = 0) ETL_NOEXCEPT
       : buffer()
     {
-      implementation::template initialise<element_type>(buffer, Number_Of_Elements, static_cast<unsigned long long>(value));
+      implementation::template initialise<element_type>(buffer, Number_Of_Elements, static_cast<unsigned long long>(value), Top_Mask);
     }
 
     //*************************************************************************
@@ -2396,7 +2397,7 @@ namespace etl
     {
       etl::bitset<Active_Bits, TElement> temp(*this);
 
-      implementation::operator_shift_left(temp.buffer, Number_Of_Elements, Active_Bits, shift);
+      implementation::operator_shift_left(temp.buffer, Number_Of_Elements, Active_Bits, shift, Top_Mask);
 
       return temp;
     }
@@ -2412,7 +2413,7 @@ namespace etl
       }
       else
       {
-        implementation::operator_shift_left(buffer, Number_Of_Elements, Active_Bits, shift);
+        implementation::operator_shift_left(buffer, Number_Of_Elements, Active_Bits, shift, Top_Mask);
       }
 
       return *this;
@@ -2749,7 +2750,7 @@ namespace etl
       : pbuffer(pbuffer_)
     {
       ETL_ASSERT(pbuffer != ETL_NULLPTR, ETL_ERROR(etl::bitset_invalid_buffer));
-      implementation::template initialise<element_type>(pbuffer, Number_Of_Elements, value);
+      implementation::template initialise<element_type>(pbuffer, Number_Of_Elements, value, Top_Mask);
     }
 
     //*************************************************************************
@@ -2759,7 +2760,7 @@ namespace etl
     ETL_CONSTEXPR14 bitset_ext(TValue value, buffer_type& buffer, typename etl::enable_if<is_integral<TValue>::value>::type* = 0) ETL_NOEXCEPT
       : pbuffer(buffer.data())
     {
-      implementation::template initialise<element_type>(pbuffer, Number_Of_Elements, static_cast<unsigned long long>(value));
+      implementation::template initialise<element_type>(pbuffer, Number_Of_Elements, static_cast<unsigned long long>(value), Top_Mask);
     }
 
     //*************************************************************************
@@ -3343,7 +3344,7 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 bitset_ext<Active_Bits, TElement>& operator<<=(size_t shift) ETL_NOEXCEPT
     {
-      implementation::operator_shift_left(pbuffer, Number_Of_Elements, Active_Bits, shift);
+      implementation::operator_shift_left(pbuffer, Number_Of_Elements, Active_Bits, shift, Top_Mask);
 
       return *this;
     }

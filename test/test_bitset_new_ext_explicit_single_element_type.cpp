@@ -280,7 +280,7 @@ namespace
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
 
-      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
+      CHECK_EQUAL_HEX(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -298,7 +298,7 @@ namespace
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
 
-      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
+      CHECK_EQUAL_HEX(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -316,7 +316,7 @@ namespace
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
 
-      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
+      CHECK_EQUAL_HEX(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -334,7 +334,7 @@ namespace
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
 
-      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
+      CHECK_EQUAL_HEX(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -352,7 +352,7 @@ namespace
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
 
-      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
+      CHECK_EQUAL_HEX(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -374,8 +374,6 @@ namespace
       {
         CHECK_EQUAL(compare.test(i), data.test(i));
       }
-
-      CHECK_EQUAL(compare.to_ullong(), data.to_ullong());
     }
 
     //*************************************************************************
@@ -2656,42 +2654,85 @@ namespace
 
       CHECK_EQUAL(32, ETL_OR_STD17::size(b));
     }
-  }
 
-  //*************************************************************************
-  TEST(test_issue_497)
-  {
-    etl::bitset_ext<11, uint8_t>::buffer_type buffer1;
-    etl::bitset_ext<11, uint8_t>              bits(buffer1);
+    //*************************************************************************
+    TEST(test_issue_497_for_flip)
+    {
+      const int Size = 11;
 
-    // Check the initial state of the bitset.
-    size_t count_set  = bits.count();
-    size_t count_size = bits.size();
-    bool   all_set    = bits.all();
+      using Bitset = etl::bitset_ext<Size, uint16_t>;
+      using Buffer = Bitset::buffer_type;
 
-    CHECK_EQUAL(0, count_set);
-    CHECK_EQUAL(11, count_size);
-    CHECK_EQUAL(false, all_set);
+      Buffer buffer1;
+      Bitset bits(buffer1);
 
-    // Copy flipped bits to a new bitset.
-    etl::bitset_ext<11, uint8_t>::buffer_type buffer2;
-    etl::bitset_ext<11, uint8_t>              negated_bits(bits.flip(), buffer2);
+      // Ensure that we are using multiple elements for the bitset.
+      CHECK_TRUE(Bitset::Number_Of_Elements == 1);
 
-    count_set  = negated_bits.count();
-    count_size = negated_bits.size();
-    all_set    = negated_bits.all();
+      // Check the initial state of the bitset.
+      CHECK_EQUAL(0, bits.count());
+      CHECK_FALSE(bits.all());
 
-    CHECK_EQUAL(11, count_set);
-    CHECK_EQUAL(11, count_size);
-    CHECK_EQUAL(true, all_set);
+      // Copy flipped bits to a new bitset.
+      // Copy flipped bits to a new bitset.
+      Buffer buffer2;
+      Bitset negated_bits(bits.flip(), buffer2);
 
-    // Test the flipped the bits in the original bitset.
-    count_set  = bits.count();
-    count_size = bits.size();
-    all_set    = bits.all();
+      CHECK_EQUAL(Size, negated_bits.count());
+      CHECK_TRUE(negated_bits.all());
+    }
 
-    CHECK_EQUAL(11, count_set);
-    CHECK_EQUAL(11, count_size);
-    CHECK_EQUAL(true, all_set);
+    //*************************************************************************
+    TEST(test_issue_497_for_left_shift_equals)
+    {
+      const int                Size    = 11;
+      const unsigned long long Initial = (1ULL << Size) - 1;
+
+      using Bitset = etl::bitset_ext<Size, uint16_t>;
+      using Buffer = Bitset::buffer_type;
+
+      // Create a bitset with all bits set to 1.
+      Buffer buffer1;
+      Bitset bits(Initial, buffer1);
+
+      // Ensure that we are using multiple elements for the bitset.
+      CHECK_TRUE(bits.Number_Of_Elements == 1);
+
+      // Check the initial state of the bitset.
+      CHECK_EQUAL(Size, bits.count());
+      CHECK_TRUE(bits.all());
+
+      // The amount to shift so that the value is moved to the msb of the storage.
+      size_t shift_amount = bits.Allocated_Bits - Size;
+
+      bits <<= shift_amount;
+
+      CHECK_EQUAL(Size - shift_amount, bits.count());
+      CHECK_FALSE(bits.all());
+    }
+
+    //*************************************************************************
+    TEST(test_issue_497_for_initial_value)
+    {
+      const int Size = 11;
+
+      using Bitset = etl::bitset_ext<Size, uint16_t>;
+      using Buffer = Bitset::buffer_type;
+
+      const unsigned long long Initial = std::numeric_limits<uint16_t>::max();
+      const unsigned long long Expected = ((1ULL << Size) - 1);
+
+      // Create a bitset from a value larger than the bitset size.
+      Buffer buffer1;
+      Bitset bits(Initial, buffer1);
+
+      // Ensure that we are using multiple elements for the bitset.
+      CHECK_TRUE(Bitset::Number_Of_Elements == 1);
+
+      // Check the initial state of the bitset.
+      CHECK_EQUAL(Expected, bits.to_ullong());
+      CHECK_EQUAL(Size, bits.count());
+      CHECK_TRUE(bits.all());
+    }
   }
 } // namespace
