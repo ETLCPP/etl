@@ -134,6 +134,7 @@ target_sources(tests PRIVATE
 		char_traits.h.t.cpp
 		checksum.h.t.cpp
 		chrono.h.t.cpp
+		chrono_no_stl.h.t.cpp
 		concepts.h.t.cpp
 		const_map.h.t.cpp
 		const_multimap.h.t.cpp
