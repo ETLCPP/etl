@@ -192,6 +192,11 @@ Atomically obtains the value of the atomic object.
 T fetch_add(T v, etl::memory_order order = etl::memory_order_seq_cst)
 T fetch_add(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
 ```
+
+```cpp
+T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
+T* fetch_add(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+```
 **Description**  
 Atomically adds the argument to the value stored in the atomic object and obtains the value held previously.
 
@@ -200,6 +205,11 @@ Atomically adds the argument to the value stored in the atomic object and obtain
 ```cpp
 T fetch_sub(T v, etl::memory_order order = etl::memory_order_seq_cst)
 T fetch_sub(T v, etl::memory_order order = etl::memory_order_seq_cst) volatile
+```
+
+```cpp
+T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst)
+T* fetch_sub(ptrdiff_t v, etl::memory_order order = etl::memory_order_seq_cst) volatile
 ```
 **Description**  
 Atomically subtracts the argument to the value stored in the atomic object and obtains the value held previously.
