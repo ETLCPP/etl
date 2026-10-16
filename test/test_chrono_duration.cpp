@@ -1045,7 +1045,7 @@ namespace
       CHECK_EQUAL(1, s1.count()); // 10 seconds % (-3) seconds = 1 second
     }
 
-#if ETL_USING_CPP20
+#if ETL_USING_CPP20 && ETL_USING_STL
     //*************************************************************************
     TEST(test_duration_spaceship_operator)
     {

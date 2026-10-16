@@ -234,7 +234,7 @@ namespace etl
     //***********************************************************************
     /// Spaceship operator
     //***********************************************************************
-#if ETL_USING_CPP20
+#if ETL_USING_CPP20 && ETL_USING_STL
     [[nodiscard]]
     inline constexpr auto operator<=>(const etl::chrono::year_month& lhs, const etl::chrono::year_month& rhs) ETL_NOEXCEPT
     {
