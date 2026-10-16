@@ -89,7 +89,7 @@ namespace
       CHECK_FALSE(ym.ok()); // Invalid year_month
     }
 
-#if ETL_USING_CPP20
+#if ETL_USING_CPP20 && ETL_USING_STL
     //*************************************************************************
     TEST(test_year_month_spaceship_operator)
     {
