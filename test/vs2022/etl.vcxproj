@@ -10447,6 +10447,7 @@
     <ClCompile Include="..\test_message_timer_atomic.cpp" />
     <ClCompile Include="..\test_message_timer_interrupt.cpp" />
     <ClCompile Include="..\test_message_timer_locked.cpp" />
+    <ClCompile Include="..\test_meta.cpp" />
     <ClCompile Include="..\test_multi_array.cpp" />
     <ClCompile Include="..\test_array.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../../unittest-cpp</AdditionalIncludeDirectories>
