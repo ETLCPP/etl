@@ -918,6 +918,12 @@ namespace
 
       CHECK(!(std::is_constructible<etl::variant<int, long>, AmbiguousIntLong>::value));
       CHECK(!(std::is_constructible<etl::variant<std::string, int, long>, AmbiguousIntLong>::value));
+
+      // The converting constructor should not accept in-place type or index tags.
+      CHECK((!std::is_constructible<etl::variant<etl::in_place_type_t<int>>, etl::in_place_type_t<int>>::value));
+      CHECK((!std::is_constructible<etl::variant<std::string, etl::in_place_type_t<int>>, etl::in_place_type_t<int>>::value));
+      CHECK((!std::is_constructible<etl::variant<etl::in_place_index_t<1U>>, etl::in_place_index_t<1U>>::value));
+      CHECK((!std::is_constructible<etl::variant<std::string, etl::in_place_index_t<2U>>, etl::in_place_index_t<2U>>::value));
     }
 
     //*************************************************************************

@@ -312,6 +312,24 @@ namespace etl
     template <typename T, typename... TTypes>
     using select_alternative_index = decltype(conversion_overloads<T, TTypes...>::select(etl::declval<T>()));
 
+    //*************************************************************************
+    /// Helpers for identifying in-place tags.
+    //*************************************************************************
+    template <typename T>
+    struct is_in_place_tag : etl::false_type
+    {
+    };
+
+    template <typename T>
+    struct is_in_place_tag<etl::in_place_type_t<T> > : etl::true_type
+    {
+    };
+
+    template <size_t Index>
+    struct is_in_place_tag<etl::in_place_index_t<Index> > : etl::true_type
+    {
+    };
+
     //*******************************************
     /// Constexpr get by index from variadic_union.
     //*******************************************
@@ -1075,7 +1093,9 @@ namespace etl
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
     template < typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
-               etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && !Trivial_, int> = 0,
+               etl::enable_if_t< !etl::is_same<etl::remove_cvref_t<T>, variant>::value && !Trivial_
+                                   && !private_variant::is_in_place_tag<etl::remove_cvref_t<T> >::value,
+                                 int>  = 0,
                size_t AlternativeIndex = private_variant::select_alternative_index<T, TTypes...>::value,
                typename TAlternative = type_from_index<AlternativeIndex>, etl::enable_if_t<etl::is_constructible<TAlternative, T>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
@@ -1085,7 +1105,9 @@ namespace etl
     }
 
     template < typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
-               etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && Trivial_, int> = 0,
+               etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && Trivial_
+                                  && !private_variant::is_in_place_tag<etl::remove_cvref_t<T> >::value,
+                                int>   = 0,
                size_t AlternativeIndex = private_variant::select_alternative_index<T, TTypes...>::value,
                typename TAlternative = type_from_index<AlternativeIndex>, etl::enable_if_t<etl::is_constructible<TAlternative, T>::value, int> = 0 >
     constexpr variant(T&& value)
