@@ -221,10 +221,12 @@ Checks equality of two cyclic values.
   Previously the first and last limits were also considered.
 
   <= 20.49.0  
-  `etl::cyclic_value<2, 7>(3) != etl::cyclic_value<2, 6>(3)`  
+  `etl::cyclic_value<int, 2, 7>(3) != etl::cyclic_value<int, 2, 6>(3)`  
+  `etl::cyclic_value<int>(2, 7, 3) != etl::cyclic_value<int>(2, 6, 3)`
   
   &gt; 20.49.0  
-  `etl::cyclic_value<2, 7>(3) == etl::cyclic_value<2, 6>(3)`
+  `etl::cyclic_value<int, 2, 7>(3) == etl::cyclic_value<int, 2, 6>(3)`
+  `etl::cyclic_value<int>(2, 7, 3) == etl::cyclic_value<int>(2, 6, 3)`
 {{< /callout >}}
 
 ---
