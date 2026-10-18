@@ -261,6 +261,57 @@ namespace etl
       }
     };
 
+    //****************************************************************************************************
+    /// Helpers for selecting the best conversion candidate for variant value construction.
+    /// Only implicit conversions that do not involve narrowing are considered.
+    //****************************************************************************************************
+    // Used to check for valid conversion that don't include narrowing as array copy-list-initialization excludes narrowing conversions.
+    template <typename T>
+    struct conversion_array
+    {
+      T value[1];
+    };
+
+    // Create a candidate function accepting TAlternative provided it can be constructed from T without narrowing conversions. When the conversion
+    // is valid, the function returns an integral constant representing the index of the alternative type in the variant's type list.
+    template <typename T, size_t Index, typename TAlternative, typename = void>
+    struct conversion_candidate
+    {
+      static void select();
+    };
+
+    template <typename T, size_t Index, typename TAlternative>
+    struct conversion_candidate<T, Index, TAlternative, etl::void_t<decltype(conversion_array<TAlternative>{{etl::declval<T>()}})> >
+    {
+      static etl::integral_constant<size_t, Index> select(TAlternative);
+    };
+
+    // Build all conversion overloads for a given type T across the list of alternative types.
+    template <typename T, size_t Index, typename... TTypes>
+    struct conversion_overloads_impl;
+
+    template <typename T, size_t Index>
+    struct conversion_overloads_impl<T, Index>
+    {
+      static void select();
+    };
+
+    template <typename T, size_t Index, typename THead, typename... TRest>
+    struct conversion_overloads_impl<T, Index, THead, TRest...>
+      : conversion_candidate<T, Index, THead>
+      , conversion_overloads_impl<T, Index + 1U, TRest...>
+    {
+      using conversion_candidate<T, Index, THead>::select;
+      using conversion_overloads_impl<T, Index + 1U, TRest...>::select;
+    };
+
+    template <typename T, typename... TTypes>
+    using conversion_overloads = conversion_overloads_impl<T, 0U, TTypes...>;
+
+    // Select the best alternative type for a given type T.
+    template <typename T, typename... TTypes>
+    using select_alternative_index = decltype(conversion_overloads<T, TTypes...>::select(etl::declval<T>()));
+
     //*******************************************
     /// Constexpr get by index from variadic_union.
     //*******************************************
@@ -1023,22 +1074,22 @@ namespace etl
     /// Construct from a value.
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
-    template <
-      typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
-      etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && !Trivial_ && etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value,
-                       int> = 0>
+    template < typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
+               etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && !Trivial_, int> = 0,
+               size_t AlternativeIndex = private_variant::select_alternative_index<T, TTypes...>::value,
+               typename TAlternative = type_from_index<AlternativeIndex>, etl::enable_if_t<etl::is_constructible<TAlternative, T>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
-      : base_type(index_of_type<T>::value)
+      : base_type(AlternativeIndex)
     {
-      construct_in_place<etl::remove_cvref_t<T> >(data, etl::forward<T>(value));
+      construct_in_place<TAlternative>(data, etl::forward<T>(value));
     }
 
-    template <
-      typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
-      etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && Trivial_ && etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value,
-                       int> = 0>
+    template < typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
+               etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && Trivial_, int> = 0,
+               size_t AlternativeIndex = private_variant::select_alternative_index<T, TTypes...>::value,
+               typename TAlternative = type_from_index<AlternativeIndex>, etl::enable_if_t<etl::is_constructible<TAlternative, T>::value, int> = 0 >
     constexpr variant(T&& value)
-      : base_type(etl::in_place_index_t<index_of_type<T>::value>{}, etl::forward<T>(value), index_of_type<T>::value)
+      : base_type(etl::in_place_index_t<AlternativeIndex>{}, etl::forward<T>(value), AlternativeIndex)
     {
     }
   #include "diagnostic_pop.h"
