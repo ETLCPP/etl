@@ -3808,9 +3808,14 @@ namespace etl
   template <typename T>
   struct is_nothrow_relocatable
   {
+  #if ETL_USING_CPP11
     static ETL_CONSTANT bool value = etl::is_trivially_relocatable<T>::value
                              || (etl::is_nothrow_move_constructible<typename etl::remove_all_extents<T>::type>::value
                                  && etl::is_nothrow_destructible<typename etl::remove_all_extents<T>::type>::value);
+  #else
+    // No move semantics: only trivially relocatable types are known to be nothrow relocatable.
+    static ETL_CONSTANT bool value = etl::is_trivially_relocatable<T>::value;
+  #endif
   };
 
 #elif defined(ETL_USER_DEFINED_TYPE_TRAITS) && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
