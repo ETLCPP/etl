@@ -1468,12 +1468,19 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_value)
     {
+      // No conversion required
       std::string        text("Some Text");
       test_variant_etl_3 variant_etl;
 
       variant_etl = text;
 
       CHECK_EQUAL(text, etl::get<std::string>(variant_etl));
+
+      // Conversion from float to double required
+      etl::variant<int, double> variant_double;
+      variant_double = 1.5f;
+
+      CHECK_EQUAL(1.5, etl::get<double>(variant_double));
     }
 
     //*************************************************************************

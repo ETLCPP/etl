@@ -1266,17 +1266,15 @@ namespace etl
     /// Move assignment operator for type.
     ///\param value The value to assign.
     //***************************************************************************
-    template <
-      typename T,
-      etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, int> = 0>
+    template < typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0,
+               size_t AlternativeIndex = private_variant::select_alternative_index<T, TTypes...>::value,
+               typename TAlternative = type_from_index<AlternativeIndex>, etl::enable_if_t<etl::is_constructible<TAlternative, T>::value, int> = 0>
     variant& operator=(T&& value)
     {
-      using type = etl::remove_cvref_t<T>;
-
       do_destroy();
-      do_construct<type>(etl::forward<T>(value));
+      do_construct<TAlternative>(etl::forward<T>(value));
 
-      type_id = index_of_type<type>::value;
+      type_id = AlternativeIndex;
 
       return *this;
     }
