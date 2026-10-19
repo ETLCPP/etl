@@ -35,6 +35,7 @@ SOFTWARE.
 #include "../../initializer_list.h"
 #include "../../placement_new.h"
 #include "../../string_view.h"
+#include "../../utility.h"
 
 ///\defgroup meta meta
 ///\ingroup etl
@@ -356,13 +357,10 @@ namespace std
     }
 
     constexpr vector(vector&& other) noexcept
-      : _M_begin(other._M_begin)
-      , _M_size(other._M_size)
-      , _M_cap(other._M_cap)
+      : _M_begin(etl::exchange(other._M_begin, nullptr))
+      , _M_size(etl::exchange(other._M_size, size_type(0)))
+      , _M_cap(etl::exchange(other._M_cap, size_type(0)))
     {
-      other._M_begin = nullptr;
-      other._M_size  = 0;
-      other._M_cap   = 0;
     }
 
     constexpr vector& operator=(const vector& other)
@@ -384,12 +382,9 @@ namespace std
       if (this != &other)
       {
         _M_clear();
-        _M_begin       = other._M_begin;
-        _M_size        = other._M_size;
-        _M_cap         = other._M_cap;
-        other._M_begin = nullptr;
-        other._M_size  = 0;
-        other._M_cap   = 0;
+        _M_begin = etl::exchange(other._M_begin, nullptr);
+        _M_size  = etl::exchange(other._M_size, size_type(0));
+        _M_cap   = etl::exchange(other._M_cap, size_type(0));
       }
       return *this;
     }
@@ -513,11 +508,9 @@ namespace std
     }
 
     constexpr basic_string(basic_string&& other) noexcept
-      : _M_data(other._M_data)
-      , _M_size(other._M_size)
+      : _M_data(etl::exchange(other._M_data, nullptr))
+      , _M_size(etl::exchange(other._M_size, size_type(0)))
     {
-      other._M_data = nullptr;
-      other._M_size = 0;
     }
 
     constexpr basic_string& operator=(const basic_string& other)
@@ -535,10 +528,8 @@ namespace std
       if (this != &other)
       {
         _M_release();
-        _M_data       = other._M_data;
-        _M_size       = other._M_size;
-        other._M_data = nullptr;
-        other._M_size = 0;
+        _M_data = etl::exchange(other._M_data, nullptr);
+        _M_size = etl::exchange(other._M_size, size_type(0));
       }
       return *this;
     }
