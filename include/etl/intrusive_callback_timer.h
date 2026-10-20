@@ -26,124 +26,77 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef ETL_CALLBACK_TIMER_INCLUDED
-#define ETL_CALLBACK_TIMER_INCLUDED
+#ifndef ETL_INTRUSIVE_TIMER_INCLUDED
+#define ETL_INTRUSIVE_TIMER_INCLUDED
 
 #include "platform.h"
 #include "algorithm.h"
-#include "atomic.h"
-#include "delegate.h"
 #include "error_handler.h"
-#include "function.h"
 #include "nullptr.h"
-#include "placement_new.h"
 #include "static_assert.h"
-#include "timer_data.h"
+#include "timer_lists.h"
+#include "timer_node.h"
 
 #include <stdint.h>
 
 namespace etl
 {
   //***************************************************************************
-  /// Interface for callback timer
+  /// Interface for timer lock policy
   //***************************************************************************
-  class iintrusive_callback_timer
+  class timer_lock_policy
   {
   public:
 
-    typedef etl::delegate<void(void)> callback_type;
+    virtual void lock()      = 0;
+    virtual void unlock()    = 0;
+    virtual bool is_locked() = 0;
+  };
 
-    typedef etl::delegate<void(etl::timer_data::id::type, uint32_t delta)> event_callback_type;
+  //***************************************************************************
+  /// Interface for intrusive timer
+  //***************************************************************************
+  class intrusive_timer
+  {
+  public:
+
+    typedef etl::delegate<void(etl::timer_data::id::type, uint32_t delta)> timer_update_callback_type;
 
     //*******************************************
-    /// Register a timer.
+    /// Constructor.
     //*******************************************
-    etl::timer::id::type register_timer(void (*p_callback_)(), uint32_t period_, bool repeating_)
+    explicit intrusive_timer(timer_lock_policy& lock_policy_)
+      : lock_policy(lock_policy_)
     {
-      return id;
     }
 
     //*******************************************
     /// Register a timer.
     //*******************************************
-    etl::timer::id::type register_timer(etl::ifunction<void>& callback_, uint32_t period_, bool repeating_)
+    etl::timer::id::type register_timer(etl::timer_node& node)
     {
-      etl::timer::id::type id = etl::timer::id::NO_TIMER;
-
-      bool is_space = (registered_timers < MAX_TIMERS);
-
-      if (is_space)
-      {
-        // Search for the free space.
-        for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
-        {
-          timer_data& timer = timer_array[i];
-
-          if (timer.id == etl::timer::id::NO_TIMER)
-          {
-            // Create in-place.
-            new (&timer) timer_data(i, callback_, period_, repeating_);
-            ++registered_timers;
-            id = i;
-            break;
-          }
-        }
-      }
-
       return id;
     }
-
-    //*******************************************
-    /// Register a timer.
-    //*******************************************
-#if ETL_USING_CPP11
-    etl::timer::id::type register_timer(callback_type& callback_, uint32_t period_, bool repeating_)
-    {
-      etl::timer::id::type id = etl::timer::id::NO_TIMER;
-
-      bool is_space = (registered_timers < MAX_TIMERS);
-
-      if (is_space)
-      {
-        // Search for the free space.
-        for (uint_least8_t i = 0U; i < MAX_TIMERS; ++i)
-        {
-          timer_data& timer = timer_array[i];
-
-          if (timer.id == etl::timer::id::NO_TIMER)
-          {
-            // Create in-place.
-            new (&timer) timer_data(i, callback_, period_, repeating_);
-            ++registered_timers;
-            id = i;
-            break;
-          }
-        }
-      }
-
-      return id;
-    }
-#endif
 
     //*******************************************
     /// Unregister a timer.
     //*******************************************
-    bool unregister_timer(etl::timer::id::type id_)
+    bool unregister_timer(etl::timer_node& node)
     {
       bool result = false;
 
-      if (id_ != etl::timer::id::NO_TIMER)
+      if (id_ != etl::timer::id::No_Timer)
       {
         timer_data& timer = timer_array[id_];
 
-        if (timer.id != etl::timer::id::NO_TIMER)
+        if (timer.id != etl::timer::id::No_Timer)
         {
           if (timer.is_active())
           {
-            ETL_DISABLE_TIMER_UPDATES;
+            lock_policy.lock();
             active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
-            ETL_ENABLE_TIMER_UPDATES;
+            lock_policy.unlock();
           }
 
           // Reset in-place.
@@ -178,9 +131,9 @@ namespace etl
     //*******************************************
     void clear()
     {
-      ETL_DISABLE_TIMER_UPDATES;
+      lock_policy.lock();
       active_list.clear();
-      ETL_ENABLE_TIMER_UPDATES;
+      lock_policy.unlock();
 
       for (int i = 0; i < MAX_TIMERS; ++i)
       {
@@ -200,7 +153,7 @@ namespace etl
     {
       if (enabled)
       {
-        if (ETL_TIMER_UPDATES_ENABLED)
+        if (!lock_policy.is_locked())
         {
           // We have something to do?
           bool has_active = !active_list.empty();
@@ -268,12 +221,12 @@ namespace etl
       bool result = false;
 
       // Valid timer id?
-      if (id_ != etl::timer::id::NO_TIMER)
+      if (id_ != etl::timer::id::No_Timer)
       {
         timer_data& timer = timer_array[id_];
 
         // Registered timer?
-        if (timer.id != etl::timer::id::NO_TIMER)
+        if (timer.id != etl::timer::id::No_Timer)
         {
           // Has a valid period.
           if (timer.period != etl::timer::state::Inactive)
@@ -288,7 +241,7 @@ namespace etl
             timer.delta = immediate_ ? 0 : timer.period;
             active_list.insert(timer.id);
             insert_callback.call_if(timer.id);
-            ETL_ENABLE_TIMER_UPDATES;
+            lock_policy.unlock();
 
             result = true;
           }
@@ -306,19 +259,19 @@ namespace etl
       bool result = false;
 
       // Valid timer id?
-      if (id_ != etl::timer::id::NO_TIMER)
+      if (id_ != etl::timer::id::No_Timer)
       {
         timer_data& timer = timer_array[id_];
 
         // Registered timer?
-        if (timer.id != etl::timer::id::NO_TIMER)
+        if (timer.id != etl::timer::id::No_Timer)
         {
           if (timer.is_active())
           {
             ETL_DISABLE_TIMER_UPDATES;
             active_list.remove(timer.id, false);
             remove_callback.call_if(timer.id);
-            ETL_ENABLE_TIMER_UPDATES;
+            lock_policy.unlock();
           }
 
           result = true;
@@ -354,16 +307,6 @@ namespace etl
       }
 
       return false;
-    }
-
-    //*******************************************
-    /// Returns true if an attempt was ever made to insert a timer into the
-    /// active list when it was already there. Such an insert is rejected, as
-    /// it would create a circular reference in the list.
-    //*******************************************
-    bool duplicate_insert_detected() const
-    {
-      return active_list.duplicate_insert_detected();
     }
 
     //*******************************************
@@ -405,7 +348,7 @@ namespace etl
       //     const timer_data& timer = timer_array[id_];
 
       //    // Registered timer?
-      //    if (timer.id != etl::timer::id::NO_TIMER)
+      //    if (timer.id != etl::timer::id::No_Timer)
       //    {
       //      return timer.is_active();
       //    }
@@ -443,251 +386,15 @@ namespace etl
       remove_callback.clear();
     }
 
-  protected:
-
-    //*******************************************
-    /// Constructor.
-    //*******************************************
-    icallback_timer(timer_data* const timer_array_, const uint_least8_t Max_Timers_)
-      : timer_array(timer_array_)
-      , active_list(timer_array_)
-      , enabled(false)
-      ,
-#if defined(ETL_CALLBACK_TIMER_USE_ATOMIC_LOCK)
-      process_semaphore(0)
-      ,
-#endif
-      registered_timers(0)
-      , MAX_TIMERS(Max_Timers_)
-    {
-    }
-
   private:
 
-    //*******************************************
-    /// Check that the timer id is valid.
-    //*******************************************
-    bool is_valid_timer_id(etl::timer::id::type id_) const
-    {
-      return (id_ < MAX_TIMERS);
-    }
+    intrusive_timer(const intrusive_timer&) ETL_DELETE;
+    intrusive_timer& operator=(const intrusive_timer&) ETL_DELETE;
 
-    //*************************************************************************
-    class timer_list
-    {
-    public:
-
-      //*******************************
-      timer_list(timer_data* ptimers_)
-        : head(etl::timer::id::NO_TIMER)
-        , tail(etl::timer::id::NO_TIMER)
-        , ptimers(ptimers_)
-        , duplicate_insert(false)
-      {
-      }
-
-      //*******************************
-      bool empty() const
-      {
-        return head == etl::timer::id::NO_TIMER;
-      }
-
-      //*******************************
-      /// Returns true if an attempt was ever made to insert a timer that was
-      /// already in the list.
-      //*******************************
-      bool duplicate_insert_detected() const
-      {
-        return duplicate_insert;
-      }
-
-      //*******************************
-      // Inserts the timer at the correct delta position
-      //*******************************
-      void insert(etl::timer::id::type id_)
-      {
-        timer_data& timer = ptimers[id_];
-
-        // A timer is in this list exactly when it is the head or has a previous
-        // link, as remove() clears both links. Inserting one that is already
-        // here would link it to itself and create a circular reference, so
-        // record the attempt and abandon the insert to keep the list intact.
-        if ((head == id_) || (timer.previous != etl::timer::id::NO_TIMER))
-        {
-          duplicate_insert = true;
-          return;
-        }
-
-        if (head == etl::timer::id::NO_TIMER)
-        {
-          // No entries yet.
-          head           = id_;
-          tail           = id_;
-          timer.previous = etl::timer::id::NO_TIMER;
-          timer.next     = etl::timer::id::NO_TIMER;
-        }
-        else
-        {
-          // We already have entries.
-          etl::timer::id::type test_id = begin();
-
-          while (test_id != etl::timer::id::NO_TIMER)
-          {
-            timer_data& test = ptimers[test_id];
-
-            // Find the correct place to insert.
-            if (timer.delta <= test.delta)
-            {
-              if (test.id == head)
-              {
-                head = timer.id;
-              }
-
-              // Insert before test.
-              timer.previous = test.previous;
-              test.previous  = timer.id;
-              timer.next     = test.id;
-
-              // Adjust the next delta to compensate.
-              test.delta -= timer.delta;
-
-              if (timer.previous != etl::timer::id::NO_TIMER)
-              {
-                ptimers[timer.previous].next = timer.id;
-              }
-              break;
-            }
-            else
-            {
-              timer.delta -= test.delta;
-            }
-
-            test_id = next(test_id);
-          }
-
-          // Reached the end?
-          if (test_id == etl::timer::id::NO_TIMER)
-          {
-            // Tag on to the tail.
-            ptimers[tail].next = timer.id;
-            timer.previous     = tail;
-            timer.next         = etl::timer::id::NO_TIMER;
-            tail               = timer.id;
-          }
-        }
-      }
-
-      //*******************************
-      void remove(etl::timer::id::type id_, bool has_expired)
-      {
-        timer_data& timer = ptimers[id_];
-
-        if (head == id_)
-        {
-          head = timer.next;
-        }
-        else
-        {
-          ptimers[timer.previous].next = timer.next;
-        }
-
-        if (tail == id_)
-        {
-          tail = timer.previous;
-        }
-        else
-        {
-          ptimers[timer.next].previous = timer.previous;
-        }
-
-        if (!has_expired)
-        {
-          // Adjust the next delta.
-          if (timer.next != etl::timer::id::NO_TIMER)
-          {
-            ptimers[timer.next].delta += timer.delta;
-          }
-        }
-
-        timer.previous = etl::timer::id::NO_TIMER;
-        timer.next     = etl::timer::id::NO_TIMER;
-        timer.delta    = etl::timer::state::Inactive;
-      }
-
-      //*******************************
-      timer_data& front()
-      {
-        return ptimers[head];
-      }
-
-      //*******************************
-      const timer_data& front() const
-      {
-        return ptimers[head];
-      }
-
-      //*******************************
-      etl::timer::id::type begin()
-      {
-        return head;
-      }
-
-      //*******************************
-      etl::timer::id::type next(etl::timer::id::type last)
-      {
-        return ptimers[last].next;
-      }
-
-      //*******************************
-      void clear()
-      {
-        etl::timer::id::type id = begin();
-
-        while (id != etl::timer::id::NO_TIMER)
-        {
-          timer_data& timer = ptimers[id];
-          id                = next(id);
-          timer.next        = etl::timer::id::NO_TIMER;
-        }
-
-        head = etl::timer::id::NO_TIMER;
-        tail = etl::timer::id::NO_TIMER;
-      }
-
-    private:
-
-      etl::timer::id::type head;
-      etl::timer::id::type tail;
-
-      timer_data* const ptimers;
-
-      // Set if an attempt was ever made to insert a timer that was already
-      // in the list.
-      bool duplicate_insert;
-    };
-
-    // The array of timer data structures.
-    timer_data* const timer_array;
-
-    // The list of active timers.
-    timer_list active_list;
-
-    volatile bool enabled;
-    uint_least8_t registered_timers;
-
-    event_callback_type timeout_callback;
-
-    etl::timer_data terminator;
-  };
-
-  //***************************************************************************
-  /// The callback timer
-  //***************************************************************************
-  class intrusive_callback_timer : public etl::iintrusive_callback_timer
-  {
-  public:
-
-  private:
+    etl::timer_lock_policy&                  lock_policy;
+    etl::private_timer::timer_register_list  register_list;
+    etl::private_timer::timer_active_list    active_list;
+    etl::private_timer::timer_triggered_list triggered_list;
   };
 } // namespace etl
 

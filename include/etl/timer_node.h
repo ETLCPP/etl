@@ -30,6 +30,7 @@ SOFTWARE.
 #define ETL_TIMER_NODE_INCLUDED
 
 #include "platform.h"
+#include "message_router.h"
 #include "nullptr.h"
 #include "timer.h"
 
@@ -66,10 +67,11 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    ETL_CONSTEXPR timer_config(uint32_t period_, etl::timer::mode::type repeating_) ETL_NOEXCEPT
+    ETL_CONSTEXPR timer_config(etl::timer::id::type id_, uint32_t period_, etl::timer::mode::type repeating_) ETL_NOEXCEPT
       : period(period_)
       , delta(period_)
       , mode(repeating_)
+      , id(id_)
     {
     }
 
@@ -98,6 +100,14 @@ namespace etl
     }
 
     //*******************************************
+    /// Returns the id of the timer.
+    //*******************************************
+    ETL_CONSTEXPR etl::timer::id::type get_id() const ETL_NOEXCEPT
+    {
+      return id;
+    }
+
+    //*******************************************
     /// Clears the timer configuration.
     //*******************************************
     ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
@@ -105,6 +115,7 @@ namespace etl
       period = etl::timer::state::Inactive;
       delta  = etl::timer::state::Inactive;
       mode   = etl::timer::mode::Repeating;
+      id     = etl::timer::id::No_Timer;
     }
 
   private:
@@ -112,7 +123,10 @@ namespace etl
     uint32_t               period; ///< The period of the timer.
     uint32_t               delta;  ///< The time remaining until the timer expires.
     etl::timer::mode::type mode;   ///< Whether the timer is repeating or single-shot.
+    etl::timer::id::type   id;     ///< The id of the timer.
   };
+
+  class sentinal_node;
 
   //***************************************************************************
   /// A timer data structure that can be linked into the timer lists.
@@ -178,9 +192,9 @@ namespace etl
     //***************************************************************************
     static etl::timer_node* sentinal() ETL_NOEXCEPT
     {
-      static etl::timer_node timer_sentinel(etl::timer_config(0, 0));
+      static etl::timer_node sentinel_node(etl::timer_config(0, 0, 0));
 
-      return &timer_sentinel;
+      return &sentinel_node;
     }
 
     //*******************************************
@@ -193,6 +207,14 @@ namespace etl
       triggered_next  = unlinked();
     }
 
+    //*******************************************
+    /// Invokes the timer's callback.
+    //*******************************************
+    virtual void invoke()
+    {
+      // Default implementation does nothing.
+    }
+
     timer_node& operator=(const timer_node&) ETL_DELETE;
 
     timer_node* registered_next; ///< The next timer in the registered timer list. nullptr if the timer is not registered.
@@ -202,20 +224,58 @@ namespace etl
     timer_config config; ///< The configuration of the timer.
   };
 
-  ////***************************************************************************
-  ///// A timer data structure that includes a callback delegate.
-  ////***************************************************************************
-  // template <typename TCallback>
-  // struct callback_timer_config : public timer_node
-  //{
-  //   callback_timer_config(TCallback callback_) ETL_NOEXCEPT
-  //     : timer_config()
-  //     , callback(callback_)
-  //   {
-  //   }
+  //***************************************************************************
+  /// A timer node that invokes a callback delegate.
+  //***************************************************************************
+  template <typename TCallback>
+  struct callback_timer_node : public timer_node
+  {
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    callback_timer_node(TCallback callback_) ETL_NOEXCEPT
+      : timer_node()
+      , callback(callback_)
+    {
+    }
 
-  //  TCallback callback; ///< The callback delegate for the timer.
-  //};
+    //*******************************************
+    /// Invokes the timer's callback.
+    //*******************************************
+    virtual void invoke() ETL_OVERRIDE
+    {
+      callback();
+    }
+
+    TCallback callback; ///< The callback delegate for the timer.
+  };
+
+  //***************************************************************************
+  /// A timer node that invokes a message callback.
+  //***************************************************************************
+  template <typename TMessage>
+  struct message_timer_node : public timer_node
+  {
+    //*******************************************
+    /// Constructor.
+    //*******************************************
+    message_timer_node(etl::imessage_router& router_, TMessage message) ETL_NOEXCEPT
+      : timer_node()
+      , router(&router_)
+    {
+    }
+
+    //*******************************************
+    /// Invokes the timer's callback.
+    //*******************************************
+    virtual void invoke() ETL_OVERRIDE
+    {
+      callback();
+    }
+
+    etl::imessage_router* router;  ///< The message router to send the message to.
+    TMessage              message; ///< The message to send when the timer expires.
+  };
 } // namespace etl
 
 #endif
