@@ -1569,8 +1569,11 @@
     <ClInclude Include="..\..\include\etl\format.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\timer_config.h">
+    <ClInclude Include="..\..\include\etl\timer_node.h">
       <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\timer_lists.h">
+      <Filter>ETL\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3842,8 +3845,11 @@
     <ClCompile Include="..\test_vector_member_function_pointer_external_buffer.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_timer_data.cpp">
-      <Filter>Tests\Timer support</Filter>
+    <ClCompile Include="..\test_timer_node.cpp">
+      <Filter>Tests\Callback Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_timer_lists.cpp">
+      <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
