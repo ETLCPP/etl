@@ -3559,6 +3559,7 @@
     <ClInclude Include="..\..\include\etl\generators\variant_pool_cpp03_generator.h" />
     <ClInclude Include="..\..\include\etl\index_of_type.h" />
     <ClInclude Include="..\..\include\etl\inplace_function.h" />
+    <ClInclude Include="..\..\include\etl\timer_config.h" />
     <ClInclude Include="..\..\include\etl\invoke.h" />
     <ClInclude Include="..\..\include\etl\lcm.h" />
     <ClInclude Include="..\..\include\etl\math.h" />
@@ -11449,6 +11450,7 @@
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_threshold.cpp" />
     <ClCompile Include="..\test_chrono_time_point.cpp" />
+    <ClCompile Include="..\test_timer_data.cpp" />
     <ClCompile Include="..\test_to_arithmetic.cpp" />
     <ClCompile Include="..\test_to_arithmetic_u16.cpp" />
     <ClCompile Include="..\test_to_arithmetic_u32.cpp" />

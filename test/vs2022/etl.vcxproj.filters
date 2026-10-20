@@ -226,6 +226,9 @@
     <Filter Include="Documentation">
       <UniqueIdentifier>{5b809d95-b37c-4011-af5e-b5ea6dcb354e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests\Timer support">
+      <UniqueIdentifier>{c3b8f843-f046-4bf2-ab0a-34e9da0dcfbe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -1565,6 +1568,9 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\format.h">
       <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\timer_config.h">
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3835,6 +3841,9 @@
     </ClCompile>
     <ClCompile Include="..\test_vector_member_function_pointer_external_buffer.cpp">
       <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_timer_data.cpp">
+      <Filter>Tests\Timer support</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
