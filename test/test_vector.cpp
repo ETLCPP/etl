@@ -805,6 +805,35 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_rvalue_from_self)
+    {
+      const size_t INITIAL_SIZE = 5;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        for (size_t source = 0; source < INITIAL_SIZE; ++source)
+        {
+          Compare_Data compare_data;
+          Data         data;
+
+          data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+          compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+          data.insert(data.cbegin() + offset, std::move(data[source]));
+
+          int value = compare_data[source];
+          compare_data.insert(compare_data.cbegin() + static_cast<ptrdiff_t>(offset), value);
+
+          CHECK_EQUAL(compare_data.size(), data.size());
+
+          bool is_equal = std::equal(data.cbegin(), data.cend(), compare_data.cbegin());
+
+          CHECK(is_equal);
+        }
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_value_outofbounds)
     {
       const size_t INITIAL_SIZE  = 5;
@@ -838,6 +867,35 @@ namespace
         bool is_equal = std::equal(data.cbegin(), data.cend(), compare_data.cbegin());
 
         CHECK(is_equal);
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value_from_self)
+    {
+      const size_t INITIAL_SIZE = 5;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        for (size_t source = 0; source < INITIAL_SIZE; ++source)
+        {
+          Compare_Data compare_data;
+          Data         data;
+
+          data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+          compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+          data.emplace(data.cbegin() + offset, data[source]);
+
+          int value = compare_data[source];
+          compare_data.insert(compare_data.cbegin() + static_cast<ptrdiff_t>(offset), value);
+
+          CHECK_EQUAL(compare_data.size(), data.size());
+
+          bool is_equal = std::equal(data.cbegin(), data.cend(), compare_data.cbegin());
+
+          CHECK(is_equal);
+        }
       }
     }
 
