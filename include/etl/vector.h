@@ -689,8 +689,8 @@ namespace etl
       }
       else
       {
-        // args may refer to elements that are about to be shifted, so construct the value first.
   #include "private/diagnostic_sign_conversion_push.h"
+        // args may refer to elements that are about to be shifted, so construct the value first.
         T value(etl::forward<Args>(args)...);
   #include "private/diagnostic_pop.h"
 
