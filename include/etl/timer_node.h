@@ -46,10 +46,11 @@ namespace etl
   {
     class timer_register_list;
     class timer_active_list;
-    class timer_triggered_list;
-
-    class intrusive_callback_timer;
+    class timer_expired_list;
   } // namespace private_timer
+
+  class timer_node;
+  class intrusive_timer;
 
   //***************************************************************************
   /// A timer configuration data structure.
@@ -60,16 +61,16 @@ namespace etl
 
     friend class private_timer::timer_register_list;
     friend class private_timer::timer_active_list;
-    friend class private_timer::timer_triggered_list;
+    friend class private_timer::timer_expired_list;
 
-    friend class intrusive_callback_timer;
+    friend class timer_node;
+    friend class intrusive_timer;
 
     //*******************************************
     /// Constructor.
     //*******************************************
     ETL_CONSTEXPR timer_config(etl::timer::id::type id_, uint32_t period_, etl::timer::mode::type repeating_) ETL_NOEXCEPT
       : period(period_)
-      , delta(period_)
       , mode(repeating_)
       , id(id_)
     {
@@ -81,14 +82,6 @@ namespace etl
     ETL_CONSTEXPR uint32_t get_period() const ETL_NOEXCEPT
     {
       return period;
-    }
-
-    //*******************************************
-    /// Returns the time remaining until the timer expires.
-    //*******************************************
-    ETL_CONSTEXPR uint32_t get_delta() const ETL_NOEXCEPT
-    {
-      return delta;
     }
 
     //*******************************************
@@ -113,7 +106,6 @@ namespace etl
     ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
     {
       period = etl::timer::state::Inactive;
-      delta  = etl::timer::state::Inactive;
       mode   = etl::timer::mode::Repeating;
       id     = etl::timer::id::No_Timer;
     }
@@ -121,7 +113,6 @@ namespace etl
   private:
 
     uint32_t               period; ///< The period of the timer.
-    uint32_t               delta;  ///< The time remaining until the timer expires.
     etl::timer::mode::type mode;   ///< Whether the timer is repeating or single-shot.
     etl::timer::id::type   id;     ///< The id of the timer.
   };
@@ -138,9 +129,9 @@ namespace etl
 
     friend class private_timer::timer_register_list;
     friend class private_timer::timer_active_list;
-    friend class private_timer::timer_triggered_list;
+    friend class private_timer::timer_expired_list;
 
-    friend class intrusive_callback_timer;
+    friend class intrusive_timer;
 
     //*******************************************
     /// Constructor.
@@ -148,8 +139,9 @@ namespace etl
     timer_node(const timer_config& config_) ETL_NOEXCEPT
       : registered_next(unlinked())
       , active_next(unlinked())
-      , triggered_next(unlinked())
+      , expired_next(unlinked())
       , config(config_)
+      , delta(config_.get_period())
     {
     }
 
@@ -159,8 +151,9 @@ namespace etl
     timer_node(const timer_node& node_) ETL_NOEXCEPT
       : registered_next(unlinked())
       , active_next(unlinked())
-      , triggered_next(unlinked())
+      , expired_next(unlinked())
       , config(node_.config)
+      , delta(node_.config.get_period())
     {
     }
 
@@ -172,7 +165,55 @@ namespace etl
       return config;
     }
 
+    //*******************************************
+    /// Returns the delta of the timer.
+    //*******************************************
+    ETL_CONSTEXPR uint32_t get_delta() const ETL_NOEXCEPT
+    {
+      return delta;
+    }
+
+    //*******************************************
+    /// Returns the period of the timer.
+    //*******************************************
+    ETL_CONSTEXPR uint32_t get_period() const ETL_NOEXCEPT
+    {
+      return config.get_period();
+    }
+
+    //*******************************************
+    /// Returns the mode of the timer.
+    //*******************************************
+    ETL_CONSTEXPR uint32_t get_mode() const ETL_NOEXCEPT
+    {
+      return config.get_mode();
+    }
+
+    //*******************************************
+    /// Returns the id of the timer.
+    //*******************************************
+    ETL_CONSTEXPR etl::timer::id::type get_id() const ETL_NOEXCEPT
+    {
+      return config.get_id();
+    }
+
   private:
+
+    //*******************************************
+    /// Sets the period of the timer.
+    //*******************************************
+    void set_period(uint32_t period_) ETL_NOEXCEPT
+    {
+      config.period = period_;
+    }
+
+    //*******************************************
+    /// Sets the mode of the timer.
+    //*******************************************
+    void set_mode(etl::timer::mode::type mode_) ETL_NOEXCEPT
+    {
+      config.mode = mode_;
+    }
 
     //*******************************************
     /// Returns a nullptr to indicate that the timer is not linked into any list.
@@ -204,24 +245,25 @@ namespace etl
     {
       registered_next = unlinked();
       active_next     = unlinked();
-      triggered_next  = unlinked();
+      expired_next    = unlinked();
+      delta           = config.get_period();
     }
 
     //*******************************************
     /// Invokes the timer's callback.
     //*******************************************
-    virtual void invoke()
+    virtual void invoke(const etl::timer_config& /*config*/)
     {
       // Default implementation does nothing.
     }
 
     timer_node& operator=(const timer_node&) ETL_DELETE;
 
-    timer_node* registered_next; ///< The next timer in the registered timer list. nullptr if the timer is not registered.
-    timer_node* active_next;     ///< The next timer in the active timer list. nullptr if the timer is not active.
-    timer_node* triggered_next;  ///< The next timer in the triggered timer list. nullptr if the timer is not triggered.
-
-    timer_config config; ///< The configuration of the timer.
+    timer_node*  registered_next; ///< The next timer in the registered timer list. nullptr if the timer is not registered.
+    timer_node*  active_next;     ///< The next timer in the active timer list. nullptr if the timer is not active.
+    timer_node*  expired_next;    ///< The next timer in the expired timer list. nullptr if the timer is not expired.
+    timer_config config;          ///< The configuration of the timer.
+    uint32_t     delta;           ///< The time remaining until the timer expires.
   };
 
   //***************************************************************************
@@ -242,9 +284,9 @@ namespace etl
     //*******************************************
     /// Invokes the timer's callback.
     //*******************************************
-    virtual void invoke() ETL_OVERRIDE
+    virtual void invoke(const etl::timer_config& config) ETL_OVERRIDE
     {
-      callback();
+      callback(config);
     }
 
     TCallback callback; ///< The callback delegate for the timer.
@@ -259,18 +301,21 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    message_timer_node(etl::imessage_router& router_, TMessage message) ETL_NOEXCEPT
+    message_timer_node(etl::imessage_router& router_, TMessage message_) ETL_NOEXCEPT
       : timer_node()
       , router(&router_)
+      , message(message_)
     {
     }
 
     //*******************************************
     /// Invokes the timer's callback.
     //*******************************************
-    virtual void invoke() ETL_OVERRIDE
+    virtual void invoke(const etl::timer_config& config) ETL_OVERRIDE
     {
-      callback();
+      message.set_timer_config(config);
+
+      router->receive(message);
     }
 
     etl::imessage_router* router;  ///< The message router to send the message to.

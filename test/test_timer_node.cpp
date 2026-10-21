@@ -39,27 +39,22 @@ namespace
     {
       constexpr etl::timer_config config1(1, 100U, etl::timer::mode::Repeating);
       CHECK_EQUAL(100U, config1.get_period());
-      CHECK_EQUAL(100U, config1.get_delta());
       CHECK_EQUAL(etl::timer::mode::Repeating, config1.get_mode());
 
       etl::timer_config config2(2, 200U, etl::timer::mode::Single_Shot);
       CHECK_EQUAL(200U, config2.get_period());
-      CHECK_EQUAL(200U, config2.get_delta());
       CHECK_EQUAL(etl::timer::mode::Single_Shot, config2.get_mode());
 
       etl::timer_config config3(config2);
       CHECK_EQUAL(config2.get_period(), config3.get_period());
-      CHECK_EQUAL(config2.get_delta(), config3.get_delta());
       CHECK_EQUAL(etl::timer::mode::Single_Shot, config2.get_mode());
 
       etl::timer_config config4 = etl::timer_config(4, 500U, etl::timer::mode::Repeating);
       CHECK_EQUAL(500U, config4.get_period());
-      CHECK_EQUAL(500U, config4.get_delta());
       CHECK_EQUAL(etl::timer::mode::Repeating, config4.get_mode());
 
       config2.clear();
       CHECK_EQUAL(etl::timer::state::Inactive, config2.get_period());
-      CHECK_EQUAL(etl::timer::state::Inactive, config2.get_delta());
       CHECK_EQUAL(etl::timer::mode::Repeating, config2.get_mode());
     }
 
@@ -74,11 +69,9 @@ namespace
       const etl::timer_config& config1_ref = node1.get_config();
 
       CHECK_EQUAL(config1.get_period(), node1.get_config().get_period());
-      CHECK_EQUAL(config1.get_delta(), node1.get_config().get_delta());
       CHECK_EQUAL(config1.get_mode(), node1.get_config().get_mode());
 
       CHECK_EQUAL(node1.get_config().get_period(), node2.get_config().get_period());
-      CHECK_EQUAL(node1.get_config().get_delta(), node2.get_config().get_delta());
       CHECK_EQUAL(node1.get_config().get_mode(), node2.get_config().get_mode());
     }
   }

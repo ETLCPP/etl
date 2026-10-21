@@ -176,11 +176,11 @@ namespace
       timer = active_list.next(timer);
       CHECK_EQUAL(active_list.end(), timer);
 
-      CHECK_EQUAL(timer2.get_config().get_period(), timer2.get_config().get_delta());
-      CHECK_EQUAL(timer3.get_config().get_period() - timer2.get_config().get_period(), timer3.get_config().get_delta());
-      CHECK_EQUAL(timer1.get_config().get_period() - timer3.get_config().get_period(), timer1.get_config().get_delta());
-      CHECK_EQUAL(timer4.get_config().get_period() - timer1.get_config().get_period(), timer4.get_config().get_delta());
-      CHECK_EQUAL(timer5.get_config().get_period() - timer3.get_config().get_period(), timer5.get_config().get_delta());
+      CHECK_EQUAL(timer2.get_config().get_period(), timer2.get_delta());
+      CHECK_EQUAL(timer3.get_config().get_period() - timer2.get_config().get_period(), timer3.get_delta());
+      CHECK_EQUAL(timer1.get_config().get_period() - timer3.get_config().get_period(), timer1.get_delta());
+      CHECK_EQUAL(timer4.get_config().get_period() - timer1.get_config().get_period(), timer4.get_delta());
+      CHECK_EQUAL(timer5.get_config().get_period() - timer3.get_config().get_period(), timer5.get_delta());
       // Remove timer3 from the list.
       active_list.remove(timer3.get_config().get_id());
 
@@ -226,10 +226,10 @@ namespace
       CHECK_TRUE(timer5_found);
 
       // Check the deltas are still correct.
-      CHECK_EQUAL(timer2.get_config().get_period(), timer2.get_config().get_delta());
-      CHECK_EQUAL(timer1.get_config().get_period() - timer3.get_config().get_period(), timer1.get_config().get_delta());
-      CHECK_EQUAL(timer4.get_config().get_period() - timer1.get_config().get_period(), timer4.get_config().get_delta());
-      CHECK_EQUAL(timer5.get_config().get_period() - timer2.get_config().get_period(), timer5.get_config().get_delta());
+      CHECK_EQUAL(timer2.get_config().get_period(), timer2.get_delta());
+      CHECK_EQUAL(timer1.get_config().get_period() - timer3.get_config().get_period(), timer1.get_delta());
+      CHECK_EQUAL(timer4.get_config().get_period() - timer1.get_config().get_period(), timer4.get_delta());
+      CHECK_EQUAL(timer5.get_config().get_period() - timer2.get_config().get_period(), timer5.get_delta());
 
       // Remove a timer that is not in the list.
       active_list.remove(timer6.get_config().get_id());
@@ -270,10 +270,10 @@ namespace
       }
 
       // Check the deltas are still correct.
-      CHECK_EQUAL(timer2.get_config().get_period(), timer2.get_config().get_delta());
-      CHECK_EQUAL(timer1.get_config().get_period() - timer3.get_config().get_period(), timer1.get_config().get_delta());
-      CHECK_EQUAL(timer4.get_config().get_period() - timer1.get_config().get_period(), timer4.get_config().get_delta());
-      CHECK_EQUAL(timer5.get_config().get_period() - timer2.get_config().get_period(), timer5.get_config().get_delta());
+      CHECK_EQUAL(timer2.get_period(), timer2.get_delta());
+      CHECK_EQUAL(timer1.get_period() - timer3.get_period(), timer1.get_delta());
+      CHECK_EQUAL(timer4.get_period() - timer1.get_period(), timer4.get_delta());
+      CHECK_EQUAL(timer5.get_period() - timer2.get_period(), timer5.get_delta());
 
       // Clear the list.
       active_list.clear();
@@ -283,7 +283,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_timer_triggered_list)
+    TEST(test_timer_expired_list)
     {
       constexpr etl::timer_config timer1_config(1, 100, etl::timer::mode::Repeating);
       constexpr etl::timer_config timer2_config(2, 65, etl::timer::mode::Repeating);
@@ -297,41 +297,41 @@ namespace
       etl::timer_node timer4{timer4_config};
       etl::timer_node timer5{timer5_config};
 
-      etl::private_timer::timer_triggered_list triggered_list;
+      etl::private_timer::timer_expired_list expired_list;
 
-      CHECK_TRUE(triggered_list.empty());
-      CHECK_TRUE(triggered_list.first() == triggered_list.end());
+      CHECK_TRUE(expired_list.empty());
+      CHECK_TRUE(expired_list.first() == expired_list.end());
 
       // Add the timers to the list.
-      triggered_list.insert(&timer1);
-      triggered_list.insert(&timer2);
-      triggered_list.insert(&timer3);
-      triggered_list.insert(&timer4);
-      triggered_list.insert(&timer5);
+      expired_list.insert(&timer1);
+      expired_list.insert(&timer2);
+      expired_list.insert(&timer3);
+      expired_list.insert(&timer4);
+      expired_list.insert(&timer5);
 
-      CHECK_FALSE(triggered_list.empty());
-      CHECK_TRUE(triggered_list.first() == &timer1);
+      CHECK_FALSE(expired_list.empty());
+      CHECK_TRUE(expired_list.first() == &timer1);
 
       // The timers should be in the order they were added.
-      etl::timer_node* timer = triggered_list.first();
+      etl::timer_node* timer = expired_list.first();
 
       CHECK_EQUAL(&timer1, timer);
-      timer = triggered_list.next(timer);
+      timer = expired_list.next(timer);
       CHECK_EQUAL(&timer2, timer);
-      timer = triggered_list.next(timer);
+      timer = expired_list.next(timer);
       CHECK_EQUAL(&timer3, timer);
-      timer = triggered_list.next(timer);
+      timer = expired_list.next(timer);
       CHECK_EQUAL(&timer4, timer);
-      timer = triggered_list.next(timer);
+      timer = expired_list.next(timer);
       CHECK_EQUAL(&timer5, timer);
-      timer = triggered_list.next(timer);
-      CHECK_EQUAL(triggered_list.end(), timer);
+      timer = expired_list.next(timer);
+      CHECK_EQUAL(expired_list.end(), timer);
 
       // Clear the list.
-      triggered_list.clear();
+      expired_list.clear();
 
-      CHECK_TRUE(triggered_list.empty());
-      CHECK_TRUE(triggered_list.first() == triggered_list.end());
+      CHECK_TRUE(expired_list.empty());
+      CHECK_TRUE(expired_list.first() == expired_list.end());
     }
   }
 } // namespace

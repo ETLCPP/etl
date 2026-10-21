@@ -37,7 +37,7 @@ SOFTWARE.
 #include <stdint.h>
 
 //*****************************************************************************
-// Definitions common to intrusive timers.
+// Definitions used by intrusive_timer.
 //*****************************************************************************
 
 namespace etl
@@ -105,7 +105,7 @@ namespace etl
         etl::timer_node* current = head;
         etl::timer_node* last    = end();
 
-        while ((current->config.id != id) && (current != end()))
+        while ((current->get_id() != id) && (current != end()))
         {
           last    = current;
           current = current->registered_next;
@@ -132,8 +132,7 @@ namespace etl
         // Clear the next pointer of the removed timer.
         current->registered_next = end();
 
-        return next;
-
+        return current;
       }
 
       //*******************************
@@ -229,10 +228,10 @@ namespace etl
           head                   = new_timer;
           new_timer->active_next = end();
         }
-        else if (new_timer->config.delta < head->config.delta)
+        else if (new_timer->delta < head->delta)
         {
           // Goes before the head.
-          head->config.delta -= new_timer->config.delta;
+          head->delta -= new_timer->delta;
           new_timer->active_next = head;
           head                   = new_timer;
         }
@@ -243,7 +242,7 @@ namespace etl
           timer_node* timer          = head->active_next;
 
           // Adjust the new_timer delta to take account of the head timer's delta.
-          new_timer->config.delta -= previous_timer->config.delta;
+          new_timer->delta -= previous_timer->delta;
 
           bool inserted = false;
 
@@ -251,21 +250,21 @@ namespace etl
           {
             // Find the correct place to insert.
             // The list is sorted by delta, so we need to find the first timer with a delta greater than the new timer's delta.
-            if (new_timer->config.delta < timer->config.delta)
+            if (new_timer->delta < timer->delta)
             {
               // Insert after the previous timer.
               previous_timer->active_next = new_timer;
               new_timer->active_next      = timer;
 
               // Adjust the next delta for the new timer's delta.
-              timer->config.delta -= new_timer->config.delta;
+              timer->delta -= new_timer->delta;
 
               inserted = true;
             }
             else
             {
               // Adjust the new_timer delta to take account of the last timer's delta.
-              new_timer->config.delta -= timer->config.delta;
+              new_timer->delta -= timer->delta;
             }
 
             // Move to the next timer in the list.
@@ -299,7 +298,7 @@ namespace etl
         etl::timer_node* current = head;
         etl::timer_node* last    = end();
 
-        while ((current->config.id != id) && (current != end()))
+        while ((current->get_id() != id) && (current != end()))
         {
           last    = current;
           current = current->active_next;
@@ -316,7 +315,7 @@ namespace etl
         // Adjust the next delta.
         if (next != end())
         {
-          next->config.delta += current->config.delta;
+          next->delta += current->delta;
         }
 
         // Remove it from the list.
@@ -332,7 +331,7 @@ namespace etl
         // Clear the next pointer of the removed timer.
         current->active_next = end();
 
-        return next;
+        return current;
       }
 
       //*******************************
@@ -393,14 +392,14 @@ namespace etl
     //*************************************************************************
     /// The list of timers that are registered.
     //*************************************************************************
-    class timer_triggered_list
+    class timer_expired_list
     {
     public:
 
       //*******************************
       /// Constructor.
       //*******************************
-      timer_triggered_list() ETL_NOEXCEPT
+      timer_expired_list() ETL_NOEXCEPT
         : head(end())
         , tail(end())
       {
@@ -419,7 +418,7 @@ namespace etl
       //*******************************
       void insert(etl::timer_node* new_timer) ETL_NOEXCEPT
       {
-        new_timer->triggered_next = end();
+        new_timer->expired_next = end();
 
         if (empty())
         {
@@ -427,7 +426,7 @@ namespace etl
         }
         else
         {
-          tail->triggered_next = new_timer;
+          tail->expired_next = new_timer;
         }
 
         tail = new_timer;
@@ -459,7 +458,7 @@ namespace etl
       {
         if (timer != end())
         {
-          return timer->triggered_next;
+          return timer->expired_next;
         }
         else
         {
@@ -485,9 +484,9 @@ namespace etl
 
         while (head != end())
         {
-          head                  = timer->triggered_next;
-          timer->triggered_next = etl::timer_node::unlinked();
-          timer                 = head;
+          head                = timer->expired_next;
+          timer->expired_next = timer->unlinked();
+          timer               = head;
         }
 
         tail = end();
