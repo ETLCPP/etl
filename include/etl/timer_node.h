@@ -69,10 +69,10 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    ETL_CONSTEXPR timer_config(etl::timer::id::type id_, uint32_t period_, etl::timer::mode::type repeating_) ETL_NOEXCEPT
+    ETL_CONSTEXPR timer_config(uint32_t period_, etl::timer::mode::type repeating_) ETL_NOEXCEPT
       : period(period_)
       , mode(repeating_)
-      , id(id_)
+      , id(etl::timer::id::No_Timer)
     {
     }
 
@@ -223,6 +223,14 @@ namespace etl
       return ETL_NULLPTR;
     }
 
+    //*******************************************
+    /// Sets the ID of the timer.
+    //*******************************************
+    void set_id(etl::timer::id::type id_) ETL_NOEXCEPT
+    {
+      config.id = id_;
+    }
+
     //***************************************************************************
     /// Returns a reference to the sentinel timer node used to mark the end of
     /// the intrusive timer lists.
@@ -233,7 +241,7 @@ namespace etl
     //***************************************************************************
     static etl::timer_node* sentinal() ETL_NOEXCEPT
     {
-      static etl::timer_node sentinel_node(etl::timer_config(0, 0, 0));
+      static etl::timer_node sentinel_node(etl::timer_config(0, 0));
 
       return &sentinel_node;
     }

@@ -70,21 +70,30 @@ namespace etl
       }
 
       //*******************************
-      // Adds the timer in to the list.
+      // Adds the timer in to the list in ID order.
       //*******************************
       void insert(etl::timer_node* new_timer) ETL_NOEXCEPT
       {
+        new_timer->registered_next = end();
+
         if (empty())
         {
           head = new_timer;
         }
         else
         {
-          tail->registered_next = new_timer;
-        }
+          etl::timer_node* current = head;
+          etl::timer_node* last    = head;
 
-        tail                       = new_timer;
-        new_timer->registered_next = end();
+          while ((current != end()) && (current->get_id() < new_timer->get_id()))
+          {
+            last    = current;
+            current = current->registered_next;
+          }
+
+          new_timer->registered_next = current;
+          last->registered_next = new_timer;
+        }
       }
 
       //*******************************
@@ -129,10 +138,11 @@ namespace etl
           last->registered_next = next;
         }
 
-        // Clear the next pointer of the removed timer.
+        // Clear the id and next pointer of the removed timer.
+        current->set_id(etl::timer::id::No_Timer);
         current->registered_next = end();
 
-        return current;
+        return next;
       }
 
       //*******************************
@@ -331,7 +341,7 @@ namespace etl
         // Clear the next pointer of the removed timer.
         current->active_next = end();
 
-        return current;
+        return next;
       }
 
       //*******************************

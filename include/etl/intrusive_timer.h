@@ -74,6 +74,7 @@ namespace etl
       , expired_list()
       , enabled(false)
       , timer_count(0U)
+      , next_id(0U)
     {
     }
 
@@ -83,25 +84,16 @@ namespace etl
     //*******************************************
     bool register_timer(etl::timer_node& node) ETL_NOEXCEPT
     {
-      etl::timer::id::type id     = node.get_id();
-      bool                 result = false;
+      bool result = false;
 
-      if (id != etl::timer::id::No_Timer)
-      {
-        lock_policy.lock();
+      etl::timer::id::type id = get_next_id();
+      node.set_id(id);
 
-        // Remove any existing timer with the same id.
-        active_list.remove(id);
-        register_list.remove(id);
+      // Register the new timer.
+      register_list.insert(&node);
 
-        // Register the new timer.
-        register_list.insert(&node);
-
-        lock_policy.unlock();
-
-        result = true;
-        ++timer_count;
-      }
+      result = true;
+      ++timer_count;
 
       return result;
     }
@@ -386,6 +378,35 @@ namespace etl
   private:
 
     //*******************************************
+    /// Gets the next available timer id.
+    //*******************************************
+    etl::timer::id::type get_next_id() ETL_NOEXCEPT
+    {
+      etl::timer::id::type next_id = 0; // IDs start at 0
+
+      etl::timer_node* timer = register_list.first();
+
+      while (timer != register_list.end())
+      {
+        if (timer->get_id() == next_id)
+        {
+          // Already in use, so increment next_id and continue checking
+          ++next_id;
+        }
+        else if (timer->get_id() > next_id)
+        {
+          // Found a gap in the IDs, so return the next_id
+          return next_id;
+        }
+
+        timer = register_list.next(timer);
+      }
+
+      // We never found a gap, so return the next available ID
+      return next_id;
+    }
+
+    //*******************************************
     /// Stops a timer without locking.
     /// Returns the timer node if it was found, otherwise returns end().
     //*******************************************
@@ -446,6 +467,7 @@ namespace etl
 
     bool   enabled;
     size_t timer_count;
+    etl::timer::id::type next_id;
   };
 } // namespace etl
 
