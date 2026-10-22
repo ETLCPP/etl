@@ -5,7 +5,7 @@ Embedded Template Library.
 https://github.com/ETLCPP/etl
 https://www.etlcpp.com
 
-Copyright(c) 2017 John Wellbelove
+Copyright(c) 2026 John Wellbelove
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files(the "Software"), to deal
@@ -30,11 +30,7 @@ SOFTWARE.
 #define ETL_INTRUSIVE_TIMER_INCLUDED
 
 #include "platform.h"
-#include "algorithm.h"
-#include "delegate.h"
-#include "error_handler.h"
 #include "nullptr.h"
-#include "static_assert.h"
 #include "timer_node.h"
 
 #include "private/timer_lists.h"
@@ -62,7 +58,7 @@ namespace etl
   {
   public:
 
-    typedef etl::delegate<void(etl::timer::id::type, uint32_t delta)> timer_update_callback_type;
+    typedef etl::delegate<void(etl::timer_node&, uint32_t delta)> timer_update_callback_type;
 
     //*******************************************
     /// Constructor.
@@ -74,7 +70,6 @@ namespace etl
       , expired_list()
       , enabled(false)
       , timer_count(0U)
-      , next_id(0U)
     {
     }
 
@@ -82,42 +77,21 @@ namespace etl
     /// Register a timer.
     /// It will not be started until the start() method is called.
     //*******************************************
-    bool register_timer(etl::timer_node& node) ETL_NOEXCEPT
+    bool register_timer(etl::timer_node& timer_) ETL_NOEXCEPT
     {
       bool result = false;
 
-      etl::timer::id::type id = get_next_id();
-      node.set_id(id);
+      lock_policy.lock();
 
-      // Register the new timer.
-      register_list.insert(&node);
-
-      result = true;
-      ++timer_count;
-
-      return result;
-    }
-
-    //*******************************************
-    /// Unregister a timer.
-    /// By id.
-    //*******************************************
-    bool unregister_timer(etl::timer::id::type id) ETL_NOEXCEPT
-    {
-      bool result = false;
-
-      if (id != etl::timer::id::No_Timer)
+      if (!timer_.is_registered(this))
       {
-        lock_policy.lock();
-
-        active_list.remove(id);
-        register_list.remove(id);
-
-        lock_policy.unlock();
-
+        register_list.insert(timer_);
+        timer_.set_owner(this);
+        ++timer_count;
         result = true;
-        --timer_count;
       }
+
+      lock_policy.unlock();
 
       return result;
     }
@@ -126,11 +100,29 @@ namespace etl
     /// Unregister a timer.
     /// By node reference.
     //*******************************************
-    bool unregister_timer(etl::timer_node& node) ETL_NOEXCEPT
+    bool unregister_timer(etl::timer_node& timer_) ETL_NOEXCEPT
     {
-      etl::timer::id::type id = node.get_id();
+      if (timer_.is_registered(this))
+      {
+        lock_policy.lock();
 
-      return unregister_timer(id);
+        if (timer_.is_active())
+        {
+          active_list.remove(&timer_);
+        }
+
+        register_list.remove(&timer_);
+
+        lock_policy.unlock();
+
+        --timer_count;
+
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
 
     //*******************************************
@@ -188,7 +180,7 @@ namespace etl
             {
               count -= timer->delta;
 
-              active_list.remove(timer->get_id());
+              active_list.remove(timer);
 
               // If the timer is repeating then add it back to the active list.
               if (timer->get_mode() == etl::timer::mode::Repeating)
@@ -227,13 +219,13 @@ namespace etl
     //*******************************************
     /// Starts a timer.
     //*******************************************
-    bool start(etl::timer::id::type id_, bool immediate_ = false) ETL_NOEXCEPT
+    bool start(etl::timer_node* timer_, bool immediate_ = false) ETL_NOEXCEPT
     {
       bool is_started = false;
 
       lock_policy.lock();
 
-      etl::timer_node* timer = find_timer(register_list, id_);
+      etl::timer_node* timer = register_list.find(timer_);
 
       if (timer != register_list.end())
       {
@@ -255,13 +247,17 @@ namespace etl
     //*******************************************
     /// Stops a timer.
     //*******************************************
-    bool stop(etl::timer::id::type id_) ETL_NOEXCEPT
+    bool stop(etl::timer_node* timer_) ETL_NOEXCEPT
     {
       bool is_stopped = false;
 
       lock_policy.lock();
 
-      is_stopped = (stop_impl(id_) != active_list.end());
+      if (timer_->is_active())
+      {
+        stop_impl(timer_);
+        is_stopped = true;
+      }
 
       lock_policy.unlock();
 
@@ -271,19 +267,52 @@ namespace etl
     //*******************************************
     /// Sets a timer's period.
     //*******************************************
-    bool set_period(etl::timer::id::type id_, uint32_t period_) ETL_NOEXCEPT
+    bool set_period(etl::timer_node* timer_, uint32_t period_) ETL_NOEXCEPT
     {
       bool result = false;
 
       lock_policy.lock();
 
-      stop_impl(id_);
-
-      etl::timer_node* timer = find_timer(register_list, id_);
-
-      if (timer != active_list.end())
+      if (timer_->is_registered(this))
       {
-        timer->set_period(period_);
+        if (timer_->is_active())
+        {
+          stop_impl(timer_);
+        }
+
+        timer_->set_period(period_);
+        result = true;
+      }
+
+      lock_policy.unlock();
+
+      return result;
+    }
+
+    //*******************************************
+    /// Sets a timer's period.
+    //*******************************************
+    bool set_period(etl::timer_node& timer_, uint32_t period_) ETL_NOEXCEPT
+    {
+      return set_period(&timer_, period_);
+    }
+
+    //*******************************************
+    /// Sets a timer's mode.
+    //*******************************************
+    bool set_mode(etl::timer_node* timer_, etl::timer::mode::type mode_) ETL_NOEXCEPT
+    {
+      bool result = false;
+
+      lock_policy.lock();
+
+      if (timer_->is_registered(this))
+      {
+        if (timer_->is_active())
+        {
+          stop_impl(timer_);
+        }
+        timer_->set_mode(mode_);
         result = true;
       }
 
@@ -295,25 +324,9 @@ namespace etl
     //*******************************************
     /// Sets a timer's mode.
     //*******************************************
-    bool set_mode(etl::timer::id::type id_, bool mode_) ETL_NOEXCEPT
+    bool set_mode(etl::timer_node& timer_, etl::timer::mode::type mode_) ETL_NOEXCEPT
     {
-      bool result = false;
-
-      lock_policy.lock();
-
-      stop_impl(id_);
-
-      etl::timer_node* timer = find_timer(register_list, id_);
-
-      if (timer != active_list.end())
-      {
-        timer->set_mode(mode_);
-        result = true;
-      }
-
-      lock_policy.unlock();
-
-      return result;
+      return set_mode(&timer_, mode_);
     }
 
     //*******************************************
@@ -350,27 +363,9 @@ namespace etl
     }
 
     //*******************************************
-    /// Checks if a timer is currently active.
-    /// Returns <b>true</b> if the timer is active, otherwise <b>false</b>.
-    //*******************************************
-    bool is_active(etl::timer::id::type id_) const ETL_NOEXCEPT
-    {
-      if (id_ != etl::timer::id::No_Timer)
-      {
-        lock_policy.lock();
-        bool is_active = (find_timer(active_list, id_) != active_list.end());
-        lock_policy.unlock();
-
-        return is_active;
-      }
-
-      return false;
-    }
-
-    //*******************************************
     /// Returns the number of registered timers.
     //*******************************************
-    size_t number_of_registered_timers() const ETL_NOEXCEPT
+    size_t number_of_timers() const ETL_NOEXCEPT
     {
       return timer_count;
     }
@@ -410,36 +405,14 @@ namespace etl
     /// Stops a timer without locking.
     /// Returns the timer node if it was found, otherwise returns end().
     //*******************************************
-    etl::timer_node* stop_impl(etl::timer::id::type id_) ETL_NOEXCEPT
+    void stop_impl(etl::timer_node* timer_) ETL_NOEXCEPT
     {
-      return active_list.remove(id_);
+      active_list.remove(timer_);
     }
 
     //*******************************************
-    /// Finds a timer in a list by its id.
-    //*******************************************
-    template <typename TList>
-    etl::timer_node* find_timer(TList& timer_list, etl::timer::id::type id_) const ETL_NOEXCEPT
-    {
-      etl::timer_node* result = timer_list.end();
-
-      if (id_ != etl::timer::id::No_Timer)
-      {
-        timer_node* timer = timer_list.first();
-
-        while ((timer != timer_list.end()) && (timer->get_config().get_id() != id_))
-        {
-          timer = timer_list.next(timer);
-        }
-
-        result = timer;
-      }
-
-      return result;
-    }
-
-    //*******************************************
-    /// Invokes the callbacks for all expired timers.
+    /// Invoke for all expired timers.
+    /// This is called after the lock has been released to avoid deadlocks.
     //*******************************************
     void invoke_expired_timers()
     {
@@ -467,7 +440,6 @@ namespace etl
 
     bool   enabled;
     size_t timer_count;
-    etl::timer::id::type next_id;
   };
 } // namespace etl
 

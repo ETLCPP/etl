@@ -30,6 +30,7 @@ SOFTWARE.
 #define ETL_TIMER_NODE_INCLUDED
 
 #include "platform.h"
+#include "delegate.h"
 #include "message_router.h"
 #include "nullptr.h"
 #include "timer.h"
@@ -122,6 +123,19 @@ namespace etl
   //***************************************************************************
   /// A timer data structure that can be linked into the timer lists.
   /// Contains a timer configuration.
+  ///
+  /// registered_next points to the next node in registered list.
+  /// - A value of etl::timer_node::unlinked() indicates that the timer is not in the registered list.
+  /// - A value of etl::timer_node::end() indicates that the timer is the last in the list.
+  ///
+  /// active_next points to the next node in active list.
+  /// - A value of etl::timer_node::unlinked() indicates that the timer is not in the active list.
+  /// - A value of etl::timer_node::end() indicates that the timer is the last in the list.
+  ///
+  /// expired_next points to the next node in expired list.
+  /// - A value of etl::timer_node::unlinked() indicates that the timer is not in the expired list.
+  /// - A value of etl::timer_node::end() indicates that the timer is the last in the list.
+  ///
   //***************************************************************************
   class timer_node
   {
@@ -140,6 +154,7 @@ namespace etl
       : registered_next(unlinked())
       , active_next(unlinked())
       , expired_next(unlinked())
+      , owner(ETL_NULLPTR)
       , config(config_)
       , delta(config_.get_period())
     {
@@ -152,6 +167,7 @@ namespace etl
       : registered_next(unlinked())
       , active_next(unlinked())
       , expired_next(unlinked())
+      , owner(ETL_NULLPTR)
       , config(node_.config)
       , delta(node_.config.get_period())
     {
@@ -216,19 +232,27 @@ namespace etl
     }
 
     //*******************************************
-    /// Returns a nullptr to indicate that the timer is not linked into any list.
-    //*******************************************
-    static etl::timer_node* unlinked() ETL_NOEXCEPT
-    {
-      return ETL_NULLPTR;
-    }
-
-    //*******************************************
     /// Sets the ID of the timer.
     //*******************************************
     void set_id(etl::timer::id::type id_) ETL_NOEXCEPT
     {
       config.id = id_;
+    }
+
+    //*******************************************
+    /// Sets the owner of the timer.
+    //*******************************************
+    void set_owner(void* owner_) ETL_NOEXCEPT
+    {
+      owner = owner_;
+    }
+
+    //*******************************************
+    /// Returns a nullptr to indicate that the timer is not linked into any list.
+    //*******************************************
+    static etl::timer_node* unlinked() ETL_NOEXCEPT
+    {
+      return ETL_NULLPTR;
     }
 
     //***************************************************************************
@@ -239,7 +263,7 @@ namespace etl
     /// This avoids needing C++17 inline variables, so it remains compatible
     /// with C++03 and C++11.
     //***************************************************************************
-    static etl::timer_node* sentinal() ETL_NOEXCEPT
+    static etl::timer_node* end() ETL_NOEXCEPT
     {
       static etl::timer_node sentinel_node(etl::timer_config(0, 0));
 
@@ -254,7 +278,33 @@ namespace etl
       registered_next = unlinked();
       active_next     = unlinked();
       expired_next    = unlinked();
+      owner           = ETL_NULLPTR;
       delta           = config.get_period();
+    }
+
+    //*******************************************
+    /// Returns true if the timer is registered to this owner.
+    /// A timer cannot be registered to more than one owner.
+    //*******************************************
+    bool is_registered(void* owner_) const ETL_NOEXCEPT
+    {
+      return (registered_next != unlinked()) && (owner == owner_);
+    }
+
+    //*******************************************
+    /// Returns true if the timer is active.
+    //*******************************************
+    bool is_active() const ETL_NOEXCEPT
+    {
+      return active_next != unlinked();
+    }
+
+    //*******************************************
+    /// Returns true if the timer has expired.
+    //*******************************************
+    bool has_expired() const ETL_NOEXCEPT
+    {
+      return expired_next != unlinked();
     }
 
     //*******************************************
@@ -267,9 +317,10 @@ namespace etl
 
     timer_node& operator=(const timer_node&) ETL_DELETE;
 
-    timer_node*  registered_next; ///< The next timer in the registered timer list. nullptr if the timer is not registered.
-    timer_node*  active_next;     ///< The next timer in the active timer list. nullptr if the timer is not active.
-    timer_node*  expired_next;    ///< The next timer in the expired timer list. nullptr if the timer is not expired.
+    timer_node*  registered_next; ///< The next timer in the registered timer list. unlinked() if the timer is not registered.
+    timer_node*  active_next;     ///< The next timer in the active timer list. unlinked() if the timer is not active.
+    timer_node*  expired_next;    ///< The next timer in the expired timer list. unlinked() if the timer is not expired.
+    void*        owner;           ///< The owner of the timer.
     timer_config config;          ///< The configuration of the timer.
     uint32_t     delta;           ///< The time remaining until the timer expires.
   };

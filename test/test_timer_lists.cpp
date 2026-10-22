@@ -65,7 +65,7 @@ namespace
       CHECK_TRUE(register_list.first() == &timer1);
 
       // Remove timer3 from the list.
-      register_list.remove(timer3.get_config().get_id());
+      register_list.remove(&timer3);
 
       // Search the list to ensure the other timers are still present.
       bool timer1_found = false;
@@ -167,7 +167,7 @@ namespace
       CHECK_EQUAL(timer4.get_config().get_period() - timer1.get_config().get_period(), timer4.get_delta());
       CHECK_EQUAL(timer5.get_config().get_period() - timer3.get_config().get_period(), timer5.get_delta());
       // Remove timer3 from the list.
-      active_list.remove(timer3.get_config().get_id());
+      active_list.remove(&timer3);
 
       // Search the list to ensure the other timers are still present.
       bool timer1_found = false;
@@ -217,7 +217,7 @@ namespace
       CHECK_EQUAL(timer5.get_config().get_period() - timer2.get_config().get_period(), timer5.get_delta());
 
       // Remove a timer that is not in the list.
-      active_list.remove(timer6.get_config().get_id());
+      active_list.remove(&timer6);
 
       // Search the list to ensure the other timers are still present.
       timer1_found = false;
@@ -275,11 +275,11 @@ namespace
       constexpr etl::timer_config timer3_config(85, etl::timer::mode::Repeating);
       constexpr etl::timer_config timer4_config(130, etl::timer::mode::Repeating);
       constexpr etl::timer_config timer5_config(85, etl::timer::mode::Repeating);
-      etl::timer_node timer1{timer1_config};
-      etl::timer_node timer2{timer2_config};
-      etl::timer_node timer3{timer3_config};
-      etl::timer_node timer4{timer4_config};
-      etl::timer_node timer5{timer5_config};
+      etl::timer_node             timer1{timer1_config};
+      etl::timer_node             timer2{timer2_config};
+      etl::timer_node             timer3{timer3_config};
+      etl::timer_node             timer4{timer4_config};
+      etl::timer_node             timer5{timer5_config};
 
       etl::private_timer::timer_expired_list expired_list;
 

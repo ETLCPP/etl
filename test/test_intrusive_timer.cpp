@@ -132,7 +132,7 @@ namespace
       etl::intrusive_timer timer_controller(lock_policy);
 
       CHECK_FALSE(timer_controller.is_running());
-      CHECK_EQUAL(0U, timer_controller.number_of_registered_timers());
+      CHECK_EQUAL(0U, timer_controller.number_of_timers());
       CHECK_EQUAL(0U, lock_policy.get_count());
     }
 
@@ -148,11 +148,11 @@ namespace
       etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
 
       CHECK_TRUE(timer_controller.register_timer(node1));
-      CHECK_EQUAL(1U, timer_controller.number_of_registered_timers());
+      CHECK_EQUAL(1U, timer_controller.number_of_timers());
       CHECK_TRUE(timer_controller.register_timer(node2));
-      CHECK_EQUAL(2U, timer_controller.number_of_registered_timers());
+      CHECK_EQUAL(2U, timer_controller.number_of_timers());
       CHECK_TRUE(timer_controller.register_timer(node3));
-      CHECK_EQUAL(3U, timer_controller.number_of_registered_timers());
+      CHECK_EQUAL(3U, timer_controller.number_of_timers());
       CHECK_FALSE(timer_controller.is_running());
       CHECK_EQUAL(0U, lock_policy.get_count());
     }
@@ -172,38 +172,15 @@ namespace
       timer_controller.register_timer(node2);
       timer_controller.register_timer(node3);
 
+      CHECK_EQUAL(3U, timer_controller.number_of_timers());
       CHECK_TRUE(timer_controller.unregister_timer(node1));
-      CHECK_EQUAL(2U, timer_controller.number_of_registered_timers());
+      CHECK_EQUAL(2U, timer_controller.number_of_timers());
       CHECK_TRUE(timer_controller.unregister_timer(node2));
-      CHECK_EQUAL(1U, timer_controller.number_of_registered_timers());
+      CHECK_EQUAL(1U, timer_controller.number_of_timers());
       CHECK_TRUE(timer_controller.unregister_timer(node3));
-      CHECK_EQUAL(0U, timer_controller.number_of_registered_timers());
+      CHECK_EQUAL(0U, timer_controller.number_of_timers());
       CHECK_FALSE(timer_controller.is_running());
       CHECK_EQUAL(0U, lock_policy.get_count());
-    }
-
-    //*************************************************************************
-    TEST(test_intrusive_timer_unregister_timers_by_id)
-    {
-      LockPolicy lock_policy;
-
-      etl::intrusive_timer timer_controller(lock_policy);
-
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
-      etl::timer_node node2(etl::timer_config(200, etl::timer::mode::Repeating));
-      etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
-
-      timer_controller.register_timer(node1);
-      timer_controller.register_timer(node2);
-      timer_controller.register_timer(node3);
-
-      CHECK_TRUE(timer_controller.unregister_timer(node1.get_config().get_id()));
-      CHECK_EQUAL(2U, timer_controller.number_of_registered_timers());
-      CHECK_TRUE(timer_controller.unregister_timer(node2.get_config().get_id()));
-      CHECK_EQUAL(1U, timer_controller.number_of_registered_timers());
-      CHECK_TRUE(timer_controller.unregister_timer(node3.get_config().get_id()));
-      CHECK_EQUAL(0U, timer_controller.number_of_registered_timers());
-      CHECK_FALSE(timer_controller.is_running());
     }
 
     //*************************************************************************
@@ -222,14 +199,14 @@ namespace
       timer_controller.register_timer(node3);
 
       // Modify the timer periods.
-      timer_controller.set_period(node1.get_id(), 150U);
-      timer_controller.set_period(node2.get_id(), 250U);
-      timer_controller.set_period(node3.get_id(), 350U);
+      timer_controller.set_period(node1, 150U);
+      timer_controller.set_period(node2, 250U);
+      timer_controller.set_period(node3, 350U);
 
       // Modify the timer modes.
-      timer_controller.set_mode(node1.get_id(), etl::timer::mode::Repeating);
-      timer_controller.set_mode(node2.get_id(), etl::timer::mode::Single_Shot);
-      timer_controller.set_mode(node3.get_id(), etl::timer::mode::Single_Shot);
+      timer_controller.set_mode(node1, etl::timer::mode::Repeating);
+      timer_controller.set_mode(node2, etl::timer::mode::Single_Shot);
+      timer_controller.set_mode(node3, etl::timer::mode::Single_Shot);
 
       CHECK_EQUAL(150U, node1.get_period());
       CHECK_EQUAL(250U, node2.get_period());
@@ -238,12 +215,14 @@ namespace
       CHECK_EQUAL(etl::timer::mode::Repeating, node1.get_mode());
       CHECK_EQUAL(etl::timer::mode::Single_Shot, node2.get_mode());
       CHECK_EQUAL(etl::timer::mode::Single_Shot, node3.get_mode());
+
+      CHECK_EQUAL(0U, lock_policy.get_count());
     }
 
     ////*************************************************************************
-    //TEST(test_intrusive_timer_one_shot)
+    // TEST(test_intrusive_timer_one_shot)
     //{
-    //  LockPolicy lock_policy;
+    //   LockPolicy lock_policy;
 
     //  etl::intrusive_timer timer_controller(lock_policy);
     //
