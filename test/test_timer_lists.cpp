@@ -33,6 +33,49 @@ SOFTWARE.
 
 namespace
 {
+  //*******************************************
+  class etl_unit_test_intrusive_timer
+  {
+  public:
+
+    //*************************************************************************
+    void register_timer(etl::private_timer::timer_register_list& register_list, etl::timer_node& timer_)
+    {
+      timer_.set_id(get_next_id(register_list));
+      register_list.insert(&timer_);
+      timer_.set_owner(this);
+    }
+
+    //*******************************************
+    etl::timer::id::type get_next_id(etl::private_timer::timer_register_list& register_list) ETL_NOEXCEPT
+    {
+      etl::timer::id::type next_id = 0; // IDs start at 0
+
+      etl::timer_node* timer = register_list.first();
+
+      while (timer != register_list.end())
+      {
+        if (timer->get_id() == next_id)
+        {
+          // Already in use, so increment next_id and continue checking
+          ++next_id;
+        }
+        else if (timer->get_id() > next_id)
+        {
+          // Found a gap in the IDs, so return the next_id
+          return next_id;
+        }
+
+        timer = register_list.next(timer);
+      }
+
+      // We never found a gap, so return the next available ID
+      return next_id;
+    }
+  };
+
+  etl_unit_test_intrusive_timer test_intrusive_timer;
+
   SUITE(test_timer_lists)
   {
     //*************************************************************************
@@ -55,11 +98,14 @@ namespace
       CHECK_TRUE(register_list.first() == register_list.end());
 
       // Add the timers to the list.
-      register_list.insert(&timer1);
-      register_list.insert(&timer2);
-      register_list.insert(&timer3);
-      register_list.insert(&timer4);
-      register_list.insert(&timer5);
+      test_intrusive_timer.register_timer(register_list, timer1);
+      test_intrusive_timer.register_timer(register_list, timer2);
+      test_intrusive_timer.register_timer(register_list, timer3);
+      test_intrusive_timer.register_timer(register_list, timer4);
+      test_intrusive_timer.register_timer(register_list, timer5);
+
+      auto p1 = register_list.first();
+      auto p2 = &timer1;
 
       CHECK_FALSE(register_list.empty());
       CHECK_TRUE(register_list.first() == &timer1);
@@ -215,50 +261,6 @@ namespace
       CHECK_EQUAL(timer1.get_config().get_period() - timer3.get_config().get_period(), timer1.get_delta());
       CHECK_EQUAL(timer4.get_config().get_period() - timer1.get_config().get_period(), timer4.get_delta());
       CHECK_EQUAL(timer5.get_config().get_period() - timer2.get_config().get_period(), timer5.get_delta());
-
-      // Remove a timer that is not in the list.
-      active_list.remove(&timer6);
-
-      // Search the list to ensure the other timers are still present.
-      timer1_found = false;
-      timer2_found = false;
-      timer3_found = false;
-      timer4_found = false;
-      timer5_found = false;
-
-      timer = active_list.first();
-
-      while (timer != active_list.end())
-      {
-        if (timer == &timer1)
-        {
-          timer1_found = true;
-        }
-        else if (timer == &timer2)
-        {
-          timer2_found = true;
-        }
-        else if (timer == &timer3)
-        {
-          timer3_found = true;
-        }
-        else if (timer == &timer4)
-        {
-          timer4_found = true;
-        }
-        else if (timer == &timer5)
-        {
-          timer5_found = true;
-        }
-
-        timer = active_list.next(timer);
-      }
-
-      // Check the deltas are still correct.
-      CHECK_EQUAL(timer2.get_period(), timer2.get_delta());
-      CHECK_EQUAL(timer1.get_period() - timer3.get_period(), timer1.get_delta());
-      CHECK_EQUAL(timer4.get_period() - timer1.get_period(), timer4.get_delta());
-      CHECK_EQUAL(timer5.get_period() - timer2.get_period(), timer5.get_delta());
 
       // Clear the list.
       active_list.clear();

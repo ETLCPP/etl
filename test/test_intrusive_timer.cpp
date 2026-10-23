@@ -82,6 +82,9 @@ namespace
   TimerInsertRemoveTest timerInsertRemoveTest;
 
   //***************************************************************************
+  /// A lock policy that counts the number of times it is locked and unlocked.
+  /// The lock count should always be 0 or 1.
+  //***************************************************************************
   class LockPolicy : public etl::timer_lock_policy
   {
   public:
@@ -94,15 +97,25 @@ namespace
     }
 
     //*******************************************
+    ~LockPolicy()
+    {
+      assert(count == 0);
+    }
+
+    //*******************************************
     void lock() ETL_NOEXCEPT override
     {
       ++count;
+
+      assert(count == 1);
     }
 
     //*******************************************
     void unlock() ETL_NOEXCEPT override
     {
       --count;
+
+      assert(count == 0);
     }
 
     //*******************************************
@@ -121,6 +134,94 @@ namespace
 
     int count;
   };
+
+  //*************************************************************************
+  using CallbackDelegate = etl::delegate<void(const etl::timer_config&)>;
+  using CallbackTimer    = etl::timer_callback_node<CallbackDelegate>;
+
+  //*************************************************************************
+  bool                     global_callback_called = false;
+  const etl::timer_config* global_config;
+
+  static void global_callback(const etl::timer_config& config)
+  {
+    global_callback_called = true;
+    global_config          = &config;
+  }
+
+  //*************************************************************************
+  class Object
+  {
+  public:
+
+    Object()
+      : member_callback_called(false)
+      , member_config(ETL_NULLPTR)
+    {
+    }
+
+    void member(const etl::timer_config& config)
+    {
+      member_callback_called = true;
+      member_config          = &config;
+    }
+
+    bool                     member_callback_called = false;
+    const etl::timer_config* member_config;
+  };
+
+  static Object object;
+
+  //*************************************************************************
+  struct CallbackMessage : public etl::message<1>
+  {
+    CallbackMessage(int value_)
+      : value(value_)
+      , config(ETL_NULLPTR)
+    {
+    }
+
+    void set_timer_config(const etl::timer_config& config_)
+    {
+      config = &config_;
+    }
+
+    int                      value;
+    const etl::timer_config* config;
+  };
+
+  class MessageProcessor : public etl::message_router<MessageProcessor, CallbackMessage>
+  {
+  public:
+
+    MessageProcessor()
+      : etl::message_router<MessageProcessor, CallbackMessage>()
+      , message_callback_called(false)
+      , message_config(ETL_NULLPTR)
+      , value(0)
+    {
+    }
+
+    //*******************************************
+    void on_receive(const CallbackMessage& msg)
+    {
+      message_callback_called = true;
+      message_config          = msg.config;
+      value                   = msg.value;
+    }
+
+    //*******************************************
+    void on_receive_unknown(const etl::imessage& msg) {}
+
+    bool                     message_callback_called;
+    const etl::timer_config* message_config;
+    int                      value;
+  };
+
+  using MessageTimer = etl::timer_message_node<CallbackMessage>;
+
+  MessageProcessor message_processor;
+  CallbackMessage  callback_message(42);
 
   SUITE(test_intrusive_timer)
   {
@@ -219,49 +320,77 @@ namespace
       CHECK_EQUAL(0U, lock_policy.get_count());
     }
 
-    ////*************************************************************************
-    // TEST(test_intrusive_timer_one_shot)
-    //{
-    //   LockPolicy lock_policy;
+    //*************************************************************************
+    TEST(test_intrusive_timer_one_shot)
+    {
+      LockPolicy lock_policy;
 
-    //  etl::intrusive_timer timer_controller(lock_policy);
-    //
-    //  etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
-    //  etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Single_Shot);
-    //  etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Single_Shot);
-    //
-    //  object.tick_list.clear();
-    //  free_tick_list1.clear();
-    //  free_tick_list2.clear();
-    //
-    //  timer_controller.start(id1);
-    //  timer_controller.start(id3);
-    //  timer_controller.start(id2);
-    //
-    //  timer_controller.enable(true);
-    //
-    //  ticks = 0;
-    //
-    //  const uint32_t step = 1UL;
-    //
-    //  while (ticks <= 100U)
-    //  {
-    //    ticks += step;
-    //    timer_controller.tick(step);
-    //  }
-    //
-    //  std::vector<uint64_t> compare1 = {37};
-    //  std::vector<uint64_t> compare2 = {23};
-    //  std::vector<uint64_t> compare3 = {11};
-    //
-    //  CHECK(object.tick_list.size() != 0);
-    //  CHECK(free_tick_list1.size() != 0);
-    //  CHECK(free_tick_list2.size() != 0);
-    //
-    //  CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
-    //  CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
-    //  CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
-    //}
+      etl::intrusive_timer timer_controller(lock_policy);
+
+      etl::timer_config config1(100, etl::timer::mode::Single_Shot);
+      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer     callback_timer1(callback_delegate1, config1);
+
+      etl::timer_config config2(23, etl::timer::mode::Single_Shot);
+      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer     callback_timer2(callback_delegate2, config2);
+
+      etl::timer_config config3(11, etl::timer::mode::Single_Shot);
+      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+
+      CHECK_TRUE(timer_controller.register_timer(callback_timer1));
+      CHECK_TRUE(timer_controller.register_timer(callback_timer2));
+      CHECK_TRUE(timer_controller.register_timer(callback_timer3));
+
+      // Get the modified id of the timers after registration.
+      etl::timer::id::type config1_id = callback_timer1.get_id();
+      etl::timer::id::type config2_id = callback_timer2.get_id();
+      etl::timer::id::type config3_id = callback_timer3.get_id();
+
+      timer_controller.start(callback_timer1);
+      timer_controller.start(callback_timer3);
+      timer_controller.start(callback_timer2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1UL;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      CHECK_TRUE(global_callback_called);
+      CHECK_EQUAL((int)config1_id, (int)global_config->get_id());
+      CHECK_EQUAL(config1.get_mode(), global_config->get_mode());
+      CHECK_EQUAL(config1.get_period(), global_config->get_period());
+
+      CHECK_TRUE(object.member_callback_called);
+      CHECK_EQUAL((int)config2_id, (int)object.member_config->get_id());
+      CHECK_EQUAL(config2.get_mode(), object.member_config->get_mode());
+      CHECK_EQUAL(config2.get_period(), object.member_config->get_period());
+
+      CHECK_TRUE(message_processor.message_callback_called);
+      CHECK_EQUAL((int)config3_id, (int)message_processor.message_config->get_id());
+      CHECK_EQUAL(config3.get_mode(), message_processor.message_config->get_mode());
+      CHECK_EQUAL(config3.get_period(), message_processor.message_config->get_period());
+      CHECK_EQUAL(callback_message.value, message_processor.value);
+
+      // std::vector<uint64_t> compare1 = {37};
+      // std::vector<uint64_t> compare2 = {23};
+      // std::vector<uint64_t> compare3 = {11};
+
+      // CHECK(object.tick_list.size() != 0);
+      // CHECK(free_tick_list1.size() != 0);
+      // CHECK(free_tick_list2.size() != 0);
+
+      // CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
+      // CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
+      // CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+    }
 
     //    //*************************************************************************
     //    TEST(message_timer_one_shot_after_timeout)

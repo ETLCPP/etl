@@ -85,6 +85,7 @@ namespace etl
 
       if (!timer_.is_registered(this))
       {
+        timer_.set_id(get_next_id());
         register_list.insert(timer_);
         timer_.set_owner(this);
         ++timer_count;
@@ -102,10 +103,12 @@ namespace etl
     //*******************************************
     bool unregister_timer(etl::timer_node& timer_) ETL_NOEXCEPT
     {
+      lock_policy.lock();
+
+      bool result = false;
+
       if (timer_.is_registered(this))
       {
-        lock_policy.lock();
-
         if (timer_.is_active())
         {
           active_list.remove(&timer_);
@@ -113,16 +116,14 @@ namespace etl
 
         register_list.remove(&timer_);
 
-        lock_policy.unlock();
-
         --timer_count;
 
-        return true;
+        result = true;
       }
-      else
-      {
-        return false;
-      }
+
+      lock_policy.unlock();
+
+      return result;
     }
 
     //*******************************************
@@ -162,6 +163,8 @@ namespace etl
     //*******************************************
     bool tick(uint32_t count)
     {
+      bool was_processed = false;
+
       if (enabled)
       {
         if (!lock_policy.is_locked())
@@ -202,35 +205,36 @@ namespace etl
               // Subtract any remainder from the next due timeout.
               active_list.first()->delta -= count;
             }
-
-            lock_policy.unlock();
-
-            // Invoke all of the expired timers.
-            invoke_expired_timers();
           }
-
-          return true;
         }
+
+        lock_policy.unlock();
+
+        was_processed = true;
+
+        // Invoke all of the expired timers.
+        invoke_expired_timers();
       }
 
-      return false;
+      return was_processed;
     }
 
     //*******************************************
     /// Starts a timer.
     //*******************************************
-    bool start(etl::timer_node* timer_, bool immediate_ = false) ETL_NOEXCEPT
+    bool start(etl::timer_node& timer_, bool immediate_ = false) ETL_NOEXCEPT
     {
       bool is_started = false;
 
       lock_policy.lock();
 
-      etl::timer_node* timer = register_list.find(timer_);
-
-      if (timer != register_list.end())
+      if (timer_.is_registered(this))
       {
-        active_list.insert(timer);
-        is_started = true;
+        if (!timer_.is_active())
+        {
+          active_list.insert(timer_);
+          is_started = true;
+        }
       }
 
       lock_policy.unlock();
@@ -238,7 +242,7 @@ namespace etl
       if (is_started && immediate_)
       {
         // Trigger the timer immediately.
-        timer->invoke(timer->get_config());
+        timer_.invoke(timer_.get_config());
       }
 
       return is_started;

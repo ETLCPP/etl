@@ -41,6 +41,13 @@ SOFTWARE.
 // Definitions common to intrusive timers.
 //*****************************************************************************
 
+#if defined(ETL_IN_UNIT_TEST)
+namespace
+{
+  class etl_unit_test_intrusive_timer;
+}
+#endif
+
 namespace etl
 {
   namespace private_timer
@@ -146,6 +153,10 @@ namespace etl
     friend class private_timer::timer_expired_list;
 
     friend class intrusive_timer;
+
+#if defined(ETL_IN_UNIT_TEST)
+    friend class etl_unit_test_intrusive_timer;
+#endif
 
     //*******************************************
     /// Constructor.
@@ -326,16 +337,16 @@ namespace etl
   };
 
   //***************************************************************************
-  /// A timer node that invokes a callback delegate.
+  /// A timer node that invokes a callback delegate type.
   //***************************************************************************
   template <typename TCallback>
-  struct callback_timer_node : public timer_node
+  struct timer_callback_node : public timer_node
   {
     //*******************************************
     /// Constructor.
     //*******************************************
-    callback_timer_node(TCallback callback_) ETL_NOEXCEPT
-      : timer_node()
+    timer_callback_node(TCallback callback_, const etl::timer_config& config_) ETL_NOEXCEPT
+      : timer_node(config_)
       , callback(callback_)
     {
     }
@@ -355,13 +366,13 @@ namespace etl
   /// A timer node that invokes a message callback.
   //***************************************************************************
   template <typename TMessage>
-  struct message_timer_node : public timer_node
+  struct timer_message_node : public timer_node
   {
     //*******************************************
     /// Constructor.
     //*******************************************
-    message_timer_node(etl::imessage_router& router_, TMessage message_) ETL_NOEXCEPT
-      : timer_node()
+    timer_message_node(const etl::timer_config& config_, etl::imessage_router& router_, TMessage message_) ETL_NOEXCEPT
+      : timer_node(config_)
       , router(&router_)
       , message(message_)
     {
