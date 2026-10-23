@@ -142,11 +142,13 @@ namespace
   //*************************************************************************
   bool                     global_callback_called = false;
   const etl::timer_config* global_config;
+  uint64_t                 global_tick_count = 0;
 
   static void global_callback(const etl::timer_config& config)
   {
     global_callback_called = true;
     global_config          = &config;
+    global_tick_count      = ticks;
   }
 
   //*************************************************************************
@@ -157,6 +159,7 @@ namespace
     Object()
       : member_callback_called(false)
       , member_config(ETL_NULLPTR)
+      , member_tick_count(0)
     {
     }
 
@@ -164,10 +167,12 @@ namespace
     {
       member_callback_called = true;
       member_config          = &config;
+      member_tick_count      = ticks;
     }
 
     bool                     member_callback_called = false;
     const etl::timer_config* member_config;
+    uint64_t                 member_tick_count;
   };
 
   static Object object;
@@ -198,7 +203,7 @@ namespace
       : etl::message_router<MessageProcessor, CallbackMessage>()
       , message_callback_called(false)
       , message_config(ETL_NULLPTR)
-      , value(0)
+      , message_value(0)
     {
     }
 
@@ -207,7 +212,8 @@ namespace
     {
       message_callback_called = true;
       message_config          = msg.config;
-      value                   = msg.value;
+      message_value           = msg.value;
+      message_tick_count      = ticks;
     }
 
     //*******************************************
@@ -215,13 +221,41 @@ namespace
 
     bool                     message_callback_called;
     const etl::timer_config* message_config;
-    int                      value;
+    int                      message_value;
+    uint64_t                 message_tick_count;
   };
 
   using MessageTimer = etl::timer_message_node<CallbackMessage>;
 
   MessageProcessor message_processor;
   CallbackMessage  callback_message(42);
+
+  //*************************************************************************
+  // Notification of the next timer that is due to expire.
+  //*************************************************************************
+  struct notification_result_type
+  {
+    void clear()
+    {
+      timer    = etl::timer_node::end();
+      notified = false;
+    }
+
+    const etl::timer_node* timer;
+    bool                   notified;
+  };
+
+  notification_result_type notification_result;
+
+  void next_timer_notification(const etl::timer_node* timer_)
+  {
+    notification_result.notified = true;
+    notification_result.timer    = timer_;
+  }
+
+  using notification_type = etl::intrusive_timer::timer_notification_callback_type;
+
+  notification_type notification_delegate = notification_type::create(next_timer_notification);
 
   SUITE(test_intrusive_timer)
   {
@@ -327,7 +361,7 @@ namespace
 
       etl::intrusive_timer timer_controller(lock_policy);
 
-      etl::timer_config config1(100, etl::timer::mode::Single_Shot);
+      etl::timer_config config1(37, etl::timer::mode::Single_Shot);
       CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
       CallbackTimer     callback_timer1(callback_delegate1, config1);
 
@@ -357,7 +391,7 @@ namespace
 
       const uint32_t step = 1UL;
 
-      while (ticks <= 100U)
+      while (ticks <= 110U)
       {
         ticks += step;
         timer_controller.tick(step);
@@ -367,29 +401,20 @@ namespace
       CHECK_EQUAL((int)config1_id, (int)global_config->get_id());
       CHECK_EQUAL(config1.get_mode(), global_config->get_mode());
       CHECK_EQUAL(config1.get_period(), global_config->get_period());
+      CHECK_EQUAL(config1.get_period(), global_tick_count);
 
       CHECK_TRUE(object.member_callback_called);
       CHECK_EQUAL((int)config2_id, (int)object.member_config->get_id());
       CHECK_EQUAL(config2.get_mode(), object.member_config->get_mode());
       CHECK_EQUAL(config2.get_period(), object.member_config->get_period());
+      CHECK_EQUAL(config2.get_period(), object.member_tick_count);
 
       CHECK_TRUE(message_processor.message_callback_called);
       CHECK_EQUAL((int)config3_id, (int)message_processor.message_config->get_id());
       CHECK_EQUAL(config3.get_mode(), message_processor.message_config->get_mode());
       CHECK_EQUAL(config3.get_period(), message_processor.message_config->get_period());
-      CHECK_EQUAL(callback_message.value, message_processor.value);
-
-      // std::vector<uint64_t> compare1 = {37};
-      // std::vector<uint64_t> compare2 = {23};
-      // std::vector<uint64_t> compare3 = {11};
-
-      // CHECK(object.tick_list.size() != 0);
-      // CHECK(free_tick_list1.size() != 0);
-      // CHECK(free_tick_list2.size() != 0);
-
-      // CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
-      // CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
-      // CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
+      CHECK_EQUAL(callback_message.value, message_processor.message_value);
+      CHECK_EQUAL(config3.get_period(), message_processor.message_tick_count);
     }
 
     //    //*************************************************************************

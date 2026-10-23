@@ -58,7 +58,11 @@ namespace etl
   {
   public:
 
-    typedef etl::delegate<void(etl::timer_node&, uint32_t delta)> timer_update_callback_type;
+    //*******************************************
+    /// The callback type for notifying the user of the next timer that is due to expire.
+    /// Either returns a pointer to the next timer that is due to expire or etl::timer_node::end() if there is no next timer.
+    //*******************************************
+    typedef etl::delegate<void(const etl::timer_node*)> timer_notification_callback_type;
 
     //*******************************************
     /// Constructor.
@@ -167,6 +171,8 @@ namespace etl
 
       if (enabled)
       {
+        bool notify = false;
+
         if (!lock_policy.is_locked())
         {
           lock_policy.lock();
@@ -181,7 +187,11 @@ namespace etl
 
             while (has_active && (count >= timer->delta))
             {
+              // Calculate if we have any time left for the next timer.
               count -= timer->delta;
+
+              // The timer has expired, so reset the delta to 0.
+              timer->delta = 0;
 
               active_list.remove(timer);
 
@@ -198,6 +208,8 @@ namespace etl
               timer = active_list.first();
 
               has_active = !active_list.empty();
+
+              notify = true;
             }
 
             if (has_active)
@@ -208,9 +220,18 @@ namespace etl
           }
         }
 
+        // Get the next timer that is due to expire.
+        etl::timer_node* next_timer = active_list.first();
+
         lock_policy.unlock();
 
         was_processed = true;
+
+        if (notify)
+        {
+          // The next timer has changed, so notify the user.
+          next_timer_notification.call_if(next_timer);
+        }
 
         // Invoke all of the expired timers.
         invoke_expired_timers();
@@ -222,7 +243,7 @@ namespace etl
     //*******************************************
     /// Starts a timer.
     //*******************************************
-    bool start(etl::timer_node& timer_, bool immediate_ = false) ETL_NOEXCEPT
+    bool start(etl::timer_node& timer_, bool immediate_ = false)
     {
       bool is_started = false;
 
@@ -237,6 +258,8 @@ namespace etl
         }
       }
 
+      bool notify = (active_list.first() == &timer_);
+
       lock_policy.unlock();
 
       if (is_started && immediate_)
@@ -245,25 +268,43 @@ namespace etl
         timer_.invoke(timer_.get_config());
       }
 
+      if (notify)
+      {
+        // The next timer has changed, so notify the user.
+        next_timer_notification.call_if(active_list.first());
+      }
+
       return is_started;
     }
 
     //*******************************************
     /// Stops a timer.
     //*******************************************
-    bool stop(etl::timer_node* timer_) ETL_NOEXCEPT
+    bool stop(etl::timer_node& timer_) ETL_NOEXCEPT
     {
       bool is_stopped = false;
 
       lock_policy.lock();
 
-      if (timer_->is_active())
+      bool notify = false;
+
+      if (timer_.is_active())
       {
+        notify = (active_list.first() == &timer_);
         stop_impl(timer_);
         is_stopped = true;
       }
 
+      // Get the next timer that is due to expire.
+      etl::timer_node* next_timer = active_list.first();
+
       lock_policy.unlock();
+
+      if (notify)
+      {
+        // The next timer has changed, so notify the user.
+        next_timer_notification.call_if(next_timer);
+      }
 
       return is_stopped;
     }
@@ -271,56 +312,36 @@ namespace etl
     //*******************************************
     /// Sets a timer's period.
     //*******************************************
-    bool set_period(etl::timer_node* timer_, uint32_t period_) ETL_NOEXCEPT
-    {
-      bool result = false;
-
-      lock_policy.lock();
-
-      if (timer_->is_registered(this))
-      {
-        if (timer_->is_active())
-        {
-          stop_impl(timer_);
-        }
-
-        timer_->set_period(period_);
-        result = true;
-      }
-
-      lock_policy.unlock();
-
-      return result;
-    }
-
-    //*******************************************
-    /// Sets a timer's period.
-    //*******************************************
     bool set_period(etl::timer_node& timer_, uint32_t period_) ETL_NOEXCEPT
     {
-      return set_period(&timer_, period_);
-    }
-
-    //*******************************************
-    /// Sets a timer's mode.
-    //*******************************************
-    bool set_mode(etl::timer_node* timer_, etl::timer::mode::type mode_) ETL_NOEXCEPT
-    {
       bool result = false;
 
       lock_policy.lock();
 
-      if (timer_->is_registered(this))
+      bool notify = false;
+
+      if (timer_.is_registered(this))
       {
-        if (timer_->is_active())
+        if (timer_.is_active())
         {
+          notify = (active_list.first() == &timer_);
           stop_impl(timer_);
         }
-        timer_->set_mode(mode_);
+
+        timer_.set_period(period_);
         result = true;
       }
 
+      // Get the next timer that is due to expire.
+      etl::timer_node* next_timer = active_list.first();
+
       lock_policy.unlock();
+
+      if (notify)
+      {
+        // The next timer has changed, so notify the user.
+        next_timer_notification.call_if(next_timer);
+      }
 
       return result;
     }
@@ -330,7 +351,35 @@ namespace etl
     //*******************************************
     bool set_mode(etl::timer_node& timer_, etl::timer::mode::type mode_) ETL_NOEXCEPT
     {
-      return set_mode(&timer_, mode_);
+      bool result = false;
+
+      lock_policy.lock();
+
+      bool notify = false;
+
+      if (timer_.is_registered(this))
+      {
+        if (timer_.is_active())
+        {
+          notify = (active_list.first() == &timer_);
+          stop_impl(timer_);
+        }
+        timer_.set_mode(mode_);
+        result = true;
+      }
+
+      // Get the next timer that is due to expire.
+      etl::timer_node* next_timer = active_list.first();
+
+      lock_policy.unlock();
+
+      if (notify)
+      {
+        // The next timer has changed, so notify the user.
+        next_timer_notification.call_if(next_timer);
+      }
+
+      return result;
     }
 
     //*******************************************
@@ -356,7 +405,7 @@ namespace etl
 
       lock_policy.lock();
 
-      if (!active_list.empty())
+      if (has_active_timer())
       {
         delta = active_list.first()->get_delta();
       }
@@ -374,6 +423,22 @@ namespace etl
       return timer_count;
     }
 
+    //*******************************************
+    /// Sets the update notification.
+    //*******************************************
+    void set_update_notification(timer_notification_callback_type callback) ETL_NOEXCEPT
+    {
+      next_timer_notification = callback;
+    }
+
+    //*******************************************
+    /// Clears the update notification.
+    //*******************************************
+    void clear_time_next_notification() ETL_NOEXCEPT
+    {
+      next_timer_notification.clear();
+    }
+
   private:
 
     //*******************************************
@@ -381,7 +446,7 @@ namespace etl
     //*******************************************
     etl::timer::id::type get_next_id() ETL_NOEXCEPT
     {
-      etl::timer::id::type next_id = 0; // IDs start at 0
+      etl::timer::id::type next_id = 0; // IDs start at 0.
 
       etl::timer_node* timer = register_list.first();
 
@@ -389,33 +454,32 @@ namespace etl
       {
         if (timer->get_id() == next_id)
         {
-          // Already in use, so increment next_id and continue checking
+          // Already in use, so increment next_id and continue checking.
           ++next_id;
         }
         else if (timer->get_id() > next_id)
         {
-          // Found a gap in the IDs, so return the next_id
+          // Found a gap in the IDs, so return the next_id.
           return next_id;
         }
 
         timer = register_list.next(timer);
       }
 
-      // We never found a gap, so return the next available ID
+      // We never found a gap, so return the next available ID.
       return next_id;
     }
 
     //*******************************************
     /// Stops a timer without locking.
-    /// Returns the timer node if it was found, otherwise returns end().
     //*******************************************
-    void stop_impl(etl::timer_node* timer_) ETL_NOEXCEPT
+    void stop_impl(etl::timer_node& timer_) ETL_NOEXCEPT
     {
-      active_list.remove(timer_);
+      active_list.remove(&timer_);
     }
 
     //*******************************************
-    /// Invoke for all expired timers.
+    /// Invoke all of the expired timers.
     /// This is called after the lock has been released to avoid deadlocks.
     //*******************************************
     void invoke_expired_timers()
@@ -441,6 +505,8 @@ namespace etl
     etl::private_timer::timer_register_list register_list;
     etl::private_timer::timer_active_list   active_list;
     etl::private_timer::timer_expired_list  expired_list;
+
+    timer_notification_callback_type next_timer_notification;
 
     bool   enabled;
     size_t timer_count;

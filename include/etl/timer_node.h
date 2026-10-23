@@ -224,6 +224,21 @@ namespace etl
       return config.get_id();
     }
 
+    //***************************************************************************
+    /// Returns a reference to the sentinel timer node used to mark the end of
+    /// the intrusive timer lists.
+    /// Implemented as a function-local static so that there is only ever one
+    /// instance, regardless of how many translation units include this header.
+    /// This avoids needing C++17 inline variables, so it remains compatible
+    /// with C++03 and C++11.
+    //***************************************************************************
+    static etl::timer_node* end() ETL_NOEXCEPT
+    {
+      static etl::timer_node sentinel_node(etl::timer_config(0, 0));
+
+      return &sentinel_node;
+    }
+
   private:
 
     //*******************************************
@@ -264,21 +279,6 @@ namespace etl
     static etl::timer_node* unlinked() ETL_NOEXCEPT
     {
       return ETL_NULLPTR;
-    }
-
-    //***************************************************************************
-    /// Returns a reference to the sentinel timer node used to mark the end of
-    /// the intrusive timer lists.
-    /// Implemented as a function-local static so that there is only ever one
-    /// instance, regardless of how many translation units include this header.
-    /// This avoids needing C++17 inline variables, so it remains compatible
-    /// with C++03 and C++11.
-    //***************************************************************************
-    static etl::timer_node* end() ETL_NOEXCEPT
-    {
-      static etl::timer_node sentinel_node(etl::timer_config(0, 0));
-
-      return &sentinel_node;
     }
 
     //*******************************************
