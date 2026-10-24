@@ -881,7 +881,6 @@ namespace etl
   {
   public:
 
-    ETL_STATIC_ASSERT((etl::is_trivially_copyable<T>::value), "atomic<T> requires that T is trivially copyable");
     ETL_STATIC_ASSERT((etl::is_copy_constructible<T>::value), "atomic<T> requires that T is copy constructible");
     ETL_STATIC_ASSERT((etl::is_copy_assignable<T>::value), "atomic<T> requires that T is copy assignable");
     ETL_STATIC_ASSERT((etl::is_move_constructible<T>::value), "atomic<T> requires that T is move constructible");
@@ -963,14 +962,15 @@ namespace etl
 
       (void)order;
       ETL_BUILTIN_LOCK;
-      if (memcmp(&value, &expected, sizeof(T)) == 0)
+      if (value == expected)
       {
         value  = desired;
         result = true;
       }
       else
       {
-        result = false;
+        expected = value;
+        result   = false;
       }
       ETL_BUILTIN_UNLOCK;
 
@@ -2062,7 +2062,6 @@ namespace etl
   {
   public:
 
-    ETL_STATIC_ASSERT((etl::is_trivially_copyable<T>::value), "atomic<T> requires that T is trivially copyable");
     ETL_STATIC_ASSERT((etl::is_copy_constructible<T>::value), "atomic<T> requires that T is copy constructible");
     ETL_STATIC_ASSERT((etl::is_copy_assignable<T>::value), "atomic<T> requires that T is copy assignable");
     ETL_STATIC_ASSERT((etl::is_move_constructible<T>::value), "atomic<T> requires that T is move constructible");
@@ -2139,15 +2138,17 @@ namespace etl
     {
       bool result;
 
+      (void)order;
       ETL_BUILTIN_LOCK;
-      if (memcmp(&value, &expected, sizeof(T)) == 0)
+      if (value == expected)
       {
         value  = desired;
         result = true;
       }
       else
       {
-        result = false;
+        expected = value;
+        result   = false;
       }
       ETL_BUILTIN_UNLOCK;
 

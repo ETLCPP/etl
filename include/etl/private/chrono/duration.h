@@ -372,6 +372,79 @@ namespace etl
         return TToDuration(static_cast<to_rep>((ct_count * ct_num) / ct_den));
       }
     }
+
+    //***********************************************************************
+    /// Rounds down a duration to the nearest lower precision.
+    //***********************************************************************
+    template <typename TToDuration, typename TRep, typename TPeriod>
+    ETL_NODISCARD ETL_CONSTEXPR14 typename etl::enable_if<etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
+      floor(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+    {
+      TToDuration result = etl::chrono::duration_cast<TToDuration>(d);
+
+      if (result > d)
+      {
+        --result;
+      }
+
+      return result;
+    }
+
+    //***********************************************************************
+    /// Rounds up a duration to the nearest higher precision.
+    //***********************************************************************
+    template <typename TToDuration, typename TRep, typename TPeriod>
+    ETL_NODISCARD ETL_CONSTEXPR14 typename etl::enable_if<etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
+      ceil(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+    {
+      TToDuration result = etl::chrono::duration_cast<TToDuration>(d);
+
+      if (result < d)
+      {
+        ++result;
+      }
+
+      return result;
+    }
+
+    //***********************************************************************
+    /// Rounds a duration to the nearest precision.
+    /// If the duration is exactly halfway, it rounds to even.
+    //***********************************************************************
+    template <typename TToDuration, typename TRep, typename TPeriod>
+    ETL_NODISCARD ETL_CONSTEXPR14 typename etl::enable_if<etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
+      round(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
+    {
+      TToDuration lower = etl::chrono::floor<TToDuration>(d);
+
+      if (lower == d)
+      {
+        return lower;
+      }
+
+      TToDuration upper = lower + TToDuration(1);
+
+      typename etl::common_type<TToDuration, etl::chrono::duration<TRep, TPeriod> >::type lower_diff = d - lower;
+      typename etl::common_type<TToDuration, etl::chrono::duration<TRep, TPeriod> >::type upper_diff = upper - d;
+
+      if ((lower_diff < upper_diff) || ((lower_diff == upper_diff) && etl::is_even(lower.count())))
+      {
+        return lower;
+      }
+      else
+      {
+        return upper;
+      }
+    }
+
+    //***********************************************************************
+    /// Returns the absolute value of a duration.
+    //***********************************************************************
+    template <typename TRep, typename TPeriod, typename = etl::enable_if_t<etl::numeric_limits<TRep>::is_signed> >
+    ETL_NODISCARD ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> abs(etl::chrono::duration<TRep, TPeriod> d) ETL_NOEXCEPT
+    {
+      return d.count() >= 0 ? +d : -d;
+    }
   } // namespace chrono
 
   //*************************************************************************
@@ -492,7 +565,37 @@ namespace etl
     common_t l = etl::chrono::duration_cast<common_t>(lhs);
     common_t r = etl::chrono::duration_cast<common_t>(rhs);
 
+  #if ETL_USING_STL
     return (l.count() <=> r.count());
+  #else
+    // The STL returns the ordering category of the representation type.
+    // Mirror that: a floating point representation is only partially ordered.
+    if constexpr (etl::is_floating_point<typename common_t::rep>::value)
+    {
+      if (l.count() < r.count())
+      {
+        return etl::partial_ordering::less;
+      }
+      else if (r.count() < l.count())
+      {
+        return etl::partial_ordering::greater;
+      }
+      else if ((l.count() <= r.count()) && (r.count() <= l.count()))
+      {
+        // Equivalent. Expressed without '==' so that -Wfloat-equal is not triggered.
+        return etl::partial_ordering::equivalent;
+      }
+      else
+      {
+        // At least one of the values is NaN.
+        return etl::partial_ordering::unordered;
+      }
+    }
+    else
+    {
+      return etl::make_strong_ordering((l.count() < r.count()) ? -1 : (r.count() < l.count()) ? 1 : 0);
+    }
+  #endif
   }
 #endif
 
@@ -620,74 +723,6 @@ namespace etl
     common_duration rhs_converted = etl::chrono::duration_cast<common_duration>(rhs);
 
     return common_duration(lhs_converted.count() % rhs_converted.count());
-  }
-
-  //***********************************************************************
-  /// Rounds down a duration to the nearest lower precision.
-  //***********************************************************************
-  template <typename TToDuration, typename TRep, typename TPeriod>
-  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
-    floor(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
-  {
-    TToDuration result = etl::chrono::duration_cast<TToDuration>(d);
-
-    if (result > d)
-    {
-      --result;
-    }
-
-    return result;
-  }
-
-  //***********************************************************************
-  /// Rounds up a duration to the nearest higher precision.
-  //***********************************************************************
-  template <typename TToDuration, typename TRep, typename TPeriod>
-  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
-    ceil(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
-  {
-    TToDuration result = etl::chrono::duration_cast<TToDuration>(d);
-
-    if (result < d)
-    {
-      ++result;
-    }
-
-    return result;
-  }
-
-  //***********************************************************************
-  /// Rounds a duration to the nearest precision.
-  /// If the duration is exactly halfway, it rounds away from zero.
-  //***********************************************************************
-  template <typename TToDuration, typename TRep, typename TPeriod>
-  ETL_CONSTEXPR14 typename etl::enable_if< etl::is_specialization<TToDuration, etl::chrono::duration>::value, TToDuration>::type
-    round(const etl::chrono::duration<TRep, TPeriod>& d) ETL_NOEXCEPT
-  {
-    // Convert the input duration to the target duration type
-    TToDuration lower = floor<TToDuration>(d);
-    TToDuration upper = ceil<TToDuration>(lower + TToDuration(1));
-
-    auto lower_diff = d - lower;
-    auto upper_diff = upper - d;
-
-    if ((lower_diff < upper_diff) || ((lower_diff == upper_diff) && etl::is_even(lower.count())))
-    {
-      return lower;
-    }
-    else
-    {
-      return upper;
-    }
-  }
-
-  //***********************************************************************
-  /// Returns the absolute value of a duration.
-  //***********************************************************************
-  template <class TRep, class TPeriod, typename = etl::enable_if_t<etl::numeric_limits<TRep>::is_signed>>
-  ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> abs(etl::chrono::duration<TRep, TPeriod> d) ETL_NOEXCEPT
-  {
-    return d.count() >= 0 ? +d : -d;
   }
 } // namespace etl
 

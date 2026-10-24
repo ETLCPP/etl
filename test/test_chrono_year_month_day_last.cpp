@@ -160,6 +160,23 @@ namespace
       CHECK_TRUE(year_month_day_last1 != year_month_day_last3);
     }
 
+#if ETL_USING_CPP20
+    //*************************************************************************
+    TEST(test_year_month_day_last_spaceship_operator)
+    {
+      Chrono::year_month_day_last year_month_day_last1(Chrono::year(2000), Chrono::month_day_last(Chrono::January));
+      Chrono::year_month_day_last year_month_day_last2(Chrono::year(2001), Chrono::month_day_last(Chrono::January));
+      Chrono::year_month_day_last year_month_day_last3(Chrono::year(2000), Chrono::month_day_last(Chrono::February));
+      Chrono::year_month_day_last year_month_day_last4(Chrono::year(2000), Chrono::month_day_last(Chrono::January));
+
+      CHECK_TRUE((year_month_day_last1 <=> year_month_day_last4) == etl::strong_ordering::equal);
+      CHECK_TRUE((year_month_day_last1 <=> year_month_day_last2) == etl::strong_ordering::less);
+      CHECK_TRUE((year_month_day_last2 <=> year_month_day_last1) == etl::strong_ordering::greater);
+      CHECK_TRUE((year_month_day_last1 <=> year_month_day_last3) == etl::strong_ordering::less);
+      CHECK_TRUE((year_month_day_last3 <=> year_month_day_last1) == etl::strong_ordering::greater);
+    }
+#endif
+
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_year_month_day_last_hashes_are_unique)

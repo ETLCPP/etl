@@ -33,9 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "functional.h"
+#include "math.h"
 #include "type_traits.h"
 
-#include <math.h>
 #include <stdint.h>
 
 namespace etl
@@ -242,7 +242,7 @@ namespace etl
 
           if (variance_value > 0)
           {
-            standard_deviation_value = sqrt(variance_value);
+            standard_deviation_value = etl::private_math::sqrt(variance_value);
           }
         }
 
