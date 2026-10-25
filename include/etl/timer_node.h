@@ -234,7 +234,7 @@ namespace etl
     //***************************************************************************
     static etl::timer_node* end() ETL_NOEXCEPT
     {
-      static etl::timer_node sentinel_node(etl::timer_config(0, 0));
+      static etl::timer_node sentinel_node(etl::timer_config(etl::timer::interval::No_Active_Interval, etl::timer::mode::Single_Shot));
 
       return &sentinel_node;
     }
@@ -297,9 +297,18 @@ namespace etl
     /// Returns true if the timer is registered to this owner.
     /// A timer cannot be registered to more than one owner.
     //*******************************************
-    bool is_registered(void* owner_) const ETL_NOEXCEPT
+    bool is_registered_with(void* owner_) const ETL_NOEXCEPT
     {
       return (registered_next != unlinked()) && (owner == owner_);
+    }
+
+    //*******************************************
+    /// Returns true if the timer is registered to this owner.
+    /// A timer cannot be registered to more than one owner.
+    //*******************************************
+    bool is_registered() const ETL_NOEXCEPT
+    {
+      return (registered_next != unlinked()) && (owner != ETL_NULLPTR);
     }
 
     //*******************************************
@@ -321,7 +330,7 @@ namespace etl
     //*******************************************
     /// Invokes the timer's callback.
     //*******************************************
-    virtual void invoke(const etl::timer_config& /*config*/)
+    virtual void invoke()
     {
       // Default implementation does nothing.
     }
@@ -345,7 +354,7 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    timer_callback_node(TCallback callback_, const etl::timer_config& config_) ETL_NOEXCEPT
+    timer_callback_node(const etl::timer_config& config_, TCallback callback_) ETL_NOEXCEPT
       : timer_node(config_)
       , callback(callback_)
     {
@@ -354,9 +363,9 @@ namespace etl
     //*******************************************
     /// Invokes the timer's callback.
     //*******************************************
-    virtual void invoke(const etl::timer_config& config) ETL_OVERRIDE
+    virtual void invoke() ETL_OVERRIDE
     {
-      callback(config);
+      callback();
     }
 
     TCallback callback; ///< The callback delegate for the timer.
@@ -381,10 +390,8 @@ namespace etl
     //*******************************************
     /// Invokes the timer's callback.
     //*******************************************
-    virtual void invoke(const etl::timer_config& config) ETL_OVERRIDE
+    virtual void invoke() ETL_OVERRIDE
     {
-      message.set_timer_config(config);
-
       router->receive(message);
     }
 

@@ -136,19 +136,23 @@ namespace
   };
 
   //*************************************************************************
-  using CallbackDelegate = etl::delegate<void(const etl::timer_config&)>;
+  using CallbackDelegate = etl::delegate<void()>;
   using CallbackTimer    = etl::timer_callback_node<CallbackDelegate>;
 
   //*************************************************************************
-  bool                     global_callback_called = false;
-  const etl::timer_config* global_config;
-  uint64_t                 global_tick_count = 0;
+  bool     global_callback_called = false;
+  uint64_t global_call_count      = 0;
 
-  static void global_callback(const etl::timer_config& config)
+  static void global_callback()
   {
     global_callback_called = true;
-    global_config          = &config;
-    global_tick_count      = ticks;
+    ++global_call_count;
+  }
+
+  void global_callback_clear()
+  {
+    global_callback_called = false;
+    global_call_count      = 0;
   }
 
   //*************************************************************************
@@ -158,21 +162,24 @@ namespace
 
     Object()
       : member_callback_called(false)
-      , member_config(ETL_NULLPTR)
-      , member_tick_count(0)
+      , member_call_count(0)
     {
     }
 
-    void member(const etl::timer_config& config)
+    void member()
     {
       member_callback_called = true;
-      member_config          = &config;
-      member_tick_count      = ticks;
+      ++member_call_count;
     }
 
-    bool                     member_callback_called = false;
-    const etl::timer_config* member_config;
-    uint64_t                 member_tick_count;
+    void clear()
+    {
+      member_callback_called = false;
+      member_call_count      = 0;
+    }
+
+    bool     member_callback_called;
+    uint64_t member_call_count;
   };
 
   static Object object;
@@ -186,11 +193,6 @@ namespace
     {
     }
 
-    void set_timer_config(const etl::timer_config& config_)
-    {
-      config = &config_;
-    }
-
     int                      value;
     const etl::timer_config* config;
   };
@@ -202,8 +204,8 @@ namespace
     MessageProcessor()
       : etl::message_router<MessageProcessor, CallbackMessage>()
       , message_callback_called(false)
-      , message_config(ETL_NULLPTR)
       , message_value(0)
+      , message_call_count(0)
     {
     }
 
@@ -211,18 +213,24 @@ namespace
     void on_receive(const CallbackMessage& msg)
     {
       message_callback_called = true;
-      message_config          = msg.config;
       message_value           = msg.value;
-      message_tick_count      = ticks;
+      ++message_call_count;
     }
 
     //*******************************************
     void on_receive_unknown(const etl::imessage& msg) {}
 
-    bool                     message_callback_called;
-    const etl::timer_config* message_config;
-    int                      message_value;
-    uint64_t                 message_tick_count;
+    //*******************************************
+    void clear()
+    {
+      message_callback_called = false;
+      message_value           = 0;
+      message_call_count      = 0;
+    }
+
+    bool     message_callback_called;
+    int      message_value;
+    uint64_t message_call_count;
   };
 
   using MessageTimer = etl::timer_message_node<CallbackMessage>;
@@ -231,29 +239,19 @@ namespace
   CallbackMessage  callback_message(42);
 
   //*************************************************************************
-  // Notification of the next timer that is due to expire.
+  // Notification of the time to the next timer that is due to expire.
   //*************************************************************************
-  struct notification_result_type
+  std::vector<uint32_t> time_to_next;
+
+  //***********************************
+  /// Notification of the time to the next timer, from the intrusive timer.
+  //***********************************
+  void next_timer_notification(uint32_t delta)
   {
-    void clear()
-    {
-      timer    = etl::timer_node::end();
-      notified = false;
-    }
-
-    const etl::timer_node* timer;
-    bool                   notified;
-  };
-
-  notification_result_type notification_result;
-
-  void next_timer_notification(const etl::timer_node* timer_)
-  {
-    notification_result.notified = true;
-    notification_result.timer    = timer_;
+    time_to_next.push_back(delta);
   }
 
-  using notification_type = etl::intrusive_timer::timer_notification_callback_type;
+  using notification_type = etl::intrusive_timer::time_to_next_notification_type;
 
   notification_type notification_delegate = notification_type::create(next_timer_notification);
 
@@ -293,7 +291,61 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_intrusive_timer_unregister_timers_by_node)
+    TEST(test_intrusive_timer_double_register_timers)
+    {
+      LockPolicy lock_policy;
+
+      etl::intrusive_timer timer_controller1(lock_policy);
+      etl::intrusive_timer timer_controller2(lock_policy);
+
+      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
+
+      bool success = false;
+
+      // Register the timer with the first controller twice.
+      success = timer_controller1.register_timer(node1);
+      CHECK_TRUE(success);
+      success = timer_controller1.register_timer(node1);
+      CHECK_FALSE(success);
+      CHECK_EQUAL(1U, timer_controller1.number_of_timers());
+
+      // Register the same timer with the second controller.
+      success = timer_controller2.register_timer(node1);
+      CHECK_FALSE(success);
+      CHECK_EQUAL(0U, timer_controller2.number_of_timers());
+    }
+
+    //*************************************************************************
+    TEST(test_intrusive_timer_find_timers)
+    {
+      LockPolicy lock_policy;
+
+      etl::intrusive_timer timer_controller(lock_policy);
+
+      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Repeating));
+      etl::timer_node node2(etl::timer_config(200, etl::timer::mode::Repeating));
+      etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
+      etl::timer_node node4(etl::timer_config(400, etl::timer::mode::Repeating));
+
+      timer_controller.register_timer(node1);
+      timer_controller.register_timer(node2);
+      timer_controller.register_timer(node3);
+
+      // Check the ids are valid, except for the unregistered node4.
+      CHECK_FALSE(node1.get_id() == etl::timer::id::No_Timer);
+      CHECK_FALSE(node2.get_id() == etl::timer::id::No_Timer);
+      CHECK_FALSE(node3.get_id() == etl::timer::id::No_Timer);
+      CHECK_TRUE(node4.get_id() == etl::timer::id::No_Timer);
+
+      // Check we can find the timers by their id.
+      CHECK_EQUAL(&node1, timer_controller.find_timer(node1.get_id()));
+      CHECK_EQUAL(&node2, timer_controller.find_timer(node2.get_id()));
+      CHECK_EQUAL(&node3, timer_controller.find_timer(node3.get_id()));
+      CHECK_EQUAL(etl::timer_node::end(), timer_controller.find_timer(node4.get_id()));
+    }
+
+    //*************************************************************************
+    TEST(test_intrusive_timer_unregister_timers)
     {
       LockPolicy lock_policy;
 
@@ -360,30 +412,36 @@ namespace
       LockPolicy lock_policy;
 
       etl::intrusive_timer timer_controller(lock_policy);
+      timer_controller.set_next_timer_notification(notification_delegate);
+      time_to_next.clear();
 
+      global_callback_clear();
       etl::timer_config config1(37, etl::timer::mode::Single_Shot);
       CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
-      CallbackTimer     callback_timer1(callback_delegate1, config1);
+      CallbackTimer     callback_timer1(config1, callback_delegate1);
 
+      object.clear();
       etl::timer_config config2(23, etl::timer::mode::Single_Shot);
       CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
-      CallbackTimer     callback_timer2(callback_delegate2, config2);
+      CallbackTimer     callback_timer2(config2, callback_delegate2);
 
+      message_processor.clear();
       etl::timer_config config3(11, etl::timer::mode::Single_Shot);
       MessageTimer      callback_timer3(config3, message_processor, callback_message);
 
-      CHECK_TRUE(timer_controller.register_timer(callback_timer1));
-      CHECK_TRUE(timer_controller.register_timer(callback_timer2));
-      CHECK_TRUE(timer_controller.register_timer(callback_timer3));
+      timer_controller.register_timer(callback_timer1);
+      timer_controller.register_timer(callback_timer2);
+      timer_controller.register_timer(callback_timer3);
 
-      // Get the modified id of the timers after registration.
-      etl::timer::id::type config1_id = callback_timer1.get_id();
-      etl::timer::id::type config2_id = callback_timer2.get_id();
-      etl::timer::id::type config3_id = callback_timer3.get_id();
+      timer_controller.start(callback_timer1); // 37, the first timer started is the first due to expire.
+      timer_controller.start(callback_timer3); // 11, the second timer started is now first due to expire, 37 is second.
+      timer_controller.start(callback_timer2); // 23, the third timer started is now second due to expire.37 is third.
 
-      timer_controller.start(callback_timer1);
-      timer_controller.start(callback_timer3);
-      timer_controller.start(callback_timer2);
+      // Check the notifications.
+      CHECK_EQUAL(37, time_to_next[0]); // 37, the first timer started is the first due to expire.
+      CHECK_EQUAL(11, time_to_next[1]); // 11, the second timer started is now first due to expire.
+
+      time_to_next.clear();
 
       timer_controller.enable(true);
 
@@ -391,344 +449,260 @@ namespace
 
       const uint32_t step = 1UL;
 
-      while (ticks <= 110U)
+      while (ticks <= 100U)
       {
         ticks += step;
         timer_controller.tick(step);
       }
 
       CHECK_TRUE(global_callback_called);
-      CHECK_EQUAL((int)config1_id, (int)global_config->get_id());
-      CHECK_EQUAL(config1.get_mode(), global_config->get_mode());
-      CHECK_EQUAL(config1.get_period(), global_config->get_period());
-      CHECK_EQUAL(config1.get_period(), global_tick_count);
-
-      CHECK_TRUE(object.member_callback_called);
-      CHECK_EQUAL((int)config2_id, (int)object.member_config->get_id());
-      CHECK_EQUAL(config2.get_mode(), object.member_config->get_mode());
-      CHECK_EQUAL(config2.get_period(), object.member_config->get_period());
-      CHECK_EQUAL(config2.get_period(), object.member_tick_count);
+      CHECK_EQUAL(1, global_call_count);
 
       CHECK_TRUE(message_processor.message_callback_called);
-      CHECK_EQUAL((int)config3_id, (int)message_processor.message_config->get_id());
-      CHECK_EQUAL(config3.get_mode(), message_processor.message_config->get_mode());
-      CHECK_EQUAL(config3.get_period(), message_processor.message_config->get_period());
-      CHECK_EQUAL(callback_message.value, message_processor.message_value);
-      CHECK_EQUAL(config3.get_period(), message_processor.message_tick_count);
+      CHECK_EQUAL(1, message_processor.message_call_count);
+
+      // Check the notifications.
+      CHECK_EQUAL(12, time_to_next[0]); // 23, the next after 11 expired.
+      CHECK_EQUAL(14, time_to_next[1]); // 37, the next after 23 expired.
+
+      time_to_next.clear();
+    }
+
+    //*************************************************************************
+    TEST(test_intrusive_timer_repeating)
+    {
+      LockPolicy lock_policy;
+
+      etl::intrusive_timer timer_controller(lock_policy);
+      timer_controller.set_next_timer_notification(notification_delegate);
+      time_to_next.clear();
+
+      global_callback_clear();
+      etl::timer_config config1(37, etl::timer::mode::Repeating);
+      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer     callback_timer1(config1, callback_delegate1);
+
+      object.clear();
+      etl::timer_config config2(23, etl::timer::mode::Repeating);
+      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer     callback_timer2(config2, callback_delegate2);
+
+      message_processor.clear();
+      etl::timer_config config3(11, etl::timer::mode::Repeating);
+      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+
+      timer_controller.register_timer(callback_timer1);
+      timer_controller.register_timer(callback_timer2);
+      timer_controller.register_timer(callback_timer3);
+
+      timer_controller.start(callback_timer1); // 37, the first timer started is the first due to expire.
+      timer_controller.start(callback_timer3); // 11, the second timer started is now first due to expire, 37 is second.
+      timer_controller.start(callback_timer2); // 23, the third timer started is now second due to expire.37 is third.
+
+      // Check the notifications.
+      CHECK_EQUAL(37, time_to_next[0]); // 37, the first timer started is the first due to expire.
+      CHECK_EQUAL(11, time_to_next[1]); // 11, the second timer started is now first due to expire.
+
+      time_to_next.clear();
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1UL;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      // Check the callback counts.
+      CHECK_TRUE(global_callback_called);
+      CHECK_EQUAL(2, global_call_count);
+
+      CHECK_TRUE(object.member_callback_called);
+      CHECK_EQUAL(4, object.member_call_count);
+
+      CHECK_TRUE(message_processor.message_callback_called);
+      CHECK_EQUAL(9, message_processor.message_call_count);
+
+      // Check the notifications.
+      CHECK_EQUAL(11, time_to_next[0]);
+      CHECK_EQUAL(1, time_to_next[1]);
+      CHECK_EQUAL(10, time_to_next[2]);
+      CHECK_EQUAL(4, time_to_next[3]);
+      CHECK_EQUAL(7, time_to_next[4]);
+      CHECK_EQUAL(2, time_to_next[5]);
+      CHECK_EQUAL(9, time_to_next[6]);
+      CHECK_EQUAL(11, time_to_next[7]);
+      CHECK_EQUAL(3, time_to_next[8]);
+      CHECK_EQUAL(5, time_to_next[9]);
+      CHECK_EQUAL(3, time_to_next[10]);
+      CHECK_EQUAL(11, time_to_next[11]);
+      CHECK_EQUAL(4, time_to_next[12]);
+      CHECK_EQUAL(7, time_to_next[13]);
+      CHECK_EQUAL(11, time_to_next[14]);
+
+      time_to_next.clear();
+    }
+
+    //*************************************************************************
+    TEST(test_intrusive_timer_repeating_bigger_step)
+    {
+      LockPolicy lock_policy;
+
+      etl::intrusive_timer timer_controller(lock_policy);
+      timer_controller.set_next_timer_notification(notification_delegate);
+      time_to_next.clear();
+
+      global_callback_clear();
+      etl::timer_config config1(37, etl::timer::mode::Repeating);
+      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer     callback_timer1(config1, callback_delegate1);
+
+      object.clear();
+      etl::timer_config config2(23, etl::timer::mode::Repeating);
+      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer     callback_timer2(config2, callback_delegate2);
+
+      message_processor.clear();
+      etl::timer_config config3(11, etl::timer::mode::Repeating);
+      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+
+      timer_controller.register_timer(callback_timer1);
+      timer_controller.register_timer(callback_timer2);
+      timer_controller.register_timer(callback_timer3);
+
+      timer_controller.start(callback_timer1); // 37, the first timer started is the first due to expire.
+      timer_controller.start(callback_timer3); // 11, the second timer started is now first due to expire, 37 is second.
+      timer_controller.start(callback_timer2); // 23, the third timer started is now second due to expire.37 is third.
+
+      // Check the notifications.
+      CHECK_EQUAL(37, time_to_next[0]); // 37, the first timer started is the first due to expire.
+      CHECK_EQUAL(11, time_to_next[1]); // 11, the second timer started is now first due to expire.
+
+      time_to_next.clear();
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 3UL;
+
+      while (ticks <= 100U)
+      {
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      // Check the callback counts.
+      CHECK_TRUE(global_callback_called);
+      CHECK_EQUAL(2, global_call_count);
+
+      CHECK_TRUE(object.member_callback_called);
+      CHECK_EQUAL(4, object.member_call_count);
+
+      CHECK_TRUE(message_processor.message_callback_called);
+      CHECK_EQUAL(9, message_processor.message_call_count);
+
+      // Check the notifications.
+      CHECK_EQUAL(10, time_to_next[0]);
+      CHECK_EQUAL(9, time_to_next[1]);
+      CHECK_EQUAL(4, time_to_next[2]);
+      CHECK_EQUAL(5, time_to_next[3]);
+      CHECK_EQUAL(1, time_to_next[4]);
+      CHECK_EQUAL(7, time_to_next[5]);
+      CHECK_EQUAL(9, time_to_next[6]);
+      CHECK_EQUAL(3, time_to_next[7]);
+      CHECK_EQUAL(5, time_to_next[8]);
+      CHECK_EQUAL(2, time_to_next[9]);
+      CHECK_EQUAL(10, time_to_next[10]);
+      CHECK_EQUAL(2, time_to_next[11]);
+      CHECK_EQUAL(6, time_to_next[12]);
+      CHECK_EQUAL(11, time_to_next[13]);
+
+      time_to_next.clear();
+    }
+
+    //*************************************************************************
+    TEST(test_intrusive_timer_repeating_register_unregister)
+    {
+      LockPolicy lock_policy;
+
+      etl::intrusive_timer timer_controller(lock_policy);
+      timer_controller.set_next_timer_notification(notification_delegate);
+      time_to_next.clear();
+
+      global_callback_clear();
+      etl::timer_config config1(37, etl::timer::mode::Repeating);
+      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer     callback_timer1(config1, callback_delegate1);
+
+      object.clear();
+      etl::timer_config config2(23, etl::timer::mode::Repeating);
+      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer     callback_timer2(config2, callback_delegate2);
+
+      message_processor.clear();
+      etl::timer_config config3(11, etl::timer::mode::Repeating);
+      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+
+      timer_controller.register_timer(callback_timer2);
+      timer_controller.register_timer(callback_timer3);
+
+      timer_controller.start(callback_timer3);
+      timer_controller.start(callback_timer2);
+
+      timer_controller.enable(true);
+
+      ticks = 0;
+
+      const uint32_t step = 1U;
+
+      while (ticks <= 100U)
+      {
+        if (ticks == 36)
+        {
+          timer_controller.unregister_timer(callback_timer2);
+
+          timer_controller.register_timer(callback_timer1);
+          timer_controller.start(callback_timer1);
+        }
+
+        ticks += step;
+        timer_controller.tick(step);
+      }
+
+      // Check the callback counts.
+      CHECK_TRUE(global_callback_called);
+      CHECK_EQUAL(1, global_call_count);
+
+      CHECK_TRUE(object.member_callback_called);
+      CHECK_EQUAL(1, object.member_call_count);
+
+      CHECK_TRUE(message_processor.message_callback_called);
+      CHECK_EQUAL(9, message_processor.message_call_count);
+
+      // Check the notifications.
+      CHECK_EQUAL(11, time_to_next[0]);  // Start to timer3
+      CHECK_EQUAL(11, time_to_next[1]);  // to timer3
+      CHECK_EQUAL(1, time_to_next[2]);   // to timer2
+      CHECK_EQUAL(10, time_to_next[3]);  // to timer3
+      CHECK_EQUAL(11, time_to_next[4]);  // to timer3
+      CHECK_EQUAL(11, time_to_next[5]);  // to timer3
+      CHECK_EQUAL(11, time_to_next[6]);  // to timer3
+      CHECK_EQUAL(7, time_to_next[7]);   // to timer1
+      CHECK_EQUAL(4, time_to_next[8]);   // to timer3
+      CHECK_EQUAL(11, time_to_next[9]);  // to timer3
+      CHECK_EQUAL(11, time_to_next[10]); // to timer3
+      CHECK_EQUAL(11, time_to_next[11]); // to timer3
+
+      time_to_next.clear();
     }
 
     //    //*************************************************************************
-    //    TEST(message_timer_one_shot_after_timeout)
-    //    {
-    //      etl::intrusive_timer<1> timer_controller;
-    //
-    //      etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Single_Shot);
-    //      object.tick_list.clear();
-    //
-    //      timer_controller.start(id1);
-    //      timer_controller.enable(true);
-    //
-    //      ticks = 0;
-    //
-    //      const uint32_t step = 1U;
-    //
-    //      while (ticks <= 100U)
-    //      {
-    //        ticks += step;
-    //        timer_controller.tick(step);
-    //      }
-    //
-    //      // Timer should have timed out.
-    //
-    //      CHECK(timer_controller.set_period(id1, 50));
-    //      timer_controller.start(id1);
-    //
-    //      object.tick_list.clear();
-    //
-    //      ticks = 0;
-    //
-    //      while (ticks <= 100U)
-    //      {
-    //        ticks += step;
-    //        timer_controller.tick(step);
-    //      }
-    //
-    //      // Timer should have timed out.
-    //
-    //      CHECK_EQUAL(50U, *object.tick_list.data());
-    //
-    //      CHECK(timer_controller.unregister_timer(id1));
-    //      CHECK(!timer_controller.unregister_timer(id1));
-    //      CHECK(!timer_controller.start(id1));
-    //      CHECK(!timer_controller.stop(id1));
-    //    }
-    //
-    //    //*************************************************************************
-    //    TEST(intrusive_timer_repeating)
-    //    {
-    //      etl::intrusive_timer<3> timer_controller;
-    //
-    //      etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
-    //      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-    //      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
-    //
-    //      object.tick_list.clear();
-    //      free_tick_list1.clear();
-    //      free_tick_list2.clear();
-    //
-    //      timer_controller.start(id1);
-    //      timer_controller.start(id3);
-    //      timer_controller.start(id2);
-    //
-    //      timer_controller.enable(true);
-    //
-    //      ticks = 0;
-    //
-    //      const uint32_t step = 1U;
-    //
-    //      while (ticks <= 100U)
-    //      {
-    //        ticks += step;
-    //        timer_controller.tick(step);
-    //      }
-    //
-    //      std::vector<uint64_t> compare1 = {37, 74};
-    //      std::vector<uint64_t> compare2 = {23, 46, 69, 92};
-    //      std::vector<uint64_t> compare3 = {11, 22, 33, 44, 55, 66, 77, 88, 99};
-    //
-    //      CHECK(object.tick_list.size() != 0);
-    //      CHECK(free_tick_list1.size() != 0);
-    //      CHECK(free_tick_list2.size() != 0);
-    //
-    //      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
-    //      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
-    //      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
-    //    }
-    //
-    //    //*************************************************************************
-    //    TEST(intrusive_timer_repeating_bigger_step)
-    //    {
-    //      etl::intrusive_timer<3> timer_controller;
-    //
-    //      etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
-    //      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-    //      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
-    //
-    //      object.tick_list.clear();
-    //      free_tick_list1.clear();
-    //      free_tick_list2.clear();
-    //
-    //      timer_controller.start(id1);
-    //      timer_controller.start(id3);
-    //      timer_controller.start(id2);
-    //
-    //      CHECK(!timer_controller.is_running());
-    //
-    //      timer_controller.enable(true);
-    //
-    //      CHECK(timer_controller.is_running());
-    //
-    //      ticks = 0;
-    //
-    //      const uint32_t step = 5U;
-    //
-    //      while (ticks <= 100U)
-    //      {
-    //        ticks += step;
-    //        timer_controller.tick(step);
-    //      }
-    //
-    //      std::vector<uint64_t> compare1 = {40, 75};
-    //      std::vector<uint64_t> compare2 = {25, 50, 70, 95};
-    //      std::vector<uint64_t> compare3 = {15, 25, 35, 45, 55, 70, 80, 90, 100};
-    //
-    //      CHECK(object.tick_list.size() != 0);
-    //      CHECK(free_tick_list1.size() != 0);
-    //      CHECK(free_tick_list2.size() != 0);
-    //
-    //      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
-    //      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
-    //      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
-    //    }
-    //
-    //    //*************************************************************************
-    //    TEST(intrusive_timer_repeating_stop_start)
-    //    {
-    //      etl::intrusive_timer<3> timer_controller;
-    //
-    //      etl::timer::id::type id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
-    //      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-    //      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
-    //
-    //      object.tick_list.clear();
-    //      free_tick_list1.clear();
-    //      free_tick_list2.clear();
-    //
-    //      timer_controller.start(id3);
-    //      timer_controller.start(id2);
-    //
-    //      timer_controller.enable(true);
-    //
-    //      ticks = 0;
-    //
-    //      const uint32_t step = 1U;
-    //
-    //      while (ticks <= 100U)
-    //      {
-    //        if (ticks == 40)
-    //        {
-    //          timer_controller.start(id1);
-    //          timer_controller.stop(id2);
-    //        }
-    //
-    //        if (ticks == 80)
-    //        {
-    //          timer_controller.stop(id1);
-    //          timer_controller.start(id2);
-    //        }
-    //
-    //        ticks += step;
-    //        timer_controller.tick(step);
-    //      }
-    //
-    //      std::vector<uint64_t> compare1 = {77};
-    //      std::vector<uint64_t> compare2 = {23};
-    //      std::vector<uint64_t> compare3 = {11, 22, 33, 44, 55, 66, 77, 88, 99};
-    //
-    //      CHECK(object.tick_list.size() != 0);
-    //      CHECK(free_tick_list1.size() != 0);
-    //      CHECK(free_tick_list2.size() != 0);
-    //
-    //      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
-    //      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
-    //      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
-    //    }
-    //
-    //    //*************************************************************************
-    //    TEST(intrusive_timer_timer_starts_timer_small_step)
-    //    {
-    //      etl::intrusive_timer<3> timer_controller;
-    //
-    //      etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::Single_Shot);
-    //      etl::timer::id::type id2 = timer_controller.register_timer(member_callback, 10, etl::timer::mode::Single_Shot);
-    //      etl::timer::id::type id3 = timer_controller.register_timer(member_callback, 22, etl::timer::mode::Single_Shot);
-    //
-    //      (void)id2;
-    //      (void)id3;
-    //
-    //      object.set_controller(timer_controller);
-    //
-    //      object.tick_list.clear();
-    //
-    //      timer_controller.start(id1);
-    //
-    //      timer_controller.enable(true);
-    //
-    //      ticks = 0;
-    //
-    //      const uint32_t step = 1U;
-    //
-    //      while (ticks <= 200U)
-    //      {
-    //        ticks += step;
-    //        timer_controller.tick(step);
-    //      }
-    //
-    //      std::vector<uint64_t> compare1 = {100, 110, 122};
-    //
-    //      CHECK(object.tick_list.size() != 0);
-    //
-    //      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
-    //    }
-    //
-    //    //*************************************************************************
-    //    TEST(intrusive_timer_timer_starts_timer_big_step)
-    //    {
-    //      etl::intrusive_timer<3> timer_controller;
-    //
-    //      etl::timer::id::type id1 = timer_controller.register_timer(member_callback2, 100, etl::timer::mode::Single_Shot);
-    //      etl::timer::id::type id2 = timer_controller.register_timer(member_callback, 10, etl::timer::mode::Single_Shot);
-    //      etl::timer::id::type id3 = timer_controller.register_timer(member_callback, 22, etl::timer::mode::Single_Shot);
-    //
-    //      (void)id2;
-    //      (void)id3;
-    //
-    //      object.set_controller(timer_controller);
-    //
-    //      object.tick_list.clear();
-    //
-    //      timer_controller.start(id1);
-    //
-    //      timer_controller.enable(true);
-    //
-    //      ticks = 0;
-    //
-    //      const uint32_t step = 3;
-    //
-    //      while (ticks <= 200U)
-    //      {
-    //        ticks += step;
-    //        timer_controller.tick(step);
-    //      }
-    //
-    //      std::vector<uint64_t> compare1 = {102, 111, 123};
-    //
-    //      CHECK(object.tick_list.size() != 0);
-    //
-    //      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
-    //    }
-    //
-    //    //*************************************************************************
-    //    TEST(intrusive_timer_repeating_register_unregister)
-    //    {
-    //      etl::intrusive_timer<3> timer_controller;
-    //
-    //      etl::timer::id::type id1;
-    //      etl::timer::id::type id2 = timer_controller.register_timer(free_function_callback, 23, etl::timer::mode::Repeating);
-    //      etl::timer::id::type id3 = timer_controller.register_timer(free_callback2, 11, etl::timer::mode::Repeating);
-    //
-    //      object.tick_list.clear();
-    //      free_tick_list1.clear();
-    //      free_tick_list2.clear();
-    //
-    //      timer_controller.start(id3);
-    //      timer_controller.start(id2);
-    //
-    //      timer_controller.enable(true);
-    //
-    //      ticks = 0;
-    //
-    //      const uint32_t step = 1U;
-    //
-    //      while (ticks <= 100U)
-    //      {
-    //        if (ticks == 40)
-    //        {
-    //          timer_controller.unregister_timer(id2);
-    //
-    //          id1 = timer_controller.register_timer(member_callback, 37, etl::timer::mode::Repeating);
-    //          timer_controller.start(id1);
-    //        }
-    //
-    //        ticks += step;
-    //        timer_controller.tick(step);
-    //      }
-    //
-    //      std::vector<uint64_t> compare1 = {77};
-    //      std::vector<uint64_t> compare2 = {23};
-    //      std::vector<uint64_t> compare3 = {11, 22, 33, 44, 55, 66, 77, 88, 99};
-    //
-    //      CHECK(object.tick_list.size() != 0);
-    //      CHECK(free_tick_list1.size() != 0);
-    //      CHECK(free_tick_list2.size() != 0);
-    //
-    //      CHECK_ARRAY_EQUAL(compare1.data(), object.tick_list.data(), compare1.size());
-    //      CHECK_ARRAY_EQUAL(compare2.data(), free_tick_list1.data(), compare2.size());
-    //      CHECK_ARRAY_EQUAL(compare3.data(), free_tick_list2.data(), compare3.size());
-    //    }
-    //
-    //    //*************************************************************************
-    //    TEST(intrusive_timer_repeating_clear)
+    //    TEST(test_intrusive_timer_repeating_clear)
     //    {
     //      etl::intrusive_timer<3> timer_controller;
     //
@@ -776,7 +750,7 @@ namespace
     //    }
     //
     //    //*************************************************************************
-    //    TEST(intrusive_timer_delayed_immediate)
+    //    TEST(test_intrusive_timer_delayed_immediate)
     //    {
     //      etl::intrusive_timer<3> timer_controller;
     //
@@ -819,7 +793,7 @@ namespace
     //    }
     //
     //    //*************************************************************************
-    //    TEST(intrusive_timer_one_shot_big_step_short_delay_insert)
+    //    TEST(test_intrusive_timer_one_shot_big_step_short_delay_insert)
     //    {
     //      etl::intrusive_timer<3> timer_controller;
     //
@@ -855,7 +829,7 @@ namespace
     //    }
     //
     //    //*************************************************************************
-    //    TEST(intrusive_timer_one_shot_empty_list_huge_tick_before_insert)
+    //    TEST(test_intrusive_timer_one_shot_empty_list_huge_tick_before_insert)
     //    {
     //      etl::intrusive_timer<3> timer_controller;
     //
@@ -989,7 +963,7 @@ namespace
     //
     //    using callback_type = etl::iintrusive_timer::callback_type;
     //
-    //    TEST(intrusive_timer_call_etl_delegate)
+    //    TEST(test_intrusive_timer_call_etl_delegate)
     //    {
     //      test_object            test_obj;
     //      callback_type          delegate_callback = callback_type::create<test_object, &test_object::call>(test_obj);
@@ -1008,7 +982,7 @@ namespace
     //    }
     //
     //    //*************************************************************************
-    //    TEST(intrusive_timer_is_active)
+    //    TEST(test_intrusive_timer_is_active)
     //    {
     //      timerInsertRemoveTest.clear();
     //      etl::intrusive_timer<4> timer_controller;
@@ -1103,7 +1077,7 @@ namespace
     //      }
     //    }
     //
-    //    TEST(intrusive_timer_threads)
+    //    TEST(test_intrusive_timer_threads)
     //    {
     //      FIX_PROCESSOR_AFFINITY;
     //
