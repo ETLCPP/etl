@@ -248,12 +248,22 @@ namespace
       etl::timer_node node2(etl::timer_config(200, etl::timer::mode::Repeating));
       etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
 
+      CHECK_FALSE(timer_controller.is_registered(node1));
+      CHECK_FALSE(timer_controller.is_registered(node2));
+      CHECK_FALSE(timer_controller.is_registered(node3));
+
       CHECK_TRUE(timer_controller.register_timer(node1));
+      CHECK_TRUE(timer_controller.is_registered(node1));
       CHECK_EQUAL(1U, timer_controller.number_of_timers());
+
       CHECK_TRUE(timer_controller.register_timer(node2));
+      CHECK_TRUE(timer_controller.is_registered(node2));
       CHECK_EQUAL(2U, timer_controller.number_of_timers());
+
       CHECK_TRUE(timer_controller.register_timer(node3));
+      CHECK_TRUE(timer_controller.is_registered(node3));
       CHECK_EQUAL(3U, timer_controller.number_of_timers());
+
       CHECK_FALSE(timer_controller.is_running());
       CHECK_EQUAL(0U, lock_policy.get_count());
     }

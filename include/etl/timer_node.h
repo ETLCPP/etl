@@ -75,11 +75,21 @@ namespace etl
     friend class intrusive_timer;
 
     //*******************************************
+    /// Default constructor.
+    //*******************************************
+    ETL_CONSTEXPR timer_config() ETL_NOEXCEPT
+      : interval(etl::timer::interval::No_Active_Interval)
+      , mode(etl::timer::mode::No_Mode_Set)
+      , id(etl::timer::id::No_Timer)
+    {
+    }
+
+    //*******************************************
     /// Constructor.
     //*******************************************
-    ETL_CONSTEXPR timer_config(uint32_t interval_, etl::timer::mode::type repeating_) ETL_NOEXCEPT
+    ETL_CONSTEXPR timer_config(uint32_t interval_, etl::timer::mode::type mode_) ETL_NOEXCEPT
       : interval(interval_)
-      , mode(repeating_)
+      , mode(mode_)
       , id(etl::timer::id::No_Timer)
     {
     }
@@ -95,7 +105,7 @@ namespace etl
     //*******************************************
     /// Returns the mode of the timer.
     //*******************************************
-    ETL_CONSTEXPR uint32_t get_mode() const ETL_NOEXCEPT
+    ETL_CONSTEXPR etl::timer::mode::type get_mode() const ETL_NOEXCEPT
     {
       return mode;
     }
@@ -124,8 +134,6 @@ namespace etl
     etl::timer::mode::type mode;     ///< Whether the timer is repeating or single-shot.
     etl::timer::id::type   id;       ///< The id of the timer.
   };
-
-  class sentinal_node;
 
   //***************************************************************************
   /// A timer data structure that can be linked into the timer lists.
@@ -211,7 +219,7 @@ namespace etl
     //*******************************************
     /// Returns the mode of the timer.
     //*******************************************
-    ETL_CONSTEXPR uint32_t get_mode() const ETL_NOEXCEPT
+    ETL_CONSTEXPR etl::timer::mode::type get_mode() const ETL_NOEXCEPT
     {
       return config.get_mode();
     }
@@ -225,7 +233,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Returns a reference to the sentinel timer node used to mark the end of
+    /// Returns a pointer to the static sentinel timer node used to mark the end of
     /// the intrusive timer lists.
     /// Implemented as a function-local static so that there is only ever one
     /// instance, regardless of how many translation units include this header.
@@ -242,7 +250,7 @@ namespace etl
   private:
 
     //*******************************************
-    /// Returns the configuration of the timer.
+    /// Sets the configuration of the timer.
     //*******************************************
     void set_config(const timer_config& config_) ETL_NOEXCEPT
     {
@@ -306,7 +314,7 @@ namespace etl
     //*******************************************
     /// Returns true if the timer is registered to the specified owner.
     //*******************************************
-    bool is_registered_with(void* owner_) const ETL_NOEXCEPT
+    bool is_registered_with(const void* owner_) const ETL_NOEXCEPT
     {
       return (registered_next != unlinked()) && (owner == owner_);
     }
@@ -385,6 +393,8 @@ namespace etl
   template <typename TMessage>
   struct timer_message_node : public timer_node
   {
+    ETL_STATIC_ASSERT((etl::is_base_of<etl::imessage, TMessage>::value), "TMessage must derive from etl::imessage");
+
     //*******************************************
     /// Constructor.
     //*******************************************

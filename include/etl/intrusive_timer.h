@@ -423,6 +423,20 @@ namespace etl
     }
 
     //*******************************************
+    /// Check if a timer is registered with this timer.
+    //*******************************************
+    bool is_registered(const etl::timer_node& timer_) const ETL_NOEXCEPT
+    {
+      lock_policy.lock();
+
+      bool is_registered = timer_.is_registered_with(this);
+
+      lock_policy.unlock();
+
+      return is_registered;
+    }
+
+    //*******************************************
     /// Returns the number of registered timers.
     //*******************************************
     size_t number_of_timers() const ETL_NOEXCEPT
