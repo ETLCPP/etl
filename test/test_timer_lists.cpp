@@ -194,7 +194,7 @@ namespace
 
       etl::timer_node* timer = active_list.first();
 
-      // The timers should be in the order of their periods.
+      // The timers should be in the order of their intervals.
       CHECK_EQUAL(&timer2, timer);
       timer = active_list.next(timer);
       CHECK_EQUAL(&timer3, timer);
@@ -208,23 +208,23 @@ namespace
       CHECK_EQUAL(active_list.end(), timer);
 
       // Check the deltas are correct.
-      // The period order of the timers in the list is timer2, timer3, timer5, timer1, timer4.
-      // timer 5 has the same period as timer 3, so it should be after timer 3 in the list.
-      CHECK_EQUAL(timer2.get_period(), timer2.get_delta());
-      CHECK_EQUAL(timer3.get_period() - timer2.get_period(), timer3.get_delta());
-      CHECK_EQUAL(timer1.get_period() - timer3.get_period(), timer1.get_delta());
-      CHECK_EQUAL(timer4.get_period() - timer1.get_period(), timer4.get_delta());
-      CHECK_EQUAL(timer5.get_period() - timer3.get_period(), timer5.get_delta());
+      // The interval order of the timers in the list is timer2, timer3, timer5, timer1, timer4.
+      // timer 5 has the same interval as timer 3, so it should be after timer 3 in the list.
+      CHECK_EQUAL(timer2.get_interval(), timer2.get_delta());
+      CHECK_EQUAL(timer3.get_interval() - timer2.get_interval(), timer3.get_delta());
+      CHECK_EQUAL(timer1.get_interval() - timer3.get_interval(), timer1.get_delta());
+      CHECK_EQUAL(timer4.get_interval() - timer1.get_interval(), timer4.get_delta());
+      CHECK_EQUAL(timer5.get_interval() - timer3.get_interval(), timer5.get_delta());
 
       // Remove timer3 from the list.
       active_list.remove(&timer3);
 
       // Check the deltas are still correct.
-      // The period order of the timers in the list is now timer2, timer5, timer1, timer4.
-      CHECK_EQUAL(timer2.get_period(), timer2.get_delta());
-      CHECK_EQUAL(timer5.get_period() - timer2.get_period(), timer5.get_delta());
-      CHECK_EQUAL(timer1.get_period() - timer5.get_period(), timer1.get_delta());
-      CHECK_EQUAL(timer4.get_period() - timer1.get_period(), timer4.get_delta());
+      // The interval order of the timers in the list is now timer2, timer5, timer1, timer4.
+      CHECK_EQUAL(timer2.get_interval(), timer2.get_delta());
+      CHECK_EQUAL(timer5.get_interval() - timer2.get_interval(), timer5.get_delta());
+      CHECK_EQUAL(timer1.get_interval() - timer5.get_interval(), timer1.get_delta());
+      CHECK_EQUAL(timer4.get_interval() - timer1.get_interval(), timer4.get_delta());
 
       // Search the list to ensure the other timers are still present.
       bool timer1_found = false;

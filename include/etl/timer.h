@@ -58,14 +58,15 @@ namespace etl
     {
       enum
       {
-        SINGLE_SHOT = false,
-        REPEATING   = true,
+        SINGLE_SHOT = 0, // Deprecated
+        REPEATING   = 1, // Deprecated
 
-        Single_Shot = false,
-        Repeating   = true
+        Single_Shot = 0,
+        Repeating   = 1,
+        No_Mode_Set = 2
       };
 
-      typedef bool type;
+      typedef uint_least8_t type;
     };
 
     // Timer start status.
@@ -114,6 +115,12 @@ namespace etl
       };
 
       typedef uint32_t type;
+    };
+
+    // Timer owner.
+    struct owner
+    {
+      static ETL_CONSTANT void* No_Owner = ETL_NULLPTR;
     };
   };
 } // namespace etl

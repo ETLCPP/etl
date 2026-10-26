@@ -162,7 +162,7 @@ namespace etl
 
         // Clear the id and next pointer of the removed timer.
         current->set_id(etl::timer::id::No_Timer);
-        current->registered_next = end();
+        current->registered_next = etl::timer_node::unlinked();
 
         // We are no longer the owner of this timer_node.
         current->set_owner(ETL_NULLPTR);
@@ -214,9 +214,9 @@ namespace etl
 
         while (head != end())
         {
-          head                   = timer->registered_next;
-          timer->registered_next = etl::timer_node::unlinked();
-          timer                  = head;
+          head = timer->registered_next;
+          timer->clear();
+          timer = head;
         }
 
         tail = end();
@@ -377,7 +377,7 @@ namespace etl
         }
 
         // Clear the next pointer of the removed timer.
-        current->active_next = end();
+        timer_->active_next = etl::timer_node::unlinked();
 
         return next;
       }

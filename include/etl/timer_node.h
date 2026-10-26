@@ -77,19 +77,19 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    ETL_CONSTEXPR timer_config(uint32_t period_, etl::timer::mode::type repeating_) ETL_NOEXCEPT
-      : period(period_)
+    ETL_CONSTEXPR timer_config(uint32_t interval_, etl::timer::mode::type repeating_) ETL_NOEXCEPT
+      : interval(interval_)
       , mode(repeating_)
       , id(etl::timer::id::No_Timer)
     {
     }
 
     //*******************************************
-    /// Returns the period of the timer.
+    /// Returns the interval of the timer.
     //*******************************************
-    ETL_CONSTEXPR uint32_t get_period() const ETL_NOEXCEPT
+    ETL_CONSTEXPR uint32_t get_interval() const ETL_NOEXCEPT
     {
-      return period;
+      return interval;
     }
 
     //*******************************************
@@ -113,16 +113,16 @@ namespace etl
     //*******************************************
     ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
     {
-      period = etl::timer::state::Inactive;
-      mode   = etl::timer::mode::Repeating;
-      id     = etl::timer::id::No_Timer;
+      interval = etl::timer::interval::No_Active_Interval;
+      mode     = etl::timer::mode::No_Mode_Set;
+      id       = etl::timer::id::No_Timer;
     }
 
   private:
 
-    uint32_t               period; ///< The period of the timer.
-    etl::timer::mode::type mode;   ///< Whether the timer is repeating or single-shot.
-    etl::timer::id::type   id;     ///< The id of the timer.
+    uint32_t               interval; ///< The interval of the timer.
+    etl::timer::mode::type mode;     ///< Whether the timer is repeating or single-shot.
+    etl::timer::id::type   id;       ///< The id of the timer.
   };
 
   class sentinal_node;
@@ -165,9 +165,9 @@ namespace etl
       : registered_next(unlinked())
       , active_next(unlinked())
       , expired_next(unlinked())
-      , owner(ETL_NULLPTR)
+      , owner(etl::timer::owner::No_Owner)
       , config(config_)
-      , delta(config_.get_period())
+      , delta(config_.get_interval())
     {
     }
 
@@ -178,9 +178,9 @@ namespace etl
       : registered_next(unlinked())
       , active_next(unlinked())
       , expired_next(unlinked())
-      , owner(ETL_NULLPTR)
+      , owner(etl::timer::owner::No_Owner)
       , config(node_.config)
-      , delta(node_.config.get_period())
+      , delta(node_.config.get_interval())
     {
     }
 
@@ -201,11 +201,11 @@ namespace etl
     }
 
     //*******************************************
-    /// Returns the period of the timer.
+    /// Returns the interval of the timer.
     //*******************************************
-    ETL_CONSTEXPR uint32_t get_period() const ETL_NOEXCEPT
+    ETL_CONSTEXPR uint32_t get_interval() const ETL_NOEXCEPT
     {
-      return config.get_period();
+      return config.get_interval();
     }
 
     //*******************************************
@@ -242,11 +242,20 @@ namespace etl
   private:
 
     //*******************************************
-    /// Sets the period of the timer.
+    /// Returns the configuration of the timer.
     //*******************************************
-    void set_period(uint32_t period_) ETL_NOEXCEPT
+    void set_config(const timer_config& config_) ETL_NOEXCEPT
     {
-      config.period = period_;
+      set_interval(config_.get_interval());
+      set_mode(config_.get_mode());
+    }
+
+    //*******************************************
+    /// Sets the interval of the timer.
+    //*******************************************
+    void set_interval(uint32_t interval_) ETL_NOEXCEPT
+    {
+      config.interval = interval_;
     }
 
     //*******************************************
@@ -282,20 +291,20 @@ namespace etl
     }
 
     //*******************************************
-    /// Clear the next pointers.
+    /// Clear the node.
     //*******************************************
     void clear() ETL_NOEXCEPT
     {
+      config.clear();
       registered_next = unlinked();
       active_next     = unlinked();
       expired_next    = unlinked();
-      owner           = ETL_NULLPTR;
-      delta           = config.get_period();
+      owner           = etl::timer::owner::No_Owner;
+      delta           = config.get_interval();
     }
 
     //*******************************************
-    /// Returns true if the timer is registered to this owner.
-    /// A timer cannot be registered to more than one owner.
+    /// Returns true if the timer is registered to the specified owner.
     //*******************************************
     bool is_registered_with(void* owner_) const ETL_NOEXCEPT
     {
@@ -303,8 +312,7 @@ namespace etl
     }
 
     //*******************************************
-    /// Returns true if the timer is registered to this owner.
-    /// A timer cannot be registered to more than one owner.
+    /// Returns true if the timer is registered to an owner.
     //*******************************************
     bool is_registered() const ETL_NOEXCEPT
     {
