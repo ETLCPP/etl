@@ -3816,6 +3816,33 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_find_rfind_all_positions)
+    {
+      const value_t the_haystack[] = STR("A haystack with a needle and another needle");
+
+      TextSTD compare_haystack(the_haystack);
+      TextL   haystack(the_haystack);
+
+      const value_t* needles[] = {STR("needle"), STR("e"), STR("")};
+
+      // Every position up to past the end, where the search must not read outside the string.
+      for (size_t position = 0UL; position <= compare_haystack.size() + 2UL; ++position)
+      {
+        for (size_t i = 0UL; i < 3UL; ++i)
+        {
+          CHECK_EQUAL(compare_haystack.find(needles[i], position), haystack.find(needles[i], position));
+          CHECK_EQUAL(compare_haystack.rfind(needles[i], position), haystack.rfind(needles[i], position));
+        }
+
+        CHECK_EQUAL(compare_haystack.find(STR('e'), position), haystack.find(STR('e'), position));
+        CHECK_EQUAL(compare_haystack.rfind(STR('e'), position), haystack.rfind(STR('e'), position));
+      }
+
+      CHECK_EQUAL(TextL::npos, haystack.find(STR('e'), TextL::npos));
+      CHECK_EQUAL(TextL::npos, haystack.find(STR("needle"), TextL::npos));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_contains_string)
     {
       TextL haystack(STR("A haystack with a needle and nothing else"));
