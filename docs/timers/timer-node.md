@@ -8,9 +8,14 @@ title: "timer_config / timer_node"
   From: `C++03`
 {{< /callout >}}
 
-
 ## Class diagram
 ```mermaid
+---
+config:
+  theme: neutral
+  look: classic
+  layout: dagre
+---
 classDiagram
   timer_node <|-- timer_callback_node
   timer_node <|-- timer_message_node

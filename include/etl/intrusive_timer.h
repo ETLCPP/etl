@@ -56,6 +56,57 @@ namespace etl
   };
 
   //***************************************************************************
+  /// No lock policy for timers.
+  //***************************************************************************
+  class timer_no_lock_policy : public timer_lock_policy
+  {
+  public:
+
+    void lock() ETL_NOEXCEPT ETL_OVERRIDE
+    {
+    }
+
+    void unlock() ETL_NOEXCEPT ETL_OVERRIDE
+    {
+    }
+
+    bool is_locked() ETL_NOEXCEPT ETL_OVERRIDE
+    {
+      return false;
+    }
+  };
+
+#if ETL_HAS_ATOMIC
+  //***************************************************************************
+  /// Atomic lock policy for timers.
+  //***************************************************************************
+  class timer_atomic_lock_policy : public timer_lock_policy
+  {
+  public:
+
+    void lock() ETL_NOEXCEPT ETL_OVERRIDE
+    {
+      lock_flag.store(true, etl::memory_order_seq_cst);
+    }
+
+    void unlock() ETL_NOEXCEPT ETL_OVERRIDE
+    {
+      lock_flag.store(false, etl::memory_order_seq_cst);
+    }
+
+    bool is_locked() ETL_NOEXCEPT ETL_OVERRIDE
+    {
+      return lock_flag.load(etl::memory_order_seq_cst);
+    }
+
+  private:
+
+    etl::atomic_bool lock_flag;
+  };
+#endif
+
+
+  //***************************************************************************
   /// Interface for intrusive timer
   //***************************************************************************
   class intrusive_timer
@@ -107,7 +158,6 @@ namespace etl
 
     //*******************************************
     /// Unregister a timer.
-    /// By node reference.
     //*******************************************
     bool unregister_timer(etl::timer_node& timer_) ETL_NOEXCEPT
     {
@@ -360,7 +410,7 @@ namespace etl
     }
 
     //*******************************************
-    /// Sets a timer's interval.
+    /// Sets a timer's configuration.
     //*******************************************
     bool set_config(etl::timer_node& timer_, const etl::timer_config& config_) ETL_NOEXCEPT
     {
