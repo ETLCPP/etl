@@ -1509,7 +1509,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TOtherTraits>
-    size_type rfind(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = 0) const
+    size_type rfind(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = npos) const
     {
       return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
     }
