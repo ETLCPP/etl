@@ -41,7 +41,7 @@ SOFTWARE.
 namespace etl
 {
 #ifdef ETL_TIMER_SEMAPHORE_TYPE
-  typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
+  typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore
 #else
   #if ETL_HAS_ATOMIC
   typedef etl::atomic_uint32_t timer_semaphore_t;
@@ -74,10 +74,10 @@ namespace etl
     {
       enum
       {
-        DELAYED   = false,
+        DELAYED   = false, // Deprecated
         IMMEDIATE = true,
 
-        Delayed   = false,
+        Delayed   = false, // Deprecated
         Immediate = true
       };
 
@@ -89,7 +89,7 @@ namespace etl
     {
       enum
       {
-        NO_TIMER = 255,
+        NO_TIMER = 255, // Deprecated
         No_Timer = 255
       };
 
@@ -101,7 +101,7 @@ namespace etl
     {
       enum
       {
-        INACTIVE = 0xFFFFFFFFUL,
+        INACTIVE = 0xFFFFFFFFUL, // Deprecated
         Inactive = 0xFFFFFFFFUL
       };
     };
@@ -111,7 +111,7 @@ namespace etl
     {
       enum
       {
-        No_Active_Interval = 0xFFFFFFFFUL,
+        No_Active_Interval = 0xFFFFFFFFUL, // Deprecated
         No_Interval        = 0xFFFFFFFFUL
       };
 
@@ -123,7 +123,7 @@ namespace etl
     {
       static ETL_CONSTANT void* No_Owner = ETL_NULLPTR;
     };
-  };
+  } // namespace timer
 } // namespace etl
 
 #endif

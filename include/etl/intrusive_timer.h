@@ -31,7 +31,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "nullptr.h"
+#include "timer_lock_policy.h"
 #include "timer_node.h"
+#include "timer_notification.h"
 
 #if ETL_HAS_ATOMIC
   #include "atomic.h"
@@ -44,77 +46,6 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  /// Interface for timer lock policy
-  //***************************************************************************
-  class timer_lock_policy
-  {
-  public:
-
-    virtual void lock() ETL_NOEXCEPT      = 0;
-    virtual void unlock() ETL_NOEXCEPT    = 0;
-    virtual bool is_locked() ETL_NOEXCEPT = 0;
-  };
-
-  //***************************************************************************
-  /// No lock policy for timers.
-  //***************************************************************************
-  class timer_no_lock_policy : public timer_lock_policy
-  {
-  public:
-
-    void lock() ETL_NOEXCEPT ETL_OVERRIDE {}
-
-    void unlock() ETL_NOEXCEPT ETL_OVERRIDE {}
-
-    bool is_locked() ETL_NOEXCEPT ETL_OVERRIDE
-    {
-      return false;
-    }
-  };
-
-#if ETL_HAS_ATOMIC
-  //***************************************************************************
-  /// Atomic lock policy for timers.
-  //***************************************************************************
-  class timer_atomic_lock_policy : public timer_lock_policy
-  {
-  public:
-
-    void lock() ETL_NOEXCEPT ETL_OVERRIDE
-    {
-      lock_flag.store(true, etl::memory_order_seq_cst);
-    }
-
-    void unlock() ETL_NOEXCEPT ETL_OVERRIDE
-    {
-      lock_flag.store(false, etl::memory_order_seq_cst);
-    }
-
-    bool is_locked() ETL_NOEXCEPT ETL_OVERRIDE
-    {
-      return lock_flag.load(etl::memory_order_seq_cst);
-    }
-
-  private:
-
-    etl::atomic_bool lock_flag;
-  };
-#endif
-
-  //***************************************************************************
-  /// Default class for time to next notification
-  //***************************************************************************
-  class timer_time_to_next_notification
-  {
-  public:
-
-    virtual void invoke(uint32_t)
-    {
-      // Do nothing by default.
-    }
-  };
-
-  //***************************************************************************
   /// Interface for intrusive timer
   //***************************************************************************
   class intrusive_timer
@@ -124,7 +55,7 @@ namespace etl
     //*******************************************
     /// Constructor.
     //*******************************************
-    explicit intrusive_timer(timer_lock_policy& lock_policy_) ETL_NOEXCEPT
+    explicit intrusive_timer(etl::timer::lock_policy& lock_policy_) ETL_NOEXCEPT
       : lock_policy(lock_policy_)
       , register_list()
       , active_list()
@@ -139,7 +70,7 @@ namespace etl
     /// Register a timer.
     /// It will not be started until the start() method is called.
     //*******************************************
-    bool register_timer(etl::timer_node& timer_) ETL_NOEXCEPT
+    bool register_timer(etl::timer::node& timer_) ETL_NOEXCEPT
     {
       bool result = false;
 
@@ -162,7 +93,7 @@ namespace etl
     //*******************************************
     /// Unregister a timer.
     //*******************************************
-    bool unregister_timer(etl::timer_node& timer_) ETL_NOEXCEPT
+    bool unregister_timer(etl::timer::node& timer_) ETL_NOEXCEPT
     {
       lock_policy.lock();
 
@@ -244,7 +175,7 @@ namespace etl
           if (has_active)
           {
             // Process timers that have expired.
-            etl::timer_node* timer = active_list.first();
+            etl::timer::node* timer = active_list.first();
 
             while (has_active && (count >= timer->delta))
             {
@@ -297,7 +228,7 @@ namespace etl
     //*******************************************
     /// Starts a timer.
     //*******************************************
-    bool start(etl::timer_node& timer_, bool immediate_ = false)
+    bool start(etl::timer::node& timer_, bool immediate_ = false)
     {
       bool is_started = false;
 
@@ -332,7 +263,7 @@ namespace etl
     //*******************************************
     /// Stops a timer.
     //*******************************************
-    bool stop(etl::timer_node& timer_) ETL_NOEXCEPT
+    bool stop(etl::timer::node& timer_) ETL_NOEXCEPT
     {
       bool is_stopped = false;
 
@@ -355,7 +286,7 @@ namespace etl
     //*******************************************
     /// Sets a timer's interval.
     //*******************************************
-    bool set_interval(etl::timer_node& timer_, uint32_t interval_) ETL_NOEXCEPT
+    bool set_interval(etl::timer::node& timer_, uint32_t interval_) ETL_NOEXCEPT
     {
       bool result = false;
 
@@ -385,7 +316,7 @@ namespace etl
     //*******************************************
     /// Sets a timer's mode.
     //*******************************************
-    bool set_mode(etl::timer_node& timer_, etl::timer::mode::type mode_) ETL_NOEXCEPT
+    bool set_mode(etl::timer::node& timer_, etl::timer::mode::type mode_) ETL_NOEXCEPT
     {
       bool result = false;
 
@@ -414,7 +345,7 @@ namespace etl
     //*******************************************
     /// Sets a timer's configuration.
     //*******************************************
-    bool set_config(etl::timer_node& timer_, const etl::timer_config& config_) ETL_NOEXCEPT
+    bool set_config(etl::timer::node& timer_, const etl::timer::config& config_) ETL_NOEXCEPT
     {
       bool result = false;
 
@@ -477,7 +408,7 @@ namespace etl
     //*******************************************
     /// Check if a timer is registered with this timer.
     //*******************************************
-    bool is_registered(const etl::timer_node& timer_) const ETL_NOEXCEPT
+    bool is_registered(const etl::timer::node& timer_) const ETL_NOEXCEPT
     {
       lock_policy.lock();
 
@@ -499,7 +430,7 @@ namespace etl
     //*******************************************
     /// Sets the update notification.
     //*******************************************
-    void set_next_timer_notification(timer_time_to_next_notification& notification) ETL_NOEXCEPT
+    void set_next_timer_notification(etl::timer::time_to_next_notification& notification) ETL_NOEXCEPT
     {
       active_notify_time_to_next = &notification;
     }
@@ -515,9 +446,9 @@ namespace etl
     //*******************************************
     /// Finds a timer by its id.
     //*******************************************
-    etl::timer_node* find_timer(etl::timer::id::type id_) ETL_NOEXCEPT
+    etl::timer::node* find_timer(etl::timer::id::type id_) ETL_NOEXCEPT
     {
-      etl::timer_node* timer = register_list.first();
+      etl::timer::node* timer = register_list.first();
 
       while (timer != register_list.end())
       {
@@ -528,7 +459,7 @@ namespace etl
 
         timer = register_list.next(timer);
       }
-      return etl::timer_node::end();
+      return etl::timer::node::end();
     }
 
   private:
@@ -536,7 +467,7 @@ namespace etl
     //*******************************************
     /// Notifies the user of the next timer that is due to expire.
     //*******************************************
-    void notify_about_timer_change(bool notify_, etl::timer_node* timer_) ETL_NOEXCEPT
+    void notify_about_timer_change(bool notify_, etl::timer::node* timer_) ETL_NOEXCEPT
     {
       if (notify_)
       {
@@ -553,7 +484,7 @@ namespace etl
     {
       etl::timer::id::type next_id = 0; // IDs start at 0.
 
-      etl::timer_node* timer = register_list.first();
+      etl::timer::node* timer = register_list.first();
 
       while ((timer != register_list.end()) && (timer->get_id() == next_id))
       {
@@ -567,7 +498,7 @@ namespace etl
     //*******************************************
     /// Stops a timer without locking.
     //*******************************************
-    void stop_timer(etl::timer_node& timer_) ETL_NOEXCEPT
+    void stop_timer(etl::timer::node& timer_) ETL_NOEXCEPT
     {
       active_list.remove(&timer_);
     }
@@ -578,7 +509,7 @@ namespace etl
     //*******************************************
     void invoke_expired_timers()
     {
-      etl::timer_node* timer = expired_list.first();
+      etl::timer::node* timer = expired_list.first();
 
       while (timer != expired_list.end())
       {
@@ -592,13 +523,13 @@ namespace etl
     intrusive_timer(const intrusive_timer&) ETL_DELETE;
     intrusive_timer& operator=(const intrusive_timer&) ETL_DELETE;
 
-    etl::timer_lock_policy&                 lock_policy;
-    etl::private_timer::timer_register_list register_list;
-    etl::private_timer::timer_active_list   active_list;
-    etl::private_timer::timer_expired_list  expired_list;
+    etl::timer::lock_policy&          lock_policy;
+    etl::private_timer::register_list register_list;
+    etl::private_timer::active_list   active_list;
+    etl::private_timer::expired_list  expired_list;
 
-    timer_time_to_next_notification  default_notify_time_to_next;
-    timer_time_to_next_notification* active_notify_time_to_next;
+    etl::timer::time_to_next_notification  default_notify_time_to_next;
+    etl::timer::time_to_next_notification* active_notify_time_to_next;
 
     bool   enabled;
     size_t timer_count;

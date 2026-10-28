@@ -33,6 +33,7 @@ SOFTWARE.
 #include "etl/intrusive_timer.h"
 #include "etl/message.h"
 #include "etl/message_router.h"
+#include "etl/delegate.h"
 #include "etl/timer.h"
 #include "etl/timer_node.h"
 
@@ -56,13 +57,13 @@ namespace
   /// A lock policy that counts the number of times it is locked and unlocked.
   /// The lock count should always be 0 or 1.
   //***************************************************************************
-  class LockPolicy : public etl::timer_lock_policy
+  class LockPolicy : public etl::timer::lock_policy
   {
   public:
 
     //*******************************************
     LockPolicy()
-      : timer_lock_policy()
+      : etl::timer::lock_policy()
       , count(0)
     {
     }
@@ -108,7 +109,7 @@ namespace
 
   //*************************************************************************
   using CallbackDelegate = etl::delegate<void()>;
-  using CallbackTimer    = etl::timer_callback_node<CallbackDelegate>;
+  using CallbackTimer    = etl::timer::callback_node<CallbackDelegate>;
 
   //*************************************************************************
   bool     global_callback_called = false;
@@ -164,8 +165,8 @@ namespace
     {
     }
 
-    int                      value;
-    const etl::timer_config* config;
+    int                       value;
+    const etl::timer::config* config;
   };
 
   class MessageProcessor : public etl::message_router<MessageProcessor, CallbackMessage>
@@ -204,7 +205,7 @@ namespace
     uint64_t message_call_count;
   };
 
-  using MessageTimer = etl::timer_message_node<CallbackMessage>;
+  using MessageTimer = etl::timer::message_node<CallbackMessage>;
 
   MessageProcessor message_processor;
   CallbackMessage  callback_message(42);
@@ -218,7 +219,7 @@ namespace
   /// A timer_time_to_next_notification that calls next_timer_notification().
   /// Passed to the intrusive timer to notify the user of the time to the next timer that is due to expire.
   //***********************************
-  class time_to_next_notification : public etl::timer_time_to_next_notification
+  class time_to_next_notification : public etl::timer::time_to_next_notification
   {
   public:
 
@@ -251,9 +252,9 @@ namespace
 
       etl::intrusive_timer timer_controller(lock_policy);
 
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
-      etl::timer_node node2(etl::timer_config(200, etl::timer::mode::Repeating));
-      etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
+      etl::timer::node node1(etl::timer::config(100, etl::timer::mode::Single_Shot));
+      etl::timer::node node2(etl::timer::config(200, etl::timer::mode::Repeating));
+      etl::timer::node node3(etl::timer::config(300, etl::timer::mode::Repeating));
 
       CHECK_FALSE(timer_controller.is_registered(node1));
       CHECK_FALSE(timer_controller.is_registered(node2));
@@ -283,7 +284,7 @@ namespace
       etl::intrusive_timer timer_controller1(lock_policy);
       etl::intrusive_timer timer_controller2(lock_policy);
 
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
+      etl::timer::node node1(etl::timer::config(100, etl::timer::mode::Single_Shot));
 
       bool success = false;
 
@@ -308,7 +309,7 @@ namespace
       etl::intrusive_timer timer_controller1(lock_policy);
       etl::intrusive_timer timer_controller2(lock_policy);
 
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
+      etl::timer::node node1(etl::timer::config(100, etl::timer::mode::Single_Shot));
 
       bool success = false;
 
@@ -332,7 +333,7 @@ namespace
 
       etl::intrusive_timer timer_controller(lock_policy);
 
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
+      etl::timer::node node1(etl::timer::config(100, etl::timer::mode::Single_Shot));
 
       // Start without registering.
       CHECK_FALSE(timer_controller.start(node1));
@@ -373,10 +374,10 @@ namespace
 
       etl::intrusive_timer timer_controller(lock_policy);
 
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Repeating));
-      etl::timer_node node2(etl::timer_config(200, etl::timer::mode::Repeating));
-      etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
-      etl::timer_node node4(etl::timer_config(400, etl::timer::mode::Repeating));
+      etl::timer::node node1(etl::timer::config(100, etl::timer::mode::Repeating));
+      etl::timer::node node2(etl::timer::config(200, etl::timer::mode::Repeating));
+      etl::timer::node node3(etl::timer::config(300, etl::timer::mode::Repeating));
+      etl::timer::node node4(etl::timer::config(400, etl::timer::mode::Repeating));
 
       timer_controller.register_timer(node1);
       timer_controller.register_timer(node2);
@@ -392,7 +393,7 @@ namespace
       CHECK_EQUAL(&node1, timer_controller.find_timer(node1.get_id()));
       CHECK_EQUAL(&node2, timer_controller.find_timer(node2.get_id()));
       CHECK_EQUAL(&node3, timer_controller.find_timer(node3.get_id()));
-      CHECK_EQUAL(etl::timer_node::end(), timer_controller.find_timer(node4.get_id()));
+      CHECK_EQUAL(etl::timer::node::end(), timer_controller.find_timer(node4.get_id()));
     }
 
     //*************************************************************************
@@ -402,9 +403,9 @@ namespace
 
       etl::intrusive_timer timer_controller(lock_policy);
 
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
-      etl::timer_node node2(etl::timer_config(200, etl::timer::mode::Repeating));
-      etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
+      etl::timer::node node1(etl::timer::config(100, etl::timer::mode::Single_Shot));
+      etl::timer::node node2(etl::timer::config(200, etl::timer::mode::Repeating));
+      etl::timer::node node3(etl::timer::config(300, etl::timer::mode::Repeating));
 
       timer_controller.register_timer(node1);
       timer_controller.register_timer(node2);
@@ -428,9 +429,9 @@ namespace
 
       etl::intrusive_timer timer_controller(lock_policy);
 
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
-      etl::timer_node node2(etl::timer_config(200, etl::timer::mode::Repeating));
-      etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
+      etl::timer::node node1(etl::timer::config(100, etl::timer::mode::Single_Shot));
+      etl::timer::node node2(etl::timer::config(200, etl::timer::mode::Repeating));
+      etl::timer::node node3(etl::timer::config(300, etl::timer::mode::Repeating));
 
       timer_controller.register_timer(node1);
       timer_controller.register_timer(node2);
@@ -464,18 +465,18 @@ namespace
 
       etl::intrusive_timer timer_controller(lock_policy);
 
-      etl::timer_node node1(etl::timer_config(100, etl::timer::mode::Single_Shot));
-      etl::timer_node node2(etl::timer_config(200, etl::timer::mode::Repeating));
-      etl::timer_node node3(etl::timer_config(300, etl::timer::mode::Repeating));
+      etl::timer::node node1(etl::timer::config(100, etl::timer::mode::Single_Shot));
+      etl::timer::node node2(etl::timer::config(200, etl::timer::mode::Repeating));
+      etl::timer::node node3(etl::timer::config(300, etl::timer::mode::Repeating));
 
       timer_controller.register_timer(node1);
       timer_controller.register_timer(node2);
       timer_controller.register_timer(node3);
 
       // Modify the timer configs.
-      etl::timer_config config1(150, etl::timer::mode::Repeating);
-      etl::timer_config config2(250, etl::timer::mode::Single_Shot);
-      etl::timer_config config3(350, etl::timer::mode::Single_Shot);
+      etl::timer::config config1(150, etl::timer::mode::Repeating);
+      etl::timer::config config2(250, etl::timer::mode::Single_Shot);
+      etl::timer::config config3(350, etl::timer::mode::Single_Shot);
 
       timer_controller.set_config(node1, config1);
       timer_controller.set_config(node2, config2);
@@ -502,18 +503,18 @@ namespace
       time_to_next.clear();
 
       global_callback_clear();
-      etl::timer_config config1(37, etl::timer::mode::Single_Shot);
-      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
-      CallbackTimer     callback_timer1(config1, callback_delegate1);
+      etl::timer::config config1(37, etl::timer::mode::Single_Shot);
+      CallbackDelegate   callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer      callback_timer1(config1, callback_delegate1);
 
       object.clear();
-      etl::timer_config config2(23, etl::timer::mode::Single_Shot);
-      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
-      CallbackTimer     callback_timer2(config2, callback_delegate2);
+      etl::timer::config config2(23, etl::timer::mode::Single_Shot);
+      CallbackDelegate   callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer      callback_timer2(config2, callback_delegate2);
 
       message_processor.clear();
-      etl::timer_config config3(11, etl::timer::mode::Single_Shot);
-      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+      etl::timer::config config3(11, etl::timer::mode::Single_Shot);
+      MessageTimer       callback_timer3(config3, message_processor, callback_message);
 
       timer_controller.register_timer(callback_timer1);
       timer_controller.register_timer(callback_timer2);
@@ -566,18 +567,18 @@ namespace
       time_to_next.clear();
 
       global_callback_clear();
-      etl::timer_config config1(37, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
-      CallbackTimer     callback_timer1(config1, callback_delegate1);
+      etl::timer::config config1(37, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer      callback_timer1(config1, callback_delegate1);
 
       object.clear();
-      etl::timer_config config2(23, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
-      CallbackTimer     callback_timer2(config2, callback_delegate2);
+      etl::timer::config config2(23, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer      callback_timer2(config2, callback_delegate2);
 
       message_processor.clear();
-      etl::timer_config config3(11, etl::timer::mode::Repeating);
-      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+      etl::timer::config config3(11, etl::timer::mode::Repeating);
+      MessageTimer       callback_timer3(config3, message_processor, callback_message);
 
       timer_controller.register_timer(callback_timer1);
       timer_controller.register_timer(callback_timer2);
@@ -647,18 +648,18 @@ namespace
       time_to_next.clear();
 
       global_callback_clear();
-      etl::timer_config config1(37, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
-      CallbackTimer     callback_timer1(config1, callback_delegate1);
+      etl::timer::config config1(37, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer      callback_timer1(config1, callback_delegate1);
 
       object.clear();
-      etl::timer_config config2(23, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
-      CallbackTimer     callback_timer2(config2, callback_delegate2);
+      etl::timer::config config2(23, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer      callback_timer2(config2, callback_delegate2);
 
       message_processor.clear();
-      etl::timer_config config3(11, etl::timer::mode::Repeating);
-      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+      etl::timer::config config3(11, etl::timer::mode::Repeating);
+      MessageTimer       callback_timer3(config3, message_processor, callback_message);
 
       timer_controller.register_timer(callback_timer1);
       timer_controller.register_timer(callback_timer2);
@@ -727,18 +728,18 @@ namespace
       time_to_next.clear();
 
       global_callback_clear();
-      etl::timer_config config1(37, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
-      CallbackTimer     callback_timer1(config1, callback_delegate1);
+      etl::timer::config config1(37, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer      callback_timer1(config1, callback_delegate1);
 
       object.clear();
-      etl::timer_config config2(23, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
-      CallbackTimer     callback_timer2(config2, callback_delegate2);
+      etl::timer::config config2(23, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer      callback_timer2(config2, callback_delegate2);
 
       message_processor.clear();
-      etl::timer_config config3(11, etl::timer::mode::Repeating);
-      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+      etl::timer::config config3(11, etl::timer::mode::Repeating);
+      MessageTimer       callback_timer3(config3, message_processor, callback_message);
 
       timer_controller.register_timer(callback_timer2);
       timer_controller.register_timer(callback_timer3);
@@ -804,18 +805,18 @@ namespace
       time_to_next.clear();
 
       global_callback_clear();
-      etl::timer_config config1(37, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
-      CallbackTimer     callback_timer1(config1, callback_delegate1);
+      etl::timer::config config1(37, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer      callback_timer1(config1, callback_delegate1);
 
       object.clear();
-      etl::timer_config config2(23, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
-      CallbackTimer     callback_timer2(config2, callback_delegate2);
+      etl::timer::config config2(23, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer      callback_timer2(config2, callback_delegate2);
 
       message_processor.clear();
-      etl::timer_config config3(11, etl::timer::mode::Repeating);
-      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+      etl::timer::config config3(11, etl::timer::mode::Repeating);
+      MessageTimer       callback_timer3(config3, message_processor, callback_message);
 
       timer_controller.register_timer(callback_timer1);
       timer_controller.register_timer(callback_timer2);
@@ -888,18 +889,18 @@ namespace
       time_to_next.clear();
 
       global_callback_clear();
-      etl::timer_config config1(37, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate1 = CallbackDelegate::create(global_callback);
-      CallbackTimer     callback_timer1(config1, callback_delegate1);
+      etl::timer::config config1(37, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate1 = CallbackDelegate::create(global_callback);
+      CallbackTimer      callback_timer1(config1, callback_delegate1);
 
       object.clear();
-      etl::timer_config config2(23, etl::timer::mode::Repeating);
-      CallbackDelegate  callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
-      CallbackTimer     callback_timer2(config2, callback_delegate2);
+      etl::timer::config config2(23, etl::timer::mode::Repeating);
+      CallbackDelegate   callback_delegate2 = CallbackDelegate::create<Object, &Object::member, object>();
+      CallbackTimer      callback_timer2(config2, callback_delegate2);
 
       message_processor.clear();
-      etl::timer_config config3(11, etl::timer::mode::Repeating);
-      MessageTimer      callback_timer3(config3, message_processor, callback_message);
+      etl::timer::config config3(11, etl::timer::mode::Repeating);
+      MessageTimer       callback_timer3(config3, message_processor, callback_message);
 
       timer_controller.register_timer(callback_timer1);
       timer_controller.register_timer(callback_timer2);
@@ -959,6 +960,132 @@ namespace
     }
 
     //*************************************************************************
+    struct FunctorExternalCount
+    {
+      FunctorExternalCount(int& call_count_)
+        : call_count(&call_count_)
+      {
+      }
+
+      void operator()()
+      {
+        ++(*call_count);
+      }
+
+      int* call_count;
+    };
+
+    TEST(test_intrusive_timer_with_functor_with_pointer_to_count)
+    {
+      int call_count = 0;
+
+      FunctorExternalCount timer_functor(call_count);
+
+      LockPolicy           lock_policy;
+      etl::intrusive_timer timer_controller(lock_policy);
+
+      etl::timer::callback_node node1(etl::timer::config(1, etl::timer::mode::Single_Shot), timer_functor);
+
+      timer_controller.register_timer(node1);
+      timer_controller.enable(true);
+      timer_controller.start(node1);
+      timer_controller.tick(1);
+
+      CHECK_EQUAL(1, call_count);
+    }
+
+    //*************************************************************************
+    struct FunctorInternalCount
+    {
+      FunctorInternalCount()
+        : call_count(0)
+      {
+      }
+
+      void operator()()
+      {
+        ++call_count;
+      }
+
+      int call_count;
+    };
+
+    TEST(test_intrusive_timer_with_functor_reference)
+    {
+      FunctorInternalCount timer_functor;
+
+      LockPolicy           lock_policy;
+      etl::intrusive_timer timer_controller(lock_policy);
+
+      etl::timer::callback_ref_node node1(etl::timer::config(1, etl::timer::mode::Single_Shot), timer_functor);
+
+      timer_controller.register_timer(node1);
+      timer_controller.enable(true);
+      timer_controller.start(node1);
+      timer_controller.tick(1);
+
+      CHECK_EQUAL(1, timer_functor.call_count);
+    }
+
+    //*************************************************************************
+    TEST(test_intrusive_timer_with_lambda)
+    {
+      int call_count = 0;
+
+      auto timer_lambda = [&call_count]()
+      {
+        ++call_count;
+      };
+
+      LockPolicy           lock_policy;
+      etl::intrusive_timer timer_controller(lock_policy);
+
+      etl::timer::callback_node node1(etl::timer::config(1, etl::timer::mode::Single_Shot), timer_lambda);
+
+      timer_controller.register_timer(node1);
+      timer_controller.enable(true);
+      timer_controller.start(node1);
+      timer_controller.tick(1);
+
+      CHECK_EQUAL(1, call_count);
+    }
+
+    //*************************************************************************
+    struct Object
+    {
+      Object()
+        : call_count(0)
+      {
+      }
+
+      void Increment()
+      {
+        ++call_count;
+      }
+
+      int call_count;
+    };
+
+    static Object object;
+
+    TEST(test_intrusive_timer_with_delegate)
+    {
+      auto delegate = etl::delegate<void()>::create<Object, &Object::Increment, object>();
+      etl::timer::config config(etl::timer::config(1, etl::timer::mode::Single_Shot));
+
+      etl::timer::callback_node node(config, delegate);
+
+      LockPolicy           lock_policy;
+      etl::intrusive_timer timer_controller(lock_policy);
+
+      timer_controller.register_timer(node);
+      timer_controller.enable(true);
+      timer_controller.start(node);
+      timer_controller.tick(1);
+
+      CHECK_EQUAL(1, object.call_count);
+    }
+    //*************************************************************************
 #if REALTIME_TEST
 
   #if defined(ETL_TARGET_OS_WINDOWS) // Only Windows priority is currently
@@ -971,7 +1098,7 @@ namespace
   #endif
 
     //*************************************************************************
-    class semaphore_lock_policy : public etl::timer_lock_policy
+    class semaphore_lock_policy : public etl::timer::lock_policy
     {
     public:
 
@@ -1014,17 +1141,17 @@ namespace
     static void real_time_callback2();
     static void real_time_callback3();
 
-    etl::timer_config config1(10, etl::timer::mode::Repeating);
-    CallbackDelegate  callback_delegate1 = CallbackDelegate::create(real_time_callback1);
-    CallbackTimer     callback_timer1(config1, callback_delegate1);
+    etl::timer::config config1(10, etl::timer::mode::Repeating);
+    CallbackDelegate   callback_delegate1 = CallbackDelegate::create(real_time_callback1);
+    CallbackTimer      callback_timer1(config1, callback_delegate1);
 
-    etl::timer_config config2(10, etl::timer::mode::Repeating);
-    CallbackDelegate  callback_delegate2 = CallbackDelegate::create(real_time_callback2);
-    CallbackTimer     callback_timer2(config2, callback_delegate2);
+    etl::timer::config config2(10, etl::timer::mode::Repeating);
+    CallbackDelegate   callback_delegate2 = CallbackDelegate::create(real_time_callback2);
+    CallbackTimer      callback_timer2(config2, callback_delegate2);
 
-    etl::timer_config config3(10, etl::timer::mode::Repeating);
-    CallbackDelegate  callback_delegate3 = CallbackDelegate::create(real_time_callback3);
-    CallbackTimer     callback_timer3(config3, callback_delegate3);
+    etl::timer::config config3(10, etl::timer::mode::Repeating);
+    CallbackDelegate   callback_delegate3 = CallbackDelegate::create(real_time_callback3);
+    CallbackTimer      callback_timer3(config3, callback_delegate3);
 
     int real_time_callback_count1 = 0;
     int real_time_callback_count2 = 0;

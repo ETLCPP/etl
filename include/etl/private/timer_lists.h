@@ -48,14 +48,14 @@ namespace etl
     /// The list of timers that are registered.
     /// The list does not do any checking of parameters as it is assumed that the timer service has already done this.
     //*************************************************************************
-    class timer_register_list
+    class register_list
     {
     public:
 
       //*******************************
       /// Constructor.
       //*******************************
-      timer_register_list() ETL_NOEXCEPT
+      register_list() ETL_NOEXCEPT
         : head(end())
         , tail(end())
       {
@@ -72,7 +72,7 @@ namespace etl
       //*******************************
       // Adds the timer in to the list in ID order.
       //*******************************
-      void insert(etl::timer_node* new_timer) ETL_NOEXCEPT
+      void insert(etl::timer::node* new_timer) ETL_NOEXCEPT
       {
         new_timer->registered_next = end();
 
@@ -89,8 +89,8 @@ namespace etl
         }
         else
         {
-          etl::timer_node* current  = head;
-          etl::timer_node* previous = head;
+          etl::timer::node* current  = head;
+          etl::timer::node* previous = head;
 
           // Find the correct place to insert the new timer in to the list.
           while ((current != end()) && (current->get_id() < new_timer->get_id()))
@@ -112,14 +112,14 @@ namespace etl
           }
         }
 
-        // We are now the exclusive owner of this timer_node.
+        // We are now the exclusive owner of this node.
         new_timer->set_owner(this);
       }
 
       //*******************************
       // Adds the timer in to the list.
       //*******************************
-      void insert(etl::timer_node& new_timer) ETL_NOEXCEPT
+      void insert(etl::timer::node& new_timer) ETL_NOEXCEPT
       {
         insert(&new_timer);
       }
@@ -128,10 +128,10 @@ namespace etl
       // Remove the timer from the list.
       // Returns the next timer in the list after the removed timer, or nullptr if the removed timer was the last in the list.
       //*******************************
-      etl::timer_node* remove(etl::timer_node* timer_) ETL_NOEXCEPT
+      etl::timer::node* remove(etl::timer::node* timer_) ETL_NOEXCEPT
       {
-        etl::timer_node* current  = head;
-        etl::timer_node* previous = head;
+        etl::timer::node* current  = head;
+        etl::timer::node* previous = head;
 
         // Find the timer in the list so we can know what timer was previous to it.
         while (current != timer_)
@@ -141,7 +141,7 @@ namespace etl
         }
 
         // Get the next timer in the lister the timer to be removed.
-        etl::timer_node* next = current->registered_next;
+        etl::timer::node* next = current->registered_next;
 
         // Remove it from the list.
         if (current == head)
@@ -162,9 +162,9 @@ namespace etl
 
         // Clear the id and next pointer of the removed timer.
         current->set_id(etl::timer::id::No_Timer);
-        current->registered_next = etl::timer_node::unlinked();
+        current->registered_next = etl::timer::node::unlinked();
 
-        // We are no longer the owner of this timer_node.
+        // We are no longer the owner of this node.
         current->set_owner(ETL_NULLPTR);
 
         return next;
@@ -174,7 +174,7 @@ namespace etl
       /// Returns the first timer in the list.
       /// If the list is empty, returns end().
       //*******************************
-      etl::timer_node* first() const ETL_NOEXCEPT
+      etl::timer::node* first() const ETL_NOEXCEPT
       {
         return head;
       }
@@ -184,7 +184,7 @@ namespace etl
       /// May be end() if the given timer is the last in the list.
       /// If the given timer is nullptr, returns end().
       //*******************************
-      etl::timer_node* next(etl::timer_node* timer) const ETL_NOEXCEPT
+      etl::timer::node* next(etl::timer::node* timer) const ETL_NOEXCEPT
       {
         if (timer != end())
         {
@@ -198,11 +198,11 @@ namespace etl
 
       //*******************************
       /// Returns the end of the list.
-      /// Always returns &etl::timer_node::end().
+      /// Always returns &etl::timer::node::end().
       //*******************************
-      etl::timer_node* const end() const ETL_NOEXCEPT
+      etl::timer::node* const end() const ETL_NOEXCEPT
       {
-        return etl::timer_node::end();
+        return etl::timer::node::end();
       }
 
       //*******************************
@@ -210,7 +210,7 @@ namespace etl
       //*******************************
       void clear()
       {
-        etl::timer_node* timer = head;
+        etl::timer::node* timer = head;
 
         while (head != end())
         {
@@ -227,9 +227,9 @@ namespace etl
       /// If in the list then returns itself.
       /// If not in the list then returns end().
       //*******************************************
-      etl::timer_node* find(etl::timer_node* timer_) const ETL_NOEXCEPT
+      etl::timer::node* find(etl::timer::node* timer_) const ETL_NOEXCEPT
       {
-        timer_node* node = first();
+        etl::timer::node* node = first();
 
         while ((node != end()) && (node != timer_))
         {
@@ -241,22 +241,22 @@ namespace etl
 
     private:
 
-      etl::timer_node* head;
-      etl::timer_node* tail;
+      etl::timer::node* head;
+      etl::timer::node* tail;
     };
 
     //*************************************************************************
     /// The list of timers that are active.
     /// The list does not do any checking of parameters as it is assumed that the timer service has already done this.
     //*************************************************************************
-    class timer_active_list
+    class active_list
     {
     public:
 
       //*******************************
       /// Constructor.
       //*******************************
-      timer_active_list() ETL_NOEXCEPT
+      active_list() ETL_NOEXCEPT
         : head(end())
       {
       }
@@ -272,7 +272,7 @@ namespace etl
       //*******************************
       // Inserts the timer at the correct delta position
       //*******************************
-      void insert(etl::timer_node* new_timer) ETL_NOEXCEPT
+      void insert(etl::timer::node* new_timer) ETL_NOEXCEPT
       {
         if (empty())
         {
@@ -290,8 +290,8 @@ namespace etl
         else
         {
           // We already have entries, and new_timer doesn't go before head.
-          timer_node* previous_timer = head;
-          timer_node* timer          = head->active_next;
+          etl::timer::node* previous_timer = head;
+          etl::timer::node* timer          = head->active_next;
 
           // Adjust the new_timer delta to take account of the head timer's delta.
           new_timer->delta -= previous_timer->delta;
@@ -336,7 +336,7 @@ namespace etl
       //*******************************
       // Inserts the timer at the correct delta position
       //*******************************
-      void insert(etl::timer_node& new_timer) ETL_NOEXCEPT
+      void insert(etl::timer::node& new_timer) ETL_NOEXCEPT
       {
         insert(&new_timer);
       }
@@ -344,10 +344,10 @@ namespace etl
       //*******************************
       /// Removes the selected timer from the list.
       //*******************************
-      etl::timer_node* remove(etl::timer_node* timer_) ETL_NOEXCEPT
+      etl::timer::node* remove(etl::timer::node* timer_) ETL_NOEXCEPT
       {
-        etl::timer_node* current  = head;
-        etl::timer_node* previous = head;
+        etl::timer::node* current  = head;
+        etl::timer::node* previous = head;
 
         // Find the timer in the list so we can know what timer was previous to it.
         while (current != timer_)
@@ -357,7 +357,7 @@ namespace etl
         }
 
         // Get the next timer in the list after the timer to be removed.
-        etl::timer_node* next = current->active_next;
+        etl::timer::node* next = current->active_next;
 
         // Adjust the next delta.
         if (next != end())
@@ -377,7 +377,7 @@ namespace etl
         }
 
         // Clear the next pointer of the removed timer.
-        timer_->active_next = etl::timer_node::unlinked();
+        timer_->active_next = etl::timer::node::unlinked();
 
         return next;
       }
@@ -386,7 +386,7 @@ namespace etl
       /// Returns the first timer in the list.
       /// If the list is empty, returns end().
       //*******************************
-      etl::timer_node* first() const ETL_NOEXCEPT
+      etl::timer::node* first() const ETL_NOEXCEPT
       {
         return head;
       }
@@ -396,7 +396,7 @@ namespace etl
       /// May be end() if the given timer is the last in the list.
       /// If the given timer is nullptr, returns end().
       //*******************************
-      etl::timer_node* next(etl::timer_node* timer) const ETL_NOEXCEPT
+      etl::timer::node* next(etl::timer::node* timer) const ETL_NOEXCEPT
       {
         if (timer != end())
         {
@@ -410,11 +410,11 @@ namespace etl
 
       //*******************************
       /// Returns the end of the list.
-      /// Always returns &etl::timer_node::end().
+      /// Always returns &etl::timer::node::end().
       //*******************************
-      etl::timer_node* const end() const ETL_NOEXCEPT
+      etl::timer::node* const end() const ETL_NOEXCEPT
       {
-        return etl::timer_node::end();
+        return etl::timer::node::end();
       }
 
       //*******************************
@@ -422,12 +422,12 @@ namespace etl
       //*******************************
       void clear()
       {
-        etl::timer_node* timer = head;
+        etl::timer::node* timer = head;
 
         while (head != end())
         {
           head               = timer->active_next;
-          timer->active_next = etl::timer_node::unlinked();
+          timer->active_next = etl::timer::node::unlinked();
           timer              = head;
         }
       }
@@ -437,9 +437,9 @@ namespace etl
       /// If in the list then returns itself.
       /// If not in the list then returns end().
       //*******************************************
-      etl::timer_node* find(etl::timer_node* timer_) const ETL_NOEXCEPT
+      etl::timer::node* find(etl::timer::node* timer_) const ETL_NOEXCEPT
       {
-        timer_node* node = first();
+        etl::timer::node* node = first();
 
         while ((node != end()) && (node != timer_))
         {
@@ -451,21 +451,21 @@ namespace etl
 
     private:
 
-      etl::timer_node* head;
+      etl::timer::node* head;
     };
 
     //*************************************************************************
     /// The list of timers that are registered.
     /// The list does not do any checking of parameters as it is assumed that the timer service has already done this.
     //*************************************************************************
-    class timer_expired_list
+    class expired_list
     {
     public:
 
       //*******************************
       /// Constructor.
       //*******************************
-      timer_expired_list() ETL_NOEXCEPT
+      expired_list() ETL_NOEXCEPT
         : head(end())
         , tail(end())
       {
@@ -482,7 +482,7 @@ namespace etl
       //*******************************
       // Adds the timer in to the list.
       //*******************************
-      void insert(etl::timer_node* new_timer) ETL_NOEXCEPT
+      void insert(etl::timer::node* new_timer) ETL_NOEXCEPT
       {
         new_timer->expired_next = end();
 
@@ -501,7 +501,7 @@ namespace etl
       //*******************************
       // Adds the timer in to the list.
       //*******************************
-      void insert(etl::timer_node& new_timer) ETL_NOEXCEPT
+      void insert(etl::timer::node& new_timer) ETL_NOEXCEPT
       {
         insert(&new_timer);
       }
@@ -510,7 +510,7 @@ namespace etl
       /// Returns the first timer in the list.
       /// If the list is empty, returns nullptr.
       //*******************************
-      etl::timer_node* first() const ETL_NOEXCEPT
+      etl::timer::node* first() const ETL_NOEXCEPT
       {
         return head;
       }
@@ -520,7 +520,7 @@ namespace etl
       /// May be end() if the given timer is the last in the list.
       /// If the given timer is nullptr, returns end().
       //*******************************
-      etl::timer_node* next(etl::timer_node* timer) const ETL_NOEXCEPT
+      etl::timer::node* next(etl::timer::node* timer) const ETL_NOEXCEPT
       {
         if (timer != end())
         {
@@ -534,11 +534,11 @@ namespace etl
 
       //*******************************
       /// Returns the end of the list.
-      /// Always returns &etl::timer_node::end().
+      /// Always returns &etl::timer::node::end().
       //*******************************
-      etl::timer_node* const end() const ETL_NOEXCEPT
+      etl::timer::node* const end() const ETL_NOEXCEPT
       {
-        return etl::timer_node::end();
+        return etl::timer::node::end();
       }
 
       //*******************************
@@ -546,7 +546,7 @@ namespace etl
       //*******************************
       void clear()
       {
-        etl::timer_node* timer = head;
+        etl::timer::node* timer = head;
 
         while (head != end())
         {
@@ -563,9 +563,9 @@ namespace etl
       /// If in the list then returns itself.
       /// If not in the list then returns end().
       //*******************************************
-      etl::timer_node* find(etl::timer_node* timer_) const ETL_NOEXCEPT
+      etl::timer::node* find(etl::timer::node* timer_) const ETL_NOEXCEPT
       {
-        timer_node* node = first();
+        etl::timer::node* node = first();
 
         while ((node != end()) && (node != timer_))
         {
@@ -577,8 +577,8 @@ namespace etl
 
     private:
 
-      etl::timer_node* head;
-      etl::timer_node* tail;
+      etl::timer::node* head;
+      etl::timer::node* tail;
     };
   } // namespace private_timer
 } // namespace etl

@@ -3561,6 +3561,8 @@
     <ClInclude Include="..\..\include\etl\inplace_function.h" />
     <ClInclude Include="..\..\include\etl\intrusive_timer.h" />
     <ClInclude Include="..\..\include\etl\private\timer_lists.h" />
+    <ClInclude Include="..\..\include\etl\timer_config.h" />
+    <ClInclude Include="..\..\include\etl\timer_lock_policy.h" />
     <ClInclude Include="..\..\include\etl\timer_node.h" />
     <ClInclude Include="..\..\include\etl\invoke.h" />
     <ClInclude Include="..\..\include\etl\lcm.h" />
@@ -3735,6 +3737,7 @@
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\threshold.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
+    <ClInclude Include="..\..\include\etl\timer_notification.h" />
     <ClInclude Include="..\..\include\etl\to_arithmetic.h" />
     <ClInclude Include="..\..\include\etl\to_string.h" />
     <ClInclude Include="..\..\include\etl\to_u16string.h" />
@@ -11453,6 +11456,7 @@
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_threshold.cpp" />
     <ClCompile Include="..\test_chrono_time_point.cpp" />
+    <ClCompile Include="..\test_timer_config.cpp" />
     <ClCompile Include="..\test_timer_lists.cpp" />
     <ClCompile Include="..\test_timer_node.cpp" />
     <ClCompile Include="..\test_to_arithmetic.cpp" />

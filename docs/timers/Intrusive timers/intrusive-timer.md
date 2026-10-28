@@ -1,9 +1,11 @@
 ---
 title: "intrusive_timer"
+weight: 103
 ---
 
 {{< callout type="info">}}
   Header: `intrusive_timer.h`  
+  Namespace: `etl`  
   Since: `20.46.0`  
   From: `C++03`
 {{< /callout >}}
@@ -94,19 +96,19 @@ explicit intrusive_timer(timer_lock_policy& lock_policy) ETL_NOEXCEPT
 Constructor.
 
 **Parameters**  
-`lock_policy` The lock policy which determines access to parts of the timer.
+`lock_policy` : The lock policy which determines access to parts of the timer.
 
 ---
 
 ```cpp
-bool register_timer(etl::timer_node& timer) ETL_NOEXCEPT
+bool register_timer(etl::timer::node& timer) ETL_NOEXCEPT
 ```
 **Description**  
 Register a timer.  
 It will not be started until the `start()` method is called.
 
 **Parameters**  
-`etl::timer_node& timer` : The timer node to register.  
+`etl::timer::node& timer` : The timer node to register.  
 The timer node must not be already registered with anything else.  
 The timer nodes's ID will be set here and this timer will be set as its owner.
 
@@ -116,7 +118,7 @@ The timer nodes's ID will be set here and this timer will be set as its owner.
 ---
 
 ```cpp
-bool unregister_timer(etl::timer_node& timer) ETL_NOEXCEPT
+bool unregister_timer(etl::timer::node& timer) ETL_NOEXCEPT
 ```
 **Description**  
 Unregisters a timer node.  
@@ -124,7 +126,7 @@ Stops the timer, if active.
 Callbacks for any expired timers may still occur.
 
 **Parameters**  
-`etl::timer_node& timer` : The timer node to unregister.  
+`etl::timer::node& timer` : The timer node to unregister.  
 The timer node must be registered with this timer. If it isn't then the function will return false.  
 The timer nodes's ID will be set here and this timer will be set as its owner.
 
@@ -176,7 +178,7 @@ If the tick was not processed then the next tick must accommodate for the extra 
 ---
 
 ```cpp
-bool start(etl::timer_node& timer, 
+bool start(etl::timer::node& timer, 
            bool             immediate = false)
 ```
 **Description**  
@@ -189,7 +191,7 @@ It will be started only if:-
 If the started timer will now be the first to expire then a 'time to next' notification will be sent.
 
 **Parameters**  
-`etl::timer_node& timer` : The timer node to start.  
+`etl::timer::node& timer` : The timer node to start.  
 `bool immediate` : If `true` then the timer expires immediately.
 
 **Return**  
@@ -198,7 +200,7 @@ If the started timer will now be the first to expire then a 'time to next' notif
 ---
 
 ```cpp
-bool stop(etl::timer_node& timer) ETL_NOEXCEPT
+bool stop(etl::timer::node& timer) ETL_NOEXCEPT
 ```
 **Description** 
 Stops a timer.  
@@ -206,7 +208,7 @@ A 'time to next' notification will be sent for the next timer to expire.
 Expired timer callbacks occur outside of the locked regions.
 
 **Parameters**  
-`etl::timer_node& timer` : The timer node to stop.  
+`etl::timer::node& timer` : The timer node to stop.  
 
 **Return**  
 `true` if the timer was stopped,
@@ -214,7 +216,7 @@ Expired timer callbacks occur outside of the locked regions.
 ---
 
 ```cpp
-bool set_interval(etl::timer_node& timer, 
+bool set_interval(etl::timer::node& timer, 
                   uint32_t         interval) ETL_NOEXCEPT
 ```
 **Description**  
@@ -224,7 +226,7 @@ The timer will be stopped if active.
 If the timer node was the next to expire then a 'time to next' notification will be sent.
 
 **Parameters**  
-`etl::timer_node& timer` : The timer node to start.  
+`etl::timer::node& timer` : The timer node to start.  
 `uint32_t interval` : The new interval.
 
 **Return**  
@@ -233,7 +235,7 @@ If the timer node was the next to expire then a 'time to next' notification will
 ---
 
 ```cpp
-bool set_mode(etl::timer_node&       timer, 
+bool set_mode(etl::timer::node&       timer, 
               etl::timer::mode::type mode) ETL_NOEXCEPT
 ```
 **Description**  
@@ -243,7 +245,7 @@ The timer will be stopped if active.
 If the timer node was the next to expire then a 'time to next' notification will be sent.
 
 **Parameters**  
-`etl::timer_node& timer` : The timer node to start.  
+`etl::timer::node& timer` : The timer node to start.  
 `etl::timer::mode::type mode` : The new mode.
 
 **Return**  
@@ -252,7 +254,7 @@ If the timer node was the next to expire then a 'time to next' notification will
 ---
 
 ```cpp
-bool set_config(etl::timer_node&         timer,
+bool set_config(etl::timer::node&         timer,
                 const etl::timer_config& config) ETL_NOEXCEPT
 ```
 **Description**  
@@ -262,7 +264,7 @@ The timer will be stopped if active.
 If the timer node was the next to expire then a 'time to next' notification will be sent.
 
 **Parameters**  
-`etl::timer_node& timer` : The timer node to start.  
+`etl::timer::node& timer` : The timer node to start.  
 `const etl::timer_config& config` : The new configuration.
 
 **Return**  
@@ -293,7 +295,7 @@ Returns `etl::timer::interval::No_Active_Interval` if there is no active timer.
 ---
 
 ```cpp
-bool is_registered(const etl::timer_node& timer) const ETL_NOEXCEPT
+bool is_registered(const etl::timer::node& timer) const ETL_NOEXCEPT
 ```
 **Description**  
 Check if a timer is registered with this timer.
@@ -331,7 +333,7 @@ Clears the update notification callback.
 ---
 
 ```cpp
-etl::timer_node* find_timer(etl::timer::id::type id) ETL_NOEXCEPT
+etl::timer::node* find_timer(etl::timer::id::type id) ETL_NOEXCEPT
 ```
 **Description**  
 Finds a timer node by its id.  
@@ -340,4 +342,30 @@ Finds a timer node by its id.
 `etl::timer::id::type id` : The ID of the timer node.  
 
 **Return**  
-A pointer to the node or `etl::timer_node::end()`
+A pointer to the node or `etl::timer::node::end()`
+
+## Examples
+
+### Callback with a lambda
+
+```cpp
+int call_count = 0;
+
+auto timer_lambda = [&call_count]()
+{
+  ++call_count;
+};
+
+etl::timer::atomic_lock_policy lock_policy;
+
+etl::intrusive_timer timer_controller(lock_policy);
+
+etl::timer::callback_node node1(etl::timer::config(1, etl::timer::mode::Single_Shot), timer_lambda);
+
+timer_controller.register_timer(node1);
+timer_controller.enable(true);
+timer_controller.start(node1);
+timer_controller.tick(1);
+
+assert(call_count == 1);
+```

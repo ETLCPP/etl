@@ -1,0 +1,17 @@
+{{ with .Page.Sections.ByTitle }}
+  <h3>Categories</h3>
+  <ul>
+    {{ range . }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    {{ end }}
+  </ul>
+{{ end }}
+
+{{ with .Page.RegularPages.ByWeight }}
+  <h3>Components</h3>
+  <ul>
+    {{ range . }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    {{ end }}
+  </ul>
+{{ end }}

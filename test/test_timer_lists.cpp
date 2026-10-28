@@ -39,7 +39,7 @@ namespace
   public:
 
     //*************************************************************************
-    void register_timer(etl::private_timer::timer_register_list& register_list, etl::timer_node& timer_)
+    void register_timer(etl::private_timer::register_list& register_list, etl::timer::node& timer_)
     {
       timer_.set_id(get_next_id(register_list));
       register_list.insert(&timer_);
@@ -47,11 +47,11 @@ namespace
     }
 
     //*******************************************
-    etl::timer::id::type get_next_id(etl::private_timer::timer_register_list& register_list) ETL_NOEXCEPT
+    etl::timer::id::type get_next_id(etl::private_timer::register_list& register_list) ETL_NOEXCEPT
     {
       etl::timer::id::type next_id = 0; // IDs start at 0
 
-      etl::timer_node* timer = register_list.first();
+      etl::timer::node* timer = register_list.first();
 
       while (timer != register_list.end())
       {
@@ -81,18 +81,18 @@ namespace
     //*************************************************************************
     TEST(test_timer_register_list)
     {
-      constexpr etl::timer_config timer1_config(100, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer2_config(65, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer3_config(85, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer4_config(130, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer5_config(85, etl::timer::mode::Repeating);
-      etl::timer_node             timer1{timer1_config};
-      etl::timer_node             timer2{timer2_config};
-      etl::timer_node             timer3{timer3_config};
-      etl::timer_node             timer4{timer4_config};
-      etl::timer_node             timer5{timer5_config};
+      constexpr etl::timer::config timer1_config(100, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer2_config(65, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer3_config(85, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer4_config(130, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer5_config(85, etl::timer::mode::Repeating);
+      etl::timer::node             timer1{timer1_config};
+      etl::timer::node             timer2{timer2_config};
+      etl::timer::node             timer3{timer3_config};
+      etl::timer::node             timer4{timer4_config};
+      etl::timer::node             timer5{timer5_config};
 
-      etl::private_timer::timer_register_list register_list;
+      etl::private_timer::register_list register_list;
 
       CHECK_TRUE(register_list.empty());
       CHECK_TRUE(register_list.first() == register_list.end());
@@ -120,7 +120,7 @@ namespace
       bool timer4_found = false;
       bool timer5_found = false;
 
-      etl::timer_node* timer = register_list.first();
+      etl::timer::node* timer = register_list.first();
 
       while (timer != register_list.end())
       {
@@ -164,21 +164,21 @@ namespace
     //*************************************************************************
     TEST(test_timer_active_list)
     {
-      constexpr etl::timer_config timer1_config(100, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer2_config(65, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer3_config(85, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer4_config(130, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer5_config(85, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer6_config(85, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer1_config(100, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer2_config(65, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer3_config(85, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer4_config(130, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer5_config(85, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer6_config(85, etl::timer::mode::Repeating);
 
-      etl::timer_node timer1(timer1_config);
-      etl::timer_node timer2(timer2_config);
-      etl::timer_node timer3(timer3_config);
-      etl::timer_node timer4(timer4_config);
-      etl::timer_node timer5(timer5_config);
-      etl::timer_node timer6(timer6_config);
+      etl::timer::node timer1(timer1_config);
+      etl::timer::node timer2(timer2_config);
+      etl::timer::node timer3(timer3_config);
+      etl::timer::node timer4(timer4_config);
+      etl::timer::node timer5(timer5_config);
+      etl::timer::node timer6(timer6_config);
 
-      etl::private_timer::timer_active_list active_list;
+      etl::private_timer::active_list active_list;
 
       CHECK_TRUE(active_list.empty());
       CHECK_TRUE(active_list.first() == active_list.end());
@@ -192,7 +192,7 @@ namespace
       CHECK_FALSE(active_list.empty());
       CHECK_TRUE(active_list.first() == &timer2);
 
-      etl::timer_node* timer = active_list.first();
+      etl::timer::node* timer = active_list.first();
 
       // The timers should be in the order of their intervals.
       CHECK_EQUAL(&timer2, timer);
@@ -277,18 +277,18 @@ namespace
     //*************************************************************************
     TEST(test_timer_expired_list)
     {
-      constexpr etl::timer_config timer1_config(100, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer2_config(65, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer3_config(85, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer4_config(130, etl::timer::mode::Repeating);
-      constexpr etl::timer_config timer5_config(85, etl::timer::mode::Repeating);
-      etl::timer_node             timer1{timer1_config};
-      etl::timer_node             timer2{timer2_config};
-      etl::timer_node             timer3{timer3_config};
-      etl::timer_node             timer4{timer4_config};
-      etl::timer_node             timer5{timer5_config};
+      constexpr etl::timer::config timer1_config(100, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer2_config(65, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer3_config(85, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer4_config(130, etl::timer::mode::Repeating);
+      constexpr etl::timer::config timer5_config(85, etl::timer::mode::Repeating);
+      etl::timer::node             timer1{timer1_config};
+      etl::timer::node             timer2{timer2_config};
+      etl::timer::node             timer3{timer3_config};
+      etl::timer::node             timer4{timer4_config};
+      etl::timer::node             timer5{timer5_config};
 
-      etl::private_timer::timer_expired_list expired_list;
+      etl::private_timer::expired_list expired_list;
 
       CHECK_TRUE(expired_list.empty());
       CHECK_TRUE(expired_list.first() == expired_list.end());
@@ -304,7 +304,7 @@ namespace
       CHECK_TRUE(expired_list.first() == &timer1);
 
       // The timers should be in the order they were added.
-      etl::timer_node* timer = expired_list.first();
+      etl::timer::node* timer = expired_list.first();
 
       CHECK_EQUAL(&timer1, timer);
       timer = expired_list.next(timer);

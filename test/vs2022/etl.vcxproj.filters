@@ -1572,10 +1572,19 @@
     <ClInclude Include="..\..\include\etl\timer_node.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\timer_lists.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\intrusive_timer.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\private\timer_lists.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\timer_lock_policy.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\timer_notification.h">
+      <Filter>ETL\Frameworks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\timer_config.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
@@ -3855,6 +3864,9 @@
       <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_intrusive_timer.cpp">
+      <Filter>Tests\Callback Timers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_timer_config.cpp">
       <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
   </ItemGroup>

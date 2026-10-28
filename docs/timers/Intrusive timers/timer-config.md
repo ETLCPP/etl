@@ -1,25 +1,27 @@
 ---
-title: "timer_config"
+title: "config"
+weight: 101
 ---
 
 {{< callout type="info">}}
-  Header: `timer_node.h`  
+  Header: `timer_config.h`  
+  Namespace: `etl::timer`  
   Since: `TBA`  
   From: `C++03`
 {{< /callout >}}
 
-## timer_config
+## config
 ```cpp
-class timer_config
+class config
 ```
 **Description**  
 Contains the configuration for a timer.  
-Used to configure a timer for an `etl::timer_node` derived timer element.
+Used to configure a timer for an `etl::timer::node` derived timer element.
 
 ---
 
 ```cpp
-ETL_CONSTEXPR timer_config(uint32_t interval, etl::timer::mode::type mode) ETL_NOEXCEPT
+ETL_CONSTEXPR config(uint32_t interval, etl::timer::mode::type mode) ETL_NOEXCEPT
 ```
 **Description**  
 Constructs a timer configuration.  
@@ -43,6 +45,7 @@ ETL_CONSTEXPR etl::timer::mode::type get_mode() const ETL_NOEXCEPT
 ```
 **Description**  
 Returns the mode of the timer.  
+One of:-  
 `etl::timer::mode::No_Mode`  
 `etl::timer::mode::Single_Shot`  
 `etl::timer::mode::Repeating`  
