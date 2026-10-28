@@ -793,7 +793,7 @@ namespace
       CHECK_TRUE(timer_controller.has_active_timer());
 
       timer_controller.tick(1);
-      CHECK_EQUAL(static_cast<etl::timer::interval::type>(etl::timer::interval::No_Active_Interval), timer_controller.time_to_next());
+      CHECK_EQUAL(static_cast<etl::timer::interval::type>(etl::timer::interval::No_Interval), timer_controller.time_to_next());
       CHECK_FALSE(timer_controller.has_active_timer());
     }
 

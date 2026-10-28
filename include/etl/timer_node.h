@@ -30,8 +30,6 @@ SOFTWARE.
 #define ETL_TIMER_NODE_INCLUDED
 
 #include "platform.h"
-#include "delegate.h"
-#include "message_router.h"
 #include "nullptr.h"
 #include "timer.h"
 
@@ -59,6 +57,7 @@ namespace etl
 
   class timer_node;
   class intrusive_timer;
+  class imessage_router;
 
   //***************************************************************************
   /// A timer configuration data structure.
@@ -78,8 +77,8 @@ namespace etl
     /// Default constructor.
     //*******************************************
     ETL_CONSTEXPR timer_config() ETL_NOEXCEPT
-      : interval(etl::timer::interval::No_Active_Interval)
-      , mode(etl::timer::mode::No_Mode_Set)
+      : interval(etl::timer::interval::No_Interval)
+      , mode(etl::timer::mode::No_Mode)
       , id(etl::timer::id::No_Timer)
     {
     }
@@ -123,8 +122,8 @@ namespace etl
     //*******************************************
     ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
     {
-      interval = etl::timer::interval::No_Active_Interval;
-      mode     = etl::timer::mode::No_Mode_Set;
+      interval = etl::timer::interval::No_Interval;
+      mode     = etl::timer::mode::No_Mode;
       id       = etl::timer::id::No_Timer;
     }
 
@@ -242,7 +241,7 @@ namespace etl
     //***************************************************************************
     static etl::timer_node* end() ETL_NOEXCEPT
     {
-      static etl::timer_node sentinel_node(etl::timer_config(etl::timer::interval::No_Active_Interval, etl::timer::mode::Single_Shot));
+      static etl::timer_node sentinel_node(etl::timer_config(etl::timer::interval::No_Interval, etl::timer::mode::Single_Shot));
 
       return &sentinel_node;
     }

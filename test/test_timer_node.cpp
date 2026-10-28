@@ -54,8 +54,8 @@ namespace
       CHECK_EQUAL(etl::timer::mode::Repeating, config4.get_mode());
 
       config2.clear();
-      CHECK_EQUAL(etl::timer::interval::No_Active_Interval, config2.get_interval());
-      CHECK_EQUAL(etl::timer::mode::No_Mode_Set, config2.get_mode());
+      CHECK_EQUAL(etl::timer::interval::No_Interval, config2.get_interval());
+      CHECK_EQUAL(etl::timer::mode::No_Mode, config2.get_mode());
     }
 
     //*************************************************************************

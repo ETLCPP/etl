@@ -28,8 +28,11 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/delegate.h"
 #include "etl/error_handler.h"
 #include "etl/intrusive_timer.h"
+#include "etl/message.h"
+#include "etl/message_router.h"
 #include "etl/timer.h"
 #include "etl/timer_node.h"
 
@@ -212,16 +215,20 @@ namespace
   std::vector<uint32_t> time_to_next;
 
   //***********************************
-  /// Notification of the time to the next timer, from the intrusive timer.
+  /// A timer_time_to_next_notification that calls next_timer_notification().
+  /// Passed to the intrusive timer to notify the user of the time to the next timer that is due to expire.
   //***********************************
-  void next_timer_notification(uint32_t delta)
+  class time_to_next_notification : public etl::timer_time_to_next_notification
   {
-    time_to_next.push_back(delta);
-  }
+  public:
 
-  using notification_type = etl::intrusive_timer::time_to_next_notification_type;
+    void invoke(uint32_t delta) override
+    {
+      time_to_next.push_back(delta);
+    }
+  };
 
-  notification_type notification_delegate = notification_type::create(next_timer_notification);
+  time_to_next_notification notification;
 
   SUITE(test_intrusive_timer)
   {
@@ -491,7 +498,7 @@ namespace
       LockPolicy lock_policy;
 
       etl::intrusive_timer timer_controller(lock_policy);
-      timer_controller.set_next_timer_notification(notification_delegate);
+      timer_controller.set_next_timer_notification(notification);
       time_to_next.clear();
 
       global_callback_clear();
@@ -542,9 +549,9 @@ namespace
 
       // Check the notifications.
       CHECK_EQUAL(3, time_to_next.size());
-      CHECK_EQUAL(12, time_to_next[0]);                                       // 23, the next after 11 expired.
-      CHECK_EQUAL(14, time_to_next[1]);                                       // 37, the next after 23 expired.
-      CHECK_EQUAL(etl::timer::interval::No_Active_Interval, time_to_next[2]); // No more timers due.
+      CHECK_EQUAL(12, time_to_next[0]);                                // 23, the next after 11 expired.
+      CHECK_EQUAL(14, time_to_next[1]);                                // 37, the next after 23 expired.
+      CHECK_EQUAL(etl::timer::interval::No_Interval, time_to_next[2]); // No more timers due.
 
       time_to_next.clear();
     }
@@ -555,7 +562,7 @@ namespace
       LockPolicy lock_policy;
 
       etl::intrusive_timer timer_controller(lock_policy);
-      timer_controller.set_next_timer_notification(notification_delegate);
+      timer_controller.set_next_timer_notification(notification);
       time_to_next.clear();
 
       global_callback_clear();
@@ -636,7 +643,7 @@ namespace
       LockPolicy lock_policy;
 
       etl::intrusive_timer timer_controller(lock_policy);
-      timer_controller.set_next_timer_notification(notification_delegate);
+      timer_controller.set_next_timer_notification(notification);
       time_to_next.clear();
 
       global_callback_clear();
@@ -716,7 +723,7 @@ namespace
       LockPolicy lock_policy;
 
       etl::intrusive_timer timer_controller(lock_policy);
-      timer_controller.set_next_timer_notification(notification_delegate);
+      timer_controller.set_next_timer_notification(notification);
       time_to_next.clear();
 
       global_callback_clear();
@@ -793,7 +800,7 @@ namespace
       LockPolicy lock_policy;
 
       etl::intrusive_timer timer_controller(lock_policy);
-      timer_controller.set_next_timer_notification(notification_delegate);
+      timer_controller.set_next_timer_notification(notification);
       time_to_next.clear();
 
       global_callback_clear();
@@ -843,12 +850,12 @@ namespace
       CHECK_TRUE(callback_timer1.get_id() == etl::timer::id::No_Timer);
       CHECK_TRUE(callback_timer2.get_id() == etl::timer::id::No_Timer);
       CHECK_TRUE(callback_timer3.get_id() == etl::timer::id::No_Timer);
-      CHECK_TRUE(callback_timer1.get_interval() == etl::timer::interval::No_Active_Interval);
-      CHECK_TRUE(callback_timer2.get_interval() == etl::timer::interval::No_Active_Interval);
-      CHECK_TRUE(callback_timer3.get_interval() == etl::timer::interval::No_Active_Interval);
-      CHECK_TRUE(callback_timer1.get_mode() == etl::timer::mode::No_Mode_Set);
-      CHECK_TRUE(callback_timer2.get_mode() == etl::timer::mode::No_Mode_Set);
-      CHECK_TRUE(callback_timer3.get_mode() == etl::timer::mode::No_Mode_Set);
+      CHECK_TRUE(callback_timer1.get_interval() == etl::timer::interval::No_Interval);
+      CHECK_TRUE(callback_timer2.get_interval() == etl::timer::interval::No_Interval);
+      CHECK_TRUE(callback_timer3.get_interval() == etl::timer::interval::No_Interval);
+      CHECK_TRUE(callback_timer1.get_mode() == etl::timer::mode::No_Mode);
+      CHECK_TRUE(callback_timer2.get_mode() == etl::timer::mode::No_Mode);
+      CHECK_TRUE(callback_timer3.get_mode() == etl::timer::mode::No_Mode);
 
       // Check the callback counts.
       CHECK_TRUE(global_callback_called);
@@ -877,7 +884,7 @@ namespace
       LockPolicy lock_policy;
 
       etl::intrusive_timer timer_controller(lock_policy);
-      timer_controller.set_next_timer_notification(notification_delegate);
+      timer_controller.set_next_timer_notification(notification);
       time_to_next.clear();
 
       global_callback_clear();

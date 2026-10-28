@@ -62,13 +62,9 @@ namespace etl
   {
   public:
 
-    void lock() ETL_NOEXCEPT ETL_OVERRIDE
-    {
-    }
+    void lock() ETL_NOEXCEPT ETL_OVERRIDE {}
 
-    void unlock() ETL_NOEXCEPT ETL_OVERRIDE
-    {
-    }
+    void unlock() ETL_NOEXCEPT ETL_OVERRIDE {}
 
     bool is_locked() ETL_NOEXCEPT ETL_OVERRIDE
     {
@@ -105,6 +101,18 @@ namespace etl
   };
 #endif
 
+  //***************************************************************************
+  /// Default class for time to next notification
+  //***************************************************************************
+  class timer_time_to_next_notification
+  {
+  public:
+
+    virtual void invoke(uint32_t)
+    {
+      // Do nothing by default.
+    }
+  };
 
   //***************************************************************************
   /// Interface for intrusive timer
@@ -112,12 +120,6 @@ namespace etl
   class intrusive_timer
   {
   public:
-
-    //*******************************************
-    /// The callback type for notifying the user of the next timer that is due to expire.
-    /// Either returns a pointer to the next timer that is due to expire or etl::timer_node::end() if there is no next timer.
-    //*******************************************
-    typedef etl::delegate<void(uint32_t delta)> time_to_next_notification_type;
 
     //*******************************************
     /// Constructor.
@@ -129,6 +131,7 @@ namespace etl
       , expired_list()
       , enabled(false)
       , timer_count(0U)
+      , active_notify_time_to_next(&default_notify_time_to_next)
     {
     }
 
@@ -303,8 +306,7 @@ namespace etl
       if (timer_.is_registered_with(this))
       {
         // Must not be active, must have a valid interval, and must have a valid mode.
-        if (!timer_.is_active() && (timer_.get_interval() != etl::timer::interval::No_Active_Interval)
-            && (timer_.get_mode() != etl::timer::mode::No_Mode_Set))
+        if (!timer_.is_active() && (timer_.get_interval() != etl::timer::interval::No_Interval) && (timer_.get_mode() != etl::timer::mode::No_Mode))
         {
           active_list.insert(timer_);
           is_started = true;
@@ -343,7 +345,7 @@ namespace etl
       }
 
       // The next timer has changed, so notify the user.
-      time_to_next_notification.call_if(active_list.first()->get_delta());
+      active_notify_time_to_next->invoke(active_list.first()->get_delta());
 
       lock_policy.unlock();
 
@@ -453,12 +455,12 @@ namespace etl
 
     //*******************************************
     /// Get the time to the next timer event.
-    /// Returns etl::timer::interval::No_Active_Interval if there is no active
+    /// Returns etl::timer::interval::No_Interval if there is no active
     /// timer.
     //*******************************************
     uint32_t time_to_next() const ETL_NOEXCEPT
     {
-      uint32_t delta = static_cast<uint32_t>(etl::timer::interval::No_Active_Interval);
+      uint32_t delta = static_cast<uint32_t>(etl::timer::interval::No_Interval);
 
       lock_policy.lock();
 
@@ -497,9 +499,9 @@ namespace etl
     //*******************************************
     /// Sets the update notification.
     //*******************************************
-    void set_next_timer_notification(time_to_next_notification_type callback) ETL_NOEXCEPT
+    void set_next_timer_notification(timer_time_to_next_notification& notification) ETL_NOEXCEPT
     {
-      time_to_next_notification = callback;
+      active_notify_time_to_next = &notification;
     }
 
     //*******************************************
@@ -507,7 +509,7 @@ namespace etl
     //*******************************************
     void clear_next_timer_notification() ETL_NOEXCEPT
     {
-      time_to_next_notification.clear();
+      active_notify_time_to_next = &default_notify_time_to_next;
     }
 
     //*******************************************
@@ -536,10 +538,10 @@ namespace etl
     //*******************************************
     void notify_about_timer_change(bool notify_, etl::timer_node* timer_) ETL_NOEXCEPT
     {
-      if (notify_ && time_to_next_notification.is_valid())
+      if (notify_)
       {
         // The next timer has changed, so notify the user.
-        time_to_next_notification(timer_->get_delta());
+        active_notify_time_to_next->invoke(timer_->get_delta());
       }
     }
 
@@ -595,7 +597,8 @@ namespace etl
     etl::private_timer::timer_active_list   active_list;
     etl::private_timer::timer_expired_list  expired_list;
 
-    time_to_next_notification_type time_to_next_notification;
+    timer_time_to_next_notification  default_notify_time_to_next;
+    timer_time_to_next_notification* active_notify_time_to_next;
 
     bool   enabled;
     size_t timer_count;

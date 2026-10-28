@@ -51,7 +51,7 @@ namespace etl
   //***************************************************************************
   /// Common definitions for the timer framework.
   //***************************************************************************
-  struct timer
+  namespace timer
   {
     // Timer modes.
     struct mode
@@ -63,7 +63,7 @@ namespace etl
 
         Single_Shot = 0,
         Repeating   = 1,
-        No_Mode_Set = 2
+        No_Mode     = 2
       };
 
       typedef uint_least8_t type;
@@ -111,7 +111,8 @@ namespace etl
     {
       enum
       {
-        No_Active_Interval = 0xFFFFFFFFUL
+        No_Active_Interval = 0xFFFFFFFFUL,
+        No_Interval        = 0xFFFFFFFFUL
       };
 
       typedef uint32_t type;

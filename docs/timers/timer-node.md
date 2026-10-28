@@ -1,10 +1,10 @@
 ---
-title: "timer_config / timer_node"
+title: "timer_node"
 ---
 
 {{< callout type="info">}}
   Header: `timer_node.h`  
-  Since: `20.46.0`  
+  Since: `TBA`  
   From: `C++03`
 {{< /callout >}}
 
@@ -31,7 +31,7 @@ classDiagram
   }
 
   class timer_node {
-    +timer_node()
+    +timer_node(const etl::timer_config&)
     +get_config() timer_config&
     +get_delta() uint32_t
     +get_interval() uint32_t
@@ -45,84 +45,25 @@ classDiagram
   }
 
   class timer_callback_node {
-    +timer_callback_node()
+    <<template TCallback>>
+    +timer_callback_node(const etl::timer_config&, TCallback, )
     +invoke() void override
   }
 
   class timer_message_node {
-    +timer_message_node()
+    <<template TMessage>>
+    +timer_message_node(const etl::timer_config&, etl::imessage_router&, TMessage)
     +invoke() void override
   }
 ```
-
----
-
-These are supporting class types for `etl::intrusive_timer`.
-
-## timer_config
-```cpp
-class timer_config
-```
-**Description**  
-Contains the configuration for a timer.  
-
----
-
-```cpp
-ETL_CONSTEXPR timer_config(uint32_t interval, etl::timer::mode::type mode) ETL_NOEXCEPT
-```
-**Description**  
-Constructs a timer configuration.  
-
-**Parameters**  
-`uint32_t interval` : The initial interval for the timer.
-`etl::timer::mode::type mode` : The initial mode of the timer.
-
----
-
-```cpp
-ETL_CONSTEXPR uint32_t get_interval() const ETL_NOEXCEPT
-```
-**Description**  
-Returns the interval of the timer.
-
----
-
-```cpp
-ETL_CONSTEXPR etl::timer::mode::type get_mode() const ETL_NOEXCEPT
-```
-**Description**  
-Returns the mode of the timer.  
-`etl::timer::mode::No_Mode_Set`  
-`etl::timer::mode::Single_Shot`  
-`etl::timer::mode::Repeating`  
-
----
-
-```cpp
-ETL_CONSTEXPR etl::timer::id::type get_id() const ETL_NOEXCEPT
-```
-**Description**  
-Returns the id of the timer.  
-The timer ID is set by registering a node that contains this configuration with an `etl::intrusive_timer`.
-
----
-
-```cpp
-ETL_CONSTEXPR14 void clear() ETL_NOEXCEPT
-```
-**Description**  
-Clears the timer configuration.  
-Interval = `etl::timer::interval::No_Active_Interval`  
-Mode     = `etl::timer::mode::No_Mode_Set`  
-ID       = `etl::timer::id::No_Timer`  
 
 ## timer_node
 ```cpp
 class timer_node
 ```
 **Description**  
-Base class for all timer nodes.
+Base class for all timer nodes.  
+Used as the timer element in `etl::intrusive_timer`.
 
 ---
 
@@ -171,7 +112,7 @@ ETL_CONSTEXPR etl::timer::mode::type get_mode() const ETL_NOEXCEPT
 ```
 **Description**  
 Returns the mode of the timer.  
-`etl::timer::mode::No_Mode_Set`  
+`etl::timer::mode::No_Mode`  
 `etl::timer::mode::Single_Shot`  
 `etl::timer::mode::Repeating`  
 
@@ -209,3 +150,7 @@ class timer_message_node : public etl::timer_node
 A timer node for a message callback using an `etl::message` derived object.  
 Derived from `etl::timer_node`.  
 Static asserts if `TMessage` is not derived from `etl::imessage`.
+
+## Example
+
+etl::timer_config

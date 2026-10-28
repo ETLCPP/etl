@@ -65,20 +65,27 @@ class timer_atomic_lock_policy : public timer_lock_policy
 This lock policy uses an atomic flag.  
 Only defined if `ETL_HAS_ATOMIC` is `1`.
 
+## timer_time_to_next_notification
+```cpp
+timer_time_to_next_notification
+```
+**Description**  
+This is the base class for 'time to next' notifications.  
+Derive from this to define a custom implementation.
+
+---
+
+```cpp
+virtual void invoke(uint32_t delta)
+```
+**Description**  
+Called to notify user code of the 'time to next' delta for the next due timer.  
+If not overridden, then does nothing.
+
 ## intrusive_timer
 ```cpp
 class intrusive_timer
 ```
-
----
-
-```cpp
-using time_to_next_notification_type = etl::delegate<void(uint32_t delta)>;
-```
-**Description**  
-The notification type for 'time to next'.
-
----
 
 ```cpp
 explicit intrusive_timer(timer_lock_policy& lock_policy) ETL_NOEXCEPT
@@ -305,13 +312,13 @@ Returns the number of registered timers.
 ---
 
 ```cpp
-void set_next_timer_notification(time_to_next_notification_type callback) ETL_NOEXCEPT
+void set_next_timer_notification(timer_time_to_next_notification& notification) ETL_NOEXCEPT
 ```
 **Description**  
-Sets the update notification callback.
+Sets the 'time to next' notification callback.
 
-**Parametetrs**  
-`time_to_next_notification_type callback` : The callback for 'time to next' notification.
+**Parameters**  
+`timer_time_to_next_notification& notification` : The object for the 'time to next' notification.
 
 ---
 
