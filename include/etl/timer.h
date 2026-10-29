@@ -148,7 +148,7 @@ namespace etl
       template <typename TDummy>
       struct owner_static
       {
-        using type = const void*;
+        using type                     = const void*;
         static constexpr type No_Owner = nullptr;
       };
 
@@ -168,7 +168,7 @@ namespace etl
 
       template <typename TDummy>
       const typename owner_static<TDummy>::type owner_static<TDummy>::No_Owner = ETL_NULLPTR;
-    }
+    } // namespace private_timer
 #endif
 
     struct owner : private_timer::owner_static<void>

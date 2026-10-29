@@ -30,11 +30,11 @@ SOFTWARE.
 #define ETL_TIMER_NODE_INCLUDED
 
 #include "platform.h"
+#include "message.h"
+#include "message_router.h"
 #include "nullptr.h"
 #include "timer.h"
 #include "timer_config.h"
-#include "message.h"
-#include "message_router.h"
 
 #include <stdint.h>
 

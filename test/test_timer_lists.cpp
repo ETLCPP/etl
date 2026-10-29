@@ -73,7 +73,7 @@ namespace etl_unit_test
       return next_id;
     }
   };
-}
+} // namespace etl_unit_test
 
 namespace
 {
