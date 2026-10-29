@@ -4362,6 +4362,11 @@ namespace
       position2 = haystack.rfind(needle_view, haystack.size() - 10);
       CHECK_EQUAL(position1, position2);
 
+      // The default position searches the whole string.
+      position1 = compare_haystack.rfind(compare_needle);
+      position2 = haystack.rfind(needle_view);
+      CHECK_EQUAL(position1, position2);
+
       View pin_view(STR("pin"));
       position2 = haystack.rfind(pin_view);
       CHECK_EQUAL(TextL::npos, position2);

@@ -103,6 +103,7 @@ These may be defined in the project settings or the user created `etl_profile.h`
 | `ETL_HAS_IDEQUE_REPAIR`              | Set to `1` if the repair functionality for `etl::ideque` is enabled, otherwise `0`.|
 | `ETL_IS_DEBUG_BUILD`                 | Set to `1` if in a debug build, otherwise `0`.|
 | `ETL_HAS_POLYMORPHIC_MESSAGES`       | Set to `1` if messages are polymorphic, otherwise `0`.|
+| `ETL_HAS_REFLECTION`                 | Defined by `etl/meta.h`. Set to `1` if the compiler supports C++26 static reflection (P2996) and `etl::meta` is available, otherwise `0`.|
 | `ETL_HAS_ERROR_ON_STRING_TRUNCATION` | Set to `1` if truncated strings are an error, otherwise `0`.|
 | `ETL_USING_LIBC_WCHAR_H`             | These macros will be defined as `0` & `1` depending on whether `ETL_NO_LIBC_WCHAR_H` is defined or not.|
 | `ETL_NOT_USING_LIBC_WCHAR_H`         | Inversion of `ETL_USING_LIBC_WCHAR_H`.|
