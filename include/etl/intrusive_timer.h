@@ -157,7 +157,7 @@ namespace etl
     // Returns true if the tick was processed,
     // false if not.
     //*******************************************
-    bool tick(uint32_t count)
+    bool tick(etl::timer::interval::type count)
     {
       bool was_processed = false;
 
@@ -286,7 +286,7 @@ namespace etl
     //*******************************************
     /// Sets a timer's interval.
     //*******************************************
-    bool set_interval(etl::timer::node& timer_, uint32_t interval_) ETL_NOEXCEPT
+    bool set_interval(etl::timer::node& timer_, etl::timer::interval::type interval_) ETL_NOEXCEPT
     {
       bool result = false;
 
@@ -389,9 +389,9 @@ namespace etl
     /// Returns etl::timer::interval::No_Interval if there is no active
     /// timer.
     //*******************************************
-    uint32_t time_to_next() const ETL_NOEXCEPT
+    etl::timer::interval::type time_to_next() const ETL_NOEXCEPT
     {
-      uint32_t delta = static_cast<uint32_t>(etl::timer::interval::No_Interval);
+      etl::timer::interval::type delta = static_cast<etl::timer::interval::type>(etl::timer::interval::No_Interval);
 
       lock_policy.lock();
 

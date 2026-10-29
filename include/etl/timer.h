@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "atomic.h"
+#include "limits.h"
 
 #include <stdint.h>
 
@@ -48,10 +49,10 @@ namespace etl
   #endif
 #endif
 
-  //***************************************************************************
-  /// Common definitions for the timer framework.
-  //***************************************************************************
-  namespace timer
+    //***************************************************************************
+    /// Common definitions for the timer framework.
+    //***************************************************************************
+    namespace timer
   {
     // Timer modes.
     struct mode
@@ -87,41 +88,45 @@ namespace etl
     // Timer id.
     struct id
     {
+      typedef uint_least8_t type;
+
       enum
       {
-        NO_TIMER = 255, // Deprecated
-        No_Timer = 255
+        NO_TIMER = etl::integral_limits<type>::max, // Deprecated
+        No_Timer = etl::integral_limits<type>::max
       };
-
-      typedef uint_least8_t type;
     };
 
     // Timer state.
     struct state
     {
+      typedef uint32_t type;
+
       enum
       {
-        INACTIVE = 0xFFFFFFFFUL, // Deprecated
-        Inactive = 0xFFFFFFFFUL
+        INACTIVE = etl::integral_limits<type>::max, // Deprecated
+        Inactive = etl::integral_limits<type>::max
       };
     };
 
     // Timer time interval.
     struct interval
     {
+      typedef uint32_t type;
+
       enum
       {
-        No_Active_Interval = 0xFFFFFFFFUL, // Deprecated
-        No_Interval        = 0xFFFFFFFFUL
+        No_Active_Interval = etl::integral_limits<type>::max, // Deprecated
+        No_Interval        = etl::integral_limits<type>::max
       };
-
-      typedef uint32_t type;
     };
 
     // Timer owner.
     struct owner
     {
-      static ETL_CONSTANT void* No_Owner = ETL_NULLPTR;
+      typedef void* type;
+
+      static ETL_CONSTANT type No_Owner = ETL_NULLPTR;
     };
   } // namespace timer
 } // namespace etl

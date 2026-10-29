@@ -134,7 +134,7 @@ namespace etl
       //*******************************************
       /// Returns the delta of the timer.
       //*******************************************
-      ETL_CONSTEXPR uint32_t get_delta() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::timer::interval::type get_delta() const ETL_NOEXCEPT
       {
         return delta;
       }
@@ -142,7 +142,7 @@ namespace etl
       //*******************************************
       /// Returns the interval of the timer.
       //*******************************************
-      ETL_CONSTEXPR uint32_t get_interval() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::timer::interval::type get_interval() const ETL_NOEXCEPT
       {
         return config.get_interval();
       }
@@ -192,7 +192,7 @@ namespace etl
       //*******************************************
       /// Sets the interval of the timer.
       //*******************************************
-      void set_interval(uint32_t interval_) ETL_NOEXCEPT
+      void set_interval(etl::timer::interval::type interval_) ETL_NOEXCEPT
       {
         config.interval = interval_;
       }
@@ -284,12 +284,12 @@ namespace etl
 
       node& operator=(const node&) ETL_DELETE;
 
-      node*    registered_next; ///< The next timer in the registered timer list. unlinked() if the timer is not registered.
-      node*    active_next;     ///< The next timer in the active timer list. unlinked() if the timer is not active.
-      node*    expired_next;    ///< The next timer in the expired timer list. unlinked() if the timer is not expired.
-      void*    owner;           ///< The owner of the timer.
-      config   config;          ///< The configuration of the timer.
-      uint32_t delta;           ///< The time remaining until the timer expires.
+      node*                      registered_next; ///< The next timer in the registered timer list. unlinked() if the timer is not registered.
+      node*                      active_next;     ///< The next timer in the active timer list. unlinked() if the timer is not active.
+      node*                      expired_next;    ///< The next timer in the expired timer list. unlinked() if the timer is not expired.
+      void*                      owner;           ///< The owner of the timer.
+      config                     config;          ///< The configuration of the timer.
+      etl::timer::interval::type delta;           ///< The time remaining until the timer expires.
     };
 
     //***************************************************************************

@@ -89,7 +89,7 @@ namespace etl
       //*******************************************
       /// Constructor.
       //*******************************************
-      ETL_CONSTEXPR config(uint32_t interval_, etl::timer::mode::type mode_) ETL_NOEXCEPT
+      ETL_CONSTEXPR config(etl::timer::interval::type interval_, etl::timer::mode::type mode_) ETL_NOEXCEPT
         : interval(interval_)
         , mode(mode_)
         , id(etl::timer::id::No_Timer)
@@ -99,7 +99,7 @@ namespace etl
       //*******************************************
       /// Returns the interval of the timer.
       //*******************************************
-      ETL_CONSTEXPR uint32_t get_interval() const ETL_NOEXCEPT
+      ETL_CONSTEXPR etl::timer::interval::type get_interval() const ETL_NOEXCEPT
       {
         return interval;
       }
@@ -132,9 +132,9 @@ namespace etl
 
     private:
 
-      uint32_t               interval; ///< The interval of the timer.
-      etl::timer::mode::type mode;     ///< Whether the timer is repeating or single-shot.
-      etl::timer::id::type   id;       ///< The id of the timer.
+      etl::timer::interval::type interval; ///< The interval of the timer.
+      etl::timer::mode::type     mode;     ///< Whether the timer is repeating or single-shot.
+      etl::timer::id::type       id;       ///< The id of the timer.
     };
   } // namespace timer
 } // namespace etl
