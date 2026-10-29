@@ -142,23 +142,41 @@ namespace etl
 #endif
 
     // Timer owner.
-    struct owner
-    {
-      typedef void* type;
-
 #if ETL_USING_CPP11
-      static ETL_CONSTANT type No_Owner = ETL_NULLPTR;
+    namespace private_timer
+    {
+      template <typename TDummy>
+      struct owner_static
+      {
+        using type = const void*;
+        static constexpr type No_Owner = nullptr;
+      };
+
+      template <typename TDummy>
+      constexpr typename owner_static<TDummy>::type owner_static<TDummy>::No_Owner;
+    } // namespace private_timer
 #else
-      static ETL_CONSTANT type No_Owner;
+    namespace private_timer
+    {
+      template <typename TDummy>
+      struct owner_static
+      {
+        typedef const void* type;
+
+        static const type No_Owner;
+      };
+
+      template <typename TDummy>
+      const typename owner_static<TDummy>::type owner_static<TDummy>::No_Owner = ETL_NULLPTR;
+    }
 #endif
+
+    struct owner : private_timer::owner_static<void>
+    {
     };
 
 #if ETL_USING_CPP11
     using owner_t = owner::type;
-#endif
-
-#if ETL_NOT_USING_CPP11
-    owner::type const owner::No_Owner = ETL_NULLPTR;
 #endif
   } // namespace timer
 } // namespace etl

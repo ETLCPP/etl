@@ -97,7 +97,8 @@ namespace etl
 
       etl::atomic_bool lock_flag;
     };
+#endif
   }
 }
-#endif
+
 #endif

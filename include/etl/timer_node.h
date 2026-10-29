@@ -289,7 +289,7 @@ namespace etl
       node*                      registered_next; ///< The next timer in the registered timer list. unlinked() if the timer is not registered.
       node*                      active_next;     ///< The next timer in the active timer list. unlinked() if the timer is not active.
       node*                      expired_next;    ///< The next timer in the expired timer list. unlinked() if the timer is not expired.
-      void*                      owner;           ///< The owner of the timer.
+      const void*                owner;           ///< The owner of the timer.
       etl::timer::config         config;          ///< The configuration of the timer.
       etl::timer::interval::type delta;           ///< The time remaining until the timer expires.
     };
