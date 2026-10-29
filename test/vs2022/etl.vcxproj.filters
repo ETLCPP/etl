@@ -3869,6 +3869,9 @@
     <ClCompile Include="..\test_timer_config.cpp">
       <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\intrusive_timer.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\library.properties">

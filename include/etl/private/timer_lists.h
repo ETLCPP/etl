@@ -200,7 +200,7 @@ namespace etl
       /// Returns the end of the list.
       /// Always returns &etl::timer::node::end().
       //*******************************
-      etl::timer::node* const end() const ETL_NOEXCEPT
+      etl::timer::node* end() const ETL_NOEXCEPT
       {
         return etl::timer::node::end();
       }
@@ -412,7 +412,7 @@ namespace etl
       /// Returns the end of the list.
       /// Always returns &etl::timer::node::end().
       //*******************************
-      etl::timer::node* const end() const ETL_NOEXCEPT
+      etl::timer::node* end() const ETL_NOEXCEPT
       {
         return etl::timer::node::end();
       }
@@ -536,7 +536,7 @@ namespace etl
       /// Returns the end of the list.
       /// Always returns &etl::timer::node::end().
       //*******************************
-      etl::timer::node* const end() const ETL_NOEXCEPT
+      etl::timer::node* end() const ETL_NOEXCEPT
       {
         return etl::timer::node::end();
       }

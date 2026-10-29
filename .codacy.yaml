@@ -1,0 +1,3 @@
+---
+exclude_paths:
+  - "etl/test/UnitTest++/**"

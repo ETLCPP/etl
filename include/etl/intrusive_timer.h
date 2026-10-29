@@ -60,9 +60,9 @@ namespace etl
       , register_list()
       , active_list()
       , expired_list()
+      , active_notify_time_to_next(&default_notify_time_to_next)
       , enabled(false)
       , timer_count(0U)
-      , active_notify_time_to_next(&default_notify_time_to_next)
     {
     }
 

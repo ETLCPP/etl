@@ -33,6 +33,8 @@ SOFTWARE.
 #include "nullptr.h"
 #include "timer.h"
 #include "timer_config.h"
+#include "message.h"
+#include "message_router.h"
 
 #include <stdint.h>
 
@@ -41,7 +43,7 @@ SOFTWARE.
 //*****************************************************************************
 
 #if defined(ETL_IN_UNIT_TEST)
-namespace
+namespace etl_unit_test
 {
   class etl_unit_test_intrusive_timer;
 }
@@ -82,14 +84,14 @@ namespace etl
     {
     public:
 
-      friend class private_timer::register_list;
-      friend class private_timer::active_list;
-      friend class private_timer::expired_list;
+      friend class etl::private_timer::register_list;
+      friend class etl::private_timer::active_list;
+      friend class etl::private_timer::expired_list;
 
-      friend class intrusive_timer;
+      friend class etl::intrusive_timer;
 
 #if defined(ETL_IN_UNIT_TEST)
-      friend class etl_unit_test_intrusive_timer;
+      friend class etl_unit_test::etl_unit_test_intrusive_timer;
 #endif
 
       //*******************************************
@@ -126,7 +128,7 @@ namespace etl
       //*******************************************
       /// Returns the configuration of the timer.
       //*******************************************
-      const config& get_config() const ETL_NOEXCEPT
+      const etl::timer::config& get_config() const ETL_NOEXCEPT
       {
         return config;
       }
@@ -134,7 +136,7 @@ namespace etl
       //*******************************************
       /// Returns the delta of the timer.
       //*******************************************
-      ETL_CONSTEXPR etl::timer::interval::type get_delta() const ETL_NOEXCEPT
+      etl::timer::interval::type get_delta() const ETL_NOEXCEPT
       {
         return delta;
       }
@@ -142,7 +144,7 @@ namespace etl
       //*******************************************
       /// Returns the interval of the timer.
       //*******************************************
-      ETL_CONSTEXPR etl::timer::interval::type get_interval() const ETL_NOEXCEPT
+      etl::timer::interval::type get_interval() const ETL_NOEXCEPT
       {
         return config.get_interval();
       }
@@ -150,7 +152,7 @@ namespace etl
       //*******************************************
       /// Returns the mode of the timer.
       //*******************************************
-      ETL_CONSTEXPR etl::timer::mode::type get_mode() const ETL_NOEXCEPT
+      etl::timer::mode::type get_mode() const ETL_NOEXCEPT
       {
         return config.get_mode();
       }
@@ -158,7 +160,7 @@ namespace etl
       //*******************************************
       /// Returns the id of the timer.
       //*******************************************
-      ETL_CONSTEXPR etl::timer::id::type get_id() const ETL_NOEXCEPT
+      etl::timer::id::type get_id() const ETL_NOEXCEPT
       {
         return config.get_id();
       }
@@ -288,7 +290,7 @@ namespace etl
       node*                      active_next;     ///< The next timer in the active timer list. unlinked() if the timer is not active.
       node*                      expired_next;    ///< The next timer in the expired timer list. unlinked() if the timer is not expired.
       void*                      owner;           ///< The owner of the timer.
-      config                     config;          ///< The configuration of the timer.
+      etl::timer::config         config;          ///< The configuration of the timer.
       etl::timer::interval::type delta;           ///< The time remaining until the timer expires.
     };
 

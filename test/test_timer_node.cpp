@@ -66,8 +66,6 @@ namespace
       etl::timer::node node1(config1);
       etl::timer::node node2(node1);
 
-      const etl::timer::config& config1_ref = node1.get_config();
-
       CHECK_EQUAL(config1.get_interval(), node1.get_config().get_interval());
       CHECK_EQUAL(config1.get_mode(), node1.get_config().get_mode());
 

@@ -256,6 +256,7 @@ target_sources(tests PRIVATE
 		intrusive_list.h.t.cpp
 		intrusive_queue.h.t.cpp
 		intrusive_stack.h.t.cpp
+		intrusive_timer.h.t.cpp
 		invert.h.t.cpp
 		invoke.h.t.cpp
 		io_port.h.t.cpp

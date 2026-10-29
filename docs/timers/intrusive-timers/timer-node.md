@@ -158,10 +158,10 @@ Derived from `etl::timer::node`.
 ## callback_ref_node
 ```cpp
 template <typename TCallback>
-class callback_node : public etl::timer::node
+class callback_ref_node : public etl::timer::node
 ```
 **Description**  
-A timer node for a function callback using functors that cannot be copied.  
+A timer node for a global function, or functors that should not be copied.  
 Derived from `etl::timer::node`. 
 
 ## message_node
@@ -187,7 +187,7 @@ void callback()
 }
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::callback_node node(config, callback);
+etl::timer::callback_ref_node<decltype(callback)> node(config, callback);
 ```
 
 ### Lambda callback
@@ -198,7 +198,7 @@ This example shows a node configured for a lambda function callback.
 auto callback = [](){ std::cout << "lambda\n"; };
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::callback_node node(config, callback);
+etl::timer::callback_node<decltype(callback)> node(config, callback);
 ```
 
 ### Message callback
@@ -233,7 +233,7 @@ MessageProcessor message_processor;
 CallbackMessage message
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::message_node node(config, message_processor, message);
+etl::timer::message_node<CallbackMessage> node(config, message_processor, message);
 ```
 
 ### Functor callback
@@ -264,7 +264,7 @@ struct Functor
 Functor functor;
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::callback_node node(config, functor);
+etl::timer::callback_node<Functor> node(config, functor);
 ```
 
 ### Functor ref callback
@@ -293,7 +293,7 @@ struct Functor
 Functor functor;
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::callback_ref_node node(config, functor);
+etl::timer::callback_ref_node<Functor> node(config, functor);
 ```
 
 ### Delegate callback
@@ -322,5 +322,5 @@ static Object object;
 auto delegate = etl::delegate<void()>::create<Object, &Object::Increment, object>();
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::callback_node node(config, delegate);
+etl::timer::callback_node<decltype(delegate)> node(config, delegate);
 ```

@@ -30,6 +30,7 @@ SOFTWARE.
 #define ETL_TIMER_NOTIFICATION_INCLUDED
 
 #include "platform.h"
+#include "time.h"
 
 //*****************************************************************************
 // Definitions common to timers.
@@ -46,12 +47,12 @@ namespace etl
     {
     public:
 
-      virtual void invoke(uint32_t)
+      virtual void invoke(etl::timer::interval::type)
       {
         // Do nothing by default.
       }
     };
-  }; // namespace timer
+  } // namespace timer
 } // namespace etl
 
 #endif

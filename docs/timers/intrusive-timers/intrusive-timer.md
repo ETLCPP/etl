@@ -361,7 +361,7 @@ etl::timer::atomic_lock_policy lock_policy;
 etl::intrusive_timer timer_controller(lock_policy);
 
 etl::timer::config config(1, etl::timer::mode::Single_Shot)
-etl::timer::callback_node node(config, callback);
+etl::timer::callback_ref_node<decltype(callback)> node(config, callback);
 
 timer_controller.register_timer(node1);
 timer_controller.enable(true);
@@ -386,7 +386,7 @@ etl::timer::atomic_lock_policy lock_policy;
 etl::intrusive_timer timer_controller(lock_policy);
 
 etl::timer::config config(1, etl::timer::mode::Single_Shot)
-etl::timer::callback_node node(config, callback);
+etl::timer::callback_node<decltype(callback)> node(config, callback);
 
 timer_controller.register_timer(node);
 timer_controller.enable(true);
@@ -428,7 +428,7 @@ MessageProcessor message_processor;
 CallbackMessage message
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::message_node node(config, message_processor, message);
+etl::timer::message_node<CallbackMessage> node(config, message_processor, message);
 
 timer_controller.register_timer(node);
 timer_controller.enable(true);
@@ -462,7 +462,7 @@ struct Functor
 Functor functor;
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::callback_node node(config, functor);
+etl::timer::callback_node<Functor> node(config, functor);
 
 timer_controller.register_timer(node);
 timer_controller.enable(true);
@@ -495,7 +495,7 @@ struct Functor
 Functor functor;
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::callback_ref_node node(config, functor);
+etl::timer::callback_ref_node<Functor> node(config, functor);
 
 timer_controller.register_timer(node);
 timer_controller.enable(true);
@@ -529,7 +529,7 @@ static Object object;
 auto delegate = etl::delegate<void()>::create<Object, &Object::Increment, object>();
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-etl::timer::callback_node node(config, delegate);
+etl::timer::callback_node<decltype(delegate)> node(config, delegate);
 
 timer_controller.register_timer(node);
 timer_controller.enable(true);

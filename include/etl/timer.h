@@ -70,6 +70,10 @@ namespace etl
       typedef uint_least8_t type;
     };
 
+#if ETL_USING_CPP11
+    using mode_t = mode::type;
+#endif
+
     // Timer start status.
     struct start
     {
@@ -85,6 +89,10 @@ namespace etl
       typedef bool type;
     };
 
+#if ETL_USING_CPP11
+    using start_t = start::type;
+#endif
+
     // Timer id.
     struct id
     {
@@ -96,6 +104,10 @@ namespace etl
         No_Timer = etl::integral_limits<type>::max
       };
     };
+
+#if ETL_USING_CPP11
+    using id_t = id::type;
+#endif
 
     // Timer state.
     struct state
@@ -109,6 +121,10 @@ namespace etl
       };
     };
 
+#if ETL_USING_CPP11
+    using state_t = state::type;
+#endif
+
     // Timer time interval.
     struct interval
     {
@@ -121,6 +137,10 @@ namespace etl
       };
     };
 
+#if ETL_USING_CPP11
+    using interval_t = interval::type;
+#endif
+
     // Timer owner.
     struct owner
     {
@@ -132,6 +152,10 @@ namespace etl
       static ETL_CONSTANT type No_Owner;
 #endif
     };
+
+#if ETL_USING_CPP11
+    using owner_t = owner::type;
+#endif
 
 #if ETL_NOT_USING_CPP11
     owner::type const owner::No_Owner = ETL_NULLPTR;

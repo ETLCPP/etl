@@ -31,7 +31,7 @@ SOFTWARE.
 #include "etl/timer_node.h"
 #include "etl/private/timer_lists.h"
 
-namespace
+namespace etl_unit_test
 {
   //*******************************************
   class etl_unit_test_intrusive_timer
@@ -73,8 +73,11 @@ namespace
       return next_id;
     }
   };
+}
 
-  etl_unit_test_intrusive_timer test_intrusive_timer;
+namespace
+{
+  etl_unit_test::etl_unit_test_intrusive_timer test_intrusive_timer;
 
   SUITE(test_timer_lists)
   {
@@ -103,9 +106,6 @@ namespace
       test_intrusive_timer.register_timer(register_list, timer3);
       test_intrusive_timer.register_timer(register_list, timer4);
       test_intrusive_timer.register_timer(register_list, timer5);
-
-      auto p1 = register_list.first();
-      auto p2 = &timer1;
 
       CHECK_FALSE(register_list.empty());
       CHECK_TRUE(register_list.first() == &timer1);

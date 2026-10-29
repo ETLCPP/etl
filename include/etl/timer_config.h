@@ -69,12 +69,12 @@ namespace etl
     {
     public:
 
-      friend class private_timer::register_list;
-      friend class private_timer::active_list;
-      friend class private_timer::expired_list;
+      friend class etl::private_timer::register_list;
+      friend class etl::private_timer::active_list;
+      friend class etl::private_timer::expired_list;
 
-      friend class node;
-      friend class intrusive_timer;
+      friend class etl::timer::node;
+      friend class etl::intrusive_timer;
 
       //*******************************************
       /// Default constructor.
