@@ -33,7 +33,6 @@ SOFTWARE.
 #include "etl/intrusive_timer.h"
 #include "etl/message.h"
 #include "etl/message_router.h"
-#include "etl/delegate.h"
 #include "etl/timer.h"
 #include "etl/timer_node.h"
 
@@ -1070,7 +1069,7 @@ namespace
 
     TEST(test_intrusive_timer_with_delegate)
     {
-      auto delegate = etl::delegate<void()>::create<Object, &Object::Increment, object>();
+      auto               delegate = etl::delegate<void()>::create<Object, &Object::Increment, object>();
       etl::timer::config config(etl::timer::config(1, etl::timer::mode::Single_Shot));
 
       etl::timer::callback_node node(config, delegate);
