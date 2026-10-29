@@ -126,8 +126,16 @@ namespace etl
     {
       typedef void* type;
 
+#if ETL_USING_CPP11
       static ETL_CONSTANT type No_Owner = ETL_NULLPTR;
+#else
+      static ETL_CONSTANT type No_Owner;
+#endif
     };
+
+#if ETL_NOT_USING_CPP11
+    owner::type const owner::No_Owner = ETL_NULLPTR;
+#endif
   } // namespace timer
 } // namespace etl
 

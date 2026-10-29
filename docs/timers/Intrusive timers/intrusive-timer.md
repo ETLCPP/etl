@@ -12,8 +12,9 @@ weight: 106
 
 ## Description
 
-The `etl::intrusive_timer` is a replacement for all legacy timers within the ETL. As an intrusive container it maintains zero internal configuration state; instead, timer nodes are allocated externally and registered with `etl::intrusive_timer`, which manages them via internal linked lists.
-To ensure safe and predictable operation, the architecture enforces the following invariants:
+The `etl::intrusive_timer` is a replacement for all legacy timers within the ETL. As an intrusive container it maintains zero internal configuration state; instead, timer nodes are allocated externally and registered with `etl::intrusive_timer`, which manages them via internal linked lists.  
+
+**Features**
 - **Lifetime**  
   Timer nodes must match or outlive the lifetime of the `etl::intrusive_timer` instance.
 - **Immutability**  
