@@ -38,7 +38,7 @@ ETL_CONSTEXPR bool is_zero(T value)
 **Returns**  
 `true` if `value` is Zero.  
 
-## is_exactly_zero
+## is_exactly_equal
 
 ```cpp
 template <typename T>
@@ -260,7 +260,7 @@ A wrapper around `::powl` in `<math.h>`.
 If `ETL_NO_LONG_DOUBLE_MATH` is defined then returns  
 `::pow` with casts to `double`.  
 otherwise  
-`::powl(base, intpart)`  
+`::powl(base, exponent)`  
 
 ## modf
 

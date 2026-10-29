@@ -1202,6 +1202,42 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_two_parameter_same_type_not_iterator)
+    {
+      std::vector<int>              compare_data(5, 7);
+      etl::indirect_vector<int, 10> data(5, 7);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(data.begin(), data.end(), compare_data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_assign_two_parameter_same_type_not_iterator)
+    {
+      std::vector<size_t>              compare_data;
+      etl::indirect_vector<size_t, 10> data;
+
+      compare_data.assign(5, 7);
+      data.assign(5, 7);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(data.begin(), data.end(), compare_data.begin()));
+    }
+
+    //*************************************************************************
+    TEST(test_insert_three_parameter_same_type_not_iterator)
+    {
+      std::vector<int>              compare_data(3UL, 1);
+      etl::indirect_vector<int, 10> data(3UL, 1);
+
+      compare_data.insert(compare_data.begin(), 2, 7);
+      data.insert(data.begin(), 2, 7);
+
+      CHECK_EQUAL(compare_data.size(), data.size());
+      CHECK(std::equal(data.begin(), data.end(), compare_data.begin()));
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_position_range)
     {
       const size_t INITIAL_SIZE = 5UL;
