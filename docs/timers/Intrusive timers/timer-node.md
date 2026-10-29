@@ -6,7 +6,7 @@ weight: 102
 {{< callout type="info">}}
   Header: `timer_node.h`  
   Namespace: `etl::timer`  
-  Since: `TBA`  
+  Since: `20.50.0`  
   From: `C++03`
  {{< /callout >}}
 
@@ -21,6 +21,8 @@ config:
 title: namespace etl::timer
 ---
 classDiagram
+  direction LR
+
   node <|-- callback_node
   node <|-- callback_ref_node
   node <|-- message_node
@@ -29,7 +31,8 @@ classDiagram
 
   class config {
     +config()
-    +get_interval() const uint32_t 
+    +config(etl::timer::interval::type interval, etl::timer::mode::type mode)
+    +get_interval() etl::timer::interval::type 
     +get_mode() etl::timer::mode::type 
     +get_id() etl::timer::id::type
     +clear() void
@@ -38,8 +41,8 @@ classDiagram
   class node {
     +node(const etl::timer::config&)
     +get_config() config&
-    +get_delta() uint32_t
-    +get_interval() uint32_t
+    +get_delta() etl::timer::interval::type
+    +get_interval() etl::timer::interval::type
     +get_mode() etl::timer::mode::type
     +get_id() etl::timer::id::type
     +static end() etl::timer::node*
@@ -71,7 +74,9 @@ class node
 ```
 **Description**  
 Base class for all timer nodes.  
-Used as the timer element in `etl::intrusive_timer`.
+Used as the timer element in `etl::intrusive_timer`.  
+
+Derive from this to create custom callback timer nodes.
 
 ---
 
@@ -100,7 +105,7 @@ Returns the configuration of the timer.
 ---
 
 ```cpp
-ETL_CONSTEXPR uint32_t get_delta() const ETL_NOEXCEPT
+ETL_CONSTEXPR etl::timer::interval::type get_delta() const ETL_NOEXCEPT
 ```
 **Description**  
 Returns the delta of the timer.
@@ -108,7 +113,7 @@ Returns the delta of the timer.
 ---
 
 ```cpp
-ETL_CONSTEXPR uint32_t get_interval() const ETL_NOEXCEPT
+ETL_CONSTEXPR etl::timer::interval::type get_interval() const ETL_NOEXCEPT
 ```
 **Description**  
 Returns the interval of the timer.
@@ -172,6 +177,9 @@ Static asserts if `TMessage` is not derived from `etl::imessage`.
 ## Examples
 
 ### Global function callback
+
+This example shows a node configured for a global function callback.  
+
 ```cpp
 void callback()
 {
@@ -179,21 +187,24 @@ void callback()
 }
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-
 etl::timer::callback_node node(config, callback);
 ```
 
 ### Lambda callback
 
+This example shows a node configured for a lambda function callback.  
+
 ```cpp
 auto callback = [](){ std::cout << "lambda\n"; };
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-
 etl::timer::callback_node node(config, callback);
 ```
 
 ### Message callback
+
+This example shows a node configured for a message callback.  
+
 ```cpp
 struct CallbackMessage : public etl::message<1>
 {
@@ -218,15 +229,17 @@ public:
   void on_receive_unknown(const etl::imessage& msg) {}
 };
 
-etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-
 MessageProcessor message_processor;
 CallbackMessage message
 
+etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
 etl::timer::message_node node(config, message_processor, message);
 ```
 
 ### Functor callback
+
+This example shows a node configured for a functor function callback.  
+The node makes a copy of the functor.  
 
 ```cpp
 int call_count = 0;
@@ -251,11 +264,13 @@ struct Functor
 Functor functor;
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-
 etl::timer::callback_node node(config, functor);
 ```
 
 ### Functor ref callback
+
+This example shows a node configured for a functor function callback.  
+The node takes a reference to the functor.  
 
 ```cpp
 // Functor that must not be copied to the node, otherwise `functor` will not get updated.
@@ -278,11 +293,12 @@ struct Functor
 Functor functor;
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-
 etl::timer::callback_ref_node node(config, functor);
 ```
 
 ### Delegate callback
+
+This example shows a node configured for an `etl::delegate` callback.  
 
 ```cpp
 struct Object
@@ -301,11 +317,10 @@ struct Object
   int call_count;
 };
 
-static Functor functor;
+static Object object;
 
-auto delegate = etl::delegate<void()>::create<Object, functor, &Object::Increment>();
+auto delegate = etl::delegate<void()>::create<Object, &Object::Increment, object>();
 
 etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
-
 etl::timer::callback_node node(config, delegate);
 ```

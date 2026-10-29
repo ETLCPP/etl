@@ -6,7 +6,7 @@ weight: 101
 {{< callout type="info">}}
   Header: `timer_config.h`  
   Namespace: `etl::timer`  
-  Since: `TBA`  
+  Since: `20.50.0`  
   From: `C++03`
 {{< /callout >}}
 
@@ -21,19 +21,19 @@ Used to configure a timer for an `etl::timer::node` derived timer element.
 ---
 
 ```cpp
-ETL_CONSTEXPR config(uint32_t interval, etl::timer::mode::type mode) ETL_NOEXCEPT
+ETL_CONSTEXPR config(etl::timer::interval::type interval, etl::timer::mode::type mode) ETL_NOEXCEPT
 ```
 **Description**  
 Constructs a timer configuration.  
 
 **Parameters**  
-`uint32_t interval` : The initial interval for the timer.  
+`etl::timer::interval::type interval` : The initial interval for the timer.  
 `etl::timer::mode::type mode` : The initial mode of the timer.
 
 ---
 
 ```cpp
-ETL_CONSTEXPR uint32_t get_interval() const ETL_NOEXCEPT
+ETL_CONSTEXPR etl::timer::interval::type get_interval() const ETL_NOEXCEPT
 ```
 **Description**  
 Returns the interval of the timer.

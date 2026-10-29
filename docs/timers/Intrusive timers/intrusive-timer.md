@@ -1,18 +1,18 @@
 ---
 title: "intrusive_timer"
-weight: 103
+weight: 106
 ---
 
 {{< callout type="info">}}
   Header: `intrusive_timer.h`  
   Namespace: `etl`  
-  Since: `20.46.0`  
+  Since: `20.50.0`  
   From: `C++03`
 {{< /callout >}}
 
 ## Description
 
-The `etl::intrusive_timer` is a replacement for all legacy timers within the ETL. As an intrusive container, it maintains zero internal configuration state; instead, timer nodes are allocated externally and registered with `etl::intrusive_timer`, which manages them via internal linked lists.
+The `etl::intrusive_timer` is a replacement for all legacy timers within the ETL. As an intrusive container it maintains zero internal configuration state; instead, timer nodes are allocated externally and registered with `etl::intrusive_timer`, which manages them via internal linked lists.
 To ensure safe and predictable operation, the architecture enforces the following invariants:
 - **Lifetime**  
   Timer nodes must match or outlive the lifetime of the `etl::intrusive_timer` instance.
@@ -20,7 +20,6 @@ To ensure safe and predictable operation, the architecture enforces the followin
   Once defined, timer nodes are structurally non-mutating and can only be modified through the `etl::intrusive_timer` API.
 - **Exclusivity**  
   A timer node can only be registered to one `etl::intrusive_timer` instance at a time.  
-### Key Features
 - **Flexible Notifications**  
   Supports both callback functions and message-passing interfaces upon expiry. Also supports custom user callback types.
 - **Dynamic Scheduling**  
@@ -56,7 +55,7 @@ Returns `true` if access is locked.
 class timer_no_lock_policy : public timer_lock_policy
 ```
 **Description**  
-This lock policy does no locking.  
+A predefined lock policy does no locking.  
 Useful for single threaded code or testing purposes.  
 
 ## timer_atomic_lock_policy
@@ -64,7 +63,7 @@ Useful for single threaded code or testing purposes.
 class timer_atomic_lock_policy : public timer_lock_policy
 ```
 **Description**  
-This lock policy uses an atomic flag.  
+A predefined lock policy that uses an atomic flag.  
 Only defined if `ETL_HAS_ATOMIC` is `1`.
 
 ## timer_time_to_next_notification
@@ -78,7 +77,7 @@ Derive from this to define a custom implementation.
 ---
 
 ```cpp
-virtual void invoke(uint32_t delta)
+virtual void invoke(etl::timer::interval::type delta)
 ```
 **Description**  
 Called to notify user code of the 'time to next' delta for the next due timer.  
@@ -161,7 +160,7 @@ Callbacks for any expired timers may still occur.
 ---
 
 ```cpp
-bool tick(uint32_t count)
+bool tick(etl::timer::interval::type count)
 ```
 **Description**  
 Called by the timer service to indicate the amount of time that has elapsed since the last successful call to 'tick'.  
@@ -169,7 +168,7 @@ Expired timer callbacks occur outside of the locked regions.
 
 
 **Parameters**  
-`uint32_t count` : The amount of time that has elapsed since the last successful call to 'tick'  
+`etl::timer::interval::type count` : The amount of time that has elapsed since the last successful call to 'tick'  
 
 **Return**  
 `true` if the tick was processed, `false` if not.  
@@ -217,7 +216,7 @@ Expired timer callbacks occur outside of the locked regions.
 
 ```cpp
 bool set_interval(etl::timer::node& timer, 
-                  uint32_t         interval) ETL_NOEXCEPT
+                  etl::timer::interval::type         interval) ETL_NOEXCEPT
 ```
 **Description**  
 Sets a timer's interval.  
@@ -227,7 +226,7 @@ If the timer node was the next to expire then a 'time to next' notification will
 
 **Parameters**  
 `etl::timer::node& timer` : The timer node to start.  
-`uint32_t interval` : The new interval.
+`etl::timer::interval::type interval` : The new interval.
 
 **Return**  
 `true` if the timer node was updated, otherwise `false`.
@@ -284,7 +283,7 @@ Check if there is an active timer.
 ---
 
 ```cpp
-uint32_t time_to_next() const ETL_NOEXCEPT
+etl::timer::interval::type time_to_next() const ETL_NOEXCEPT
 ```
 **Description**  
 Get the time to the next timer event.
@@ -346,12 +345,37 @@ A pointer to the node or `etl::timer::node::end()`
 
 ## Examples
 
+### Callback with a global function
+
+```cpp
+int call_count = 0;
+
+void callback()
+{
+  std::cout << "callback()\n";
+}
+
+etl::timer::atomic_lock_policy lock_policy;
+
+etl::intrusive_timer timer_controller(lock_policy);
+
+etl::timer::config config(1, etl::timer::mode::Single_Shot)
+etl::timer::callback_node node(config, callback);
+
+timer_controller.register_timer(node1);
+timer_controller.enable(true);
+timer_controller.start(node);
+timer_controller.tick(1);
+
+assert(call_count == 1);
+```
+
 ### Callback with a lambda
 
 ```cpp
 int call_count = 0;
 
-auto timer_lambda = [&call_count]()
+auto callback = [&call_count]()
 {
   ++call_count;
 };
@@ -360,12 +384,156 @@ etl::timer::atomic_lock_policy lock_policy;
 
 etl::intrusive_timer timer_controller(lock_policy);
 
-etl::timer::callback_node node1(etl::timer::config(1, etl::timer::mode::Single_Shot), timer_lambda);
+etl::timer::config config(1, etl::timer::mode::Single_Shot)
+etl::timer::callback_node node(config, callback);
 
-timer_controller.register_timer(node1);
+timer_controller.register_timer(node);
 timer_controller.enable(true);
-timer_controller.start(node1);
+timer_controller.start(node);
 timer_controller.tick(1);
 
 assert(call_count == 1);
+```
+
+### Callback with a message
+
+```cpp
+struct CallbackMessage : public etl::message<1>
+{
+};
+
+class MessageProcessor : public etl::message_router<MessageProcessor, CallbackMessage>
+{
+public:
+
+  MessageProcessor()
+    : etl::message_router<MessageProcessor, CallbackMessage>()
+    : call_count(0)
+  {
+  }
+
+  //*******************************************
+  void on_receive(const CallbackMessage& msg)
+  {
+    ++call_count;
+    std::cout << "CallbackMessage\n";
+  }
+
+  //*******************************************
+  void on_receive_unknown(const etl::imessage& msg) {}
+};
+
+MessageProcessor message_processor;
+CallbackMessage message
+
+etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
+etl::timer::message_node node(config, message_processor, message);
+
+timer_controller.register_timer(node);
+timer_controller.enable(true);
+timer_controller.start(node);
+timer_controller.tick(1);
+
+assert(message_processor.call_count == 1);
+```
+### Callback with a functor
+
+```cpp
+int call_count = 0;
+
+// Functor that can be copied to the node, because `call_count` is referenced by a pointer.
+struct Functor
+{
+  Functor(int& call_count_)
+    : call_count(&call_count_)
+  {
+  }
+
+  void operator()()
+  {
+    ++(*call_count);
+    std::cout << "Functor ref callback : " << *call_count << "\n";
+  }
+
+  int* call_count;
+};
+
+Functor functor;
+
+etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
+etl::timer::callback_node node(config, functor);
+
+timer_controller.register_timer(node);
+timer_controller.enable(true);
+timer_controller.start(node);
+timer_controller.tick(1);
+
+assert(call_count == 1);
+```
+
+### Callback with a functor ref
+
+```cpp
+// Functor that must not be copied to the node, otherwise `functor` will not get updated.
+struct Functor
+{
+  Functor()
+    : call_count(0)
+  {
+  }
+
+  void operator()()
+  {
+    ++call_count;
+    std::cout << "Functor ref callback : " << call_count << "\n";
+  }
+
+  int call_count;
+};
+
+Functor functor;
+
+etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
+etl::timer::callback_ref_node node(config, functor);
+
+timer_controller.register_timer(node);
+timer_controller.enable(true);
+timer_controller.start(node);
+timer_controller.tick(1);
+
+assert(functor.call_count == 1);
+```
+
+### Callback with a delegate
+
+```cpp
+struct Object
+{
+  Object()
+    : call_count(0)
+  {
+  }
+
+  void Increment()
+  {
+    ++call_count;
+    std::cout << "Increment callback : " << call_count << "\n";
+  }
+
+  int call_count;
+};
+
+static Object object;
+
+auto delegate = etl::delegate<void()>::create<Object, &Object::Increment, object>();
+
+etl::timer::config config(etl::timer::config(100, etl::timer::mode::Single_Shot));
+etl::timer::callback_node node(config, delegate);
+
+timer_controller.register_timer(node);
+timer_controller.enable(true);
+timer_controller.start(node);
+timer_controller.tick(1);
+
+assert(object.call_count == 1);
 ```
