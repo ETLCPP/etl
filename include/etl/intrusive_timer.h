@@ -247,6 +247,8 @@ namespace etl
       // Is this the next timer that is due to expire?
       bool notify = (active_list.first() == &timer_);
 
+      notify_about_timer_change(notify, &timer_);
+
       lock_policy.unlock();
 
       if (is_started && immediate_)
@@ -254,8 +256,6 @@ namespace etl
         // Trigger the timer immediately.
         timer_.invoke();
       }
-
-      notify_about_timer_change(notify, &timer_);
 
       return is_started;
     }
@@ -266,17 +266,18 @@ namespace etl
     bool stop(etl::timer::node& timer_) ETL_NOEXCEPT
     {
       bool is_stopped = false;
+      bool notify     = false;
 
       lock_policy.lock();
 
       if (timer_.is_active())
       {
+        notify = (active_list.first() == &timer_);
         stop_timer(timer_);
         is_stopped = true;
       }
 
-      // The next timer has changed, so notify the user.
-      active_notify_time_to_next->invoke(active_list.first()->get_delta());
+      notify_about_timer_change(notify, active_list.first());
 
       lock_policy.unlock();
 
