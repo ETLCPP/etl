@@ -158,7 +158,7 @@ namespace
   //*************************************************************************
   struct CallbackMessage : public etl::message<1>
   {
-    CallbackMessage(int value_)
+    explicit CallbackMessage(int value_)
       : value(value_)
       , config(ETL_NULLPTR)
     {
@@ -961,7 +961,7 @@ namespace
     //*************************************************************************
     struct FunctorExternalCount
     {
-      FunctorExternalCount(int& call_count_)
+      explicit FunctorExternalCount(int& call_count_)
         : call_count(&call_count_)
       {
       }
