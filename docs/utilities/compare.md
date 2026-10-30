@@ -28,54 +28,72 @@ second_argument_type;
 cmp_result;
 ```
 
-`cmp_result` has the values `Less`, `Equal`, and `Greater`.
+`cmp_result` defines the values `Less`, `Equal`, and `Greater`.
 
 ## Members
 ```cpp
 static bool lt(first_argument_type lhs, second_argument_type rhs)
 ```
+**Description**  
+Less than.
+
 **Return**  
-`true` if `lhs < rhs`, otherwise `false`.
+`true` if `TLess()(lhs, rhs)`, otherwise `false`.
 
 ---
 
 ```cpp
 static bool lte(first_argument_type lhs, second_argument_type rhs)
 ```
+**Description**  
+Less than or equal.
+
 **Return**  
-`true` if `lhs <= rhs`, otherwise `false`.
+`true` if `lhs` is less than or equal to `rhs`, otherwise `false`.
 
 ---
 
 ```cpp
 static bool gt(first_argument_type lhs, second_argument_type rhs)
 ```
+**Description**  
+Greater than.
+
 **Return**  
-`true` if `lhs > rhs`, otherwise `false`.
+`true` if `lhs` is greater than `rhs`, otherwise `false`.
 
 ---
 
 ```cpp
 static bool gte(first_argument_type lhs, second_argument_type rhs)
 ```
+**Description**  
+Greater than or equal.
+
 **Return**  
-`true` if `lhs >= rhs`, otherwise `false`.
+`true` if `lhs` is greater than or equal to `rhs`, otherwise `false`.
 
 ---
 
 ```cpp
 static bool eq(first_argument_type lhs, second_argument_type rhs)
 ```
+**Description**  
+Equal.
+
 **Return**  
-`true` if `lhs == rhs`, otherwise `false`.
+`true` if neither value compares less than the other, otherwise `false`.
 
 ---
 
 ```cpp
 static bool ne(first_argument_type lhs, second_argument_type rhs)
 ```
+**Description**  
+Not equal.
+
 **Return**  
-`true` if `lhs != rhs`, otherwise `false`.
+`true` if if either value compare less than the other, otherwise `false`.
 
 ---
 
