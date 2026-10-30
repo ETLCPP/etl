@@ -1407,12 +1407,6 @@
     <ClInclude Include="..\..\include\etl\index_of_type.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\variant_select_do_visitor.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\private\variant_select_do_operator.h">
-      <Filter>ETL\Private</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\monostate.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
@@ -1669,6 +1663,9 @@
     </ClCompile>
     <ClCompile Include="..\test_message_timer_locked.cpp">
       <Filter>Tests\Messaging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_meta.cpp">
+      <Filter>Tests\Types</Filter>
     </ClCompile>
     <ClCompile Include="..\test_shared_message.cpp">
       <Filter>Tests\Messaging</Filter>
@@ -3592,6 +3589,9 @@
     </ClCompile>
     <ClCompile Include="..\test_function_traits.cpp">
       <Filter>Tests\Types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_future.cpp">
+      <Filter>Tests\Misc</Filter>
     </ClCompile>
     <ClCompile Include="..\test_singleton_base.cpp">
       <Filter>Tests\Patterns</Filter>

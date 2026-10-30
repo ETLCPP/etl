@@ -64,6 +64,7 @@ These may be defined in the project settings or the user created `etl_profile.h`
 | `ETL_MESSAGES_ARE_VIRTUAL` | `ETL_MESSAGES_ARE_VIRTUAL` is deprecated and may be removed.<br/>Only valid before 19.4.1<br/>Messages are virtual, by default, from 19.4.1|
 | `ETL_USE_TYPE_TRAITS_BUILTINS` | Forces the ETL to use calls compiler built-ins.<br/>Sets all of them to be 1 if not already defined.<br/>If not defined `ETL_USE_BUILTIN_IS_ASSIGNABLE` then<br/>`ETL_USE_BUILTIN_IS_ASSIGNABLE = 1`<br/><br/>If not defined ETL_USE_BUILTIN_IS_CONSTRUCTIBLE then<br/>`ETL_USE_BUILTIN_IS_CONSTRUCTIBLE = 1`<br/><br/>If not `ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE` then<br/>`ETL_USE_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE = 1`<br/><br/>If not defined `ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE` then<br/>`ETL_USE_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE = 1`<br/><br/>If not defined `ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE` then<br/>`ETL_USE_BUILTIN_IS_TRIVIALLY_COPYABLE = 1`<br/><br/>`ETL_TARGET_DEVICE_GENERIC`<br/>Only `ETL_TARGET_DEVICE_ARM_CORTEX_M0` and `ETL_TARGET_DEVICE_ARM` and `ETL_TARGET_DEVICE_ARM_CORTEX_M0_PLUS` are currently used in the ETL code to disable `etl::atomic`.|
 | `ETL_NO_LIBC_WCHAR_H` | Define if the libc++ used has not been compiled for `wchar_t` support.|
+| `ETL_FORCE_INCLUDE_MATH_H` | When `ETL_NO_STL` is defined and the compiler is GCC or clang, the ETL does not include `<math.h>`, but uses the equivalent compiler built-ins instead (GCC's `<math.h>` may drag in large parts of the C++ standard library).<br/>Define this to always include the environment's `<math.h>` instead.|
 
 ## ETL defined
 **Defined in platform.h**  
@@ -102,6 +103,7 @@ These may be defined in the project settings or the user created `etl_profile.h`
 | `ETL_HAS_IDEQUE_REPAIR`              | Set to `1` if the repair functionality for `etl::ideque` is enabled, otherwise `0`.|
 | `ETL_IS_DEBUG_BUILD`                 | Set to `1` if in a debug build, otherwise `0`.|
 | `ETL_HAS_POLYMORPHIC_MESSAGES`       | Set to `1` if messages are polymorphic, otherwise `0`.|
+| `ETL_HAS_REFLECTION`                 | Defined by `etl/meta.h`. Set to `1` if the compiler supports C++26 static reflection (P2996) and `etl::meta` is available, otherwise `0`.|
 | `ETL_HAS_ERROR_ON_STRING_TRUNCATION` | Set to `1` if truncated strings are an error, otherwise `0`.|
 | `ETL_USING_LIBC_WCHAR_H`             | These macros will be defined as `0` & `1` depending on whether `ETL_NO_LIBC_WCHAR_H` is defined or not.|
 | `ETL_NOT_USING_LIBC_WCHAR_H`         | Inversion of `ETL_USING_LIBC_WCHAR_H`.|
