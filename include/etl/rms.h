@@ -33,9 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "functional.h"
+#include "math.h"
 #include "type_traits.h"
 
-#include <math.h>
 #include <stdint.h>
 
 namespace etl
@@ -162,7 +162,7 @@ namespace etl
 
           if (mean_of_squares > 0)
           {
-            rms_value = sqrt(mean_of_squares);
+            rms_value = etl::private_math::sqrt(mean_of_squares);
           }
         }
 

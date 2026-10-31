@@ -289,6 +289,7 @@ target_sources(tests PRIVATE
 		message_timer_interrupt.h.t.cpp
 		message_timer_locked.h.t.cpp
 		message_types.h.t.cpp
+                meta.h.t.cpp
 		multimap.h.t.cpp
 		multiset.h.t.cpp
 		multi_array.h.t.cpp

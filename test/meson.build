@@ -235,6 +235,7 @@ etl_test_sources = files(
 	'test_message_timer_atomic.cpp',
 	'test_message_timer_interrupt.cpp',
 	'test_message_timer_locked.cpp',
+	'test_meta.cpp',
 	'test_multi_array.cpp',
 	'test_multi_range.cpp',
 	'test_multi_span.cpp',

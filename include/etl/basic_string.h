@@ -1476,6 +1476,11 @@ namespace etl
     //*********************************************************************
     size_type find(T c, size_type position = 0) const
     {
+      if (position >= size())
+      {
+        return npos;
+      }
+
       const_iterator i = etl::find(begin() + position, end(), c);
 
       if (i != end())
@@ -1504,7 +1509,7 @@ namespace etl
     ///\param pos  The position to start searching from.
     //*********************************************************************
     template <typename TOtherTraits>
-    size_type rfind(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = 0) const
+    size_type rfind(const etl::basic_string_view<T, TOtherTraits>& view, size_type pos = npos) const
     {
       return rfind_impl(view.rbegin(), view.rend(), view.size(), pos);
     }
@@ -1544,12 +1549,8 @@ namespace etl
     //*********************************************************************
     size_type rfind(T c, size_type position = npos) const
     {
-      if (position >= size())
-      {
-        position = size();
-      }
-
-      position = size() - position;
+      // Reverse offset of the first character to check, which is 'position' itself.
+      position = (position >= size()) ? 0 : (size() - position - 1);
 
       const_reverse_iterator i = etl::find(rbegin() + static_cast<difference_type>(position), rend(), c);
 
@@ -2851,9 +2852,14 @@ namespace etl
     template <typename TIterator>
     size_type find_impl(TIterator first, TIterator last, size_type sz, size_type pos = 0) const
     {
-      if ((pos + sz) > size())
+      if ((pos > size()) || (sz > (size() - pos)))
       {
         return npos;
+      }
+
+      if (sz == 0)
+      {
+        return pos;
       }
 
       const_iterator iposition = etl::search(begin() + pos, end(), first, last);
@@ -2879,12 +2885,18 @@ namespace etl
         return npos;
       }
 
-      if (pos >= size())
+      if (pos > (size() - sz))
       {
-        pos = size();
+        pos = size() - sz;
       }
 
-      pos = size() - pos;
+      if (sz == 0)
+      {
+        return pos;
+      }
+
+      // Reverse offset of the last character of a match starting at 'pos'.
+      pos = size() - (pos + sz);
 
       const_reverse_iterator iposition = etl::search(rbegin() + static_cast<difference_type>(pos), rend(), rfirst, rlast);
 

@@ -1753,7 +1753,7 @@ namespace etl
       const size_t fractional_decimals = 6; // default
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign      = signbit(value);
+      bool sign      = etl::private_math::sign_bit(value);
       T    abs_value = sign ? -value : value;
 
       // Use scientific notation for values that would overflow unsigned long long
@@ -1801,7 +1801,7 @@ namespace etl
       long long int       exponent_int        = 0;
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = signbit(value);
+      bool sign = etl::private_math::sign_bit(value);
 
       T integral;
       T fractional = etl::math::modf(value, &integral);
@@ -1866,7 +1866,7 @@ namespace etl
       long long int       exponent_int        = 0;
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = signbit(value);
+      bool sign = etl::private_math::sign_bit(value);
 
       T abs_value = sign ? -value : value;
 
@@ -1930,7 +1930,7 @@ namespace etl
       const size_t fractional_decimals = 6; // default
 
       // Detect sign using signbit to correctly handle -0.0
-      bool sign = signbit(value);
+      bool sign = etl::private_math::sign_bit(value);
 
       T integral;
       T fractional = etl::math::modf(value, &integral);
@@ -2110,7 +2110,7 @@ namespace etl
     template <typename OutputIt, typename T>
     void format_floating(OutputIt& it, T value, const format_spec_t& spec)
     {
-      if (isnan(value))
+      if (etl::is_nan(value))
       {
         if (spec.type.has_value() && (is_uppercase(spec.type.value())))
         {
@@ -2121,7 +2121,7 @@ namespace etl
           format_sequence(it, "nan");
         }
       }
-      else if (isinf(value))
+      else if (etl::is_infinity(value))
       {
         if (spec.type.has_value() && (is_uppercase(spec.type.value())))
         {
@@ -2375,7 +2375,7 @@ namespace etl
       if (fmt_ctx.format_spec.zero && fmt_ctx.format_spec.align == spec_align_t::NONE)
       {
         // Output sign first, then zero-fill, then the unsigned part
-        bool sign = signbit(arg);
+        bool sign = etl::private_math::sign_bit(arg);
         if (sign || fmt_ctx.format_spec.sign != spec_sign_t::MINUS)
         {
           // Output the sign character

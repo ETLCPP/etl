@@ -283,6 +283,75 @@ namespace etl
       }
     };
 
+    //****************************************************************************************************
+    /// Helpers for selecting the best conversion candidate for variant value construction.
+    /// Only implicit conversions that do not involve narrowing are considered.
+    //****************************************************************************************************
+    // Used to check for valid conversion that don't include narrowing as array copy-list-initialization excludes narrowing conversions.
+    template <typename T>
+    struct conversion_array
+    {
+      T value[1];
+    };
+
+    // Create a candidate function accepting TAlternative provided it can be constructed from T without narrowing conversions. When the conversion
+    // is valid, the function returns an integral constant representing the index of the alternative type in the variant's type list.
+    template <typename T, size_t Index, typename TAlternative, typename = void>
+    struct conversion_candidate
+    {
+      static void select();
+    };
+
+    template <typename T, size_t Index, typename TAlternative>
+    struct conversion_candidate<T, Index, TAlternative, etl::void_t<decltype(conversion_array<TAlternative>{{etl::declval<T>()}})> >
+    {
+      static etl::integral_constant<size_t, Index> select(TAlternative);
+    };
+
+    // Build all conversion overloads for a given type T across the list of alternative types.
+    template <typename T, size_t Index, typename... TTypes>
+    struct conversion_overloads_impl;
+
+    template <typename T, size_t Index>
+    struct conversion_overloads_impl<T, Index>
+    {
+      static void select();
+    };
+
+    template <typename T, size_t Index, typename THead, typename... TRest>
+    struct conversion_overloads_impl<T, Index, THead, TRest...>
+      : conversion_candidate<T, Index, THead>
+      , conversion_overloads_impl<T, Index + 1U, TRest...>
+    {
+      using conversion_candidate<T, Index, THead>::select;
+      using conversion_overloads_impl<T, Index + 1U, TRest...>::select;
+    };
+
+    template <typename T, typename... TTypes>
+    using conversion_overloads = conversion_overloads_impl<T, 0U, TTypes...>;
+
+    // Select the best alternative type for a given type T.
+    template <typename T, typename... TTypes>
+    using select_alternative_index = decltype(conversion_overloads<T, TTypes...>::select(etl::declval<T>()));
+
+    //*************************************************************************
+    /// Helpers for identifying in-place tags.
+    //*************************************************************************
+    template <typename T>
+    struct is_in_place_tag : etl::false_type
+    {
+    };
+
+    template <typename T>
+    struct is_in_place_tag<etl::in_place_type_t<T> > : etl::true_type
+    {
+    };
+
+    template <size_t Index>
+    struct is_in_place_tag<etl::in_place_index_t<Index> > : etl::true_type
+    {
+    };
+
     //*******************************************
     /// Constexpr get by index from variadic_union.
     //*******************************************
@@ -1016,22 +1085,27 @@ namespace etl
     /// Construct from a value.
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
-    template <typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
-              etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && !Trivial_, int> = 0>
+    template < typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
+               etl::enable_if_t< !etl::is_same<etl::remove_cvref_t<T>, variant>::value && !Trivial_
+                                   && !private_variant::is_in_place_tag<etl::remove_cvref_t<T> >::value,
+                                 int>  = 0,
+               size_t AlternativeIndex = private_variant::select_alternative_index<T, TTypes...>::value,
+               typename TAlternative = type_from_index<AlternativeIndex>, etl::enable_if_t<etl::is_constructible<TAlternative, T>::value, int> = 0>
     ETL_CONSTEXPR14 variant(T&& value)
-      : base_type(index_of_type<T>::value)
+      : base_type(AlternativeIndex)
     {
-      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
-
-      construct_in_place<etl::remove_cvref_t<T> >(data, etl::forward<T>(value));
+      construct_in_place<TAlternative>(data, etl::forward<T>(value));
     }
 
-    template <typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
-              etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && Trivial_, int> = 0>
+    template < typename T, bool Trivial_ = Is_Trivially_Destructible_Suite,
+               etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value && Trivial_
+                                  && !private_variant::is_in_place_tag<etl::remove_cvref_t<T> >::value,
+                                int>   = 0,
+               size_t AlternativeIndex = private_variant::select_alternative_index<T, TTypes...>::value,
+               typename TAlternative = type_from_index<AlternativeIndex>, etl::enable_if_t<etl::is_constructible<TAlternative, T>::value, int> = 0 >
     constexpr variant(T&& value)
-      : base_type(etl::in_place_index_t<index_of_type<T>::value>{}, etl::forward<T>(value), index_of_type<T>::value)
+      : base_type(etl::in_place_index_t<AlternativeIndex>{}, etl::forward<T>(value), AlternativeIndex)
     {
-      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
     }
   #include "diagnostic_pop.h"
 
@@ -1049,20 +1123,19 @@ namespace etl
     /// Construct from arguments.
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
-    template <typename T, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite, etl::enable_if_t<!Trivial_, int> = 0>
+    template <typename T, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite,
+              etl::enable_if_t<!Trivial_ && etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, int> = 0>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
       : base_type(index_of_type<T>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
-
       construct_in_place_args<etl::remove_cvref_t<T> >(data, etl::forward<TArgs>(args)...);
     }
 
-    template <typename T, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite, etl::enable_if_t<Trivial_, int> = 0>
+    template <typename T, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite,
+              etl::enable_if_t<Trivial_ && etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, int> = 0>
     constexpr explicit variant(etl::in_place_type_t<T>, TArgs&&... args)
       : base_type(etl::in_place_index_t<index_of_type<T>::value>{}, etl::remove_cvref_t<T>(etl::forward<TArgs>(args)...), index_of_type<T>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
     }
   #include "diagnostic_pop.h"
 
@@ -1070,22 +1143,20 @@ namespace etl
     /// Construct from arguments.
     //***************************************************************************
   #include "diagnostic_uninitialized_push.h"
-    template <size_t Index, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite, etl::enable_if_t<!Trivial_, int> = 0>
+    template <size_t Index, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite,
+              etl::enable_if_t<!Trivial_ && (Index < sizeof...(TTypes)), int> = 0>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
       : base_type(Index)
     {
       using type = type_from_index<Index>;
-      static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
-
       construct_in_place_args<type>(data, etl::forward<TArgs>(args)...);
     }
 
-    template <size_t Index, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite, etl::enable_if_t<Trivial_, int> = 0>
+    template <size_t Index, typename... TArgs, bool Trivial_ = Is_Trivially_Destructible_Suite,
+              etl::enable_if_t<Trivial_ && (Index < sizeof...(TTypes)), int> = 0>
     constexpr explicit variant(etl::in_place_index_t<Index>, TArgs&&... args)
       : base_type(etl::in_place_index_t<Index>{}, type_from_index<Index>(etl::forward<TArgs>(args)...), Index)
     {
-      using type = type_from_index<Index>;
-      static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
     }
   #include "diagnostic_pop.h"
 
@@ -1094,12 +1165,10 @@ namespace etl
       /// Construct from type, initializer_list and arguments.
       //***************************************************************************
     #include "diagnostic_uninitialized_push.h"
-    template <typename T, typename U, typename... TArgs >
+    template <typename T, typename U, typename... TArgs, etl::enable_if_t<etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, int> = 0>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_type_t<T>, std::initializer_list<U> init, TArgs&&... args)
       : base_type(index_of_type<T>::value)
     {
-      static_assert(etl::is_one_of<etl::remove_cvref_t<T>, TTypes...>::value, "Unsupported type");
-
       construct_in_place_args<etl::remove_cvref_t<T> >(data, init, etl::forward<TArgs>(args)...);
     }
     #include "diagnostic_pop.h"
@@ -1108,13 +1177,11 @@ namespace etl
       /// Construct from index, initializer_list and arguments.
       //***************************************************************************
     #include "diagnostic_uninitialized_push.h"
-    template <size_t Index, typename U, typename... TArgs >
+    template <size_t Index, typename U, typename... TArgs, etl::enable_if_t<(Index < sizeof...(TTypes)), int> = 0>
     ETL_CONSTEXPR14 explicit variant(etl::in_place_index_t<Index>, std::initializer_list<U> init, TArgs&&... args)
       : base_type(Index)
     {
       using type = type_from_index<Index>;
-      static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
-
       construct_in_place_args<type>(data, init, etl::forward<TArgs>(args)...);
     }
     #include "diagnostic_pop.h"
@@ -1142,11 +1209,9 @@ namespace etl
     //***************************************************************************
     /// Emplace by type with variadic constructor parameters.
     //***************************************************************************
-    template <typename T, typename... TArgs>
+    template <typename T, typename... TArgs, etl::enable_if_t<etl::is_one_of<T, TTypes...>::value, int> = 0>
     T& emplace(TArgs&&... args) ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<etl::remove_cvref_t<T>, TArgs...>::value))
     {
-      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
-
       using type = etl::remove_cvref_t<T>;
 
       do_destroy();
@@ -1161,12 +1226,10 @@ namespace etl
     //***************************************************************************
     /// Emplace by type with variadic constructor parameters.
     //***************************************************************************
-    template <typename T, typename U, typename... TArgs>
+    template <typename T, typename U, typename... TArgs, etl::enable_if_t<etl::is_one_of<T, TTypes...>::value, int> = 0>
     T& emplace(std::initializer_list<U> il, TArgs&&... args)
       ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<etl::remove_cvref_t<T>, std::initializer_list<U>, TArgs...>::value))
     {
-      static_assert(etl::is_one_of<T, TTypes...>::value, "Unsupported type");
-
       using type = etl::remove_cvref_t<T>;
 
       do_destroy();
@@ -1181,12 +1244,10 @@ namespace etl
     //***************************************************************************
     /// Emplace by index with variadic constructor parameters.
     //***************************************************************************
-    template <size_t Index, typename... TArgs>
+    template <size_t Index, typename... TArgs, etl::enable_if_t<(Index < sizeof...(TTypes)), int> = 0>
     typename etl::variant_alternative_t<Index, variant<TTypes...> >& emplace(TArgs&&... args)
       ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<type_from_index<Index>, TArgs...>::value))
     {
-      static_assert(Index < sizeof...(TTypes), "Index out of range");
-
       using type = type_from_index<Index>;
 
       do_destroy();
@@ -1201,12 +1262,10 @@ namespace etl
     //***************************************************************************
     /// Emplace by index with variadic constructor parameters.
     //***************************************************************************
-    template <size_t Index, typename U, typename... TArgs>
+    template <size_t Index, typename U, typename... TArgs, etl::enable_if_t<(Index < sizeof...(TTypes)), int> = 0>
     typename etl::variant_alternative_t<Index, variant<TTypes...> >& emplace(std::initializer_list<U> il, TArgs&&... args)
       ETL_NOEXCEPT_IF((etl::is_nothrow_constructible<type_from_index<Index>, std::initializer_list<U>, TArgs...>::value))
     {
-      static_assert(Index < sizeof...(TTypes), "Index out of range");
-
       using type = type_from_index<Index>;
 
       do_destroy();
@@ -1222,17 +1281,15 @@ namespace etl
     /// Move assignment operator for type.
     ///\param value The value to assign.
     //***************************************************************************
-    template <typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0>
+    template < typename T, etl::enable_if_t<!etl::is_same<etl::remove_cvref_t<T>, variant>::value, int> = 0,
+               size_t AlternativeIndex = private_variant::select_alternative_index<T, TTypes...>::value,
+               typename TAlternative = type_from_index<AlternativeIndex>, etl::enable_if_t<etl::is_constructible<TAlternative, T>::value, int> = 0>
     variant& operator=(T&& value)
     {
-      using type = etl::remove_cvref_t<T>;
-
-      static_assert(etl::is_one_of<type, TTypes...>::value, "Unsupported type");
-
       do_destroy();
-      do_construct<type>(etl::forward<T>(value));
+      do_construct<TAlternative>(etl::forward<T>(value));
 
-      type_id = index_of_type<type>::value;
+      type_id = AlternativeIndex;
 
       return *this;
     }

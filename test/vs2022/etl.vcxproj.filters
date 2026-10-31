@@ -1691,6 +1691,9 @@
     <ClCompile Include="..\test_message_timer_locked.cpp">
       <Filter>Tests\Messaging</Filter>
     </ClCompile>
+    <ClCompile Include="..\test_meta.cpp">
+      <Filter>Tests\Types</Filter>
+    </ClCompile>
     <ClCompile Include="..\test_shared_message.cpp">
       <Filter>Tests\Messaging</Filter>
     </ClCompile>
