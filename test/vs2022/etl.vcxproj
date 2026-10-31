@@ -3559,6 +3559,11 @@
     <ClInclude Include="..\..\include\etl\generators\variant_pool_cpp03_generator.h" />
     <ClInclude Include="..\..\include\etl\index_of_type.h" />
     <ClInclude Include="..\..\include\etl\inplace_function.h" />
+    <ClInclude Include="..\..\include\etl\intrusive_timer.h" />
+    <ClInclude Include="..\..\include\etl\private\timer_lists.h" />
+    <ClInclude Include="..\..\include\etl\timer_config.h" />
+    <ClInclude Include="..\..\include\etl\timer_lock_policy.h" />
+    <ClInclude Include="..\..\include\etl\timer_node.h" />
     <ClInclude Include="..\..\include\etl\invoke.h" />
     <ClInclude Include="..\..\include\etl\lcm.h" />
     <ClInclude Include="..\..\include\etl\math.h" />
@@ -3732,6 +3737,7 @@
     <ClInclude Include="..\..\include\etl\task.h" />
     <ClInclude Include="..\..\include\etl\threshold.h" />
     <ClInclude Include="..\..\include\etl\timer.h" />
+    <ClInclude Include="..\..\include\etl\timer_notification.h" />
     <ClInclude Include="..\..\include\etl\to_arithmetic.h" />
     <ClInclude Include="..\..\include\etl\to_string.h" />
     <ClInclude Include="..\..\include\etl\to_u16string.h" />
@@ -7340,6 +7346,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20 - Force C++03 - No virtual messages|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\syntax_check\intrusive_timer.h.t.cpp" />
     <ClCompile Include="..\syntax_check\invert.h.t.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug MSVC C++20|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug Clang C++20|Win32'">true</ExcludedFromBuild>
@@ -10401,6 +10408,7 @@
     <ClCompile Include="..\test_index_of_type.cpp" />
     <ClCompile Include="..\test_inplace_function.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
+    <ClCompile Include="..\test_intrusive_timer.cpp" />
     <ClCompile Include="..\test_invoke.cpp" />
     <ClCompile Include="..\test_is_invocable.cpp" />
     <ClCompile Include="..\test_macros.cpp" />
@@ -11450,6 +11458,9 @@
     <ClCompile Include="..\test_task_scheduler.cpp" />
     <ClCompile Include="..\test_threshold.cpp" />
     <ClCompile Include="..\test_chrono_time_point.cpp" />
+    <ClCompile Include="..\test_timer_config.cpp" />
+    <ClCompile Include="..\test_timer_lists.cpp" />
+    <ClCompile Include="..\test_timer_node.cpp" />
     <ClCompile Include="..\test_to_arithmetic.cpp" />
     <ClCompile Include="..\test_to_arithmetic_u16.cpp" />
     <ClCompile Include="..\test_to_arithmetic_u32.cpp" />
