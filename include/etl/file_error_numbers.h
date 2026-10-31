@@ -114,4 +114,5 @@ SOFTWARE.
 #define ETL_INTRUSIVE_AVL_TREE_FILE_ID             "81"
 #define ETL_FUTURE_FILE_ID                         "82"
 #define ETL_CYCLIC_VALUE_FILE_ID                   "83"
+#define ETL_SEMAPHORE_FILE_ID                      "84"
 #endif
