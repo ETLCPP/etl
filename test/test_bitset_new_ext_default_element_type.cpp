@@ -2553,7 +2553,7 @@ namespace
       using Bitset = etl::bitset_ext<Size, uint8_t>;
       using Buffer = Bitset::buffer_type;
 
-      const unsigned long long Initial = std::numeric_limits<uint16_t>::max();
+      const unsigned long long Initial  = std::numeric_limits<uint16_t>::max();
       const unsigned long long Expected = ((1ULL << Size) - 1);
 
       // Create a bitset from a value larger than the bitset size.

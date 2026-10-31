@@ -2963,7 +2963,7 @@ namespace
 
       using Bitset = etl::bitset<Size, uint16_t>;
 
-      const unsigned long long Initial = std::numeric_limits<uint16_t>::max();
+      const unsigned long long Initial  = std::numeric_limits<uint16_t>::max();
       const unsigned long long Expected = ((1ULL << Size) - 1);
 
       // Create a bitset from a value larger than the bitset size.
