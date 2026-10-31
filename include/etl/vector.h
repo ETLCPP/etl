@@ -611,9 +611,18 @@ namespace etl
       }
       else
       {
+        // value may refer to an element that is about to be shifted.
+        const_pointer p_value = etl::addressof(value);
+
         create_back(back());
         etl::move_backward(position_, p_end - 2, p_end - 1);
-        *position_ = value;
+
+        if ((p_value >= position_) && (p_value < p_end))
+        {
+          ++p_value;
+        }
+
+        *position_ = *p_value;
       }
 
       return position_;
@@ -640,9 +649,18 @@ namespace etl
       }
       else
       {
+        // value may refer to an element that is about to be shifted.
+        pointer p_value = etl::addressof(value);
+
         create_back(etl::move(back()));
         etl::move_backward(position_, p_end - 2, p_end - 1);
-        *position_ = etl::move(value);
+
+        if ((p_value >= position_) && (p_value < p_end))
+        {
+          ++p_value;
+        }
+
+        *position_ = etl::move(*p_value);
       }
 
       return position_;
@@ -661,24 +679,25 @@ namespace etl
 
       iterator position_ = to_iterator(position);
 
-      void* p;
-
       if (position_ == end())
       {
-        p = p_end++;
+  #include "private/diagnostic_sign_conversion_push.h"
+        ::new (p_end) T(etl::forward<Args>(args)...);
+  #include "private/diagnostic_pop.h"
+        ++p_end;
         ETL_INCREMENT_DEBUG_COUNT;
       }
       else
       {
-        p = etl::addressof(*position_);
-        create_back(back());
-        etl::move_backward(position_, p_end - 2, p_end - 1);
-        (*position_).~T();
-      }
-
   #include "private/diagnostic_sign_conversion_push.h"
-      ::new (p) T(etl::forward<Args>(args)...);
+        // args may refer to elements that are about to be shifted, so construct the value first.
+        T value(etl::forward<Args>(args)...);
   #include "private/diagnostic_pop.h"
+
+        create_back(etl::move(back()));
+        etl::move_backward(position_, p_end - 2, p_end - 1);
+        *position_ = etl::move(value);
+      }
 
       return position_;
     }
@@ -691,22 +710,21 @@ namespace etl
 
       iterator position_ = to_iterator(position);
 
-      void* p;
-
       if (position_ == end())
       {
-        p = p_end++;
+        ::new (p_end) T(value1);
+        ++p_end;
         ETL_INCREMENT_DEBUG_COUNT;
       }
       else
       {
-        p = etl::addressof(*position_);
+        // The values may refer to elements that are about to be shifted, so construct the value first.
+        T value(value1);
+
         create_back(back());
         etl::move_backward(position_, p_end - 2, p_end - 1);
-        (*position_).~T();
+        *position_ = value;
       }
-
-      ::new (p) T(value1);
 
       return position_;
     }
@@ -719,22 +737,21 @@ namespace etl
 
       iterator position_ = to_iterator(position);
 
-      void* p;
-
       if (position_ == end())
       {
-        p = p_end++;
+        ::new (p_end) T(value1, value2);
+        ++p_end;
         ETL_INCREMENT_DEBUG_COUNT;
       }
       else
       {
-        p = etl::addressof(*position_);
+        // The values may refer to elements that are about to be shifted, so construct the value first.
+        T value(value1, value2);
+
         create_back(back());
         etl::move_backward(position_, p_end - 2, p_end - 1);
-        (*position_).~T();
+        *position_ = value;
       }
-
-      ::new (p) T(value1, value2);
 
       return position_;
     }
@@ -747,22 +764,21 @@ namespace etl
 
       iterator position_ = to_iterator(position);
 
-      void* p;
-
       if (position_ == end())
       {
-        p = p_end++;
+        ::new (p_end) T(value1, value2, value3);
+        ++p_end;
         ETL_INCREMENT_DEBUG_COUNT;
       }
       else
       {
-        p = etl::addressof(*position_);
+        // The values may refer to elements that are about to be shifted, so construct the value first.
+        T value(value1, value2, value3);
+
         create_back(back());
         etl::move_backward(position_, p_end - 2, p_end - 1);
-        (*position_).~T();
+        *position_ = value;
       }
-
-      ::new (p) T(value1, value2, value3);
 
       return position_;
     }
@@ -775,22 +791,21 @@ namespace etl
 
       iterator position_ = to_iterator(position);
 
-      void* p;
-
       if (position_ == end())
       {
-        p = p_end++;
+        ::new (p_end) T(value1, value2, value3, value4);
+        ++p_end;
         ETL_INCREMENT_DEBUG_COUNT;
       }
       else
       {
-        p = etl::addressof(*position_);
+        // The values may refer to elements that are about to be shifted, so construct the value first.
+        T value(value1, value2, value3, value4);
+
         create_back(back());
         etl::move_backward(position_, p_end - 2, p_end - 1);
-        (*position_).~T();
+        *position_ = value;
       }
-
-      ::new (p) T(value1, value2, value3, value4);
 
       return position_;
     }
@@ -836,6 +851,14 @@ namespace etl
       size_t copy_new_n      = construct_old_n;
       size_t construct_new_n = insert_n - copy_new_n;
 
+      // value may refer to an element that is about to be shifted.
+      const_pointer p_value = etl::addressof(value);
+
+      if ((p_value >= position_) && (p_value < p_end))
+      {
+        p_value += n;
+      }
+
       // Construct old.
       etl::uninitialized_move(p_end - construct_old_n, p_end, p_construct_old);
       ETL_ADD_DEBUG_COUNT(construct_old_n);
@@ -844,11 +867,11 @@ namespace etl
       etl::move_backward(p_buffer + insert_begin, p_buffer + insert_begin + copy_old_n, p_buffer + insert_end + copy_old_n);
 
       // Construct new.
-      etl::uninitialized_fill_n(p_end, construct_new_n, value);
+      etl::uninitialized_fill_n(p_end, construct_new_n, *p_value);
       ETL_ADD_DEBUG_COUNT(construct_new_n);
 
       // Copy new.
-      etl::fill_n(p_buffer + insert_begin, copy_new_n, value);
+      etl::fill_n(p_buffer + insert_begin, copy_new_n, *p_value);
 
       p_end += n;
     }
