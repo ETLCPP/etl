@@ -60,8 +60,7 @@ namespace etl
       /// Constructor.
       //*************************************************************************
       debounce_value_base(value_type initial_value)
-        : value(initial_value)
-        , last_value(initial_value)
+        : last_value(initial_value)
         , count(0)
         , state(Unstable)
         , notification(nullptr)
@@ -71,7 +70,7 @@ namespace etl
       //*************************************************************************
       /// Adds a new value.
       /// If the value has changed, the counter is reset and the value is marked as unstable.
-      /// Returns 'true' if the value is stable.
+      /// Returns 'true' if the value has changed.
       //*************************************************************************
       bool add(value_type value, count_type stable_count)
       {
@@ -108,7 +107,7 @@ namespace etl
 
         last_value = value;
 
-        return is_stable();
+        return has_changed();
       }
 
       //*************************************************************************
@@ -133,7 +132,7 @@ namespace etl
       //*************************************************************************
       value_type get() const
       {
-        return value;
+        return last_value;
       }
 
       //*************************************************************************
@@ -163,7 +162,6 @@ namespace etl
         Changed  = 2
       };
 
-      value_type         value;
       value_type         last_value;
       count_type         count;
       notification_type* notification;
@@ -171,51 +169,7 @@ namespace etl
     };
   } // namespace private_debounce_value
 
-  template <typename TValue, typename TCount, typename TTag>
-  class debounce_value;
-
-  //*************************************************************************
-  /// A debounced for a value.
-  /// The debounced will only change its value if the new value has been stable for a given number of calls.
-  /// Compile-time stable count.
-  //*************************************************************************
-  template <typename TValue, typename TCount, TCount Stable_Count>
-  class debounce_value<TValue, TCount, etl::integral_constant<TCount, Stable_Count>> // (2) compile-time specialization
-    : public private_debounce_value::debounce_value_base<TValue, TCount>
-  {
-  public:
-
-    using value_type = typename private_debounce_value::debounce_value_base<TValue, TCount>::value_type;
-    using count_type = typename private_debounce_value::debounce_value_base<TValue, TCount>::count_type;
-
-    //*************************************************************************
-    /// Constructor.
-    //*************************************************************************
-    explicit debounce_value(value_type initial_value)
-      : private_debounce_value::debounce_value_base<TValue, TCount>(initial_value)
-    {
-    }
-
-    //*************************************************************************
-    /// Adds a new value to the debounced.
-    /// If the value has changed, the counter is reset and the debounced is marked as unstable.
-    //*************************************************************************
-    bool add(value_type value)
-    {
-      return private_debounce_value::debounce_value_base<TValue, TCount>::add(value, Stable_Count);
-    }
-  };
-
-  //*************************************************************************
-  /// A debounced for a value.
-  /// The debounced will only change its value if the new value has been stable for a given number of calls.
-  /// Runtime stable count.
-  //*************************************************************************
-  struct debounce_runtime_tag
-  {
-  };
-
-  template <typename TValue, typename TCount = uint16_t, typename TTag = debounce_runtime_tag>
+  template <typename TValue, typename TCount>
   class debounce_value : public private_debounce_value::debounce_value_base<TValue, TCount>
   {
   public:

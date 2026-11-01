@@ -10411,7 +10411,6 @@
     <ClCompile Include="..\test_math_functions.cpp" />
     <ClCompile Include="..\test_message.cpp" />
     <ClCompile Include="..\test_message_broker.cpp" />
-    <ClCompile Include="..\test_notification.cpp" />
     <ClCompile Include="..\test_not_null_pointer.cpp" />
     <ClCompile Include="..\test_not_null_pointer_constexpr.cpp" />
     <ClCompile Include="..\test_not_null_unique_pointer.cpp" />

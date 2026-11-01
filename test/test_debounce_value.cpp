@@ -30,6 +30,8 @@ SOFTWARE.
 
 #include "etl/debounce_value.h"
 
+#include <vector>
+
 namespace
 {
   uint8_t notification_value = 0;
@@ -46,7 +48,8 @@ namespace
 
   SUITE(test_debounce)
   {
-    TEST(test_debounce_value_runtime)
+    //*************************************************************************
+    TEST(test_debounce_value)
     {
       const uint8_t Initial_Value = 1;
       const uint8_t Stable_Count  = 4;
@@ -81,12 +84,13 @@ namespace
       CHECK_TRUE(value.add(2));
       CHECK_TRUE(value.is_stable());
       CHECK_TRUE(value.has_changed());
+      CHECK_EQUAL(2, value.get());
 
       // Notified.
       CHECK_EQUAL(2, notification_value);
 
       // Still stable.
-      CHECK_TRUE(value.add(2));
+      CHECK_FALSE(value.add(2));
       CHECK_TRUE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
@@ -112,14 +116,148 @@ namespace
       CHECK_TRUE(value.add(3));
       CHECK_TRUE(value.is_stable());
       CHECK_TRUE(value.has_changed());
+      CHECK_EQUAL(3, value.get());
 
       // Notified.
       CHECK_EQUAL(3, notification_value);
 
       // Stable.
-      CHECK_TRUE(value.add(3));
+      CHECK_FALSE(value.add(3));
       CHECK_TRUE(value.is_stable());
       CHECK_FALSE(value.has_changed());
+    }
+
+    //*************************************************************************
+    TEST(test_debounce_value_modify_stable_count)
+    {
+      const uint8_t Initial_Value = 1;
+      const uint8_t Stable_Count = 4;
+
+      etl::debounce_value<uint8_t, uint8_t> value(Initial_Value, Stable_Count);
+
+      value.set_notification(notification);
+
+      notification_value = 0;
+
+      CHECK_FALSE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+
+      //*******************************
+      // Transition from unstable to stable.
+      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+
+      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+
+      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+
+      // Not notified yet.
+      CHECK_EQUAL(0, notification_value);
+
+      // Stable & changed.
+      CHECK_TRUE(value.add(2));
+      CHECK_TRUE(value.is_stable());
+      CHECK_TRUE(value.has_changed());
+      CHECK_EQUAL(2, value.get());
+
+      // Notified.
+      CHECK_EQUAL(2, notification_value);
+
+      // Still stable.
+      CHECK_FALSE(value.add(2));
+      CHECK_TRUE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+
+      //*******************************
+      // Change the stable count.
+      value.set_stable_count(2);
+
+      //*******************************
+      // Transition from unstable to stable.
+      // Unstable.
+      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+
+      // Not notified yet.
+      CHECK_EQUAL(2, notification_value);
+
+      // Stable & changed.
+      CHECK_TRUE(value.add(3));
+      CHECK_TRUE(value.is_stable());
+      CHECK_TRUE(value.has_changed());
+      CHECK_EQUAL(3, value.get());
+
+      // Notified.
+      CHECK_EQUAL(3, notification_value);
+
+      // Stable.
+      CHECK_FALSE(value.add(3));
+      CHECK_TRUE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+    }
+
+    //*************************************************************************
+    TEST(test_debounce_value_modify_notification)
+    {
+      const uint8_t Initial_Value = 1;
+      const uint8_t Stable_Count  = 4;
+
+      etl::debounce_value<uint8_t, uint8_t> value(Initial_Value, Stable_Count);
+
+      value.set_notification(notification);
+
+      notification_value = 0;
+
+      //*******************************
+      // Transition from unstable to stable.
+      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.add(2));
+      CHECK_TRUE(value.add(2));
+
+      // Notified.
+      CHECK_EQUAL(2, notification_value);
+
+      value.clear_notification();
+
+      //*******************************
+      // Transition from unstable to stable.
+      // Unstable.
+      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.add(3));
+      CHECK_TRUE(value.add(3));
+
+      // Not notified, so the value remains the same.
+      CHECK_EQUAL(2, notification_value);
+    }
+
+    //*************************************************************************
+    TEST(test_debounce_values_from_an_input)
+    {
+      std::vector<uint8_t> input = { 1, 2, 3, 3, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6 };
+      std::vector<uint8_t> output;
+      std::vector<uint8_t> expected = { 2, 3, 4, 6 };
+
+      const uint8_t Stable_Count = 3;
+      etl::debounce_value<uint8_t, uint8_t> value(0, Stable_Count);
+
+      for (uint8_t v : input)
+      {
+        if (value.add(v))
+        {
+          output.push_back(value.get());
+        }
+      }
+
+      CHECK_EQUAL(expected.size(), output.size());
+      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
     }
   }
 } // namespace

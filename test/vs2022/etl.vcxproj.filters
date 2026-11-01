@@ -1566,6 +1566,12 @@
     <ClInclude Include="..\..\include\etl\format.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\debounce_value.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\notification.h">
+      <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -3838,6 +3844,9 @@
     </ClCompile>
     <ClCompile Include="..\test_vector_member_function_pointer_external_buffer.cpp">
       <Filter>Tests\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_debounce_value.cpp">
+      <Filter>Tests\Misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
