@@ -47,7 +47,7 @@ namespace etl
     {
     public:
 
-      virtual void invoke(etl::timer::interval::type)
+      virtual void on_time_to_next_notification(etl::timer::interval::type)
       {
         // Do nothing by default.
       }

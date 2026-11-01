@@ -26,63 +26,45 @@ The `etl::intrusive_timer` is a replacement for all legacy timers within the ETL
 - **Dynamic Scheduling**  
   Features a configurable notification hook that fires whenever the next due timer changes, yielding the precise 'time-to-next' interval to user code.
 
-## timer_lock_policy
+## etl::timer::lock_policy
 ```cpp
-class timer_lock_policy
+class lock_policy
 ```
 **Description**  
 Interface for a timer lock policy.  
 Derive from this to implement your own lock policy.
 
-Declares the following pure virtual functions.  
+See [lock_policy]({{< relref "timer-lock-policy.md#lock_policy" >}})
 
----
-
-`virtual void lock() ETL_NOEXCEPT`  
-Locks access.  
-
----
-
-`virtual void unlock() ETL_NOEXCEPT`  
-Unlocks access.  
-
----
-
-`virtual bool is_locked() ETL_NOEXCEPT`  
-Returns `true` if access is locked.  
-
-## timer_no_lock_policy
+## etl::timer::no_lock_policy
 ```cpp
-class timer_no_lock_policy : public timer_lock_policy
+class no_lock_policy : public timer_lock_policy
 ```
 **Description**  
 A predefined lock policy does no locking.  
 Useful for single threaded code or testing purposes.  
 
-## timer_atomic_lock_policy
+See [no_lock_policy]({{< relref "timer-lock-policy.md#no_lock_policy" >}})
+
+## etl::timer::atomic_lock_policy
 ```cpp
-class timer_atomic_lock_policy : public timer_lock_policy
+class atomic_lock_policy : public timer_lock_policy
 ```
 **Description**  
 A predefined lock policy that uses an atomic flag.  
 Only defined if `ETL_HAS_ATOMIC` is `1`.
 
-## timer_time_to_next_notification
+See [atomic_lock_policy]({{< relref "timer-lock-policy.md#atomic_lock_policy" >}})
+
+## etl::timer::time_to_next_notification
 ```cpp
-timer_time_to_next_notification
+time_to_next_notification
 ```
 **Description**  
 This is the base class for 'time to next' notifications.  
 Derive from this to define a custom implementation.
 
----
-
-```cpp
-virtual void invoke(etl::timer::interval::type delta)
-```
-**Description**  
-Called to notify user code of the 'time to next' delta for the next due timer.  
-If not overridden, then does nothing.
+See [timer_notification]({{< relref "timer-notification.md" >}})
 
 ## intrusive_timer
 ```cpp

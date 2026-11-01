@@ -10,17 +10,15 @@ weight: 104
   From: `C++03`
 {{< /callout >}}
 
-## Description
-
 ## time_to_next_notification
 ```cpp
-timer_time_to_next_notification
+time_to_next_notification
 ```
 **Description**  
 This is the base class for 'time to next' notifications.  
 Derive from this to define a custom implementation.  
 
 ```cpp
-virtual void invoke(etl::timer::interval::type)
+virtual void on_time_to_next_notification(etl::timer::interval::type)
 ```
 If not overridden then does nothing.  

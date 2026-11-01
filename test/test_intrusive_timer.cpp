@@ -222,7 +222,7 @@ namespace
   {
   public:
 
-    void invoke(uint32_t delta) override
+    void on_time_to_next_notification(uint32_t delta) override
     {
       time_to_next.push_back(delta);
     }

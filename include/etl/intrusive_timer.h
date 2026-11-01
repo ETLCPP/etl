@@ -60,7 +60,7 @@ namespace etl
       , register_list()
       , active_list()
       , expired_list()
-      , active_notify_time_to_next(&default_notify_time_to_next)
+      , notify_time_to_next(&default_notify_time_to_next)
       , enabled(false)
       , timer_count(0U)
     {
@@ -433,7 +433,7 @@ namespace etl
     //*******************************************
     void set_next_timer_notification(etl::timer::time_to_next_notification& notification) ETL_NOEXCEPT
     {
-      active_notify_time_to_next = &notification;
+      notify_time_to_next = &notification;
     }
 
     //*******************************************
@@ -441,7 +441,7 @@ namespace etl
     //*******************************************
     void clear_next_timer_notification() ETL_NOEXCEPT
     {
-      active_notify_time_to_next = &default_notify_time_to_next;
+      notify_time_to_next = &default_notify_time_to_next;
     }
 
     //*******************************************
@@ -473,7 +473,7 @@ namespace etl
       if (notify_)
       {
         // The next timer has changed, so notify the user.
-        active_notify_time_to_next->invoke(timer_->get_delta());
+        notify_time_to_next->on_time_to_next_notification(timer_->get_delta());
       }
     }
 
@@ -530,7 +530,7 @@ namespace etl
     etl::private_timer::expired_list  expired_list;
 
     etl::timer::time_to_next_notification  default_notify_time_to_next;
-    etl::timer::time_to_next_notification* active_notify_time_to_next;
+    etl::timer::time_to_next_notification* notify_time_to_next;
 
     bool   enabled;
     size_t timer_count;
