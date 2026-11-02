@@ -79,8 +79,10 @@ These may be defined in the project settings or the user created `etl_profile.h`
 | `ETL_CONSTEXPR17`                    | If `ETL_CPP17_SUPPORTED` is defined as `1` then this macro is defined as `constexpr`, otherwise defined as blank.|
 | `ETL_IF_CONSTEXPR`                   | If `ETL_CPP17_SUPPORTED` is defined as `1` then this macro is defined as `constexpr`, otherwise defined as blank.|
 | `ETL_CONSTANT`                       | If `ETL_CPP11_SUPPORTED` is defined as `1` then this macro is defined as `constexpr`, otherwise defined as `const`.|
-| `ETL_NOEXCEPT`                       | If `ETL_CPP11_SUPPORTED` is defined as `1` then this macro is defined as `noexcept`, otherwise defined as blank.|
-| `ETL_NOEXCEPT_EXPR(expression)`      | If `ETL_CPP11_SUPPORTED` is defined as `1` then this macro is defined as `noexcept(expression)`, otherwise defined as blank.|
+| `ETL_NOEXCEPT`                       | In C++11 and later, defined as `noexcept`, otherwise blank. Independent of `ETL_THROW_EXCEPTIONS` and compiler exception handling settings.|
+| `ETL_NOEXCEPT_EXPR(expression)`      | In C++11 and later, defined as `noexcept(expression)`, otherwise blank. Independent of exception handling settings.|
+| `ETL_NOEXCEPT_IF(b)`                 | In C++11 and later, defined as `noexcept((b))`, otherwise blank. Independent of exception handling settings.|
+| `ETL_NOEXCEPT_FROM(x)`               | In C++11 and later, defined as `noexcept(noexcept(x))`, otherwise blank. Independent of exception handling settings.|
 | `ETL_NODISCARD`                      | If `ETL_CPP11_SUPPORTED` is defined as `1` then this macro is defined as `[[nodiscard]]`, otherwise defined as blank.|
 | `ETL_DEPRECATED`                     | If `ETL_CPP14_SUPPORTED` is defined as `1` then this macro is defined as `[[deprecated]]`, otherwise defined as blank.|
 | `ETL_DEPRECATED_REASON(reason)`      | If `ETL_CPP14_SUPPORTED` is defined as `1` then this macro is defined as `[[deprecated(reason)]]`, otherwise defined as blank.|
@@ -147,4 +149,3 @@ These may be user defined in `etl_profile.h`, or automatically determined in `pl
 | `ETL_DEVELOPMENT_OS_GENERIC`         | |
 |                                      | |
 | `ETL_NO_CPP_NAN_SUPPORT`             | If defined, indicates that the compiler does not support nan(), nanf() or nanl().<br/>Automatically defined if using CodeWorks for ARM.|
-

@@ -394,17 +394,11 @@ SOFTWARE.
   #define ETL_ENUM_CLASS_TYPE(name, type) enum class name : type
   #define ETL_LVALUE_REF_QUALIFIER        &
   #define ETL_RVALUE_REF_QUALIFIER        &&
-  #if ETL_USING_EXCEPTIONS
-    #define ETL_NOEXCEPT           noexcept
-    #define ETL_NOEXCEPT_EXPR(...) noexcept(__VA_ARGS__)
-    #define ETL_NOEXCEPT_IF(b)     noexcept((b))
-    #define ETL_NOEXCEPT_FROM(x)   noexcept(noexcept(x))
-  #else
-    #define ETL_NOEXCEPT
-    #define ETL_NOEXCEPT_EXPR(...)
-    #define ETL_NOEXCEPT_IF(b)
-    #define ETL_NOEXCEPT_FROM(x)
-  #endif
+  // noexcept support is independent of whether ETL throws exceptions.
+  #define ETL_NOEXCEPT           noexcept
+  #define ETL_NOEXCEPT_EXPR(...) noexcept(__VA_ARGS__)
+  #define ETL_NOEXCEPT_IF(b)     noexcept((b))
+  #define ETL_NOEXCEPT_FROM(x)   noexcept(noexcept(x))
 #else
   #define ETL_CONSTEXPR
   #define ETL_CONSTEXPR11
