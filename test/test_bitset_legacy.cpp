@@ -1505,13 +1505,13 @@ namespace
     {
       etl::bitset<5U> bits;
       std::bitset<5U> stdbits;
-      etl::bitset<5U> negbits    = ~bits;
-      std::bitset<5U> stdnegbits = ~stdbits;
+      etl::bitset<5U> negated_bits = ~bits;
+      std::bitset<5U> stdnegbits   = ~stdbits;
 
       CHECK_EQUAL(stdbits.count(), bits.count());
       CHECK_EQUAL(stdbits.all(), bits.all());
-      CHECK_EQUAL(stdnegbits.count(), negbits.count());
-      CHECK_EQUAL(stdnegbits.all(), negbits.all());
+      CHECK_EQUAL(stdnegbits.count(), negated_bits.count());
+      CHECK_EQUAL(stdnegbits.all(), negated_bits.all());
     }
 
     //*************************************************************************
