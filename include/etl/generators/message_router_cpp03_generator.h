@@ -440,12 +440,12 @@ public:
 
   void receive(const etl::imessage& msg) ETL_OVERRIDE
   {
-#include "etl/private/diagnostic_array_bounds_push.h"
+#include "private/diagnostic_array_bounds_push.h"
     if (has_successor())
     {
       get_successor().receive(msg);
     }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
   }
 
   //**********************************************
