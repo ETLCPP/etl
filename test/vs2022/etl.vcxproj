@@ -3594,6 +3594,8 @@
     <ClInclude Include="..\..\include\etl\private\diagnostic_pop.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_self_assign_overloaded_push.h" />
     <ClInclude Include="..\..\include\etl\private\diagnostic_unused_function_push.h" />
+    <ClInclude Include="..\..\include\etl\private\message_packet_cpp03.h" />
+    <ClInclude Include="..\..\include\etl\private\message_router_cpp03.h" />
     <ClInclude Include="..\..\include\etl\private\tuple_element.h" />
     <ClInclude Include="..\..\include\etl\private\tuple_size.h" />
     <ClInclude Include="..\..\include\etl\pseudo_moving_average.h" />
