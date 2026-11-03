@@ -1637,6 +1637,57 @@ namespace
     }
 
     //*************************************************************************
+    // Counts the bits that differ from a bit by bit shift, for every shift from 0 to the full size.
+    template <typename TElement>
+    size_t count_shift_mismatches()
+    {
+      typedef etl::bitset_ext<128, TElement> bitset_type;
+
+      typename bitset_type::buffer_type buffer;
+      bitset_type                       data(buffer);
+
+      for (size_t i = 0U; i < 128U; i += 3U)
+      {
+        data.set(i);
+      }
+
+      size_t mismatches = 0U;
+
+      for (size_t shift = 0U; shift <= 128U; ++shift)
+      {
+        typename bitset_type::buffer_type left_buffer;
+        typename bitset_type::buffer_type right_buffer;
+        bitset_type                       left(data, left_buffer);
+        bitset_type                       right(data, right_buffer);
+        left <<= shift;
+        right >>= shift;
+
+        for (size_t i = 0U; i < 128U; ++i)
+        {
+          const bool expected_left  = (i >= shift) && data.test(i - shift);
+          const bool expected_right = ((i + shift) < 128U) && data.test(i + shift);
+
+          mismatches += (left.test(i) != expected_left) ? 1U : 0U;
+          mismatches += (right.test(i) != expected_right) ? 1U : 0U;
+        }
+      }
+
+      return mismatches;
+    }
+
+    //*************************************************************************
+    TEST(test_shift_operators_all_shifts_32_bit_element_type)
+    {
+      CHECK_EQUAL(0U, count_shift_mismatches<uint32_t>());
+    }
+
+    //*************************************************************************
+    TEST(test_shift_operators_all_shifts_64_bit_element_type)
+    {
+      CHECK_EQUAL(0U, count_shift_mismatches<uint64_t>());
+    }
+
+    //*************************************************************************
     TEST(test_and_equals_operator)
     {
       etl::bitset_ext<64>::buffer_type buffer1;
