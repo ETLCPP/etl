@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include "platform.h"
 #include "atomic.h"
+#include "limits.h"
 
 #include <stdint.h>
 
@@ -41,81 +42,143 @@ SOFTWARE.
 namespace etl
 {
 #ifdef ETL_TIMER_SEMAPHORE_TYPE
-  typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore_t;
+  typedef ETL_TIMER_SEMAPHORE_TYPE timer_semaphore
 #else
   #if ETL_HAS_ATOMIC
   typedef etl::atomic_uint32_t timer_semaphore_t;
   #endif
 #endif
 
-  //***************************************************************************
-  /// Common definitions for the timer framework.
-  //***************************************************************************
-  struct timer
+    //***************************************************************************
+    /// Common definitions for the timer framework.
+    //***************************************************************************
+    namespace timer
   {
     // Timer modes.
     struct mode
     {
       enum
       {
-        SINGLE_SHOT = false,
-        REPEATING   = true,
+        SINGLE_SHOT = 0, // Deprecated
+        REPEATING   = 1, // Deprecated
 
-        Single_Shot = false,
-        Repeating   = true
+        Single_Shot = 0,
+        Repeating   = 1,
+        No_Mode     = 2
       };
 
-      typedef bool type;
+      typedef uint_least8_t type;
     };
+
+#if ETL_USING_CPP11
+    using mode_t = mode::type;
+#endif
 
     // Timer start status.
     struct start
     {
       enum
       {
-        DELAYED   = false,
+        DELAYED   = false, // Deprecated
         IMMEDIATE = true,
 
-        Delayed   = false,
+        Delayed   = false, // Deprecated
         Immediate = true
       };
 
       typedef bool type;
     };
 
+#if ETL_USING_CPP11
+    using start_t = start::type;
+#endif
+
     // Timer id.
     struct id
     {
+      typedef uint_least8_t type;
+
       enum
       {
-        NO_TIMER = 255,
-        No_Timer = 255
+        NO_TIMER = etl::integral_limits<type>::max, // Deprecated
+        No_Timer = etl::integral_limits<type>::max
       };
-
-      typedef uint_least8_t type;
     };
+
+#if ETL_USING_CPP11
+    using id_t = id::type;
+#endif
 
     // Timer state.
     struct state
     {
+      typedef uint32_t type;
+
       enum
       {
-        INACTIVE = 0xFFFFFFFFUL,
-        Inactive = 0xFFFFFFFFUL
+        INACTIVE = etl::integral_limits<type>::max, // Deprecated
+        Inactive = etl::integral_limits<type>::max
       };
     };
+
+#if ETL_USING_CPP11
+    using state_t = state::type;
+#endif
 
     // Timer time interval.
     struct interval
     {
+      typedef uint32_t type;
+
       enum
       {
-        No_Active_Interval = 0xFFFFFFFFUL
+        No_Active_Interval = etl::integral_limits<type>::max, // Deprecated
+        No_Interval        = etl::integral_limits<type>::max
+      };
+    };
+
+#if ETL_USING_CPP11
+    using interval_t = interval::type;
+#endif
+
+    // Timer owner.
+#if ETL_USING_CPP11
+    namespace private_timer
+    {
+      template <typename TDummy>
+      struct owner_static
+      {
+        using type                     = const void*;
+        static constexpr type No_Owner = nullptr;
       };
 
-      typedef uint32_t type;
+      template <typename TDummy>
+      constexpr typename owner_static<TDummy>::type owner_static<TDummy>::No_Owner;
+    } // namespace private_timer
+#else
+    namespace private_timer
+    {
+      template <typename TDummy>
+      struct owner_static
+      {
+        typedef const void* type;
+
+        static const type No_Owner;
+      };
+
+      template <typename TDummy>
+      const typename owner_static<TDummy>::type owner_static<TDummy>::No_Owner = ETL_NULLPTR;
+    } // namespace private_timer
+#endif
+
+    struct owner : private_timer::owner_static<void>
+    {
     };
-  };
+
+#if ETL_USING_CPP11
+    using owner_t = owner::type;
+#endif
+  } // namespace timer
 } // namespace etl
 
 #endif

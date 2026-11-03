@@ -16,9 +16,9 @@
 #include "Config.h"
 #include "TestResults.h"
 #include "MemoryOutStream.h"
-#include<iomanip> 
+#include<iomanip>
 
-namespace UnitTest 
+namespace UnitTest
 {
   template <typename T>
   typename std::enable_if<!std::is_pointer<T>::value, std::string>::type
@@ -178,7 +178,7 @@ namespace UnitTest
      if (!(expected == actual))
      {
        UnitTest::MemoryOutStream stream;
-       stream << "Expected " 
+       stream << "Expected "
          << DisplayValue(expected) << " but was " << DisplayValue(actual);
 
        results.OnTestFailure(details, stream.GetText());
@@ -205,7 +205,7 @@ namespace UnitTest
      if (!(expected == actual))
      {
        UnitTest::MemoryOutStream stream;
-       stream << std::hex << std::uppercase << std::setfill('0') 
+       stream << std::hex << std::uppercase << std::setfill('0')
               << "Expected 0x" << std::setw(2 * sizeof(Expected)) << (static_cast<typename std::make_unsigned<Expected>::type>(expected) & ~(typename std::make_unsigned<Expected>::type(0)))
               << " but was 0x" << std::setw(2 * sizeof(Actual))   << (static_cast<typename std::make_unsigned<Actual>::type>(actual)     & ~(typename std::make_unsigned<Actual>::type(0)));
 
@@ -219,7 +219,7 @@ namespace UnitTest
      if (expected == actual)
      {
        UnitTest::MemoryOutStream stream;
-       stream << "Expected not equal, but both values are" << actual;
+       stream << "Expected not equal, but both values are " << actual;
 
        results.OnTestFailure(details, stream.GetText());
      }
@@ -231,7 +231,7 @@ namespace UnitTest
      if (expected == actual)
      {
        UnitTest::MemoryOutStream stream;
-       stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual)) 
+       stream << std::hex << std::uppercase << std::setfill('0') << std::setw(2 * sizeof(Actual))
               << "Expected not equal, but both values are " << (actual & ~(typename std::make_unsigned<Actual>::type(0)));
 
        results.OnTestFailure(details, stream.GetText());
