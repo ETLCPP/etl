@@ -3539,6 +3539,7 @@
     <ClInclude Include="..\..\include\etl\crc8_opensafety.h" />
     <ClInclude Include="..\..\include\etl\crc8_rohc.h" />
     <ClInclude Include="..\..\include\etl\crc8_wcdma.h" />
+    <ClInclude Include="..\..\include\etl\debounce_multi_bit.h" />
     <ClInclude Include="..\..\include\etl\debounce_value.h" />
     <ClInclude Include="..\..\include\etl\delegate_observable.h" />
     <ClInclude Include="..\..\include\etl\expected.h" />
@@ -10392,6 +10393,7 @@
     <ClCompile Include="..\test_crc8_opensafety.cpp" />
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
+    <ClCompile Include="..\test_debounce_multi_bit.cpp" />
     <ClCompile Include="..\test_debounce_value.cpp" />
     <ClCompile Include="..\test_delegate_observable.cpp" />
     <ClCompile Include="..\test_etl_assert.cpp" />
