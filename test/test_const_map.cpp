@@ -1686,5 +1686,26 @@ namespace
       CHECK_TRUE(greater_than_equal11);
 #endif
     }
+
+    //*************************************************************************
+    TEST(test_construct_from_not_default_constuctible)
+    {
+      struct F : Key
+      {
+        constexpr explicit F(char c)
+          : Key(c)
+        {
+        }
+      };
+
+      using ConstKey    = etl::const_map<F, int, 3>;
+      using ConstMapped = etl::const_map<int, F, 3>;
+
+      static const ConstKey constKeyMap{std::make_pair(F('1'), 1), std::make_pair(F('2'), 2), std::make_pair(F('3'), 3)};
+      CHECK_TRUE(constKeyMap.is_valid());
+
+      static const ConstMapped constMappedMap{std::make_pair(1, F('1')), std::make_pair(2, F('2')), std::make_pair(3, F('3'))};
+      CHECK_TRUE(constMappedMap.is_valid());
+    }
   }
 } // namespace
