@@ -86,13 +86,16 @@ namespace etl
   {
   public:
 
-    ETL_STATIC_ASSERT(std::is_integral<TValue>::value&& std::is_unsigned<TValue>::value, "TValue must be an unsigned integer type");
-    ETL_STATIC_ASSERT(Width >= 1, "Width must be at least 1");
-    ETL_STATIC_ASSERT(Width <= sizeof(TValue) * 8, "Field does not fit in the value type");
-    ETL_STATIC_ASSERT(Valid_Count >= 1, "Valid_Count must be at least 1");
-    ETL_STATIC_ASSERT(Valid_Count <= static_cast<TCount>(~TCount(0)) && Hold_Count <= static_cast<TCount>(~TCount(0))
-                        && Repeat_Count <= static_cast<TCount>(~TCount(0)),
-                      "TCount is too small for the configured counts");
+    // clang-format off
+    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value && etl::is_unsigned<TValue>::value, "TValue must be an unsigned integer type");
+    ETL_STATIC_ASSERT(Width >= 1,                                                         "Width must be at least 1");
+    ETL_STATIC_ASSERT(Width <= sizeof(TValue) * 8,                                        "The width does not fit in the value type");
+    ETL_STATIC_ASSERT(Valid_Count >= 1,                                                   "Valid_Count must be at least 1");
+    ETL_STATIC_ASSERT((Valid_Count <= etl::integral_limits<TCount>::max) &&
+                      (Hold_Count <= etl::integral_limits<TCount>::max) &&
+                      (Repeat_Count <= etl::integral_limits<TCount>::max),                "TCount is too small for the configured counts");
+    ETL_STATIC_ASSERT((Repeat_Count == 0) || (Hold_Count != 0),                           "If Repeat_Count is non-zero, Hold_Count must be non-zero");
+    // clang-format on
 
     typedef TValue        value_type;
     typedef TCount        count_type;
@@ -124,25 +127,25 @@ namespace etl
     /// Adds a new next of the whole port value.
     /// Returns true if any bit changed state, became held, or repeated.
     //***************************************************************************
-    void update(const value_type next)
+    bool update(const value_type next)
     {
-      value_type changed_bits = sample ^ next;
-      sample                  = next;
+      // Determine which bits have changed since the last sample.
+      const value_type changed_bits = sample ^ next;
 
+      sample  = next;
       changed = 0;
 
-      count_type* pcount = &counts[0];
-      value_type  bit    = 1U;
-      pcount             = &counts[0];
+      // The initial loop conditions.
+      count_type* pcount = &counts[0]; // Pointer to the first bit's timer.
+      value_type  bit    = 1U;         // Mask for the first bit in the field.
 
       for (size_t i = 0; i < Width; ++i)
       {
-        bool bit_is_set      = (sample & bit) != 0;
-        bool bit_has_changed = (changed_bits & bit) != 0;
+        const bool bit_is_set      = (sample & bit) != 0;
+        const bool bit_has_changed = (changed_bits & bit) != 0;
 
         if (bit_has_changed)
         {
-          // Reset the timer for this bit.
           *pcount = 0;
         }
 
@@ -150,112 +153,34 @@ namespace etl
         {
           case Off:
             {
-              if (bit_is_set)
-              {
-                ++(*pcount);
-
-                // If we have reached the 'Valid_Count' move to the On state.
-                if (*pcount >= Valid_Count)
-                {
-                  set_state(On, bit);
-                  changed |= bit;
-                  *pcount = 0;
-                }
-              }
+              handle_off(pcount, bit, bit_is_set);
+              break;
             }
-            break;
 
           case On:
             {
-              if (Hold_Count > 0)
-              {
-                ++(*pcount);
-
-                if (bit_is_set)
-                {
-                  // If we have reached the 'Hold_Count', and hold is enabled, we move to the Held state.
-                  if (*pcount >= Hold_Count)
-                  {
-                    set_state(Held, bit);
-                    changed |= bit;
-                    *pcount = 0;
-                  }
-                }
-                else
-                {
-                  // If we have reached the 'Valid_Count' we move back to the Off state.
-                  if (*pcount >= Valid_Count)
-                  {
-                    set_state(Off, bit);
-                    changed |= bit;
-                    *pcount = 0;
-                  }
-                }
-              }
+              handle_on(pcount, bit, bit_is_set);
+              break;
             }
-            break;
 
           case Held:
             {
-              if (Repeat_Count > 0)
-              {
-                ++(*pcount);
-
-                if (bit_is_set)
-                {
-                  // If we have reached the 'repeat count', and repeat is enabled, we move to the Repeating state.
-                  if (*pcount >= Repeat_Count)
-                  {
-                    set_state(Repeating, bit);
-                    changed |= bit;
-                    *pcount = 0;
-                  }
-                }
-                else
-                {
-                  // If we have reached the 'Valid_Count' we move back to the Off state.
-                  if (*pcount >= Valid_Count)
-                  {
-                    set_state(Off, bit);
-                    changed |= bit;
-                    *pcount = 0;
-                  }
-                }
-              }
+              handle_held(pcount, bit, bit_is_set);
+              break;
             }
-            break;
 
           case Repeating:
             {
-              ++(*pcount);
-
-              if (bit_is_set)
-              {
-                // If we have reached the 'Repeat_Count', and repeat is enabled, we set the changed flag again.
-                if (*pcount >= Repeat_Count)
-                {
-                  changed |= bit;
-                  *pcount = 0;
-                }
-              }
-              else
-              {
-                // If we have reached the 'Valid_Count' we move back to the Off state.
-                if (*pcount >= Valid_Count)
-                {
-                  set_state(Off, bit);
-                  changed |= bit;
-                  *pcount = 0;
-                }
-              }
+              handle_repeating(pcount, bit, bit_is_set);
+              break;
             }
-            break;
         }
 
-        // changed_bits = changed_bits >> 1U; // Move to the next bit.
         bit = bit << 1U; // Move to the next bit.
         ++pcount;        // Move to the next bit's timer.
       }
+
+      return (changed != 0);
     }
 
     //***************************************************************************
@@ -264,7 +189,7 @@ namespace etl
     //***************************************************************************
     bool has_changed(size_t n) const
     {
-      value_type bit = bit_mask(n);
+      const value_type bit = bit_mask(n);
 
       return (changed & bit) != 0;
     }
@@ -275,8 +200,8 @@ namespace etl
     //***************************************************************************
     bool is_set(size_t n) const
     {
-      value_type bit   = bit_mask(n);
-      state_type state = get_state(bit);
+      const value_type bit   = bit_mask(n);
+      const state_type state = get_state(bit);
 
       return (state == On) || (state == Held) || (state == Repeating);
     }
@@ -287,8 +212,8 @@ namespace etl
     //***************************************************************************
     bool is_held(size_t n) const
     {
-      value_type bit   = bit_mask(n);
-      state_type state = get_state(bit);
+      const value_type bit   = bit_mask(n);
+      const state_type state = get_state(bit);
 
       return (state == Held) || (state == Repeating);
     }
@@ -299,8 +224,8 @@ namespace etl
     //***************************************************************************
     bool is_repeating(size_t n) const
     {
-      value_type bit   = bit_mask(n);
-      state_type state = get_state(bit);
+      const value_type bit   = bit_mask(n);
+      const state_type state = get_state(bit);
 
       return (state == Repeating);
     }
@@ -310,12 +235,12 @@ namespace etl
     //***************************************************************************
     /// State fit in 2 bits, state_lo & state_hi.
     //***************************************************************************
-    enum state
+    enum state_id
     {
       Off       = 0, // Debounced state is Off.
       On        = 1, // Debounced state is On.
-      Held      = 2, // Debounced state is Held.
-      Repeating = 3  // Debounced state is Repeating.
+      Held      = 2, // Debounced state is Held. Implies On.
+      Repeating = 3  // Debounced state is Repeating. Implies Held and On.
     };
 
     //***************************************************************************
@@ -324,8 +249,8 @@ namespace etl
     //***************************************************************************
     state_type get_state(const value_type bit) const
     {
-      state_type lo = static_cast<state_type>((state_lo & bit) > 0);
-      state_type hi = static_cast<state_type>((state_hi & bit) > 0);
+      const state_type lo = static_cast<state_type>((state_lo & bit) > 0);
+      const state_type hi = static_cast<state_type>((state_hi & bit) > 0);
 
       return static_cast<state_type>(lo | (hi << 1));
     }
@@ -340,6 +265,84 @@ namespace etl
       state_hi = state & 2 ? state_hi | bit : state_hi & ~bit;
     }
 
+    //***************************************************************************
+    /// Increments *pcount; if it reaches 'threshold' the bit moves to
+    /// 'new_state', the changed flag is set, and the timer is reset.
+    //***************************************************************************
+    void try_transition(count_type* pcount, uint32_t threshold, state_type new_state, value_type bit)
+    {
+      ++(*pcount);
+
+      if (*pcount >= threshold)
+      {
+        set_state(new_state, bit);
+        changed |= bit;
+        *pcount = 0;
+      }
+    }
+
+    //***************************************************************************
+    /// Handler for the 'Off' state.
+    //***************************************************************************
+    void handle_off(count_type* pcount, value_type bit, bool bit_is_set)
+    {
+      if (bit_is_set)
+      {
+        try_transition(pcount, Valid_Count, On, bit);
+      }
+    }
+
+    //***************************************************************************
+    /// Handler for the 'On' state.
+    //***************************************************************************
+    void handle_on(count_type* pcount, value_type bit, bool bit_is_set)
+    {
+      if (bit_is_set)
+      {
+        if ETL_IF_CONSTEXPR (Hold_Count > 0)
+        {
+          try_transition(pcount, Hold_Count, Held, bit);
+        }
+      }
+      else
+      {
+        try_transition(pcount, Valid_Count, Off, bit);
+      }
+    }
+
+    //***************************************************************************
+    /// Handler for the 'Held' state.
+    //***************************************************************************
+    void handle_held(count_type* pcount, value_type bit, bool bit_is_set)
+    {
+      if (bit_is_set)
+      {
+        if ETL_IF_CONSTEXPR (Repeat_Count > 0)
+        {
+          try_transition(pcount, Repeat_Count, Repeating, bit);
+        }
+      }
+      else
+      {
+        try_transition(pcount, Valid_Count, Off, bit);
+      }
+    }
+
+    //***************************************************************************
+    /// Handler for the 'Repeating' state.
+    //***************************************************************************
+    void handle_repeating(count_type* pcount, value_type bit, bool bit_is_set)
+    {
+      if (bit_is_set)
+      {
+        try_transition(pcount, Repeat_Count, Repeating, bit);
+      }
+      else
+      {
+        try_transition(pcount, Valid_Count, Off, bit);
+      }
+    }
+
     //*************************************************************************
     /// Returns a mask with only the nth bit set.
     //*****************************************************************************
@@ -350,7 +353,7 @@ namespace etl
 
     value_type sample;   // The last known state of the bits.
     value_type state_lo; // Low bits of the state.
-    value_type state_hi; // High bits of the state.
+    value_type state_hi; // High bits of the state. Combined with state_lo to form a 2-bit state for each bit in the field.
     value_type changed;  // Bits that have changed at the last update.
 
     count_type counts[Width]; // Off / On / Hold / Repeat timers.

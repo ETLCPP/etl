@@ -47,14 +47,16 @@ namespace
   const value_type Bit1 = 1;
   const value_type Bit2 = 2;
 
-  using debounce_type1 = etl::debounce_multi_bit<value_type, count_type, 1, Valid_Count>;
+  using debounce_valid             = etl::debounce_multi_bit<value_type, count_type, 1, Valid_Count>;
+  using debounce_valid_hold        = etl::debounce_multi_bit<value_type, count_type, 1, Valid_Count, Hold_Count>;
+  using debounce_valid_hold_repeat = etl::debounce_multi_bit<value_type, count_type, 1, Valid_Count, Hold_Count, Repeat_Count>;
 
   SUITE(test_debounce_multi_bit)
   {
     //*************************************************************************
-    TEST(test_debounce1)
+    TEST(test_debounce_no_hold_or_repeat)
     {
-      debounce_type1 value(Initial_Value);
+      debounce_valid value(Initial_Value);
 
       CHECK_FALSE(value.has_changed(Bit0));
       CHECK_FALSE(value.is_set(Bit0));
@@ -63,63 +65,32 @@ namespace
 
       //*******************************
       // Transition from Off to On.
-      value.update(1);
-      CHECK_FALSE(value.has_changed(Bit0));
-      CHECK_FALSE(value.is_set(Bit0));
-      CHECK_FALSE(value.is_held(Bit0));
-      CHECK_FALSE(value.is_repeating(Bit0));
+      for (size_t i = 0; i < Valid_Count - 1; ++i)
+      {
+        CHECK_FALSE(value.update(1));
+        CHECK_FALSE(value.has_changed(Bit0));
+        CHECK_FALSE(value.is_set(Bit0));
+        CHECK_FALSE(value.is_held(Bit0));
+        CHECK_FALSE(value.is_repeating(Bit0));
+      }
 
-      value.update(1);
-      CHECK_FALSE(value.has_changed(Bit0));
-      CHECK_FALSE(value.is_set(Bit0));
-      CHECK_FALSE(value.is_held(Bit0));
-      CHECK_FALSE(value.is_repeating(Bit0));
-
-      value.update(1);
-      CHECK_FALSE(value.has_changed(Bit0));
-      CHECK_FALSE(value.is_set(Bit0));
-      CHECK_FALSE(value.is_held(Bit0));
-      CHECK_FALSE(value.is_repeating(Bit0));
-
-      // Stable & changed.
-      value.update(1);
+      // Changed.
+      CHECK_TRUE(value.update(1));
       CHECK_TRUE(value.has_changed(Bit0));
       CHECK_TRUE(value.is_set(Bit0));
       CHECK_FALSE(value.is_held(Bit0));
       CHECK_FALSE(value.is_repeating(Bit0));
 
-      // Still stable.
-      value.update(1);
-      CHECK_FALSE(value.has_changed(Bit0));
-      CHECK_TRUE(value.is_set(Bit0));
-      CHECK_FALSE(value.is_held(Bit0));
-      CHECK_FALSE(value.is_repeating(Bit0));
-
-      ////*******************************
-      //// Transition from unstable to stable.
-      //// Unstable.
-      // CHECK_FALSE(value.add(3));
-      // CHECK_FALSE(value.is_stable());
-      // CHECK_FALSE(value.has_changed());
-
-      // CHECK_FALSE(value.add(3));
-      // CHECK_FALSE(value.is_stable());
-      // CHECK_FALSE(value.has_changed());
-
-      // CHECK_FALSE(value.add(3));
-      // CHECK_FALSE(value.is_stable());
-      // CHECK_FALSE(value.has_changed());
-
-      //// Stable & changed.
-      // CHECK_TRUE(value.add(3));
-      // CHECK_TRUE(value.is_stable());
-      // CHECK_TRUE(value.has_changed());
-      // CHECK_EQUAL(3, value.get());
-
-      //// Stable.
-      // CHECK_FALSE(value.add(3));
-      // CHECK_TRUE(value.is_stable());
-      // CHECK_FALSE(value.has_changed());
+      //*******************************
+      // Ensure no more transitions.
+      for (size_t i = 0; i < Valid_Count; ++i)
+      {
+        CHECK_FALSE(value.update(1));
+        CHECK_FALSE(value.has_changed(Bit0));
+        CHECK_TRUE(value.is_set(Bit0));
+        CHECK_FALSE(value.is_held(Bit0));
+        CHECK_FALSE(value.is_repeating(Bit0));
+      }
     }
   }
 } // namespace
