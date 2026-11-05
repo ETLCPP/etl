@@ -198,24 +198,27 @@ namespace etl
 
           bool valid = (count == valid_count);
 
-          switch (flags & State)
+          if (valid)
           {
-            case Off:
-              {
-                set_state(sample, valid, valid);
-                break;
-              }
+            switch (flags & State)
+            {
+              case Off:
+                {
+                  set_state(sample, valid, valid);
+                  break;
+                }
 
-            case On:
-              {
-                set_state(sample, valid, valid);
-                break;
-              }
+              case On:
+                {
+                  set_state(sample, valid, valid);
+                  break;
+                }
 
-            default:
-              {
-                break;
-              }
+              default:
+                {
+                  break;
+                }
+            }
           }
         }
 
@@ -274,30 +277,33 @@ namespace etl
           bool valid = (count == valid_count);
           bool hold  = (count == hold_count);
 
-          switch (flags & State)
+          if (valid || hold)
           {
-            case Off:
-              {
-                set_state(sample, valid, valid);
-                break;
-              }
+            switch (flags & State)
+            {
+              case Off:
+                {
+                  set_state(sample, valid, valid);
+                  break;
+                }
 
-            case On:
-              {
-                set_state(sample, hold, valid);
-                break;
-              }
+              case On:
+                {
+                  set_state(sample, hold, valid);
+                  break;
+                }
 
-            case Held:
-              {
-                set_state(sample, hold, valid);
-                break;
-              }
+              case Held:
+                {
+                  set_state(sample, hold, valid);
+                  break;
+                }
 
-            default:
-              {
-                break;
-              }
+              default:
+                {
+                  break;
+                }
+            }
           }
         }
 
@@ -332,6 +338,7 @@ namespace etl
       //*************************************************************************
       void set_state(bool sample, bool condition_set, bool condition_clear)
       {
+        // clang-format off                                       State     Sample  Condition Set             Condition Clear
         static ETL_CONSTANT uint_least8_t state_table[8][2] = {/* Off       0 */ {debounce_base::Off, debounce_base::Off},
                                                        /* Off       1 */ {debounce_base::On, debounce_base::Off},
                                                        /* On        0 */ {debounce_base::Off, debounce_base::On},
@@ -339,8 +346,8 @@ namespace etl
                                                        /* Held      0 */ {debounce_base::Off, debounce_base::Held},
                                                        /* Held      1 */ {debounce_base::Repeating, debounce_base::Held},
                                                        /* Repeating 0 */ {debounce_base::Off, debounce_base::Repeating},
-                                                       /* Repeating 1 */
-                                                       {debounce_base::Repeating, debounce_base::Repeating}};
+                                                       /* Repeating 1 */ {debounce_base::Repeating, debounce_base::Repeating}};
+        // clang-format on
 
         get_next(sample, condition_set, condition_clear, state_table);
       }
@@ -360,42 +367,45 @@ namespace etl
           bool hold   = (count == hold_count);
           bool repeat = (count == repeat_count);
 
-          switch (flags & State)
+          if (valid || hold || repeat)
           {
-            case Off:
-              {
-                set_state(sample, valid, valid);
-                break;
-              }
-
-            case On:
-              {
-                set_state(sample, hold, valid);
-                break;
-              }
-
-            case Held:
-              {
-                set_state(sample, repeat, valid);
-                break;
-              }
-
-            case Repeating:
-              {
-                set_state(sample, repeat, valid);
-
-                if (sample && repeat)
+            switch (flags & State)
+            {
+              case Off:
                 {
-                  count = 0;
-                  flags |= Change;
+                  set_state(sample, valid, valid);
+                  break;
                 }
-                break;
-              }
 
-            default:
-              {
-                break;
-              }
+              case On:
+                {
+                  set_state(sample, hold, valid);
+                  break;
+                }
+
+              case Held:
+                {
+                  set_state(sample, repeat, valid);
+                  break;
+                }
+
+              case Repeating:
+                {
+                  set_state(sample, repeat, valid);
+
+                  if (sample && repeat)
+                  {
+                    count = 0;
+                    flags |= Change;
+                  }
+                  break;
+                }
+
+              default:
+                {
+                  break;
+                }
+            }
           }
         }
 
@@ -428,11 +438,21 @@ namespace etl
 
     //*************************************************************************
     /// Adds a new sample.
-    /// Returns 'true' if the debouncer changes state.
     ///\param sample The new sample.
     ///\return 'true' if the debouncer changed state.
     //*************************************************************************
     bool add(bool sample)
+    {
+      return process(sample, VALID_COUNT, HOLD_COUNT, REPEAT_COUNT);
+    }
+
+    //*************************************************************************
+    /// Updates with a new sample.
+    /// For compatibility with the later etl::debounce_value and etl::debounce_multi_bit classes.
+    ///\param sample The new sample.
+    ///\return 'true' if the debouncer changed state.
+    //*************************************************************************
+    bool update(bool sample)
     {
       return process(sample, VALID_COUNT, HOLD_COUNT, REPEAT_COUNT);
     }

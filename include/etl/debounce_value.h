@@ -62,11 +62,11 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Adds a new value.
+    /// Updates with a new value.
     /// If the value has changed, the counter is reset and the value is marked as unstable.
     /// Returns 'true' if the value has changed.
     //*************************************************************************
-    bool add(value_type value)
+    bool update(value_type value)
     {
       // Changed from last time?
       if (value != last_value)

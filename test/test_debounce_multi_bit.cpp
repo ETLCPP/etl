@@ -62,6 +62,7 @@ namespace
       CHECK_FALSE(value.is_set(Bit0));
       CHECK_FALSE(value.is_held(Bit0));
       CHECK_FALSE(value.is_repeating(Bit0));
+      CHECK_EQUAL(0, value.get_state());
 
       //*******************************
       // Transition from Off to On.
@@ -74,6 +75,8 @@ namespace
         CHECK_FALSE(value.is_repeating(Bit0));
       }
 
+      CHECK_EQUAL(0, value.get_state());
+
       // Changed.
       CHECK_TRUE(value.update(1));
       CHECK_TRUE(value.has_changed(Bit0));
@@ -81,11 +84,80 @@ namespace
       CHECK_FALSE(value.is_held(Bit0));
       CHECK_FALSE(value.is_repeating(Bit0));
 
+      CHECK_EQUAL(1, value.get_state());
+
       //*******************************
       // Ensure no more transitions.
       for (size_t i = 0; i < Valid_Count; ++i)
       {
         CHECK_FALSE(value.update(1));
+        CHECK_FALSE(value.has_changed(Bit0));
+        CHECK_TRUE(value.is_set(Bit0));
+        CHECK_FALSE(value.is_held(Bit0));
+        CHECK_FALSE(value.is_repeating(Bit0));
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_debounce_no_hold_or_repeat_incremental)
+    {
+      debounce_valid value(Initial_Value);
+
+      CHECK_FALSE(value.has_changed(Bit0));
+      CHECK_FALSE(value.is_set(Bit0));
+      CHECK_FALSE(value.is_held(Bit0));
+      CHECK_FALSE(value.is_repeating(Bit0));
+
+      //*******************************
+      // Transition from Off to On.
+      for (size_t i = 0; i < Valid_Count - 1; ++i)
+      {
+        for (size_t j = 0; j < value.get_width() - 1; ++j)
+        {
+          CHECK_FALSE(value.update_incremental(1));
+          CHECK_FALSE(value.has_changed(Bit0));
+          CHECK_FALSE(value.is_set(Bit0));
+          CHECK_FALSE(value.is_held(Bit0));
+          CHECK_FALSE(value.is_repeating(Bit0));
+        }
+
+        CHECK_TRUE(value.update_incremental(1));
+        CHECK_FALSE(value.has_changed(Bit0));
+        CHECK_FALSE(value.is_set(Bit0));
+        CHECK_FALSE(value.is_held(Bit0));
+        CHECK_FALSE(value.is_repeating(Bit0));
+      }
+
+      CHECK_EQUAL(0, value.get_state());
+
+      // Final incremental update.
+      // Changed.
+      for (size_t j = 0; j < value.get_width() - 1; ++j)
+      {
+        CHECK_FALSE(value.update_incremental(1));
+        CHECK_FALSE(value.has_changed(Bit0));
+        CHECK_FALSE(value.is_set(Bit0));
+        CHECK_FALSE(value.is_held(Bit0));
+        CHECK_FALSE(value.is_repeating(Bit0));
+      }
+
+      CHECK_TRUE(value.update_incremental(1));
+      CHECK_TRUE(value.has_changed(Bit0));
+      CHECK_TRUE(value.is_set(Bit0));
+      CHECK_FALSE(value.is_held(Bit0));
+      CHECK_FALSE(value.is_repeating(Bit0));
+
+      CHECK_EQUAL(1, value.get_state());
+
+      //*******************************
+      // Ensure no more transitions.
+      for (size_t i = 0; i < Valid_Count; ++i)
+      {
+        for (size_t j = 0; j < value.get_width(); ++j)
+        {
+          value.update_incremental(1);
+        }
+
         CHECK_FALSE(value.has_changed(Bit0));
         CHECK_TRUE(value.is_set(Bit0));
         CHECK_FALSE(value.is_held(Bit0));

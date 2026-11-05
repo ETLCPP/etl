@@ -49,52 +49,52 @@ namespace
 
       //*******************************
       // Transition from unstable to stable.
-      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.update(2));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
-      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.update(2));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
-      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.update(2));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
       // Stable & changed.
-      CHECK_TRUE(value.add(2));
+      CHECK_TRUE(value.update(2));
       CHECK_TRUE(value.is_stable());
       CHECK_TRUE(value.has_changed());
       CHECK_EQUAL(2, value.get());
 
       // Still stable.
-      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.update(2));
       CHECK_TRUE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
       //*******************************
       // Transition from unstable to stable.
       // Unstable.
-      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.update(3));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
-      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.update(3));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
-      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.update(3));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
       // Stable & changed.
-      CHECK_TRUE(value.add(3));
+      CHECK_TRUE(value.update(3));
       CHECK_TRUE(value.is_stable());
       CHECK_TRUE(value.has_changed());
       CHECK_EQUAL(3, value.get());
 
       // Stable.
-      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.update(3));
       CHECK_TRUE(value.is_stable());
       CHECK_FALSE(value.has_changed());
     }
@@ -112,26 +112,26 @@ namespace
 
       //*******************************
       // Transition from unstable to stable.
-      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.update(2));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
-      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.update(2));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
-      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.update(2));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
       // Stable & changed.
-      CHECK_TRUE(value.add(2));
+      CHECK_TRUE(value.update(2));
       CHECK_TRUE(value.is_stable());
       CHECK_TRUE(value.has_changed());
       CHECK_EQUAL(2, value.get());
 
       // Still stable.
-      CHECK_FALSE(value.add(2));
+      CHECK_FALSE(value.update(2));
       CHECK_TRUE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
@@ -142,18 +142,18 @@ namespace
       //*******************************
       // Transition from unstable to stable.
       // Unstable.
-      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.update(3));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
 
       // Stable & changed.
-      CHECK_TRUE(value.add(3));
+      CHECK_TRUE(value.update(3));
       CHECK_TRUE(value.is_stable());
       CHECK_TRUE(value.has_changed());
       CHECK_EQUAL(3, value.get());
 
       // Stable.
-      CHECK_FALSE(value.add(3));
+      CHECK_FALSE(value.update(3));
       CHECK_TRUE(value.is_stable());
       CHECK_FALSE(value.has_changed());
     }
@@ -170,7 +170,7 @@ namespace
 
       for (uint8_t v : input)
       {
-        if (value.add(v))
+        if (value.update(v))
         {
           output.push_back(value.get());
         }

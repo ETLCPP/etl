@@ -57,6 +57,7 @@ SOFTWARE.
 //-----------------------------------------------------------------------------
 
 #include "platform.h"
+#include "array.h"
 #include "binary.h"
 #include "memory.h"
 #include "static_assert.h"
@@ -114,71 +115,80 @@ namespace etl
     //***************************************************************************
     void reset(value_type initial = 0)
     {
-      sample   = initial;
-      state_lo = 0;
-      state_hi = 0;
-      changed  = 0;
+      sample    = initial;
+      state_lo  = 0;
+      state_hi  = 0;
+      changed   = 0;
+      bit_index = 0;
 
       // Clear the timers for all bits.
-      etl::fill(ETL_OR_STD::begin(counts), ETL_OR_STD::end(counts), 0);
+      counts.fill(0);
     }
 
     //***************************************************************************
-    /// Adds a new next of the whole port value.
-    /// Returns true if any bit changed state, became held, or repeated.
+    /// Updates a bit.
+    /// The value of 'next' must not change between calls to update_incremental() until all bits have been processed.
+    /// Do not call update() after update_incremental() on the same instance unless update_incremental() has completed a full cycle (returned true).
+    /// Returns true if all of the bits have been processed.
+    //***************************************************************************
+    bool update_incremental(const value_type next)
+    {
+      // Determine which bits have changed since the last sample.
+      const value_type changed_bits = sample ^ next;
+
+      // First bit?
+      if (bit_index == 0)
+      {
+        changed = 0;
+      }
+
+      count_type*      pcount          = &counts[bit_index];
+      const value_type bit             = bit_mask(bit_index);
+      const bool       bit_has_changed = (changed_bits & bit) != 0;
+
+      update_bit(bit_has_changed, bit, pcount, next);
+
+      ++bit_index;
+
+      // Have we processed all of the bits?
+      if (bit_index == Width)
+      {
+        bit_index = 0;
+        sample    = next;
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    //***************************************************************************
+    /// Updates the whole port value.
+    /// Returns true if any bit changed state.
     //***************************************************************************
     bool update(const value_type next)
     {
       // Determine which bits have changed since the last sample.
       const value_type changed_bits = sample ^ next;
 
-      sample  = next;
       changed = 0;
 
       // The initial loop conditions.
-      count_type* pcount = &counts[0]; // Pointer to the first bit's timer.
-      value_type  bit    = 1U;         // Mask for the first bit in the field.
+      count_type* pcount = counts.data(); // Pointer to the first bit's timer.
+      value_type  bit    = 1U;            // Mask for the first bit in the field.
 
       for (size_t i = 0; i < Width; ++i)
       {
-        const bool bit_is_set      = (sample & bit) != 0;
         const bool bit_has_changed = (changed_bits & bit) != 0;
 
-        if (bit_has_changed)
-        {
-          *pcount = 0;
-        }
-
-        switch (get_state(bit))
-        {
-          case Off:
-            {
-              handle_off(pcount, bit, bit_is_set);
-              break;
-            }
-
-          case On:
-            {
-              handle_on(pcount, bit, bit_is_set);
-              break;
-            }
-
-          case Held:
-            {
-              handle_held(pcount, bit, bit_is_set);
-              break;
-            }
-
-          case Repeating:
-            {
-              handle_repeating(pcount, bit, bit_is_set);
-              break;
-            }
-        }
+        update_bit(bit_has_changed, bit, pcount, next);
 
         bit = bit << 1U; // Move to the next bit.
         ++pcount;        // Move to the next bit's timer.
       }
+
+      sample = next;
 
       return (changed != 0);
     }
@@ -201,7 +211,7 @@ namespace etl
     bool is_set(size_t n) const
     {
       const value_type bit   = bit_mask(n);
-      const state_type state = get_state(bit);
+      const state_type state = get_bit_state(bit);
 
       return (state == On) || (state == Held) || (state == Repeating);
     }
@@ -213,7 +223,7 @@ namespace etl
     bool is_held(size_t n) const
     {
       const value_type bit   = bit_mask(n);
-      const state_type state = get_state(bit);
+      const state_type state = get_bit_state(bit);
 
       return (state == Held) || (state == Repeating);
     }
@@ -225,9 +235,33 @@ namespace etl
     bool is_repeating(size_t n) const
     {
       const value_type bit   = bit_mask(n);
-      const state_type state = get_state(bit);
+      const state_type state = get_bit_state(bit);
 
       return (state == Repeating);
+    }
+
+    //***************************************************************************
+    /// Returns the width of the bit field.
+    //***************************************************************************
+    size_t get_width() const
+    {
+      return Width;
+    }
+
+    //***************************************************************************
+    /// Returns the current state.
+    //***************************************************************************
+    value_type get_state() const
+    {
+      value_type bit    = 1U;
+      value_type result = 0;
+
+      for (size_t i = 0; i < Width; ++i)
+      {
+        result |= (get_bit_state(bit) >= On) ? bit : 0;
+      }
+
+      return result;
     }
 
   private:
@@ -244,10 +278,51 @@ namespace etl
     };
 
     //***************************************************************************
+    /// Updates a bit.
+    /// Returns true if the bit changed state.
+    //***************************************************************************
+    void update_bit(const bool bit_has_changed, const value_type bit, count_type* pcount, const value_type next)
+    {
+      const bool bit_is_set = (next & bit) != 0;
+
+      if (bit_has_changed)
+      {
+        *pcount = 0;
+      }
+
+      switch (get_bit_state(bit))
+      {
+        case Off:
+          {
+            handle_off(pcount, bit, bit_is_set);
+            break;
+          }
+
+        case On:
+          {
+            handle_on(pcount, bit, bit_is_set);
+            break;
+          }
+
+        case Held:
+          {
+            handle_held(pcount, bit, bit_is_set);
+            break;
+          }
+
+        case Repeating:
+          {
+            handle_repeating(pcount, bit, bit_is_set);
+            break;
+          }
+      }
+    }
+
+    //***************************************************************************
     /// Gets the current debounce state for a specific bit.
     ///\return The current state of the bit.
     //***************************************************************************
-    state_type get_state(const value_type bit) const
+    state_type get_bit_state(const value_type bit) const
     {
       const state_type lo = static_cast<state_type>((state_lo & bit) > 0);
       const state_type hi = static_cast<state_type>((state_hi & bit) > 0);
@@ -259,7 +334,7 @@ namespace etl
     /// Gets the current debounce state for a specific bit.
     ///\return The current state of the bit.
     //***************************************************************************
-    void set_state(state_type state, const value_type bit)
+    void set_bit_state(state_type state, const value_type bit)
     {
       state_lo = state & 1 ? state_lo | bit : state_lo & ~bit;
       state_hi = state & 2 ? state_hi | bit : state_hi & ~bit;
@@ -275,7 +350,7 @@ namespace etl
 
       if (*pcount >= threshold)
       {
-        set_state(new_state, bit);
+        set_bit_state(new_state, bit);
         changed |= bit;
         *pcount = 0;
       }
@@ -356,7 +431,9 @@ namespace etl
     value_type state_hi; // High bits of the state. Combined with state_lo to form a 2-bit state for each bit in the field.
     value_type changed;  // Bits that have changed at the last update.
 
-    count_type counts[Width]; // Off / On / Hold / Repeat timers.
+    etl::array<count_type, Width> counts; // Off / On / Hold / Repeat timers.
+
+    uint_least8_t bit_index; // Index of the next bit to process in incremental mode.
   };
 } // namespace etl
 
