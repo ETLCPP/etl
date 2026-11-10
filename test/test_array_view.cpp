@@ -800,10 +800,10 @@ namespace
   #if ETL_USING_STL
       CHECK_TRUE(std::is_trivially_copyable<etl::array_view<int>>::value);
       CHECK_TRUE(std::is_trivially_copyable<etl::array_view<const int>>::value);
+      CHECK_TRUE(std::is_trivially_copy_constructible<etl::array_view<int>>::value);
+      CHECK_TRUE(std::is_trivially_copy_assignable<etl::array_view<int>>::value);
+      CHECK_TRUE(std::is_trivially_destructible<etl::array_view<int>>::value);
   #endif
-      CHECK_TRUE(etl::is_trivially_copy_constructible<etl::array_view<int>>::value);
-      CHECK_TRUE(etl::is_trivially_copy_assignable<etl::array_view<int>>::value);
-      CHECK_TRUE(etl::is_trivially_destructible<etl::array_view<int>>::value);
     }
 #endif
   }
