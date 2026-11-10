@@ -14,7 +14,8 @@ template <typename T1, typename T2>
 struct pair
 ```
 **Description**  
-A clone of std::pair
+A clone of std::pair.  
+In C++11 and later, `etl::pair` is trivially copyable if both `T1` and `T2` are trivially copyable.
 
 **C++03**  
 ```cpp

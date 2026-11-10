@@ -1320,10 +1320,10 @@ namespace
     #if ETL_USING_CPP20
       CHECK_TRUE(std::is_trivially_copyable<etl::u8string_view>::value);
     #endif
+      CHECK_TRUE(std::is_trivially_copy_constructible<etl::string_view>::value);
+      CHECK_TRUE(std::is_trivially_copy_assignable<etl::string_view>::value);
+      CHECK_TRUE(std::is_trivially_destructible<etl::string_view>::value);
   #endif
-      CHECK_TRUE(etl::is_trivially_copy_constructible<etl::string_view>::value);
-      CHECK_TRUE(etl::is_trivially_copy_assignable<etl::string_view>::value);
-      CHECK_TRUE(etl::is_trivially_destructible<etl::string_view>::value);
     }
 #endif
   }
