@@ -2726,7 +2726,7 @@ namespace etl
                                iterator>::type
       copy_characters(TIterator1 from, size_t n, iterator to)
     {
-#include "etl/private/diagnostic_stringop_overflow_push.h"
+#include "private/diagnostic_stringop_overflow_push.h"
       size_t count = 0;
 
       while (count != n)
@@ -2735,7 +2735,7 @@ namespace etl
         ++count;
       }
 
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
       return to;
     }
 
