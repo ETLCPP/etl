@@ -179,7 +179,7 @@ namespace etl
     /// Copy constructor
     //*************************************************************************
 #if ETL_USING_CPP11
-    ETL_CONSTEXPR basic_string_view(const basic_string_view& other) = default;
+    ETL_CONSTEXPR basic_string_view(const basic_string_view& other) ETL_NOEXCEPT = default;
 #else
     ETL_CONSTEXPR basic_string_view(const basic_string_view& other) ETL_NOEXCEPT
       : mbegin(other.mbegin)
@@ -330,7 +330,7 @@ namespace etl
     /// Assign from a view.
     //*************************************************************************
 #if ETL_USING_CPP11
-    ETL_CONSTEXPR14 etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view<T, TTraits>& other) = default;
+    ETL_CONSTEXPR14 etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view<T, TTraits>& other) ETL_NOEXCEPT = default;
 #else
     ETL_CONSTEXPR14 etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view<T, TTraits>& other) ETL_NOEXCEPT
     {

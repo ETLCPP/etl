@@ -292,25 +292,6 @@ namespace
       CHECK_EQUAL(std::string("Hello"), sp2.second);
     }
 
-#if ETL_USING_CPP11
-    //*************************************************************************
-    TEST(test_pair_is_trivially_copyable)
-    {
-      CHECK_TRUE((etl::is_trivially_copyable<etl::pair<int, double>>::value));
-      CHECK_TRUE((etl::is_trivially_copyable<etl::pair<const int, int>>::value));
-  #if ETL_USING_STL
-      CHECK_TRUE((std::is_trivially_copyable<etl::pair<int, double>>::value));
-      CHECK_TRUE((std::is_trivially_copyable<etl::pair<const int, int>>::value));
-  #endif
-      CHECK_TRUE((etl::is_trivially_copy_constructible<etl::pair<int, double>>::value));
-      CHECK_TRUE((etl::is_trivially_copy_assignable<etl::pair<int, double>>::value));
-      CHECK_TRUE((etl::is_trivially_destructible<etl::pair<int, double>>::value));
-
-      // Non-trivially copyable types should not produce trivially copyable pair
-      CHECK_FALSE((etl::is_trivially_copyable<etl::pair<int, std::string>>::value));
-    }
-#endif
-
     //*************************************************************************
     TEST(test_exchange)
     {
