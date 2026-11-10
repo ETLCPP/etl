@@ -59,9 +59,9 @@ namespace etl
     }
 
 #if ETL_USING_CPP11
-    ETL_CONSTEXPR20 reference_wrapper(const reference_wrapper& rhs) = default;
+    ETL_CONSTEXPR20 reference_wrapper(const reference_wrapper& rhs) ETL_NOEXCEPT = default;
 
-    ETL_CONSTEXPR20 reference_wrapper<T>& operator=(const reference_wrapper& rhs) = default;
+    ETL_CONSTEXPR20 reference_wrapper<T>& operator=(const reference_wrapper& rhs) ETL_NOEXCEPT = default;
 #else
     ETL_CONSTEXPR20 reference_wrapper(const reference_wrapper& rhs) ETL_NOEXCEPT
       : t(rhs.t)
@@ -88,8 +88,8 @@ namespace etl
 #if ETL_USING_CPP11
     // implementation without etl::invoke, which would add a circular dependency
     template <typename... TArgs>
-    ETL_CONSTEXPR20 auto operator()(TArgs&&... args) const noexcept(noexcept(etl::declval<T&>()(etl::declval<TArgs>()...)))
-      -> decltype(etl::declval<T&>()(etl::declval<TArgs>()...))
+    ETL_CONSTEXPR20 auto operator()(TArgs&&... args) const
+      noexcept(noexcept(etl::declval<T&>()(etl::declval<TArgs>()...))) -> decltype(etl::declval<T&>()(etl::declval<TArgs>()...))
     {
       return get()(etl::forward<TArgs>(args)...);
     }

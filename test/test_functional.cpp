@@ -333,10 +333,10 @@ namespace
   #if ETL_USING_STL
       CHECK_TRUE(std::is_trivially_copyable<etl::reference_wrapper<int>>::value);
       CHECK_TRUE(std::is_trivially_copyable<etl::reference_wrapper<const int>>::value);
+      CHECK_TRUE(std::is_trivially_copy_constructible<etl::reference_wrapper<int>>::value);
+      CHECK_TRUE(std::is_trivially_copy_assignable<etl::reference_wrapper<int>>::value);
+      CHECK_TRUE(std::is_trivially_destructible<etl::reference_wrapper<int>>::value);
   #endif
-      CHECK_TRUE(etl::is_trivially_copy_constructible<etl::reference_wrapper<int>>::value);
-      CHECK_TRUE(etl::is_trivially_copy_assignable<etl::reference_wrapper<int>>::value);
-      CHECK_TRUE(etl::is_trivially_destructible<etl::reference_wrapper<int>>::value);
     }
 #endif
 
