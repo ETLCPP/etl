@@ -11,7 +11,8 @@ Defines functional classes from the STL.
 ## reference_wrapper
 
 `etl::reference_wrapper` is a class template that wraps a reference in a copyable, assignable object.  
-A clone of `std::reference_wrapper`.
+A clone of `std::reference_wrapper`.  
+In C++11 and later, `etl::reference_wrapper` is trivially copyable.
 
 ## unary_function
 
