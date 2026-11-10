@@ -1798,11 +1798,15 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
+#if ETL_USING_CPP11
+    bitset(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 bitset(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
       : buffer()
     {
       implementation::operator_assignment(buffer, other.buffer, Number_Of_Elements);
     }
+#endif
 
     //*************************************************************************
     /// Construct from a value.
@@ -1857,12 +1861,16 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
+#if ETL_USING_CPP11
+    bitset& operator=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 bitset& operator=(const bitset<Active_Bits, TElement>& other) ETL_NOEXCEPT
     {
       implementation::operator_assignment(buffer, other.buffer, Number_Of_Elements);
 
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Set all of the bits.

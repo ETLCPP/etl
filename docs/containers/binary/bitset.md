@@ -5,7 +5,8 @@ title: "bitset"
 {{< callout >}}
   Header: `bitset.h`  
   Since: 20.33.0  
-  Similar to: [std::bitset](https://en.cppreference.com/w/cpp/utility/bitset.html)
+  Similar to: [std::bitset](https://en.cppreference.com/w/cpp/utility/bitset.html)  
+  Trivially copyable: C++11 and later
 {{< /callout >}}
 
 This is the new default bitset implementation, from 20.33.0 onwards.  
