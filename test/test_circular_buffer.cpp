@@ -647,6 +647,8 @@ namespace
       {
         CHECK_EQUAL(input2[i], data[i]);
       }
+
+      CHECK_THROW(data[data.size()], etl::circular_buffer_out_of_bounds);
     }
 
     //*************************************************************************
@@ -662,6 +664,8 @@ namespace
       {
         CHECK_EQUAL(input[i + 3], data[i]);
       }
+
+      CHECK_THROW(data[data.size()], etl::circular_buffer_out_of_bounds);
     }
 
     //*************************************************************************

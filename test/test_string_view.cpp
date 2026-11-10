@@ -926,6 +926,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_find_rfind_all_positions)
+    {
+      const std::string compare_text("abcdabcdab");
+      View              view(compare_text.c_str());
+
+      const char* needles[] = {"cd", "d", "x", ""};
+
+      // Every position up to past the end, where the search must not read outside the view.
+      for (size_t position = 0U; position <= compare_text.size() + 2U; ++position)
+      {
+        for (size_t i = 0U; i < 4U; ++i)
+        {
+          CHECK_EQUAL(compare_text.find(needles[i], position), view.find(needles[i], position));
+          CHECK_EQUAL(compare_text.rfind(needles[i], position), view.rfind(needles[i], position));
+        }
+      }
+
+      CHECK_EQUAL(View::npos, view.find("cd", View::npos));
+    }
+
+    //*************************************************************************
     TEST(test_find_first_of)
     {
       const char* s1 = "l";

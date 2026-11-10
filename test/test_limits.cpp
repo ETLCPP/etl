@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/limits.h"
+#include <cmath>
 #include <limits>
 
 namespace
@@ -675,6 +676,16 @@ namespace
       CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
       CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
       CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(-STD_NL::infinity(), -ETL_NL::infinity());
+      CHECK_TRUE(ETL_NL::infinity() > ETL_NL::max());
+      CHECK_TRUE(std::isinf(ETL_NL::infinity()));
+      CHECK_FALSE(std::signbit(ETL_NL::infinity()));
+      CHECK_TRUE(std::isnan(ETL_NL::quiet_NaN()));
+      CHECK_TRUE(std::isnan(ETL_NL::signaling_NaN()));
     }
 
     //*************************************************************************
@@ -702,6 +713,16 @@ namespace
       CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
       CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
       CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(-STD_NL::infinity(), -ETL_NL::infinity());
+      CHECK_TRUE(ETL_NL::infinity() > ETL_NL::max());
+      CHECK_TRUE(std::isinf(ETL_NL::infinity()));
+      CHECK_FALSE(std::signbit(ETL_NL::infinity()));
+      CHECK_TRUE(std::isnan(ETL_NL::quiet_NaN()));
+      CHECK_TRUE(std::isnan(ETL_NL::signaling_NaN()));
     }
 
     //*************************************************************************
@@ -729,6 +750,16 @@ namespace
       CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
       CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
       CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(-STD_NL::infinity(), -ETL_NL::infinity());
+      CHECK_TRUE(ETL_NL::infinity() > ETL_NL::max());
+      CHECK_TRUE(std::isinf(ETL_NL::infinity()));
+      CHECK_FALSE(std::signbit(ETL_NL::infinity()));
+      CHECK_TRUE(std::isnan(ETL_NL::quiet_NaN()));
+      CHECK_TRUE(std::isnan(ETL_NL::signaling_NaN()));
     }
   }
 } // namespace

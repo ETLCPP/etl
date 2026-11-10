@@ -336,6 +336,22 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_constructor_two_parameter_same_type_not_iterator)
+    {
+      LookupInt lookup;
+      PoolInt   pool;
+
+      etl::indirect_vector_ext<int> data(5, 7, lookup, pool);
+
+      CHECK_EQUAL(5U, data.size());
+      CHECK_EQUAL(7, data[0]);
+      CHECK_EQUAL(7, data[1]);
+      CHECK_EQUAL(7, data[2]);
+      CHECK_EQUAL(7, data[3]);
+      CHECK_EQUAL(7, data[4]);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_assignment)
     {
       LookupNDC lookup1;

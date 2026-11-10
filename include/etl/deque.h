@@ -791,6 +791,8 @@ namespace etl
     //*************************************************************************
     reference operator[](size_t index)
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(index < current_size, ETL_ERROR(deque_out_of_bounds));
+
       iterator result(_begin);
       result += static_cast<difference_type>(index);
 
@@ -803,6 +805,8 @@ namespace etl
     //*************************************************************************
     const_reference operator[](size_t index) const
     {
+      ETL_ASSERT_CHECK_INDEX_OPERATOR(index < current_size, ETL_ERROR(deque_out_of_bounds));
+
       iterator result(_begin);
       result += static_cast<difference_type>(index);
 

@@ -1393,7 +1393,7 @@ namespace
     // because ETL_NOEXCEPT_IF expands to nothing otherwise.
     // The etl::is_nothrow_* traits only work with STL or builtins.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_USING_EXCEPTIONS && (defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS)))
+#if ETL_USING_CPP11 && ETL_USING_EXCEPTIONS && ETL_USING_STL
     struct NothrowAtAll
     {
       NothrowAtAll() noexcept {}

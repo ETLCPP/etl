@@ -40,9 +40,23 @@ SOFTWARE.
   #define __USE_C99_MATH
 #endif
 
+// GCC and clang supply the floating point infinity and NaN values as compiler builtins, so
+// <math.h> is not required at all.
+// This matters for ETL_NO_STL builds: libstdc++'s <math.h> (GCC 16) includes <cmath>, which in
+// turn drags in large parts of the standard library (<string> etc.), defeating the point of a
+// no-STL build. clang picks up the same <math.h> when using libstdc++.
+// Define ETL_FORCE_INCLUDE_MATH_H to opt out and use the environment's <math.h>.
+#if ETL_NOT_USING_STL && (defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG)) && !defined(ETL_FORCE_INCLUDE_MATH_H)
+  #define ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES 1
+#else
+  #define ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES 0
+#endif
+
 #include <float.h>
 #include <limits.h>
-#include <math.h>
+#if !ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES
+  #include <math.h>
+#endif
 
 #include "private/minmax_push.h"
 
@@ -68,16 +82,34 @@ SOFTWARE.
     #define LDBL_MAX_10_EXP DBL_MAX_10_EXP
   #endif
 
-  #if !defined(HUGE_VAL)
-    // Looks like we don't have these macros defined.
-    // They're compiler implementation dependent, so we'll make them the same as
-    // the max values.
-    #define HUGE_VALF FLT_MAX
-    #define HUGE_VAL  DBL_MAX
-    #define HUGE_VALL LDBL_MAX
+  #if ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES
+    // <math.h> was not included, so use the compiler builtins directly.
+    // HUGE_VAL etc. are deliberately not defined, as they would clash with a <math.h> included later.
+    #define ETL_HUGE_VALF (__builtin_huge_valf())
+    #define ETL_HUGE_VAL  (__builtin_huge_val())
+    #define ETL_HUGE_VALL (__builtin_huge_vall())
+  #else
+    #if !defined(HUGE_VAL)
+      // Looks like we don't have these macros defined.
+      // They're compiler implementation dependent, so we'll make them the same as
+      // the max values.
+      #define HUGE_VALF FLT_MAX
+      #define HUGE_VAL  DBL_MAX
+      #define HUGE_VALL LDBL_MAX
+    #endif
+
+    #define ETL_HUGE_VALF HUGE_VALF
+    #define ETL_HUGE_VAL  HUGE_VAL
+    #define ETL_HUGE_VALL HUGE_VALL
   #endif
 
-  #if defined(ETL_NO_CPP_NAN_SUPPORT)
+  #if ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES
+    // The builtins need no library support, so ETL_NO_CPP_NAN_SUPPORT is irrelevant here.
+    #define ETL_NANF    __builtin_nanf("")
+    #define ETL_NAN     __builtin_nan("")
+    #define ETL_NANL    __builtin_nanl("")
+    #define ETL_HAS_NAN true
+  #elif defined(ETL_NO_CPP_NAN_SUPPORT)
     #if defined(NAN)
       #include "private/diagnostic_useless_cast_push.h"
       #define ETL_NANF    NAN
@@ -87,9 +119,9 @@ SOFTWARE.
       #include "private/diagnostic_pop.h"
     #else
       #include "private/diagnostic_useless_cast_push.h"
-      #define ETL_NANF    HUGE_VALF
-      #define ETL_NAN     HUGE_VAL
-      #define ETL_NANL    HUGE_VALL
+      #define ETL_NANF    ETL_HUGE_VALF
+      #define ETL_NAN     ETL_HUGE_VAL
+      #define ETL_NANL    ETL_HUGE_VALL
       #define ETL_HAS_NAN false
       #include "private/diagnostic_pop.h"
     #endif
@@ -1570,7 +1602,7 @@ namespace etl
     }
     static ETL_CONSTEXPR float infinity()
     {
-      return HUGE_VALF;
+      return ETL_HUGE_VALF;
     }
     static float round_error()
     {
@@ -1617,7 +1649,7 @@ namespace etl
     }
     static ETL_CONSTEXPR double infinity()
     {
-      return HUGE_VAL;
+      return ETL_HUGE_VAL;
     }
     static double round_error()
     {
@@ -1664,7 +1696,7 @@ namespace etl
     }
     static ETL_CONSTEXPR long double infinity()
     {
-      return HUGE_VALL;
+      return ETL_HUGE_VALL;
     }
     static long double round_error()
     {

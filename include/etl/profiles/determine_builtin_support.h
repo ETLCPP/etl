@@ -31,143 +31,24 @@ SOFTWARE.
 #ifndef ETL_DETERMINE_BUILTIN_SUPPORT_H_INCLUDED
 #define ETL_DETERMINE_BUILTIN_SUPPORT_H_INCLUDED
 
-#if defined(ETL_USE_TYPE_TRAITS_BUILTINS) // Set all of them to be true if not
-                                          // already defined
-  #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
-    #define ETL_USING_BUILTIN_IS_ASSIGNABLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_CONSTRUCTIBLE)
-    #define ETL_USING_BUILTIN_IS_CONSTRUCTIBLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE)
-    #define ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE)
-    #define ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE)
-    #define ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR)
-    #define ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE)
-    #define ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE)
-    #define ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR)
-    #define ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_DESTRUCTIBLE)
-    #define ETL_USING_BUILTIN_IS_DESTRUCTIBLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE)
-    #define ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE)
-    #define ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_STANDARD_LAYOUT)
-    #define ETL_USING_BUILTIN_IS_STANDARD_LAYOUT 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_TRIVIAL)
-    #define ETL_USING_BUILTIN_IS_TRIVIAL 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE)
-    #define ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF)
-    #define ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_UNION)
-    #define ETL_USING_BUILTIN_IS_UNION 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_EMPTY)
-    #define ETL_USING_BUILTIN_IS_EMPTY 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_POLYMORPHIC)
-    #define ETL_USING_BUILTIN_IS_POLYMORPHIC 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_ABSTRACT)
-    #define ETL_USING_BUILTIN_IS_ABSTRACT 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_FINAL)
-    #define ETL_USING_BUILTIN_IS_FINAL 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_AGGREGATE)
-    #define ETL_USING_BUILTIN_IS_AGGREGATE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR)
-    #define ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS)
-    #define ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE)
-    #define ETL_USING_BUILTIN_UNDERLYING_TYPE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED)
-    #define ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_BIT_CAST)
-    #define ETL_USING_BUILTIN_BIT_CAST 1
+#if ETL_USING_GCC_COMPILER && (ETL_COMPILER_FULL_VERSION >= 70000 && ETL_COMPILER_FULL_VERSION < 100000) && !defined(ETL_COMPILER_MICROSOFT)
+  // GCC 7, 8 and 9 provide __builtin_launder but not __has_builtin.
+  #if !defined(ETL_USING_BUILTIN_LAUNDER)
+    #define ETL_USING_BUILTIN_LAUNDER 1
   #endif
 #endif
 
-#if defined(ETL_USE_BUILTIN_MEM_FUNCTIONS) // Set all of them to be true if not
-                                           // already defined
-  #if !defined(ETL_USING_BUILTIN_MEMCPY)
-    #define ETL_USING_BUILTIN_MEMCPY 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMMOVE)
-    #define ETL_USING_BUILTIN_MEMMOVE 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMSET)
-    #define ETL_USING_BUILTIN_MEMSET 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMCMP)
-    #define ETL_USING_BUILTIN_MEMCMP 1
-  #endif
-
-  #if !defined(ETL_USING_BUILTIN_MEMCHR)
-    #define ETL_USING_BUILTIN_MEMCHR 1
+#if (ETL_USING_GCC_COMPILER || ETL_USING_CLANG_COMPILER) && !defined(ETL_COMPILER_MICROSOFT)
+  // __builtin_constant_p predates __has_builtin on GCC and Clang, so enable it for
+  // those compilers when __has_builtin was not available to detect it.
+  #if !defined(ETL_USING_BUILTIN_CONSTANT_P)
+    #define ETL_USING_BUILTIN_CONSTANT_P 1
   #endif
 #endif
 
-#if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for
-                                                               // existence of builtin functions?
-                                                               // Fix VS2022 intellisense issue.
+#if defined(__has_builtin) && !defined(ETL_DISABLE_BUILTIN_FUNCTIONS) && !defined(ETL_COMPILER_MICROSOFT) // Use __has_builtin to check for
+                                                                                                          // existence of builtin functions?
+                                                                                                          // Fix VS2022 intellisense issue.
   #if !defined(ETL_USING_BUILTIN_IS_ASSIGNABLE)
     #define ETL_USING_BUILTIN_IS_ASSIGNABLE __has_builtin(__is_assignable)
   #endif
@@ -319,6 +200,15 @@ SOFTWARE.
   #if !defined(ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE)
     #define ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE __has_builtin(__builtin_is_cpp_trivially_relocatable)
   #endif
+
+  #if !defined(ETL_USING_BUILTIN_LAUNDER)
+    #define ETL_USING_BUILTIN_LAUNDER __has_builtin(__builtin_launder)
+  #endif
+
+  #if !defined(ETL_USING_BUILTIN_ASSUME_ALIGNED)
+    #define ETL_USING_BUILTIN_ASSUME_ALIGNED __has_builtin(__builtin_assume_aligned)
+  #endif
+
 #endif
 
 #if defined(ETL_COMPILER_MICROSOFT) // The Microsoft compiler supports the __is_trivially_copyable
@@ -531,11 +421,27 @@ SOFTWARE.
   #define ETL_USING_BUILTIN_BIT_CAST 0
 #endif
 
+#if !defined(ETL_USING_BUILTIN_LAUNDER)
+  #define ETL_USING_BUILTIN_LAUNDER 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_ASSUME_ALIGNED)
+  #define ETL_USING_BUILTIN_ASSUME_ALIGNED 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR)
+  #define ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR 0
+#endif
+
+#if !defined(ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR)
+  #define ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR 0
+#endif
+
 namespace etl
 {
   namespace traits
   {
-    // Documentation: https://www.etlcpp.com/etl_traits.html
+    // Documentation: https://www.etlcpp.com/docs/utilities/etl-traits/
 
     static ETL_CONSTANT bool using_builtin_is_assignable                        = (ETL_USING_BUILTIN_IS_ASSIGNABLE == 1);
     static ETL_CONSTANT bool using_builtin_is_constructible                     = (ETL_USING_BUILTIN_IS_CONSTRUCTIBLE == 1);
@@ -545,18 +451,36 @@ namespace etl
     static ETL_CONSTANT bool using_builtin_is_trivially_assignable              = (ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_destructible            = (ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1);
     static ETL_CONSTANT bool using_builtin_is_trivially_copyable                = (ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1);
-    static ETL_CONSTANT bool using_builtin_underlying_type                      = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
+    static ETL_CONSTANT bool using_builtin_is_destructible                      = (ETL_USING_BUILTIN_IS_DESTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_nothrow_destructible              = (ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_standard_layout                   = (ETL_USING_BUILTIN_IS_STANDARD_LAYOUT == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivial                           = (ETL_USING_BUILTIN_IS_TRIVIAL == 1);
+    static ETL_CONSTANT bool using_builtin_is_layout_compatible                 = (ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE == 1);
+    static ETL_CONSTANT bool using_builtin_is_pointer_interconvertible_base_of  = (ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF == 1);
+    static ETL_CONSTANT bool using_builtin_is_union                             = (ETL_USING_BUILTIN_IS_UNION == 1);
+    static ETL_CONSTANT bool using_builtin_is_empty                             = (ETL_USING_BUILTIN_IS_EMPTY == 1);
+    static ETL_CONSTANT bool using_builtin_is_polymorphic                       = (ETL_USING_BUILTIN_IS_POLYMORPHIC == 1);
+    static ETL_CONSTANT bool using_builtin_is_abstract                          = (ETL_USING_BUILTIN_IS_ABSTRACT == 1);
+    static ETL_CONSTANT bool using_builtin_is_final                             = (ETL_USING_BUILTIN_IS_FINAL == 1);
+    static ETL_CONSTANT bool using_builtin_is_aggregate                         = (ETL_USING_BUILTIN_IS_AGGREGATE == 1);
     static ETL_CONSTANT bool using_builtin_is_constant_evaluated                = (ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1);
+    static ETL_CONSTANT bool using_builtin_is_virtual_base_of                   = (ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF == 1);
+    static ETL_CONSTANT bool using_builtin_is_trivially_relocatable             = (ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE == 1);
+    static ETL_CONSTANT bool using_builtin_has_unique_object_representations    = (ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS == 1);
+    static ETL_CONSTANT bool using_builtin_has_trivial_constructor              = (ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR == 1);
+    static ETL_CONSTANT bool using_builtin_has_trivial_destructor               = (ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR == 1);
+    static ETL_CONSTANT bool using_builtin_has_virtual_destructor               = (ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR == 1);
+    static ETL_CONSTANT bool using_builtin_underlying_type                      = (ETL_USING_BUILTIN_UNDERLYING_TYPE == 1);
     static ETL_CONSTANT bool using_builtin_constant_p                           = (ETL_USING_BUILTIN_CONSTANT_P == 1);
     static ETL_CONSTANT bool using_builtin_memcpy                               = (ETL_USING_BUILTIN_MEMCPY == 1);
     static ETL_CONSTANT bool using_builtin_memmove                              = (ETL_USING_BUILTIN_MEMMOVE == 1);
     static ETL_CONSTANT bool using_builtin_memset                               = (ETL_USING_BUILTIN_MEMSET == 1);
     static ETL_CONSTANT bool using_builtin_memcmp                               = (ETL_USING_BUILTIN_MEMCMP == 1);
     static ETL_CONSTANT bool using_builtin_memchr                               = (ETL_USING_BUILTIN_MEMCHR == 1);
-    static ETL_CONSTANT bool using_builtin_is_virtual_base_of                   = (ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF == 1);
-    static ETL_CONSTANT bool using_builtin_is_trivially_relocatable             = (ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE == 1);
     static ETL_CONSTANT bool using_builtin_builtin_is_cpp_trivially_relocatable = (ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE == 1);
     static ETL_CONSTANT bool using_builtin_bit_cast                             = (ETL_USING_BUILTIN_BIT_CAST == 1);
+    static ETL_CONSTANT bool using_builtin_launder                              = (ETL_USING_BUILTIN_LAUNDER == 1);
+    static ETL_CONSTANT bool using_builtin_assume_aligned                       = (ETL_USING_BUILTIN_ASSUME_ALIGNED == 1);
   } // namespace traits
 } // namespace etl
 

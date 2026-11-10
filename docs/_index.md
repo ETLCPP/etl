@@ -118,9 +118,9 @@ CRC calculations (8, 16, 32 & 64-bit)
 Checksums and hash functions
 - Variants (type-safe unions)
 - Extensive template support utilities
-- Robust Error Handling: Configurable error checking using asserts, exceptions, error handlers, or no checks; user’s choice.
+- Robust Error Handling: Configurable error checking using asserts, exceptions, error handlers, or no checks; user's choice.
 - Thoroughly Tested:  
-Over 10,000 unit tests
+Over **14,000** tests
 Tested with Visual Studio 2022, GCC 12, and Clang 14
 Continuous integration via GitHub Actions.
 - Readable and Well-Documented: Clean, maintainable source code with clear documentation.
@@ -128,6 +128,7 @@ Continuous integration via GitHub Actions.
 - Archived: A snapshot of the ETL is preserved in the Arctic Code Vault for long-term digital preservation.
 
 ## Support the ETL
+
 Maintaining the ETL can take a lot of man-hours of work, but unfortunately it doesn't pay the bills. When I have to take on paying work, the ETL gets a lot less attention. So if you have found the library is an important component in your work and you would like to help out, then please consider by supporting the project.
 
 ---

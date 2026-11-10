@@ -33,9 +33,9 @@ SOFTWARE.
 
 #include "platform.h"
 #include "functional.h"
+#include "math.h"
 #include "type_traits.h"
 
-#include <math.h>
 #include <stdint.h>
 
 namespace etl
@@ -254,12 +254,12 @@ namespace etl
 
           if (variance1 > 0)
           {
-            stddev1 = sqrt(variance1);
+            stddev1 = etl::private_math::sqrt(variance1);
           }
 
           if (variance2 > 0)
           {
-            stddev2 = sqrt(variance2);
+            stddev2 = etl::private_math::sqrt(variance2);
           }
 
           covariance_value = ((n * inner_product) - (sum1 * sum2)) * adjustment;

@@ -174,18 +174,20 @@ namespace etl
               active_list.remove(timer.id, true);
               remove_callback.call_if(timer.id);
 
-              if (timer.callback.is_valid())
-              {
-                // Call the delegate callback.
-                timer.callback();
-              }
-
+              // The timer is reinserted before the callback is called, so that
+              // a callback that restarts the timer replaces this entry instead
+              // of the timer being inserted into the active list twice.
               if (timer.repeating)
               {
                 // Reinsert the timer.
                 timer.delta = timer.period;
                 active_list.insert(timer.id);
                 insert_callback.call_if(timer.id);
+              }
+
+              if (timer.callback.is_valid())
+              {
+                timer.callback();
               }
 
               has_active = !active_list.empty();
@@ -299,6 +301,16 @@ namespace etl
       }
 
       return false;
+    }
+
+    //*******************************************
+    /// Returns true if an attempt was ever made to insert a timer into the
+    /// active list when it was already there. Such an insert is rejected, as
+    /// it would create a circular reference in the list.
+    //*******************************************
+    bool duplicate_insert_detected() const
+    {
+      return active_list.duplicate_insert_detected();
     }
 
     //*******************************************
@@ -486,6 +498,7 @@ namespace etl
         : head(etl::timer::id::NO_TIMER)
         , tail(etl::timer::id::NO_TIMER)
         , ptimers(ptimers_)
+        , duplicate_insert(false)
       {
       }
 
@@ -496,11 +509,30 @@ namespace etl
       }
 
       //*******************************
+      /// Returns true if an attempt was ever made to insert a timer that was
+      /// already in the list.
+      //*******************************
+      bool duplicate_insert_detected() const
+      {
+        return duplicate_insert;
+      }
+
+      //*******************************
       // Inserts the timer at the correct delta position
       //*******************************
       void insert(etl::timer::id::type id_)
       {
         timer_data& timer = ptimers[id_];
+
+        // A timer is in this list exactly when it is the head or has a previous
+        // link, as remove() clears both links. Inserting one that is already
+        // here would link it to itself and create a circular reference, so
+        // record the attempt and abandon the insert to keep the list intact.
+        if ((head == id_) || (timer.previous != etl::timer::id::NO_TIMER))
+        {
+          duplicate_insert = true;
+          return;
+        }
 
         if (head == etl::timer::id::NO_TIMER)
         {
@@ -644,6 +676,10 @@ namespace etl
       etl::timer::id::type tail;
 
       timer_data* const ptimers;
+
+      // Set if an attempt was ever made to insert a timer that was already
+      // in the list.
+      bool duplicate_insert;
     };
 
     // The array of timer data structures.

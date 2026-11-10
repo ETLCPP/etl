@@ -228,7 +228,7 @@ namespace etl
     [[nodiscard]]
     inline constexpr auto operator<=>(const etl::chrono::month& d1, const etl::chrono::month& d2) ETL_NOEXCEPT
     {
-      return (static_cast<unsigned>(d1) <=> static_cast<unsigned>(d2));
+      return etl::make_strong_ordering(d1.compare(d2));
     }
 #endif
 

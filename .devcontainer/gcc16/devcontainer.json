@@ -1,0 +1,12 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/cpp
+//
+// GCC 16 is the reference toolchain for the C++26 static reflection support in
+// etl/meta.h. It cannot use the shared ../Dockerfile because there is no
+// 'gcc:16' base image yet, so gcc-16 is taken from Debian sid instead.
+{
+	"name": "Gcc 16",
+	"build": {
+		"dockerfile": "./Dockerfile"
+	}
+}

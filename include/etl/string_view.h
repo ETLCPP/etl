@@ -355,7 +355,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::string_view_bounds
     /// if the index is out of bounds.
     //*************************************************************************
-    ETL_CONSTEXPR const_reference operator[](size_type i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
+    ETL_CONSTEXPR const_reference operator[](size_type i) const ETL_NOEXCEPT_EXPR(ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
 #if ETL_USING_CPP11 && ETL_NOT_USING_CPP14 && ETL_USING_EXCEPTIONS && ETL_CHECKING_INDEX_OPERATOR
       return i < size() ? mbegin[i] : throw(ETL_ERROR(string_view_bounds));
@@ -554,9 +554,14 @@ namespace etl
     //*************************************************************************
     ETL_CONSTEXPR14 size_type find(etl::basic_string_view<T, TTraits> view, size_type position = 0) const ETL_NOEXCEPT
     {
-      if ((size() < view.size()))
+      if ((position > size()) || (view.size() > (size() - position)))
       {
         return npos;
+      }
+
+      if (view.empty())
+      {
+        return position;
       }
 
       const_iterator iposition = etl::search(begin() + position, end(), view.begin(), view.end());
@@ -598,9 +603,11 @@ namespace etl
 
       position = etl::min(position, size() - view.size());
 
-      const_iterator iposition = etl::find_end(begin(), begin() + position + view.size(), view.begin(), view.end());
+      const_iterator search_end = begin() + position + view.size();
+      const_iterator iposition  = etl::find_end(begin(), search_end, view.begin(), view.end());
 
-      if (iposition == end())
+      // find_end returns the end of the searched range when there is no match.
+      if ((iposition == search_end) && !view.empty())
       {
         return npos;
       }

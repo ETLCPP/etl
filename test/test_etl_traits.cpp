@@ -66,6 +66,44 @@ namespace
       CHECK_EQUAL((ETL_USING_8BIT_TYPES == 1), etl::traits::has_8bit_types);
       CHECK_EQUAL((ETL_USING_64BIT_TYPES == 1), etl::traits::has_64bit_types);
 
+      // Using builtins...
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_ASSIGNABLE == 1), etl::traits::using_builtin_is_assignable);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_CONSTRUCTIBLE == 1), etl::traits::using_builtin_is_constructible);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_NOTHROW_CONSTRUCTIBLE == 1), etl::traits::using_builtin_is_nothrow_constructible);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_NOTHROW_ASSIGNABLE == 1), etl::traits::using_builtin_is_nothrow_assignable);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_TRIVIALLY_CONSTRUCTIBLE == 1), etl::traits::using_builtin_is_trivially_constructible);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_TRIVIALLY_ASSIGNABLE == 1), etl::traits::using_builtin_is_trivially_assignable);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_TRIVIALLY_DESTRUCTIBLE == 1), etl::traits::using_builtin_is_trivially_destructible);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE == 1), etl::traits::using_builtin_is_trivially_copyable);
+      CHECK_EQUAL((ETL_USING_BUILTIN_HAS_TRIVIAL_CONSTRUCTOR == 1), etl::traits::using_builtin_has_trivial_constructor);
+      CHECK_EQUAL((ETL_USING_BUILTIN_HAS_TRIVIAL_DESTRUCTOR == 1), etl::traits::using_builtin_has_trivial_destructor);
+      CHECK_EQUAL((ETL_USING_BUILTIN_HAS_VIRTUAL_DESTRUCTOR == 1), etl::traits::using_builtin_has_virtual_destructor);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_DESTRUCTIBLE == 1), etl::traits::using_builtin_is_destructible);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_NOTHROW_DESTRUCTIBLE == 1), etl::traits::using_builtin_is_nothrow_destructible);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_STANDARD_LAYOUT == 1), etl::traits::using_builtin_is_standard_layout);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_TRIVIAL == 1), etl::traits::using_builtin_is_trivial);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_LAYOUT_COMPATIBLE == 1), etl::traits::using_builtin_is_layout_compatible);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_POINTER_INTERCONVERTIBLE_BASE_OF == 1), etl::traits::using_builtin_is_pointer_interconvertible_base_of);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_UNION == 1), etl::traits::using_builtin_is_union);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_EMPTY == 1), etl::traits::using_builtin_is_empty);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_POLYMORPHIC == 1), etl::traits::using_builtin_is_polymorphic);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_ABSTRACT == 1), etl::traits::using_builtin_is_abstract);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_FINAL == 1), etl::traits::using_builtin_is_final);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_AGGREGATE == 1), etl::traits::using_builtin_is_aggregate);
+      CHECK_EQUAL((ETL_USING_BUILTIN_HAS_UNIQUE_OBJECT_REPRESENTATIONS == 1), etl::traits::using_builtin_has_unique_object_representations);
+      CHECK_EQUAL((ETL_USING_BUILTIN_UNDERLYING_TYPE == 1), etl::traits::using_builtin_underlying_type);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_CONSTANT_EVALUATED == 1), etl::traits::using_builtin_is_constant_evaluated);
+      CHECK_EQUAL((ETL_USING_BUILTIN_CONSTANT_P == 1), etl::traits::using_builtin_constant_p);
+      CHECK_EQUAL((ETL_USING_BUILTIN_MEMCPY == 1), etl::traits::using_builtin_memcpy);
+      CHECK_EQUAL((ETL_USING_BUILTIN_MEMMOVE == 1), etl::traits::using_builtin_memmove);
+      CHECK_EQUAL((ETL_USING_BUILTIN_MEMSET == 1), etl::traits::using_builtin_memset);
+      CHECK_EQUAL((ETL_USING_BUILTIN_MEMCMP == 1), etl::traits::using_builtin_memcmp);
+      CHECK_EQUAL((ETL_USING_BUILTIN_MEMCHR == 1), etl::traits::using_builtin_memchr);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_VIRTUAL_BASE_OF == 1), etl::traits::using_builtin_is_virtual_base_of);
+      CHECK_EQUAL((ETL_USING_BUILTIN_IS_TRIVIALLY_RELOCATABLE == 1), etl::traits::using_builtin_is_trivially_relocatable);
+      CHECK_EQUAL((ETL_USING_BUILTIN_BUILTIN_IS_CPP_TRIVIALLY_RELOCATABLE == 1), etl::traits::using_builtin_builtin_is_cpp_trivially_relocatable);
+      CHECK_EQUAL((ETL_USING_BUILTIN_BIT_CAST == 1), etl::traits::using_builtin_bit_cast);
+
       // Has...
       CHECK_EQUAL((ETL_HAS_ATOMIC == 1), etl::traits::has_atomic);
       CHECK_EQUAL((ETL_HAS_MUTEX == 1), etl::traits::has_mutex);
