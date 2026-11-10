@@ -1952,6 +1952,20 @@ namespace
       CHECK_TRUE(from_empty.has_value());
       CHECK_EQUAL(99, from_empty.value());
     }
+
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<etl::optional<int>>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::optional<double>>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::optional<char>>::value);
+
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<etl::optional<int>>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::optional<double>>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::optional<char>>::value);
+  #endif
+    }
 #endif
   }
 } // namespace
