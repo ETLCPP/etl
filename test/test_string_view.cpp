@@ -1309,18 +1309,18 @@ namespace
       CHECK_TRUE(etl::is_trivially_copyable<etl::wstring_view>::value);
       CHECK_TRUE(etl::is_trivially_copyable<etl::u16string_view>::value);
       CHECK_TRUE(etl::is_trivially_copyable<etl::u32string_view>::value);
-#if ETL_USING_CPP20
+  #if ETL_USING_CPP20
       CHECK_TRUE(etl::is_trivially_copyable<etl::u8string_view>::value);
-#endif
-#if ETL_USING_STL
+  #endif
+  #if ETL_USING_STL
       CHECK_TRUE(std::is_trivially_copyable<etl::string_view>::value);
       CHECK_TRUE(std::is_trivially_copyable<etl::wstring_view>::value);
       CHECK_TRUE(std::is_trivially_copyable<etl::u16string_view>::value);
       CHECK_TRUE(std::is_trivially_copyable<etl::u32string_view>::value);
-#if ETL_USING_CPP20
+    #if ETL_USING_CPP20
       CHECK_TRUE(std::is_trivially_copyable<etl::u8string_view>::value);
-#endif
-#endif
+    #endif
+  #endif
       CHECK_TRUE(etl::is_trivially_copy_constructible<etl::string_view>::value);
       CHECK_TRUE(etl::is_trivially_copy_assignable<etl::string_view>::value);
       CHECK_TRUE(etl::is_trivially_destructible<etl::string_view>::value);
