@@ -82,6 +82,21 @@ namespace etl
   };
 
   //***************************************************************************
+  /// The active polarity of a bit or bits.
+  ///\ingroup binary
+  //***************************************************************************
+  struct bit_polarity
+  {
+    typedef uint_least8_t type;
+
+    enum
+    {
+      Active_High,
+      Active_Low
+    };
+  };
+
+  //***************************************************************************
   /// Maximum value that can be contained in N bits.
   ///\ingroup binary
   //***************************************************************************

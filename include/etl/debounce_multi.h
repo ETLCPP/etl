@@ -31,35 +31,11 @@ SOFTWARE.
 #ifndef DEBOUNCE_MULTI_BIT_INCLUDED
 #define DEBOUNCE_MULTI_BIT_INCLUDED
 
-//-----------------------------------------------------------------------------
-// debounce_multi_bit
-//
-// Debounces a contiguous group of bits read from an IO port. Each bit is
-// debounced independently, using the same semantics as etl::debounce:
-//
-//   Valid_Count  : Number of consecutive samples a bit must differ from its
-//                  previous debounced state before the state changes (>= 1).
-//   Hold_Count   : Number of samples a bit must remain set (after becoming
-//                  valid) before a 'held' event is generated. 0 = disabled.
-//   Repeat_Count : Once held, a 'repeat' event is generated every
-//                  Repeat_Count samples. 0 = disabled.
-//
-// TValue  : unsigned integer type of the port (uint8_t/16_t/32_t/64_t).
-// Shift   : Position of the lowest bit of the field within the port value.
-// Width   : Number of contiguous bits in the field.
-// TCount  : Type of the per-bit counters. Must be able to hold the largest of
-//           Valid_Count, Hold_Count and Repeat_Count.
-//
-// All masks returned by this class are field-aligned, i.e. bit 0 of a mask
-// corresponds to the lowest bit of the field (port bit 'Shift').
-//
-// Call update() at a fixed sampling interval (e.g. every 1ms from a timer).
-//-----------------------------------------------------------------------------
-
 #include "platform.h"
 #include "array.h"
 #include "binary.h"
 #include "memory.h"
+
 #include "static_assert.h"
 
 #include <stddef.h>
@@ -71,6 +47,7 @@ namespace etl
   /// Debounces a contiguous group of bits read from an IO port.
   ///\tparam TValue      The type of the port value (uint8_t/16_t/32_t/64_t).
   ///\tparam Width       The number of bits in the field (1..sizeof(TValue) * 8).
+  ///\tparam Polarity    The polarity of the bits. Active_High = valid input reads as '1', Active_Low = valid input reads as '0'.
   ///\tparam Valid_Count The number of consecutive samples a bit must differ
   ///                    from its previous debounced state before the state
   ///                    changes (>= 1).
@@ -82,8 +59,9 @@ namespace etl
   ///\tparam TCount      The type of the per-bit counters. Must be able to hold
   ///                    the largest of Valid_Count, Hold_Count and Repeat_Count.
   //*************************************************************************
-  template <typename TValue, typename TCount, size_t Width, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
-  class debounce_multi_bit
+  template <typename TValue, typename TCount, size_t Width, etl::bit_polarity::type Polarity, uint32_t Valid_Count, uint32_t Hold_Count = 0,
+            uint32_t Repeat_Count = 0>
+  class debounce_multi
   {
   public:
 
@@ -98,15 +76,16 @@ namespace etl
     ETL_STATIC_ASSERT((Repeat_Count == 0) || (Hold_Count != 0),                           "If Repeat_Count is non-zero, Hold_Count must be non-zero");
     // clang-format on
 
-    typedef TValue        value_type;
-    typedef TCount        count_type;
-    typedef uint_least8_t state_id_type;
+    typedef TValue value_type;
+    typedef TCount count_type;
 
     //***************************************************************************
-    /// State fit in 2 bits, state_lo & state_hi.
+    /// State fit in 2 bits, state_low & state_high.
     //***************************************************************************
     struct state_id
     {
+      typedef uint_least8_t type;
+
       enum
       {
         Off       = 0, // Debounced state is Off.
@@ -117,36 +96,73 @@ namespace etl
     };
 
     //***************************************************************************
-    /// Constructor. All bits start in the 'clear' state.
+    /// Constructor. All bits start in the 'Off' state.
+    ///\param initial The initial raw port value, in the same polarity as values passed to update(). Default = the 'inactive' reading for all bits.
     //***************************************************************************
-    debounce_multi_bit(value_type initial = 0)
+    debounce_multi(value_type initial = initial_value())
     {
       reset(initial);
     }
 
     //***************************************************************************
     /// Resets the debouncer state.
+    ///\param initial The initial raw port value, in the same polarity as values passed to update(). Default = the 'inactive' reading for all bits.
     //***************************************************************************
-    void reset(value_type initial = 0)
+    void reset(value_type initial = initial_value())
     {
-      sample    = initial;
-      state_lo  = 0;
-      state_hi  = 0;
-      changed   = 0;
-      bit_index = 0;
+      sample     = logical_value(initial); // Converted to, and stored in, the internal logical (active = 1) form.
+      state_low  = 0;
+      state_high = 0;
+      changed    = 0;
+      bit_index  = 0;
 
       // Clear the timers for all bits.
       counts.fill(0);
     }
 
     //***************************************************************************
+    /// Resets a bit to the 'Off' state.
+    /// \param n The bit number [0, Width). An 'n' that is out of range is ignored.
+    /// \param initial The raw reading for this bit, in the same polarity as values passed to update().
+    ///                If true, the bit reads as it would when physically asserted; if false, as at rest.
+    ///                Default is 'false'. The state is set to 'Off' and the count is reset to 0.
+    //***************************************************************************
+    void reset_bit(size_t n, bool initial = false)
+    {
+      // Only accept valid bit numbers.
+      if (n < Width)
+      {
+        value_type bit = bit_mask(n);
+
+        // Convert the raw reading to the internal logical (active = 1) form.
+        const bool bit_is_active = logical_value(initial);
+
+        if (bit_is_active)
+        {
+          sample |= bit;
+        }
+        else
+        {
+          sample &= ~bit;
+        }
+
+        clear_bit_state(bit);
+        clear_changed_state(bit);
+        clear_counter(n);
+      }
+    }
+
+    //***************************************************************************
     /// Updates a bit.
-    /// The value of 'next' must not change between calls to update_incremental() until all bits have been processed.
+    /// The value of 'raw_next' must not change between calls to update_incremental() until all bits have been processed.
     /// Do not call update() after update_incremental() on the same instance unless update_incremental() has completed a full cycle (returned true).
     /// Returns true if all of the bits have been processed.
     //***************************************************************************
-    bool update_incremental(const value_type next)
+    bool update_incremental(const value_type raw_next)
     {
+      // Convert to the internal logical (active = 1) representation.
+      const value_type next = logical_value(raw_next);
+
       // Determine which bits have changed since the last sample.
       const value_type changed_bits = sample ^ next;
 
@@ -159,8 +175,9 @@ namespace etl
       count_type*      pcount          = &counts[bit_index];
       const value_type bit             = bit_mask(bit_index);
       const bool       bit_has_changed = (changed_bits & bit) != 0;
+      const bool       bit_is_set      = (next & bit) != 0;
 
-      update_bit(bit_has_changed, bit, pcount, next);
+      update_bit(bit_has_changed, bit, pcount, bit_is_set);
 
       ++bit_index;
 
@@ -181,8 +198,11 @@ namespace etl
     /// Updates the whole port value.
     /// Returns true if any bit changed state.
     //***************************************************************************
-    bool update(const value_type next)
+    bool update(const value_type raw_next)
     {
+      // Convert to the internal logical (active = 1) representation.
+      const value_type next = logical_value(raw_next);
+
       // Determine which bits have changed since the last sample.
       const value_type changed_bits = sample ^ next;
 
@@ -195,8 +215,9 @@ namespace etl
       for (size_t i = 0; i < Width; ++i)
       {
         const bool bit_has_changed = (changed_bits & bit) != 0;
+        const bool bit_is_set      = (next & bit) != 0;
 
-        update_bit(bit_has_changed, bit, pcount, next);
+        update_bit(bit_has_changed, bit, pcount, bit_is_set);
 
         bit = bit << 1U; // Move to the next bit.
         ++pcount;        // Move to the next bit's timer.
@@ -209,7 +230,7 @@ namespace etl
 
     //***************************************************************************
     /// Returns true if the bit changed state on the last update.
-    ///\param n The bit number (0..Width - 1).
+    ///\param n The bit number [0, Width).
     //***************************************************************************
     bool has_changed(size_t n) const
     {
@@ -220,36 +241,36 @@ namespace etl
 
     //***************************************************************************
     /// Returns true if the bit is currently set.
-    ///\param n The bit number (0..Width - 1).
+    ///\param n The bit number [0, Width).
     //***************************************************************************
     bool is_set(size_t n) const
     {
-      const value_type    bit   = bit_mask(n);
-      const state_id_type state = get_bit_state(bit);
+      const value_type     bit   = bit_mask(n);
+      const state_id::type state = get_bit_state(bit);
 
       return (state >= state_id::On);
     }
 
     //***************************************************************************
     /// Returns true if the bit is currently held.
-    ///\param n The bit number (0..Width - 1).
+    ///\param n The bit number [0, Width).
     //***************************************************************************
     bool is_held(size_t n) const
     {
-      const value_type    bit   = bit_mask(n);
-      const state_id_type state = get_bit_state(bit);
+      const value_type     bit   = bit_mask(n);
+      const state_id::type state = get_bit_state(bit);
 
       return (state >= state_id::Held);
     }
 
     //***************************************************************************
     /// Returns true if the bit is currently repeating.
-    ///\param n The bit number (0..Width - 1).
+    ///\param n The bit number [0, Width).
     //***************************************************************************
     bool is_repeating(size_t n) const
     {
-      const value_type    bit   = bit_mask(n);
-      const state_id_type state = get_bit_state(bit);
+      const value_type     bit   = bit_mask(n);
+      const state_id::type state = get_bit_state(bit);
 
       return (state == state_id::Repeating);
     }
@@ -263,42 +284,90 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Returns the current state of all bits as a value_type.
+    /// Returns the stable (debounced) value of all bits, in the same polarity as the raw input.
     //***************************************************************************
-    value_type get_state() const
+    value_type get_value() const
     {
-      value_type bit    = 1U;
-      value_type result = 0;
+      // A bit is 'active' (state >= On) if it is set in either state_low or state_high.
+      const value_type active_mask = (state_low | state_high);
 
-      for (size_t i = 0; i < Width; ++i)
+      // Convert from the internal logical (active = 1) representation back to the raw input's polarity.
+      if ETL_IF_CONSTEXPR ((Polarity == etl::bit_polarity::Active_High))
       {
-        result |= (get_bit_state(bit) >= state_id::On) ? bit : 0;
-        bit <<= 1;
+        return active_mask;
       }
-
-      return result;
+      else
+      {
+        return static_cast<value_type>(active_mask ^ field_mask());
+      }
     }
 
     //***************************************************************************
     /// Returns the current state id of a bit.
     //***************************************************************************
-    state_id_type get_state(size_t n) const
+    state_id::type get_state(size_t n) const
     {
       value_type bit = bit_mask(n);
 
       return get_bit_state(bit);
     }
 
+    //***************************************************************************
+    /// Returns the changed state of the bit field.
+    //***************************************************************************
+    value_type get_changed() const
+    {
+      return changed;
+    }
+
   private:
 
     //***************************************************************************
-    /// Updates a bit.
-    /// Returns true if the bit changed state.
+    /// Returns the default initial value for the sample, expressed in the raw/physical polarity
+    /// (i.e. the 'inactive' reading for all bits, matching what a real port would read at rest).
     //***************************************************************************
-    void update_bit(const bool bit_has_changed, const value_type bit, count_type* pcount, const value_type next)
+    static value_type initial_value()
     {
-      const bool bit_is_set = (next & bit) != 0;
+      return static_cast<value_type>(Polarity == etl::bit_polarity::Active_High) ? 0 : field_mask();
+    }
 
+    //***************************************************************************
+    /// Converts a raw port value into the internal logical (active = 1) representation,
+    /// independent of the configured polarity.
+    //***************************************************************************
+    static value_type logical_value(value_type v)
+    {
+      if ETL_IF_CONSTEXPR (Polarity == etl::bit_polarity::Active_High)
+      {
+        return v & field_mask();
+      }
+      else
+      {
+        return static_cast<value_type>(~v & field_mask());
+      }
+    }
+
+    //***************************************************************************
+    /// Converts a raw port bool into the internal logical (active = 1) representation,
+    /// independent of the configured polarity.
+    //***************************************************************************
+    static bool logical_value(bool v)
+    {
+      if ETL_IF_CONSTEXPR (Polarity == etl::bit_polarity::Active_High)
+      {
+        return v;
+      }
+      else
+      {
+        return !v;
+      }
+    }
+
+    //***************************************************************************
+    /// Updates a bit.
+    //***************************************************************************
+    void update_bit(const bool bit_has_changed, const value_type bit, count_type* pcount, const bool bit_is_set)
+    {
       if (bit_has_changed)
       {
         *pcount = 0;
@@ -336,35 +405,59 @@ namespace etl
     /// Gets the current debounce state for a specific bit.
     ///\return The current state of the bit.
     //***************************************************************************
-    state_id_type get_bit_state(const value_type bit) const
+    state_id::type get_bit_state(const value_type bit) const
     {
-      const state_id_type lo = static_cast<state_id_type>((state_lo & bit) > 0);
-      const state_id_type hi = static_cast<state_id_type>((state_hi & bit) > 0);
+      const state_id::type lo = static_cast<state_id::type>((state_low & bit) > 0);
+      const state_id::type hi = static_cast<state_id::type>((state_high & bit) > 0);
 
-      return static_cast<state_id_type>(lo | (hi << 1));
+      return static_cast<state_id::type>(lo | (hi << 1));
     }
 
     //***************************************************************************
-    /// Gets the current debounce state for a specific bit.
-    ///\return The current state of the bit.
+    /// Sets the current debounce state for a specific bit.
     //***************************************************************************
-    void set_bit_state(state_id_type state, const value_type bit)
+    void set_bit_state(const value_type bit, state_id::type state)
     {
-      state_lo = state & 1 ? state_lo | bit : state_lo & ~bit;
-      state_hi = state & 2 ? state_hi | bit : state_hi & ~bit;
+      state_low  = state & 1 ? state_low | bit : state_low & ~bit;
+      state_high = state & 2 ? state_high | bit : state_high & ~bit;
+    }
+
+    //***************************************************************************
+    /// Clears the current debounce state for a specific bit.
+    //***************************************************************************
+    void clear_bit_state(const value_type bit)
+    {
+      state_low  = state_low & ~bit;
+      state_high = state_high & ~bit;
+    }
+
+    //***************************************************************************
+    /// Clears the current changed state for a specific bit.
+    //***************************************************************************
+    void clear_changed_state(const value_type bit)
+    {
+      changed &= ~bit;
+    }
+
+    //***************************************************************************
+    /// Clears the current timer for a specific bit.
+    //***************************************************************************
+    void clear_counter(size_t n)
+    {
+      counts[n] = 0;
     }
 
     //***************************************************************************
     /// Increments *pcount; if it reaches 'threshold' the bit moves to
     /// 'new_state', the changed flag is set, and the timer is reset.
     //***************************************************************************
-    void check_for_transition(count_type* pcount, uint32_t threshold, state_id_type new_state, value_type bit)
+    void check_for_transition(count_type* pcount, uint32_t threshold, state_id::type new_state, value_type bit)
     {
       ++(*pcount);
 
       if (*pcount >= threshold)
       {
-        set_bit_state(new_state, bit);
+        set_bit_state(bit, new_state);
         changed |= bit;
         *pcount = 0;
       }
@@ -434,16 +527,25 @@ namespace etl
 
     //*************************************************************************
     /// Returns a mask with only the nth bit set.
-    //*****************************************************************************
+    /// If 'n' is out of range then returns 0.
+    //*************************************************************************
     static value_type bit_mask(size_t n)
     {
-      return static_cast<value_type>(value_type(1) << n);
+      return (n < Width) ? static_cast<value_type>(value_type(1) << n) : 0;
     }
 
-    value_type sample;   // The last known value of the bits. Note, this is not the same as the 'state' of the bits.
-    value_type state_lo; // Low bits of the state.
-    value_type state_hi; // High bits of the state. Combined with state_lo to form a 2-bit state for each bit in the field.
-    value_type changed;  // Bits that have changed at the last update.
+    //*************************************************************************
+    /// Returns a mask with only Width bits set.
+    //*************************************************************************
+    static value_type field_mask()
+    {
+      return static_cast<value_type>(etl::max_value_for_nbits<Width>::value);
+    }
+
+    value_type sample;     // The last known value of the bits. Note, this is not the same as the 'state' of the bits.
+    value_type state_low;  // Low bits of the state.
+    value_type state_high; // High bits of the state. Combined with state_low to form a 2-bit state for each bit in the field.
+    value_type changed;    // Bits that have changed at the last update.
 
     etl::array<count_type, Width> counts; // Off / On / Hold / Repeat timers.
 

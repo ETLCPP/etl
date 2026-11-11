@@ -1572,7 +1572,10 @@
     <ClInclude Include="..\..\include\etl\debounce_value.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\debounce_multi_bit.h">
+    <ClInclude Include="..\..\include\etl\debounce_multi.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\key_matrix.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
@@ -3851,7 +3854,10 @@
     <ClCompile Include="..\test_debounce_value.cpp">
       <Filter>Tests\Misc</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_debounce_multi_bit.cpp">
+    <ClCompile Include="..\test_debounce_multi_active_high.cpp">
+      <Filter>Tests\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_debounce_multi_active_low.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
   </ItemGroup>

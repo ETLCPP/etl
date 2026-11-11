@@ -448,7 +448,7 @@ namespace etl
 
     //*************************************************************************
     /// Updates with a new sample.
-    /// For compatibility with the later etl::debounce_value and etl::debounce_multi_bit classes.
+    /// For compatibility with the later etl::debounce_value and etl::debounce_multi classes.
     ///\param sample The new sample.
     ///\return 'true' if the debouncer changed state.
     //*************************************************************************
