@@ -226,6 +226,12 @@
     <Filter Include="Documentation">
       <UniqueIdentifier>{5b809d95-b37c-4011-af5e-b5ea6dcb354e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\I/O">
+      <UniqueIdentifier>{261cb610-c08e-461d-8fd3-dc6d03e04270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\I/O">
+      <UniqueIdentifier>{deeab5a1-dddc-4657-aa0e-4060bec846c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\etl\enum_type.h">
@@ -354,9 +360,6 @@
     <ClInclude Include="..\..\include\etl\unordered_map.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\io_port.h">
-      <Filter>ETL\Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\set.h">
       <Filter>ETL\Containers</Filter>
     </ClInclude>
@@ -395,9 +398,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\unordered_multiset.h">
       <Filter>ETL\Containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\debounce.h">
-      <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\platform.h">
       <Filter>ETL\Utilities</Filter>
@@ -1569,14 +1569,20 @@
     <ClInclude Include="..\..\include\etl\notification.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\debounce_value.h">
-      <Filter>ETL\Utilities</Filter>
+    <ClInclude Include="..\..\include\etl\debounce.h">
+      <Filter>ETL\I/O</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\debounce_multi.h">
-      <Filter>ETL\Utilities</Filter>
+      <Filter>ETL\I/O</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\debounce_value.h">
+      <Filter>ETL\I/O</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\io_port.h">
+      <Filter>ETL\I/O</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\key_matrix.h">
-      <Filter>ETL\Utilities</Filter>
+      <Filter>ETL\I/O</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2103,9 +2109,6 @@
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="..\test_cyclic_value.cpp">
-      <Filter>Tests\Algorithms</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_debounce.cpp">
       <Filter>Tests\Algorithms</Filter>
     </ClCompile>
     <ClCompile Include="..\test_gamma.cpp">
@@ -3851,14 +3854,20 @@
     <ClCompile Include="..\test_vector_member_function_pointer_external_buffer.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_debounce_value.cpp">
-      <Filter>Tests\Misc</Filter>
-    </ClCompile>
     <ClCompile Include="..\test_debounce_multi_active_high.cpp">
-      <Filter>Tests\Algorithms</Filter>
+      <Filter>Tests\I/O</Filter>
     </ClCompile>
     <ClCompile Include="..\test_debounce_multi_active_low.cpp">
-      <Filter>Tests\Algorithms</Filter>
+      <Filter>Tests\I/O</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_debounce.cpp">
+      <Filter>Tests\I/O</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_debounce_value.cpp">
+      <Filter>Tests\I/O</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_key_matrix_active_low.cpp">
+      <Filter>Tests\I/O</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

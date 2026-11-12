@@ -91,7 +91,7 @@ namespace etl
         Off       = 0, // Debounced state is Off.
         On        = 1, // Debounced state is On.
         Held      = 2, // Debounced state is Held. Implies On.
-        Repeating = 3  // Debounced state is Repeating. Implies Held and On.
+        Repeating = 3, // Debounced state is Repeating. Implies Held and On.
       };
     };
 
