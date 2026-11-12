@@ -32,6 +32,9 @@ add_library(etl::etl ALIAS ${PROJECT_NAME})
 
 include(GNUInstallDirs)
 
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_headers.cmake")
+etl_generate_headers()
+
 target_include_directories(${PROJECT_NAME} ${INCLUDE_SPECIFIER} INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
