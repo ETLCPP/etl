@@ -171,7 +171,17 @@ Construct from a const STL array.
 ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT
 ```
 **Description**  
-Copy constructor.
+Copy constructor.  
+Defaulted for C++11 and above.
+
+---
+
+```cpp
+ETL_CONSTEXPR14 span& operator=(const span& other) ETL_NOEXCEPT
+```
+**Description**  
+Copy assignment.  
+Defaulted for C++11 and above.
 
 ---
 
@@ -179,6 +189,12 @@ Copy constructor.
 template <typename U, size_t N>
 ETL_CONSTEXPR span(const etl::span<U, N>& other) ETL_NOEXCEPT
 ```
+
+## Trivially copyable
+From: `20.50.0`  
+For C++11 and above, `etl::span` is trivially copyable, trivially copy/move constructible, trivially copy/move assignable
+and trivially destructible, as is `std::span`.  
+This allows spans to be passed in registers and copied with `memcpy`.
 
 ## Access
 
