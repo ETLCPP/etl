@@ -15,6 +15,7 @@ include(CheckCXXCompilerFlag)
 add_executable(etl_tests
 	main.cpp
 	murmurhash3.cpp
+	clocks_for_unit_tests.cpp
 	test_algorithm.cpp
 	test_algorithm_ranges.cpp
 	test_alignment.cpp
@@ -301,6 +302,7 @@ add_executable(etl_tests
 	test_rms.cpp
 	test_rounded_integral_division.cpp
 	test_scaled_rounding.cpp
+	test_semaphore.cpp
 	test_set.cpp
 	test_shared_message.cpp
 	test_signal.cpp
