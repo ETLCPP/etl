@@ -21,8 +21,12 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-cogapp
+        sudo apt-get install -y python3-cogapp python3-venv cmake g++
 
     - name: Run generator_test.py
       run: |
         cd scripts && python3 generator_test.py
+
+    - name: Run CMake generation smoke test
+      run: |
+        cd scripts && python3 test_cmake_generation.py

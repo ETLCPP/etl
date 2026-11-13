@@ -34,6 +34,11 @@
 
 [**Project documentation**](https://www.etlcpp.com/)
 
+## Header generation with CMake
+
+Set `ETL_NUMBER_OF_HANDLERS` to generate larger C++03 capacities with CMake.
+See [header generation options and requirements](docs/getting-started/generators.md#header-generation-with-cmake).
+
 ## Motivation
 
 C++ is a powerful language for embedded systems development, with templates offering a great deal of flexibility and type safety. While the C++ Standard Library provides a wealth of well-tested functionality, it’s often not well suited to environments with strict deterministic behavior and limited resources.
