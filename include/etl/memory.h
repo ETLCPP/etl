@@ -921,10 +921,10 @@ namespace etl
   template <typename TInputIterator, typename TOutputIterator>
   TOutputIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
-    #include "etl/private/diagnostic_array_bounds_push.h"
-    #include "etl/private/diagnostic_stringop_overflow_push.h"
+    #include "private/diagnostic_array_bounds_push.h"
+    #include "private/diagnostic_stringop_overflow_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
-    #include "etl/private/diagnostic_pop.h"
+    #include "private/diagnostic_pop.h"
   }
 
   //*****************************************************************************
@@ -938,9 +938,9 @@ namespace etl
   {
     count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
-    #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "private/diagnostic_array_bounds_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
-    #include "etl/private/diagnostic_pop.h"
+    #include "private/diagnostic_pop.h"
   }
   #else
   //*****************************************************************************
@@ -3380,10 +3380,10 @@ namespace etl
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_move a non trivially copyable type");
 
 #if ETL_USING_BUILTIN_MEMMOVE
-  #include "etl/private/diagnostic_array_bounds_push.h"
-  #include "etl/private/diagnostic_stringop_overread_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_stringop_overread_push.h"
     __builtin_memmove(reinterpret_cast<void*>(db), reinterpret_cast<const void*>(sb), sizeof(T) * n);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 #else
     ::memmove(reinterpret_cast<void*>(db), reinterpret_cast<const void*>(sb), sizeof(T) * n);
 #endif

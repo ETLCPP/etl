@@ -132,6 +132,48 @@ SOFTWARE.
     #define ETL_HAS_NAN true
   #endif
 
+  // IEC 559 (IEEE 754) conformance of the floating point types.
+  // Uses the same conditions as libstdc++'s std::numeric_limits<T>::is_iec559:
+  // the type has an infinity, a quiet NaN and denormals.
+  // __GCC_IEC_559 is not used, as it is 0 on targets with a single precision only FPU,
+  // although 'double' still uses the IEEE 754 format.
+  // For is_iec559 to be true, C++ also requires has_quiet_NaN and has_signaling_NaN to be true.
+  // These are ETL_HAS_NAN, which is not guaranteed by the compiler's macros, so it is checked too.
+  // MSVC does not predefine these macros, but 'float', 'double' and 'long double' are IEEE 754
+  // on all of its targets ('long double' is the same as 'double').
+  // If the compiler does not predefine the required macros, the result is conservatively 'false'.
+  // Each of them may be defined as 'true' or 'false' in etl_profile.h to override the detection.
+  // An override is used as is.
+  #if !defined(ETL_FLOAT_IS_IEC559)
+    #if defined(__FLT_HAS_INFINITY__) && defined(__FLT_HAS_QUIET_NAN__) && defined(__FLT_HAS_DENORM__)
+      #define ETL_FLOAT_IS_IEC559 ((__FLT_HAS_INFINITY__ != 0) && (__FLT_HAS_QUIET_NAN__ != 0) && (__FLT_HAS_DENORM__ != 0) && ETL_HAS_NAN)
+    #elif defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_FLOAT_IS_IEC559 ETL_HAS_NAN
+    #else
+      #define ETL_FLOAT_IS_IEC559 false
+    #endif
+  #endif
+
+  #if !defined(ETL_DOUBLE_IS_IEC559)
+    #if defined(__DBL_HAS_INFINITY__) && defined(__DBL_HAS_QUIET_NAN__) && defined(__DBL_HAS_DENORM__)
+      #define ETL_DOUBLE_IS_IEC559 ((__DBL_HAS_INFINITY__ != 0) && (__DBL_HAS_QUIET_NAN__ != 0) && (__DBL_HAS_DENORM__ != 0) && ETL_HAS_NAN)
+    #elif defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_DOUBLE_IS_IEC559 ETL_HAS_NAN
+    #else
+      #define ETL_DOUBLE_IS_IEC559 false
+    #endif
+  #endif
+
+  #if !defined(ETL_LONG_DOUBLE_IS_IEC559)
+    #if defined(__LDBL_HAS_INFINITY__) && defined(__LDBL_HAS_QUIET_NAN__) && defined(__LDBL_HAS_DENORM__)
+      #define ETL_LONG_DOUBLE_IS_IEC559 ((__LDBL_HAS_INFINITY__ != 0) && (__LDBL_HAS_QUIET_NAN__ != 0) && (__LDBL_HAS_DENORM__ != 0) && ETL_HAS_NAN)
+    #elif defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_LONG_DOUBLE_IS_IEC559 ETL_HAS_NAN
+    #else
+      #define ETL_LONG_DOUBLE_IS_IEC559 false
+    #endif
+  #endif
+
 namespace etl
 {
   enum float_round_style
@@ -627,7 +669,6 @@ namespace etl
       static ETL_CONSTANT bool               has_quiet_NaN     = ETL_HAS_NAN;
       static ETL_CONSTANT bool               has_signaling_NaN = ETL_HAS_NAN;
       static ETL_CONSTANT bool               has_denorm_loss   = false;
-      static ETL_CONSTANT bool               is_iec559         = false;
       static ETL_CONSTANT bool               is_bounded        = true;
       static ETL_CONSTANT bool               is_modulo         = false;
       static ETL_CONSTANT bool               traps             = false;
@@ -664,9 +705,6 @@ namespace etl
     ETL_CONSTANT bool floating_point_limits_common<T>::has_denorm_loss;
 
     template <typename T>
-    ETL_CONSTANT bool floating_point_limits_common<T>::is_iec559;
-
-    template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::is_bounded;
 
     template <typename T>
@@ -697,6 +735,8 @@ namespace etl
       static ETL_CONSTANT int min_exponent10 = FLT_MIN_10_EXP;
       static ETL_CONSTANT int max_exponent   = FLT_MAX_EXP;
       static ETL_CONSTANT int max_exponent10 = FLT_MAX_10_EXP;
+
+      static ETL_CONSTANT bool is_iec559 = ETL_FLOAT_IS_IEC559;
     };
 
     template <typename T>
@@ -720,6 +760,9 @@ namespace etl
     template <typename T>
     ETL_CONSTANT int floating_point_limits_float<T>::max_exponent10;
 
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_float<T>::is_iec559;
+
     //*********************************
     // double
     template <typename T = void>
@@ -733,6 +776,8 @@ namespace etl
       static ETL_CONSTANT int min_exponent10 = DBL_MIN_10_EXP;
       static ETL_CONSTANT int max_exponent   = DBL_MAX_EXP;
       static ETL_CONSTANT int max_exponent10 = DBL_MAX_10_EXP;
+
+      static ETL_CONSTANT bool is_iec559 = ETL_DOUBLE_IS_IEC559;
     };
 
     template <typename T>
@@ -756,6 +801,9 @@ namespace etl
     template <typename T>
     ETL_CONSTANT int floating_point_limits_double<T>::max_exponent10;
 
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_double<T>::is_iec559;
+
     //*********************************
     // long double
     template <typename T = void>
@@ -769,6 +817,8 @@ namespace etl
       static ETL_CONSTANT int min_exponent10 = LDBL_MIN_10_EXP;
       static ETL_CONSTANT int max_exponent   = LDBL_MAX_EXP;
       static ETL_CONSTANT int max_exponent10 = LDBL_MAX_10_EXP;
+
+      static ETL_CONSTANT bool is_iec559 = ETL_LONG_DOUBLE_IS_IEC559;
     };
 
     template <typename T>
@@ -791,6 +841,9 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT int floating_point_limits_long_double<T>::max_exponent10;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_long_double<T>::is_iec559;
   } // namespace private_limits
 
   //***************************************************************************

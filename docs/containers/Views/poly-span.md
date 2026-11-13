@@ -9,6 +9,7 @@ title: "poly_span"
 
 Polymorphic span.  
 This class implements a view in to a contiguous range through a base type.  
+In C++11 and later, `etl::poly_span` is trivially copyable.  
 
 ```cpp
 etl::poly_span<typename TBase, size_t Extent = etl::dynamic_extent>
@@ -153,7 +154,7 @@ Static asserts if `N` is greater than `Extent` or `etl::iterator_traits<TIterato
 ETL_CONSTEXPR poly_span(const poly_span& other)
 ```
 **Description**  
-Copy constructor.
+Copy constructor. (Defaulted and trivially copyable in C++11 and later).
 
 ## Access
 
@@ -194,7 +195,7 @@ Returns a pointer to the first element.
 ETL_CONSTEXPR14 poly_span& operator =(const poly_span& other) ETL_NOEXCEPT
 ```
 **Description**  
-Assign from a other span
+Assign from another span. (Defaulted in C++11 and later).
 
 ---
 
