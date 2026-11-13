@@ -407,8 +407,6 @@ namespace etl
     using const_iterator  = typename base_t::const_iterator;
     using size_type       = typename base_t::size_type;
 
-    static_assert((etl::is_default_constructible<key_type>::value), "key_type must be default constructible");
-
   #include "private/diagnostic_uninitialized_push.h"
     //*************************************************************************
     ///\brief Construct a const_set from a variadic list of elements.
@@ -427,6 +425,8 @@ namespace etl
     {
       static_assert((etl::are_all_same<value_type, etl::decay_t<TElements>...>::value), "All elements must be value_type");
       static_assert(sizeof...(elements) <= Size, "Number of elements exceeds capacity");
+      static_assert(sizeof...(elements) == Size || etl::is_default_constructible<key_type>::value,
+                    "key_type must be default constructible, if providing less than Size elements");
     }
   #include "private/diagnostic_pop.h"
 
@@ -460,8 +460,6 @@ namespace etl
     using const_pointer   = typename base_t::const_pointer;
     using const_iterator  = typename base_t::const_iterator;
     using size_type       = typename base_t::size_type;
-
-    static_assert((etl::is_default_constructible<key_type>::value), "key_type must be default constructible");
 
     //*************************************************************************
     ///\brief Default construct a const_multiset.
