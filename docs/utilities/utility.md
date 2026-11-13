@@ -14,7 +14,8 @@ template <typename T1, typename T2>
 struct pair
 ```
 **Description**  
-A clone of std::pair
+A clone of std::pair  
+Trivially copyable: C++11 and later (when member types are trivially copyable)
 
 **C++03**  
 ```cpp
