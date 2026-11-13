@@ -34,57 +34,58 @@ SOFTWARE.
 #include "platform.h"
 #include "array.h"
 #include "binary.h"
+#include "bit.h"
 #include "debounce_multi.h"
-#include "largest.h"
-#include "queue.h"
-#include "smallest.h"
 #include "integral_limits.h"
+#include "queue.h"
 
 #include <stdint.h>
 
 namespace etl
 {
+  // clang-format off
   //******************************************************************************
   // A key matrix decoder.
   // \tparam N_Rows       The number of rows in the key matrix. Rows are read from the key matrix.
   // \tparam N_Columns    The number of columns in the key matrix. Columns are written to the key matrix.
-  // \tparam N_Key_Buffer The number of keys that may be buffered simultaneously.
   // \tparam Polarity     The polarity of the key matrix. Active_High = pressed key reads as '1', Active_Low = pressed key reads as '0'.
-  // \tparam TCount       The type of the per-bit counters. Must be able to hold the largest of Valid_Count, Hold_Count and Repeat_Count.
-  // \tparam TRow         The type of the read value (uint8_t/16_t/32_t/64_t).
-  // \tparam TColumn      The type of the write value (uint8_t/16_t/32_t/64_t).
   // \tparam Valid_Count  The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= 1).
-  // \tparam Hold_Count   The number of samples a bit must remain set (after becoming valid) before a 'held' event is generated. 0 = disabled.
-  // \tparam Repeat_Count Once held, a 'repeat' event is generated every Repeat_Count samples. 0 = disabled.
+  // \tparam Hold_Count   The number of samples a bit must remain set (after becoming valid) before a 'held' event is generated. 0 = disabled. Default = 0.
+  // \tparam Repeat_Count Once held, a 'repeat' event is generated every Repeat_Count samples. 0 = disabled. Default = 0.
+  // \tparam N_Key_Events The number of keys that may be buffered simultaneously. Default = 1.
   //******************************************************************************
-  template <size_t N_Rows, size_t N_Columns, size_t N_Key_Buffer, etl::bit_polarity::type Polarity, typename TRow, typename TColumn,
-            uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
+  // clang-format on
+  template <size_t N_Rows, size_t N_Columns, etl::bit_polarity::type Polarity, uint32_t Valid_Count, uint32_t Hold_Count = 0,
+            uint32_t Repeat_Count = 0, size_t N_Key_Events = 1>
   class key_matrix
   {
-  private:
-
-    typedef typename etl::smallest_uint_for_value<Valid_Count>::type  valid_count_type;
-    typedef typename etl::smallest_uint_for_value<Hold_Count>::type   hold_count_type;
-    typedef typename etl::smallest_uint_for_value<Repeat_Count>::type repeat_count_type;
-
   public:
 
-    typedef TRow    row_type;
-    typedef TColumn column_type;
+    // The type that holds the value read from the key matrix column debouncer.
+    typedef uint_least8_t column_type;
 
-    // Determine the type of the per-bit counters. Must be able to hold the largest of Valid_Count, Hold_Count and Repeat_Count.
-    typedef typename etl::largest_type<valid_count_type, hold_count_type, repeat_count_type>::type count_type;
+    // The type that holds a column index
+    typedef uint_least8_t column_index_type;
+
+  private:
+
+    // The debouncer for each column in the key matrix.
+    typedef etl::debounce_multi<column_type, N_Rows, Polarity, Valid_Count, Hold_Count, Repeat_Count> debounce_type;
+
+  public:
 
     // The type that holds a key value
     typedef uint_least8_t key_type;
 
-    // An invalid key code.
+    // The invalid key code.
+    // The range of supported keys is [0, Invalid_Key).
     static const key_type Invalid_Key = etl::integral_limits<key_type>::max;
 
     //***************************************************************************
-    // The state of a key in the key matrix. It inherits from the debounce_multi state_id to provide the same state IDs.
+    // The state of a key in the key matrix.
+    // It inherits from the debounce_multi state_id to provide the same state IDs.
     //***************************************************************************
-    class key_state : public etl::debounce_multi<row_type, count_type, N_Rows, Polarity, Valid_Count, Hold_Count, Repeat_Count>::state_id
+    class key_state : public debounce_type::state_id
     {
     public:
 
@@ -182,15 +183,17 @@ namespace etl
 
     //***************************************************************************
     /// Write the column index to the key matrix.
-    ///\param column_index_ The index of the column to write to the key matrix.
+    /// This function must be overridden to write the column index to the key matrix.
+    ///\param column_index The index of the column to make active in the key matrix.
     //***************************************************************************
-    virtual void write_column(column_type column_index_) = 0;
+    virtual void select_column(column_index_type column_index_) = 0;
 
     //***************************************************************************
     /// Read a value from the key matrix.
-    ///\return The value read from the key matrix rows.
+    /// This function must be overridden to read a value from the key matrix.
+    ///\return The value read from the key matrix rows for the currently selected column.
     //***************************************************************************
-    virtual row_type read_row() = 0;
+    virtual column_type read_column() = 0;
 
     //***************************************************************************
     /// Reset the key matrix.
@@ -199,7 +202,7 @@ namespace etl
     {
       column_index = 0;
 
-      write_column(column_index);
+      select_column(column_index);
 
       for (size_t i = 0; i < N_Columns; ++i)
       {
@@ -215,37 +218,32 @@ namespace etl
     bool scan_incremental()
     {
       // Read the next column from the key matrix.
-      row_type read_value = read_row();
+      column_type read_value = read_column();
 
       // Get the current column debouncer.
-      row_debouncer_type& column = columns[column_index];
+      debounce_type& column = columns[column_index];
 
       // Update the column debouncer with the new reading.
       if (column.update(read_value))
       {
-        size_t row_index = 0;
-
         // Get the changed state of the column.
-        row_type changed = column.get_changed();
+        column_type changed = column.get_changed();
 
         // One or more keys have changed state in this column.
-        while (changed != 0)
+        while ((changed != 0) && !key_event_buffer.full())
         {
-          if (changed & 1)
-          {
-            if (!key_buffer.full())
-            {
-              key_event event;
+          // Jump straight to the next set bit by using the count trailing zeros function.
+          size_t row_index = static_cast<size_t>(etl::countr_zero(changed));
 
-              event.key   = static_cast<key_type>((row_index * N_Columns) + column_index);
-              event.state = column.get_state(row_index);
+          // Add the key event to the buffer.
+          key_type  key   = static_cast<key_type>((row_index * N_Columns) + column_index);
+          key_state state = column.get_state(row_index);
+          key_event event{key, state};
 
-              key_buffer.push(event);
-            }
-          }
+          key_event_buffer.push(event);
 
-          changed >>= 1;
-          ++row_index;
+          // Clear the bit we've just processed.
+          changed &= static_cast<column_type>(changed - 1);
         }
       }
 
@@ -257,7 +255,7 @@ namespace etl
       }
 
       // Write the next column to the key matrix.
-      write_column(column_index);
+      select_column(column_index);
 
       // Return true if all of the columns have been processed, otherwise false.
       return (column_index == 0);
@@ -278,43 +276,64 @@ namespace etl
     }
 
     //***************************************************************************
-    size_t get_column_size() const
+    /// Returns the number of columns in the key matrix.
+    //***************************************************************************
+    size_t column_size() const
     {
       return N_Columns;
     }
 
     //***************************************************************************
-    size_t get_row_size() const
+    /// Returns the number of rows in the key matrix.
+    //***************************************************************************
+    size_t row_size() const
     {
       return N_Rows;
     }
 
     //***************************************************************************
-    size_t get_matrix_size() const
+    /// Returns the number of keys in the key matrix.
+    //***************************************************************************
+    size_t matrix_size() const
     {
       return N_Rows * N_Columns;
     }
 
     //***************************************************************************
-    size_t get_key_event_max_size() const
+    /// Returns the maximum number of key events that can be buffered.
+    //***************************************************************************
+    size_t key_event_max_size() const
     {
-      return N_Key_Buffer;
+      return N_Key_Events;
     }
 
     //***************************************************************************
-    size_t get_key_event_size() const
+    /// Returns the number of key events that have been buffered.
+    //***************************************************************************
+    size_t key_event_size() const
     {
-      return key_buffer.size();
+      return key_event_buffer.size();
     }
 
     //***************************************************************************
-    key_event get_key_event()
+    /// Returns true if there are key events in the buffer.
+    //***************************************************************************
+    bool has_key_events() const
+    {
+      return !key_event_buffer.empty();
+    }
+
+    //***************************************************************************
+    /// Returns the next key event from the buffer.
+    /// If the buffer is empty then returns a key event with key = Invalid_Key and state = Off.
+    //***************************************************************************
+    key_event get_next_key_event()
     {
       key_event event{Invalid_Key, key_state::Off};
 
-      if (!key_buffer.empty())
+      if (!key_event_buffer.empty())
       {
-        key_buffer.pop_into(event);
+        key_event_buffer.pop_into(event);
       }
 
       return event;
@@ -323,19 +342,19 @@ namespace etl
     //***************************************************************************
     size_t get_max_key_id() const
     {
-      return ;
+      return Invalid_Key - 1U;
     }
 
   private:
 
-    typedef etl::debounce_multi<row_type, count_type, N_Rows, Polarity, Valid_Count, Hold_Count, Repeat_Count> row_debouncer_type;
-
-    etl::array<row_debouncer_type, N_Columns> columns;
-
     // The buffer of keys that have been detected in the last complete scan.
-    etl::queue<key_event, N_Key_Buffer> key_buffer;
+    etl::queue<key_event, N_Key_Events> key_event_buffer;
 
-    column_type column_index;
+    // The list of debouncers for each column in the key matrix.
+    etl::array<debounce_type, N_Columns> columns;
+
+    // The index of the column that is currently being processed.
+    column_index_type column_index;
   };
 } // namespace etl
 

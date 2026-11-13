@@ -19,7 +19,17 @@ class debounce_multi_bit
 |`Valid_Count`  | The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= 1). |
 |`Hold_Count`   | The number of samples a bit must remain set (after becoming valid) before the 'held' state is reached. `0` = disabled. |
 |`Repeat_Count` | Once 'held', a 'repeat' state is generated every `Repeat_Count` samples. `0` = disabled.                               |
-|`TCount`       | The type of the per-bit counters. Must be able to hold the largest of `Valid_Count`, `Hold_Count` and `Repeat_Count`.  |
+
+## States
+
+The debouncer can use one of four sets of state transitions, dependant on the values of `Valid_Count`, `Hold_Count`, `Repeat_Count`.  
+Any state can transition directly to `Off`.
+```cpp
+Off -> Valid
+Off -> Valid -> Held
+Off -> Valid -> Repeating
+Off -> Valid -> Held -> Repeating
+```
 
 ## Types
     

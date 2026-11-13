@@ -37,7 +37,7 @@ SOFTWARE.
 namespace
 {
   using value_type = uint8_t;
-  using count_type = uint16_t;
+  using count_type = uint32_t;
 
   const value_type Initial_Value = 0;
 
@@ -59,9 +59,10 @@ namespace
 
   const etl::bit_polarity::type Polarity = etl::bit_polarity::Active_High;
 
-  using debounce_valid             = etl::debounce_multi<value_type, count_type, NBits, Polarity, Valid_Count>;
-  using debounce_valid_hold        = etl::debounce_multi<value_type, count_type, NBits, Polarity, Valid_Count, Hold_Count>;
-  using debounce_valid_hold_repeat = etl::debounce_multi<value_type, count_type, NBits, Polarity, Valid_Count, Hold_Count, Repeat_Count>;
+  using debounce_valid             = etl::debounce_multi<value_type, NBits, Polarity, Valid_Count>;
+  using debounce_valid_hold        = etl::debounce_multi<value_type, NBits, Polarity, Valid_Count, Hold_Count>;
+  using debounce_valid_hold_repeat = etl::debounce_multi<value_type, NBits, Polarity, Valid_Count, Hold_Count, Repeat_Count>;
+  using debounce_valid_repeat      = etl::debounce_multi<value_type, NBits, Polarity, Valid_Count, 0, Repeat_Count>;
 
   SUITE(test_debounce_multi_active_high)
   {
@@ -326,6 +327,174 @@ namespace
         CHECK_TRUE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_debounce_valid_repeat)
+    {
+      debounce_valid_repeat debouncer(Initial_Value);
+
+      CHECK_FALSE(debouncer.has_changed(Bit0));
+      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_FALSE(debouncer.is_repeating(Bit0));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_value()));
+
+      //*******************************
+      // Transition from Off to On.
+      for (size_t i = 0; i < Valid_Count - 1; ++i)
+      {
+        CHECK_FALSE(debouncer.update(Active0));
+        CHECK_FALSE(debouncer.has_changed(Bit0));
+        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_held(Bit0));
+        CHECK_FALSE(debouncer.is_repeating(Bit0));
+      }
+
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_value()));
+
+      // Changed.
+      CHECK_TRUE(debouncer.update(Active0));
+      CHECK_TRUE(debouncer.has_changed(Bit0));
+      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_FALSE(debouncer.is_repeating(Bit0));
+
+      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_value()));
+
+      //*******************************
+      // Transition from Valid to Repeating.
+      for (size_t i = 0; i < Repeat_Count - 1; ++i)
+      {
+        CHECK_FALSE(debouncer.update(Active0));
+        CHECK_FALSE(debouncer.has_changed(Bit0));
+        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_held(Bit0));
+        CHECK_FALSE(debouncer.is_repeating(Bit0));
+      }
+
+      // Changed.
+      CHECK_TRUE(debouncer.update(Active0));
+      CHECK_TRUE(debouncer.has_changed(Bit0));
+      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_TRUE(debouncer.is_repeating(Bit0));
+
+      //*******************************
+      // Check for more repeat transitions.
+      for (size_t i = 0; i < Repeat_Count - 1; ++i)
+      {
+        CHECK_FALSE(debouncer.update(Active0));
+        CHECK_FALSE(debouncer.has_changed(Bit0));
+        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_held(Bit0));
+        CHECK_TRUE(debouncer.is_repeating(Bit0));
+      }
+
+      // Changed.
+      CHECK_TRUE(debouncer.update(Active0));
+      CHECK_TRUE(debouncer.has_changed(Bit0));
+      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_TRUE(debouncer.is_repeating(Bit0));
+    }
+
+    //*************************************************************************
+    TEST(test_debounce_valid_repeat_incremental)
+    {
+      debounce_valid_repeat debouncer(Initial_Value);
+
+      CHECK_FALSE(debouncer.has_changed(Bit0));
+      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_FALSE(debouncer.is_repeating(Bit0));
+
+      //*******************************
+      // Transition from Off to On.
+      for (size_t i = 0; i < Valid_Count - 1; ++i)
+      {
+        for (size_t j = 0; j < debouncer.get_width() - 1; ++j)
+        {
+          CHECK_FALSE(debouncer.update_incremental(Active0));
+        }
+
+        CHECK_TRUE(debouncer.update_incremental(Active0));
+        CHECK_FALSE(debouncer.has_changed(Bit0));
+        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_held(Bit0));
+        CHECK_FALSE(debouncer.is_repeating(Bit0));
+      }
+
+      // Final incremental update.
+      // Changed.
+      for (size_t j = 0; j < debouncer.get_width() - 1; ++j)
+      {
+        CHECK_FALSE(debouncer.update_incremental(Active0));
+      }
+
+      CHECK_TRUE(debouncer.update_incremental(Active0));
+      CHECK_TRUE(debouncer.has_changed(Bit0));
+      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_FALSE(debouncer.is_repeating(Bit0));
+
+      //*******************************
+      // Transition from Valid to Repeating.
+      for (size_t i = 0; i < Repeat_Count - 1; ++i)
+      {
+        for (size_t j = 0; j < debouncer.get_width() - 1; ++j)
+        {
+          CHECK_FALSE(debouncer.update_incremental(Active0));
+        }
+
+        CHECK_TRUE(debouncer.update_incremental(Active0));
+        CHECK_FALSE(debouncer.has_changed(Bit0));
+        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_held(Bit0));
+        CHECK_FALSE(debouncer.is_repeating(Bit0));
+      }
+
+      // Final incremental update.
+      // Changed.
+      for (size_t j = 0; j < debouncer.get_width() - 1; ++j)
+      {
+        CHECK_FALSE(debouncer.update_incremental(Active0));
+      }
+
+      CHECK_TRUE(debouncer.update_incremental(Active0));
+      CHECK_TRUE(debouncer.has_changed(Bit0));
+      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_TRUE(debouncer.is_repeating(Bit0));
+
+      //*******************************
+      // Check for more repeat transitions.
+      for (size_t i = 0; i < Repeat_Count - 1; ++i)
+      {
+        for (size_t j = 0; j < debouncer.get_width() - 1; ++j)
+        {
+          CHECK_FALSE(debouncer.update_incremental(Active0));
+        }
+
+        CHECK_TRUE(debouncer.update_incremental(Active0));
+        CHECK_FALSE(debouncer.has_changed(Bit0));
+        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_held(Bit0));
+        CHECK_TRUE(debouncer.is_repeating(Bit0));
+      }
+
+      // Final incremental update.
+      // Changed.
+      for (size_t j = 0; j < debouncer.get_width() - 1; ++j)
+      {
+        CHECK_FALSE(debouncer.update_incremental(Active0));
+      }
+
+      CHECK_TRUE(debouncer.update_incremental(Active0));
+      CHECK_TRUE(debouncer.has_changed(Bit0));
+      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_TRUE(debouncer.is_repeating(Bit0));
     }
 
     //*************************************************************************

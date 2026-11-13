@@ -39,23 +39,20 @@ namespace
   const size_t   NColumns     = 4;
   const size_t   NKeys        = 12;
   const uint32_t Valid_Count  = 4;
-  const uint32_t Hold_Count   = 0;
-  const uint32_t Repeat_Count = 0;
+  const uint32_t Hold_Count   = 4;
+  const uint32_t Repeat_Count = 4;
 
   //*************************************************************************
   // A key pad base class for testing.
   // NRows        = 3
   // NColumns     = 4
-  // NKeys        = 12
   // Polarity     = Active_Low
-  // TRow         = uint8_t
-  // TColumn      = uint8_t
   // Valid_Count  = 4
-  // Hold_Count   = 0
-  // Repeat_Count = 0
+  // Hold_Count   = 4
+  // Repeat_Count = 4
+  // NKeys        = 12
   //*************************************************************************
-  using key_pad_base =
-    etl::key_matrix<NRows, NColumns, NKeys, etl::bit_polarity::Active_Low, uint8_t, uint8_t, Valid_Count, Hold_Count, Repeat_Count>;
+  using key_pad_base = etl::key_matrix<NRows, NColumns, etl::bit_polarity::Active_Low, Valid_Count, Hold_Count, Repeat_Count, NKeys>;
 
   //*************************************************************************
   // A simple key pad implementation for testing.
@@ -66,7 +63,7 @@ namespace
 
     //*********************************
     key_pad()
-      : rows{Row_Inactive, Row_Inactive, Row_Inactive, Row_Inactive} // All rows are inactive (high) at reset
+      : columns{Row_Inactive, Row_Inactive, Row_Inactive, Row_Inactive} // All columns are inactive (high) at reset
       , column_index(0)
     {
     }
@@ -76,37 +73,37 @@ namespace
 
     //*********************************
     // Overridden function to set the column index.
-    void write_column(column_type column_index_) override
+    void select_column(column_index_type column_index_) override
     {
       column_index = column_index_;
     }
 
     //*********************************
     // Overridden function to read the row value.
-    row_type read_row() override
+    column_type read_column() override
     {
-      return rows[column_index];
+      return columns[column_index];
     }
 
     //*********************************
     // Reset the key pad to its initial state.
     void set_all_keys_off()
     {
-      std::fill(std::begin(rows), std::end(rows), Row_Inactive); // All keys are inactive (high)
+      std::fill(std::begin(columns), std::end(columns), Row_Inactive); // All keys are inactive (high)
     }
 
     //*********************************
     // Set a specific key to active (low) state.
     void set_key_on(const std::pair<size_t, size_t>& key)
     {
-      rows[key.second] &= ~(1 << key.first); // Set the key to active (low)
+      columns[key.second] &= ~(1 << key.first); // Set the key to active (low)
     }
 
     //*********************************
     // Set a specific key to inactive (high) state.
     void set_key_off(const std::pair<size_t, size_t>& key)
     {
-      rows[key.second] |= (1 << key.first); // Set the key to inactive (high)
+      columns[key.second] |= (1 << key.first); // Set the key to inactive (high)
     }
 
     //*********************************
@@ -127,11 +124,11 @@ namespace
     std::pair<size_t, size_t>& Key11 = key_positions[10]; // Row 2, Column 2
     std::pair<size_t, size_t>& Key12 = key_positions[11]; // Row 2, Column 3
 
-    const row_type Row_Inactive = 7; // All rows are inactive (high) when no keys are pressed.
+    const column_type Row_Inactive = 7; // All columns are inactive (high) when no keys are pressed.
 
     // The following are used to simulate the key pad in the unit tests.
-    volatile row_type    rows[NColumns];
-    volatile column_type column_index;
+    volatile column_type       columns[NColumns];
+    volatile column_index_type column_index;
   };
 
   SUITE(test_key_matrix_active_low)
@@ -140,12 +137,21 @@ namespace
     TEST(test_key_matrix_status)
     {
       key_pad pad;
+
+      CHECK_EQUAL(NRows, pad.row_size());
+      CHECK_EQUAL(NColumns, pad.column_size());
+      CHECK_EQUAL(NRows * NColumns, pad.matrix_size());
+      CHECK_EQUAL(NKeys, pad.key_event_max_size());
+      CHECK_EQUAL(0, pad.key_event_size());
+      CHECK_EQUAL(false, pad.has_key_events());
     }
 
     //*************************************************************************
     TEST(test_key_matrix_one_key_becomes_pressed)
     {
       key_pad pad;
+
+      //*******************************
 
       pad.set_all_keys_off();
       pad.set_key_on(pad.Key1);
@@ -166,29 +172,76 @@ namespace
         pad.scan();
       }
 
-      size_t key_event_count = pad.get_key_event_size();
+      size_t key_event_count = pad.key_event_size();
 
       std::vector<key_pad::key_event> keys_pressed;
 
       for (size_t i = 0; i < key_event_count; ++i)
       {
-        keys_pressed.push_back(pad.get_key_event());
+        keys_pressed.push_back(pad.get_next_key_event());
       }
 
+      std::sort(keys_pressed.begin(), keys_pressed.end(), [](const key_pad::key_event& a, const key_pad::key_event& b) { return a.key < b.key; });
+
+      //*******************************
+
       pad.set_all_keys_off();
+      pad.set_key_on(pad.Key1);
       keys_pressed.clear();
 
-      for (size_t i = 0; i < Valid_Count; ++i)
+      for (size_t i = 0; i < Hold_Count; ++i)
       {
         pad.scan();
       }
 
-      key_event_count = pad.get_key_event_size();
+      key_event_count = pad.key_event_size();
 
-      for (size_t i = 0; i < key_event_count + 1; ++i)
+      for (size_t i = 0; i < key_event_count; ++i)
       {
-        keys_pressed.push_back(pad.get_key_event());
+        keys_pressed.push_back(pad.get_next_key_event());
       }
+
+      std::sort(keys_pressed.begin(), keys_pressed.end(), [](const key_pad::key_event& a, const key_pad::key_event& b) { return a.key < b.key; });
+
+      //*******************************
+
+      keys_pressed.clear();
+
+      for (size_t i = 0; i < Repeat_Count; ++i)
+      {
+        pad.scan();
+      }
+
+      key_event_count = pad.key_event_size();
+
+      for (size_t i = 0; i < key_event_count; ++i)
+      {
+        keys_pressed.push_back(pad.get_next_key_event());
+      }
+
+      std::sort(keys_pressed.begin(), keys_pressed.end(), [](const key_pad::key_event& a, const key_pad::key_event& b) { return a.key < b.key; });
+
+      //*******************************
+
+      keys_pressed.clear();
+
+      pad.set_all_keys_off();
+
+      for (size_t i = 0; i < Hold_Count; ++i)
+      {
+        pad.scan();
+      }
+
+      key_event_count = pad.key_event_size();
+
+      for (size_t i = 0; i < key_event_count; ++i)
+      {
+        keys_pressed.push_back(pad.get_next_key_event());
+      }
+
+      std::sort(keys_pressed.begin(), keys_pressed.end(), [](const key_pad::key_event& a, const key_pad::key_event& b) { return a.key < b.key; });
+
+      keys_pressed.clear();
     }
   }
 } // namespace

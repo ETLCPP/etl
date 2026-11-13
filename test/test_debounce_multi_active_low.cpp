@@ -37,7 +37,7 @@ SOFTWARE.
 namespace
 {
   using value_type = uint8_t;
-  using count_type = uint16_t;
+  using count_type = uint32_t;
 
   const value_type Initial_Value = 0;
 
@@ -59,9 +59,10 @@ namespace
 
   const etl::bit_polarity::type Polarity = etl::bit_polarity::Active_Low;
 
-  using debounce_valid             = etl::debounce_multi<value_type, count_type, NBits, Polarity, Valid_Count>;
-  using debounce_valid_hold        = etl::debounce_multi<value_type, count_type, NBits, Polarity, Valid_Count, Hold_Count>;
-  using debounce_valid_hold_repeat = etl::debounce_multi<value_type, count_type, NBits, Polarity, Valid_Count, Hold_Count, Repeat_Count>;
+  using debounce_valid             = etl::debounce_multi<value_type, NBits, Polarity, Valid_Count>;
+  using debounce_valid_hold        = etl::debounce_multi<value_type, NBits, Polarity, Valid_Count, Hold_Count>;
+  using debounce_valid_hold_repeat = etl::debounce_multi<value_type, NBits, Polarity, Valid_Count, Hold_Count, Repeat_Count>;
+  using debounce_valid_repeat      = etl::debounce_multi<value_type, NBits, Polarity, Valid_Count, 0, Repeat_Count>;
 
   SUITE(test_debounce_multi_active_low)
   {

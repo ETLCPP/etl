@@ -34,8 +34,9 @@ SOFTWARE.
 #include "platform.h"
 #include "array.h"
 #include "binary.h"
+#include "largest.h"
 #include "memory.h"
-
+#include "smallest.h"
 #include "static_assert.h"
 
 #include <stddef.h>
@@ -56,28 +57,29 @@ namespace etl
   ///                    0 = disabled.
   ///\tparam Repeat_Count Once held, a 'repeat' event is generated every
   ///                     Repeat_Count samples. 0 = disabled.
-  ///\tparam TCount      The type of the per-bit counters. Must be able to hold
-  ///                    the largest of Valid_Count, Hold_Count and Repeat_Count.
   //*************************************************************************
-  template <typename TValue, typename TCount, size_t Width, etl::bit_polarity::type Polarity, uint32_t Valid_Count, uint32_t Hold_Count = 0,
-            uint32_t Repeat_Count = 0>
+  template <typename TValue, size_t Width, etl::bit_polarity::type Polarity, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
   class debounce_multi
   {
+  private:
+
+    typedef typename etl::smallest_uint_for_value<Valid_Count>::type  valid_count_type;
+    typedef typename etl::smallest_uint_for_value<Hold_Count>::type   hold_count_type;
+    typedef typename etl::smallest_uint_for_value<Repeat_Count>::type repeat_count_type;
+
+    // Determine the type of the per-bit counters. Must be able to hold the largest of Valid_Count, Hold_Count and Repeat_Count.
+    typedef typename etl::largest_type<valid_count_type, hold_count_type, repeat_count_type>::type count_type;
+
   public:
 
     // clang-format off
-    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value && etl::is_unsigned<TValue>::value, "TValue must be an unsigned integer type");
+    ETL_STATIC_ASSERT(etl::is_integral<TValue>::value && etl::is_unsigned<TValue>::value, "TValue must be an unsigned integral type");
     ETL_STATIC_ASSERT(Width >= 1,                                                         "Width must be at least 1");
     ETL_STATIC_ASSERT(Width <= sizeof(TValue) * 8,                                        "The width does not fit in the value type");
     ETL_STATIC_ASSERT(Valid_Count >= 1,                                                   "Valid_Count must be at least 1");
-    ETL_STATIC_ASSERT((Valid_Count <= etl::integral_limits<TCount>::max) &&
-                      (Hold_Count <= etl::integral_limits<TCount>::max) &&
-                      (Repeat_Count <= etl::integral_limits<TCount>::max),                "TCount is too small for the configured counts");
-    ETL_STATIC_ASSERT((Repeat_Count == 0) || (Hold_Count != 0),                           "If Repeat_Count is non-zero, Hold_Count must be non-zero");
     // clang-format on
 
     typedef TValue value_type;
-    typedef TCount count_type;
 
     //***************************************************************************
     /// State fit in 2 bits, state_low & state_high.
@@ -260,7 +262,7 @@ namespace etl
       const value_type     bit   = bit_mask(n);
       const state_id::type state = get_bit_state(bit);
 
-      return (state >= state_id::Held);
+      return (state >= state_id::Held) && (Hold_Count > 0);
     }
 
     //***************************************************************************
@@ -484,6 +486,10 @@ namespace etl
         if ETL_IF_CONSTEXPR (Hold_Count > 0)
         {
           check_for_transition(pcount, Hold_Count, state_id::Held, bit);
+        }
+        else if ETL_IF_CONSTEXPR (Repeat_Count > 0)
+        {
+          check_for_transition(pcount, Repeat_Count, state_id::Repeating, bit);
         }
       }
       else
