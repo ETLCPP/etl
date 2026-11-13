@@ -2882,5 +2882,23 @@ namespace
       CHECK_EQUAL(Size, bits.count());
       CHECK_TRUE(bits.all());
     }
+
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+#if ETL_USING_CPP11
+      CHECK_TRUE(etl::is_trivially_copyable<etl::bitset<8>>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::bitset<64>>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::bitset<128>>::value);
+      CHECK_TRUE((etl::is_trivially_copyable<etl::bitset<128, uint32_t>>::value));
+
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<etl::bitset<8>>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::bitset<64>>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::bitset<128>>::value);
+      CHECK_TRUE((std::is_trivially_copyable<etl::bitset<128, uint32_t>>::value));
+  #endif
+#endif
+    }
   }
 } // namespace
