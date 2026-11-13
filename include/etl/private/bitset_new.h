@@ -1434,7 +1434,8 @@ namespace etl
         while (src_index >= 0)
         {
           // Shift msb.
-          element_type msb   = element_type((pbuffer[src_index] & msb_mask) >> msb_shift);
+          // A shift of whole elements has no msb part. Shifting an element by Bits_Per_Element is undefined.
+          element_type msb   = (msb_shift == Bits_Per_Element) ? element_type(0) : element_type((pbuffer[src_index] & msb_mask) >> msb_shift);
           pbuffer[dst_index] = pbuffer[dst_index] | msb;
           --dst_index;
 
@@ -1482,7 +1483,9 @@ namespace etl
         const size_t lsb_shift = Bits_Per_Element - split_position;
         const size_t msb_shift = split_position;
 
-        const element_type lsb_mask         = element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
+        // A shift of whole elements has no lsb part. Shifting an element by Bits_Per_Element is undefined.
+        const element_type lsb_mask =
+          (split_position == 0U) ? element_type(0) : element_type(etl::integral_limits<element_type>::max >> (Bits_Per_Element - split_position));
         const element_type msb_mask         = etl::integral_limits<element_type>::max - lsb_mask;
         const element_type msb_shifted_mask = element_type(msb_mask >> msb_shift);
 
@@ -1494,7 +1497,7 @@ namespace etl
           ++src_index;
 
           // Shift lsb.
-          element_type lsb = element_type((pbuffer[src_index] & lsb_mask) << lsb_shift);
+          element_type lsb = (split_position == 0U) ? element_type(0) : element_type((pbuffer[src_index] & lsb_mask) << lsb_shift);
 
           // Combine them.
           pbuffer[dst_index] = lsb | msb;

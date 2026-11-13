@@ -103,7 +103,7 @@ SOFTWARE.
     cog.outl("  {")
     cog.outl("    const etl::message_id_t id = msg.get_message_id();")
     cog.outl("")
-    cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
+    cog.outl("#include \"diagnostic_array_bounds_push.h\"")
     cog.outl("    switch (id)")
     cog.outl("    {")
     for n in range(1, int(Handlers) + 1):
@@ -123,7 +123,7 @@ SOFTWARE.
     cog.outl("         break;")
     cog.outl("      }")
     cog.outl("    }")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"diagnostic_pop.h\"")
     cog.outl("  }")
     cog.outl("")
     cog.outl("  template <typename TMessage>")
@@ -133,9 +133,9 @@ SOFTWARE.
     cog.outl("T%s>::value, void>::type" % int(Handlers))
     cog.outl("    receive(const TMessage& msg)")
     cog.outl("  {")
-    cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
+    cog.outl("#include \"diagnostic_array_bounds_push.h\"")
     cog.outl("    static_cast<TDerived*>(this)->on_receive(msg);")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"diagnostic_pop.h\"")
     cog.outl("  }")
     cog.outl("")
     cog.outl("  template <typename TMessage>")
@@ -151,9 +151,9 @@ SOFTWARE.
     cog.outl("    }")
     cog.outl("    else")
     cog.outl("    {")
-    cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
+    cog.outl("#include \"diagnostic_array_bounds_push.h\"")
     cog.outl("      static_cast<TDerived*>(this)->on_receive_unknown(msg);")
-    cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+    cog.outl("#include \"diagnostic_pop.h\"")
     cog.outl("    }")
     cog.outl("  }")
     cog.outl("")
@@ -288,7 +288,7 @@ SOFTWARE.
         cog.outl("  {")
         cog.outl("    const etl::message_id_t id = msg.get_message_id();")
         cog.outl("")
-        cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
+        cog.outl("#include \"diagnostic_array_bounds_push.h\"")
         cog.outl("    switch (id)")
         cog.outl("    {")
         for t in range(1, n + 1):
@@ -308,7 +308,7 @@ SOFTWARE.
         cog.outl("         break;")
         cog.outl("      }")
         cog.outl("    }")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"diagnostic_pop.h\"")
         cog.outl("  }")
         cog.outl("")
         cog.outl("  template <typename TMessage>")
@@ -318,9 +318,9 @@ SOFTWARE.
         cog.outl("T%s>::value, void>::type" % n)
         cog.outl("    receive(const TMessage& msg)")
         cog.outl("  {")
-        cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
+        cog.outl("#include \"diagnostic_array_bounds_push.h\"")
         cog.outl("    static_cast<TDerived*>(this)->on_receive(msg);")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"diagnostic_pop.h\"")
         cog.outl("  }")
         cog.outl("")
         cog.outl("  template <typename TMessage>")
@@ -336,9 +336,9 @@ SOFTWARE.
         cog.outl("    }")
         cog.outl("    else")
         cog.outl("    {")
-        cog.outl("#include \"etl/private/diagnostic_array_bounds_push.h\"")
+        cog.outl("#include \"diagnostic_array_bounds_push.h\"")
         cog.outl("      static_cast<TDerived*>(this)->on_receive_unknown(msg);")
-        cog.outl("#include \"etl/private/diagnostic_pop.h\"")
+        cog.outl("#include \"diagnostic_pop.h\"")
         cog.outl("    }")
         cog.outl("  }")
         cog.outl("")
@@ -440,12 +440,12 @@ public:
 
   void receive(const etl::imessage& msg) ETL_OVERRIDE
   {
-#include "etl/private/diagnostic_array_bounds_push.h"
+#include "diagnostic_array_bounds_push.h"
     if (has_successor())
     {
       get_successor().receive(msg);
     }
-#include "etl/private/diagnostic_pop.h"
+#include "diagnostic_pop.h"
   }
 
   //**********************************************

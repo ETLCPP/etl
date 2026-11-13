@@ -517,9 +517,9 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
       }
     }
 
@@ -531,9 +531,9 @@ namespace etl
     template < typename TMessage, typename etl::enable_if<etl::is_one_of<TMessage, TMessageTypes...>::value, int>::type = 0>
     void receive(const TMessage& msg)
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
       static_cast<TDerived*>(this)->on_receive(msg);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
     }
 
     //**********************************************
@@ -552,9 +552,9 @@ namespace etl
       }
       else
       {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
         static_cast<TDerived*>(this)->on_receive_unknown(msg);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
       }
     }
 
@@ -828,12 +828,12 @@ namespace etl
     //***********************************************
     void receive(const etl::imessage& msg) ETL_OVERRIDE
     {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
       if (has_successor())
       {
         get_successor().receive(msg);
       }
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
     }
 
     //**********************************************
