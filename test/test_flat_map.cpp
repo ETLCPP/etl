@@ -984,6 +984,51 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_excess)
+    {
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK_THROW(data.emplace(10, N10), etl::flat_map_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_key_when_full)
+    {
+      Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
+      DataNDC         data(initial_data.begin(), initial_data.end());
+
+      CHECK(data.full());
+
+      // Emplacing an existing key when the map is full should not throw.
+      // It should return an iterator to the existing element and leave it
+      // unchanged, matching the behaviour of insert() and try_emplace().
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        ETL_OR_STD::pair<DataNDC::iterator, bool> result = data.emplace(static_cast<int>(i), N19);
+
+        CHECK(result.first != data.end());
+        CHECK(!result.second);
+        CHECK_EQUAL(static_cast<int>(i), result.first->first);
+        CHECK(result.first->second == initial_data[i].second);
+      }
+
+      // The same applies to the overload taking a key/value pair.
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result = data.emplace(ETL_OR_STD::make_pair(5, N19));
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK_EQUAL(5, result.first->first);
+      CHECK(result.first->second == N5);
+
+      // The map must be unchanged.
+      CHECK_EQUAL(SIZE, data.size());
+
+      bool isEqual = Check_Equal(data.begin(), data.end(), compare_data.begin());
+
+      CHECK(isEqual);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_try_emplace_value)
     {
       Data1 data;
