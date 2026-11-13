@@ -13,7 +13,8 @@ title: "basic_string_view"
   `std::u32string_view`
 {{< /callout >}}
 
-This class implements a view in to a range of a `C` string, `etl::string` (+ variants), `std::string` (+ variants).
+This class implements a view in to a range of a `C` string, `etl::string` (+ variants), `std::string` (+ variants).  
+In C++11 and later, `etl::basic_string_view` is trivially copyable.
 
 ## Classes
 
@@ -86,7 +87,15 @@ Construct from a zero terminated string.
 ETL_CONSTEXPR basic_string_view(const etl::basic_string_view& other)
 ```
 **Description**  
-Copy constructor.
+Copy constructor. (Defaulted and trivially copyable in C++11 and later).
+
+## Assignment
+
+```cpp
+ETL_CONSTEXPR14 etl::basic_string_view<T, TTraits>& operator=(const etl::basic_string_view& other)
+```
+**Description**  
+Copy assignment operator. (Defaulted in C++11 and later).
 
 ## Modifiers
 
