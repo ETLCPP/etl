@@ -58,6 +58,11 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR20 reference_wrapper(const reference_wrapper& rhs) ETL_NOEXCEPT = default;
+
+    ETL_CONSTEXPR20 reference_wrapper<T>& operator=(const reference_wrapper& rhs) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR20 reference_wrapper(const reference_wrapper& rhs) ETL_NOEXCEPT
       : t(rhs.t)
     {
@@ -68,6 +73,7 @@ namespace etl
       t = rhs.t;
       return *this;
     }
+#endif
 
     ETL_CONSTEXPR20 T& get() const ETL_NOEXCEPT
     {
