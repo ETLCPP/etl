@@ -389,11 +389,16 @@ namespace etl
 
     //*************************************************************************
     /// Copy constructor
+    /// Defaulted for C++11 and above, so that span is trivially copyable.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT
       : pbegin(other.pbegin)
     {
     }
+#endif
 
     //*************************************************************************
     /// Copy constructor
@@ -585,12 +590,17 @@ namespace etl
 
     //*************************************************************************
     /// Assign from a span.
+    /// Defaulted for C++11 and above, so that span is trivially copyable.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 span& operator=(const span& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 span& operator=(const span& other) ETL_NOEXCEPT
     {
       pbegin = other.pbegin;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Returns a reference to the value at index 'i'.
@@ -981,12 +991,17 @@ namespace etl
 
     //*************************************************************************
     /// Copy constructor
+    /// Defaulted for C++11 and above, so that span is trivially copyable.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR span(const span& other) ETL_NOEXCEPT
       : pbegin(other.pbegin)
       , pend(other.pend)
     {
     }
+#endif
 
     //*************************************************************************
     /// Copy constructor
@@ -1148,13 +1163,18 @@ namespace etl
 
     //*************************************************************************
     /// Assign from a span.
+    /// Defaulted for C++11 and above, so that span is trivially copyable.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 span& operator=(const span& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 span& operator=(const span& other) ETL_NOEXCEPT
     {
       pbegin = other.pbegin;
       pend   = other.pend;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Returns a reference to the value at index 'i'.

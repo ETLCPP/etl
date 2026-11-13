@@ -9,7 +9,8 @@ title: "array_view"
 {{< /callout >}}
 
 This class implements a view in to a range of a C array, `etl::array`, `std::array`, `etl::vector` and `std::vector`.  
-It will support construction from any class that supports data() and size() member functions as well as plain C arrays. 
+It will support construction from any class that supports data() and size() member functions as well as plain C arrays.  
+In C++11 and later, `etl::array_view` is trivially copyable. 
 
 If `ETL_ARRAY_VIEW_IS_MUTABLE` is defined, then the contents of the view are mutable.
 The view is non-mutable by default, which is the opposite to the behaviour in 17.5.0 or earlier.
@@ -110,7 +111,15 @@ Construct from a compile time sized C array.
 ETL_CONSTEXPR array_view(const array_view& other)
 ```
 **Description**  
-Copy constructor.
+Copy constructor. (Defaulted and trivially copyable in C++11 and later).
+
+## Assignment
+
+```cpp
+ETL_CONSTEXPR14 array_view& operator=(const array_view& other)
+```
+**Description**  
+Copy assignment operator. (Defaulted in C++11 and later).
 
 ## Modifiers
 

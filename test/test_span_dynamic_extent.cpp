@@ -36,6 +36,7 @@ SOFTWARE.
 #include <algorithm>
 #include <array>
 #include <iterator>
+#include <type_traits>
 #include <vector>
 #if ETL_USING_CPP20
   #include <span>
@@ -543,6 +544,70 @@ namespace
       bool isEqual = std::equal(cview.begin(), cview.end(), etldata.begin());
       CHECK(isEqual);
     }
+
+    //*************************************************************************
+    TEST(test_copy_assignment_operator)
+    {
+      View view1(etldata);
+      View view2(etldatasmaller.begin(), etldatasmaller.begin() + 2);
+
+      view2 = view1;
+
+      CHECK(view1.data() == view2.data());
+      CHECK_EQUAL(view1.size(), view2.size());
+    }
+
+    //*************************************************************************
+    TEST(test_trivially_copyable)
+    {
+      CHECK(std::is_trivially_copyable<View>::value);
+      CHECK(std::is_trivially_copyable<CView>::value);
+      CHECK(std::is_trivially_copy_constructible<View>::value);
+      CHECK(std::is_trivially_copy_assignable<View>::value);
+      CHECK(std::is_trivially_move_constructible<View>::value);
+      CHECK(std::is_trivially_move_assignable<View>::value);
+      CHECK(std::is_trivially_destructible<View>::value);
+
+      // A trivially copyable span may be copied by its object representation.
+      View                 view1(etldata);
+      View                 view2;
+      const unsigned char* source = reinterpret_cast<const unsigned char*>(&view1);
+      std::copy(source, source + sizeof(View), reinterpret_cast<unsigned char*>(&view2));
+
+      CHECK(view1.data() == view2.data());
+      CHECK_EQUAL(view1.size(), view2.size());
+    }
+
+#if ETL_USING_CPP14
+    //*************************************************************************
+    TEST(test_constexpr_copy_and_assignment)
+    {
+      static constexpr int data[] = {0, 1, 2, 3};
+
+      static constexpr etl::span<const int> view1(data);
+      static constexpr etl::span<const int> view2(view1);
+
+      struct Assign
+      {
+        static constexpr etl::span<const int> get(etl::span<const int> other)
+        {
+          etl::span<const int> view;
+          view = other;
+          return view;
+        }
+      };
+
+      static constexpr etl::span<const int> view3 = Assign::get(view1);
+
+      static_assert(view2.data() == data, "Copy constructed span has wrong data");
+      static_assert(view2.size() == 4U, "Copy constructed span has wrong size");
+      static_assert(view3.data() == data, "Copy assigned span has wrong data");
+      static_assert(view3.size() == 4U, "Copy assigned span has wrong size");
+
+      CHECK(view2.data() == data);
+      CHECK(view3.data() == data);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_empty)
