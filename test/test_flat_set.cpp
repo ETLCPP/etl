@@ -798,6 +798,80 @@ namespace
     }
 
     //*************************************************************************
+    // Emplacing from constructor arguments takes a different code path from
+    // emplacing a value_type, and in C++03 a separate overload for each
+    // number of arguments.
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_from_arguments_when_full)
+    {
+      Data1 data1;
+      Data2 data2;
+      Data3 data3;
+      Data4 data4;
+
+      data1.emplace(); // D1() is "a"
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        const std::string s0(1, char('a' + i));
+        const std::string s1(1, char('b' + i));
+        const std::string s2(1, char('c' + i));
+        const std::string s3(1, char('d' + i));
+
+        if (i != 0)
+        {
+          data1.emplace(s0);
+        }
+
+        data2.emplace(s0, s1);
+        data3.emplace(s0, s1, s2);
+        data4.emplace(s0, s1, s2, s3);
+      }
+
+      CHECK(data1.full());
+      CHECK(data2.full());
+      CHECK(data3.full());
+      CHECK(data4.full());
+
+      // Existing values: no exception, and the existing element is returned.
+      ETL_OR_STD::pair<Data1::iterator, bool> result1 = data1.emplace();
+      CHECK(result1.first != data1.end());
+      CHECK(!result1.second);
+      CHECK_EQUAL(std::string("a"), result1.first->a);
+
+      result1 = data1.emplace("c");
+      CHECK(result1.first != data1.end());
+      CHECK(!result1.second);
+      CHECK_EQUAL(std::string("c"), result1.first->a);
+
+      ETL_OR_STD::pair<Data2::iterator, bool> result2 = data2.emplace("c", "d");
+      CHECK(result2.first != data2.end());
+      CHECK(!result2.second);
+      CHECK_EQUAL(std::string("c"), result2.first->a);
+
+      ETL_OR_STD::pair<Data3::iterator, bool> result3 = data3.emplace("c", "d", "e");
+      CHECK(result3.first != data3.end());
+      CHECK(!result3.second);
+      CHECK_EQUAL(std::string("c"), result3.first->a);
+
+      ETL_OR_STD::pair<Data4::iterator, bool> result4 = data4.emplace("c", "d", "e", "f");
+      CHECK(result4.first != data4.end());
+      CHECK(!result4.second);
+      CHECK_EQUAL(std::string("c"), result4.first->a);
+
+      // New values still report that the set is full.
+      CHECK_THROW(data1.emplace("z"), etl::flat_set_full);
+      CHECK_THROW(data2.emplace("y", "z"), etl::flat_set_full);
+      CHECK_THROW(data3.emplace("x", "y", "z"), etl::flat_set_full);
+      CHECK_THROW(data4.emplace("w", "x", "y", "z"), etl::flat_set_full);
+
+      // The sets must be unchanged.
+      CHECK_EQUAL(SIZE, data1.size());
+      CHECK_EQUAL(SIZE, data2.size());
+      CHECK_EQUAL(SIZE, data3.size());
+      CHECK_EQUAL(SIZE, data4.size());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());
