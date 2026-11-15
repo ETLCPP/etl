@@ -86,6 +86,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// expected_no_error
+  //***************************************************************************
+  class expected_no_error : public etl::expected_exception
+  {
+  public:
+
+    expected_no_error(string_type file_name_, numeric_type line_number_)
+      : expected_exception(ETL_ERROR_TEXT("expected:invalid", ETL_EXPECTED_FILE_ID"A"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Unexpected type.
   /// etl::unexpected represents an unexpected value stored in etl::expected.
   //***************************************************************************
@@ -778,34 +791,46 @@ namespace etl
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() & ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() & ETL_NOEXCEPT_IF(ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const& ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const& ETL_NOEXCEPT_IF(ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() && ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() && ETL_NOEXCEPT_IF(ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::move(etl::get<Error_Type>(storage));
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&& ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&& ETL_NOEXCEPT_IF(ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::move(etl::get<Error_Type>(storage));
     }
 
@@ -892,10 +917,13 @@ namespace etl
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
     const error_type& error() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
@@ -1318,37 +1346,45 @@ namespace etl
 #if ETL_USING_CPP11
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() & ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() & ETL_NOEXCEPT_IF(ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const& ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const& ETL_NOEXCEPT_IF(ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() && ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() && ETL_NOEXCEPT_IF(ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::move(etl::get<Error_Type>(storage));
     }
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&& ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&& ETL_NOEXCEPT_IF(ETL_NOT_CHECKING_EXTRA)
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::move(etl::get<Error_Type>(storage));
     }
 
@@ -1386,10 +1422,12 @@ namespace etl
 #else
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if extra checks are not enabled and an error has not been set
     //*******************************************
     const error_type& error() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
