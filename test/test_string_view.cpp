@@ -1301,5 +1301,30 @@ namespace
       CHECK_EQUAL(std::string("World"), std::string(view.substr(6).data(), view.substr(6).size()));
       CHECK_EQUAL(5U, view.substr(6, etl::string_view::npos).size());
     }
+    //*************************************************************************
+#if ETL_USING_CPP11
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<etl::string_view>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::wstring_view>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::u16string_view>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::u32string_view>::value);
+  #if ETL_USING_CPP20
+      CHECK_TRUE(etl::is_trivially_copyable<etl::u8string_view>::value);
+  #endif
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<etl::string_view>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::wstring_view>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::u16string_view>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::u32string_view>::value);
+    #if ETL_USING_CPP20
+      CHECK_TRUE(std::is_trivially_copyable<etl::u8string_view>::value);
+    #endif
+      CHECK_TRUE(std::is_trivially_copy_constructible<etl::string_view>::value);
+      CHECK_TRUE(std::is_trivially_copy_assignable<etl::string_view>::value);
+      CHECK_TRUE(std::is_trivially_destructible<etl::string_view>::value);
+  #endif
+    }
+#endif
   }
 } // namespace
