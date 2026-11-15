@@ -93,7 +93,7 @@ namespace etl
   public:
 
     expected_no_error(string_type file_name_, numeric_type line_number_)
-      : expected_exception(ETL_ERROR_TEXT("expected:invalid", ETL_EXPECTED_FILE_ID"A"), file_name_, line_number_)
+      : expected_exception(ETL_ERROR_TEXT("expected:no_error", ETL_EXPECTED_FILE_ID"B"), file_name_, line_number_)
     {
     }
   };
