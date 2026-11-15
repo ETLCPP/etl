@@ -4,7 +4,8 @@ title: "optional"
 
 {{< callout type="info">}}
   Header: `optional.h`  
-  Similar to: `std::optional`
+  Similar to: `std::optional`  
+  Trivially copyable: C++11 and later (for fundamental / trivially copyable types)
 {{< /callout >}}
 
 A class where the value is optional.  

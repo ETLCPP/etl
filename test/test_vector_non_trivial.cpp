@@ -996,6 +996,87 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_value_from_self)
+    {
+      const size_t INITIAL_SIZE = 5;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        for (size_t source = 0; source < INITIAL_SIZE; ++source)
+        {
+          CompareDataNDC compare_data;
+          DataNDC        data;
+
+          data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+          compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+          data.emplace(data.begin() + offset, data[source]);
+
+          NDC value(compare_data[source]);
+          compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), value);
+
+          CHECK_EQUAL(compare_data.size(), data.size());
+
+          bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+          CHECK(is_equal);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_position_member_from_self)
+    {
+      const size_t INITIAL_SIZE = 5;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        for (size_t source = 0; source < INITIAL_SIZE; ++source)
+        {
+          CompareDataNDC compare_data;
+          DataNDC        data;
+
+          data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+          compare_data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+          data.emplace(data.begin() + offset, data[source].value, data[source].index);
+
+          NDC value(compare_data[source].value, compare_data[source].index);
+          compare_data.insert(compare_data.begin() + static_cast<ptrdiff_t>(offset), value);
+
+          CHECK_EQUAL(compare_data.size(), data.size());
+
+          bool is_equal = std::equal(data.begin(), data.end(), compare_data.begin());
+
+          CHECK(is_equal);
+        }
+      }
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_position_rvalue_from_self)
+    {
+      const size_t INITIAL_SIZE = 5;
+
+      for (size_t offset = 0; offset <= INITIAL_SIZE; ++offset)
+      {
+        for (size_t source = 0; source < INITIAL_SIZE; ++source)
+        {
+          DataNDC data;
+
+          data.assign(initial_data.begin(), initial_data.begin() + INITIAL_SIZE);
+
+          const NDC expected(data[source]);
+
+          data.insert(data.begin() + offset, std::move(data[source]));
+
+          CHECK_EQUAL(INITIAL_SIZE + 1, data.size());
+          CHECK(expected == data[offset]);
+        }
+      }
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_emplace_position_value_outofbounds)
     {
       const size_t      INITIAL_SIZE = 5;

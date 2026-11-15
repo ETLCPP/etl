@@ -831,7 +831,7 @@ namespace
     }
 
     //*************************************************************************
-    TEST(test_constructor_value)
+    TEST(test_constructor_value_no_conversion)
     {
       // Char.
       char               c = 'a';
@@ -853,6 +853,101 @@ namespace
       CHECK(text == "Some Text");
       CHECK(etl::holds_alternative<std::string>(variant_text_etl));
       CHECK_EQUAL(text, etl::get<std::string>(variant_text_etl));
+    }
+
+    //*************************************************************************
+    TEST(test_constructor_value_conversion)
+    {
+      // Non-narrowing numeric conversions should be allowed.
+      etl::variant<int, double> variant_double_trivial{1.5f};
+      CHECK_EQUAL(etl::holds_alternative<double>(variant_double_trivial), true);
+      CHECK_EQUAL(1.5, etl::get<double>(variant_double_trivial));
+
+      etl::variant<std::string, double> variant_double_nontrivial{1.5f};
+      CHECK_EQUAL(etl::holds_alternative<double>(variant_double_nontrivial), true);
+      CHECK_EQUAL(1.5, etl::get<double>(variant_double_nontrivial));
+
+      // Implicit conversions for non-numeric types should also be allowed.
+      struct ImplicitInt
+      {
+        operator int() const
+        {
+          return 42;
+        }
+      };
+
+      etl::variant<int, double> variant_implicit_int_trivial{ImplicitInt{}};
+      CHECK_EQUAL(etl::holds_alternative<int>(variant_implicit_int_trivial), true);
+      CHECK_EQUAL(42, etl::get<int>(variant_implicit_int_trivial));
+
+      etl::variant<int, std::string> variant_implicit_int_nontrivial{ImplicitInt{}};
+      CHECK_EQUAL(etl::holds_alternative<int>(variant_implicit_int_nontrivial), true);
+      CHECK_EQUAL(42, etl::get<int>(variant_implicit_int_nontrivial));
+
+      // Exact match should be chosen over other conversions.
+      etl::variant<int, double, float> variant_float_trivial{1.5f};
+      CHECK_EQUAL(etl::holds_alternative<float>(variant_float_trivial), true);
+      CHECK_EQUAL(1.5f, etl::get<float>(variant_float_trivial));
+
+      etl::variant<std::string, double, float> variant_float_nontrivial{1.5f};
+      CHECK_EQUAL(etl::holds_alternative<float>(variant_float_nontrivial), true);
+      CHECK_EQUAL(1.5f, etl::get<float>(variant_float_nontrivial));
+
+      // Conversion should be possible even in the presence of duplicate alternatives.
+      etl::variant<int, int, double> variant_duplicate_trivial{1.5f};
+      CHECK_EQUAL(etl::holds_alternative<double>(variant_duplicate_trivial), true);
+      CHECK_EQUAL(1.5, etl::get<double>(variant_duplicate_trivial));
+
+      etl::variant<std::string, std::string, double> variant_duplicate_nontrivial{1.5f};
+      CHECK_EQUAL(etl::holds_alternative<double>(variant_duplicate_nontrivial), true);
+      CHECK_EQUAL(1.5, etl::get<double>(variant_duplicate_nontrivial));
+
+      // Narrowing conversion should not be allowed.
+      CHECK(!(etl::is_constructible<etl::variant<float>, double>::value));
+      CHECK(!(etl::is_constructible<etl::variant<std::string, float>, double>::value));
+      CHECK(!(std::is_constructible<etl::variant<int>, float>::value));
+      CHECK(!(std::is_constructible<etl::variant<std::string, int>, float>::value));
+      CHECK(!(std::is_constructible<etl::variant<short>, int>::value));
+      CHECK(!(std::is_constructible<etl::variant<std::string, short>, int>::value));
+      CHECK(!(std::is_constructible<etl::variant<unsigned int>, int>::value));
+      CHECK(!(std::is_constructible<etl::variant<std::string, unsigned int>, int>::value));
+
+      // Construction should not be allowed when no implicit conversion is possible.
+      struct ExplicitInt
+      {
+        explicit operator int() const
+        {
+          return 42;
+        }
+      };
+
+      CHECK(!(std::is_constructible<etl::variant<bool>, const int*>::value));
+      CHECK(!(std::is_constructible<etl::variant<std::string, bool>, const int*>::value));
+      CHECK(!(std::is_constructible<etl::variant<int>, ExplicitInt>::value));
+      CHECK(!(std::is_constructible<etl::variant<std::string, int>, ExplicitInt>::value));
+
+      // Construction should not be allowed when the conversion is ambiguous.
+      struct AmbiguousIntLong
+      {
+        operator int() const
+        {
+          return 1;
+        }
+
+        operator long() const
+        {
+          return 1L;
+        }
+      };
+
+      CHECK(!(std::is_constructible<etl::variant<int, long>, AmbiguousIntLong>::value));
+      CHECK(!(std::is_constructible<etl::variant<std::string, int, long>, AmbiguousIntLong>::value));
+
+      // The converting constructor should not accept in-place type or index tags.
+      CHECK((!std::is_constructible<etl::variant<etl::in_place_type_t<int>>, etl::in_place_type_t<int>>::value));
+      CHECK((!std::is_constructible<etl::variant<std::string, etl::in_place_type_t<int>>, etl::in_place_type_t<int>>::value));
+      CHECK((!std::is_constructible<etl::variant<etl::in_place_index_t<1U>>, etl::in_place_index_t<1U>>::value));
+      CHECK((!std::is_constructible<etl::variant<std::string, etl::in_place_index_t<2U>>, etl::in_place_index_t<2U>>::value));
     }
 
     //*************************************************************************
@@ -1535,12 +1630,19 @@ namespace
     //*************************************************************************
     TEST(test_assign_from_value)
     {
+      // No conversion required
       std::string        text("Some Text");
       test_variant_etl_3 variant_etl;
 
       variant_etl = text;
 
       CHECK_EQUAL(text, etl::get<std::string>(variant_etl));
+
+      // Conversion from float to double required
+      etl::variant<int, double> variant_double;
+      variant_double = 1.5f;
+
+      CHECK_EQUAL(1.5, etl::get<double>(variant_double));
     }
 
     //*************************************************************************
