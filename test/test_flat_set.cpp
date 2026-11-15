@@ -798,6 +798,48 @@ namespace
     }
 
     //*************************************************************************
+    // A default-constructible value that cannot be copied must still be
+    // emplaceable into a full set. In C++03 a copy-initialised temporary
+    // would need an accessible copy constructor.
+    class NonCopyable
+    {
+    public:
+
+      NonCopyable()
+        : value(0)
+      {
+      }
+
+      bool operator<(const NonCopyable& other) const
+      {
+        return value < other.value;
+      }
+
+    private:
+
+      NonCopyable(const NonCopyable&);
+      NonCopyable& operator=(const NonCopyable&);
+
+      int value;
+    };
+
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_non_copyable_value_when_full)
+    {
+      typedef etl::flat_set<NonCopyable, 1> DataNC;
+
+      DataNC data;
+
+      data.emplace();
+      CHECK(data.full());
+
+      ETL_OR_STD::pair<DataNC::iterator, bool> result = data.emplace();
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK_EQUAL(1U, data.size());
+    }
+
+    //*************************************************************************
     // Emplacing from constructor arguments takes a different code path from
     // emplacing a value_type, and in C++03 a separate overload for each
     // number of arguments.

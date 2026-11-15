@@ -391,8 +391,7 @@ namespace etl
       {
         // A duplicate does not need a free slot, so only report flat_set_full
         // for a new value. This matches insert() and the variadic emplace().
-        value_type temp_value = value_type();
-        iterator   position   = find(temp_value);
+        iterator position = find(value_type());
 
         if (position == end())
         {
