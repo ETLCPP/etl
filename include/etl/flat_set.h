@@ -421,7 +421,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
@@ -468,7 +468,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
@@ -515,7 +515,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
@@ -562,7 +562,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
@@ -609,7 +609,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
