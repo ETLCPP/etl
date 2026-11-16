@@ -323,6 +323,44 @@ etl::has_byte_n<0x12>(uint32_t(0x01234567)) == false
 etl::has_byte_n<0x45>(uint32_t(0x01234567)) == true
 ```
 
+## clear_lowest_set_bit
+```cpp
+template <typename T>
+T clear_lowest_set_bit(T value)
+```
+**Description**  
+Clear the lowest set bit.  
+`T` must be an unsigned integral.  
+
+## has_multiple_set_bits
+```cpp
+template <typename T>
+bool has_multiple_set_bits(T value)
+```
+**Description**  
+Checks if a value has multiple set bits.  
+`T` must be an integral.  
+
+## has_at_most_one_bit
+```cpp
+template <typename T>
+bool has_at_most_one_bit(T value)
+```
+**Description**  
+Checks if a value has at most one set bit.  
+Returns `true` for `0` and for values that are a power of `2`.  
+`T` must be an integral.  
+
+## is_a_power_of_two
+```cpp
+template <typename T>
+bool is_a_power_of_two(T value)
+```
+**Description**  
+Checks if a value is a power of `2`.  
+Excludes `0`.  
+`T` must be an integral.  
+
 ## binary_merge
 Merges two binary values according to a mask.  
 Bits set in the mask select bits in the first value, clear bits select those in the second.

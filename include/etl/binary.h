@@ -2270,6 +2270,49 @@ namespace etl
   }
 
   //***************************************************************************
+  /// Clear the lowest set bit.
+  /// T must be an unsigned integral.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_integral<T>::value && etl::is_unsigned<T>::value, T>::type clear_lowest_set_bit(T value)
+  {
+    return value & static_cast<T>(value - 1);
+  }
+
+  //***************************************************************************
+  /// Checks if a value has multiple set bits.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_integral<T>::value, bool>::type has_multiple_set_bits(T value)
+  {
+    return (value & (value - 1)) != 0;
+  }
+
+  //***************************************************************************
+  /// Checks if a value has at most one set bit.
+  /// Returns true for 0 and for values that are a power of 2.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_integral<T>::value, bool>::type has_at_most_one_bit(T value)
+  {
+    return (value & (value - 1)) == 0;
+  }
+
+  //***************************************************************************
+  /// Checks if a value is a power of 2.
+  /// Excludes 0.
+  ///\ingroup binary
+  //***************************************************************************
+  template <typename T>
+  typename etl::enable_if<etl::is_integral<T>::value, bool>::type is_a_power_of_two(T value)
+  {
+    return has_at_most_one_bit(value) && (value != 0);
+  }
+
+  //***************************************************************************
   /// Bit 'not' a value
   ///\ingroup binary
   //***************************************************************************
