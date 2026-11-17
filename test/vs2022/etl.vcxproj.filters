@@ -3854,10 +3854,7 @@
     <ClCompile Include="..\test_vector_member_function_pointer_external_buffer.cpp">
       <Filter>Tests\Containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_debounce_multi_active_high.cpp">
-      <Filter>Tests\I/O</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test_debounce_multi_active_low.cpp">
+    <ClCompile Include="..\test_debounce_multi.cpp">
       <Filter>Tests\I/O</Filter>
     </ClCompile>
     <ClCompile Include="..\test_debounce.cpp">
@@ -3866,7 +3863,7 @@
     <ClCompile Include="..\test_debounce_value.cpp">
       <Filter>Tests\I/O</Filter>
     </ClCompile>
-    <ClCompile Include="..\test_key_matrix_active_low.cpp">
+    <ClCompile Include="..\test_key_matrix.cpp">
       <Filter>Tests\I/O</Filter>
     </ClCompile>
   </ItemGroup>

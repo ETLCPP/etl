@@ -44,21 +44,36 @@ SOFTWARE.
 
 namespace etl
 {
+  //***************************************************************************
+  /// States fit in 2 bits.
+  //***************************************************************************
+  struct debounce_state_id
+  {
+    typedef uint_least8_t type;
+
+    enum
+    {
+      Off       = 0, // Debounced state is Off.
+      On        = 1, // Debounced state is On.
+      Held      = 2, // Debounced state is Held. Implies On.
+      Repeating = 3, // Debounced state is Repeating. Implies Held and On.
+    };
+  };
+
   //*************************************************************************
   /// Debounces a contiguous group of bits read from an IO port.
-  ///\tparam TValue      The type of the port value (uint8_t/16_t/32_t/64_t).
-  ///\tparam Width       The number of bits in the field (1..sizeof(TValue) * 8).
-  ///\tparam Polarity    The polarity of the bits. Active_High = valid input reads as '1', Active_Low = valid input reads as '0'.
-  ///\tparam Valid_Count The number of consecutive samples a bit must differ
-  ///                    from its previous debounced state before the state
-  ///                    changes (>= 1).
-  ///\tparam Hold_Count  The number of samples a bit must remain set (after
-  ///                    becoming valid) before a 'held' event is generated.
-  ///                    0 = disabled.
+  ///\tparam TValue       The type of the port value (uint8_t/16_t/32_t/64_t).
+  ///\tparam Width        The number of bits in the field (1..sizeof(TValue) * 8).
+  ///\tparam Valid_Count  The number of consecutive samples a bit must differ
+  ///                     from its previous debounced state before the state
+  ///                     changes (>= 1).
+  ///\tparam Hold_Count   The number of samples a bit must remain set (after
+  ///                     becoming valid) before a 'held' event is generated.
+  ///                     0 = disabled.
   ///\tparam Repeat_Count Once held, a 'repeat' event is generated every
   ///                     Repeat_Count samples. 0 = disabled.
   //*************************************************************************
-  template <typename TValue, size_t Width, etl::bit_polarity::type Polarity, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
+  template <typename TValue, size_t Width, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
   class debounce_multi
   {
   private:
@@ -75,44 +90,29 @@ namespace etl
     // clang-format off
     ETL_STATIC_ASSERT(etl::is_integral<TValue>::value && etl::is_unsigned<TValue>::value, "TValue must be an unsigned integral type");
     ETL_STATIC_ASSERT(Width >= 1,                                                         "Width must be at least 1");
-    ETL_STATIC_ASSERT(Width <= sizeof(TValue) * 8,                                        "The width does not fit in the value type");
+    ETL_STATIC_ASSERT(Width <= sizeof(TValue) * CHAR_BIT,                                 "The width does not fit in the value type");
     ETL_STATIC_ASSERT(Valid_Count >= 1,                                                   "Valid_Count must be at least 1");
     // clang-format on
 
-    typedef TValue value_type;
-
-    //***************************************************************************
-    /// State fit in 2 bits, state_low & state_high.
-    //***************************************************************************
-    struct state_id
-    {
-      typedef uint_least8_t type;
-
-      enum
-      {
-        Off       = 0, // Debounced state is Off.
-        On        = 1, // Debounced state is On.
-        Held      = 2, // Debounced state is Held. Implies On.
-        Repeating = 3, // Debounced state is Repeating. Implies Held and On.
-      };
-    };
+    typedef TValue            value_type;
+    typedef debounce_state_id state_id;
 
     //***************************************************************************
     /// Constructor. All bits start in the 'Off' state.
     ///\param initial The initial raw port value, in the same polarity as values passed to update(). Default = the 'inactive' reading for all bits.
     //***************************************************************************
-    debounce_multi(value_type initial = initial_value())
+    debounce_multi(value_type initial = 0)
     {
       reset(initial);
     }
 
     //***************************************************************************
     /// Resets the debouncer state.
-    ///\param initial The initial raw port value, in the same polarity as values passed to update(). Default = the 'inactive' reading for all bits.
+    ///\param initial The initial raw port value. Assumes active_high polarity.
     //***************************************************************************
-    void reset(value_type initial = initial_value())
+    void reset(value_type initial = 0)
     {
-      sample     = logical_value(initial); // Converted to, and stored in, the internal logical (active = 1) form.
+      sample     = initial;
       state_low  = 0;
       state_high = 0;
       changed    = 0;
@@ -136,10 +136,7 @@ namespace etl
       {
         value_type bit = bit_mask(n);
 
-        // Convert the raw reading to the internal logical (active = 1) form.
-        const bool bit_is_active = logical_value(initial);
-
-        if (bit_is_active)
+        if (initial)
         {
           sample |= bit;
         }
@@ -160,11 +157,8 @@ namespace etl
     /// Do not call update() after update_incremental() on the same instance unless update_incremental() has completed a full cycle (returned true).
     /// Returns true if all of the bits have been processed.
     //***************************************************************************
-    bool update_incremental(const value_type raw_next)
+    bool update_incremental(const value_type next)
     {
-      // Convert to the internal logical (active = 1) representation.
-      const value_type next = logical_value(raw_next);
-
       // Determine which bits have changed since the last sample.
       const value_type changed_bits = sample ^ next;
 
@@ -200,11 +194,8 @@ namespace etl
     /// Updates the whole port value.
     /// Returns true if any bit changed state.
     //***************************************************************************
-    bool update(const value_type raw_next)
+    bool update(const value_type next)
     {
-      // Convert to the internal logical (active = 1) representation.
-      const value_type next = logical_value(raw_next);
-
       // Determine which bits have changed since the last sample.
       const value_type changed_bits = sample ^ next;
 
@@ -286,22 +277,13 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Returns the stable (debounced) value of all bits, in the same polarity as the raw input.
+    /// Returns a mask of all currently active bits (state >= On), where a set
+    /// bit always means 'active'.
     //***************************************************************************
-    value_type get_value() const
+    value_type get_active_mask() const
     {
       // A bit is 'active' (state >= On) if it is set in either state_low or state_high.
-      const value_type active_mask = (state_low | state_high);
-
-      // Convert from the internal logical (active = 1) representation back to the raw input's polarity.
-      if ETL_IF_CONSTEXPR ((Polarity == etl::bit_polarity::Active_High))
-      {
-        return active_mask;
-      }
-      else
-      {
-        return static_cast<value_type>(active_mask ^ field_mask());
-      }
+      return (state_low | state_high);
     }
 
     //***************************************************************************
@@ -323,47 +305,6 @@ namespace etl
     }
 
   private:
-
-    //***************************************************************************
-    /// Returns the default initial value for the sample, expressed in the raw/physical polarity
-    /// (i.e. the 'inactive' reading for all bits, matching what a real port would read at rest).
-    //***************************************************************************
-    static value_type initial_value()
-    {
-      return static_cast<value_type>(Polarity == etl::bit_polarity::Active_High) ? 0 : field_mask();
-    }
-
-    //***************************************************************************
-    /// Converts a raw port value into the internal logical (active = 1) representation,
-    /// independent of the configured polarity.
-    //***************************************************************************
-    static value_type logical_value(value_type v)
-    {
-      if ETL_IF_CONSTEXPR (Polarity == etl::bit_polarity::Active_High)
-      {
-        return v & field_mask();
-      }
-      else
-      {
-        return static_cast<value_type>(~v & field_mask());
-      }
-    }
-
-    //***************************************************************************
-    /// Converts a raw port bool into the internal logical (active = 1) representation,
-    /// independent of the configured polarity.
-    //***************************************************************************
-    static bool logical_value(bool v)
-    {
-      if ETL_IF_CONSTEXPR (Polarity == etl::bit_polarity::Active_High)
-      {
-        return v;
-      }
-      else
-      {
-        return !v;
-      }
-    }
 
     //***************************************************************************
     /// Updates a bit.

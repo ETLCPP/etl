@@ -1,19 +1,21 @@
 ---
-title: "debounce_multi_bit"
+title: "debounce_multi"
 ---
 
 {{< callout type="info">}}
-  Header: `debounce_multi_bit.h`  
+  Header: `debounce_multi.h`  
   Since: `20.50.0`  
 {{< /callout >}}
 
 Debounces a contiguous group of bits read from an IO port.
 
-template <typename TValue, typename TCount, size_t Width, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
-class debounce_multi_bit
+```cpp
+  template <typename TValue, size_t Width, etl::bit_polarity::type Polarity, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
+  class debounce_multi
+```
 
-| Parameter | Description |
-|-|-|
+| Parameter     | Description                                                                                                            |
+|---------------|------------------------------------------------------------------------------------------------------------------------|
 |`TValue`       | The type of the port value. Must be an unsigned integral.                                                              |
 |`Width`        | The number of bits in the field. `[1, sizeof(TValue) * CHAR_BIT)`                                                      |
 |`Valid_Count`  | The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= 1). |
@@ -31,13 +33,34 @@ Off -> Valid -> Repeating
 Off -> Valid -> Held -> Repeating
 ```
 
+## Static asserts
+
+`TValue` must be a unsigned integral.  
+`Width` must be great than or equal to 1. 
+The size of `TValue` in bits must not be less than `Width`.  
+`Valid_Count` must be great than or equal to 1. 
+
 ## Types
-    
+
+**External definition**
+```cpp
+struct debounce_state_id
+```
+```
+Off       = 0  
+On        = 1  
+Held      = 2  
+Repeating = 3  
+```
+
+---
+
+**In class definitions**
+
 | Type | Definitions |
-| - | - |
-|`value_type` | `TValue`|
-|`count_type` | `TCount`|
-|`state_id` | `Off`, `On`, `Held`, `Repeating`|
+|-----------------|------------------------------|
+|`value_type`     | `TValue`                     |
+|`state_id`       | `etl::debounce_state_id`     |
 |`state_id::type` | The type to hold a `state_id`|
 
 ## Member functions
@@ -98,6 +121,7 @@ Updates the whole port value.
 
 **Parameters**  
 `next` The value of the whole multi bit field.  
+Bits are strictly `1` = active, `0` = inactive.
 
 **Return**  
 `true` if any bit changed state.  
@@ -160,10 +184,10 @@ Returns the width of the bit field.
 ---
 
 ```cpp
-value_type get_value() const
+value_type get_active_mask() const
 ```
 **Description**  
-Returns the current stable debounced value of all bits as a `value_type`.  
+Returns a mask of all currently active bits (where state is `On`, `Held`, or `repeating`).  
 
 ---
 
@@ -174,7 +198,7 @@ state_id::type get_state(size_t n) const
 Returns the current state id of a bit.
 
 **Return**  
-One of:-
+One of:-  
 `state_id::Off`  
 `state_id::On`  
 `state_id::Held`  

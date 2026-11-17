@@ -10394,8 +10394,7 @@
     <ClCompile Include="..\test_crc8_opensafety.cpp" />
     <ClCompile Include="..\test_crc8_rohc.cpp" />
     <ClCompile Include="..\test_crc8_wcdma.cpp" />
-    <ClCompile Include="..\test_debounce_multi_active_high.cpp" />
-    <ClCompile Include="..\test_debounce_multi_active_low.cpp" />
+    <ClCompile Include="..\test_debounce_multi.cpp" />
     <ClCompile Include="..\test_debounce_value.cpp" />
     <ClCompile Include="..\test_delegate_observable.cpp" />
     <ClCompile Include="..\test_etl_assert.cpp" />
@@ -10410,7 +10409,7 @@
     <ClCompile Include="..\test_intrusive_links.cpp" />
     <ClCompile Include="..\test_invoke.cpp" />
     <ClCompile Include="..\test_is_invocable.cpp" />
-    <ClCompile Include="..\test_key_matrix_active_low.cpp" />
+    <ClCompile Include="..\test_key_matrix.cpp" />
     <ClCompile Include="..\test_macros.cpp" />
     <ClCompile Include="..\test_math.cpp" />
     <ClCompile Include="..\test_math_functions.cpp" />
