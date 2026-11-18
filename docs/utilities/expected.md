@@ -563,7 +563,7 @@ error_type& error()& ETL_NOEXCEPT
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Since: C++11
 
 ---
@@ -575,7 +575,7 @@ const error_type& error() const& ETL_NOEXCEPT
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Since: C++11
 
 ---
@@ -587,7 +587,7 @@ error_type&& error() && ETL_NOEXCEPT
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Since: C++11
 
 ---
@@ -599,7 +599,7 @@ const error_type&& error() const&& ETL_NOEXCEPT
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Since: C++11
 
 ---
@@ -609,7 +609,7 @@ error_type& error() const
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Before: C++11
 
 ---
