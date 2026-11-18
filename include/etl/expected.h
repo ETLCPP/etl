@@ -86,6 +86,19 @@ namespace etl
   };
 
   //***************************************************************************
+  /// expected_no_error
+  //***************************************************************************
+  class expected_no_error : public etl::expected_exception
+  {
+  public:
+
+    expected_no_error(string_type file_name_, numeric_type line_number_)
+      : expected_exception(ETL_ERROR_TEXT("expected:no_error", ETL_EXPECTED_FILE_ID"B"), file_name_, line_number_)
+    {
+    }
+  };
+
+  //***************************************************************************
   /// Unexpected type.
   /// etl::unexpected represents an unexpected value stored in etl::expected.
   //***************************************************************************
@@ -778,34 +791,50 @@ namespace etl
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() & ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() &
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const& ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const&
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() && ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() &&
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::move(etl::get<Error_Type>(storage));
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&& ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&&
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::move(etl::get<Error_Type>(storage));
     }
 
@@ -892,10 +921,14 @@ namespace etl
     }
 
     //*******************************************
-    ///
+    /// Returns the error
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     const error_type& error() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
@@ -1318,37 +1351,49 @@ namespace etl
 #if ETL_USING_CPP11
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() & ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() &
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const& ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const&
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() && ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() &&
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::move(etl::get<Error_Type>(storage));
     }
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
-    ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&& ETL_NOEXCEPT
+    ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&&
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::move(etl::get<Error_Type>(storage));
     }
 
@@ -1386,10 +1431,13 @@ namespace etl
 #else
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if an error has not been set.
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
+    /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     const error_type& error() const
     {
+      ETL_ASSERT_CHECK_EXTRA(!has_value(), ETL_ERROR(expected_no_error));
+
       return etl::get<Error_Type>(storage);
     }
 
