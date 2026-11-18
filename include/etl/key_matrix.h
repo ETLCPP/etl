@@ -156,9 +156,11 @@ namespace etl
   template <size_t N_Rows, size_t N_Columns>
   struct key_matrix_traits
   {
-    typedef etl::smallest_uint_for_bits<N_Rows>::type     row_type;          ///< The type that holds the value read from the key matrix rows.
-    typedef etl::smallest_uint_for_value<N_Columns>::type column_index_type; ///< The type that holds a column index that selects the active column.
-    typedef etl::smallest_uint_for_value<N_Rows * N_Columns>::type key_type; ///< The type that holds a key value.
+    // clang-format off
+    typedef typename etl::smallest_uint_for_bits<N_Rows>::type              row_type;          ///< The type that holds the value read from the key matrix rows.
+    typedef typename etl::smallest_uint_for_value<N_Columns>::type          column_index_type; ///< The type that holds a column index that selects the active column.
+    typedef typename etl::smallest_uint_for_value<N_Rows * N_Columns>::type key_type;          ///< The type that holds a key value.
+    /// clang-format on
 
     typedef key_matrix_state key_state; ///< The type that holds the state of a key in the key matrix.
 
@@ -205,7 +207,8 @@ namespace etl
     //***************************************************************************
     /// Returns the maximum key ID that can be used with this key matrix.
     /// The range of supported keys is [0, max_key_id()].
-    ETL_CONSTEXPR size_t max_key_id() const
+    //***************************************************************************
+    ETL_CONSTEXPR key_type max_key_id() const
     {
       return Invalid_Key - 1U;
     }

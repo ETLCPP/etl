@@ -55,6 +55,7 @@ namespace etl
     //*************************************************************************
     debounce_value(value_type initial_value_, count_type stable_count_)
       : last_value(initial_value_)
+      , last_stable_value(initial_value_)
       , count(0)
       , stable_count(stable_count_)
       , state(Unstable)
@@ -84,7 +85,8 @@ namespace etl
           // Have we reached the stable count?
           if (count == stable_count)
           {
-            state = static_cast<State>(Stable | Changed);
+            last_stable_value = value;
+            state             = static_cast<State>(Stable | Changed);
           }
         }
         else
@@ -100,11 +102,11 @@ namespace etl
     }
 
     //*************************************************************************
-    /// Gets the current value.
+    /// Gets the last stable value.
     //*************************************************************************
     value_type get() const
     {
-      return last_value;
+      return last_stable_value;
     }
 
     //*************************************************************************
@@ -112,12 +114,12 @@ namespace etl
     //*************************************************************************
     operator value_type() const
     {
-      return last_value;
+      return last_stable_value;
     }
 
     //*************************************************************************
     /// Gets the current change state.
-    ///\return 'true' if the value has changed.
+    ///\return 'true' if the last stable value has changed.
     //*************************************************************************
     bool has_changed() const
     {
@@ -151,6 +153,7 @@ namespace etl
     };
 
     value_type last_value;
+    value_type last_stable_value;
     count_type count;
     count_type stable_count;
     State      state;

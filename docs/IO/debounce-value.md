@@ -7,7 +7,7 @@ title: "debounce_value"
   Since: `20.50.0`  
 {{< /callout >}}
 
-This class is designed to take an input value that may take time to become stable, such as a binary rotary encoder or DIP switches, and indicate when it has settled to a stable state.
+This class is designed to take an input value that may take time to become stable, such as a binary rotary encoder, and indicate when it has settled to a stable state.
 
 ```cpp
 template <typename TValue, typename TCount>
@@ -16,12 +16,13 @@ etl::debounce_value;
 
 ## Types
 
-`value_type` : The type of the input value.  
-`count_type` : The type for the counter.  
+`value_type` The type of the input value.  
+`count_type` The type for the counter.  
 
 
 ## Member functions
 
+### Constructor
 ```cpp
 debounce_value(value_type initial_value, count_type stable_count)
 ```
@@ -33,10 +34,9 @@ Constructor.
 
 `stable_count` : The count at which an input is deemed to be stable.  
 
----
-
+### update(value_type)
 ```cpp
-bool add(value_type value)
+bool update(value_type value)
 ```
 **Description**  
 Adds a new value.  
@@ -48,48 +48,43 @@ If the value has changed, the count is reset and the value is marked as unstable
 **Return**  
 Returns `true` if the value has changed.
 
----
-
+### get()
 ```cpp
 value_type get() const
 ```
 **Description**  
 Gets the current value.  
-May not be stable unless `is_stable()` returns `true`.
+Gets the last stable value.
 
----
-
+### value_type()
 ```cpp
 operator value_type() const
 ```
 **Description**  
 Conversion operator.  
-May not be stable unless `is_stable()` returns `true`.
+Gets the last stable value.
 
----
-
+### has_changed()
 ```cpp
 bool has_changed() const
 ```
 **Description**  
-Gets the current change state.  
+Checks if the input has changed to a new stable state.  
     
 **Return**  
 `true` if the stable value has changed.  
 
----
-
+### is_stable()
 ```cpp
 bool is_stable() const
 ```
 **Description**  
-Gets the current stable state.  
+Checks if the input is in a stable state.  
 
 **Return**  
 `true` if the value is stable.  
 
----
-
+### set_stable_count(count_type)
 ```cpp
 void set_stable_count(count_type stable_count)
 ```

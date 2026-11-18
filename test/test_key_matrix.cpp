@@ -35,9 +35,9 @@ SOFTWARE.
 
 namespace
 {
-  const size_t   NRows                 = 3;
-  const size_t   NColumns              = 4;
-  const size_t   NKeys                 = 12;
+  const size_t   N_Rows                = 3;
+  const size_t   N_Columns             = 4;
+  const size_t   N_Key_Events          = 12;
   const uint32_t Valid_Count           = 4;
   const uint32_t Hold_Count            = 4;
   const uint32_t Repeat_Count          = 4;
@@ -49,8 +49,8 @@ namespace
   //*************************************************************************
   struct MatrixPort
   {
-    using row_type          = etl::key_matrix_traits<NRows, NColumns>::row_type;
-    using column_index_type = etl::key_matrix_traits<NRows, NColumns>::column_index_type;
+    using row_type          = etl::key_matrix_traits<N_Rows, N_Columns>::row_type;
+    using column_index_type = etl::key_matrix_traits<N_Rows, N_Columns>::column_index_type;
 
     //***************************************************************************
     /// Constructor.
@@ -63,8 +63,6 @@ namespace
 
     //***************************************************************************
     /// Write the column index to the key matrix.
-    /// This function must be overridden to write the column index to the key matrix.
-    ///\param column_index The index of the column to make active in the key matrix.
     //***************************************************************************
     void select_column(column_index_type column_index_)
     {
@@ -73,8 +71,6 @@ namespace
 
     //***************************************************************************
     /// Read a value from the key matrix.
-    /// This function must be overridden to read a value from the key matrix.
-    ///\return The value read from the key matrix rows for the currently selected column.
     //***************************************************************************
     row_type read_row()
     {
@@ -84,24 +80,25 @@ namespace
     const row_type Row_Inactive = 0;
 
     // The following are used to simulate the key pad in the unit tests.
-    volatile row_type          columns[NColumns];
+    volatile row_type          columns[N_Columns];
     volatile column_index_type column_index;
   };
 
   //*************************************************************************
   // A key pad base class for testing.
-  // NRows             = 3
-  // NColumns          = 4
+  // N_Rows            = 3
+  // N_Columns         = 4
   // Valid_Count       = 4
   // Hold_Count        = 4
   // Repeat_Count      = 4
-  // NKeys             = 12
+  // N_Key_Events      = 12
   // Filter_Ghost_Keys = Filter_Ghost_Keys_On/Filter_Ghost_Keys_Off
   //*************************************************************************
   using key_pad_base_no_ghost_check =
-    etl::key_matrix<MatrixPort, NRows, NColumns, Valid_Count, Hold_Count, Repeat_Count, NKeys, Filter_Ghost_Keys_Off>;
+    etl::key_matrix<MatrixPort, N_Rows, N_Columns, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_Off>;
 
-  using key_pad_base_ghost_check = etl::key_matrix<MatrixPort, NRows, NColumns, Valid_Count, Hold_Count, Repeat_Count, NKeys, Filter_Ghost_Keys_On>;
+  using key_pad_base_ghost_check =
+    etl::key_matrix<MatrixPort, N_Rows, N_Columns, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_On>;
 
   //*************************************************************************
   // A simple key pad implementation for testing.
@@ -166,7 +163,7 @@ namespace
 
     //*********************************
     // A list of key positions indexed as row/column.
-    std::array<key_info, NRows * NColumns> key_positions = {
+    std::array<key_info, N_Rows * N_Columns> key_positions = {
       {{0, 0, 0}, {1, 0, 1}, {2, 0, 2}, {3, 0, 3}, {4, 1, 0}, {5, 1, 1}, {6, 1, 2}, {7, 1, 3}, {8, 2, 0}, {9, 2, 1}, {10, 2, 2}, {11, 2, 3}}};
 
     key_info& Key1  = key_positions[0];  // Row 0, Column 0
@@ -211,10 +208,10 @@ namespace
     {
       key_pad_no_ghost_check pad;
 
-      CHECK_EQUAL(NRows, pad.row_size());
-      CHECK_EQUAL(NColumns, pad.column_size());
-      CHECK_EQUAL(NRows * NColumns, pad.matrix_size());
-      CHECK_EQUAL(NKeys, pad.max_number_of_key_events());
+      CHECK_EQUAL(N_Rows, pad.row_size());
+      CHECK_EQUAL(N_Columns, pad.column_size());
+      CHECK_EQUAL(N_Rows * N_Columns, pad.matrix_size());
+      CHECK_EQUAL(N_Key_Events, pad.max_number_of_key_events());
       CHECK_EQUAL(0, pad.number_of_key_events());
       CHECK_EQUAL(false, pad.has_key_events());
     }
