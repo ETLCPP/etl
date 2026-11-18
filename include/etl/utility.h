@@ -448,18 +448,22 @@ namespace etl
     }
 
     /// Copy constructor
-    ETL_CONSTEXPR pair(const pair<T1, T2>& other)
-      : first(other.first)
-      , second(other.second)
-    {
-    }
-
 #if ETL_USING_CPP11
+    ETL_CONSTEXPR pair(const pair<T1, T2>& other) ETL_NOEXCEPT = default;
+
     /// Move constructor
+    ETL_CONSTEXPR14 pair(pair<T1, T2>&& other) ETL_NOEXCEPT = default;
+
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(pair<U1, U2>&& other)
       : first(etl::forward<U1>(other.first))
       , second(etl::forward<U2>(other.second))
+    {
+    }
+#else
+    ETL_CONSTEXPR pair(const pair<T1, T2>& other)
+      : first(other.first)
+      , second(other.second)
     {
     }
 #endif
@@ -499,6 +503,11 @@ namespace etl
       swap(second, other.second);
     }
 
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 pair<T1, T2>& operator=(const pair<T1, T2>& other) ETL_NOEXCEPT = default;
+
+    ETL_CONSTEXPR14 pair<T1, T2>& operator=(pair<T1, T2>&& other) ETL_NOEXCEPT = default;
+#else
     pair<T1, T2>& operator=(const pair<T1, T2>& other)
     {
       first  = other.first;
@@ -506,6 +515,7 @@ namespace etl
 
       return *this;
     }
+#endif
 
     template <typename U1, typename U2>
     pair<U1, U2>& operator=(const pair<U1, U2>& other)
@@ -517,14 +527,6 @@ namespace etl
     }
 
 #if ETL_USING_CPP11
-    pair<T1, T2>& operator=(pair<T1, T2>&& other)
-    {
-      first  = etl::forward<T1>(other.first);
-      second = etl::forward<T2>(other.second);
-
-      return *this;
-    }
-
     template <typename U1, typename U2>
     pair<U1, U2>& operator=(pair<U1, U2>&& other)
     {

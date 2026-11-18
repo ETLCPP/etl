@@ -217,6 +217,7 @@ add_executable(etl_tests
 	test_intrusive_list.cpp
 	test_intrusive_queue.cpp
 	test_intrusive_stack.cpp
+	test_intrusive_timer.cpp
 	test_invert.cpp
 	test_invoke.cpp
 	test_io_port.cpp
@@ -345,6 +346,9 @@ add_executable(etl_tests
 	test_successor.cpp
 	test_task_scheduler.cpp
 	test_threshold.cpp
+	test_timer_config.cpp
+	test_timer_lists.cpp
+	test_timer_node.cpp
 	test_to_arithmetic.cpp
 	test_to_arithmetic_u16.cpp
 	test_to_arithmetic_u32.cpp
