@@ -7,34 +7,40 @@ title: "key_matrix"
   Since: `20.50.0`  
 {{< /callout >}}
 
-Debounces an R x C matrix of keys. Handles valid, held, and repeating key states. The key changes can be monitored by status functions and a built-in key event buffer. The number of buffered key events is selectable. For a key matrix without diodes ghost keys can be filtered out.  
+`etl::key_matrix` is a template class for scanning a row/column key matrix (e.g., a keyboard or keypad) with built-in debouncing and optional ghost-key filtering.
+
+The `TMatrix_Port` type abstracts the hardware interface (selecting columns and reading rows).
+
+**Key Responsibilities**  
+- **Scanning**: Drives a `TMatrix_Port` to select each column and read back the row states.
+  - `scan_incremental()` scans one column per call (non-blocking style); returns `true` once a full matrix pass completes.  
+  - `scan()` scans the entire matrix in one call (loops over `scan_incremental()`).  
+
+-	**Debouncing**: Each column has its own debounce_multi instance to debounce key presses/releases per column.  
+
+-	**Ghost-key filtering**: After a full scan cycle, "ghost" keys (false positives caused by multiple simultaneous key presses in matrix wiring) are detected, and filtered out, if `Filter_Ghost_Keys` is enabled.  
+
+- **Key events**: Generates `key_event` objects (key id + key_state: On/Off/Repeat/Hold, etc.) and stores them in an internal buffer.  
+  - `has_key_events()`
+  - `number_of_key_events()`
+  - `next_key_event()`
+  - `clear_key_events()`.  
+
+-	**State queries**: `get_key_state(size_t key)` returns the debounced state of an individual key from its index.  
+
+-	**Reset**: `reset()` clears all debounce states, the event buffer, and resets scanning to the first column.  
+
+-	**Polarity**: Inputs must be supplied so that `0` represents the 'Off' state and `1` represents the 'On' state.
 
 ---
+
+**Typical Use Case**  
+You implement a small port/adapter class with `select_column()` and `read_row()` methods for your hardware, then repeatedly call `scan()` (or `scan_incremental()` in a polling loop) and call `next_key_event()` to get debounced key press/release/hold/repeat events; useful for embedded keypad/keyboard drivers without dynamic memory allocation.
+
+## Example key matrix
 
 The key values returned are assigned by column then row order.  
 ![Key Matrix](key-matrix.png)
-
----
-
-```cpp
-  template <size_t N_Rows, size_t N_Columns, etl::bit_polarity::type Polarity, 
-            uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0, 
-            size_t N_Key_Events = 1, bool Filter_Ghost_Keys = false>
-  class key_matrix
-```
-
-| Parameter | Description |
-|-|-|
-|`TMatrix_Port`      | The type that interfaces with the key matrix hardware. Must implement `void select_column(column_index_type)` and `row_type read_row()`.|
-|`NRows`             | The number of rows in the key matrix.                                                                                    |
-|`NColumns`          | The number of columns in the key matrix.                                                                                 |
-|`Valid_Count`       | The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= `1`). |
-|`Hold_Count`        | The number of samples a bit must remain set (after becoming valid) before the 'held' state is reached. Default = `0`.    |
-|`Repeat_Count`      | Once 'held', a 'repeat' state is generated every `Repeat_Count` samples. Default = `0`.                                  |
-|`N_Key_Events`      | The maximum number of buffered key events. Default = `1`. Configure up to the number of physical keys.                   |
-|`Filter_Ghost_Keys` | Set `true` for non-diode protected keys to remove ghost keys. Default = `false`                                          |
-
-A value of `0` for `Hold_Count` or `Repeat_Count` will disable the corresponding functionality.  
 
 ## States
 
@@ -204,23 +210,29 @@ The range of supported keys is `[0, max_key_id()]`.
 
 ## key_matrix
 ```cpp
-  template <typename TMatrix_Port, size_t N_Rows, size_t N_Columns, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0,
-            size_t N_Key_Events = 1, bool Filter_Ghost_Keys = false>
-  class key_matrix : public key_matrix_traits<N_Rows, N_Columns>
+template <typename TMatrix_Port, size_t N_Rows, size_t N_Columns, 
+          uint32_t Valid_Count, uint32_t Hold_Count = 0, 
+          uint32_t Repeat_Count = 0, size_t N_Key_Events = 1,
+          bool Filter_Ghost_Keys = false>
+class key_matrix
 ```
 **Description**  
-A key matrix decoder.  
+A key matrix decoder.
 
-| Template parameter | Description                                                                                                                          |
-|--------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-|`TMatrix_Port`      | The type that provides the interface to the key matrix hardware.                                                                     |
-|`N_Rows`            | The number of rows in the key matrix. Rows are read from the key matrix.                                                             |
-|`N_Columns`         | The number of columns in the key matrix. Columns are written to the key matrix.                                                      |
-|`Valid_Count`       | The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= 1).               |
-|`Hold_Count`        | The number of samples a bit must remain set (after becoming valid) before a *held* event is generated. `0` = disabled. Default = `0`.|
-|`Repeat_Count`      | Once held, a *repeat* event is generated every `Repeat_Count` samples. `0` = disabled. Default = `0`.                                |
-|`N_Key_Events`      | The number of keys that may be buffered simultaneously. Default = `1`.                                                               |
-|`Filter_Ghost_Keys` | If `true`, any newly changed bits that are ghosted are suppressed until the ambiguity resolves. Default = `false`.                   |
+---
+
+| Parameter | Description |
+|-|-|
+|`TMatrix_Port`      | The type that interfaces with the key matrix hardware. Must implement `void select_column(column_index_type)` and `row_type read_row()`.|
+|`N_Rows`            | The number of rows in the key matrix.                                                                                    |
+|`N_Columns`         | The number of columns in the key matrix.                                                                                 |
+|`Valid_Count`       | The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= `1`). |
+|`Hold_Count`        | The number of samples a bit must remain set (after becoming valid) before the 'held' state is reached. Default = `0`.    |
+|`Repeat_Count`      | Once 'held', a 'repeat' state is generated every `Repeat_Count` samples. Default = `0`.                                  |
+|`N_Key_Events`      | The maximum number of buffered key events. Default = `1`. Configure up to the number of physical keys.                   |
+|`Filter_Ghost_Keys` | Set `true` for non-diode protected keys to remove ghost keys. Default = `false`                                          |
+
+A value of `0` for `Hold_Count` or `Repeat_Count` will disable the corresponding functionality.  
 
 ## Member types
     

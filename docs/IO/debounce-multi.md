@@ -7,10 +7,30 @@ title: "debounce_multi"
   Since: `20.50.0`  
 {{< /callout >}}
 
-Debounces a contiguous group of bits read from an IO port.
+`etl::debounce_multi` is a template class that debounces a whole field of bits read from a single IO port value (e.g., all the pins read in one `uint8_t`/`uint16_t`/etc.) in parallel, rather than debouncing a single bit like `etl::debounce`.
+
+**Per-Bit State Machine**  
+Each bit progresses through `debounce_state_id`: `Off` → `On` → `Held` → `Repeating`, tracked bitmask state registers plus a per-bit counter array, letting it debounce `Width` independent bits simultaneously with compact storage.
+
+**Core Operations**  
+-	**Construction/reset**: `debounce_multi(initial)` / `reset(initial)` initializes all bits to `Off` and sets the starting starting sample; `reset_bit(n, initial)` resets a single bit.
+-	**Updating**:  
+`update(next)` - processes an entire new raw port value in one call, updating all bits' states/counters and returning true if any bit changed.  
+`update_incremental(next)` - processes one bit per call (useful for incrementally scanning a matrix one line at a time); returns `true` once all `Width` bits have been processed in the current cycle.
+- **Querying**:  
+  - `has_changed(n)`, `is_set(n)`, `is_held(n)`, `is_repeating(n)` - per-bit status.  
+  - `get_state(n)` - returns the bit's `state_id` (`Off`/`On`/`Held`/`Repeating`).  
+  - `get_changed()` - bitmask of all bits that changed on the last update.  
+  - `get_active_mask()` - bitmask of all bits currently >= `On`.  
+  - `get_width()` - returns `Width`.  
+-	**Polarity**: Inputs must be supplied so that `0` represents the 'Off' state and `1` represents the 'On' state.
+---
+
+**Typical Use Case**  
+This is generally useful anywhere you need debounced, simultaneous multi-bit digital input handling (e.g., reading a parallel GPIO port) without dynamic memory allocation, including support for "held"/"repeat" style key-repeat behavior.
 
 ```cpp
-  template <typename TValue, size_t Width, etl::bit_polarity::type Polarity, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
+  template <typename TValue, size_t Width, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
   class debounce_multi
 ```
 
@@ -40,9 +60,9 @@ The diagram below shows the effect of the various parameters.
 ## Static asserts
 
 `TValue` must be a unsigned integral.  
-`Width` must be great than or equal to 1. 
+`Width` must be greater than `0`.  
 The size of `TValue` in bits must not be less than `Width`.  
-`Valid_Count` must be great than or equal to 1. 
+`Valid_Count` must be greater than `0`. 
 
 ## Types
 
@@ -172,7 +192,7 @@ Returns `true` if the bit is currently repeating.
 
 ### get_width()
 ```cpp
-size_t get_width() const
+ETL_CONSTEXPR size_t get_width() const
 ```
 **Description**  
 Returns the width of the bit field.

@@ -19,7 +19,6 @@ etl::debounce_value;
 `value_type` The type of the input value.  
 `count_type` The type for the counter.  
 
-
 ## Member functions
 
 ### Constructor
