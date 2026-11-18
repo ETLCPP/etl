@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include <array>
 #include <vector>
+#include <algorithm>
 
 namespace
 {
@@ -187,20 +188,6 @@ namespace
   using key_pad_no_ghost_check = KeyPad<key_pad_base_no_ghost_check>;
   using key_pad_ghost_check    = KeyPad<key_pad_base_ghost_check>;
 
-  //*************************************************************************
-  std::ostream& operator<<(std::ostream& os, const key_pad_no_ghost_check::key_event::key_state& state)
-  {
-    switch (state.value())
-    {
-      case etl::key_matrix_state::Off: os << "Off"; break;
-      case etl::key_matrix_state::On: os << "On"; break;
-      case etl::key_matrix_state::Held: os << "Held"; break;
-      case etl::key_matrix_state::Repeating: os << "Repeating"; break;
-      default: os << "Unknown"; break;
-    }
-    return os;
-  }
-
   SUITE(test_key_matrix_active_high)
   {
     //*************************************************************************
@@ -271,20 +258,18 @@ namespace
       CHECK_EQUAL(10, keys_pressed[10].key); // Key11
       CHECK_EQUAL(11, keys_pressed[11].key); // Key12
 
-      auto event = key_event::key_state::On;
-
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[0].state);  // Key1
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[1].state);  // Key2
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[2].state);  // Key3
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[3].state);  // Key4
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[4].state);  // Key5
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[5].state);  // Key6
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[6].state);  // Key7
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[7].state);  // Key8
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[8].state);  // Key9
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[9].state);  // Key10
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[10].state); // Key11
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[11].state); // Key12
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[0].state.value());  // Key1
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[1].state.value());  // Key2
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[2].state.value());  // Key3
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[3].state.value());  // Key4
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[4].state.value());  // Key5
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[5].state.value());  // Key6
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[6].state.value());  // Key7
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[7].state.value());  // Key8
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[8].state.value());  // Key9
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[9].state.value());  // Key10
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[10].state.value()); // Key11
+      CHECK_EQUAL(key_event::key_state::On, keys_pressed[11].state.value()); // Key12
 
       //*******************************
       // Simulate holding down Key1 for Hold_Count scans, then check that it is reported as Held.
@@ -324,18 +309,18 @@ namespace
       CHECK_EQUAL(10, keys_pressed[10].key); // Key11
       CHECK_EQUAL(11, keys_pressed[11].key); // Key12
 
-      CHECK_EQUAL(key_event::key_state::Held, keys_pressed[0].state); // Key1
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[1].state);  // Key2
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[2].state);  // Key3
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[3].state);  // Key4
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[4].state);  // Key5
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[5].state);  // Key6
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[6].state);  // Key7
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[7].state);  // Key8
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[8].state);  // Key9
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[9].state);  // Key10
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[10].state); // Key11
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[11].state); // Key12
+      CHECK_EQUAL(key_event::key_state::Held, keys_pressed[0].state.value()); // Key1
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[1].state.value());  // Key2
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[2].state.value());  // Key3
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[3].state.value());  // Key4
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[4].state.value());  // Key5
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[5].state.value());  // Key6
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[6].state.value());  // Key7
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[7].state.value());  // Key8
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[8].state.value());  // Key9
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[9].state.value());  // Key10
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[10].state.value()); // Key11
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[11].state.value()); // Key12
 
       //*******************************
       // Simulate holding down Key1 for Repeat_Count scans, then check that it is reported as Repeating.
@@ -359,7 +344,7 @@ namespace
 
       CHECK_EQUAL(1, keys_pressed.size());
       CHECK_EQUAL(0, keys_pressed[0].key);                                 // Key1
-      CHECK_EQUAL(key_event::key_state::Repeating, keys_pressed[0].state); // Key1
+      CHECK_EQUAL(key_event::key_state::Repeating, keys_pressed[0].state.value()); // Key1
 
       //*******************************
       // Simulate releasing Key1, then check that it is reported as Off.
@@ -385,7 +370,7 @@ namespace
 
       CHECK_EQUAL(1, keys_pressed.size());
       CHECK_EQUAL(0, keys_pressed[0].key);                           // Key1
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[0].state); // Key1
+      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[0].state.value()); // Key1
 
       keys_pressed.clear();
     }
@@ -496,18 +481,18 @@ namespace
 
         CHECK_EQUAL(expected_key_events[i], pad.number_of_key_events());
 
-        CHECK_EQUAL(key1_expected[i], pad.get_key_state(pad.Key1.id));
-        CHECK_EQUAL(key2_expected[i], pad.get_key_state(pad.Key2.id));
-        CHECK_EQUAL(key3_expected[i], pad.get_key_state(pad.Key3.id));
-        CHECK_EQUAL(key4_expected[i], pad.get_key_state(pad.Key4.id));
-        CHECK_EQUAL(key5_expected[i], pad.get_key_state(pad.Key5.id));
-        CHECK_EQUAL(key6_expected[i], pad.get_key_state(pad.Key6.id));
-        CHECK_EQUAL(key7_expected[i], pad.get_key_state(pad.Key7.id));
-        CHECK_EQUAL(key8_expected[i], pad.get_key_state(pad.Key8.id));
-        CHECK_EQUAL(key9_expected[i], pad.get_key_state(pad.Key9.id));
-        CHECK_EQUAL(key10_expected[i], pad.get_key_state(pad.Key10.id));
-        CHECK_EQUAL(key11_expected[i], pad.get_key_state(pad.Key11.id));
-        CHECK_EQUAL(key12_expected[i], pad.get_key_state(pad.Key12.id));
+        CHECK_EQUAL(key1_expected[i].value(), pad.get_key_state(pad.Key1.id).value());
+        CHECK_EQUAL(key2_expected[i].value(), pad.get_key_state(pad.Key2.id).value());
+        CHECK_EQUAL(key3_expected[i].value(), pad.get_key_state(pad.Key3.id).value());
+        CHECK_EQUAL(key4_expected[i].value(), pad.get_key_state(pad.Key4.id).value());
+        CHECK_EQUAL(key5_expected[i].value(), pad.get_key_state(pad.Key5.id).value());
+        CHECK_EQUAL(key6_expected[i].value(), pad.get_key_state(pad.Key6.id).value());
+        CHECK_EQUAL(key7_expected[i].value(), pad.get_key_state(pad.Key7.id).value());
+        CHECK_EQUAL(key8_expected[i].value(), pad.get_key_state(pad.Key8.id).value());
+        CHECK_EQUAL(key9_expected[i].value(), pad.get_key_state(pad.Key9.id).value());
+        CHECK_EQUAL(key10_expected[i].value(), pad.get_key_state(pad.Key10.id).value());
+        CHECK_EQUAL(key11_expected[i].value(), pad.get_key_state(pad.Key11.id).value());
+        CHECK_EQUAL(key12_expected[i].value(), pad.get_key_state(pad.Key12.id).value());
 
         pad.clear_key_events();
       }

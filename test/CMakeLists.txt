@@ -168,6 +168,8 @@ add_executable(etl_tests
 	test_clamped_value.cpp
 	test_cyclic_value.cpp
 	test_debounce.cpp
+	test_debounce_multi.cpp
+	test_debounce_value.cpp
 	test_delegate.cpp
 	test_delegate_cpp03.cpp
 	test_delegate_observable.cpp
@@ -223,6 +225,7 @@ add_executable(etl_tests
 	test_is_invocable.cpp
 	test_iterator.cpp
 	test_jenkins.cpp
+	test_key_matrix.cpp
 	test_largest.cpp
 	test_limiter.cpp
 	test_limits.cpp

@@ -46,8 +46,6 @@ namespace
   const count_type Repeat_Count = 2;
 
   const value_type Bit0 = 0;
-  const value_type Bit1 = 1;
-  const value_type Bit2 = 2;
 
   const value_type Active0   = 1;
   const value_type Inactive0 = 0;

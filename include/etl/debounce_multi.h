@@ -271,7 +271,7 @@ namespace etl
     //***************************************************************************
     /// Returns the width of the bit field.
     //***************************************************************************
-    size_t get_width() const
+    ETL_CONSTEXPR size_t get_width() const
     {
       return Width;
     }
@@ -484,7 +484,7 @@ namespace etl
     //*************************************************************************
     /// Returns a mask with only Width bits set.
     //*************************************************************************
-    static value_type field_mask()
+    static ETL_CONSTEXPR value_type field_mask()
     {
       return static_cast<value_type>(etl::max_value_for_nbits<Width>::value);
     }
