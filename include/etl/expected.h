@@ -792,7 +792,7 @@ namespace etl
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() &
@@ -804,7 +804,7 @@ namespace etl
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const&
@@ -816,7 +816,7 @@ namespace etl
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() &&
@@ -828,7 +828,7 @@ namespace etl
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&&
@@ -922,7 +922,7 @@ namespace etl
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     const error_type& error() const
@@ -1351,7 +1351,7 @@ namespace etl
 #if ETL_USING_CPP11
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     ETL_NODISCARD ETL_CONSTEXPR14 error_type& error() &
@@ -1363,7 +1363,7 @@ namespace etl
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     ETL_NODISCARD ETL_CONSTEXPR14 const error_type& error() const&
@@ -1375,7 +1375,7 @@ namespace etl
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     ETL_NODISCARD ETL_CONSTEXPR14 error_type&& error() &&
@@ -1387,7 +1387,7 @@ namespace etl
 
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     ETL_NODISCARD ETL_CONSTEXPR14 const error_type&& error() const&&
@@ -1431,7 +1431,7 @@ namespace etl
 #else
     //*******************************************
     /// Returns the error
-    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort 
+    /// Undefined behaviour if has_value() is true and the configured assert does not throw or abort
     /// (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
     //*******************************************
     const error_type& error() const
