@@ -559,7 +559,7 @@ Before: C++11
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14
-error_type& error()& ETL_NOEXCEPT
+error_type& error()&
 ```
 **Description**  
 Returns the error.
@@ -571,7 +571,7 @@ Since: C++11
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14
-const error_type& error() const& ETL_NOEXCEPT
+const error_type& error() const&
 ```
 **Description**  
 Returns the error.
@@ -583,7 +583,7 @@ Since: C++11
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14
-error_type&& error() && ETL_NOEXCEPT
+error_type&& error() &&
 ```
 **Description**  
 Returns the error.
@@ -595,7 +595,7 @@ Since: C++11
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14
-const error_type&& error() const&& ETL_NOEXCEPT
+const error_type&& error() const&&
 ```
 **Description**  
 Returns the error.
