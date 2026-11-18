@@ -224,5 +224,14 @@ namespace
 
       CHECK_EQUAL(11016, sd.time_since_epoch().count());
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::year_month_day_last>::value);
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::year_month_day_last>::value);
+    }
+#endif
   }
 } // namespace

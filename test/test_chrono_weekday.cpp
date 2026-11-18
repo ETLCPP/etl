@@ -383,5 +383,14 @@ namespace
       CHECK_EQUAL(256U, hashes.size());
     }
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::weekday>::value);
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::weekday>::value);
+    }
+#endif
   }
 } // namespace

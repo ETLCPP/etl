@@ -140,5 +140,14 @@ namespace
       (void)std::unique(hashes.begin(), hashes.end());
     }
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::month_day_last>::value);
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::month_day_last>::value);
+    }
+#endif
   }
 } // namespace

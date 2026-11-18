@@ -8,7 +8,8 @@ title: "weekday"
   Similar to: [std::chrono::weekday](https://en.cppreference.com/w/cpp/chrono/weekday.html)
 {{< /callout >}}
 
-A class representing a weekday.
+A class representing a weekday.  
+In C++11 and later, `etl::chrono::weekday` is trivially copyable.
 
 ```cpp
 class weekday
@@ -62,7 +63,7 @@ weekday(const etl::chrono::weekday& other)
 ETL_NOEXCEPT
 ```
 **Description**  
-Copy constructor.
+Copy constructor. (Defaulted and trivially copyable in C++11 and later).
 
 ## Tests
 
@@ -94,7 +95,7 @@ etl::chrono::weekday& operator =(const etl::chrono::weekday& rhs)
 ETL_NOEXCEPT
 ```
 **Description**  
-Assignment operator      
+Assignment operator. (Defaulted in C++11 and later).      
 
 ## Access
 

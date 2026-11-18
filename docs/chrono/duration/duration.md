@@ -9,7 +9,8 @@ title: "duration"
   Similar to: [std::chrono::duration_values](https://en.cppreference.com/w/cpp/chrono/duration_values.html)
 {{< /callout >}}
 
-Templates representing a time interval.
+Templates representing a time interval.  
+In C++11 and later, `etl::chrono::duration` is trivially copyable when `TRep` is trivially copyable.
 
 ## duration_values
 ```cpp
@@ -64,6 +65,9 @@ ETL_CONSTEXPR14
 duration(const etl::chrono::duration<TRep, TPeriod>& other) 
 ETL_NOEXCEPT
 ```
+**Description**  
+Copy constructor. (Defaulted and trivially copyable in C++11 and later when `TRep` is trivially copyable).
+
 ---
 
 ```cpp
@@ -101,8 +105,10 @@ else returns `0`
 ### Assignment
 ```cpp
 ETL_CONSTEXPR14 
-etl::chrono::duration<TRep, TPeriod> operator =(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
+etl::chrono::duration<TRep, TPeriod>& operator =(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
 ```
+**Description**  
+Assignment operator. (Defaulted in C++11 and later).
 
 ---
 

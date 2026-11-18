@@ -453,5 +453,16 @@ namespace
 
       CHECK_EQUAL(expected, actual);
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      using TimePoint = Chrono::time_point<test_clock, Chrono::seconds>;
+
+      CHECK_TRUE(etl::is_trivially_copyable<TimePoint>::value);
+      CHECK_TRUE(std::is_trivially_copyable<TimePoint>::value);
+    }
+#endif
   }
 } // namespace

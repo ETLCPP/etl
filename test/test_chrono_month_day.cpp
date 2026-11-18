@@ -210,5 +210,14 @@ namespace
       CHECK_EQUAL(Chrono::December, md_max.month());
       CHECK_EQUAL(Chrono::day{31}, md_max.day());
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::month_day>::value);
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::month_day>::value);
+    }
+#endif
   }
 } // namespace

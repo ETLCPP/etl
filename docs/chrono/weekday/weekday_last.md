@@ -8,7 +8,8 @@ title: "weekday_last"
   Similar to: [std::chrono::weekday_last](https://en.cppreference.com/w/cpp/chrono/weekday_last.html)
 {{< /callout >}}
 
-A class representing the last day of a weekday.
+A class representing the last day of a weekday.  
+In C++11 and later, `etl::chrono::weekday_last` is trivially copyable.
 
 ```cpp
 class weekday_last
@@ -42,7 +43,7 @@ weekday_last(const etl::chrono::weekday_last& other)
 ETL_NOEXCEPT
 ```
 **Description**  
-Copy constructor.
+Copy constructor. (Defaulted and trivially copyable in C++11 and later).
 
 ---
 
@@ -65,7 +66,7 @@ etl::chrono::weekday_last& operator =(const etl::chrono::weekday_last& rhs)
 ETL_NOEXCEPT
 ```
 **Description**  
-Assignment operator      
+Assignment operator. (Defaulted in C++11 and later).      
 
 ## Access
 

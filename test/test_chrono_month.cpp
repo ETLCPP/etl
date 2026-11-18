@@ -343,5 +343,14 @@ namespace
       CHECK_EQUAL(11U, static_cast<unsigned>(Chrono::November));
       CHECK_EQUAL(12U, static_cast<unsigned>(Chrono::December));
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::month>::value);
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::month>::value);
+    }
+#endif
   }
 } // namespace

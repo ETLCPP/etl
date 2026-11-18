@@ -1173,5 +1173,21 @@ namespace
   #endif
     }
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE((etl::is_trivially_copyable<Chrono::duration<int>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<Chrono::duration<double>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<Chrono::seconds>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<Chrono::milliseconds>::value));
+
+      CHECK_TRUE((std::is_trivially_copyable<Chrono::duration<int>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<Chrono::duration<double>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<Chrono::seconds>::value));
+      CHECK_TRUE((std::is_trivially_copyable<Chrono::milliseconds>::value));
+    }
+#endif
   }
 } // namespace

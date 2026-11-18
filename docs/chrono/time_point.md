@@ -13,7 +13,8 @@ template <typename TClock, typename TDuration = typename TClock::duration>
 class time_point;
 ```
 Represents a point in time storing a `TDuration` indicating the time 
-interval from the start of the `TClock`'s epoch.
+interval from the start of the `TClock`'s epoch.  
+In C++11 and later, `etl::chrono::time_point` is trivially copyable when `TDuration` is trivially copyable.
 
 ## Member types
 
@@ -52,7 +53,7 @@ time_point(const time_point& rhs)
 ETL_NOEXCEPT
 ```
 **Description**  
-Copy constructor.
+Copy constructor. (Defaulted and trivially copyable in C++11 and later when `TDuration` is trivially copyable).
 
 ---
 
@@ -72,7 +73,7 @@ time_point& operator =(const time_point& rhs)
 ETL_NOEXCEPT
 ```
 **Description**  
-Assignment operator.
+Assignment operator. (Defaulted in C++11 and later).
 
 ## Access
 ```cpp

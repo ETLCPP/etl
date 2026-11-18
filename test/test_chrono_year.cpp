@@ -307,5 +307,14 @@ namespace
       CHECK_EQUAL(65535U, hashes.size());
     }
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<etl::chrono::year>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::chrono::year>::value);
+    }
+#endif
   }
 } // namespace
