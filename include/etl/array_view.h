@@ -296,11 +296,15 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR array_view(const array_view& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR array_view(const array_view& other) ETL_NOEXCEPT
       : mbegin(other.mbegin)
       , mend(other.mend)
     {
     }
+#endif
 
     //*************************************************************************
     /// Returns a reference to the first element.
@@ -485,12 +489,16 @@ namespace etl
     //*************************************************************************
     /// Assign from a view.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 array_view& operator=(const array_view& other) ETL_NOEXCEPT = default;
+#else
     array_view& operator=(const array_view& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
       mend   = other.mend;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Assign from iterators

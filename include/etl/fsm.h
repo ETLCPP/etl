@@ -809,11 +809,11 @@ namespace etl
         }
       }
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
       // If we get here, then we don't have a handler for this message type, so
       // pass it to the parent if we have one, otherwise call on_event_unknown.
       return (p_parent != nullptr) ? p_parent->process_event(message) : static_cast<TDerived*>(this)->on_event_unknown(message);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
     }
 
     //**********************************************

@@ -769,7 +769,18 @@ namespace etl
       {
       }
 
-#include "private/diagnostic_uninitialized_push.h"
+#if ETL_USING_CPP11
+      //***************************************************************************
+      /// Copy constructor.
+      //***************************************************************************
+      optional_impl(const optional_impl& other) ETL_NOEXCEPT = default;
+
+      //***************************************************************************
+      /// Move constructor.
+      //***************************************************************************
+      optional_impl(optional_impl&& other) ETL_NOEXCEPT = default;
+#else
+  #include "private/diagnostic_uninitialized_push.h"
 
       //***************************************************************************
       /// Copy constructor.
@@ -781,20 +792,10 @@ namespace etl
           storage.construct(other.value());
         }
       }
-#include "private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
+#endif
 
 #if ETL_USING_CPP11
-      //***************************************************************************
-      /// Move constructor.
-      //***************************************************************************
-      ETL_CONSTEXPR14 optional_impl(optional_impl&& other) ETL_NOEXCEPT
-      {
-        if (other.has_value())
-        {
-          storage.construct(etl::move(other.value()));
-        }
-      }
-
       //***************************************************************************
       /// Constructor from value type.
       //***************************************************************************
@@ -845,6 +846,17 @@ namespace etl
         return *this;
       }
 
+#if ETL_USING_CPP11
+      //***************************************************************************
+      /// Assignment operator from optional_impl.
+      //***************************************************************************
+      optional_impl& operator=(const optional_impl& other) ETL_NOEXCEPT = default;
+
+      //***************************************************************************
+      /// Assignment operator from optional_impl.
+      //***************************************************************************
+      optional_impl& operator=(optional_impl&& other) ETL_NOEXCEPT = default;
+#else
       //***************************************************************************
       /// Assignment operator from optional_impl.
       //***************************************************************************
@@ -855,27 +867,6 @@ namespace etl
           if (other.has_value())
           {
             storage.construct(other.value());
-          }
-          else
-          {
-            storage.destroy();
-          }
-        }
-
-        return *this;
-      }
-
-#if ETL_USING_CPP11
-      //***************************************************************************
-      /// Assignment operator from optional_impl.
-      //***************************************************************************
-      ETL_CONSTEXPR14 optional_impl& operator=(optional_impl&& other) ETL_NOEXCEPT
-      {
-        if (this != &other)
-        {
-          if (other.has_value())
-          {
-            storage.construct(etl::move(other.value()));
           }
           else
           {

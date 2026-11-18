@@ -545,5 +545,21 @@ namespace
       CHECK((std::is_same_v<int, std::remove_reference_t<decltype(s.front())>>));
     }
 #endif
+
+    //*************************************************************************
+#if ETL_USING_CPP11
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE((etl::is_trivially_copyable<etl::poly_span<int>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::poly_span<const int>>::value));
+  #if ETL_USING_STL
+      CHECK_TRUE((std::is_trivially_copyable<etl::poly_span<int>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::poly_span<const int>>::value));
+      CHECK_TRUE((std::is_trivially_copy_constructible<etl::poly_span<int>>::value));
+      CHECK_TRUE((std::is_trivially_copy_assignable<etl::poly_span<int>>::value));
+      CHECK_TRUE((std::is_trivially_destructible<etl::poly_span<int>>::value));
+  #endif
+    }
+#endif
   }
 } // namespace
