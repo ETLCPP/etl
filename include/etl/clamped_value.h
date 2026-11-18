@@ -314,16 +314,23 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT
       : value(other.value)
     {
     }
+#endif
 
     //*************************************************************************
     /// Assignment operator.
     ///\param other The value to copy.
     ///\return A reference to this value.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       if (this == &other)
@@ -334,6 +341,7 @@ namespace etl
       set(other.value);
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Sets the value.
@@ -673,12 +681,16 @@ namespace etl
     /// Copy constructor.
     ///\param other The value to copy.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT
       : value(other.value)
       , min_value(other.min_value)
       , max_value(other.max_value)
     {
     }
+#endif
 
     //*************************************************************************
     /// Sets the range.
@@ -811,6 +823,9 @@ namespace etl
     ///\param other The value to copy.
     ///\return A reference to this value.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       if (this == &other)
@@ -823,6 +838,7 @@ namespace etl
       max_value = other.max_value;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Adds a number of steps and clamps to the range.
