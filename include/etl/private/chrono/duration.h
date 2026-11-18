@@ -121,12 +121,12 @@ namespace etl
       //***********************************************************************
       /// Copy constructor.
       //***********************************************************************
-      duration(const duration&) ETL_NOEXCEPT = default;
+      duration(const duration&) = default;
 
       //***********************************************************************
       /// Move constructor.
       //***********************************************************************
-      duration(duration&&) ETL_NOEXCEPT = default;
+      duration(duration&&) = default;
 #else
       //***********************************************************************
       ETL_CONSTEXPR14 duration(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
@@ -155,12 +155,12 @@ namespace etl
       //***********************************************************************
       /// Assignment operator.
       //***********************************************************************
-      duration& operator=(const duration&) ETL_NOEXCEPT = default;
+      duration& operator=(const duration&) = default;
 
       //***********************************************************************
       /// Move assignment operator.
       //***********************************************************************
-      duration& operator=(duration&&) ETL_NOEXCEPT = default;
+      duration& operator=(duration&&) = default;
 #else
       //***********************************************************************
       ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod>& operator=(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT

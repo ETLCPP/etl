@@ -61,9 +61,10 @@ Default constructor.
 ---
 
 ```cpp
+duration(const duration&) = default; // Since C++11
+
 ETL_CONSTEXPR14
-duration(const etl::chrono::duration<TRep, TPeriod>& other) 
-ETL_NOEXCEPT
+duration(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT // C++03
 ```
 **Description**  
 Copy constructor. (Defaulted and trivially copyable in C++11 and later when `TRep` is trivially copyable).
@@ -104,8 +105,10 @@ else returns `0`
 
 ### Assignment
 ```cpp
+duration& operator =(const duration&) = default; // Since C++11
+
 ETL_CONSTEXPR14 
-etl::chrono::duration<TRep, TPeriod>& operator =(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
+etl::chrono::duration<TRep, TPeriod>& operator =(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT // C++03
 ```
 **Description**  
 Assignment operator. (Defaulted in C++11 and later).

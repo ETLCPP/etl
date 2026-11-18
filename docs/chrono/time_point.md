@@ -48,9 +48,10 @@ Construct from a duration.
 ---
 
 ```cpp
+time_point(const time_point&) = default; // Since C++11
+
 ETL_CONSTEXPR14 
-time_point(const time_point& rhs) 
-ETL_NOEXCEPT
+time_point(const time_point& rhs) ETL_NOEXCEPT // C++03
 ```
 **Description**  
 Copy constructor. (Defaulted and trivially copyable in C++11 and later when `TDuration` is trivially copyable).
@@ -68,9 +69,10 @@ Copy construct from another time_point with a different duration type.
 
 ## Assignment
 ```cpp
+time_point& operator =(const time_point&) = default; // Since C++11
+
 ETL_CONSTEXPR14 
-time_point& operator =(const time_point& rhs) 
-ETL_NOEXCEPT
+time_point& operator =(const time_point& rhs) ETL_NOEXCEPT // C++03
 ```
 **Description**  
 Assignment operator. (Defaulted in C++11 and later).

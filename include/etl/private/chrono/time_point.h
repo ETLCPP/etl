@@ -70,12 +70,12 @@ namespace etl
       //***************************************************************************
       /// Copy constructor.
       //***************************************************************************
-      time_point(const time_point&) ETL_NOEXCEPT = default;
+      time_point(const time_point&) = default;
 
       //***************************************************************************
       /// Move constructor.
       //***************************************************************************
-      time_point(time_point&&) ETL_NOEXCEPT = default;
+      time_point(time_point&&) = default;
 #else
       //***************************************************************************
       /// Copy constructor.
@@ -99,12 +99,12 @@ namespace etl
       //***************************************************************************
       /// Assignment operator.
       //***************************************************************************
-      time_point& operator=(const time_point&) ETL_NOEXCEPT = default;
+      time_point& operator=(const time_point&) = default;
 
       //***************************************************************************
       /// Move assignment operator.
       //***************************************************************************
-      time_point& operator=(time_point&&) ETL_NOEXCEPT = default;
+      time_point& operator=(time_point&&) = default;
 #else
       //***************************************************************************
       /// Assignment operator.

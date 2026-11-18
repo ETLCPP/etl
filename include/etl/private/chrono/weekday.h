@@ -98,12 +98,12 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      weekday(const weekday&) ETL_NOEXCEPT = default;
+      weekday(const weekday&) = default;
 
       //***********************************************************************
       /// Move constructor
       //***********************************************************************
-      weekday(weekday&&) ETL_NOEXCEPT = default;
+      weekday(weekday&&) = default;
 #else
       //***********************************************************************
       /// Copy constructor
@@ -118,12 +118,12 @@ namespace etl
       //***********************************************************************
       /// Assignment operator
       //***********************************************************************
-      weekday& operator=(const weekday&) ETL_NOEXCEPT = default;
+      weekday& operator=(const weekday&) = default;
 
       //***********************************************************************
       /// Move assignment operator
       //***********************************************************************
-      weekday& operator=(weekday&&) ETL_NOEXCEPT = default;
+      weekday& operator=(weekday&&) = default;
 #else
       //***********************************************************************
       /// Assignment operator
@@ -445,12 +445,12 @@ namespace etl
       //***********************************************************************
       /// Copy constructor
       //***********************************************************************
-      weekday_last(const weekday_last&) ETL_NOEXCEPT = default;
+      weekday_last(const weekday_last&) = default;
 
       //***********************************************************************
       /// Move constructor
       //***********************************************************************
-      weekday_last(weekday_last&&) ETL_NOEXCEPT = default;
+      weekday_last(weekday_last&&) = default;
 #else
       //***********************************************************************
       /// Copy constructor
@@ -465,12 +465,12 @@ namespace etl
       //***********************************************************************
       /// Assignment operator
       //***********************************************************************
-      weekday_last& operator=(const weekday_last&) ETL_NOEXCEPT = default;
+      weekday_last& operator=(const weekday_last&) = default;
 
       //***********************************************************************
       /// Move assignment operator
       //***********************************************************************
-      weekday_last& operator=(weekday_last&&) ETL_NOEXCEPT = default;
+      weekday_last& operator=(weekday_last&&) = default;
 #else
       //***********************************************************************
       /// Assignment operator

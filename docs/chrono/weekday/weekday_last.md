@@ -38,9 +38,10 @@ Construct from weekday and index.
 ---
 
 ```cpp
+weekday_last(const weekday_last&) = default; // Since C++11
+
 ETL_CONSTEXPR14 
-weekday_last(const etl::chrono::weekday_last& other) 
-ETL_NOEXCEPT
+weekday_last(const etl::chrono::weekday_last& other) ETL_NOEXCEPT // C++03
 ```
 **Description**  
 Copy constructor. (Defaulted and trivially copyable in C++11 and later).
@@ -61,9 +62,10 @@ ETL_NOEXCEPT
 ## Assignment
 
 ```cpp
+weekday_last& operator =(const weekday_last&) = default; // Since C++11
+
 ETL_CONSTEXPR14 
-etl::chrono::weekday_last& operator =(const etl::chrono::weekday_last& rhs) 
-ETL_NOEXCEPT
+etl::chrono::weekday_last& operator =(const etl::chrono::weekday_last& rhs) ETL_NOEXCEPT // C++03
 ```
 **Description**  
 Assignment operator. (Defaulted in C++11 and later).      
