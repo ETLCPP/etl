@@ -1029,5 +1029,22 @@ namespace
 
       CHECK_EQUAL(minimum + 2, value.get());
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE((etl::is_trivially_copyable<etl::cyclic_value<int, 0, 10>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::cyclic_value<int>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::cyclic_value<uint8_t, 1, 5>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::cyclic_value<uint64_t>>::value));
+  #if ETL_USING_STL
+      CHECK_TRUE((std::is_trivially_copyable<etl::cyclic_value<int, 0, 10>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::cyclic_value<int>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::cyclic_value<uint8_t, 1, 5>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::cyclic_value<uint64_t>>::value));
+  #endif
+    }
+#endif
   }
 } // namespace
