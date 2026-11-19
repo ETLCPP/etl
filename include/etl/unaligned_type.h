@@ -2302,6 +2302,23 @@ namespace etl
 #if ETL_USING_CPP11
   template <typename T, int Endian>
   using unaligned_type_ext_t = typename etl::unaligned_type_ext<T, Endian>::type;
+
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, int Endian>
+  struct is_trivially_copyable<etl::unaligned_type<T, Endian>> : etl::true_type
+  {
+  };
+
+  template <size_t Size_, int Endian>
+  struct is_trivially_copyable<etl::unaligned_uint_type<Size_, Endian>> : etl::true_type
+  {
+  };
+
+  template <size_t Size_, int Endian>
+  struct is_trivially_copyable<etl::unaligned_int_type<Size_, Endian>> : etl::true_type
+  {
+  };
+  #endif
 #endif
 
 #if ETL_USING_CPP17
