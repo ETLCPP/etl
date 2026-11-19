@@ -765,10 +765,14 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 unaligned_type(const unaligned_type&) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 unaligned_type(const unaligned_type<T, Endian>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
     }
+#endif
 
     //*************************************************************************
     /// Copy constructor
@@ -792,12 +796,16 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 unaligned_type& operator=(const unaligned_type&) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 unaligned_type& operator=(const unaligned_type<T, Endian_>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian_, this->storage);
 
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Assignment operator from other endianness.
@@ -1068,10 +1076,14 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 unaligned_uint_type(const unaligned_uint_type&) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 unaligned_uint_type(const unaligned_uint_type<Size_, Endian>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
     }
+#endif
 
     //*************************************************************************
     /// Copy constructor from other endianness.
@@ -1095,12 +1107,16 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 unaligned_uint_type& operator=(const unaligned_uint_type&) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 unaligned_uint_type& operator=(const unaligned_uint_type<Size_, Endian_>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian_, this->storage);
 
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Assignment operator from other endianness.
@@ -1243,10 +1259,14 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 unaligned_int_type(const unaligned_int_type&) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 unaligned_int_type(const unaligned_int_type<Size_, Endian>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian, this->storage);
     }
+#endif
 
     //*************************************************************************
     /// Copy constructor from other endianness.
@@ -1270,12 +1290,16 @@ namespace etl
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 unaligned_int_type& operator=(const unaligned_int_type&) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 unaligned_int_type& operator=(const unaligned_int_type<Size_, Endian_>& other)
     {
       unaligned_copy::copy_store_to_store(other.data(), Endian_, this->storage);
 
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Assignment operator from other endianness.
@@ -2278,6 +2302,23 @@ namespace etl
 #if ETL_USING_CPP11
   template <typename T, int Endian>
   using unaligned_type_ext_t = typename etl::unaligned_type_ext<T, Endian>::type;
+
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, int Endian>
+  struct is_trivially_copyable<etl::unaligned_type<T, Endian>> : etl::true_type
+  {
+  };
+
+  template <size_t Size_, int Endian>
+  struct is_trivially_copyable<etl::unaligned_uint_type<Size_, Endian>> : etl::true_type
+  {
+  };
+
+  template <size_t Size_, int Endian>
+  struct is_trivially_copyable<etl::unaligned_int_type<Size_, Endian>> : etl::true_type
+  {
+  };
+  #endif
 #endif
 
 #if ETL_USING_CPP17

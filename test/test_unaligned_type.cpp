@@ -2041,6 +2041,31 @@ namespace
       CHECK_EQUAL(1.5f, float(be_v));
     }
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE((etl::is_trivially_copyable<etl::le_uint32_t>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::be_uint32_t>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::le_int16_t>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::be_int16_t>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::le_float_t>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::be_double_t>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::unaligned_uint_type<4, etl::endian::little>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::unaligned_int_type<4, etl::endian::big>>::value));
+  #if ETL_USING_STL
+      CHECK_TRUE((std::is_trivially_copyable<etl::le_uint32_t>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::be_uint32_t>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::le_int16_t>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::be_int16_t>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::le_float_t>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::be_double_t>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::unaligned_uint_type<4, etl::endian::little>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::unaligned_int_type<4, etl::endian::big>>::value));
+  #endif
+    }
+#endif
   }
 } // namespace
 
