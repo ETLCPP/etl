@@ -335,9 +335,9 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR20 TIterator2 move_backward(TIterator1 sb, TIterator1 se, TIterator2 de)
   {
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
     return std::move_backward(sb, se, de);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
   }
 #elif ETL_USING_CPP11
   // For C++11
@@ -895,7 +895,7 @@ namespace etl
     {
       TDistance parent = (value_index - 1) / 2;
 
-#include "etl/private/diagnostic_array_bounds_push.h"
+#include "private/diagnostic_array_bounds_push.h"
       while ((value_index > top_index) && compare(*(first + parent), value))
       {
         *(first + value_index) = ETL_MOVE(*(first + parent));
@@ -904,7 +904,7 @@ namespace etl
       }
 
       *(first + value_index) = ETL_MOVE(value);
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
     }
 
     // Adjust Heap Helper
@@ -914,7 +914,7 @@ namespace etl
       TDistance top_index = value_index;
       TDistance child2nd  = (2 * value_index) + 2;
 
-#include "etl/private/diagnostic_array_bounds_push.h"
+#include "private/diagnostic_array_bounds_push.h"
       while (child2nd < length)
       {
         if (compare(*(first + child2nd), *(first + (child2nd - 1))))
@@ -932,7 +932,7 @@ namespace etl
         *(first + value_index) = ETL_MOVE(*(first + (child2nd - 1)));
         value_index            = child2nd - 1;
       }
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
       push_heap(first, value_index, top_index, ETL_MOVE(value), compare);
     }
@@ -1365,9 +1365,9 @@ namespace etl
       value_type temp(ETL_MOVE(*first));
 
       // Move the rest.
-#include "etl/private/diagnostic_stringop_overread_push.h"
+#include "private/diagnostic_stringop_overread_push.h"
       TIterator result = etl::move(etl::next(first), last, first);
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
 
       // Restore the first item in its rotated position.
       *result = ETL_MOVE(temp);
@@ -2823,9 +2823,9 @@ namespace etl
     d_size_type   d_size   = etl::distance(o_begin, o_end);
     min_size_type min_size = etl::min<min_size_type>(s_size, d_size);
 
-  #include "etl/private/diagnostic_null_dereference_push.h"
+  #include "private/diagnostic_null_dereference_push.h"
     return etl::move(i_begin, i_begin + min_size, o_begin);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
   }
 
   //***************************************************************************
@@ -5852,7 +5852,7 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I>::value, "partial_sort requires random access iterators");
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
 
         I last_it = ranges::next(first, last);
 
@@ -5891,7 +5891,7 @@ namespace etl
 
         return last_it;
 
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
       }
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>
@@ -5945,7 +5945,7 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I2>::value, "partial_sort_copy requires the output to be random access iterators");
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
 
         I1 in_last  = ranges::next(first, last);
         I2 out_last = ranges::next(result_first, result_last);
@@ -5990,7 +5990,7 @@ namespace etl
           etl::iter_swap(result_first, result_first + heap_end);
           sift_down(result_first, decltype(heap_size){0}, heap_end, comp, proj2);
         }
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 
         return {etl::move(in_last), etl::move(r)};
       }
@@ -7038,7 +7038,7 @@ namespace etl
       {
         ETL_STATIC_ASSERT(etl::is_random_access_iterator<I>::value, "pop_heap requires random access iterators");
 
-  #include "etl/private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
 
         I last_it = ranges::next(first, last);
 
@@ -7057,7 +7057,7 @@ namespace etl
 
         return ranges::next(first, last);
 
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
       }
 
       template <class R, class Comp = ranges::less, class Proj = etl::identity, typename = etl::enable_if_t<etl::is_range_v<R>>>

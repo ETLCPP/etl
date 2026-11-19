@@ -4278,6 +4278,18 @@ namespace
       compare_result = compare_text.compare(3, 6, TextSTD(STR("ABCDEFG")));
       result         = text.compare(3, 6, View(STR("ABCDEFG")));
       CHECK(compares_agree(compare_result, result));
+
+      // Length past the end.
+      compare_text = STR("xxxABC");
+      text         = STR("xxxABC");
+
+      compare_result = compare_text.compare(3, 6, TextSTD(STR("ABC")));
+      result         = text.compare(3, 6, View(STR("ABC")));
+      CHECK(compares_agree(compare_result, result));
+
+      compare_result = compare_text.compare(3, TextSTD::npos, TextSTD(STR("ABC")));
+      result         = text.compare(3, Text::npos, View(STR("ABC")));
+      CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
@@ -4418,6 +4430,18 @@ namespace
       compare_result = compare_text.compare(3, 6, STR("ABCDEFG"));
       result         = text.compare(3, 6, STR("ABCDEFG"));
       CHECK(compares_agree(compare_result, result));
+
+      // Length past the end.
+      compare_text = STR("xxxABC");
+      text         = STR("xxxABC");
+
+      compare_result = compare_text.compare(3, 6, STR("ABC"));
+      result         = text.compare(3, 6, STR("ABC"));
+      CHECK(compares_agree(compare_result, result));
+
+      compare_result = compare_text.compare(3, TextSTD::npos, STR("ABC"));
+      result         = text.compare(3, Text::npos, STR("ABC"));
+      CHECK(compares_agree(compare_result, result));
     }
 
     //*************************************************************************
@@ -4452,6 +4476,18 @@ namespace
       // Longer.
       compare_result = compare_text.compare(3, 6, STR("ABCDEFGbb"), 7);
       result         = text.compare(3, 6, STR("ABCDEFGbb"), 7);
+      CHECK(compares_agree(compare_result, result));
+
+      // Length past the end.
+      compare_text = STR("xxxABC");
+      text         = STR("xxxABC");
+
+      compare_result = compare_text.compare(3, 6, STR("ABCbb"), 3);
+      result         = text.compare(3, 6, STR("ABCbb"), 3);
+      CHECK(compares_agree(compare_result, result));
+
+      compare_result = compare_text.compare(3, TextSTD::npos, STR("ABCbb"), 3);
+      result         = text.compare(3, Text::npos, STR("ABCbb"), 3);
       CHECK(compares_agree(compare_result, result));
     }
 
