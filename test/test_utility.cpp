@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include "unit_test_framework.h"
 
+#include "etl/functional.h"
 #include "etl/memory.h"
 #include "etl/utility.h"
 
@@ -183,6 +184,38 @@ namespace
       CHECK_EQUAL(p1.first, p2.first);
       CHECK_EQUAL(p1.second, p2.second);
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_make_pair_decays_and_unwraps_reference_wrapper)
+    {
+      int        i      = 1;
+      const int  ci     = 2;
+      const char text[] = "abc";
+
+      // Lvalue and const lvalue arguments produce value elements, not references.
+      auto p1 = etl::make_pair(i, ci);
+      CHECK_TRUE((etl::is_same<etl::pair<int, int>, decltype(p1)>::value));
+
+      // Arrays decay to pointers.
+      auto p2 = etl::make_pair(text, 1);
+      CHECK_TRUE((etl::is_same<etl::pair<const char*, int>, decltype(p2)>::value));
+
+      // The pair holds copies.
+      i = 10;
+      CHECK_EQUAL(1, p1.first);
+      CHECK_EQUAL(2, p1.second);
+      CHECK_EQUAL(text, p2.first);
+
+      // etl::reference_wrapper produces a reference element.
+      auto p3 = etl::make_pair(etl::ref(i), etl::cref(ci));
+      CHECK_TRUE((etl::is_same<etl::pair<int&, const int&>, decltype(p3)>::value));
+      CHECK_EQUAL(&i, &p3.first);
+      CHECK_EQUAL(&ci, &p3.second);
+      p3.first = 20;
+      CHECK_EQUAL(20, i);
+    }
+#endif
 
     //*************************************************************************
     TEST(test_pair_swap_member)

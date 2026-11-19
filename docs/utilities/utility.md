@@ -30,6 +30,7 @@ ETL_CONSTEXPR14 pair<T1, T2> make_pair(T1&& a, T2&& b)
 ```
 **Description**  
 Returns a pair.  
+As `std::make_pair`, the element types are decayed (an lvalue argument is copied, an array becomes a pointer), and an `etl::reference_wrapper<T>` argument produces a `T&` element.  
 `constexpr` from C++14, as are the pair comparison operators `==`, `!=`, `<`, `>`, `<=` and `>=`.
 
 ---
