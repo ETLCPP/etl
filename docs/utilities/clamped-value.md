@@ -26,7 +26,8 @@ including the header to override automatic detection.
 
 When `ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is `0`, `T` must be an integral
 type. When it is `1`, `float`, `double`, and `long double` may also be used with
-runtime bounds.
+runtime bounds. `clamped_value_range<T>` and `referenced_clamped_value<T>` are
+available in C++11 and later.
 
 ```cpp
 // C++11 and later
@@ -48,12 +49,29 @@ etl::clamped_value<float, -1.5f, 2.5f> float_ct(0.5f);
 #endif
 ```
 
+In C++11 and later, multiple values can share one immutable runtime range:
+
+```cpp
+const etl::clamped_value_range<float> range(-1.5f, 2.5f);
+
+etl::referenced_clamped_value<float> value1(range, 0.5f);
+etl::referenced_clamped_value<float> value2(range, 1.5f);
+```
+
+`referenced_clamped_value<T>` stores an
+`etl::reference_wrapper<const clamped_value_range<T>>`. The range must outlive
+every value that refers to it. Construction from a temporary range is deleted.
+Copying or swapping a referenced value also copies or swaps its range reference.
+
 ## Types
 
 `difference_type` is the signed counterpart of `T` for integral values. For
 floating-point values, `difference_type` is `T`, allowing fractional steps.
 `limits_type` and `difference_limits_type` provide the corresponding
 `etl::numeric_limits` specializations.
+
+`referenced_clamped_value<T>` also defines `range_type` as
+`clamped_value_range<T>`.
 
 ## Constructors
 
@@ -76,6 +94,23 @@ runtime-bound specialization. Supplying `Min` and `Max` selects fixed
 compile-time bounds. NaN bounds and initial values are rejected. Infinite
 bounds and values are permitted.
 
+### Referenced ranges
+
+```cpp
+clamped_value_range<T> range(min, max);
+referenced_clamped_value<T> value(range);
+referenced_clamped_value<T> value(range, initial);
+```
+
+The one-argument value constructor initializes to `range.min()`. The
+two-argument form clamps `initial` to the shared range. A range is immutable
+after construction, so every referring value observes stable bounds. A
+default-constructed range uses the full representable range of `T`.
+
+`referenced_clamped_value<T>` is non-owning. The referenced range must outlive
+the value and any copies of it. The constructors taking `range_type&&` are
+deleted to prevent direct construction from a temporary range.
+
 ## Modifiers
 
 ```cpp
@@ -92,6 +127,10 @@ the value directly to a bound. For integral values, `advance` uses the signed
 counterpart of `T` as its step type. For floating-point values, the step type
 is `T` and may be fractional. Steps saturate in constant time at the minimum
 or maximum rather than wrapping. NaN steps are rejected.
+
+`referenced_clamped_value<T>` supports `set(T)`, `to_min()`, `to_max()`, and
+`advance(difference_type)`. It does not provide `set(min, max)` because its
+range is immutable and shared.
 
 Positive steps move toward `max`; negative steps move toward `min`. Infinite
 steps saturate at a finite bound. Infinite values and bounds remain valid.
@@ -122,6 +161,14 @@ ETL_NODISCARD T max() const noexcept;
 Gets the current value and its bounds. Both compile-time and runtime
 specializations provide these accessors as const-qualified member functions.
 
+`referenced_clamped_value<T>` additionally provides:
+
+```cpp
+ETL_NODISCARD const range_type& range() const noexcept;
+```
+
+This returns the exact `clamped_value_range<T>` object referenced by the value.
+
 ## Operators
 
 ```cpp
@@ -143,6 +190,8 @@ floating-point values, assignment and compound-assignment reject NaN.
 Prefix increment and decrement return a reference to the updated object.
 Postfix increment and decrement return a copy of the value before it was
 updated. All four operations move by one and saturate at the applicable bound.
+`referenced_clamped_value<T>` provides the same conversion, assignment,
+increment, decrement, and compound-assignment operators.
 
 ## Operations
 
@@ -152,6 +201,10 @@ ETL_CONSTEXPR14 void swap(clamped_value& lhs, clamped_value& rhs);
 ```
 
 Swaps clamped values. Runtime values also swap their bounds.
+
+Swapping two `referenced_clamped_value<T>` objects swaps both their current
+values and range references. Copy construction and copy assignment preserve
+the source's range identity; they do not copy the range itself.
 
 Equality, inequality, and relational comparisons are provided. Comparisons
 against arithmetic values use the implicit conversion to `T`. Equality
@@ -169,3 +222,124 @@ assignments, and steps also trigger an ETL assertion. Depending on the ETL
 error-handler configuration, an assertion may throw `etl::exception`, invoke a
 configured handler, or terminate. Operations that validate input are only
 `noexcept` when exceptions are disabled.
+
+The same validation applies when constructing `clamped_value_range<T>` and
+when assigning or advancing a `referenced_clamped_value<T>`.
+
+## Shared Referenced Ranges
+
+`clamped_value_range<T>` and `referenced_clamped_value<T>` are available in
+C++11 and later. They let independent values share immutable runtime bounds.
+
+### `clamped_value_range<T>`
+
+```cpp
+template <typename T>
+class clamped_value_range;
+```
+
+#### Constructors
+
+```cpp
+clamped_value_range();
+clamped_value_range(T min, T max);
+```
+
+The default constructor uses the full representable range of `T`. The
+two-argument constructor stores immutable bounds and rejects reversed or NaN
+bounds.
+
+#### Accessors
+
+```cpp
+ETL_NODISCARD T min() const noexcept;
+ETL_NODISCARD T max() const noexcept;
+```
+
+### `referenced_clamped_value<T>`
+
+```cpp
+template <typename T>
+class referenced_clamped_value;
+```
+
+The class stores a current value and an
+`etl::reference_wrapper<const clamped_value_range<T>>`. It does not own the
+range, which must outlive the value and all copies of it.
+
+Member types are `range_type`, `difference_type`, `limits_type`, and
+`difference_limits_type`, with the same numeric meanings as `clamped_value<T>`.
+
+#### Constructors
+
+```cpp
+explicit referenced_clamped_value(const range_type& range);
+referenced_clamped_value(const range_type& range, T initial);
+referenced_clamped_value(const referenced_clamped_value& other);
+
+referenced_clamped_value(range_type&&) = delete;
+referenced_clamped_value(range_type&&, T) = delete;
+```
+
+The one-argument constructor initializes to `range.min()`. The two-argument
+constructor clamps `initial`. Temporary ranges are rejected to prevent an
+immediately dangling reference. Copy construction preserves the source value
+and range identity.
+
+#### Modifiers
+
+```cpp
+void set(T value);
+void to_min() noexcept;
+void to_max() noexcept;
+void advance(difference_type n);
+```
+
+These operations mirror `clamped_value<T>`. There is no `set(min, max)` because
+the referenced range is immutable and shared.
+
+#### Accessors
+
+```cpp
+ETL_NODISCARD T get() const noexcept;
+ETL_NODISCARD T min() const noexcept;
+ETL_NODISCARD T max() const noexcept;
+ETL_NODISCARD const range_type& range() const noexcept;
+ETL_NODISCARD operator T() const noexcept;
+```
+
+`range()` returns the exact range object held by reference.
+
+#### Operators
+
+```cpp
+referenced_clamped_value& operator=(const referenced_clamped_value& other) & noexcept;
+referenced_clamped_value& operator=(T value) &;
+referenced_clamped_value& operator++() & noexcept;
+referenced_clamped_value operator++(int) noexcept;
+referenced_clamped_value& operator--() & noexcept;
+referenced_clamped_value operator--(int) noexcept;
+referenced_clamped_value& operator+=(difference_type n) &;
+referenced_clamped_value& operator-=(difference_type n) &;
+```
+
+Copy assignment copies both the current value and range reference. Arithmetic
+and value assignment clamp to the referenced bounds. Comparisons compare only
+current values, not range identity or bounds.
+
+#### Swap
+
+```cpp
+void swap(referenced_clamped_value& other) noexcept;
+void swap(referenced_clamped_value& lhs,
+          referenced_clamped_value& rhs) noexcept;
+```
+
+Swap exchanges both current values and range references, keeping each value
+associated with its original bounds.
+
+#### Errors
+
+Invalid or NaN range bounds trigger an ETL assertion. NaN initial values,
+assignments, and steps are also rejected. Infinite values follow the same
+behavior as `clamped_value<T>`.

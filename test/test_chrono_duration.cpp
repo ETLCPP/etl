@@ -1052,9 +1052,34 @@ namespace
       Chrono::seconds      s1(2);     // 2 seconds
       Chrono::milliseconds ms1(1500); // 1500 milliseconds
 
-      CHECK_TRUE(s1 <=> s1 == std::strong_ordering::equal);
-      CHECK_TRUE(ms1 <=> s1 == std::strong_ordering::less);
-      CHECK_TRUE(s1 <=> ms1 == std::strong_ordering::greater);
+      CHECK_TRUE(s1 <=> s1 == etl::strong_ordering::equal);
+      CHECK_TRUE(ms1 <=> s1 == etl::strong_ordering::less);
+      CHECK_TRUE(s1 <=> ms1 == etl::strong_ordering::greater);
+
+      static_assert(etl::is_same<decltype(s1 <=> ms1), etl::strong_ordering>::value, "Must return etl::strong_ordering");
+    }
+
+    //*************************************************************************
+    TEST(test_duration_spaceship_operator_floating_point_representation)
+    {
+      typedef Chrono::duration<double> fp_seconds;
+
+      fp_seconds fs1(1.5);
+      fp_seconds fs2(2.5);
+
+      // A floating point representation is only partially ordered.
+      static_assert(etl::is_same<decltype(fs1 <=> fs2), etl::partial_ordering>::value, "Must return etl::partial_ordering");
+
+      CHECK_TRUE((fs1 <=> fs1) == etl::partial_ordering::equivalent);
+      CHECK_TRUE((fs1 <=> fs2) == etl::partial_ordering::less);
+      CHECK_TRUE((fs2 <=> fs1) == etl::partial_ordering::greater);
+
+      fp_seconds nan_seconds(etl::numeric_limits<double>::quiet_NaN());
+
+      CHECK_TRUE((nan_seconds <=> fs1) == etl::partial_ordering::unordered);
+      CHECK_FALSE((nan_seconds <=> fs1) < 0);
+      CHECK_FALSE((nan_seconds <=> fs1) == 0);
+      CHECK_FALSE((nan_seconds <=> fs1) > 0);
     }
 #endif
 
@@ -1074,40 +1099,40 @@ namespace
     //*************************************************************************
     TEST(test_floor)
     {
-      Chrono::milliseconds ms(1234);                       // 1234 milliseconds
-      Chrono::seconds      s = floor<Chrono::seconds>(ms); // Floor to seconds
+      Chrono::milliseconds ms(1234);                               // 1234 milliseconds
+      Chrono::seconds      s = Chrono::floor<Chrono::seconds>(ms); // Floor to seconds
       CHECK_EQUAL(1, s.count());
 
-      Chrono::milliseconds negative_ms(-1234);                               // -1234 milliseconds
-      Chrono::seconds      negative_s = floor<Chrono::seconds>(negative_ms); // Floor to seconds
+      Chrono::milliseconds negative_ms(-1234);                                       // -1234 milliseconds
+      Chrono::seconds      negative_s = Chrono::floor<Chrono::seconds>(negative_ms); // Floor to seconds
       CHECK_EQUAL(-2, negative_s.count());
     }
 
     //*************************************************************************
     TEST(test_ceil)
     {
-      Chrono::milliseconds ms(1234);                      // 1234 milliseconds
-      Chrono::seconds      s = ceil<Chrono::seconds>(ms); // Ceil to seconds
+      Chrono::milliseconds ms(1234);                              // 1234 milliseconds
+      Chrono::seconds      s = Chrono::ceil<Chrono::seconds>(ms); // Ceil to seconds
       CHECK_EQUAL(2, s.count());
 
-      Chrono::milliseconds negative_ms(-1234);                              // -1234 milliseconds
-      Chrono::seconds      negative_s = ceil<Chrono::seconds>(negative_ms); // Ceil to seconds
+      Chrono::milliseconds negative_ms(-1234);                                      // -1234 milliseconds
+      Chrono::seconds      negative_s = Chrono::ceil<Chrono::seconds>(negative_ms); // Ceil to seconds
       CHECK_EQUAL(-1, negative_s.count());
     }
 
     //*************************************************************************
     TEST(test_round)
     {
-      Chrono::milliseconds ms(1500);                       // 1500 milliseconds
-      Chrono::seconds      s = round<Chrono::seconds>(ms); // Round to seconds
+      Chrono::milliseconds ms(1500);                               // 1500 milliseconds
+      Chrono::seconds      s = Chrono::round<Chrono::seconds>(ms); // Round to seconds
       CHECK_EQUAL(2, s.count());
 
-      Chrono::milliseconds ms_halfway(2500);                               // 2500 milliseconds
-      Chrono::seconds      s_halfway = round<Chrono::seconds>(ms_halfway); // Round to seconds
+      Chrono::milliseconds ms_halfway(2500);                                       // 2500 milliseconds
+      Chrono::seconds      s_halfway = Chrono::round<Chrono::seconds>(ms_halfway); // Round to seconds
       CHECK_EQUAL(2, s_halfway.count());
 
-      Chrono::milliseconds negative_ms(-1500);                               // -1500 milliseconds
-      Chrono::seconds      negative_s = round<Chrono::seconds>(negative_ms); // Round to seconds
+      Chrono::milliseconds negative_ms(-1500);                                       // -1500 milliseconds
+      Chrono::seconds      negative_s = Chrono::round<Chrono::seconds>(negative_ms); // Round to seconds
       CHECK_EQUAL(-2, negative_s.count());
     }
 

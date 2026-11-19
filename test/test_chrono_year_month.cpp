@@ -97,11 +97,11 @@ namespace
       Chrono::year_month ym2{Chrono::year(2001), Chrono::January};
       Chrono::year_month ym3{Chrono::year(2000), Chrono::February};
 
-      CHECK_TRUE((ym1 <=> ym1) == std::strong_ordering::equal);
-      CHECK_TRUE((ym1 <=> ym2) == std::strong_ordering::less);
-      CHECK_TRUE((ym2 <=> ym1) == std::strong_ordering::greater);
-      CHECK_TRUE((ym1 <=> ym3) == std::strong_ordering::less);
-      CHECK_TRUE((ym3 <=> ym1) == std::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym1) == etl::strong_ordering::equal);
+      CHECK_TRUE((ym1 <=> ym2) == etl::strong_ordering::less);
+      CHECK_TRUE((ym2 <=> ym1) == etl::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym3) == etl::strong_ordering::less);
+      CHECK_TRUE((ym3 <=> ym1) == etl::strong_ordering::greater);
     }
 #endif
 

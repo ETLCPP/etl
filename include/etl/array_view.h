@@ -296,11 +296,15 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR array_view(const array_view& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR array_view(const array_view& other) ETL_NOEXCEPT
       : mbegin(other.mbegin)
       , mend(other.mend)
     {
     }
+#endif
 
     //*************************************************************************
     /// Returns a reference to the first element.
@@ -485,12 +489,16 @@ namespace etl
     //*************************************************************************
     /// Assign from a view.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 array_view& operator=(const array_view& other) ETL_NOEXCEPT = default;
+#else
     array_view& operator=(const array_view& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
       mend   = other.mend;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Assign from iterators
@@ -518,7 +526,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::array_view_bounds
     /// if the index is out of bounds.
     //*************************************************************************
-    reference operator[](const size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
+    reference operator[](const size_t i) ETL_NOEXCEPT_EXPR(ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(array_view_bounds));
 
@@ -531,7 +539,7 @@ namespace etl
     /// If asserts or exceptions are enabled, throws an etl::array_view_bounds
     /// if the index is out of bounds.
     //*************************************************************************
-    const_reference operator[](const size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_USING_EXCEPTIONS || ETL_NOT_CHECKING_INDEX_OPERATOR)
+    const_reference operator[](const size_t i) const ETL_NOEXCEPT_EXPR(ETL_NOT_CHECKING_INDEX_OPERATOR)
     {
       ETL_ASSERT_CHECK_INDEX_OPERATOR(i < size(), ETL_ERROR(array_view_bounds));
 

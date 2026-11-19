@@ -384,11 +384,15 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR poly_span(const poly_span<TBase, Extent>& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR poly_span(const poly_span<TBase, Extent>& other) ETL_NOEXCEPT
       : pbegin(other.pbegin)
       , element_size(other.element_size)
     {
     }
+#endif
 
     //*************************************************************************
     /// Copy constructor
@@ -491,12 +495,16 @@ namespace etl
     //*************************************************************************
     /// Assign from a poly_span.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 poly_span& operator=(const poly_span& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 poly_span& operator=(const poly_span& other) ETL_NOEXCEPT
     {
       pbegin       = other.pbegin;
       element_size = other.element_size;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Assign from a poly_span.
@@ -764,12 +772,16 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR poly_span(const poly_span<TBase, etl::dynamic_extent>& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR poly_span(const poly_span<TBase, etl::dynamic_extent>& other) ETL_NOEXCEPT
       : pbegin(other.pbegin)
       , element_size(other.element_size)
       , span_extent(other.span_extent)
     {
     }
+#endif
 
     //*************************************************************************
     /// Copy constructor
@@ -873,6 +885,9 @@ namespace etl
     //*************************************************************************
     /// Assign from a poly_span.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 poly_span& operator=(const poly_span& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 poly_span& operator=(const poly_span& other) ETL_NOEXCEPT
     {
       pbegin       = other.pbegin;
@@ -880,6 +895,7 @@ namespace etl
       span_extent  = other.span_extent;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Assign from a poly_span.

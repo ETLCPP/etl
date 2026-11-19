@@ -4,10 +4,9 @@ title: "variant"
 
 {{< callout type="info">}}
   Header: `variant.h`  
-  Similar to: `std::variant`
+  Similar to: `std::variant`  
+  For C++11 and above.
 {{< /callout >}}
-
-**For C++11 and above.**  
 
 ```cpp
 template <typename... TTypes>
@@ -15,8 +14,6 @@ class variant
 ```
 
 A variadic class that can contain one a several specified types in a type safe manner.  
-C++11 and C++14 support up to 32 types for visitor callback callbacks.  
-C++17 and above supports any number of visitor callback types.  
 
 Accepts functors, `etl::overload` and `etl::visitor` types as visitor callbacks.  
 
@@ -400,37 +397,42 @@ ETL_CONSTEXPR14 bool holds_alternative(size_t index, const etl::variant<TTypes..
 Checks if the variant v holds the alternative index.
 
 ## Visitation
-For `etl::visitor`
 
-For C++11 and C++14 the maximum number of visitor types is 32.
-Code size may be minimised if one of the following macros are defined.
+`etl::variant` provides member functions that support three methods of visitation.
 
-```cpp
-ETL_VARIANT_CPP11_MAX_8_TYPES
-ETL_VARIANT_CPP11_MAX_16_TYPES
-ETL_VARIANT_CPP11_MAX_24_TYPES
-```
-**Description**  
-C++17 and above support any number of visitor callback types.
+{{< callout type="info">}}
+### Before: `20.50.0`  
+- C++11 and C++14:  
+Supports up to 32 types of functor, `etl::visitor`, or `etl::overload` callback types.  
+- C++17 and above:  
+Supports any number of functor or `etl::visitor`, or `etl::overload`callback types.  
 
-`etl::variant` provides member functions that support two methods of visitation.
+### From: `20.50.0`  
+- Supports any number of visitor callback types.  
+- Compiles to smaller object code.  
+{{< /callout >}}
 
----
+### etl::visitor
 
 ```cpp
 void accept_visitor(etl::visitor<TTypes...>& v)
 ```
 **Description**  
 Accepts an `etl::visitor` derived type.  
+{{< callout type="warning">}}
 Deprecated from `20.36.0`
+{{< /callout >}}
+
+---
 
 ```cpp
 void accept_visitor(etl::visitor<TTypes...>& v) const
 ```
 **Description**  
 Accepts `an etl::visitor` derived type.  
-Deprecated  
-Since: `20.36.0`
+{{< callout type="warning">}}
+Deprecated from `20.36.0`
+{{< /callout >}}
 
 ---
 
@@ -438,7 +440,7 @@ Since: `20.36.0`
 void accept(etl::visitor<TTypes...>& v)
 ```
 **Description**  
-Accepts an `etl::visitor` derived type.
+Accepts an `etl::visitor` derived type.  
 Since: `20.36.0`
 
 ---
@@ -450,9 +452,9 @@ void accept(etl::visitor<TTypes...>& v) const
 Accepts an `etl::visitor` derived type.  
 Since: `20.36.0`
 
-See `visitor`
+[See visitor]({{< relref "../../patterns/visitor.md" >}})
 
----
+### Functors
 
 ```cpp
 template <typename TVisitor>
@@ -460,7 +462,9 @@ void accept_functor(TVisitor& v)
 ```
 **Description**  
 Accepts a functor that overrides `operator()` for each type.  
-Deprecated since `20.36.0`
+{{< callout type="warning">}}
+Deprecated from `20.36.0`
+{{< /callout >}}
 
 ---
 
@@ -470,7 +474,9 @@ void accept_functor(TVisitor& v) const
 ```
 **Description**  
 Accepts a functor that overrides `operator()` for each type.  
-Deprecated since `20.36.0`
+{{< callout type="warning">}}
+Deprecated from `20.36.0`
+{{< /callout >}}
 
 ---
 
@@ -479,7 +485,7 @@ template <typename TVisitor>
 void accept(TVisitor& v)
 ```
 **Description**  
-Accepts a functor that overrides `operator()` for each type.
+Accepts a functor that overrides `operator()` for each type.  
 Since: `20.36.0`
 
 ---
@@ -489,13 +495,14 @@ template <typename TVisitor>
 void accept(TVisitor& v) const
 ```
 **Description**  
-Accepts a functor that overrides `operator()` for each type.
+Accepts a functor that overrides `operator()` for each type.  
 Since: `20.36.0`
 
 See overload
 
-## Visitation
-For STL style `etl::visit`.
+### etl::visit
+
+For STL style `etl::visit`.  
 Since: `20.28.0`
 
 The ETL implements an STL style visit function.

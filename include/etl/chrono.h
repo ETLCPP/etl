@@ -37,6 +37,7 @@ SOFTWARE.
 
 #if ETL_USING_CPP11
 
+  #include "compare.h"
   #include "hash.h"
   #include "integral_limits.h"
   #include "type_traits.h"

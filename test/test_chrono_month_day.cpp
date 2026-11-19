@@ -97,9 +97,9 @@ namespace
       Chrono::month_day md2{Chrono::February, Chrono::day{10}};
       Chrono::month_day md3{Chrono::January, Chrono::day{15}};
 
-      CHECK_TRUE((md1 <=> md3) == std::strong_ordering::equal);   // Same month and day
-      CHECK_TRUE((md1 <=> md2) == std::strong_ordering::less);    // Different month and day
-      CHECK_TRUE((md2 <=> md1) == std::strong_ordering::greater); // Same month and day
+      CHECK_TRUE((md1 <=> md3) == etl::strong_ordering::equal);   // Same month and day
+      CHECK_TRUE((md1 <=> md2) == etl::strong_ordering::less);    // Different month and day
+      CHECK_TRUE((md2 <=> md1) == etl::strong_ordering::greater); // Same month and day
     }
 #endif
 

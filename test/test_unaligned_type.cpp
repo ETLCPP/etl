@@ -283,6 +283,294 @@ namespace
     }
 
     //*************************************************************************
+    // 'value_from' reads a value straight out of a byte buffer, without first
+    // copying the bytes into an unaligned_type's own storage.
+    //*************************************************************************
+    TEST(test_value_from_integral)
+    {
+      const std::array<unsigned char, 8> buffer = {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0};
+
+      CHECK_EQUAL(uint16_t(0x1234), etl::be_uint16_t::value_from(buffer.data()));
+      CHECK_EQUAL(uint16_t(0x3412), etl::le_uint16_t::value_from(buffer.data()));
+
+      CHECK_EQUAL(uint32_t(0x12345678), etl::be_uint32_t::value_from(buffer.data()));
+      CHECK_EQUAL(uint32_t(0x78563412), etl::le_uint32_t::value_from(buffer.data()));
+
+      CHECK_EQUAL(uint64_t(0x123456789ABCDEF0), etl::be_uint64_t::value_from(buffer.data()));
+      CHECK_EQUAL(uint64_t(0xF0DEBC9A78563412), etl::le_uint64_t::value_from(buffer.data()));
+    }
+
+    //*************************************************************************
+    /// The address need not be aligned for the value's type.
+    //*************************************************************************
+    TEST(test_value_from_unaligned_address)
+    {
+      const std::array<unsigned char, 6> buffer = {0xFF, 0x12, 0x34, 0x56, 0x78, 0xFF};
+
+      CHECK_EQUAL(uint32_t(0x12345678), etl::be_uint32_t::value_from(buffer.data() + 1));
+      CHECK_EQUAL(uint32_t(0x78563412), etl::le_uint32_t::value_from(buffer.data() + 1));
+    }
+
+    //*************************************************************************
+    /// 'value_from' must agree with constructing from the same address and
+    /// then reading the value back out.
+    //*************************************************************************
+    TEST(test_value_from_matches_construction)
+    {
+      const std::array<unsigned char, 8> buffer = {0xEE, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
+
+      CHECK_EQUAL(etl::be_uint16_t(buffer.data()).value(), etl::be_uint16_t::value_from(buffer.data()));
+      CHECK_EQUAL(etl::le_uint16_t(buffer.data()).value(), etl::le_uint16_t::value_from(buffer.data()));
+      CHECK_EQUAL(etl::be_uint32_t(buffer.data()).value(), etl::be_uint32_t::value_from(buffer.data()));
+      CHECK_EQUAL(etl::le_uint32_t(buffer.data()).value(), etl::le_uint32_t::value_from(buffer.data()));
+      CHECK_EQUAL(etl::be_uint64_t(buffer.data()).value(), etl::be_uint64_t::value_from(buffer.data()));
+      CHECK_EQUAL(etl::le_uint64_t(buffer.data()).value(), etl::le_uint64_t::value_from(buffer.data()));
+    }
+
+    //*************************************************************************
+    /// Boundary values must survive the round trip through the store.
+    //*************************************************************************
+    TEST(test_value_from_boundary_values)
+    {
+      const std::array<unsigned char, 4> zeroes = {0x00, 0x00, 0x00, 0x00};
+      const std::array<unsigned char, 4> ones   = {0xFF, 0xFF, 0xFF, 0xFF};
+
+      CHECK_EQUAL(uint32_t(0), etl::be_uint32_t::value_from(zeroes.data()));
+      CHECK_EQUAL(uint32_t(0), etl::le_uint32_t::value_from(zeroes.data()));
+
+      CHECK_EQUAL(etl::integral_limits<uint32_t>::max, etl::be_uint32_t::value_from(ones.data()));
+      CHECK_EQUAL(etl::integral_limits<uint32_t>::max, etl::le_uint32_t::value_from(ones.data()));
+    }
+
+    //*************************************************************************
+    /// Signed types are reconstructed through their unsigned representation.
+    //*************************************************************************
+    TEST(test_value_from_negative_values)
+    {
+      const std::array<unsigned char, 4> buffer = {0xFF, 0xFF, 0xFF, 0xFE};
+
+      CHECK_EQUAL(int32_t(-2), etl::be_int32_t::value_from(buffer.data()));
+      CHECK_EQUAL(int16_t(-1), etl::be_int16_t::value_from(buffer.data()));
+    }
+
+    //*************************************************************************
+    /// The floating point specialisation provides 'value_from' too.
+    //*************************************************************************
+    TEST(test_value_from_float)
+    {
+      const float  f = 3.1415927f;
+      const double d = 2.718281828459045;
+
+      etl::be_float_t  be_f(f);
+      etl::le_double_t le_d(d);
+
+      CHECK_EQUAL(f, etl::be_float_t::value_from(be_f.data()));
+      CHECK_EQUAL(d, etl::le_double_t::value_from(le_d.data()));
+    }
+    /// Unsigned integers that have no native equivalent, such as 24 bit.
+    //*************************************************************************
+    TEST(test_uint24)
+    {
+      CHECK_EQUAL(3U, sizeof(etl::le_uint24_t));
+      CHECK_EQUAL(3U, sizeof(etl::be_uint24_t));
+      CHECK_EQUAL(3U, size_t(etl::le_uint24_t::Size));
+
+      CHECK((etl::is_same<uint32_t, etl::le_uint24_t::value_type>::value));
+      CHECK_EQUAL(uint32_t(0x00FFFFFF), etl::le_uint24_t::Max_Value);
+
+      etl::le_uint24_t le_v(0x123456U);
+      etl::be_uint24_t be_v(0x123456U);
+
+      CHECK_EQUAL(uint32_t(0x123456), le_v.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v.value());
+
+      // Check the storage byte order.
+      CHECK_EQUAL(0x56, int(le_v.data()[0]));
+      CHECK_EQUAL(0x34, int(le_v.data()[1]));
+      CHECK_EQUAL(0x12, int(le_v.data()[2]));
+
+      CHECK_EQUAL(0x12, int(be_v.data()[0]));
+      CHECK_EQUAL(0x34, int(be_v.data()[1]));
+      CHECK_EQUAL(0x56, int(be_v.data()[2]));
+
+      // Copy construction, including from the other endianness.
+      etl::le_uint24_t le_v2(le_v);
+      etl::be_uint24_t be_v2(be_v);
+      etl::le_uint24_t le_v3(be_v);
+      etl::be_uint24_t be_v3(le_v);
+
+      CHECK_EQUAL(uint32_t(0x123456), le_v2.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v2.value());
+      CHECK_EQUAL(uint32_t(0x123456), le_v3.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_v3.value());
+
+      // Assignment.
+      le_v2 = 0xFFFFFFU;
+      be_v2 = 0xFFFFFFU;
+      CHECK_EQUAL(uint32_t(0xFFFFFF), le_v2.value());
+      CHECK_EQUAL(uint32_t(0xFFFFFF), be_v2.value());
+
+      // Boundary values.
+      etl::le_uint24_t le_zero(0U);
+      etl::be_uint24_t be_zero(0U);
+      CHECK_EQUAL(uint32_t(0), le_zero.value());
+      CHECK_EQUAL(uint32_t(0), be_zero.value());
+
+      // Values that do not fit are truncated, like a narrowing cast.
+      etl::le_uint24_t le_truncated(0xAB123456U);
+      etl::be_uint24_t be_truncated(0xAB123456U);
+      CHECK_EQUAL(uint32_t(0x123456), le_truncated.value());
+      CHECK_EQUAL(uint32_t(0x123456), be_truncated.value());
+    }
+
+    //*************************************************************************
+    TEST(test_uint24_decode_buffer)
+    {
+      const std::array<unsigned char, 4> buffer = {0xAA, 0xBB, 0xCC, 0xDD};
+
+      etl::le_uint24_t le_v(buffer.data(), buffer.size());
+      etl::be_uint24_t be_v(buffer.data(), buffer.size());
+
+      CHECK_EQUAL(uint32_t(0xCCBBAA), le_v.value());
+      CHECK_EQUAL(uint32_t(0xAABBCC), be_v.value());
+
+      // One byte short.
+      CHECK_THROW(etl::le_uint24_t le_short(buffer.data(), 2U), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_uint24_t be_short(buffer.data(), 2U), etl::unaligned_type_buffer_size);
+    }
+
+#if ETL_USING_64BIT_TYPES
+    //*************************************************************************
+    TEST(test_uint40_uint48_uint56)
+    {
+      CHECK_EQUAL(5U, sizeof(etl::be_uint40_t));
+      CHECK_EQUAL(6U, sizeof(etl::be_uint48_t));
+      CHECK_EQUAL(7U, sizeof(etl::be_uint56_t));
+
+      etl::be_uint48_t be_v(0x0123456789ABULL);
+      etl::le_uint48_t le_v(0x0123456789ABULL);
+
+      CHECK_EQUAL(uint64_t(0x0123456789AB), be_v.value());
+      CHECK_EQUAL(uint64_t(0x0123456789AB), le_v.value());
+
+      CHECK_EQUAL(0x01, int(be_v.data()[0]));
+      CHECK_EQUAL(0xAB, int(le_v.data()[0]));
+
+      CHECK_EQUAL(uint64_t(0x000000FFFFFFFFFF), etl::be_uint40_t::Max_Value);
+      CHECK_EQUAL(uint64_t(0x00FFFFFFFFFFFFFF), etl::be_uint56_t::Max_Value);
+    }
+#endif
+
+    //*************************************************************************
+    /// Signed integers that have no native equivalent, such as 24 bit.
+    //*************************************************************************
+    TEST(test_int24)
+    {
+      CHECK_EQUAL(3U, sizeof(etl::le_int24_t));
+      CHECK_EQUAL(3U, sizeof(etl::be_int24_t));
+      CHECK_EQUAL(3U, size_t(etl::le_int24_t::Size));
+
+      CHECK((etl::is_same<int32_t, etl::le_int24_t::value_type>::value));
+      CHECK_EQUAL(int32_t(8388607), etl::le_int24_t::Max_Value);
+      CHECK_EQUAL(int32_t(-8388608), etl::le_int24_t::Min_Value);
+
+      etl::le_int24_t le_v(0x123456);
+      etl::be_int24_t be_v(0x123456);
+
+      CHECK_EQUAL(int32_t(0x123456), le_v.value());
+      CHECK_EQUAL(int32_t(0x123456), be_v.value());
+
+      // Check the storage byte order.
+      CHECK_EQUAL(0x56, int(le_v.data()[0]));
+      CHECK_EQUAL(0x12, int(le_v.data()[2]));
+      CHECK_EQUAL(0x12, int(be_v.data()[0]));
+      CHECK_EQUAL(0x56, int(be_v.data()[2]));
+
+      // Negative values are sign extended on reading.
+      etl::le_int24_t le_n(-2);
+      etl::be_int24_t be_n(-2);
+
+      CHECK_EQUAL(int32_t(-2), le_n.value());
+      CHECK_EQUAL(int32_t(-2), be_n.value());
+
+      CHECK_EQUAL(0xFE, int(le_n.data()[0]));
+      CHECK_EQUAL(0xFF, int(le_n.data()[1]));
+      CHECK_EQUAL(0xFF, int(le_n.data()[2]));
+
+      CHECK_EQUAL(0xFF, int(be_n.data()[0]));
+      CHECK_EQUAL(0xFF, int(be_n.data()[1]));
+      CHECK_EQUAL(0xFE, int(be_n.data()[2]));
+
+      // Copy construction, including from the other endianness.
+      etl::le_int24_t le_n2(be_n);
+      etl::be_int24_t be_n2(le_n);
+
+      CHECK_EQUAL(int32_t(-2), le_n2.value());
+      CHECK_EQUAL(int32_t(-2), be_n2.value());
+
+      // Assignment.
+      le_n2 = -1;
+      be_n2 = -1;
+      CHECK_EQUAL(int32_t(-1), le_n2.value());
+      CHECK_EQUAL(int32_t(-1), be_n2.value());
+
+      // Boundary values.
+      etl::le_int24_t le_min(etl::le_int24_t::Min_Value);
+      etl::be_int24_t be_min(etl::be_int24_t::Min_Value);
+      etl::le_int24_t le_max(etl::le_int24_t::Max_Value);
+      etl::be_int24_t be_max(etl::be_int24_t::Max_Value);
+
+      CHECK_EQUAL(int32_t(-8388608), le_min.value());
+      CHECK_EQUAL(int32_t(-8388608), be_min.value());
+      CHECK_EQUAL(int32_t(8388607), le_max.value());
+      CHECK_EQUAL(int32_t(8388607), be_max.value());
+
+      etl::le_int24_t le_zero(0);
+      CHECK_EQUAL(int32_t(0), le_zero.value());
+
+      // Values that do not fit are truncated, like a narrowing cast.
+      etl::be_int24_t be_truncated(0x7F123456);
+      CHECK_EQUAL(int32_t(0x123456), be_truncated.value());
+    }
+
+    //*************************************************************************
+    TEST(test_int24_decode_buffer)
+    {
+      const std::array<unsigned char, 4> buffer = {0x80, 0x00, 0x00, 0xDD};
+
+      etl::le_int24_t le_v(buffer.data(), buffer.size());
+      etl::be_int24_t be_v(buffer.data(), buffer.size());
+
+      CHECK_EQUAL(int32_t(0x000080), le_v.value());
+      CHECK_EQUAL(int32_t(-8388608), be_v.value());
+
+      // One byte short.
+      CHECK_THROW(etl::le_int24_t le_short(buffer.data(), 2U), etl::unaligned_type_buffer_size);
+      CHECK_THROW(etl::be_int24_t be_short(buffer.data(), 2U), etl::unaligned_type_buffer_size);
+    }
+
+#if ETL_USING_64BIT_TYPES
+    //*************************************************************************
+    TEST(test_int40_int48_int56)
+    {
+      CHECK_EQUAL(5U, sizeof(etl::be_int40_t));
+      CHECK_EQUAL(6U, sizeof(etl::be_int48_t));
+      CHECK_EQUAL(7U, sizeof(etl::be_int56_t));
+
+      etl::be_int48_t be_v(-1099511627775LL);
+      etl::le_int48_t le_v(-1099511627775LL);
+
+      CHECK_EQUAL(int64_t(-1099511627775LL), be_v.value());
+      CHECK_EQUAL(int64_t(-1099511627775LL), le_v.value());
+
+      CHECK_EQUAL(int64_t(549755813887LL), etl::be_int40_t::Max_Value);
+      CHECK_EQUAL(int64_t(-549755813888LL), etl::be_int40_t::Min_Value);
+      CHECK_EQUAL(int64_t(36028797018963967LL), etl::be_int56_t::Max_Value);
+      CHECK_EQUAL(int64_t(-36028797018963968LL), etl::be_int56_t::Min_Value);
+    }
+#endif
+
+    //*************************************************************************
     // The following tests demonstrate the 'decode' direction: given a raw byte
     // buffer (e.g. as received from a file, network socket or memory-mapped
     // device), interpret it as an explicitly little/big endian unaligned_type
@@ -623,6 +911,25 @@ namespace
       // syntactically valid constexpr, by also exercising them at runtime.
       CHECK_EQUAL(0x12345678U, le_v.value());
       CHECK_EQUAL(0x12345678U, be_v.value());
+    }
+
+    //*************************************************************************
+    /// 'value_from' is usable at compile time for the same reason: it reads
+    /// the buffer through the 'const unsigned char*' path.
+    //*************************************************************************
+    TEST(test_constexpr_value_from_integral)
+    {
+      static ETL_CONSTANT unsigned char le_buffer[4] = {0x78, 0x56, 0x34, 0x12};
+      static ETL_CONSTANT unsigned char be_buffer[4] = {0x12, 0x34, 0x56, 0x78};
+
+      constexpr uint32_t le_v = etl::le_uint32_t::value_from(le_buffer);
+      constexpr uint32_t be_v = etl::be_uint32_t::value_from(be_buffer);
+
+      static_assert(le_v == 0x12345678U, "le_uint32_t constexpr value_from");
+      static_assert(be_v == 0x12345678U, "be_uint32_t constexpr value_from");
+
+      CHECK_EQUAL(0x12345678U, le_v);
+      CHECK_EQUAL(0x12345678U, be_v);
     }
 
   #if ETL_USING_BUILTIN_BIT_CAST

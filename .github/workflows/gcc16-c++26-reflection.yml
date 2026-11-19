@@ -1,0 +1,78 @@
+name: gcc16-c++26-reflection
+on:
+  push:
+    branches: [ master, development, pull-request/* ]
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - '.devcontainer/**'
+  pull_request:
+    branches: [ master, development, pull-request/* ]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/**'
+      - 'include/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+      - '.devcontainer/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+
+  build-gcc16-cpp26-reflection-stl:
+    name: GCC 16 C++26 Reflection - STL
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v6.0.3
+      with:
+        persist-credentials: false
+
+    - name: Build Docker image
+      run: docker build -t etl-gcc16 -f .devcontainer/gcc16/Dockerfile .
+
+    - name: Build and run tests
+      run: |
+        docker run --rm --user root -v ${{ github.workspace }}:/etl etl-gcc16 bash -c "\
+          cd /etl && \
+          export CC=gcc-16 && \
+          export CXX=g++-16 && \
+          g++-16 --version && \
+          cmake -G Ninja -B /tmp/build-stl -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 -DETL_OPTIMISATION=-O0 /etl/test && \
+          grep -q 'ETL_GNU_HAS_FREFLECTION:INTERNAL=1' /tmp/build-stl/CMakeCache.txt || (echo 'ERROR: -freflection was not detected - C++26 reflection is not being tested.' && exit 1) && \
+          cmake --build /tmp/build-stl -j \$(getconf _NPROCESSORS_ONLN) && \
+          ctest --test-dir /tmp/build-stl --output-on-failure"
+
+  build-gcc16-cpp26-reflection-no-stl:
+    name: GCC 16 C++26 Reflection - No STL
+    runs-on: ubuntu-24.04
+
+    steps:
+    - uses: actions/checkout@v6.0.3
+      with:
+        persist-credentials: false
+
+    - name: Build Docker image
+      run: docker build -t etl-gcc16 -f .devcontainer/gcc16/Dockerfile .
+
+    - name: Build and run tests
+      run: |
+        docker run --rm --user root -v ${{ github.workspace }}:/etl etl-gcc16 bash -c "\
+          cd /etl && \
+          export CC=gcc-16 && \
+          export CXX=g++-16 && \
+          g++-16 --version && \
+          cmake -G Ninja -B /tmp/build-no-stl -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 -DETL_OPTIMISATION=-O0 /etl/test && \
+          grep -q 'ETL_GNU_HAS_FREFLECTION:INTERNAL=1' /tmp/build-no-stl/CMakeCache.txt || (echo 'ERROR: -freflection was not detected - C++26 reflection is not being tested.' && exit 1) && \
+          cmake --build /tmp/build-no-stl -j \$(getconf _NPROCESSORS_ONLN) && \
+          ctest --test-dir /tmp/build-no-stl --output-on-failure"

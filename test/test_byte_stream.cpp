@@ -1375,6 +1375,61 @@ namespace
     }
 
     //*************************************************************************
+    TEST(write_bool_callback)
+    {
+      std::array<char, 3> storage = {};
+      std::vector<char>   received;
+      std::vector<size_t> lengths;
+      std::vector<char*>  positions;
+      auto                lambda = [&](etl::byte_stream_writer::callback_parameter_type sp)
+      {
+        received.insert(received.end(), sp.begin(), sp.end());
+        lengths.push_back(sp.size());
+        positions.push_back(sp.data());
+      };
+      etl::byte_stream_writer::callback_type callback(lambda);
+      etl::byte_stream_writer                writer(storage.data(), storage.size(), etl::endian::big, callback);
+
+      CHECK_TRUE(writer.write(char(7)));
+      CHECK_TRUE(writer.write(true));
+      CHECK_TRUE(writer.write(false));
+      CHECK_TRUE(writer.full());
+      CHECK_EQUAL(size_t(3), writer.size_bytes());
+      CHECK_EQUAL(size_t(3), received.size());
+      CHECK(received == std::vector<char>({char(7), char(1), char(0)}));
+      CHECK(lengths == std::vector<size_t>({1U, 1U, 1U}));
+      CHECK(positions == std::vector<char*>({storage.data(), storage.data() + 1, storage.data() + 2}));
+      CHECK_ARRAY_EQUAL(storage.data(), received.data(), received.size());
+
+      CHECK_FALSE(writer.write(true));
+      CHECK_EQUAL(size_t(3), received.size());
+      CHECK_EQUAL(size_t(3), writer.size_bytes());
+    }
+
+    //*************************************************************************
+    TEST(write_bool_unchecked_callback)
+    {
+      std::array<char, 2> storage = {};
+      std::vector<char>   received;
+      auto                lambda = [&](etl::byte_stream_writer::callback_parameter_type sp)
+      {
+        CHECK_EQUAL(size_t(1), sp.size());
+        received.insert(received.end(), sp.begin(), sp.end());
+      };
+      etl::byte_stream_writer::callback_type callback(lambda);
+      etl::byte_stream_writer                writer(storage.data(), storage.size(), etl::endian::little);
+      writer.set_callback(callback);
+
+      writer.write_unchecked(false);
+      etl::write_unchecked(writer, true);
+      CHECK_TRUE(writer.full());
+      CHECK_EQUAL(size_t(2), writer.size_bytes());
+      CHECK(received == std::vector<char>({char(0), char(1)}));
+      CHECK_EQUAL(char(0), storage[0]);
+      CHECK_EQUAL(char(1), storage[1]);
+    }
+
+    //*************************************************************************
     TEST(write_byte_stream_callback)
     {
       std::array<char, sizeof(int32_t)> storage;
