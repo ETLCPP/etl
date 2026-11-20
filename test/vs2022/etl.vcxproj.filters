@@ -226,6 +226,12 @@
     <Filter Include="Documentation">
       <UniqueIdentifier>{5b809d95-b37c-4011-af5e-b5ea6dcb354e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ETL\Utilities\Semaphore">
+      <UniqueIdentifier>{304d989b-df11-403b-8ce9-ea594a66e759}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Timer support">
+      <UniqueIdentifier>{c3b8f843-f046-4bf2-ab0a-34e9da0dcfbe}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ETL\I/O">
       <UniqueIdentifier>{261cb610-c08e-461d-8fd3-dc6d03e04270}</UniqueIdentifier>
     </Filter>
@@ -556,6 +562,9 @@
       <Filter>ETL\Utilities\Mutex</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\mutex.h">
+      <Filter>ETL\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore.h">
       <Filter>ETL\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\combinations.h">
@@ -1098,6 +1107,12 @@
     <ClInclude Include="..\iterators_for_unit_tests.h">
       <Filter>Tests\Test Support</Filter>
     </ClInclude>
+    <ClInclude Include="..\clocks_for_unit_tests.h">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\clocks_for_unit_tests.cpp">
+      <Filter>Tests\Test Support</Filter>
+    </ClInclude>
     <ClInclude Include="..\etl_profile.h">
       <Filter>Tests\Test Support</Filter>
     </ClInclude>
@@ -1565,6 +1580,24 @@
     </ClInclude>
     <ClInclude Include="..\..\include\etl\format.h">
       <Filter>UnitTest++\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_std.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_clang_sync.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_exceptions.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_freertos.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\semaphore\semaphore_gcc_sync.h">
+      <Filter>ETL\Utilities\Semaphore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\etl\timer_node.h">
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\notification.h">
       <Filter>UnitTest++\Header Files</Filter>
@@ -2041,6 +2074,9 @@
     </ClCompile>
     <ClCompile Include="..\test_format_spec.cpp">
       <Filter>Tests\Strings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_semaphore.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\test_set.cpp">
       <Filter>Tests\Containers</Filter>
