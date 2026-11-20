@@ -1308,6 +1308,24 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_pair_constexpr_make_pair_and_comparisons)
+    {
+      constexpr etl::pair<int, int> p1 = etl::make_pair(1, 2);
+      constexpr etl::pair<int, int> p2 = etl::make_pair(1, 3);
+
+      static_assert(p1.first == 1, "constexpr make_pair first");
+      static_assert(p1.second == 2, "constexpr make_pair second");
+
+      static_assert(p1 == p1, "constexpr pair ==");
+      static_assert(p1 != p2, "constexpr pair !=");
+      static_assert(p1 < p2, "constexpr pair <");
+      static_assert(p2 > p1, "constexpr pair >");
+      static_assert(p1 <= p1, "constexpr pair <=");
+      static_assert(p2 >= p1, "constexpr pair >=");
+      CHECK(true);
+    }
+
+    //*************************************************************************
     TEST(test_coordinate_2d_constexpr_ctors)
     {
       constexpr etl::coordinate_2d<int> c1;
