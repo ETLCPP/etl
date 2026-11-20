@@ -814,6 +814,15 @@ namespace etl
   {
     lhs.swap(rhs);
   }
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, T First, T Last, bool EtlRuntimeSpecialisation>
+  struct is_trivially_copyable<etl::cyclic_value<T, First, Last, EtlRuntimeSpecialisation>> : etl::bool_constant<etl::is_trivially_copyable<T>::value>
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 //*************************************************************************
