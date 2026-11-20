@@ -52,6 +52,10 @@ a modified Linux kernel utilizing the PREEMPT_RT patchset (now in mainline since
 
 ## Libraries
 
+[modm](https://modm.dev/)  
+[Support for ETL](https://modm.dev/reference/module/modm-etl/)  
+A barebone embedded library generator.  
+
 [JSON](https://github.com/nlohmann/json)  
 JOSN parser.  
 
