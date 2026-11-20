@@ -691,6 +691,15 @@ namespace etl
     }
   };
 #endif
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T>
+  struct is_trivially_copyable<etl::array_view<T>> : etl::true_type
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 //*************************************************************************
