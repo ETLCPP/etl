@@ -2342,6 +2342,14 @@ namespace etl
     lhs.swap(rhs);
   }
 
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T>
+  struct is_trivially_copyable<etl::optional<T>> : etl::bool_constant<etl::is_trivially_copyable<T>::value>
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #undef ETL_OPTIONAL_ENABLE_CPP14

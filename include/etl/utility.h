@@ -1410,6 +1410,15 @@ namespace etl
   {
     return static_cast<typename etl::make_signed<T>::type>(value);
   }
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T1, typename T2>
+  struct is_trivially_copyable<etl::pair<T1, T2>> : etl::bool_constant<etl::is_trivially_copyable<T1>::value && etl::is_trivially_copyable<T2>::value>
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif
