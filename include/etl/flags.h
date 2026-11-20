@@ -388,6 +388,15 @@ namespace etl
   {
     lhs.swap(rhs);
   }
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, T MASK>
+  struct is_trivially_copyable<etl::flags<T, MASK>> : etl::true_type
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif
