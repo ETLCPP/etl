@@ -118,8 +118,8 @@ etl::common_type_t<T1, T2>
 divide_round_half_up(T1 numerator, T2 denominator) ETL_NOEXCEPT
 ```
 ```cpp
-.151 / 100 ==  3
-.150 / 100 ==  3
+.151 / 100 ==  2
+.150 / 100 ==  2
 .149 / 100 ==  1
 ..51 / 100 ==  1
 ..50 / 100 ==  1
@@ -128,13 +128,13 @@ divide_round_half_up(T1 numerator, T2 denominator) ETL_NOEXCEPT
 .-50 / 100 == -1
 .-51 / 100 == -1
 -149 / 100 == -1
--150 / 100 == -3
--151 / 100 == -3
+-150 / 100 == -2
+-151 / 100 == -2
 ```
 
 ## divide_round_half_down
 Values are rounded to the nearest integral value.  
-'Half' values are rounded up (towards zero)
+'Half' values are rounded down (towards zero)
 
 ```cpp
 template <typename T1, typename T2>
@@ -143,8 +143,8 @@ etl::common_type_t<T1, T2>
 divide_round_half_down(T1 numerator, T2 denominator) ETL_NOEXCEPT
 ```
 ```cpp
-.151 / 100 ==  3
-.150 / 100 ==  2
+.151 / 100 ==  2
+.150 / 100 ==  1
 .149 / 100 ==  1
 ..51 / 100 ==  1
 ..50 / 100 ==  0
@@ -153,8 +153,8 @@ divide_round_half_down(T1 numerator, T2 denominator) ETL_NOEXCEPT
 .-50 / 100 ==  0
 .-51 / 100 == -1
 -149 / 100 == -1
--150 / 100 == -2
--151 / 100 == -3
+-150 / 100 == -1
+-151 / 100 == -2
 ```
 
 ## divide_round_half_even
