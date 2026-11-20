@@ -111,10 +111,14 @@ namespace etl
     //*********************************
     /// Copy construct from a not_null pointer.
     //*********************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 not_null(const etl::not_null<T*>& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 not_null(const etl::not_null<T*>& other) ETL_NOEXCEPT
       : ptr(other.get())
     {
     }
+#endif
 
     //*********************************
     /// Assignment from a pointer.
@@ -139,12 +143,16 @@ namespace etl
     //*********************************
     /// Assignment from a not_null.
     //*********************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 not_null& operator=(const etl::not_null<T*>& rhs) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 not_null& operator=(const etl::not_null<T*>& rhs) ETL_NOEXCEPT
     {
       ptr = rhs.get();
 
       return *this;
     }
+#endif
 
     //*********************************
     /// Gets the underlying pointer.
@@ -276,6 +284,15 @@ namespace etl
     /// The underlying unique_ptr.
     underlying_type u_ptr;
   };
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T>
+  struct is_trivially_copyable<etl::not_null<T*>> : etl::true_type
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif
