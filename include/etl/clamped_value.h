@@ -1389,6 +1389,20 @@ namespace etl
     etl::reference_wrapper<const range_type> value_range;
   };
 #endif
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, T... Limits>
+  struct is_trivially_copyable<etl::clamped_value<T, Limits...>> : etl::bool_constant<etl::is_trivially_copyable<T>::value>
+  {
+  };
+
+  template <typename T>
+  struct is_trivially_copyable<etl::clamped_value_range<T>> : etl::bool_constant<etl::is_trivially_copyable<T>::value>
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif
