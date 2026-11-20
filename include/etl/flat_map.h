@@ -423,30 +423,23 @@ namespace etl
     template <typename... Args>
     ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, Args&&... args)
     {
+      iterator i_element = lower_bound(key);
+
+      // Already exists? Then no free slot is needed, so this is not a capacity failure.
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(etl::forward<Args>(args)...);
+      ETL_INCREMENT_DEBUG_COUNT;
 
-      iterator i_element = lower_bound(key);
-
-      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
-
-      // Doesn't already exist?
-      if ((i_element == end()) || compare(key, i_element->first))
-      {
-        ETL_INCREMENT_DEBUG_COUNT;
-        result = refmap_t::insert_at(i_element, *pvalue);
-      }
-      else
-      {
-        pvalue->~value_type();
-        storage.release(pvalue);
-      }
-
-      return result;
+      return refmap_t::insert_at(i_element, *pvalue);
     }
 
 #else
@@ -457,30 +450,23 @@ namespace etl
     template <typename T1>
     ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, const T1& value1)
     {
+      iterator i_element = lower_bound(key);
+
+      // Already exists? Then no free slot is needed, so this is not a capacity failure.
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1);
+      ETL_INCREMENT_DEBUG_COUNT;
 
-      iterator i_element = lower_bound(key);
-
-      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
-
-      // Doesn't already exist?
-      if ((i_element == end()) || compare(key, i_element->first))
-      {
-        ETL_INCREMENT_DEBUG_COUNT;
-        result = refmap_t::insert_at(i_element, *pvalue);
-      }
-      else
-      {
-        pvalue->~value_type();
-        storage.release(pvalue);
-      }
-
-      return result;
+      return refmap_t::insert_at(i_element, *pvalue);
     }
 
     //*************************************************************************
@@ -489,30 +475,23 @@ namespace etl
     template <typename T1, typename T2>
     ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, const T1& value1, const T2& value2)
     {
+      iterator i_element = lower_bound(key);
+
+      // Already exists? Then no free slot is needed, so this is not a capacity failure.
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2);
+      ETL_INCREMENT_DEBUG_COUNT;
 
-      iterator i_element = lower_bound(key);
-
-      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
-
-      // Doesn't already exist?
-      if ((i_element == end()) || compare(key, i_element->first))
-      {
-        ETL_INCREMENT_DEBUG_COUNT;
-        result = refmap_t::insert_at(i_element, *pvalue);
-      }
-      else
-      {
-        pvalue->~value_type();
-        storage.release(pvalue);
-      }
-
-      return result;
+      return refmap_t::insert_at(i_element, *pvalue);
     }
 
     //*************************************************************************
@@ -521,30 +500,23 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3)
     {
+      iterator i_element = lower_bound(key);
+
+      // Already exists? Then no free slot is needed, so this is not a capacity failure.
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3);
+      ETL_INCREMENT_DEBUG_COUNT;
 
-      iterator i_element = lower_bound(key);
-
-      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
-
-      // Doesn't already exist?
-      if ((i_element == end()) || compare(key, i_element->first))
-      {
-        ETL_INCREMENT_DEBUG_COUNT;
-        result = refmap_t::insert_at(i_element, *pvalue);
-      }
-      else
-      {
-        pvalue->~value_type();
-        storage.release(pvalue);
-      }
-
-      return result;
+      return refmap_t::insert_at(i_element, *pvalue);
     }
 
     //*************************************************************************
@@ -553,30 +525,23 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     ETL_OR_STD::pair<iterator, bool> emplace(const_key_reference key, const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
+      iterator i_element = lower_bound(key);
+
+      // Already exists? Then no free slot is needed, so this is not a capacity failure.
+      if ((i_element != end()) && !compare(key, i_element->first))
+      {
+        return ETL_OR_STD::pair<iterator, bool>(i_element, false);
+      }
+
       ETL_ASSERT(!full(), ETL_ERROR(flat_map_full));
 
       // Create it.
       value_type* pvalue = storage.allocate<value_type>();
       ::new ((void*)etl::addressof(pvalue->first)) key_type(key);
       ::new ((void*)etl::addressof(pvalue->second)) mapped_type(value1, value2, value3, value4);
+      ETL_INCREMENT_DEBUG_COUNT;
 
-      iterator i_element = lower_bound(key);
-
-      ETL_OR_STD::pair<iterator, bool> result(i_element, false);
-
-      // Doesn't already exist?
-      if ((i_element == end()) || compare(key, i_element->first))
-      {
-        ETL_INCREMENT_DEBUG_COUNT;
-        result = refmap_t::insert_at(i_element, *pvalue);
-      }
-      else
-      {
-        pvalue->~value_type();
-        storage.release(pvalue);
-      }
-
-      return result;
+      return refmap_t::insert_at(i_element, *pvalue);
     }
 
 #endif
