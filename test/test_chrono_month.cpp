@@ -349,7 +349,9 @@ namespace
     TEST(test_is_trivially_copyable)
     {
       CHECK_TRUE(etl::is_trivially_copyable<Chrono::month>::value);
+  #if ETL_USING_STL
       CHECK_TRUE(std::is_trivially_copyable<Chrono::month>::value);
+  #endif
     }
 #endif
   }

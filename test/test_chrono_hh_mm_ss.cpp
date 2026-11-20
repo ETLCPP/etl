@@ -374,8 +374,10 @@ namespace
     {
       CHECK_TRUE((etl::is_trivially_copyable<Chrono::hh_mm_ss<Chrono::seconds>>::value));
       CHECK_TRUE((etl::is_trivially_copyable<Chrono::hh_mm_ss<Chrono::milliseconds>>::value));
+  #if ETL_USING_STL
       CHECK_TRUE((std::is_trivially_copyable<Chrono::hh_mm_ss<Chrono::seconds>>::value));
       CHECK_TRUE((std::is_trivially_copyable<Chrono::hh_mm_ss<Chrono::milliseconds>>::value));
+  #endif
     }
 #endif
   }

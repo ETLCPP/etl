@@ -320,7 +320,9 @@ namespace
     TEST(test_is_trivially_copyable)
     {
       CHECK_TRUE(etl::is_trivially_copyable<Chrono::day>::value);
+  #if ETL_USING_STL
       CHECK_TRUE(std::is_trivially_copyable<Chrono::day>::value);
+  #endif
     }
 #endif
   }
