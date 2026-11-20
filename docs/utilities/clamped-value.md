@@ -15,6 +15,8 @@ supported in C++11 and later when `ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is
 `1`. Floating-point compile-time bounds require C++20 support for
 floating-point non-type template arguments.
 
+Trivially copyable: C++11 and later (when `T` is trivially copyable)
+
 ## Availability
 
 `ETL_HAS_FLOATING_POINT_CLAMPED_VALUE` is always defined by this header as
