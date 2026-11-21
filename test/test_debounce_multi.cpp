@@ -60,7 +60,7 @@ namespace
   using debounce_valid_hold_repeat = etl::debounce_multi<value_type, NBits, Valid_Count, Hold_Count, Repeat_Count>;
   using debounce_valid_repeat      = etl::debounce_multi<value_type, NBits, Valid_Count, 0, Repeat_Count>;
 
-  SUITE(test_debounce_multi_active_high)
+  SUITE(test_debounce_multi)
   {
     //*************************************************************************
     TEST(test_debounce_status)
@@ -176,6 +176,30 @@ namespace
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
+    }
+
+    //*************************************************************************
+    TEST(test_debounce_valid_with_initial_bit0_value_as_active)
+    {
+      debounce_valid debouncer(Active0);
+
+      CHECK_FALSE(debouncer.has_changed(Bit0));
+      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_held(Bit0));
+      CHECK_FALSE(debouncer.is_repeating(Bit0));
+
+      //*******************************
+      for (size_t i = 0; i < Valid_Count; ++i)
+      {
+        debouncer.update(Active0);
+
+        CHECK_FALSE(debouncer.has_changed(Bit0));
+        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_held(Bit0));
+        CHECK_FALSE(debouncer.is_repeating(Bit0));
+      }
+
+      CHECK_TRUE(Bit0_Active == debouncer.get_active_mask());
     }
 
     //*************************************************************************
