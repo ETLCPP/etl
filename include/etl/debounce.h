@@ -443,7 +443,7 @@ namespace etl
     //*************************************************************************
     bool add(bool sample)
     {
-      return process(sample, VALID_COUNT, HOLD_COUNT, REPEAT_COUNT);
+      return update(sample);
     }
 
     //*************************************************************************
@@ -486,6 +486,17 @@ namespace etl
     //*************************************************************************
     bool add(bool sample)
     {
+      return update(sample);
+    }
+
+    //*************************************************************************
+    /// Updates with a new sample.
+    /// For compatibility with the later etl::debounce_value and etl::debounce_multi classes.
+    ///\param sample The new sample.
+    ///\return 'true' if the debouncer changed state.
+    //*************************************************************************
+    bool update(bool sample)
+    {
       return process(sample, VALID_COUNT, HOLD_COUNT);
     }
   };
@@ -516,6 +527,17 @@ namespace etl
     ///\return 'true' if the debouncer changed state.
     //*************************************************************************
     bool add(bool sample)
+    {
+      return update(sample);
+    }
+
+    //*************************************************************************
+    /// Updates with a new sample.
+    /// For compatibility with the later etl::debounce_value and etl::debounce_multi classes.
+    ///\param sample The new sample.
+    ///\return 'true' if the debouncer changed state.
+    //*************************************************************************
+    bool update(bool sample)
     {
       return process(sample, VALID_COUNT);
     }
@@ -579,6 +601,17 @@ namespace etl
     ///\return 'true' if the debouncer changed state.
     //*************************************************************************
     bool add(bool sample)
+    {
+      return update(sample);
+    }
+
+    //*************************************************************************
+    /// Updates with a new sample.
+    /// For compatibility with the later etl::debounce_value and etl::debounce_multi classes.
+    ///\param sample The new sample.
+    ///\return 'true' if the debouncer changed state.
+    //*************************************************************************
+    bool update(bool sample)
     {
       return process(sample, valid_count, hold_count, repeat_count);
     }
