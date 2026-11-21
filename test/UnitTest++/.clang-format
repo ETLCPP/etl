@@ -1,0 +1,4 @@
+---
+# Disables formatting completely for this entire folder sub-tree
+DisableFormat: true
+...

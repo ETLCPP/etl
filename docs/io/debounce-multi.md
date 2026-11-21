@@ -23,11 +23,12 @@ Each bit progresses through `debounce_state_id`: `Off` → `On` → `Held` → `
   - `get_changed()` - bitmask of all bits that changed on the last update.  
   - `get_active_mask()` - bitmask of all bits currently >= `On`.  
   - `get_width()` - returns `Width`.  
--	**Polarity**: Inputs must be supplied so that `0` represents the 'Off' state and `1` represents the 'On' state.
+-	**Polarity**: The debouncer works with *logical* bits, so inputs must be supplied where `0` represents the 'Off' state and `1` represents the 'On' state.
+
 ---
 
 **Typical Use Case**  
-This is generally useful anywhere you need debounced, simultaneous multi-bit digital input handling (e.g., reading a parallel GPIO port) without dynamic memory allocation, including support for "held"/"repeat" style key-repeat behavior.
+This is generally useful anywhere you need debounced, simultaneous multi-bit digital input handling (e.g., reading a parallel GPIO port), including support for "held"/"repeat" style key-repeat behavior.
 
 ```cpp
   template <typename TValue, size_t Width, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0>
@@ -37,7 +38,7 @@ This is generally useful anywhere you need debounced, simultaneous multi-bit dig
 | Parameter     | Description                                                                                                            |
 |---------------|------------------------------------------------------------------------------------------------------------------------|
 |`TValue`       | The type of the port value. Must be an unsigned integral.                                                              |
-|`Width`        | The number of bits in the field. `[1, sizeof(TValue) * CHAR_BIT)`                                                      |
+|`Width`        | The number of bits in the field. Range `[1, sizeof(TValue) * CHAR_BIT)`                                                      |
 |`Valid_Count`  | The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= 1). |
 |`Hold_Count`   | The number of samples a bit must remain set (after becoming valid) before the 'held' state is reached. `0` = disabled. |
 |`Repeat_Count` | Once 'held', a 'repeat' state is generated every `Repeat_Count` samples. `0` = disabled.                               |
@@ -97,7 +98,7 @@ debounce_multi_bit(value_type initial)
 Constructor.  
 All bits start in the `Off` state.
 
-### reset(value_type)
+### void reset(value_type)
 ```cpp
 void reset(value_type initial)
 ```
@@ -107,7 +108,7 @@ Resets the debouncer state.
 **Parameters**  
 `initial` : The default initial value is 'all inactive'. The value is the physical state of the input.  
 
-### reset_state(size_t, bool)
+### void reset_state(size_t, bool)
 ```cpp
 void reset_state(size_t n, bool initial)
 ```
@@ -118,7 +119,7 @@ The state is set to `Off` and the count is reset to `0`.
 `n` : The bit number `[0, Width)`. If `n` is out of range then it is ignored.  
 `initial` : The default initial value is 'inactive'. The value is the physical state of the input.  
 
-### update_incremental(value_type)
+### bool update_incremental(value_type)
 ```cpp
 bool update_incremental(value_type next)
 ```
@@ -133,7 +134,7 @@ Do not call `update()` after `update_incremental()` on the same instance unless 
 **Return**  
 `true` if all of the bits have been processed.
 
-### update(value_type)
+### bool update(value_type)
 ```cpp
 bool update(value_type next)
 ```
@@ -147,7 +148,7 @@ Bits are strictly `1` = active, `0` = inactive.
 **Return**  
 `true` if any bit changed state.  
 
-### has_changed(size_t)
+### bool has_changed(size_t)
 ```cpp
 bool has_changed(size_t n) const
 ```
@@ -160,7 +161,7 @@ Checks if a bit's state has changed.
 **Return**  
 Returns `true` if the bit changed state on the last update.  
 
-### is_set(size_t)
+### bool is_set(size_t)
 ```cpp
 bool is_set(size_t n) const
 ```
@@ -170,7 +171,7 @@ Returns `true` if the bit is currently set.
 **Parameters**  
 `n` : The bit number `[0, Width)`.
 
-### is_held(size_t)
+### bool is_held(size_t)
 ```cpp
 bool is_held(size_t n) const
 ```
@@ -180,7 +181,7 @@ Returns `true` if the bit is currently held.
 **Parameters**  
  `n` :  The bit number [0, Width).
 
-### is_repeating(size_t)
+### bool is_repeating(size_t)
 ```cpp
 bool is_repeating(size_t n) const
 ```
@@ -190,21 +191,21 @@ Returns `true` if the bit is currently repeating.
 **Parameters**  
  `n` :  The bit number [0, Width).
 
-### get_width()
+### size_t get_width()
 ```cpp
 ETL_CONSTEXPR size_t get_width() const
 ```
 **Description**  
 Returns the width of the bit field.
 
-### get_active_mask()
+### value_type get_active_mask()
 ```cpp
 value_type get_active_mask() const
 ```
 **Description**  
 Returns a mask of all currently active bits (where state is `On`, `Held`, or `repeating`).  
 
-### get_state(size_t)
+### state_id::type get_state(size_t)
 ```cpp
 state_id::type get_state(size_t n) const
 ```
@@ -218,7 +219,7 @@ One of:-
 `state_id::Held`  
 `state_id::Repeating`  
 
-### get_changed()
+### value_type get_changed()
 ```cpp
 value_type get_changed() const
 ```

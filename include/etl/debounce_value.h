@@ -65,35 +65,33 @@ namespace etl
     //*************************************************************************
     /// Updates with a new value.
     /// If the value has changed, the counter is reset and the value is marked as unstable.
-    /// Returns 'true' if the value has changed.
+    /// Returns 'true' if the stable value has changed.
     //*************************************************************************
     bool update(value_type value)
     {
       // Changed from last time?
       if (value != last_value)
       {
-        count = 1;
         state = Unstable;
+        count = 0;
+      }
+
+      // Increment the counter if we haven't reached the stable count yet.
+      if (count < stable_count)
+      {
+        ++count;
+
+        // Have we reached the stable count?
+        if (count == stable_count)
+        {
+          last_stable_value = value;
+          state             = static_cast<State>(Stable | Changed);
+        }
       }
       else
       {
-        // Increment the counter if we haven't reached the stable count yet.
-        if (count < stable_count)
-        {
-          ++count;
-
-          // Have we reached the stable count?
-          if (count == stable_count)
-          {
-            last_stable_value = value;
-            state             = static_cast<State>(Stable | Changed);
-          }
-        }
-        else
-        {
-          // If the counter has already reached the stable count then we are already stable, but no further change has occurred.
-          state = Stable;
-        }
+        // If the counter has already reached the stable count then we are already stable, but no further change has occurred.
+        state = Stable;
       }
 
       last_value = value;
@@ -133,14 +131,6 @@ namespace etl
     bool is_stable() const
     {
       return (state & Stable) != 0;
-    }
-
-    //*************************************************************************
-    /// Sets the stable count.
-    //*************************************************************************
-    void set_stable_count(count_type stable_count_)
-    {
-      stable_count = stable_count_;
     }
 
   private:

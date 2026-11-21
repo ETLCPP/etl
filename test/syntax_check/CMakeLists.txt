@@ -205,6 +205,8 @@ target_sources(tests PRIVATE
 		clamped_value.h.t.cpp
 		cyclic_value.h.t.cpp
 		debounce.h.t.cpp
+		debounce_multi.h.t.cpp
+		debounce_value.h.t.cpp
 		debug_count.h.t.cpp
 		delegate.h.t.cpp
 		delegate_observable.h.t.cpp
@@ -256,6 +258,7 @@ target_sources(tests PRIVATE
 		intrusive_list.h.t.cpp
 		intrusive_queue.h.t.cpp
 		intrusive_stack.h.t.cpp
+		intrusive_timer.h.t.cpp
 		invert.h.t.cpp
 		invoke.h.t.cpp
 		io_port.h.t.cpp

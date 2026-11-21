@@ -296,11 +296,15 @@ namespace etl
     //*************************************************************************
     /// Copy constructor
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR array_view(const array_view& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR array_view(const array_view& other) ETL_NOEXCEPT
       : mbegin(other.mbegin)
       , mend(other.mend)
     {
     }
+#endif
 
     //*************************************************************************
     /// Returns a reference to the first element.
@@ -485,12 +489,16 @@ namespace etl
     //*************************************************************************
     /// Assign from a view.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 array_view& operator=(const array_view& other) ETL_NOEXCEPT = default;
+#else
     array_view& operator=(const array_view& other) ETL_NOEXCEPT
     {
       mbegin = other.mbegin;
       mend   = other.mend;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Assign from iterators
@@ -682,6 +690,15 @@ namespace etl
                                                      reinterpret_cast<const uint8_t*>(view.data() + view.size()));
     }
   };
+#endif
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T>
+  struct is_trivially_copyable<etl::array_view<T>> : etl::true_type
+  {
+  };
+  #endif
 #endif
 } // namespace etl
 

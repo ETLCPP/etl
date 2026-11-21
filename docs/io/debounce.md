@@ -44,7 +44,7 @@ debounce(bool initial_state = false)
 **Description**  
 Default constructor.  
 
-### etl::debounce<Valid_Count, Hold_Count, Repeat_Count>
+### debounce<Valid_Count, Hold_Count, Repeat_Count>
 `etl::debounce<Valid_Count, Hold_Count, Repeat_Count>`
 
 The initial state defaults to:  
@@ -54,7 +54,7 @@ Valid count   = `Valid_Count`
 Hold count    = `Hold_Count`  
 Repeat count  = `Repeat_Count`  
 
-### etl::debounce<Valid_Count, Hold_Count>
+### debounce<Valid_Count, Hold_Count>
 `etl::debounce<Valid_Count, Hold_Count>`
 
 The initial state defaults to:  
@@ -64,7 +64,7 @@ Valid count   = `Valid_Count`
 Hold count    = `Hold_Count`  
 Repeat count  = `0` (Disabled)  
 
-### etl::debounce<Valid_Count>
+### debounce<Valid_Count>
 `etl::debounce<Valid_Count>`
 
 The initial state defaults to:  
@@ -74,7 +74,7 @@ Valid count   = `Valid_Count`
 Hold count    = `0` (Disabled)  
 Repeat count  = `0` (Disabled)  
 
-### etl::debounce<>
+### debounce<>
 `etl::debounce<>`
 
 The initial state defaults to:  

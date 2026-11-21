@@ -1566,9 +1566,6 @@
     <ClInclude Include="..\..\include\etl\format.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\notification.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\debounce.h">
       <Filter>ETL\I/O</Filter>
     </ClInclude>
@@ -1581,8 +1578,8 @@
     <ClInclude Include="..\..\include\etl\io_port.h">
       <Filter>ETL\I/O</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\key_matrix.h">
-      <Filter>ETL\I/O</Filter>
+    <ClInclude Include="..\..\include\etl\intrusive_timer.h">
+      <Filter>ETL\Frameworks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -3862,6 +3859,15 @@
     </ClCompile>
     <ClCompile Include="..\test_debounce_value.cpp">
       <Filter>Tests\I/O</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\debounce_multi.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\syntax_check\debounce_value.h.t.cpp">
+      <Filter>Tests\Syntax Checks\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test_intrusive_timer.cpp">
+      <Filter>Tests\Callback Timers</Filter>
     </ClCompile>
     <ClCompile Include="..\test_key_matrix.cpp">
       <Filter>Tests\I/O</Filter>

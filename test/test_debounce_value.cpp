@@ -37,10 +37,10 @@ namespace
   SUITE(test_debounce)
   {
     //*************************************************************************
-    TEST(test_debounce_value)
+    TEST(test_debounce_value_with_a_stable_count_of_1)
     {
       const uint8_t Initial_Value = 1;
-      const uint8_t Stable_Count  = 4;
+      const uint8_t Stable_Count  = 1;
 
       etl::debounce_value<uint8_t, uint8_t> value(Initial_Value, Stable_Count);
 
@@ -49,18 +49,6 @@ namespace
 
       //*******************************
       // Transition from unstable to stable.
-      CHECK_FALSE(value.update(2));
-      CHECK_FALSE(value.is_stable());
-      CHECK_FALSE(value.has_changed());
-
-      CHECK_FALSE(value.update(2));
-      CHECK_FALSE(value.is_stable());
-      CHECK_FALSE(value.has_changed());
-
-      CHECK_FALSE(value.update(2));
-      CHECK_FALSE(value.is_stable());
-      CHECK_FALSE(value.has_changed());
-
       // Stable & changed.
       CHECK_TRUE(value.update(2));
       CHECK_TRUE(value.is_stable());
@@ -74,33 +62,20 @@ namespace
 
       //*******************************
       // Transition from unstable to stable.
-      // Unstable.
-      CHECK_FALSE(value.update(3));
-      CHECK_FALSE(value.is_stable());
-      CHECK_FALSE(value.has_changed());
-
-      CHECK_FALSE(value.update(3));
-      CHECK_FALSE(value.is_stable());
-      CHECK_FALSE(value.has_changed());
-
-      CHECK_FALSE(value.update(3));
-      CHECK_FALSE(value.is_stable());
-      CHECK_FALSE(value.has_changed());
-
       // Stable & changed.
       CHECK_TRUE(value.update(3));
       CHECK_TRUE(value.is_stable());
       CHECK_TRUE(value.has_changed());
       CHECK_EQUAL(3, value.get());
 
-      // Stable.
+      // Still stable.
       CHECK_FALSE(value.update(3));
       CHECK_TRUE(value.is_stable());
       CHECK_FALSE(value.has_changed());
     }
 
     //*************************************************************************
-    TEST(test_debounce_value_modify_stable_count)
+    TEST(test_debounce_value_with_a_stable_count_of_4)
     {
       const uint8_t Initial_Value = 1;
       const uint8_t Stable_Count  = 4;
@@ -136,12 +111,16 @@ namespace
       CHECK_FALSE(value.has_changed());
 
       //*******************************
-      // Change the stable count.
-      value.set_stable_count(2);
-
-      //*******************************
       // Transition from unstable to stable.
       // Unstable.
+      CHECK_FALSE(value.update(3));
+      CHECK_FALSE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+
+      CHECK_FALSE(value.update(3));
+      CHECK_FALSE(value.is_stable());
+      CHECK_FALSE(value.has_changed());
+
       CHECK_FALSE(value.update(3));
       CHECK_FALSE(value.is_stable());
       CHECK_FALSE(value.has_changed());
@@ -152,7 +131,7 @@ namespace
       CHECK_TRUE(value.has_changed());
       CHECK_EQUAL(3, value.get());
 
-      // Stable.
+      // Still stable.
       CHECK_FALSE(value.update(3));
       CHECK_TRUE(value.is_stable());
       CHECK_FALSE(value.has_changed());

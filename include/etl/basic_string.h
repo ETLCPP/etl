@@ -1925,6 +1925,11 @@ namespace etl
     template <typename TOtherTraits>
     int compare(size_type position, size_type length_, const etl::basic_string_view<T, TOtherTraits>& view) const
     {
+      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
+
+      // Limit the length.
+      length_ = etl::min(length_, size() - position);
+
       return compare(p_buffer + position, p_buffer + position + length_, view.data(), view.data() + view.size());
     }
 
@@ -1974,6 +1979,11 @@ namespace etl
     //*************************************************************************
     int compare(size_type position, size_type length_, const_pointer s) const
     {
+      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
+
+      // Limit the length.
+      length_ = etl::min(length_, size() - position);
+
       return compare(p_buffer + position, p_buffer + position + length_, s, s + etl::strlen(s));
     }
 
@@ -1982,6 +1992,11 @@ namespace etl
     //*************************************************************************
     int compare(size_type position, size_type length_, const_pointer s, size_type n) const
     {
+      ETL_ASSERT(position <= size(), ETL_ERROR(string_out_of_bounds));
+
+      // Limit the length.
+      length_ = etl::min(length_, size() - position);
+
       return compare(p_buffer + position, p_buffer + position + length_, s, s + n);
     }
 
@@ -2726,7 +2741,7 @@ namespace etl
                                iterator>::type
       copy_characters(TIterator1 from, size_t n, iterator to)
     {
-#include "etl/private/diagnostic_stringop_overflow_push.h"
+#include "private/diagnostic_stringop_overflow_push.h"
       size_t count = 0;
 
       while (count != n)
@@ -2735,7 +2750,7 @@ namespace etl
         ++count;
       }
 
-#include "etl/private/diagnostic_pop.h"
+#include "private/diagnostic_pop.h"
       return to;
     }
 

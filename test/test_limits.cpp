@@ -657,6 +657,7 @@ namespace
       typedef etl::numeric_limits<float> ETL_NL;
       typedef std::numeric_limits<float> STD_NL;
 
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
       CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
       CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
       CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
@@ -694,6 +695,7 @@ namespace
       typedef etl::numeric_limits<double> ETL_NL;
       typedef std::numeric_limits<double> STD_NL;
 
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
       CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
       CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
       CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
@@ -731,6 +733,7 @@ namespace
       typedef etl::numeric_limits<long double> ETL_NL;
       typedef std::numeric_limits<long double> STD_NL;
 
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
       CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
       CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
       CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
