@@ -154,6 +154,8 @@ etl_test_sources = files(
 	'test_clamped_value.cpp',
 	'test_cyclic_value.cpp',
 	'test_debounce.cpp',
+	'test_debounce_multi.cpp',
+	'test_debounce_value.cpp',
 	'test_delegate.cpp',
 	'test_delegate_cpp03.cpp',
 	'test_delegate_observable.cpp',

@@ -1566,9 +1566,6 @@
     <ClInclude Include="..\..\include\etl\format.h">
       <Filter>UnitTest++\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\etl\notification.h">
-      <Filter>UnitTest++\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\etl\debounce.h">
       <Filter>ETL\I/O</Filter>
     </ClInclude>
@@ -1579,9 +1576,6 @@
       <Filter>ETL\I/O</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\etl\io_port.h">
-      <Filter>ETL\I/O</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\etl\key_matrix.h">
       <Filter>ETL\I/O</Filter>
     </ClInclude>
   </ItemGroup>
