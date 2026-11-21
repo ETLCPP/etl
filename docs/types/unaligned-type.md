@@ -9,6 +9,7 @@ title: "unaligned_type"
 
 A wrapper for fundamental types around unaligned internal storage.  
 Allows big and little endian storage.  
+Trivially copyable: C++11 and later  
 
 Marked as `packed` for MSVC, GCC amd Clang.  
 

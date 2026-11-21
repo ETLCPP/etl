@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_FUNCTIONAL_INCLUDED
 
 #include "platform.h"
+#include "type_traits.h"
 #include "utility.h"
 
 ///\defgroup functional functional
@@ -707,6 +708,14 @@ namespace etl
   } // namespace ranges
 #endif
 
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T>
+  struct is_trivially_copyable<etl::reference_wrapper<T>> : etl::true_type
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif
