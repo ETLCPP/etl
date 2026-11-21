@@ -7,20 +7,21 @@ title: "key_matrix"
   Since: `20.50.0`  
 {{< /callout >}}
 
-`etl::key_matrix` is a template class for scanning a row/column key matrix (e.g., a keyboard or keypad) with built-in debouncing and optional ghost-key filtering.
+`etl::key_matrix` is a template class for scanning a read/write key matrix (e.g., a keyboard or keypad) with built-in debouncing and optional ghost-key filtering.
 
-The `TMatrix_Port` type abstracts the hardware interface (selecting columns and reading rows).
+The `TMatrix_Port` type abstracts the hardware interface (reading from and writing to the matrix).
 
 **Key Responsibilities**  
-- **Scanning**: Drives a `TMatrix_Port` to select each column and read back the row states.
-  - `scan_incremental()` scans one column per call (non-blocking style); returns `true` once a full matrix pass completes.  
+- **Scanning**: Drives a `TMatrix_Port` to read from and write to the matrix.
+  - `scan_incremental()` scans one write line per call (non-blocking style); returns `true` once a full matrix pass completes.  
   - `scan()` scans the entire matrix in one call (loops over `scan_incremental()`).  
 
--	**Debouncing**: Each column has its own debounce_multi instance to debounce key presses/releases per column.  
+-	**Debouncing**: Each key is independently debounced for press/hold/repeat/release.  
 
--	**Ghost-key filtering**: After a full scan cycle, "ghost" keys (false positives caused by multiple simultaneous key presses in matrix wiring) are detected, and filtered out, if `Filter_Ghost_Keys` is enabled.  
+-	**Ghost-key filtering**: After a full scan cycle, "ghost" keys (false positives caused by multiple simultaneous key presses in matrix wiring) are detected, and filtered out, if `Filter_Ghost_Keys` is enabled. Not required for key matrices protected by diodes.  
 
-- **Key events**: Generates `key_event` objects (key id + key_state: On/Off/Repeat/Hold, etc.) and stores them in an internal buffer.  
+- **Key events**: Generates `key_event` objects (key id + key_state: Off/On/Hold/Repeat.) and stores them in an internal buffer.  
+Managed by the member functions:-
   - `has_key_events()`
   - `number_of_key_events()`
   - `next_key_event()`
@@ -28,18 +29,18 @@ The `TMatrix_Port` type abstracts the hardware interface (selecting columns and 
 
 -	**State queries**: `get_key_state(size_t key)` returns the debounced state of an individual key from its index.  
 
--	**Reset**: `reset()` clears all debounce states, the event buffer, and resets scanning to the first column.  
+-	**Reset**: `reset()` clears all debounce states, the event buffer, and resets scanning to the first write line.  
 
 -	**Polarity**: Inputs must be supplied so that `0` represents the 'Off' state and `1` represents the 'On' state.
 
 ---
 
 **Typical Use Case**  
-You implement a small port/adapter class with `select_column()` and `read_row()` methods for your hardware, then repeatedly call `scan()` (or `scan_incremental()` in a polling loop) and call `next_key_event()` to get debounced key press/release/hold/repeat events; useful for embedded keypad/keyboard drivers without dynamic memory allocation.
+You implement a small port/adapter class with `write_key_matrix()` and `read_key_matrix()` methods for your hardware, then repeatedly call `scan()` (or `scan_incremental()` in a polling loop) and call `next_key_event()` to get the debounced key events.
 
 ## Example key matrix
 
-The key values returned are assigned by column then row order.  
+The key values returned are assigned by `etl::key_matrix` by write-line then read-line order.  
 ![Key Matrix](key-matrix.png)
 
 ## States
@@ -144,19 +145,19 @@ Returns `true` if the `key_matrix_state`s are not equal.
 ## key_matrix_traits
 
 ```cpp
-template <size_t N_Rows, size_t N_Columns>
+template <size_t N_Read, size_t N_Write>
 struct key_matrix_traits
 ```
 **Description**  
-Defines the traits dependent on `NRows` and `NColumns`.
+Defines the traits dependent on `N_Read` and `N_Write`.
 
-| Type              | Description                                                       |
-|-------------------|-------------------------------------------------------------------|
-|`row_type`         | The type that holds the value read from the key matrix rows.      |
-|`column_index_type`| The type that holds a column index that selects the active column.|
-|`key_type`         | The type that holds a key value.                                  |
-|`key_state`        | The type that holds the state of a key in the key matrix.         |
-|`key_event`        | The key event that is generated when a key changes state.         |
+| Type              | Description                                                          |
+|-------------------|----------------------------------------------------------------------|
+|`read_type`        | The type that holds the value read from the key matrix.              |
+|`write_index_type` | The type that holds a write index that selects the active write line.|
+|`key_type`         | The type that holds a key value.                                     |
+|`key_state`        | The type that holds the state of a key in the key matrix.            |
+|`key_event`        | The key event that is generated when a key changes state.            |
 
 ---
 
@@ -179,26 +180,26 @@ A key event that is pushed into the key event buffer when a key changes state.
 |`key_type  key;`  | The key code of the key that has changed state.|
 |`key_state state;`| The new state of the key.                      |
 
-### column_size()
+### write_size()
 ```cpp
-ETL_CONSTEXPR size_t column_size() const
+ETL_CONSTEXPR size_t write_size() const
 ```
 **Description**  
-Returns `NColumns`.
+Returns `N_Write`.
 
-### row_size()
+### read_size()
 ```cpp
-ETL_CONSTEXPR size_t row_size() const
+ETL_CONSTEXPR size_t read_size() const
 ```
 **Description**  
-Returns `NRows`.  
+Returns `N_Read`.  
 
 ### matrix_size()
 ```cpp
 ETL_CONSTEXPR size_t matrix_size() const
 ```
 **Description**  
-Returns `N_Rows * N_Columns`.
+Returns `N_Read * N_Write`.
 
 ### max_key_id()
 ```cpp
@@ -210,7 +211,7 @@ The range of supported keys is `[0, max_key_id()]`.
 
 ## key_matrix
 ```cpp
-template <typename TMatrix_Port, size_t N_Rows, size_t N_Columns, 
+template <typename TMatrix_Port, size_t N_Read, size_t N_Write, 
           uint32_t Valid_Count, uint32_t Hold_Count = 0, 
           uint32_t Repeat_Count = 0, size_t N_Key_Events = 1,
           bool Filter_Ghost_Keys = false>
@@ -223,9 +224,9 @@ A key matrix decoder.
 
 | Parameter | Description |
 |-|-|
-|`TMatrix_Port`      | The type that interfaces with the key matrix hardware. Must implement `void select_column(column_index_type)` and `row_type read_row()`.|
-|`N_Rows`            | The number of rows in the key matrix.                                                                                    |
-|`N_Columns`         | The number of columns in the key matrix.                                                                                 |
+|`TMatrix_Port`      | The type that interfaces with the key matrix hardware. Must implement `void write_key_matrix(write_index_type)` and `read_type read_key_matrix()`.|
+|`N_Read`            | The number of read lines in the key matrix.                                                                                    |
+|`N_Write`         | The number of write lines in the key matrix.                                                                                 |
 |`Valid_Count`       | The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= `1`). |
 |`Hold_Count`        | The number of samples a bit must remain set (after becoming valid) before the 'held' state is reached. Default = `0`.    |
 |`Repeat_Count`      | Once 'held', a 'repeat' state is generated every `Repeat_Count` samples. Default = `0`.                                  |
@@ -236,11 +237,11 @@ A value of `0` for `Hold_Count` or `Repeat_Count` will disable the corresponding
 
 ## Member types
     
-| Type               |                                                               |
-|--------------------|---------------------------------------------------------------|
-|`row_type`          | The type that holds the value read from the key matrix column |
-|`column_index_type` | The type that holds a column index                            |
-|`key_type`          | The type that holds a key value                               |
+| Type              |                                                               |
+|-------------------|---------------------------------------------------------------|
+|`read_type`        | The type that holds the value read from the key matrix        |
+|`write_index_type` | The type that holds a write index                             |
+|`key_type`         | The type that holds a key value                               |
 
 ## key_state
 
@@ -264,36 +265,40 @@ Defined in `etl::key_matrix_traits`.
 key_matrix()
 ```
 **Description**  
-Constructor.
+Constructor.  
+Calls `reset()`.  
 
 ### reset()
 ```cpp
 void reset()
 ```
 **Description**  
-Resets the key matrix.
-Resets all states and state timers.
-Selects column `0`.
+Resets the key matrix.  
+Resets states and state timers and the key event buffer.  
+Selects write line `0`.  
 
 ### scan_incremental()
 ```cpp
 bool scan_incremental()
 ```
 **Description**  
-Scans one column of the key matrix.  
+Scans one write line of the key matrix.  
 This function must be called repeatedly to scan the whole key matrix.  
-When the last column has been scanned then any key changes are pushed to the key event buffer.  
+When the last write line has been scanned then any key changes are pushed to the key event buffer.  
 
 **Returns**
-`true` if all of the columns have been processed, otherwise `false`.
+`true` if all of the write lines have been processed, otherwise `false`.
 
 ### scan()
 ```cpp
-void scan()
+bool scan()
 ```
 **Description**  
 Scans the whole key matrix.  
-This function will scan all of the columns and rows in the key matrix.
+This function will scan all of the write lines and read lines in the key matrix.
+
+**Returns**  
+`true` if any key events have been produced, otherwise `false`.  
 
 ### get_key_state(size_t)
 ```cpp
@@ -348,8 +353,8 @@ The range of supported keys is `[0, max_key_id()]`.
 
 ## Example
 
-You have a 4 column x 3 row matrix of keys.  
-The polarity for column outputs and row inputs is active-low.  
+You have a 4 write x 3 read matrix of keys.  
+The polarity for write outputs and read inputs is active-low.  
 The maximum number of events to be buffered is 3.  
 The key matrix supports *pressed* and *held* functionality, but not *repeating*.  
 The matrix does not require anti-ghosting.  
@@ -359,52 +364,52 @@ The matrix does not require anti-ghosting.
 
 #include "etl/key_matrix.h"
 
-const size_t   N_Rows                = 3;
-const size_t   N_Columns             = 4;
+const size_t   N_Read                = 3;
+const size_t   N_Write               = 4;
 const uint32_t Valid_Count           = 4;
 const uint32_t Hold_Count            = 4;
 const uint32_t Repeat_Count          = 0;
 const size_t   N_Key_Events          = 3;
 const bool     Filter_Ghost_Keys_Off = false;
 
-uint8_t row;
-uint8_t column;
+uint8_t read;
+uint8_t write;
 
 // The matrix IO ports.
-uint8_t* row_port    = &row;
-uint8_t* column_port = &column;
+uint8_t* read_port  = &read;
+uint8_t* write_port = &write;
 
 //*************************************************************************
 // A port that provides the interface to the key matrix hardware.
 //*************************************************************************
 struct MatrixPort
 {
-  using row_type          = etl::key_matrix_traits<N_Rows, N_Columns>::row_type;
-  using column_index_type = etl::key_matrix_traits<N_Rows, N_Columns>::column_index_type;
+  using read_type        = etl::key_matrix_traits<N_Read, N_Write>::read_type;
+  using write_index_type = etl::key_matrix_traits<N_Read, N_Write>::write_index_type;
 
   //***************************************************************************
-  // Write the column index to the key matrix.
+  // Write the write index to the key matrix.
   // Active low so invert the value.
   //***************************************************************************
-  void select_column(column_index_type column_index)
+  void write_key_matrix(write_index_type write_index)
   {
-    *column_port = static_cast<uint8_t>(~(1U << column_index));
+    *write_port = static_cast<uint8_t>(~(1U << write_index));
   }
 
   //***************************************************************************
   // Read a value from the key matrix.
   // Active low, so invert the value.
   //***************************************************************************
-  row_type read_row()
+  read_type read_key_matrix()
   {
-    return static_cast<row_type>(~(*row_port));
+    return static_cast<read_type>(~(*read_port));
   }
 };
 
 // The port to interface with the hardware.
 MatrixPort matrixPort;
 
-using KeyMatrix = etl::key_matrix<MatrixPort, N_Rows, N_Columns, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_Off>;
+using KeyMatrix = etl::key_matrix<MatrixPort, N_Read, N_Write, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_Off>;
 using KeyEvent  = KeyMatrix::key_event;
 using KeyType   = KeyMatrix::key_type;
 using KeyState  = KeyMatrix::key_state;

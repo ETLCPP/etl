@@ -3568,7 +3568,6 @@
     <ClInclude Include="..\..\include\etl\math.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
     <ClInclude Include="..\..\include\etl\monostate.h" />
-    <ClInclude Include="..\..\include\etl\notification.h" />
     <ClInclude Include="..\..\include\etl\not_null.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\print.h" />
@@ -11646,6 +11645,7 @@
   <ItemGroup>
     <Text Include="..\..\CMakeLists.txt" />
     <Text Include="..\..\Converting header guards.txt" />
+    <Text Include="..\..\meson_options.txt" />
     <Text Include="..\..\support\Release notes.txt" />
     <Text Include="..\..\todo.txt" />
     <Text Include="..\..\version.txt" />

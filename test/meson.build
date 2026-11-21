@@ -211,6 +211,7 @@ etl_test_sources = files(
 	'test_is_invocable.cpp',
 	'test_iterator.cpp',
 	'test_jenkins.cpp',
+	'test_key_matrix.cpp',
 	'test_largest.cpp',
 	'test_limiter.cpp',
 	'test_limits.cpp',

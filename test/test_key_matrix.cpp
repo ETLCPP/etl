@@ -30,14 +30,14 @@ SOFTWARE.
 
 #include "etl/key_matrix.h"
 
+#include <algorithm>
 #include <array>
 #include <vector>
-#include <algorithm>
 
 namespace
 {
-  const size_t   N_Rows                = 3;
-  const size_t   N_Columns             = 4;
+  const size_t   N_Read                = 3;
+  const size_t   N_Write               = 4;
   const size_t   N_Key_Events          = 12;
   const uint32_t Valid_Count           = 4;
   const uint32_t Hold_Count            = 4;
@@ -50,45 +50,45 @@ namespace
   //*************************************************************************
   struct MatrixPort
   {
-    using row_type          = etl::key_matrix_traits<N_Rows, N_Columns>::row_type;
-    using column_index_type = etl::key_matrix_traits<N_Rows, N_Columns>::column_index_type;
+    using read_type        = etl::key_matrix_traits<N_Read, N_Write>::read_type;
+    using write_index_type = etl::key_matrix_traits<N_Read, N_Write>::write_index_type;
 
     //***************************************************************************
     /// Constructor.
     //***************************************************************************
     MatrixPort()
-      : columns()
-      , column_index(0)
+      : read_channels()
+      , write_index(0)
     {
     }
 
     //***************************************************************************
-    /// Write the column index to the key matrix.
+    /// Set the write an index to the key matrix.
     //***************************************************************************
-    void select_column(column_index_type column_index_)
+    void write_key_matrix(write_index_type write_index_)
     {
-      column_index = column_index_;
+      write_index = write_index_;
     }
 
     //***************************************************************************
     /// Read a value from the key matrix.
     //***************************************************************************
-    row_type read_row()
+    read_type read_key_matrix()
     {
-      return columns[column_index];
+      return read_channels[write_index];
     }
 
-    const row_type Row_Inactive = 0;
+    const read_type Read_Inactive = 0;
 
     // The following are used to simulate the key pad in the unit tests.
-    volatile row_type          columns[N_Columns];
-    volatile column_index_type column_index;
+    volatile read_type        read_channels[N_Write];
+    volatile write_index_type write_index;
   };
 
   //*************************************************************************
   // A key pad base class for testing.
-  // N_Rows            = 3
-  // N_Columns         = 4
+  // N_Read            = 3
+  // N_Write           = 4
   // Valid_Count       = 4
   // Hold_Count        = 4
   // Repeat_Count      = 4
@@ -96,10 +96,10 @@ namespace
   // Filter_Ghost_Keys = Filter_Ghost_Keys_On/Filter_Ghost_Keys_Off
   //*************************************************************************
   using key_pad_base_no_ghost_check =
-    etl::key_matrix<MatrixPort, N_Rows, N_Columns, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_Off>;
+    etl::key_matrix<MatrixPort, N_Read, N_Write, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_Off>;
 
   using key_pad_base_ghost_check =
-    etl::key_matrix<MatrixPort, N_Rows, N_Columns, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_On>;
+    etl::key_matrix<MatrixPort, N_Read, N_Write, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_On>;
 
   //*************************************************************************
   // A simple key pad implementation for testing.
@@ -109,15 +109,15 @@ namespace
   {
   public:
 
-    using row_type          = typename TKeyPad::row_type;
-    using column_index_type = typename TKeyPad::column_index_type;
-    using key_type          = typename TKeyPad::key_type;
+    using read_type        = typename TKeyPad::read_type;
+    using write_index_type = typename TKeyPad::write_index_type;
+    using key_type         = typename TKeyPad::key_type;
 
     //*********************************
     struct key_info
     {
       key_type id;
-      size_t   column;
+      size_t   write_index;
       size_t   row;
     };
 
@@ -131,21 +131,21 @@ namespace
     // Reset the key pad to its initial state.
     void set_all_keys_off()
     {
-      std::fill(std::begin(port.columns), std::end(port.columns), Row_Inactive); // All keys are inactive (low)
+      std::fill(std::begin(port.read_channels), std::end(port.read_channels), Read_Inactive); // All keys are inactive (low)
     }
 
     //*********************************
     // Set a specific key to active (low) state.
     void set_key_on(const key_info& key)
     {
-      port.columns[key.row] |= (1 << key.column); // Set the key to active (high)
+      port.read_channels[key.row] |= (1 << key.write_index); // Set the key to active (high)
     }
 
     //*********************************
     // Set a specific key to inactive (high) state.
     void set_key_off(const key_info& key)
     {
-      port.columns[key.row] &= ~(1 << key.column); // Set the key to inactive (low)
+      port.read_channels[key.row] &= ~(1 << key.write_index); // Set the key to inactive (low)
     }
 
     //*********************************
@@ -163,8 +163,8 @@ namespace
     }
 
     //*********************************
-    // A list of key positions indexed as row/column.
-    std::array<key_info, N_Rows * N_Columns> key_positions = {
+    // A list of key positions indexed as row/write_index.
+    std::array<key_info, N_Read * N_Write> key_positions = {
       {{0, 0, 0}, {1, 0, 1}, {2, 0, 2}, {3, 0, 3}, {4, 1, 0}, {5, 1, 1}, {6, 1, 2}, {7, 1, 3}, {8, 2, 0}, {9, 2, 1}, {10, 2, 2}, {11, 2, 3}}};
 
     key_info& Key1  = key_positions[0];  // Row 0, Column 0
@@ -180,7 +180,7 @@ namespace
     key_info& Key11 = key_positions[10]; // Row 2, Column 2
     key_info& Key12 = key_positions[11]; // Row 2, Column 3
 
-    const row_type Row_Inactive = 0; // All columns are inactive (high) when no keys are pressed.
+    const read_type Read_Inactive = 0; // All read_channels are inactive (high) when no keys are pressed.
 
     MatrixPort port;
   };
@@ -195,9 +195,9 @@ namespace
     {
       key_pad_no_ghost_check pad;
 
-      CHECK_EQUAL(N_Rows, pad.row_size());
-      CHECK_EQUAL(N_Columns, pad.column_size());
-      CHECK_EQUAL(N_Rows * N_Columns, pad.matrix_size());
+      CHECK_EQUAL(N_Read, pad.read_size());
+      CHECK_EQUAL(N_Write, pad.write_size());
+      CHECK_EQUAL(N_Read * N_Write, pad.matrix_size());
       CHECK_EQUAL(N_Key_Events, pad.max_number_of_key_events());
       CHECK_EQUAL(0, pad.number_of_key_events());
       CHECK_EQUAL(false, pad.has_key_events());
@@ -227,10 +227,14 @@ namespace
       pad.set_key_on(pad.Key11);
       pad.set_key_on(pad.Key12);
 
+      bool key_events_pending = false;
+
       for (size_t i = 0; i < Valid_Count; ++i)
       {
-        pad.scan();
+        key_events_pending = pad.scan();
       }
+
+      CHECK_TRUE(key_events_pending);
 
       size_t key_event_count = pad.number_of_key_events();
 
@@ -343,7 +347,7 @@ namespace
                 [](const key_pad_no_ghost_check::key_event& a, const key_pad_no_ghost_check::key_event& b) { return a.key < b.key; });
 
       CHECK_EQUAL(1, keys_pressed.size());
-      CHECK_EQUAL(0, keys_pressed[0].key);                                 // Key1
+      CHECK_EQUAL(0, keys_pressed[0].key);                                         // Key1
       CHECK_EQUAL(key_event::key_state::Repeating, keys_pressed[0].state.value()); // Key1
 
       //*******************************
@@ -369,7 +373,7 @@ namespace
                 [](const key_pad_no_ghost_check::key_event& a, const key_pad_no_ghost_check::key_event& b) { return a.key < b.key; });
 
       CHECK_EQUAL(1, keys_pressed.size());
-      CHECK_EQUAL(0, keys_pressed[0].key);                           // Key1
+      CHECK_EQUAL(0, keys_pressed[0].key);                                   // Key1
       CHECK_EQUAL(key_event::key_state::Off, keys_pressed[0].state.value()); // Key1
 
       keys_pressed.clear();
