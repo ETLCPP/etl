@@ -137,7 +137,6 @@ namespace
       CHECK_FALSE(value.has_changed());
     }
 
-
     //*************************************************************************
     TEST(test_debounce_values_from_an_input_stream)
     {
