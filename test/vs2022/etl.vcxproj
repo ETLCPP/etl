@@ -3561,13 +3561,12 @@
     <ClInclude Include="..\..\include\etl\generators\variant_pool_cpp03_generator.h" />
     <ClInclude Include="..\..\include\etl\index_of_type.h" />
     <ClInclude Include="..\..\include\etl\inplace_function.h" />
+    <ClInclude Include="..\..\include\etl\intrusive_timer.h" />
     <ClInclude Include="..\..\include\etl\invoke.h" />
-    <ClInclude Include="..\..\include\etl\key_matrix.h" />
     <ClInclude Include="..\..\include\etl\lcm.h" />
     <ClInclude Include="..\..\include\etl\math.h" />
     <ClInclude Include="..\..\include\etl\message_broker.h" />
     <ClInclude Include="..\..\include\etl\monostate.h" />
-    <ClInclude Include="..\..\include\etl\notification.h" />
     <ClInclude Include="..\..\include\etl\not_null.h" />
     <ClInclude Include="..\..\include\etl\poly_span.h" />
     <ClInclude Include="..\..\include\etl\print.h" />
@@ -10447,6 +10446,7 @@
     <ClCompile Include="..\test_index_of_type.cpp" />
     <ClCompile Include="..\test_inplace_function.cpp" />
     <ClCompile Include="..\test_intrusive_links.cpp" />
+    <ClCompile Include="..\test_intrusive_timer.cpp" />
     <ClCompile Include="..\test_invoke.cpp" />
     <ClCompile Include="..\test_is_invocable.cpp" />
     <ClCompile Include="..\test_macros.cpp" />
