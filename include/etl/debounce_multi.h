@@ -28,8 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef DEBOUNCE_MULTI_BIT_INCLUDED
-#define DEBOUNCE_MULTI_BIT_INCLUDED
+#ifndef ETL_DEBOUNCE_MULTI_BIT_INCLUDED
+#define ETL_DEBOUNCE_MULTI_BIT_INCLUDED
 
 #include "platform.h"
 #include "array.h"
@@ -99,7 +99,7 @@ namespace etl
 
     //***************************************************************************
     /// Constructor. All bits start in the 'Off' state.
-    ///\param initial The initial raw port value, in the same polarity as values passed to update(). Default = the 'inactive' reading for all bits.
+    ///\param initial The initial port value. Default = the 'inactive' reading for all bits.
     //***************************************************************************
     debounce_multi(value_type initial = 0)
     {
@@ -108,12 +108,12 @@ namespace etl
 
     //***************************************************************************
     /// Resets the debouncer state.
-    ///\param initial The initial raw port value. Assumes active_high polarity.
+    ///\param initial The initial port value. Default = the 'inactive' reading for all bits.
     //***************************************************************************
     void reset(value_type initial = 0)
     {
       sample     = initial;
-      state_low  = 0;
+      state_low  = initial;
       state_high = 0;
       changed    = 0;
       bit_index  = 0;
@@ -125,9 +125,7 @@ namespace etl
     //***************************************************************************
     /// Resets a bit to the 'Off' state.
     /// \param n The bit number [0, Width). An 'n' that is out of range is ignored.
-    /// \param initial The raw reading for this bit, in the same polarity as values passed to update().
-    ///                If true, the bit reads as it would when physically asserted; if false, as at rest.
-    ///                Default is 'false'. The state is set to 'Off' and the count is reset to 0.
+    /// \param initial The initial port value for this bit. Default is 'false'. The state is set to 'Off' and the count is reset to 0.
     //***************************************************************************
     void reset_bit(size_t n, bool initial = false)
     {
@@ -139,13 +137,14 @@ namespace etl
         if (initial)
         {
           sample |= bit;
+          set_bit_state(bit, state_id::On);
         }
         else
         {
           sample &= ~bit;
+          set_bit_state(bit, state_id::Off);
         }
 
-        clear_bit_state(bit);
         clear_changed_state(bit);
         clear_counter(n);
       }
