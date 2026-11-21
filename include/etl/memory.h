@@ -2299,7 +2299,7 @@ namespace etl
 
     //*********************************
     template <typename U>
-    ETL_CONSTEXPR default_delete(const default_delete<U>&) ETL_NOEXCEPT
+    ETL_CONSTEXPR default_delete(const default_delete<U>&, typename etl::enable_if<etl::is_convertible<U*, T*>::value, void>::type* = 0) ETL_NOEXCEPT
     {
     }
 
@@ -2326,7 +2326,8 @@ namespace etl
 
     //*********************************
     template <typename U>
-    ETL_CONSTEXPR default_delete(const default_delete<U>&) ETL_NOEXCEPT
+    ETL_CONSTEXPR default_delete(const default_delete<U>&, typename etl::enable_if<etl::is_convertible<U*, T (*)[]>::value, void>::type* = 0)
+      ETL_NOEXCEPT
     {
     }
 
@@ -2337,6 +2338,23 @@ namespace etl
       delete[] p;
     }
   };
+
+#if ETL_USING_CPP11
+  namespace private_unique_ptr
+  {
+    //*********************************
+    /// Checks whether a unique_ptr with deleter TDeleter may be move
+    /// constructed from a unique_ptr with deleter E.
+    /// If TDeleter is a reference then E must be the same type, otherwise E
+    /// must be implicitly convertible to TDeleter.
+    //*********************************
+    template <typename TDeleter, typename E>
+    struct is_compatible_deleter
+      : etl::bool_constant<etl::is_reference<TDeleter>::value ? etl::is_same<E, TDeleter>::value : etl::is_convertible<E, TDeleter>::value>
+    {
+    };
+  } // namespace private_unique_ptr
+#endif
 
   //*****************************************************************************
   /// Unique pointer.
@@ -2403,7 +2421,15 @@ namespace etl
     {
     }
 
-    template <typename U, typename E>
+    //*********************************
+    /// Converting move constructor.
+    /// Only enabled if the source manages a single object whose pointer is
+    /// implicitly convertible to this pointer type, and the deleter is
+    /// compatible.
+    template <typename U, typename E,
+              typename etl::enable_if<!etl::is_array<U>::value && etl::is_convertible<typename etl::unique_ptr<U, E>::pointer, pointer>::value
+                                        && private_unique_ptr::is_compatible_deleter<TDeleter, E>::value,
+                                      int>::type = 0>
     unique_ptr(unique_ptr<U, E>&& u) ETL_NOEXCEPT
       : p(u.release())
       , deleter(etl::forward<E>(u.get_deleter()))
@@ -2607,7 +2633,16 @@ namespace etl
     {
     }
 
-    template <typename U, typename E>
+    //*********************************
+    /// Converting move constructor.
+    /// Only enabled if the source manages an array whose element type is
+    /// only more cv-qualified than this element type, and the deleter is
+    /// compatible.
+    template <typename U, typename E,
+              typename etl::enable_if<etl::is_array<U>::value
+                                        && etl::is_convertible<typename etl::unique_ptr<U, E>::element_type (*)[], element_type (*)[]>::value
+                                        && private_unique_ptr::is_compatible_deleter<TDeleter, E>::value,
+                                      int>::type = 0>
     unique_ptr(unique_ptr<U, E>&& u) ETL_NOEXCEPT
       : p(u.release())
       , deleter(etl::forward<E>(u.get_deleter()))
