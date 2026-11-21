@@ -59,7 +59,7 @@ If the value has changed, the count is reset and the value is marked as unstable
 `value` : The next input value.  
     
 **Return**  
-Returns `true` if the value has changed.
+Returns `true` if the stable value has changed.
 
 ### value_type get()
 ```cpp
@@ -96,10 +96,3 @@ Checks if the input is in a stable state.
 
 **Return**  
 `true` if the value is stable.  
-
-### void set_stable_count(count_type)
-```cpp
-void set_stable_count(count_type stable_count)
-```
-**Description**  
-Sets the count at which a non-changing input value is seen as stable.
