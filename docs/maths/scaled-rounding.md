@@ -298,7 +298,7 @@ Values are rounded to the nearest integral value.
 
 ```cpp
 template <size_t Scaling, typename T>
-T round_half_even_scaled(T value)
+T round_half_odd_scaled(T value)
 ```
 **Description**  |
 ```cpp
@@ -321,7 +321,7 @@ T round_half_even_scaled(T value)
 
 ```cpp
 template <size_t Scaling, typename T>
-T round_half_even_unscaled(T value)
+T round_half_odd_unscaled(T value)
 ```
 **Description**  |
 ```cpp

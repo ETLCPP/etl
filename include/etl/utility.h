@@ -548,13 +548,13 @@ namespace etl
   //***************************************************************************
 #if ETL_USING_CPP11
   template <typename T1, typename T2>
-  inline pair<T1, T2> make_pair(T1&& a, T2&& b)
+  inline ETL_CONSTEXPR14 pair<T1, T2> make_pair(T1&& a, T2&& b)
   {
     return pair<T1, T2>(etl::forward<T1>(a), etl::forward<T2>(b));
   }
 #else
   template <typename T1, typename T2>
-  inline pair<T1, T2> make_pair(T1 a, T2 b)
+  inline ETL_CONSTEXPR14 pair<T1, T2> make_pair(T1 a, T2 b)
   {
     return pair<T1, T2>(a, b);
   }
@@ -596,7 +596,7 @@ namespace etl
 
   ///  Two pairs of the same type are equal if their members are equal.
   template <typename T1, typename T2>
-  inline bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
 #include "private/diagnostic_float_equal_push.h"
     return (a.first == b.first) && (a.second == b.second);
@@ -605,34 +605,34 @@ namespace etl
 
   /// Uses @c operator== to find the result.
   template <typename T1, typename T2>
-  inline bool operator!=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator!=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(a == b);
   }
 
   template <typename T1, typename T2>
-  inline bool operator<(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator<(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (a.first < b.first) || (!(b.first < a.first) && (a.second < b.second));
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator>(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator>(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (b < a);
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator<=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator<=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(b < a);
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator>=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator>=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(a < b);
   }
@@ -1410,6 +1410,15 @@ namespace etl
   {
     return static_cast<typename etl::make_signed<T>::type>(value);
   }
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T1, typename T2>
+  struct is_trivially_copyable<etl::pair<T1, T2>> : etl::bool_constant<etl::is_trivially_copyable<T1>::value && etl::is_trivially_copyable<T2>::value>
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif
