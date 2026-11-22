@@ -73,10 +73,14 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR flags(const flags<T, MASK>& pattern) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR flags(const flags<T, MASK>& pattern) ETL_NOEXCEPT
       : data(pattern.value())
     {
     }
+#endif
 
     //*************************************************************************
     /// Tests bits.
@@ -314,12 +318,16 @@ namespace etl
     //*************************************************************************
     /// operator =
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 flags<T, MASK>& operator=(const flags<T, MASK>& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 flags<T, MASK>& operator=(flags<T, MASK> other) ETL_NOEXCEPT
     {
       data = other.data;
 
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// operator =
@@ -380,6 +388,15 @@ namespace etl
   {
     lhs.swap(rhs);
   }
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, T MASK>
+  struct is_trivially_copyable<etl::flags<T, MASK>> : etl::true_type
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif

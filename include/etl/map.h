@@ -1211,7 +1211,18 @@ namespace etl
       Node* inserted_node = ETL_NULLPTR;
       bool  inserted      = false;
 
-      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+      if (full())
+      {
+        // An existing key does not require a free node, so inserting it is
+        // not a capacity failure.
+        iterator iter = find(value.first);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(map_full));
+        }
+
+        return ETL_OR_STD::make_pair(iter, false);
+      }
 
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
@@ -1237,7 +1248,18 @@ namespace etl
       Node* inserted_node = ETL_NULLPTR;
       bool  inserted      = false;
 
-      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+      if (full())
+      {
+        // An existing key does not require a free node, so inserting it is
+        // not a capacity failure.
+        iterator iter = find(value.first);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(map_full));
+        }
+
+        return ETL_OR_STD::make_pair(iter, false);
+      }
 
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
@@ -1263,7 +1285,18 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
 
-      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+      if (full())
+      {
+        // An existing key does not require a free node, so inserting it is
+        // not a capacity failure.
+        iterator iter = find(value.first);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(map_full));
+        }
+
+        return iter;
+      }
 
       // Get next available free node
       Data_Node& node = allocate_data_node(value);
@@ -1288,7 +1321,18 @@ namespace etl
       // Default to no inserted node
       Node* inserted_node = ETL_NULLPTR;
 
-      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+      if (full())
+      {
+        // An existing key does not require a free node, so inserting it is
+        // not a capacity failure.
+        iterator iter = find(value.first);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(map_full));
+        }
+
+        return iter;
+      }
 
       // Get next available free node
       Data_Node& node = allocate_data_node(etl::move(value));
@@ -1327,7 +1371,22 @@ namespace etl
     template <typename... Args>
     ETL_OR_STD::pair<iterator, bool> emplace(Args&&... args)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(map_full));
+      if (full())
+      {
+        // An existing key does not require a free node, so emplacing it is not
+        // a capacity failure. Construct a temporary to obtain its key and only
+        // emit map_full if the key is not already present. This keeps emplace
+        // consistent with insert when the map is full.
+        value_type temp_value(etl::forward<Args>(args)...);
+        iterator   position = find(temp_value.first);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(map_full));
+        }
+
+        return ETL_OR_STD::make_pair(position, false);
+      }
 
       // Get next available free node
       Data_Node& node = allocate_data_node_from_args(etl::forward<Args>(args)...);
