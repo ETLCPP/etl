@@ -11,14 +11,15 @@ This class is designed to take an input value that may take time to become stabl
 
 ---
 
-Assuming the stable count has been set to `4`.  
+Assuming the stable count has been set to `3`.  
 Initial value is `0`.  
-`-` = Unstable  
-`#` = Stable  
+`-` = false  
+`#` = true  
 ```
-       Input:  0  1  2  3  4  5  6  6  6  6  6  6  5  4  3  3  3  3  3  3  
-       State:  -  -  -  -  -  -  -  -  -  #  #  #  -  -  -  -  -  #  #  #
-Stable Value:  0  0  0  0  0  0  0  0  0  6  6  6  6  6  6  6  6  3  3  3
+        Input:  1  2  3  3  2  2  2  3  3  3  3  3  3  2  3  3  3  4  4  4  5  5  6  6  6
+Changed State:  -  -  -  -  -  -  #  -  -  #  -  -  -  -  -  -  -  -  -  #  -  -  -  -  #
+ Stable State:  -  -  -  -  -  -  #  -  -  #  #  #  #  -  -  -  #  -  -  #  -  -  -  -  #
+ Stable Value:  0  0  0  0  0  0  2  2  2  3  3  3  3  3  3  3  3  3  3  4  4  4  4  4  6
 ```
 
 ---
