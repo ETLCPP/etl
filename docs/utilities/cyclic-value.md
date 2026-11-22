@@ -10,6 +10,7 @@ title: "cyclic_value"
 Provides a value that cycles between two limits.  
 Supports increments, decrements and arbitrary advance.  
 Supports compile time and runtime variants.  
+Trivially copyable: C++11 and later (when `T` is trivially copyable)  
 
 ```cpp
 template <typename T, const T First = 0, const T Last = 0>

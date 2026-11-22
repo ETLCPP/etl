@@ -41,6 +41,7 @@ SOFTWARE.
 #include "integral_limits.h"
 #include "iterator.h"
 #include "memory.h"
+#include "type_traits.h"
 #include "private/minmax_push.h"
 
 #if ETL_USING_STL && ETL_USING_CPP17
@@ -1011,6 +1012,15 @@ namespace etl
                                                      reinterpret_cast<const uint8_t*>(text.data() + text.size()));
     }
   };
+#endif
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, typename TTraits>
+  struct is_trivially_copyable<etl::basic_string_view<T, TTraits>> : etl::true_type
+  {
+  };
+  #endif
 #endif
 } // namespace etl
 

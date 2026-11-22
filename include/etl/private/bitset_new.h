@@ -46,6 +46,7 @@ SOFTWARE.
 #include "../span.h"
 #include "../static_assert.h"
 #include "../string.h"
+#include "../type_traits.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -3695,6 +3696,14 @@ namespace etl
     return !(lhs == rhs);
   }
 
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <size_t Active_Bits, typename TElement>
+  struct is_trivially_copyable<etl::bitset<Active_Bits, TElement>> : etl::true_type
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #include "minmax_pop.h"

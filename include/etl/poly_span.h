@@ -1079,6 +1079,15 @@ namespace etl
     }
   };
 #endif
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename TBase, size_t Extent>
+  struct is_trivially_copyable<etl::poly_span<TBase, Extent>> : etl::true_type
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif
