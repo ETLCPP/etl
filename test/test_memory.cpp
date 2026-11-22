@@ -996,6 +996,60 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_move_construction_reference_deleter)
+    {
+      struct Deleter
+      {
+        int count = 0;
+
+        void operator()(int* p)
+        {
+          ++count;
+          delete p;
+        }
+      };
+
+      Deleter d;
+
+      {
+        etl::unique_ptr<int, Deleter&> up1(new int(1), d);
+        etl::unique_ptr<int, Deleter&> up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK_EQUAL(1, *up2);
+        CHECK(&up2.get_deleter() == &d);
+      }
+
+      CHECK_EQUAL(1, d.count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_construction_non_default_constructible_deleter)
+    {
+      struct Deleter
+      {
+        explicit Deleter(int id_)
+          : id(id_)
+        {
+        }
+
+        void operator()(int* p) const
+        {
+          delete p;
+        }
+
+        int id;
+      };
+
+      etl::unique_ptr<int, Deleter> up1(new int(1), Deleter(42));
+      etl::unique_ptr<int, Deleter> up2(std::move(up1));
+
+      CHECK(up1.get() == nullptr);
+      CHECK_EQUAL(1, *up2);
+      CHECK_EQUAL(42, up2.get_deleter().id);
+    }
+
+    //*************************************************************************
     TEST(test_unique_ptr_release)
     {
       auto                 buffer = new int;
@@ -1462,6 +1516,62 @@ namespace
       }
 
       CHECK_EQUAL(1, deleter.count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_array_construction_reference_deleter)
+    {
+      struct Deleter
+      {
+        int count = 0;
+
+        void operator()(int* p)
+        {
+          ++count;
+          delete[] p;
+        }
+      };
+
+      Deleter d;
+
+      {
+        etl::unique_ptr<int[], Deleter&> up1(new int[4], d);
+        int*                             p = up1.get();
+        etl::unique_ptr<int[], Deleter&> up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK(up2.get() == p);
+        CHECK(&up2.get_deleter() == &d);
+      }
+
+      CHECK_EQUAL(1, d.count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_array_construction_non_default_constructible_deleter)
+    {
+      struct Deleter
+      {
+        explicit Deleter(int id_)
+          : id(id_)
+        {
+        }
+
+        void operator()(int* p) const
+        {
+          delete[] p;
+        }
+
+        int id;
+      };
+
+      etl::unique_ptr<int[], Deleter> up1(new int[4], Deleter(42));
+      int*                            p = up1.get();
+      etl::unique_ptr<int[], Deleter> up2(std::move(up1));
+
+      CHECK(up1.get() == nullptr);
+      CHECK(up2.get() == p);
+      CHECK_EQUAL(42, up2.get_deleter().id);
     }
 
     //*************************************************************************
