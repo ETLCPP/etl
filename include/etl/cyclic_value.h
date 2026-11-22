@@ -278,20 +278,28 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
-    ETL_CONSTEXPR cyclic_value(const cyclic_value<T, First, Last>& other) ETL_NOEXCEPT
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR cyclic_value(const cyclic_value& other) ETL_NOEXCEPT = default;
+#else
+    ETL_CONSTEXPR cyclic_value(const cyclic_value& other) ETL_NOEXCEPT
       : value(other.value)
     {
     }
+#endif
 
     //*************************************************************************
     /// Assignment operator.
     //*************************************************************************
-    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value<T, First, Last>& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT = default;
+#else
+    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       value = other.value;
 
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Adds a number of steps and clamps to the range.
@@ -560,12 +568,16 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR cyclic_value(const cyclic_value& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR cyclic_value(const cyclic_value& other) ETL_NOEXCEPT
       : value(other.value)
       , first_value(other.first_value)
       , last_value(other.last_value)
     {
     }
+#endif
 
     //*************************************************************************
     /// Sets the range.
@@ -686,6 +698,9 @@ namespace etl
     //*************************************************************************
     /// = operator.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 cyclic_value& operator=(const cyclic_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       value       = other.value;
@@ -693,6 +708,7 @@ namespace etl
       last_value  = other.last_value;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Adds a number of steps and clamps to the range.
@@ -798,6 +814,15 @@ namespace etl
   {
     lhs.swap(rhs);
   }
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, T First, T Last, bool EtlRuntimeSpecialisation>
+  struct is_trivially_copyable<etl::cyclic_value<T, First, Last, EtlRuntimeSpecialisation>> : etl::bool_constant<etl::is_trivially_copyable<T>::value>
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 //*************************************************************************
