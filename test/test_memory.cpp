@@ -1126,6 +1126,9 @@ namespace
 
       CHECK(up1 == up2);
       CHECK(!(up1 == up3));
+      CHECK(!(up1 != up2));
+      CHECK(up1 != up3);
+      CHECK(up3 != up1);
       CHECK(!(up1 < up2));
       CHECK(up1 < up3);
       CHECK(!(up3 <= up1));
