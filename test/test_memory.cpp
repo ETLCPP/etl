@@ -1050,6 +1050,42 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_void)
+    {
+      struct Deleter
+      {
+        int count = 0;
+
+        void operator()(void* p)
+        {
+          ++count;
+          delete static_cast<int*>(p);
+        }
+      };
+
+      CHECK((std::is_same<void, etl::unique_ptr<void, Deleter&>::reference>::value));
+      CHECK((std::is_same<void*, etl::unique_ptr<void, Deleter&>::pointer>::value));
+
+      Deleter d;
+
+      {
+        int*                            p = new int(1);
+        etl::unique_ptr<void, Deleter&> up1(p, d);
+        etl::unique_ptr<void, Deleter&> up2(std::move(up1));
+
+        CHECK(!bool(up1));
+        CHECK(bool(up2));
+        CHECK(up2.get() == p);
+        CHECK_EQUAL(1, *static_cast<int*>(up2.get()));
+
+        up2.reset(new int(2));
+        CHECK_EQUAL(1, d.count);
+      }
+
+      CHECK_EQUAL(2, d.count);
+    }
+
+    //*************************************************************************
     TEST(test_unique_ptr_release)
     {
       auto                 buffer = new int;
