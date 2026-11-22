@@ -160,5 +160,20 @@ namespace
       CHECK_FALSE(nn1 >= nn2);
       CHECK_TRUE(nn2 >= nn1);
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE((etl::is_trivially_copyable<etl::not_null<int*>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::not_null<const int*>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::not_null<S*>>::value));
+  #if ETL_USING_STL
+      CHECK_TRUE((std::is_trivially_copyable<etl::not_null<int*>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::not_null<const int*>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::not_null<S*>>::value));
+  #endif
+    }
+#endif
   }
 } // namespace

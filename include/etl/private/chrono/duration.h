@@ -117,11 +117,23 @@ namespace etl
       {
       }
 
+#if ETL_USING_CPP11
+      //***********************************************************************
+      /// Copy constructor.
+      //***********************************************************************
+      duration(const duration&) = default;
+
+      //***********************************************************************
+      /// Move constructor.
+      //***********************************************************************
+      duration(duration&&) = default;
+#else
       //***********************************************************************
       ETL_CONSTEXPR14 duration(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
         : value(other.value)
       {
       }
+#endif
 
       //***********************************************************************
       template <typename TRep2>
@@ -139,17 +151,29 @@ namespace etl
                           "Cannot convert duration from floating point to integral");
       }
 
+#if ETL_USING_CPP11
       //***********************************************************************
-      ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> operator=(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
+      /// Assignment operator.
+      //***********************************************************************
+      duration& operator=(const duration&) = default;
+
+      //***********************************************************************
+      /// Move assignment operator.
+      //***********************************************************************
+      duration& operator=(duration&&) = default;
+#else
+      //***********************************************************************
+      ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod>& operator=(const etl::chrono::duration<TRep, TPeriod>& other) ETL_NOEXCEPT
       {
         value = other.count();
 
         return *this;
       }
+#endif
 
       //***********************************************************************
       template <typename TRep2, typename TPeriod2>
-      ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod> operator=(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
+      ETL_CONSTEXPR14 etl::chrono::duration<TRep, TPeriod>& operator=(const etl::chrono::duration<TRep2, TPeriod2>& other) ETL_NOEXCEPT
       {
         value = etl::chrono::duration_cast<etl::chrono::duration<TRep, TPeriod> >(other).count();
 

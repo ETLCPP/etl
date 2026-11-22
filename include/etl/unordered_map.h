@@ -971,7 +971,19 @@ namespace etl
     {
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
+      if (full())
+      {
+        // An existing key does not require a free node, so inserting it is
+        // not a capacity failure.
+        iterator iter = find(key_value_pair.first);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(unordered_map_full));
+        }
+
+        result.first = iter;
+        return result;
+      }
 
       const key_type& key = key_value_pair.first;
 
@@ -1050,7 +1062,19 @@ namespace etl
     {
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
+      if (full())
+      {
+        // An existing key does not require a free node, so inserting it is
+        // not a capacity failure.
+        iterator iter = find(key_value_pair.first);
+        if (iter == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(unordered_map_full));
+        }
+
+        result.first = iter;
+        return result;
+      }
 
       const key_type& key = key_value_pair.first;
 
@@ -1173,7 +1197,23 @@ namespace etl
     {
       ETL_OR_STD::pair<iterator, bool> result(end(), false);
 
-      ETL_ASSERT(!full(), ETL_ERROR(unordered_map_full));
+      if (full())
+      {
+        // An existing key does not require a free node, so emplacing it is not
+        // a capacity failure. Construct a temporary to obtain its key and only
+        // emit unordered_map_full if the key is not already present. This keeps
+        // emplace consistent with insert when the unordered_map is full.
+        value_type temp_value(etl::forward<Args>(args)...);
+        iterator   position = find(temp_value.first);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(unordered_map_full));
+        }
+
+        result.first = position;
+        return result;
+      }
 
       // Construct the value in a temporary node to get the key for hashing.
       node_t* node = allocate_data_node();

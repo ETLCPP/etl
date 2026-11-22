@@ -8,7 +8,8 @@ title: "flags"
 {{< /callout >}}
 
 Provides a wrapper around a set of binary flags.  
-Supports compile time and runtime variants  
+Supports compile time and runtime variants.  
+Trivially copyable: C++11 and later  
 
 ```cpp
 template <typename T, T MASK = etl::integral_limits<T>::max>

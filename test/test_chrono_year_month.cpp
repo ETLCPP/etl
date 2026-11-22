@@ -215,5 +215,16 @@ namespace
       CHECK_TRUE((dys + ym == Chrono::year_month(ym.year() + dys, ym.month())));
       CHECK_TRUE((ym - dys == Chrono::year_month(ym.year() - dys, ym.month())));
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::year_month>::value);
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::year_month>::value);
+  #endif
+    }
+#endif
   }
 } // namespace

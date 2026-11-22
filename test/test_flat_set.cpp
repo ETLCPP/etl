@@ -798,6 +798,210 @@ namespace
     }
 
     //*************************************************************************
+    // Emplacing a value that is already present returns the existing element,
+    // whether or not the set is full. In C++03 each number of constructor
+    // arguments has its own overload.
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_returns_existing_element)
+    {
+      Data1 data0;
+      Data1 data1;
+      Data2 data2;
+      Data3 data3;
+      Data4 data4;
+
+      for (size_t full = 0; full < 2; ++full)
+      {
+        data0.clear();
+        data1.clear();
+        data2.clear();
+        data3.clear();
+        data4.clear();
+
+        data0.emplace(); // D1() is "a"
+        data1.emplace("b");
+        data2.emplace("b", "c");
+        data3.emplace("b", "c", "d");
+        data4.emplace("b", "c", "d", "e");
+
+        if (full == 1)
+        {
+          for (size_t i = 1; i < SIZE; ++i)
+          {
+            const std::string s0(1, char('b' + i));
+            const std::string s1(1, char('c' + i));
+            const std::string s2(1, char('d' + i));
+            const std::string s3(1, char('e' + i));
+
+            data0.emplace(s0);
+            data1.emplace(s0);
+            data2.emplace(s0, s1);
+            data3.emplace(s0, s1, s2);
+            data4.emplace(s0, s1, s2, s3);
+          }
+
+          CHECK(data0.full());
+          CHECK(data1.full());
+          CHECK(data2.full());
+          CHECK(data3.full());
+          CHECK(data4.full());
+        }
+
+        const size_t size0 = data0.size();
+        const size_t size1 = data1.size();
+        const size_t size2 = data2.size();
+        const size_t size3 = data3.size();
+        const size_t size4 = data4.size();
+
+        ETL_OR_STD::pair<Data1::iterator, bool> result0 = data0.emplace();
+        CHECK(result0.first == data0.find(D1()));
+        CHECK(result0.first != data0.end());
+        CHECK(!result0.second);
+
+        ETL_OR_STD::pair<Data1::iterator, bool> result1 = data1.emplace("b");
+        CHECK(result1.first == data1.find(D1("b")));
+        CHECK(result1.first != data1.end());
+        CHECK(!result1.second);
+
+        ETL_OR_STD::pair<Data2::iterator, bool> result2 = data2.emplace("b", "c");
+        CHECK(result2.first == data2.find(D2("b", "c")));
+        CHECK(result2.first != data2.end());
+        CHECK(!result2.second);
+
+        ETL_OR_STD::pair<Data3::iterator, bool> result3 = data3.emplace("b", "c", "d");
+        CHECK(result3.first == data3.find(D3("b", "c", "d")));
+        CHECK(result3.first != data3.end());
+        CHECK(!result3.second);
+
+        ETL_OR_STD::pair<Data4::iterator, bool> result4 = data4.emplace("b", "c", "d", "e");
+        CHECK(result4.first == data4.find(D4("b", "c", "d", "e")));
+        CHECK(result4.first != data4.end());
+        CHECK(!result4.second);
+
+        CHECK_EQUAL(size0, data0.size());
+        CHECK_EQUAL(size1, data1.size());
+        CHECK_EQUAL(size2, data2.size());
+        CHECK_EQUAL(size3, data3.size());
+        CHECK_EQUAL(size4, data4.size());
+      }
+    }
+
+    //*************************************************************************
+    // A default-constructible value that cannot be copied must still be
+    // emplaceable into a full set. In C++03 a copy-initialised temporary
+    // would need an accessible copy constructor.
+    class NonCopyable
+    {
+    public:
+
+      NonCopyable()
+        : value(0)
+      {
+      }
+
+      bool operator<(const NonCopyable& other) const
+      {
+        return value < other.value;
+      }
+
+    private:
+
+      NonCopyable(const NonCopyable&);
+      NonCopyable& operator=(const NonCopyable&);
+
+      int value;
+    };
+
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_non_copyable_value_when_full)
+    {
+      typedef etl::flat_set<NonCopyable, 1> DataNC;
+
+      DataNC data;
+
+      data.emplace();
+      CHECK(data.full());
+
+      ETL_OR_STD::pair<DataNC::iterator, bool> result = data.emplace();
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK_EQUAL(1U, data.size());
+    }
+
+    //*************************************************************************
+    // Emplacing from constructor arguments takes a different code path from
+    // emplacing a value_type, and in C++03 a separate overload for each
+    // number of arguments.
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_from_arguments_when_full)
+    {
+      Data1 data1;
+      Data2 data2;
+      Data3 data3;
+      Data4 data4;
+
+      data1.emplace(); // D1() is "a"
+
+      for (size_t i = 0; i < SIZE; ++i)
+      {
+        const std::string s0(1, char('a' + i));
+        const std::string s1(1, char('b' + i));
+        const std::string s2(1, char('c' + i));
+        const std::string s3(1, char('d' + i));
+
+        if (i != 0)
+        {
+          data1.emplace(s0);
+        }
+
+        data2.emplace(s0, s1);
+        data3.emplace(s0, s1, s2);
+        data4.emplace(s0, s1, s2, s3);
+      }
+
+      CHECK(data1.full());
+      CHECK(data2.full());
+      CHECK(data3.full());
+      CHECK(data4.full());
+
+      // Existing values: no exception, and the existing element is returned.
+      ETL_OR_STD::pair<Data1::iterator, bool> result1 = data1.emplace();
+      CHECK(result1.first != data1.end());
+      CHECK(!result1.second);
+      CHECK_EQUAL(std::string("a"), result1.first->a);
+
+      result1 = data1.emplace("c");
+      CHECK(result1.first != data1.end());
+      CHECK(!result1.second);
+      CHECK_EQUAL(std::string("c"), result1.first->a);
+
+      ETL_OR_STD::pair<Data2::iterator, bool> result2 = data2.emplace("c", "d");
+      CHECK(result2.first != data2.end());
+      CHECK(!result2.second);
+      CHECK_EQUAL(std::string("c"), result2.first->a);
+
+      ETL_OR_STD::pair<Data3::iterator, bool> result3 = data3.emplace("c", "d", "e");
+      CHECK(result3.first != data3.end());
+      CHECK(!result3.second);
+      CHECK_EQUAL(std::string("c"), result3.first->a);
+
+      ETL_OR_STD::pair<Data4::iterator, bool> result4 = data4.emplace("c", "d", "e", "f");
+      CHECK(result4.first != data4.end());
+      CHECK(!result4.second);
+      CHECK_EQUAL(std::string("c"), result4.first->a);
+
+      // New values still report that the set is full.
+      CHECK_THROW(data1.emplace("z"), etl::flat_set_full);
+      CHECK_THROW(data2.emplace("y", "z"), etl::flat_set_full);
+      CHECK_THROW(data3.emplace("x", "y", "z"), etl::flat_set_full);
+      CHECK_THROW(data4.emplace("w", "x", "y", "z"), etl::flat_set_full);
+
+      // The sets must be unchanged.
+      CHECK_EQUAL(SIZE, data1.size());
+      CHECK_EQUAL(SIZE, data2.size());
+      CHECK_EQUAL(SIZE, data3.size());
+      CHECK_EQUAL(SIZE, data4.size());
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_erase_key)
     {
       Compare_DataNDC compare_data(initial_data.begin(), initial_data.end());

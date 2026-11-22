@@ -103,5 +103,16 @@ namespace
       CHECK_TRUE(ym1 != ym3);  // Different month
       CHECK_TRUE(ym1 != ym4);  // Different day
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::year_month_weekday_last>::value);
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::year_month_weekday_last>::value);
+  #endif
+    }
+#endif
   }
 } // namespace
