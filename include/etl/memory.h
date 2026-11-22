@@ -2326,8 +2326,8 @@ namespace etl
 
     //*********************************
     template <typename U>
-    ETL_CONSTEXPR default_delete(const default_delete<U>&, typename etl::enable_if<etl::is_convertible<U*, T (*)[]>::value, void>::type* = 0)
-      ETL_NOEXCEPT
+    ETL_CONSTEXPR default_delete(const default_delete<U[]>&,
+                             typename etl::enable_if<etl::is_convertible<U (*)[], T (*)[]>::value, void>::type* = 0) ETL_NOEXCEPT
     {
     }
 

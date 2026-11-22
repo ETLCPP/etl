@@ -1208,7 +1208,7 @@ namespace
     TEST(test_unique_ptr_converting_move_array_construction)
     {
       etl::unique_ptr<int[]> up1(new int[4]);
-      std::iota(&up1[0], &up1[4], 0);
+      std::iota(up1.get(), up1.get() + 4, 0);
       etl::unique_ptr<const int[]> up2(std::move(up1));
 
       CHECK(up1.get() == nullptr);
@@ -1264,6 +1264,204 @@ namespace
       CHECK(!(std::is_constructible<etl::unique_ptr<int, Deleter>, etl::unique_ptr<int, OtherDeleter>&&>::value));
       CHECK(!(std::is_constructible<etl::unique_ptr<int, Deleter&>, etl::unique_ptr<int, Deleter>&&>::value));
       CHECK(!(std::is_constructible<etl::unique_ptr<int[], Deleter>, etl::unique_ptr<int[], OtherDeleter>&&>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_construction_with_stateful_deleter)
+    {
+      struct Deleter
+      {
+        Deleter(int id_, int* count_)
+          : id(id_)
+          , count(count_)
+        {
+        }
+
+        void operator()(const int* p) const
+        {
+          ++*count;
+          delete p;
+        }
+
+        int  id;
+        int* count;
+      };
+
+      int count = 0;
+
+      {
+        etl::unique_ptr<int, Deleter>       up1(new int(1), Deleter(42, &count));
+        etl::unique_ptr<const int, Deleter> up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK_EQUAL(1, *up2);
+        CHECK_EQUAL(42, up2.get_deleter().id);
+        CHECK(up2.get_deleter().count == &count);
+        CHECK_EQUAL(0, count);
+      }
+
+      // The moved deleter released the object, and the moved-from pointer released nothing.
+      CHECK_EQUAL(1, count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_array_construction_with_stateful_deleter)
+    {
+      struct Deleter
+      {
+        Deleter(int id_, int* count_)
+          : id(id_)
+          , count(count_)
+        {
+        }
+
+        void operator()(const int* p) const
+        {
+          ++*count;
+          delete[] p;
+        }
+
+        int  id;
+        int* count;
+      };
+
+      int count = 0;
+
+      {
+        etl::unique_ptr<int[], Deleter>       up1(new int[4], Deleter(42, &count));
+        etl::unique_ptr<const int[], Deleter> up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK(up2.get() != nullptr);
+        CHECK_EQUAL(42, up2.get_deleter().id);
+        CHECK(up2.get_deleter().count == &count);
+        CHECK_EQUAL(0, count);
+      }
+
+      CHECK_EQUAL(1, count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_construction_with_converting_deleter)
+    {
+      struct ConvertingBase
+      {
+        virtual ~ConvertingBase() {}
+      };
+
+      struct ConvertingDerived : public ConvertingBase
+      {
+      };
+
+      struct DerivedDeleter
+      {
+        DerivedDeleter(int id_, int* count_)
+          : id(id_)
+          , count(count_)
+        {
+        }
+
+        void operator()(ConvertingDerived* p) const
+        {
+          ++*count;
+          delete p;
+        }
+
+        int  id;
+        int* count;
+      };
+
+      struct BaseDeleter
+      {
+        // Implicit conversion from the source deleter, keeping its state.
+        BaseDeleter(const DerivedDeleter& other)
+          : id(other.id)
+          , count(other.count)
+        {
+        }
+
+        void operator()(ConvertingBase* p) const
+        {
+          ++*count;
+          delete p;
+        }
+
+        int  id;
+        int* count;
+      };
+
+      CHECK((std::is_constructible<etl::unique_ptr<ConvertingBase, BaseDeleter>, etl::unique_ptr<ConvertingDerived, DerivedDeleter>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingDerived, DerivedDeleter>, etl::unique_ptr<ConvertingBase, BaseDeleter>&&>::value));
+
+      int count = 0;
+
+      {
+        etl::unique_ptr<ConvertingDerived, DerivedDeleter> up1(new ConvertingDerived, DerivedDeleter(7, &count));
+        ConvertingDerived*                                 p = up1.get();
+        etl::unique_ptr<ConvertingBase, BaseDeleter>       up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK(up2.get() == p);
+        CHECK_EQUAL(7, up2.get_deleter().id);
+        CHECK(up2.get_deleter().count == &count);
+        CHECK_EQUAL(0, count);
+      }
+
+      CHECK_EQUAL(1, count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_construction_with_reference_deleter)
+    {
+      struct ConvertingBase
+      {
+        virtual ~ConvertingBase() {}
+      };
+
+      struct ConvertingDerived : public ConvertingBase
+      {
+      };
+
+      struct Deleter
+      {
+        void operator()(ConvertingBase* p)
+        {
+          ++count;
+          delete p;
+        }
+
+        int count = 0;
+      };
+
+      struct OtherDeleter
+      {
+        void operator()(ConvertingBase* p)
+        {
+          delete p;
+        }
+      };
+
+      // A reference deleter only accepts the same reference type.
+      CHECK((std::is_constructible<etl::unique_ptr<ConvertingBase, Deleter&>, etl::unique_ptr<ConvertingDerived, Deleter&>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingBase, Deleter&>, etl::unique_ptr<ConvertingDerived, Deleter>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingBase, Deleter&>, etl::unique_ptr<ConvertingDerived, const Deleter&>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingBase, Deleter&>, etl::unique_ptr<ConvertingDerived, OtherDeleter&>&&>::value));
+
+      Deleter deleter;
+
+      {
+        etl::unique_ptr<ConvertingDerived, Deleter&> up1(new ConvertingDerived, deleter);
+        ConvertingDerived*                           p = up1.get();
+        etl::unique_ptr<ConvertingBase, Deleter&>    up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK(up2.get() == p);
+        // Both refer to the original deleter object.
+        CHECK(&up2.get_deleter() == &deleter);
+        CHECK_EQUAL(0, deleter.count);
+      }
+
+      CHECK_EQUAL(1, deleter.count);
     }
 
     //*************************************************************************
@@ -3483,6 +3681,10 @@ namespace
       CHECK(!(std::is_convertible<etl::default_delete<DeleterDerived[]>, etl::default_delete<DeleterBase[]> >::value));
       CHECK(!(std::is_convertible<etl::default_delete<long>, etl::default_delete<int> >::value));
       CHECK(!(std::is_convertible<etl::default_delete<DeleterBase>, etl::default_delete<DeleterDerived> >::value));
+
+      // An array of known bound is not an array of unknown bound.
+      CHECK(!(std::is_convertible<etl::default_delete<int[2]>, etl::default_delete<int[]> >::value));
+      CHECK(!(std::is_convertible<etl::default_delete<int[2]>, etl::default_delete<const int[]> >::value));
     }
 
 #if ETL_USING_CPP14
