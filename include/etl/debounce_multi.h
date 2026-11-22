@@ -112,8 +112,8 @@ namespace etl
     //***************************************************************************
     void reset(value_type initial = 0)
     {
-      sample     = initial;
-      state_low  = initial;
+      sample     = initial & field_mask();
+      state_low  = sample;
       state_high = 0;
       changed    = 0;
       bit_index  = 0;
