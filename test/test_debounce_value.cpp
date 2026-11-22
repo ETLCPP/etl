@@ -140,23 +140,43 @@ namespace
     //*************************************************************************
     TEST(test_debounce_values_from_an_input_stream)
     {
-      std::vector<uint8_t> input = {1, 2, 3, 3, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6};
+      std::vector<uint8_t> input = {1, 2, 3, 3, 2, 2, 2, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6};
       std::vector<uint8_t> output;
-      std::vector<uint8_t> expected = {2, 3, 4, 6};
+      std::vector<int>     actual_update_state;
+      std::vector<int>     actual_changed_state;
+      std::vector<int>     actual_stable_state;
+      std::vector<uint8_t> expected_value   = {2, 3, 4, 6};
+      std::vector<int>     expected_update_state  = {0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+      std::vector<int>     expected_changed_state = {0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+      std::vector<int>     expected_stable_state  = {0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1};
 
-      const uint8_t                         Stable_Count = 3;
+      const uint8_t Stable_Count = 3;
+
       etl::debounce_value<uint8_t, uint8_t> value(0, Stable_Count);
 
       for (uint8_t v : input)
       {
-        if (value.update(v))
+        bool changed = value.update(v);
+
+        if (changed)
         {
           output.push_back(value.get());
         }
+
+        actual_update_state.push_back(changed);
+        actual_changed_state.push_back(value.has_changed());
+        actual_stable_state.push_back(value.is_stable());
       }
 
-      CHECK_EQUAL(expected.size(), output.size());
-      CHECK_ARRAY_EQUAL(expected.data(), output.data(), expected.size());
+      CHECK_EQUAL(expected_value.size(), output.size());
+      CHECK_EQUAL(expected_update_state.size(), actual_update_state.size());
+      CHECK_EQUAL(expected_changed_state.size(), actual_changed_state.size());
+      CHECK_EQUAL(expected_stable_state.size(), actual_stable_state.size());
+
+      CHECK_ARRAY_EQUAL(expected_value.data(), output.data(), expected_value.size());
+      CHECK_ARRAY_EQUAL(expected_update_state.data(), actual_update_state.data(), expected_update_state.size());
+      CHECK_ARRAY_EQUAL(expected_changed_state.data(), actual_changed_state.data(), expected_changed_state.size());
+      CHECK_ARRAY_EQUAL(expected_stable_state.data(), actual_stable_state.data(), expected_stable_state.size());
     }
   }
 } // namespace
