@@ -1139,6 +1139,70 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_nullptr_comparison_tests)
+    {
+      int  value = 1;
+      int* p     = &value;
+
+      etl::unique_ptr<int, NoDelete<int>> up_null;
+      etl::unique_ptr<int, NoDelete<int>> up(p);
+
+      // The standard library is the reference for the pointer ordering.
+      std::unique_ptr<int, NoDelete<int>> sup_null;
+      std::unique_ptr<int, NoDelete<int>> sup(p);
+
+      CHECK(up_null == nullptr);
+      CHECK(nullptr == up_null);
+      CHECK(!(up_null != nullptr));
+      CHECK(!(nullptr != up_null));
+      CHECK(!(up == nullptr));
+      CHECK(!(nullptr == up));
+      CHECK(up != nullptr);
+      CHECK(nullptr != up);
+
+      CHECK_EQUAL(sup_null < nullptr, up_null < nullptr);
+      CHECK_EQUAL(nullptr < sup_null, nullptr < up_null);
+      CHECK_EQUAL(sup_null <= nullptr, up_null <= nullptr);
+      CHECK_EQUAL(nullptr <= sup_null, nullptr <= up_null);
+      CHECK_EQUAL(sup_null > nullptr, up_null > nullptr);
+      CHECK_EQUAL(nullptr > sup_null, nullptr > up_null);
+      CHECK_EQUAL(sup_null >= nullptr, up_null >= nullptr);
+      CHECK_EQUAL(nullptr >= sup_null, nullptr >= up_null);
+
+      CHECK_EQUAL(sup < nullptr, up < nullptr);
+      CHECK_EQUAL(nullptr < sup, nullptr < up);
+      CHECK_EQUAL(sup <= nullptr, up <= nullptr);
+      CHECK_EQUAL(nullptr <= sup, nullptr <= up);
+      CHECK_EQUAL(sup > nullptr, up > nullptr);
+      CHECK_EQUAL(nullptr > sup, nullptr > up);
+      CHECK_EQUAL(sup >= nullptr, up >= nullptr);
+      CHECK_EQUAL(nullptr >= sup, nullptr >= up);
+
+      // A null pointer is never less than, or greater than, nullptr.
+      CHECK(!(up_null < nullptr));
+      CHECK(!(nullptr < up_null));
+      CHECK(up_null <= nullptr);
+      CHECK(up_null >= nullptr);
+
+      // Arrays.
+      etl::unique_ptr<int[]> upa_null;
+      etl::unique_ptr<int[]> upa(new int[2]);
+
+      CHECK(upa_null == nullptr);
+      CHECK(nullptr == upa_null);
+      CHECK(upa != nullptr);
+      CHECK(nullptr != upa);
+      CHECK(!(upa_null < nullptr));
+      CHECK(upa_null <= nullptr);
+      CHECK(upa_null >= nullptr);
+      CHECK((upa < nullptr) != (upa > nullptr));
+      CHECK((upa <= nullptr) == (upa < nullptr));
+      CHECK((upa >= nullptr) == (upa > nullptr));
+      CHECK((nullptr < upa) == (upa > nullptr));
+      CHECK((nullptr > upa) == (upa < nullptr));
+    }
+
+    //*************************************************************************
     TEST(test_unique_ptr_from_array_pointer_construction)
     {
       etl::unique_ptr<int[]> up(new int[4]);
