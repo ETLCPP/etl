@@ -1983,5 +1983,33 @@ namespace
 
       CHECK_EQUAL(1, ImmobileError::destructions);
     }
+
+    //*************************************************************************
+    TEST(test_expected_error_throws_when_no_error)
+    {
+      Expected expected;
+
+      CHECK_THROW(Error error = expected.error(), etl::expected_no_error);
+      CHECK_THROW(Error error = static_cast<Expected&&>(expected).error(), etl::expected_no_error);
+
+      const Expected cexpected;
+
+      CHECK_THROW(Error error = cexpected.error(), etl::expected_no_error);
+      CHECK_THROW(Error error = static_cast<const Expected&&>(cexpected).error(), etl::expected_no_error);
+    }
+
+    //*************************************************************************
+    TEST(test_void_value_expected_error_throws_when_no_error)
+    {
+      ExpectedV expected;
+
+      CHECK_THROW(Error error = expected.error(), etl::expected_no_error);
+      CHECK_THROW(Error error = static_cast<ExpectedV&&>(expected).error(), etl::expected_no_error);
+
+      const ExpectedV cexpected;
+
+      CHECK_THROW(Error error = cexpected.error(), etl::expected_no_error);
+      CHECK_THROW(Error error = static_cast<const ExpectedV&&>(cexpected).error(), etl::expected_no_error);
+    }
   }
 } // namespace

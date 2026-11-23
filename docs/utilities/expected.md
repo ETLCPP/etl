@@ -559,11 +559,11 @@ Before: C++11
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14
-error_type& error()& ETL_NOEXCEPT
+error_type& error()&
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Since: C++11
 
 ---
@@ -571,11 +571,11 @@ Since: C++11
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14
-const error_type& error() const& ETL_NOEXCEPT
+const error_type& error() const&
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Since: C++11
 
 ---
@@ -583,11 +583,11 @@ Since: C++11
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14
-error_type&& error() && ETL_NOEXCEPT
+error_type&& error() &&
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Since: C++11
 
 ---
@@ -595,11 +595,11 @@ Since: C++11
 ```cpp
 ETL_NODISCARD
 ETL_CONSTEXPR14
-const error_type&& error() const&& ETL_NOEXCEPT
+const error_type&& error() const&&
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Since: C++11
 
 ---
@@ -609,7 +609,7 @@ error_type& error() const
 ```
 **Description**  
 Returns the error.
-Undefined if has_value() returns true.
+Undefined behaviour if has_value() is true and the configured assert does not throw or abort (e.g. ETL_NO_CHECKS, a release build without exceptions, or a returning assert handler)
 Before: C++11
 
 ---
