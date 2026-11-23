@@ -2295,6 +2295,8 @@ namespace etl
     //*********************************
     void operator()(T* p) const ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(!etl::is_void<T>::value, "etl::default_delete cannot delete a void pointer");
+
       delete p;
     }
   };
