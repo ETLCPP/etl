@@ -2816,6 +2816,93 @@ namespace etl
   {
     return !(lhs < rhs);
   }
+
+  //*****************************************************************************
+  // Comparison operators for unique_ptr and nullptr
+  //*****************************************************************************
+  template <typename T, typename TDeleter>
+  bool operator==(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t) ETL_NOEXCEPT
+  {
+    return !lhs;
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator==(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs) ETL_NOEXCEPT
+  {
+    return !rhs;
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator!=(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t) ETL_NOEXCEPT
+  {
+    return static_cast<bool>(lhs);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator!=(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs) ETL_NOEXCEPT
+  {
+    return static_cast<bool>(rhs);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator<(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t)
+  {
+    return lhs.get() < typename etl::unique_ptr<T, TDeleter>::pointer();
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator<(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs)
+  {
+    return typename etl::unique_ptr<T, TDeleter>::pointer() < rhs.get();
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator<=(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t)
+  {
+    return !(ETL_NULLPTR < lhs);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator<=(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs)
+  {
+    return !(rhs < ETL_NULLPTR);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator>(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t)
+  {
+    return ETL_NULLPTR < lhs;
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator>(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs)
+  {
+    return rhs < ETL_NULLPTR;
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator>=(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t)
+  {
+    return !(lhs < ETL_NULLPTR);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator>=(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs)
+  {
+    return !(ETL_NULLPTR < rhs);
+  }
+
   //*****************************************************************************
   /// Default construct an item at address p.
   ///\ingroup memory
