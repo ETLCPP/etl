@@ -541,16 +541,45 @@ namespace etl
   //***************************************************************************
   ///\brief A convenience wrapper for creating a @ref pair from two objects.
   ///
+  /// As std::make_pair, the element types are decayed, and an
+  /// etl::reference_wrapper<T> argument produces a T& element.
+  ///
   ///\param a The first object.
   ///\param b The second object.
   ///
   ///\return A newly-constructed @ref pair object of the appropriate type.
   //***************************************************************************
 #if ETL_USING_CPP11
-  template <typename T1, typename T2>
-  inline ETL_CONSTEXPR14 pair<T1, T2> make_pair(T1&& a, T2&& b)
+  // Defined in functional.h, which includes this header.
+  template <typename T>
+  class reference_wrapper;
+
+  namespace private_utility
   {
-    return pair<T1, T2>(etl::forward<T1>(a), etl::forward<T2>(b));
+    template <typename T>
+    struct make_pair_unwrap
+    {
+      typedef T type;
+    };
+
+    template <typename T>
+    struct make_pair_unwrap<etl::reference_wrapper<T> >
+    {
+      typedef T& type;
+    };
+
+    template <typename T>
+    struct make_pair_type : make_pair_unwrap<typename etl::decay<T>::type>
+    {
+    };
+  } // namespace private_utility
+
+  template <typename T1, typename T2>
+  inline ETL_CONSTEXPR14 pair<typename private_utility::make_pair_type<T1>::type, typename private_utility::make_pair_type<T2>::type> make_pair(T1&& a,
+                                                                                                                                         T2&& b)
+  {
+    return pair<typename private_utility::make_pair_type<T1>::type, typename private_utility::make_pair_type<T2>::type>(etl::forward<T1>(a),
+                                                                                                                        etl::forward<T2>(b));
   }
 #else
   template <typename T1, typename T2>
