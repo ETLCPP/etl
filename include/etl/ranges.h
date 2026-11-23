@@ -6219,8 +6219,29 @@ namespace etl
         C operator()(Range&& r)
         {
           using result_type = C;
+          using range_type  = etl::remove_cvref_t<Range>;
 
-          result_type result;
+          // As std::ranges::to does, construct the result directly from the range when possible.
+          // An rvalue container is then moved as a whole, and an lvalue container is copied.
+          // ETL views are excluded: view_interface converts implicitly to bool, which would
+          // otherwise select a container's size constructor.
+          if constexpr (!etl::is_base_of_v<etl::ranges::view_interface<range_type>, range_type> && etl::is_constructible_v<result_type, Range>)
+          {
+            return result_type(etl::forward<Range>(r));
+          }
+          else
+          {
+            return from_elements(r);
+          }
+        }
+
+      private:
+
+        // Kept separate so that the named result is not returned alongside another object, which would prevent NRVO.
+        template <class Range>
+        static C from_elements(Range& r)
+        {
+          C result;
 
           // Forward each element with the value category the range gives it, as std::ranges::to does.
           // An lvalue range must be copied, not moved from. Use views::as_rvalue to move the elements.
