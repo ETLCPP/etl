@@ -6200,23 +6200,10 @@ namespace etl
 
         to_range_adapter_closure() = default;
 
+        // A single const overload serves both const and non-const closures, so every caller gets
+        // the same copy/move behaviour.
         template <class Range>
-        C operator()(const Range& r) const
-        {
-          using result_type = C;
-
-          result_type result;
-
-          for (auto i : r)
-          {
-            result.push_back(i);
-          }
-
-          return result;
-        }
-
-        template <class Range>
-        C operator()(Range&& r)
+        C operator()(Range&& r) const
         {
           using result_type = C;
           using range_type  = etl::remove_cvref_t<Range>;
