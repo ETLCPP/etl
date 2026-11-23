@@ -19,20 +19,20 @@ variable empty to skip that group unless another group requires it):
 
 | Variable | Generated headers |
 | --- | --- |
-| `ETL_NUMBER_OF_HANDLERS` | `fsm`, `message_router`, `message_packet` |
+| `ETL_NUMBER_OF_MESSAGE_HANDLERS` | `fsm`, `message_router`, `message_packet` |
 | `ETL_NUMBER_OF_TYPES` | `largest`, `smallest`, `type_lookup`, `type_select`, `variant_pool` |
 | `ETL_IS_ONE_OF` | `type_traits` |
 
 For example:
 
 ```sh
-cmake -S . -B build -DETL_NUMBER_OF_HANDLERS=32
+cmake -S . -B build -DETL_NUMBER_OF_MESSAGE_HANDLERS=32
 ```
 
 For `add_subdirectory` or `FetchContent`, set the variables before adding ETL:
 
 ```cmake
-set(ETL_NUMBER_OF_HANDLERS 32 CACHE STRING "ETL handler capacity")
+set(ETL_NUMBER_OF_MESSAGE_HANDLERS 32 CACHE STRING "ETL message handler capacity")
 ```
 
 Unset type limits follow the handler count, and unset `is_one_of` limits follow

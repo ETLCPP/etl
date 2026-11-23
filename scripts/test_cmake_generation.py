@@ -57,7 +57,7 @@ int main()
     (source / "CMakeLists.txt").write_text('''
 cmake_minimum_required(VERSION 3.10)
 project(generation_consumer LANGUAGES CXX)
-set(ETL_NUMBER_OF_HANDLERS 32)
+set(ETL_NUMBER_OF_MESSAGE_HANDLERS 32)
 add_subdirectory("@ROOT@" etl-build)
 add_executable(consumer main.cpp)
 set_target_properties(consumer PROPERTIES CXX_STANDARD 98 CXX_STANDARD_REQUIRED YES)

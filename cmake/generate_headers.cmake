@@ -5,7 +5,7 @@ function(etl_generate_headers)
     set(source_directory "${CMAKE_CURRENT_SOURCE_DIR}/include")
     # Validate requested capacities. With no settings, leave the headers untouched.
     set(generation_enabled FALSE)
-    foreach(option ETL_NUMBER_OF_HANDLERS ETL_NUMBER_OF_TYPES ETL_IS_ONE_OF)
+    foreach(option ETL_NUMBER_OF_MESSAGE_HANDLERS ETL_NUMBER_OF_TYPES ETL_IS_ONE_OF)
         if(NOT DEFINED ${option})
             set(${option} "" CACHE STRING
                 "ETL generator capacity (empty skips this group unless required by another)")
@@ -22,7 +22,7 @@ function(etl_generate_headers)
         # For example, 32 handlers also require at least 32 types and is_one_of entries.
         # Inferred values stay local instead of being saved in the CMake cache.
         set(required_capacity 16)
-        foreach(option ETL_NUMBER_OF_HANDLERS ETL_NUMBER_OF_TYPES ETL_IS_ONE_OF)
+        foreach(option ETL_NUMBER_OF_MESSAGE_HANDLERS ETL_NUMBER_OF_TYPES ETL_IS_ONE_OF)
             if("${${option}}" STREQUAL "")
                 if(required_capacity GREATER 16)
                     set(${option} "${required_capacity}")
@@ -78,7 +78,7 @@ function(etl_generate_headers)
 
         # Generate directly into include/etl/private, just like generate.bat.
         # Match each Cog parameter to its capacity and generator templates.
-        set(Handlers_capacity "${ETL_NUMBER_OF_HANDLERS}")
+        set(Handlers_capacity "${ETL_NUMBER_OF_MESSAGE_HANDLERS}")
         set(NTypes_capacity "${ETL_NUMBER_OF_TYPES}")
         set(IsOneOf_capacity "${ETL_IS_ONE_OF}")
         set(Handlers_headers fsm_fwd_decl_cpp03 fsm_friend_decl_cpp03 fsm_cpp03

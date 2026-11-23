@@ -207,7 +207,7 @@ reading its version from `version.txt` instead of `git describe`, so no extra co
 
 ### Header generation with CMake
 
-Set `ETL_NUMBER_OF_HANDLERS` to generate larger C++03 capacities with CMake.
+Set `ETL_NUMBER_OF_MESSAGE_HANDLERS` to generate larger C++03 capacities with CMake.
 See [header generation options and requirements](docs/getting-started/generators.md#header-generation-with-cmake).
 
 ## Profile definition
