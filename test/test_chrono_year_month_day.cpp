@@ -107,13 +107,13 @@ namespace
       Chrono::year_month_day ym3{Chrono::year(2000), Chrono::February, Chrono::day(1)};
       Chrono::year_month_day ym4{Chrono::year(2000), Chrono::January, Chrono::day(2)};
 
-      CHECK_TRUE((ym1 <=> ym1) == std::strong_ordering::equal);
-      CHECK_TRUE((ym1 <=> ym2) == std::strong_ordering::less);
-      CHECK_TRUE((ym2 <=> ym1) == std::strong_ordering::greater);
-      CHECK_TRUE((ym1 <=> ym3) == std::strong_ordering::less);
-      CHECK_TRUE((ym3 <=> ym1) == std::strong_ordering::greater);
-      CHECK_TRUE((ym1 <=> ym4) == std::strong_ordering::less);
-      CHECK_TRUE((ym4 <=> ym1) == std::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym1) == etl::strong_ordering::equal);
+      CHECK_TRUE((ym1 <=> ym2) == etl::strong_ordering::less);
+      CHECK_TRUE((ym2 <=> ym1) == etl::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym3) == etl::strong_ordering::less);
+      CHECK_TRUE((ym3 <=> ym1) == etl::strong_ordering::greater);
+      CHECK_TRUE((ym1 <=> ym4) == etl::strong_ordering::less);
+      CHECK_TRUE((ym4 <=> ym1) == etl::strong_ordering::greater);
     }
 #endif
 
@@ -225,5 +225,16 @@ namespace
       CHECK_TRUE(ym1 != ym3);  // Different month
       CHECK_TRUE(ym1 != ym4);  // Different day
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::year_month_day>::value);
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::year_month_day>::value);
+  #endif
+    }
+#endif
   }
 } // namespace

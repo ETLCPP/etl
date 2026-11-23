@@ -4,98 +4,91 @@ title: "timer"
 
 {{< callout type="info">}}
   Header: `timer.h`  
+  Namespace: `etl::timer`  
 {{< /callout >}}
-
 
 Contains definitions common to timers.
 
-## timer
-```cpp
-struct timer
-{
-  // Timer modes.
-  struct mode
-  {
-    enum
-    {
-      SINGLE_SHOT = false,
-      REPEATING   = true
-    };
-
-    typedef bool type;
-  };
-
-  // Timer start status.
-  struct start
-  {
-    enum
-    {
-      DELAYED   = false,
-      IMMEDIATE = true
-    };
-
-    typedef bool type;
-  };
-
-  // Timer id.
-  struct id
-  {
-    enum
-    {
-      NO_TIMER = 255
-    };
-
-    typedef uint_least8_t type;
-  };
-
-  // Timer state.
-  struct state
-  {
-    enum
-    {
-      INACTIVE = 0xFFFFFFFF
-    };
-  };
-};
-```
-
-### mode
+## mode
 **Types**  
 `type`
 The type for timer mode.  
-Defined as `bool`.
 
 **Constants**  
-`SINGLE_SHOT`  
+`No_Mode`  
+When the timer has no mode set.  
+
+`Singe_Shot`  
 The timer expires once and then stops.  
 
-`REPEATING`  
+`Repeating`  
 The timer is restarted after every timeout.  
 
-### start
+---
+
+From: C++11  
+`mode_t` = `mode::type`
+
+## start
 **Types**  
 `type`
-The type for timer start mode.  
-Defined as `bool`.
+The type for timer mode.  
 
 **Constants**  
-`IMMEDIATE`  
+`Immediate`  
 - *Single Shot*  
 The timer is triggered on the next tick. The normal timeout does not occur.  
 
 - *Repeating*  
 The timer is triggered on the next tick and then on subsequent timeouts.  
 
-`DELAYED`  
+`Delayed`  
 The timer is triggered on the timeout.
 
-### id
+---
+
+From: C++11  
+`start_t` = `start::type`
+
+## id
 **Types**  
 `type`  
 The type for timer identifiers.  
-Defined as `uint_least8_t`.
 
 **Constants**  
-`NO_TIMER`  
+`No_Timer`  
 The id of an unregistered timer.
 
+---
+
+From: C++11  
+`id_t` = `id::type`
+
+## interval
+**Types**  
+`type`  
+The type for timer intervals.  
+
+**Constants**  
+`No_Interval`  
+The when the timer has no interval set.
+
+---
+
+From: C++11  
+`interval_t` = `interval::type`
+
+## owner
+
+**Types**  
+`type`  
+The type for timer owners.  
+
+**Constants**  
+`No_Owner`  
+The when the timer node is not registered to a timer controller.
+
+---
+
+From: C++11  
+`owner_t` = `owner::type`

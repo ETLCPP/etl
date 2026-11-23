@@ -37,6 +37,7 @@ SOFTWARE.
 
 #if ETL_USING_CPP11
 
+  #include "compare.h"
   #include "hash.h"
   #include "integral_limits.h"
   #include "type_traits.h"
@@ -89,6 +90,100 @@ namespace etl
   {
     using namespace literals::chrono_literals;
   }
+
+  #if ETL_USING_CPP11
+    #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename TRep, typename TPeriod>
+  struct is_trivially_copyable<etl::chrono::duration<TRep, TPeriod>> : etl::bool_constant<etl::is_trivially_copyable<TRep>::value>
+  {
+  };
+
+  template <typename TClock, typename TDuration>
+  struct is_trivially_copyable<etl::chrono::time_point<TClock, TDuration>> : etl::bool_constant<etl::is_trivially_copyable<TDuration>::value>
+  {
+  };
+
+  template <typename Duration>
+  struct is_trivially_copyable<etl::chrono::hh_mm_ss<Duration>> : etl::bool_constant<etl::is_trivially_copyable<Duration>::value>
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::day> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::month> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::year> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::weekday> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::weekday_indexed> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::weekday_last> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::month_day> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::month_day_last> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::month_weekday> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::month_weekday_last> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::year_month> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::year_month_day> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::year_month_day_last> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::year_month_weekday> : etl::true_type
+  {
+  };
+
+  template <>
+  struct is_trivially_copyable<etl::chrono::year_month_weekday_last> : etl::true_type
+  {
+  };
+    #endif
+  #endif
 } // namespace etl
 
 #endif

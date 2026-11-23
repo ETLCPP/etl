@@ -132,14 +132,7 @@ namespace etl
   #endif
     ETL_STATIC_ASSERT(!etl::is_void<T>::value, "etl::launder argument must not be a void type");
 
-  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
-    #if __has_builtin(__builtin_launder)
-    return __builtin_launder(p);
-    #else
-    return p;
-    #endif
-  #elif ETL_USING_GCC_COMPILER && (ETL_COMPILER_FULL_VERSION >= 70000)
-    // GCC 7, 8 and 9 provide __builtin_launder but not __has_builtin.
+  #if ETL_USING_BUILTIN_LAUNDER
     return __builtin_launder(p);
   #else
     return p;
@@ -400,12 +393,8 @@ namespace etl
   template <size_t N, typename T>
   ETL_NODISCARD ETL_CONSTEXPR T* assume_aligned(T* ptr) ETL_NOEXCEPT
   {
-  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
-    #if __has_builtin(__builtin_assume_aligned)
+  #if ETL_USING_BUILTIN_ASSUME_ALIGNED
     return static_cast<T*>(__builtin_assume_aligned(ptr, N));
-    #else
-    return ptr;
-    #endif
   #else
     return ptr;
   #endif
@@ -932,10 +921,10 @@ namespace etl
   template <typename TInputIterator, typename TOutputIterator>
   TOutputIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
-    #include "etl/private/diagnostic_array_bounds_push.h"
-    #include "etl/private/diagnostic_stringop_overflow_push.h"
+    #include "private/diagnostic_array_bounds_push.h"
+    #include "private/diagnostic_stringop_overflow_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
-    #include "etl/private/diagnostic_pop.h"
+    #include "private/diagnostic_pop.h"
   }
 
   //*****************************************************************************
@@ -949,9 +938,9 @@ namespace etl
   {
     count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
-    #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "private/diagnostic_array_bounds_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
-    #include "etl/private/diagnostic_pop.h"
+    #include "private/diagnostic_pop.h"
   }
   #else
   //*****************************************************************************
@@ -2299,13 +2288,15 @@ namespace etl
 
     //*********************************
     template <typename U>
-    ETL_CONSTEXPR default_delete(const default_delete<U>&) ETL_NOEXCEPT
+    ETL_CONSTEXPR default_delete(const default_delete<U>&, typename etl::enable_if<etl::is_convertible<U*, T*>::value, void>::type* = 0) ETL_NOEXCEPT
     {
     }
 
     //*********************************
     void operator()(T* p) const ETL_NOEXCEPT
     {
+      ETL_STATIC_ASSERT(!etl::is_void<T>::value, "etl::default_delete cannot delete a void pointer");
+
       delete p;
     }
   };
@@ -2326,7 +2317,8 @@ namespace etl
 
     //*********************************
     template <typename U>
-    ETL_CONSTEXPR default_delete(const default_delete<U>&) ETL_NOEXCEPT
+    ETL_CONSTEXPR default_delete(const default_delete<U[]>&,
+                             typename etl::enable_if<etl::is_convertible<U (*)[], T (*)[]>::value, void>::type* = 0) ETL_NOEXCEPT
     {
     }
 
@@ -2337,6 +2329,23 @@ namespace etl
       delete[] p;
     }
   };
+
+#if ETL_USING_CPP11
+  namespace private_unique_ptr
+  {
+    //*********************************
+    /// Checks whether a unique_ptr with deleter TDeleter may be move
+    /// constructed from a unique_ptr with deleter E.
+    /// If TDeleter is a reference then E must be the same type, otherwise E
+    /// must be implicitly convertible to TDeleter.
+    //*********************************
+    template <typename TDeleter, typename E>
+    struct is_compatible_deleter
+      : etl::bool_constant<etl::is_reference<TDeleter>::value ? etl::is_same<E, TDeleter>::value : etl::is_convertible<E, TDeleter>::value>
+    {
+    };
+  } // namespace private_unique_ptr
+#endif
 
   //*****************************************************************************
   /// Unique pointer.
@@ -2368,22 +2377,16 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************
     unique_ptr(unique_ptr&& other) ETL_NOEXCEPT
+      : p(other.release())
+      , deleter(etl::forward<TDeleter>(other.deleter))
     {
-      if (&other != this)
-      {
-        p       = other.release();
-        deleter = etl::move(other.deleter);
-      }
     }
 #else
     //*********************************
     unique_ptr(unique_ptr& other) ETL_NOEXCEPT
+      : p(other.release())
+      , deleter(other.deleter)
     {
-      if (&other != this)
-      {
-        p       = other.release();
-        deleter = other.deleter;
-      }
     }
 #endif
 
@@ -2403,7 +2406,15 @@ namespace etl
     {
     }
 
-    template <typename U, typename E>
+    //*********************************
+    /// Converting move constructor.
+    /// Only enabled if the source manages a single object whose pointer is
+    /// implicitly convertible to this pointer type, and the deleter is
+    /// compatible.
+    template <typename U, typename E,
+              typename etl::enable_if<!etl::is_array<U>::value && etl::is_convertible<typename etl::unique_ptr<U, E>::pointer, pointer>::value
+                                        && private_unique_ptr::is_compatible_deleter<TDeleter, E>::value,
+                                      int>::type = 0>
     unique_ptr(unique_ptr<U, E>&& u) ETL_NOEXCEPT
       : p(u.release())
       , deleter(etl::forward<E>(u.get_deleter()))
@@ -2572,22 +2583,16 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************
     unique_ptr(unique_ptr&& other) ETL_NOEXCEPT
+      : p(other.release())
+      , deleter(etl::forward<TDeleter>(other.deleter))
     {
-      if (&other != this)
-      {
-        p       = other.release();
-        deleter = etl::move(other.deleter);
-      }
     }
 #else
     //*********************************
     unique_ptr(unique_ptr& other) ETL_NOEXCEPT
+      : p(other.release())
+      , deleter(other.deleter)
     {
-      if (&other != this)
-      {
-        p       = other.release();
-        deleter = other.deleter;
-      }
     }
 #endif
 
@@ -2607,7 +2612,16 @@ namespace etl
     {
     }
 
-    template <typename U, typename E>
+    //*********************************
+    /// Converting move constructor.
+    /// Only enabled if the source manages an array whose element type is
+    /// only more cv-qualified than this element type, and the deleter is
+    /// compatible.
+    template <typename U, typename E,
+              typename etl::enable_if<etl::is_array<U>::value
+                                        && etl::is_convertible<typename etl::unique_ptr<U, E>::element_type (*)[], element_type (*)[]>::value
+                                        && private_unique_ptr::is_compatible_deleter<TDeleter, E>::value,
+                                      int>::type = 0>
     unique_ptr(unique_ptr<U, E>&& u) ETL_NOEXCEPT
       : p(u.release())
       , deleter(etl::forward<E>(u.get_deleter()))
@@ -2758,6 +2772,13 @@ namespace etl
 
   //*********************************
   template <typename T1, typename TD1, typename T2, typename TD2>
+  bool operator!=(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
+  {
+    return !(lhs == rhs);
+  }
+
+  //*********************************
+  template <typename T1, typename TD1, typename T2, typename TD2>
   bool operator<(const etl::unique_ptr<T1, TD1>& lhs, const etl::unique_ptr<T2, TD2>& rhs)
   {
     return reinterpret_cast<char*>(lhs.get()) < reinterpret_cast<char*>(rhs.get());
@@ -2783,6 +2804,93 @@ namespace etl
   {
     return !(lhs < rhs);
   }
+
+  //*****************************************************************************
+  // Comparison operators for unique_ptr and nullptr
+  //*****************************************************************************
+  template <typename T, typename TDeleter>
+  bool operator==(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t) ETL_NOEXCEPT
+  {
+    return !lhs;
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator==(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs) ETL_NOEXCEPT
+  {
+    return !rhs;
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator!=(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t) ETL_NOEXCEPT
+  {
+    return static_cast<bool>(lhs);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator!=(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs) ETL_NOEXCEPT
+  {
+    return static_cast<bool>(rhs);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator<(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t)
+  {
+    return lhs.get() < typename etl::unique_ptr<T, TDeleter>::pointer();
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator<(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs)
+  {
+    return typename etl::unique_ptr<T, TDeleter>::pointer() < rhs.get();
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator<=(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t)
+  {
+    return !(ETL_NULLPTR < lhs);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator<=(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs)
+  {
+    return !(rhs < ETL_NULLPTR);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator>(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t)
+  {
+    return ETL_NULLPTR < lhs;
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator>(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs)
+  {
+    return rhs < ETL_NULLPTR;
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator>=(const etl::unique_ptr<T, TDeleter>& lhs, etl::nullptr_t)
+  {
+    return !(lhs < ETL_NULLPTR);
+  }
+
+  //*********************************
+  template <typename T, typename TDeleter>
+  bool operator>=(etl::nullptr_t, const etl::unique_ptr<T, TDeleter>& rhs)
+  {
+    return !(ETL_NULLPTR < rhs);
+  }
+
   //*****************************************************************************
   /// Default construct an item at address p.
   ///\ingroup memory
@@ -3391,10 +3499,10 @@ namespace etl
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_move a non trivially copyable type");
 
 #if ETL_USING_BUILTIN_MEMMOVE
-  #include "etl/private/diagnostic_array_bounds_push.h"
-  #include "etl/private/diagnostic_stringop_overread_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_stringop_overread_push.h"
     __builtin_memmove(reinterpret_cast<void*>(db), reinterpret_cast<const void*>(sb), sizeof(T) * n);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 #else
     ::memmove(reinterpret_cast<void*>(db), reinterpret_cast<const void*>(sb), sizeof(T) * n);
 #endif

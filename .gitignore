@@ -20,7 +20,7 @@ examples/ArmTimerCallbacks/Objects
 examples/ArmTimerCallbacks/DebugConfig
 build-test-Desktop_x86_windows_msvc2017_pe_32bit-Debug/unittest++/src
 buildresults/
-build
+build*/
 subprojects/*
 !subprojects/*.wrap
 
@@ -423,3 +423,4 @@ include/etl/iterator.h~RFfd5eda.TMP
 test/vs2022/Build
 docs/Messaging
 test/vs2026/Build
+test/include

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(etl_unit_tests LANGUAGES CXX)
 
+include(CheckCXXCompilerFlag)
+
 #include(FetchContent)
 #FetchContent_Declare(
 #  googletest
@@ -196,6 +198,7 @@ add_executable(etl_tests
 	test_function.cpp
 	test_functional.cpp
 	test_function_traits.cpp
+	test_future.cpp
 	test_gamma.cpp
 	test_hash.cpp
 	test_hfsm.cpp
@@ -214,6 +217,7 @@ add_executable(etl_tests
 	test_intrusive_list.cpp
 	test_intrusive_queue.cpp
 	test_intrusive_stack.cpp
+	test_intrusive_timer.cpp
 	test_invert.cpp
 	test_invoke.cpp
 	test_io_port.cpp
@@ -231,6 +235,7 @@ add_executable(etl_tests
 	test_map.cpp
 	test_math.cpp
 	test_math_functions.cpp
+	test_meta.cpp
 	test_mean.cpp
 	test_memory.cpp
 	test_mem_cast.cpp
@@ -341,6 +346,9 @@ add_executable(etl_tests
 	test_successor.cpp
 	test_task_scheduler.cpp
 	test_threshold.cpp
+	test_timer_config.cpp
+	test_timer_lists.cpp
+	test_timer_node.cpp
 	test_to_arithmetic.cpp
 	test_to_arithmetic_u16.cpp
 	test_to_arithmetic_u32.cpp
@@ -442,14 +450,14 @@ else()
 	message(STATUS "Compiling for STL")
 endif()
 
-if (ETL_USE_TYPE_TRAITS_BUILTINS)
-	message(STATUS "Compiling for built-in type traits")
-	target_compile_definitions(etl_tests PRIVATE -DETL_USE_TYPE_TRAITS_BUILTINS)
-endif()
-
 if (ETL_USER_DEFINED_TYPE_TRAITS)
 	message(STATUS "Compiling for user defined type traits")
 	target_compile_definitions(etl_tests PRIVATE -DETL_USER_DEFINED_TYPE_TRAITS)
+endif()
+
+if (ETL_DISABLE_BUILTIN_FUNCTIONS)
+	message(STATUS "Compiling with builtin functions disabled")
+	target_compile_definitions(etl_tests PRIVATE -DETL_DISABLE_BUILTIN_FUNCTIONS)
 endif()
 
 if (ETL_MESSAGES_ARE_NOT_VIRTUAL)
@@ -512,6 +520,16 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 			${EXTRA_COMPILE_OPTIONS}
 			)
 	target_link_options(etl_tests PRIVATE ${EXTRA_LINK_OPTIONS})
+
+	if (ETL_CXX_STANDARD MATCHES "26")
+		# -freflection is only accepted when compiling as C++26, so probe with that standard.
+		set(CMAKE_REQUIRED_FLAGS "-std=c++26")
+		check_cxx_compiler_flag(-freflection ETL_GNU_HAS_FREFLECTION)
+		unset(CMAKE_REQUIRED_FLAGS)
+		if (ETL_GNU_HAS_FREFLECTION)
+			target_compile_options(etl_tests PRIVATE -freflection)
+		endif ()
+	endif ()
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")

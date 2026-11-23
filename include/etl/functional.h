@@ -32,6 +32,7 @@ SOFTWARE.
 #define ETL_FUNCTIONAL_INCLUDED
 
 #include "platform.h"
+#include "type_traits.h"
 #include "utility.h"
 
 ///\defgroup functional functional
@@ -58,6 +59,11 @@ namespace etl
     {
     }
 
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR20 reference_wrapper(const reference_wrapper& rhs) ETL_NOEXCEPT = default;
+
+    ETL_CONSTEXPR20 reference_wrapper<T>& operator=(const reference_wrapper& rhs) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR20 reference_wrapper(const reference_wrapper& rhs) ETL_NOEXCEPT
       : t(rhs.t)
     {
@@ -68,6 +74,7 @@ namespace etl
       t = rhs.t;
       return *this;
     }
+#endif
 
     ETL_CONSTEXPR20 T& get() const ETL_NOEXCEPT
     {
@@ -701,6 +708,14 @@ namespace etl
   } // namespace ranges
 #endif
 
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T>
+  struct is_trivially_copyable<etl::reference_wrapper<T>> : etl::true_type
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif

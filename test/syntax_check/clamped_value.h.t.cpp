@@ -37,3 +37,13 @@ etl::clamped_value<double> clamped_double_run_time;
 #if ETL_HAS_COMPILE_TIME_FLOATING_POINT_CLAMPED_VALUE
 etl::clamped_value<float, -1.0f, 1.0f> clamped_float_compile_time;
 #endif
+
+#if ETL_USING_CPP11
+const etl::clamped_value_range<int> referenced_clamped_range(0, 10);
+etl::referenced_clamped_value<int>  referenced_clamped_int(referenced_clamped_range);
+
+  #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+const etl::clamped_value_range<float> referenced_clamped_float_range(-1.0f, 1.0f);
+etl::referenced_clamped_value<float>  referenced_clamped_float(referenced_clamped_float_range);
+  #endif
+#endif

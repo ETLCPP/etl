@@ -52,7 +52,7 @@ jobs:
           cd /workspaces/etl && \
           export CC=gcc && \
           export CXX=g++ && \
-          cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./ && \
+          cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./ && \
           gcc --version && \
           make -j \$(getconf _NPROCESSORS_ONLN) && \
           ./test/etl_tests -v"
@@ -73,7 +73,7 @@ jobs:
           cd /workspaces/etl && \
           export CC=gcc && \
           export CXX=g++ && \
-          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./ && \
+          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF -DETL_CXX_STANDARD=26 ./ && \
           gcc --version && \
           make -j \$(getconf _NPROCESSORS_ONLN) && \
           ./test/etl_tests -v"
@@ -94,7 +94,7 @@ jobs:
           cd /workspaces/etl && \
           export CC=gcc && \
           export CXX=g++ && \
-          cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./ && \
+          cmake -DBUILD_TESTS=ON -DNO_STL=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./ && \
           gcc --version && \
           make -j \$(getconf _NPROCESSORS_ONLN) && \
           ./test/etl_tests -v"
@@ -115,7 +115,7 @@ jobs:
           cd /workspaces/etl && \
           export CC=gcc && \
           export CXX=g++ && \
-          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./ && \
+          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=ON -DETL_CXX_STANDARD=26 ./ && \
           gcc --version && \
           make -j \$(getconf _NPROCESSORS_ONLN) && \
           ./test/etl_tests -v"

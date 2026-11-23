@@ -707,6 +707,7 @@ size_t find(char c, size_t pos = 0) const;
 
 ```cpp
 size_t rfind(const etl::istring& str, size_t pos = npos) const;
+size_t rfind(const etl::string_view& view, size_t pos = npos) const;
 size_t rfind(const char* s, size_t pos = npos) const;
 size_t rfind(const char* s, size_t pos, size_t n) const;
 size_t rfind(char c, size_t pos = npos) const;

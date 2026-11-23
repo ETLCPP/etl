@@ -448,18 +448,22 @@ namespace etl
     }
 
     /// Copy constructor
-    ETL_CONSTEXPR pair(const pair<T1, T2>& other)
-      : first(other.first)
-      , second(other.second)
-    {
-    }
-
 #if ETL_USING_CPP11
+    ETL_CONSTEXPR pair(const pair<T1, T2>& other) ETL_NOEXCEPT = default;
+
     /// Move constructor
+    ETL_CONSTEXPR14 pair(pair<T1, T2>&& other) ETL_NOEXCEPT = default;
+
     template <typename U1, typename U2>
     ETL_CONSTEXPR14 pair(pair<U1, U2>&& other)
       : first(etl::forward<U1>(other.first))
       , second(etl::forward<U2>(other.second))
+    {
+    }
+#else
+    ETL_CONSTEXPR pair(const pair<T1, T2>& other)
+      : first(other.first)
+      , second(other.second)
     {
     }
 #endif
@@ -499,6 +503,11 @@ namespace etl
       swap(second, other.second);
     }
 
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 pair<T1, T2>& operator=(const pair<T1, T2>& other) ETL_NOEXCEPT = default;
+
+    ETL_CONSTEXPR14 pair<T1, T2>& operator=(pair<T1, T2>&& other) ETL_NOEXCEPT = default;
+#else
     pair<T1, T2>& operator=(const pair<T1, T2>& other)
     {
       first  = other.first;
@@ -506,6 +515,7 @@ namespace etl
 
       return *this;
     }
+#endif
 
     template <typename U1, typename U2>
     pair<U1, U2>& operator=(const pair<U1, U2>& other)
@@ -517,14 +527,6 @@ namespace etl
     }
 
 #if ETL_USING_CPP11
-    pair<T1, T2>& operator=(pair<T1, T2>&& other)
-    {
-      first  = etl::forward<T1>(other.first);
-      second = etl::forward<T2>(other.second);
-
-      return *this;
-    }
-
     template <typename U1, typename U2>
     pair<U1, U2>& operator=(pair<U1, U2>&& other)
     {
@@ -539,20 +541,49 @@ namespace etl
   //***************************************************************************
   ///\brief A convenience wrapper for creating a @ref pair from two objects.
   ///
+  /// As std::make_pair, the element types are decayed, and an
+  /// etl::reference_wrapper<T> argument produces a T& element.
+  ///
   ///\param a The first object.
   ///\param b The second object.
   ///
   ///\return A newly-constructed @ref pair object of the appropriate type.
   //***************************************************************************
 #if ETL_USING_CPP11
-  template <typename T1, typename T2>
-  inline pair<T1, T2> make_pair(T1&& a, T2&& b)
+  // Defined in functional.h, which includes this header.
+  template <typename T>
+  class reference_wrapper;
+
+  namespace private_utility
   {
-    return pair<T1, T2>(etl::forward<T1>(a), etl::forward<T2>(b));
+    template <typename T>
+    struct make_pair_unwrap
+    {
+      typedef T type;
+    };
+
+    template <typename T>
+    struct make_pair_unwrap<etl::reference_wrapper<T> >
+    {
+      typedef T& type;
+    };
+
+    template <typename T>
+    struct make_pair_type : make_pair_unwrap<typename etl::decay<T>::type>
+    {
+    };
+  } // namespace private_utility
+
+  template <typename T1, typename T2>
+  inline ETL_CONSTEXPR14 pair<typename private_utility::make_pair_type<T1>::type, typename private_utility::make_pair_type<T2>::type> make_pair(T1&& a,
+                                                                                                                                         T2&& b)
+  {
+    return pair<typename private_utility::make_pair_type<T1>::type, typename private_utility::make_pair_type<T2>::type>(etl::forward<T1>(a),
+                                                                                                                        etl::forward<T2>(b));
   }
 #else
   template <typename T1, typename T2>
-  inline pair<T1, T2> make_pair(T1 a, T2 b)
+  inline ETL_CONSTEXPR14 pair<T1, T2> make_pair(T1 a, T2 b)
   {
     return pair<T1, T2>(a, b);
   }
@@ -594,7 +625,7 @@ namespace etl
 
   ///  Two pairs of the same type are equal if their members are equal.
   template <typename T1, typename T2>
-  inline bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator==(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
 #include "private/diagnostic_float_equal_push.h"
     return (a.first == b.first) && (a.second == b.second);
@@ -603,34 +634,34 @@ namespace etl
 
   /// Uses @c operator== to find the result.
   template <typename T1, typename T2>
-  inline bool operator!=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator!=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(a == b);
   }
 
   template <typename T1, typename T2>
-  inline bool operator<(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator<(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (a.first < b.first) || (!(b.first < a.first) && (a.second < b.second));
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator>(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator>(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return (b < a);
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator<=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator<=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(b < a);
   }
 
   /// Uses @c operator< to find the result.
   template <typename T1, typename T2>
-  inline bool operator>=(const pair<T1, T2>& a, const pair<T1, T2>& b)
+  inline ETL_CONSTEXPR14 bool operator>=(const pair<T1, T2>& a, const pair<T1, T2>& b)
   {
     return !(a < b);
   }
@@ -1408,6 +1439,15 @@ namespace etl
   {
     return static_cast<typename etl::make_signed<T>::type>(value);
   }
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T1, typename T2>
+  struct is_trivially_copyable<etl::pair<T1, T2>> : etl::bool_constant<etl::is_trivially_copyable<T1>::value && etl::is_trivially_copyable<T2>::value>
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif

@@ -387,7 +387,20 @@ namespace etl
     //*************************************************************************
     ETL_OR_STD::pair<iterator, bool> emplace()
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
+      if (full())
+      {
+        // A duplicate does not need a free slot, so only report flat_set_full
+        // for a new value. This matches insert() and the variadic emplace().
+        iterator position = find(value_type());
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(flat_set_full));
+          return ETL_OR_STD::pair<iterator, bool>(end(), false);
+        }
+
+        return ETL_OR_STD::pair<iterator, bool>(position, false);
+      }
 
       ETL_OR_STD::pair<iterator, bool> result;
 
@@ -408,7 +421,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
@@ -420,7 +433,21 @@ namespace etl
     template <typename T1>
     ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
+      if (full())
+      {
+        // A duplicate does not need a free slot, so only report flat_set_full
+        // for a new value. This matches insert() and the variadic emplace().
+        value_type temp_value(value1);
+        iterator   position = find(temp_value);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(flat_set_full));
+          return ETL_OR_STD::pair<iterator, bool>(end(), false);
+        }
+
+        return ETL_OR_STD::pair<iterator, bool>(position, false);
+      }
 
       ETL_OR_STD::pair<iterator, bool> result;
 
@@ -441,7 +468,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
@@ -453,7 +480,21 @@ namespace etl
     template <typename T1, typename T2>
     ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
+      if (full())
+      {
+        // A duplicate does not need a free slot, so only report flat_set_full
+        // for a new value. This matches insert() and the variadic emplace().
+        value_type temp_value(value1, value2);
+        iterator   position = find(temp_value);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(flat_set_full));
+          return ETL_OR_STD::pair<iterator, bool>(end(), false);
+        }
+
+        return ETL_OR_STD::pair<iterator, bool>(position, false);
+      }
 
       ETL_OR_STD::pair<iterator, bool> result;
 
@@ -474,7 +515,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
@@ -486,7 +527,21 @@ namespace etl
     template <typename T1, typename T2, typename T3>
     ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
+      if (full())
+      {
+        // A duplicate does not need a free slot, so only report flat_set_full
+        // for a new value. This matches insert() and the variadic emplace().
+        value_type temp_value(value1, value2, value3);
+        iterator   position = find(temp_value);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(flat_set_full));
+          return ETL_OR_STD::pair<iterator, bool>(end(), false);
+        }
+
+        return ETL_OR_STD::pair<iterator, bool>(position, false);
+      }
 
       ETL_OR_STD::pair<iterator, bool> result;
 
@@ -507,7 +562,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;
@@ -519,7 +574,21 @@ namespace etl
     template <typename T1, typename T2, typename T3, typename T4>
     ETL_OR_STD::pair<iterator, bool> emplace(const T1& value1, const T2& value2, const T3& value3, const T4& value4)
     {
-      ETL_ASSERT(!full(), ETL_ERROR(flat_set_full));
+      if (full())
+      {
+        // A duplicate does not need a free slot, so only report flat_set_full
+        // for a new value. This matches insert() and the variadic emplace().
+        value_type temp_value(value1, value2, value3, value4);
+        iterator   position = find(temp_value);
+
+        if (position == end())
+        {
+          ETL_ASSERT_FAIL(ETL_ERROR(flat_set_full));
+          return ETL_OR_STD::pair<iterator, bool>(end(), false);
+        }
+
+        return ETL_OR_STD::pair<iterator, bool>(position, false);
+      }
 
       ETL_OR_STD::pair<iterator, bool> result;
 
@@ -540,7 +609,7 @@ namespace etl
         // Destroy it.
         pvalue->~value_type();
         storage.release(pvalue);
-        result = ETL_OR_STD::pair<iterator, bool>(end(), false);
+        result = ETL_OR_STD::pair<iterator, bool>(i_element, false);
       }
 
       return result;

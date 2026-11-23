@@ -126,7 +126,6 @@ struct type_list_contains
 ```
 **Description**  
 Defines `value` as `true` if the `type_list` contains the specified type, otherwise `false`.
-From: `C++17`
 
 ---
 
@@ -135,7 +134,8 @@ template <typename TTypeList, typename T>
 constexpr bool type_list_contains_v
 ```
 **Description**  
-Defined as `true` if the `type_list` contains the specified type, otherwise `false`.
+Defined as `true` if the `type_list` contains the specified type, otherwise `false`.  
+From: `C++17`
 
 ## type_list_has_duplicates_of
 ```cpp

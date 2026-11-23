@@ -181,8 +181,19 @@ namespace
       ss << etl::noboolalpha << false << STR(" ") << true << STR(" ") << etl::boolalpha << false << STR(" ") << true;
       CHECK_EQUAL(String(STR("0 1 false true")), ss.str());
 
+      // Float
+      ss.str().clear();
+      ss << etl::setprecision(4) << 3.1415927f;
+      CHECK_EQUAL(String(STR("3.1416")), ss.str());
+
+      // Double
       ss.str().clear();
       ss << etl::setprecision(4) << 3.1415927;
+      CHECK_EQUAL(String(STR("3.1416")), ss.str());
+
+      // Long double
+      ss.str().clear();
+      ss << etl::setprecision(4) << 3.1415927l;
       CHECK_EQUAL(String(STR("3.1416")), ss.str());
 
       ss.str().clear();

@@ -769,6 +769,54 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_existing_value_when_full)
+    {
+      Data compare_data(initial_data.begin(), initial_data.end());
+      Data data(initial_data.begin(), initial_data.end());
+
+      CHECK(data.full());
+
+      // Inserting an existing key when the map is full should not throw.
+      // It should return an iterator to the existing element and leave it
+      // unchanged.
+      ETL_OR_STD::pair<Data::iterator, bool> result = data.insert(ETL_OR_STD::make_pair(std::string("5"), 99));
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK_EQUAL(std::string("5"), result.first->first);
+      CHECK_EQUAL(5, result.first->second);
+
+      Data::value_type existing(std::string("3"), 99);
+      result = data.insert(existing);
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK_EQUAL(std::string("3"), result.first->first);
+      CHECK_EQUAL(3, result.first->second);
+
+      // The same applies when a position hint is given.
+      Data::iterator position = data.insert(data.begin(), ETL_OR_STD::make_pair(std::string("7"), 99));
+
+      CHECK(position != data.end());
+      CHECK_EQUAL(std::string("7"), position->first);
+      CHECK_EQUAL(7, position->second);
+
+      position = data.insert(data.begin(), existing);
+
+      CHECK(position != data.end());
+      CHECK_EQUAL(std::string("3"), position->first);
+      CHECK_EQUAL(3, position->second);
+
+      // A new key still reports that the map is full.
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(std::string("10"), 10)), etl::map_full);
+      CHECK_THROW(data.insert(data.begin(), ETL_OR_STD::make_pair(std::string("10"), 10)), etl::map_full);
+
+      // The map must be unchanged.
+      CHECK_EQUAL(MAX_SIZE, data.size());
+      CHECK(data == compare_data);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_range)
     {
       Compare_Data compare_data;
@@ -901,6 +949,39 @@ namespace
       Data data(initial_data.begin(), initial_data.end());
 
       CHECK_THROW(data.emplace(std::string("10"), 10), etl::map_full);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_when_full)
+    {
+      Data compare_data(initial_data.begin(), initial_data.end());
+      Data data(initial_data.begin(), initial_data.end());
+
+      CHECK(data.full());
+
+      // Emplacing an existing key when the map is full should not throw.
+      // It should return an iterator to the existing element and leave it
+      // unchanged, matching the behaviour of insert() and try_emplace().
+      ETL_OR_STD::pair<Data::iterator, bool> result = data.emplace(std::string("5"), 99);
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK_EQUAL(std::string("5"), result.first->first);
+      CHECK_EQUAL(5, result.first->second);
+
+      result = data.emplace(Data::value_type(std::string("3"), 99));
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK_EQUAL(std::string("3"), result.first->first);
+      CHECK_EQUAL(3, result.first->second);
+
+      // A new key still reports that the map is full.
+      CHECK_THROW(data.emplace(std::string("10"), 10), etl::map_full);
+
+      // The map must be unchanged.
+      CHECK_EQUAL(MAX_SIZE, data.size());
+      CHECK(data == compare_data);
     }
 
     //*************************************************************************

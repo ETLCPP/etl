@@ -623,5 +623,24 @@ namespace
       CHECK_EQUAL(int(FNONE), int(flags3 ^= F01234567));
       CHECK_EQUAL(int(F0246), int(flags4 ^= FNONE));
     }
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE((etl::is_trivially_copyable<Flags>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<FlagsM0246>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::flags<uint16_t>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::flags<uint32_t>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::flags<uint64_t>>::value));
+  #if ETL_USING_STL
+      CHECK_TRUE((std::is_trivially_copyable<Flags>::value));
+      CHECK_TRUE((std::is_trivially_copyable<FlagsM0246>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::flags<uint16_t>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::flags<uint32_t>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::flags<uint64_t>>::value));
+  #endif
+    }
+#endif
   }
 } // namespace

@@ -747,6 +747,53 @@ namespace
     }
 
     //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_insert_existing_value_when_full)
+    {
+      DataNDC compare_data(initial_data.begin(), initial_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK(data.full());
+
+      // Inserting an existing key when the unordered_map is full should not
+      // throw. It should return an iterator to the existing element and leave
+      // it unchanged.
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result = data.insert(ETL_OR_STD::make_pair(K5, N10));
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK(result.first->first == K5);
+      CHECK(result.first->second == N5);
+
+      DataNDC::value_type existing(K3, N10);
+      result = data.insert(existing);
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK(result.first->first == K3);
+      CHECK(result.first->second == N3);
+
+      // The same applies when a position hint is given.
+      DataNDC::iterator position = data.insert(data.begin(), ETL_OR_STD::make_pair(K7, N10));
+
+      CHECK(position != data.end());
+      CHECK(position->first == K7);
+      CHECK(position->second == N7);
+
+      position = data.insert(data.begin(), existing);
+
+      CHECK(position != data.end());
+      CHECK(position->first == K3);
+      CHECK(position->second == N3);
+
+      // A new key still reports that the unordered_map is full.
+      CHECK_THROW(data.insert(ETL_OR_STD::make_pair(K10, N10)), etl::unordered_map_full);
+
+      // The unordered_map must be unchanged.
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK(data == compare_data);
+    }
+
+    //*************************************************************************
     TEST_FIXTURE(SetupFixture, test_insert_range)
     {
       DataNDC data;
@@ -795,6 +842,39 @@ namespace
       CHECK(result2.second == false);
       CHECK_EQUAL(1U, data.size());
       CHECK(1 == data.at("1").value);
+    }
+
+    //*************************************************************************
+    TEST_FIXTURE(SetupFixture, test_emplace_existing_value_when_full)
+    {
+      DataNDC compare_data(initial_data.begin(), initial_data.end());
+      DataNDC data(initial_data.begin(), initial_data.end());
+
+      CHECK(data.full());
+
+      // Emplacing a new key when the unordered_map is full should throw.
+      CHECK_THROW(data.emplace(K10, N10), etl::unordered_map_full);
+
+      // Emplacing an existing key when the unordered_map is full should not
+      // throw. It should return an iterator to the existing element and leave
+      // it unchanged, matching the behaviour of insert() and try_emplace().
+      ETL_OR_STD::pair<DataNDC::iterator, bool> result = data.emplace(K5, N10);
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK(result.first->first == K5);
+      CHECK(result.first->second == N5);
+
+      result = data.emplace(DataNDC::value_type(K3, N10));
+
+      CHECK(result.first != data.end());
+      CHECK(!result.second);
+      CHECK(result.first->first == K3);
+      CHECK(result.first->second == N3);
+
+      // The unordered_map must be unchanged.
+      CHECK_EQUAL(SIZE, data.size());
+      CHECK(data == compare_data);
     }
 
     //*************************************************************************

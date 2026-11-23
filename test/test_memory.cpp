@@ -996,6 +996,60 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_move_construction_reference_deleter)
+    {
+      struct Deleter
+      {
+        int count = 0;
+
+        void operator()(int* p)
+        {
+          ++count;
+          delete p;
+        }
+      };
+
+      Deleter d;
+
+      {
+        etl::unique_ptr<int, Deleter&> up1(new int(1), d);
+        etl::unique_ptr<int, Deleter&> up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK_EQUAL(1, *up2);
+        CHECK(&up2.get_deleter() == &d);
+      }
+
+      CHECK_EQUAL(1, d.count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_construction_non_default_constructible_deleter)
+    {
+      struct Deleter
+      {
+        explicit Deleter(int id_)
+          : id(id_)
+        {
+        }
+
+        void operator()(int* p) const
+        {
+          delete p;
+        }
+
+        int id;
+      };
+
+      etl::unique_ptr<int, Deleter> up1(new int(1), Deleter(42));
+      etl::unique_ptr<int, Deleter> up2(std::move(up1));
+
+      CHECK(up1.get() == nullptr);
+      CHECK_EQUAL(1, *up2);
+      CHECK_EQUAL(42, up2.get_deleter().id);
+    }
+
+    //*************************************************************************
     TEST(test_unique_ptr_release)
     {
       auto                 buffer = new int;
@@ -1126,6 +1180,9 @@ namespace
 
       CHECK(up1 == up2);
       CHECK(!(up1 == up3));
+      CHECK(!(up1 != up2));
+      CHECK(up1 != up3);
+      CHECK(up3 != up1);
       CHECK(!(up1 < up2));
       CHECK(up1 < up3);
       CHECK(!(up3 <= up1));
@@ -1136,6 +1193,70 @@ namespace
       CHECK(!(up1 >= up3));
       CHECK(up2 >= up1);
       CHECK(up3 >= up1);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_nullptr_comparison_tests)
+    {
+      int  value = 1;
+      int* p     = &value;
+
+      etl::unique_ptr<int, NoDelete<int>> up_null;
+      etl::unique_ptr<int, NoDelete<int>> up(p);
+
+      // The standard library is the reference for the pointer ordering.
+      std::unique_ptr<int, NoDelete<int>> sup_null;
+      std::unique_ptr<int, NoDelete<int>> sup(p);
+
+      CHECK(up_null == nullptr);
+      CHECK(nullptr == up_null);
+      CHECK(!(up_null != nullptr));
+      CHECK(!(nullptr != up_null));
+      CHECK(!(up == nullptr));
+      CHECK(!(nullptr == up));
+      CHECK(up != nullptr);
+      CHECK(nullptr != up);
+
+      CHECK_EQUAL(sup_null < nullptr, up_null < nullptr);
+      CHECK_EQUAL(nullptr < sup_null, nullptr < up_null);
+      CHECK_EQUAL(sup_null <= nullptr, up_null <= nullptr);
+      CHECK_EQUAL(nullptr <= sup_null, nullptr <= up_null);
+      CHECK_EQUAL(sup_null > nullptr, up_null > nullptr);
+      CHECK_EQUAL(nullptr > sup_null, nullptr > up_null);
+      CHECK_EQUAL(sup_null >= nullptr, up_null >= nullptr);
+      CHECK_EQUAL(nullptr >= sup_null, nullptr >= up_null);
+
+      CHECK_EQUAL(sup < nullptr, up < nullptr);
+      CHECK_EQUAL(nullptr < sup, nullptr < up);
+      CHECK_EQUAL(sup <= nullptr, up <= nullptr);
+      CHECK_EQUAL(nullptr <= sup, nullptr <= up);
+      CHECK_EQUAL(sup > nullptr, up > nullptr);
+      CHECK_EQUAL(nullptr > sup, nullptr > up);
+      CHECK_EQUAL(sup >= nullptr, up >= nullptr);
+      CHECK_EQUAL(nullptr >= sup, nullptr >= up);
+
+      // A null pointer is never less than, or greater than, nullptr.
+      CHECK(!(up_null < nullptr));
+      CHECK(!(nullptr < up_null));
+      CHECK(up_null <= nullptr);
+      CHECK(up_null >= nullptr);
+
+      // Arrays.
+      etl::unique_ptr<int[]> upa_null;
+      etl::unique_ptr<int[]> upa(new int[2]);
+
+      CHECK(upa_null == nullptr);
+      CHECK(nullptr == upa_null);
+      CHECK(upa != nullptr);
+      CHECK(nullptr != upa);
+      CHECK(!(upa_null < nullptr));
+      CHECK(upa_null <= nullptr);
+      CHECK(upa_null >= nullptr);
+      CHECK((upa < nullptr) != (upa > nullptr));
+      CHECK((upa <= nullptr) == (upa < nullptr));
+      CHECK((upa >= nullptr) == (upa > nullptr));
+      CHECK((nullptr < upa) == (upa > nullptr));
+      CHECK((nullptr > upa) == (upa < nullptr));
     }
 
     //*************************************************************************
@@ -1167,6 +1288,357 @@ namespace
       CHECK_EQUAL(1, up2[1]);
       CHECK_EQUAL(2, up2[2]);
       CHECK_EQUAL(3, up2[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_construction)
+    {
+      struct ConvertingBase
+      {
+        virtual ~ConvertingBase() {}
+        virtual int value() const
+        {
+          return 1;
+        }
+      };
+
+      struct ConvertingDerived : public ConvertingBase
+      {
+        int value() const override
+        {
+          return 2;
+        }
+      };
+
+      etl::unique_ptr<ConvertingDerived> up1(new ConvertingDerived);
+      ConvertingDerived*                 p = up1.get();
+      etl::unique_ptr<ConvertingBase>    up2(std::move(up1));
+
+      CHECK(up1.get() == nullptr);
+      CHECK(up2.get() == p);
+      CHECK_EQUAL(2, up2->value());
+
+      etl::unique_ptr<int>       up3(new int(3));
+      etl::unique_ptr<const int> up4(std::move(up3));
+
+      CHECK(up3.get() == nullptr);
+      CHECK_EQUAL(3, *up4);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_array_construction)
+    {
+      etl::unique_ptr<int[]> up1(new int[4]);
+      std::iota(up1.get(), up1.get() + 4, 0);
+      etl::unique_ptr<const int[]> up2(std::move(up1));
+
+      CHECK(up1.get() == nullptr);
+      CHECK(up2.get() != nullptr);
+      CHECK_EQUAL(0, up2[0]);
+      CHECK_EQUAL(1, up2[1]);
+      CHECK_EQUAL(2, up2[2]);
+      CHECK_EQUAL(3, up2[3]);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_invalid_converting_move_construction)
+    {
+      struct ConvertingBase
+      {
+        virtual ~ConvertingBase() {}
+      };
+
+      struct ConvertingDerived : public ConvertingBase
+      {
+      };
+
+      struct Deleter
+      {
+        void operator()(int*) const {}
+      };
+
+      struct OtherDeleter
+      {
+        void operator()(int*) const {}
+      };
+
+      // Valid conversions.
+      CHECK((std::is_constructible<etl::unique_ptr<ConvertingBase>, etl::unique_ptr<ConvertingDerived>&&>::value));
+      CHECK((std::is_constructible<etl::unique_ptr<const int>, etl::unique_ptr<int>&&>::value));
+      CHECK((std::is_constructible<etl::unique_ptr<const int[]>, etl::unique_ptr<int[]>&&>::value));
+
+      // Between single objects and arrays.
+      CHECK(!(std::is_constructible<etl::unique_ptr<int>, etl::unique_ptr<int[]>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<int[]>, etl::unique_ptr<int>&&>::value));
+      CHECK(!(std::is_convertible<etl::unique_ptr<int[]>&&, etl::unique_ptr<int> >::value));
+      CHECK(!(std::is_convertible<etl::unique_ptr<int>&&, etl::unique_ptr<int[]> >::value));
+
+      // Arrays of derived types cannot be treated as arrays of base types.
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingBase[]>, etl::unique_ptr<ConvertingDerived[]>&&>::value));
+
+      // Unrelated or less cv-qualified types.
+      CHECK(!(std::is_constructible<etl::unique_ptr<int>, etl::unique_ptr<long>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<int>, etl::unique_ptr<const int>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<int[]>, etl::unique_ptr<const int[]>&&>::value));
+
+      // Incompatible deleters.
+      CHECK(!(std::is_constructible<etl::unique_ptr<int, Deleter>, etl::unique_ptr<int, OtherDeleter>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<int, Deleter&>, etl::unique_ptr<int, Deleter>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<int[], Deleter>, etl::unique_ptr<int[], OtherDeleter>&&>::value));
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_construction_with_stateful_deleter)
+    {
+      struct Deleter
+      {
+        Deleter(int id_, int* count_)
+          : id(id_)
+          , count(count_)
+        {
+        }
+
+        void operator()(const int* p) const
+        {
+          ++*count;
+          delete p;
+        }
+
+        int  id;
+        int* count;
+      };
+
+      int count = 0;
+
+      {
+        etl::unique_ptr<int, Deleter>       up1(new int(1), Deleter(42, &count));
+        etl::unique_ptr<const int, Deleter> up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK_EQUAL(1, *up2);
+        CHECK_EQUAL(42, up2.get_deleter().id);
+        CHECK(up2.get_deleter().count == &count);
+        CHECK_EQUAL(0, count);
+      }
+
+      // The moved deleter released the object, and the moved-from pointer released nothing.
+      CHECK_EQUAL(1, count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_array_construction_with_stateful_deleter)
+    {
+      struct Deleter
+      {
+        Deleter(int id_, int* count_)
+          : id(id_)
+          , count(count_)
+        {
+        }
+
+        void operator()(const int* p) const
+        {
+          ++*count;
+          delete[] p;
+        }
+
+        int  id;
+        int* count;
+      };
+
+      int count = 0;
+
+      {
+        etl::unique_ptr<int[], Deleter>       up1(new int[4], Deleter(42, &count));
+        etl::unique_ptr<const int[], Deleter> up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK(up2.get() != nullptr);
+        CHECK_EQUAL(42, up2.get_deleter().id);
+        CHECK(up2.get_deleter().count == &count);
+        CHECK_EQUAL(0, count);
+      }
+
+      CHECK_EQUAL(1, count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_construction_with_converting_deleter)
+    {
+      struct ConvertingBase
+      {
+        virtual ~ConvertingBase() {}
+      };
+
+      struct ConvertingDerived : public ConvertingBase
+      {
+      };
+
+      struct DerivedDeleter
+      {
+        DerivedDeleter(int id_, int* count_)
+          : id(id_)
+          , count(count_)
+        {
+        }
+
+        void operator()(ConvertingDerived* p) const
+        {
+          ++*count;
+          delete p;
+        }
+
+        int  id;
+        int* count;
+      };
+
+      struct BaseDeleter
+      {
+        // Implicit conversion from the source deleter, keeping its state.
+        BaseDeleter(const DerivedDeleter& other)
+          : id(other.id)
+          , count(other.count)
+        {
+        }
+
+        void operator()(ConvertingBase* p) const
+        {
+          ++*count;
+          delete p;
+        }
+
+        int  id;
+        int* count;
+      };
+
+      CHECK((std::is_constructible<etl::unique_ptr<ConvertingBase, BaseDeleter>, etl::unique_ptr<ConvertingDerived, DerivedDeleter>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingDerived, DerivedDeleter>, etl::unique_ptr<ConvertingBase, BaseDeleter>&&>::value));
+
+      int count = 0;
+
+      {
+        etl::unique_ptr<ConvertingDerived, DerivedDeleter> up1(new ConvertingDerived, DerivedDeleter(7, &count));
+        ConvertingDerived*                                 p = up1.get();
+        etl::unique_ptr<ConvertingBase, BaseDeleter>       up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK(up2.get() == p);
+        CHECK_EQUAL(7, up2.get_deleter().id);
+        CHECK(up2.get_deleter().count == &count);
+        CHECK_EQUAL(0, count);
+      }
+
+      CHECK_EQUAL(1, count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_converting_move_construction_with_reference_deleter)
+    {
+      struct ConvertingBase
+      {
+        virtual ~ConvertingBase() {}
+      };
+
+      struct ConvertingDerived : public ConvertingBase
+      {
+      };
+
+      struct Deleter
+      {
+        void operator()(ConvertingBase* p)
+        {
+          ++count;
+          delete p;
+        }
+
+        int count = 0;
+      };
+
+      struct OtherDeleter
+      {
+        void operator()(ConvertingBase* p)
+        {
+          delete p;
+        }
+      };
+
+      // A reference deleter only accepts the same reference type.
+      CHECK((std::is_constructible<etl::unique_ptr<ConvertingBase, Deleter&>, etl::unique_ptr<ConvertingDerived, Deleter&>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingBase, Deleter&>, etl::unique_ptr<ConvertingDerived, Deleter>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingBase, Deleter&>, etl::unique_ptr<ConvertingDerived, const Deleter&>&&>::value));
+      CHECK(!(std::is_constructible<etl::unique_ptr<ConvertingBase, Deleter&>, etl::unique_ptr<ConvertingDerived, OtherDeleter&>&&>::value));
+
+      Deleter deleter;
+
+      {
+        etl::unique_ptr<ConvertingDerived, Deleter&> up1(new ConvertingDerived, deleter);
+        ConvertingDerived*                           p = up1.get();
+        etl::unique_ptr<ConvertingBase, Deleter&>    up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK(up2.get() == p);
+        // Both refer to the original deleter object.
+        CHECK(&up2.get_deleter() == &deleter);
+        CHECK_EQUAL(0, deleter.count);
+      }
+
+      CHECK_EQUAL(1, deleter.count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_array_construction_reference_deleter)
+    {
+      struct Deleter
+      {
+        int count = 0;
+
+        void operator()(int* p)
+        {
+          ++count;
+          delete[] p;
+        }
+      };
+
+      Deleter d;
+
+      {
+        etl::unique_ptr<int[], Deleter&> up1(new int[4], d);
+        int*                             p = up1.get();
+        etl::unique_ptr<int[], Deleter&> up2(std::move(up1));
+
+        CHECK(up1.get() == nullptr);
+        CHECK(up2.get() == p);
+        CHECK(&up2.get_deleter() == &d);
+      }
+
+      CHECK_EQUAL(1, d.count);
+    }
+
+    //*************************************************************************
+    TEST(test_unique_ptr_move_array_construction_non_default_constructible_deleter)
+    {
+      struct Deleter
+      {
+        explicit Deleter(int id_)
+          : id(id_)
+        {
+        }
+
+        void operator()(int* p) const
+        {
+          delete[] p;
+        }
+
+        int id;
+      };
+
+      etl::unique_ptr<int[], Deleter> up1(new int[4], Deleter(42));
+      int*                            p = up1.get();
+      etl::unique_ptr<int[], Deleter> up2(std::move(up1));
+
+      CHECK(up1.get() == nullptr);
+      CHECK(up2.get() == p);
+      CHECK_EQUAL(42, up2.get_deleter().id);
     }
 
     //*************************************************************************
@@ -1943,6 +2415,7 @@ namespace
     }
 
     //*************************************************************************
+#if (ETL_USING_STL && ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED) || ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
     TEST(test_start_lifetime_as)
     {
       struct quad_t
@@ -1968,6 +2441,7 @@ namespace
       CHECK_EQUAL(1, cp->a);
       CHECK_EQUAL(4, cp->d);
     }
+#endif
 
     //*************************************************************************
     TEST(test_start_lifetime_as_array)
@@ -3363,6 +3837,33 @@ namespace
       // Verify the memory occupied by the object has been cleared.
       unsigned char zeroes[sizeof(Data)] = {0};
       CHECK(memcmp(buffer, zeroes, sizeof(Data)) == 0);
+    }
+
+    //*************************************************************************
+    TEST(test_default_delete_converting_construction)
+    {
+      struct DeleterBase
+      {
+        virtual ~DeleterBase() {}
+      };
+
+      struct DeleterDerived : public DeleterBase
+      {
+      };
+
+      CHECK((std::is_convertible<etl::default_delete<DeleterDerived>, etl::default_delete<DeleterBase> >::value));
+      CHECK((std::is_convertible<etl::default_delete<int>, etl::default_delete<const int> >::value));
+      CHECK((std::is_convertible<etl::default_delete<int[]>, etl::default_delete<const int[]> >::value));
+
+      CHECK(!(std::is_convertible<etl::default_delete<int[]>, etl::default_delete<int> >::value));
+      CHECK(!(std::is_convertible<etl::default_delete<int>, etl::default_delete<int[]> >::value));
+      CHECK(!(std::is_convertible<etl::default_delete<DeleterDerived[]>, etl::default_delete<DeleterBase[]> >::value));
+      CHECK(!(std::is_convertible<etl::default_delete<long>, etl::default_delete<int> >::value));
+      CHECK(!(std::is_convertible<etl::default_delete<DeleterBase>, etl::default_delete<DeleterDerived> >::value));
+
+      // An array of known bound is not an array of unknown bound.
+      CHECK(!(std::is_convertible<etl::default_delete<int[2]>, etl::default_delete<int[]> >::value));
+      CHECK(!(std::is_convertible<etl::default_delete<int[2]>, etl::default_delete<const int[]> >::value));
     }
 
 #if ETL_USING_CPP14
