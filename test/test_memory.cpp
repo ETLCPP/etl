@@ -2238,6 +2238,7 @@ namespace
     }
 
     //*************************************************************************
+#if (ETL_USING_STL && ETL_CPP11_TYPE_TRAITS_IS_TRIVIAL_SUPPORTED) || ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
     TEST(test_start_lifetime_as)
     {
       struct quad_t
@@ -2263,6 +2264,7 @@ namespace
       CHECK_EQUAL(1, cp->a);
       CHECK_EQUAL(4, cp->d);
     }
+#endif
 
     //*************************************************************************
     TEST(test_start_lifetime_as_array)

@@ -49,7 +49,7 @@ jobs:
     - name: Build and run tests
       run: |
         docker run --rm --user root -v ${{ github.workspace }}:/workspaces/etl etl-powerpc bash -c "\
-          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USE_TYPE_TRAITS_BUILTINS=OFF -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
+          cmake -DBUILD_TESTS=ON -DNO_STL=ON -DETL_USER_DEFINED_TYPE_TRAITS=OFF -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
            -DETL_CXX_STANDARD=23 -DCMAKE_TOOLCHAIN_FILE=.devcontainer/powerpc/toolchain-powerpc.cmake \
            -DEXTRA_TESTING_FLAGS=-v \
            ./ && \

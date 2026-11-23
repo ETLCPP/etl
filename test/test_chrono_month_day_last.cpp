@@ -100,6 +100,20 @@ namespace
       CHECK_TRUE(month_day_last1 != month_day_last3);
     }
 
+#if ETL_USING_CPP20
+    //*************************************************************************
+    TEST(test_month_day_last_spaceship_operator)
+    {
+      Chrono::month_day_last month_day_last1(Chrono::January);
+      Chrono::month_day_last month_day_last2(Chrono::February);
+      Chrono::month_day_last month_day_last3(Chrono::January);
+
+      CHECK_TRUE((month_day_last1 <=> month_day_last3) == etl::strong_ordering::equal);
+      CHECK_TRUE((month_day_last1 <=> month_day_last2) == etl::strong_ordering::less);
+      CHECK_TRUE((month_day_last2 <=> month_day_last1) == etl::strong_ordering::greater);
+    }
+#endif
+
 #if ETL_USING_ETL_CHRONO
     //*************************************************************************
     TEST(test_month_day_last_hashes_are_unique)
@@ -124,6 +138,17 @@ namespace
 
       std::sort(hashes.begin(), hashes.end());
       (void)std::unique(hashes.begin(), hashes.end());
+    }
+#endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<Chrono::month_day_last>::value);
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<Chrono::month_day_last>::value);
+  #endif
     }
 #endif
   }

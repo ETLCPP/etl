@@ -35,6 +35,7 @@ SOFTWARE.
 #include "absolute.h"
 #include "algorithm.h"
 #include "error_handler.h"
+#include "functional.h"
 #include "limits.h"
 #include "math.h"
 #include "static_assert.h"
@@ -313,16 +314,23 @@ namespace etl
     //*************************************************************************
     /// Copy constructor.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT
       : value(other.value)
     {
     }
+#endif
 
     //*************************************************************************
     /// Assignment operator.
     ///\param other The value to copy.
     ///\return A reference to this value.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       if (this == &other)
@@ -333,6 +341,7 @@ namespace etl
       set(other.value);
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Sets the value.
@@ -672,12 +681,16 @@ namespace etl
     /// Copy constructor.
     ///\param other The value to copy.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR clamped_value(const clamped_value& other) ETL_NOEXCEPT
       : value(other.value)
       , min_value(other.min_value)
       , max_value(other.max_value)
     {
     }
+#endif
 
     //*************************************************************************
     /// Sets the range.
@@ -810,6 +823,9 @@ namespace etl
     ///\param other The value to copy.
     ///\return A reference to this value.
     //*************************************************************************
+#if ETL_USING_CPP11
+    ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT = default;
+#else
     ETL_CONSTEXPR14 clamped_value& operator=(const clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
     {
       if (this == &other)
@@ -822,6 +838,7 @@ namespace etl
       max_value = other.max_value;
       return *this;
     }
+#endif
 
     //*************************************************************************
     /// Adds a number of steps and clamps to the range.
@@ -978,6 +995,414 @@ namespace etl
     T min_value;
     T max_value;
   };
+
+#if ETL_USING_CPP11
+  //***************************************************************************
+  /// An immutable pair of runtime limits that may be shared by multiple
+  /// referenced_clamped_value objects.
+  ///@tparam T An integral type, or a floating-point type when
+  ///           ETL_HAS_FLOATING_POINT_CLAMPED_VALUE is `1`.
+  ///\ingroup clamped_value
+  //***************************************************************************
+  template <typename T>
+  class clamped_value_range
+  {
+  public:
+
+    typedef typename private_clamped_value::traits<T>::limits_type limits_type;
+
+    //*************************************************************************
+    /// Constructs the full representable range of T.
+    //*************************************************************************
+    ETL_CONSTEXPR14 clamped_value_range()
+      : min_value(limits_type::lowest())
+      , max_value(limits_type::max())
+    {
+    }
+
+    //*************************************************************************
+    /// Constructs a range with the supplied limits.
+    /// Reversed bounds and NaN bounds are rejected.
+    ///\param min_ The minimum value.
+    ///\param max_ The maximum value.
+    //*************************************************************************
+    ETL_CONSTEXPR14 clamped_value_range(T min_, T max_)
+      : min_value(min_)
+      , max_value(max_)
+    {
+      private_clamped_value::validate(min_);
+      private_clamped_value::validate(max_);
+      ETL_ASSERT(min_ <= max_, ETL_ERROR_GENERIC("clamped_value_range: invalid range"));
+    }
+
+    //*************************************************************************
+    /// Gets the minimum value.
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR T min() const ETL_NOEXCEPT
+    {
+      return min_value;
+    }
+
+    //*************************************************************************
+    /// Gets the maximum value.
+    //*************************************************************************
+    ETL_NODISCARD ETL_CONSTEXPR T max() const ETL_NOEXCEPT
+    {
+      return max_value;
+    }
+
+  private:
+
+    const T min_value;
+    const T max_value;
+  };
+
+  //***************************************************************************
+  /// Provides a value clamped to a shared immutable runtime range.
+  /// The referenced range must outlive this object.
+  ///@tparam T An integral type, or a floating-point type when
+  ///           ETL_HAS_FLOATING_POINT_CLAMPED_VALUE is `1`.
+  ///\ingroup clamped_value
+  //***************************************************************************
+  template <typename T>
+  class referenced_clamped_value
+  {
+  public:
+
+    /// The referenced range type.
+    typedef clamped_value_range<T> range_type;
+
+    /// The type used to advance or subtract from the stored value.
+    typedef typename private_clamped_value::traits<T>::difference_type difference_type;
+
+    /// Numeric limits for the stored value type.
+    typedef typename private_clamped_value::traits<T>::limits_type limits_type;
+
+    /// Numeric limits for difference_type.
+    typedef typename private_clamped_value::traits<T>::difference_limits_type difference_limits_type;
+
+    //*************************************************************************
+    /// Constructs a value initialized to the minimum of the referenced range.
+    ///\param range_ The range to reference. It must outlive this object.
+    //*************************************************************************
+    explicit referenced_clamped_value(const range_type& range_)
+      : value(range_.min())
+      , value_range(etl::cref(range_))
+    {
+    }
+
+    //*************************************************************************
+    /// Constructs a value clamped to the referenced range.
+    ///\param range_ The range to reference. It must outlive this object.
+    ///\param initial The initial value.
+    //*************************************************************************
+    referenced_clamped_value(const range_type& range_, T initial)
+      : value(private_clamped_value::validated_clamp(initial, range_.min(), range_.max()))
+      , value_range(etl::cref(range_))
+    {
+    }
+
+    //*************************************************************************
+    /// Prevents construction with a temporary range.
+    //*************************************************************************
+    referenced_clamped_value(range_type&&)    = delete;
+    referenced_clamped_value(range_type&&, T) = delete;
+
+    //*************************************************************************
+    /// Copies the value and its range reference.
+    ///\param other The value to copy.
+    //*************************************************************************
+    referenced_clamped_value(const referenced_clamped_value& other) ETL_NOEXCEPT
+      : value(other.value)
+      , value_range(other.value_range)
+    {
+    }
+
+    //*************************************************************************
+    /// Copy assignment. Copies the value and its range reference.
+    ///\param other The value and range reference to copy.
+    ///\return A reference to this value.
+    //*************************************************************************
+    referenced_clamped_value& operator=(const referenced_clamped_value& other) ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      if (this != &other)
+      {
+        value       = other.value;
+        value_range = other.value_range;
+      }
+
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Sets the value and clamps it to the referenced range.
+    ///\param value_ The value to assign.
+    //*************************************************************************
+    void set(T value_)
+    {
+      value = private_clamped_value::validated_clamp(value_, min(), max());
+    }
+
+    //*************************************************************************
+    /// Resets the value to the minimum of the referenced range.
+    //*************************************************************************
+    void to_min() ETL_NOEXCEPT
+    {
+      value = min();
+    }
+
+    //*************************************************************************
+    /// Resets the value to the maximum of the referenced range.
+    //*************************************************************************
+    void to_max() ETL_NOEXCEPT
+    {
+      value = max();
+    }
+
+    //*************************************************************************
+    /// Advances the value and saturates it at the referenced bounds.
+    ///\param n The difference to add.
+    //*************************************************************************
+    void advance(difference_type n)
+    {
+      private_clamped_value::validate(n);
+      value = private_clamped_value::advance(value, min(), max(), n);
+    }
+
+    //*************************************************************************
+    /// Converts to the underlying value type.
+    ///\return The current value.
+    //*************************************************************************
+    ETL_NODISCARD operator T() const ETL_NOEXCEPT
+    {
+      return value;
+    }
+
+    //*************************************************************************
+    /// Advances by one and saturates at the maximum.
+    ///\return A reference to this value.
+    //*************************************************************************
+    referenced_clamped_value& operator++() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      value = private_clamped_value::advance(value, min(), max(), difference_type(1));
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Advances by one and returns the previous value.
+    ///\return The value before incrementing.
+    //*************************************************************************
+    referenced_clamped_value operator++(int) ETL_NOEXCEPT
+    {
+      referenced_clamped_value temp(*this);
+      ++(*this);
+      return temp;
+    }
+
+    //*************************************************************************
+    /// Subtracts one and saturates at the minimum.
+    ///\return A reference to this value.
+    //*************************************************************************
+    referenced_clamped_value& operator--() ETL_LVALUE_REF_QUALIFIER ETL_NOEXCEPT
+    {
+      value = private_clamped_value::advance(value, min(), max(), difference_type(-1));
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Subtracts one and returns the previous value.
+    ///\return The value before decrementing.
+    //*************************************************************************
+    referenced_clamped_value operator--(int) ETL_NOEXCEPT
+    {
+      referenced_clamped_value temp(*this);
+      --(*this);
+      return temp;
+    }
+
+    //*************************************************************************
+    /// Assigns a value and clamps it to the referenced range.
+    ///\param value_ The value to assign.
+    ///\return A reference to this value.
+    //*************************************************************************
+    referenced_clamped_value& operator=(T value_) ETL_LVALUE_REF_QUALIFIER
+    {
+      set(value_);
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Adds a difference and clamps to the referenced range.
+    ///\param n The difference to add.
+    ///\return A reference to this value.
+    //*************************************************************************
+    referenced_clamped_value& operator+=(difference_type n) ETL_LVALUE_REF_QUALIFIER
+    {
+      advance(n);
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Subtracts a difference and clamps to the referenced range.
+    ///\param n The difference to subtract.
+    ///\return A reference to this value.
+    //*************************************************************************
+    referenced_clamped_value& operator-=(difference_type n) ETL_LVALUE_REF_QUALIFIER
+    {
+      private_clamped_value::validate(n);
+      value = private_clamped_value::subtract(value, min(), max(), n);
+      return *this;
+    }
+
+    //*************************************************************************
+    /// Gets the current value.
+    ///\return The current value.
+    //*************************************************************************
+    ETL_NODISCARD
+    T get() const ETL_NOEXCEPT
+    {
+      return value;
+    }
+
+    //*************************************************************************
+    /// Gets the minimum of the referenced range.
+    ///\return The minimum value.
+    //*************************************************************************
+    ETL_NODISCARD
+    T min() const ETL_NOEXCEPT
+    {
+      return value_range.get().min();
+    }
+
+    //*************************************************************************
+    /// Gets the maximum of the referenced range.
+    ///\return The maximum value.
+    //*************************************************************************
+    ETL_NODISCARD
+    T max() const ETL_NOEXCEPT
+    {
+      return value_range.get().max();
+    }
+
+    //*************************************************************************
+    /// Gets the referenced range.
+    ///\return The referenced range.
+    //*************************************************************************
+    ETL_NODISCARD
+    const range_type& range() const ETL_NOEXCEPT
+    {
+      return value_range.get();
+    }
+
+    //*************************************************************************
+    /// Swaps the values and range references.
+    ///\param other The value to swap with.
+    //*************************************************************************
+    void swap(referenced_clamped_value& other) ETL_NOEXCEPT
+    {
+      using ETL_OR_STD::swap;
+      swap(value, other.value);
+      swap(value_range, other.value_range);
+    }
+
+    //*************************************************************************
+    /// Swaps the values and range references.
+    ///\param lhs The first value.
+    ///\param rhs The second value.
+    //*************************************************************************
+    friend void swap(referenced_clamped_value& lhs, referenced_clamped_value& rhs) ETL_NOEXCEPT
+    {
+      lhs.swap(rhs);
+    }
+
+    //*************************************************************************
+    /// Compares current values for equality.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if the current values are equal.
+    //*************************************************************************
+    friend bool operator==(const referenced_clamped_value& lhs, const referenced_clamped_value& rhs) ETL_NOEXCEPT
+    {
+  #include "private/diagnostic_float_equal_push.h"
+      return lhs.value == rhs.value;
+  #include "private/diagnostic_pop.h"
+    }
+
+    //*************************************************************************
+    /// Compares current values for inequality.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if the current values differ.
+    //*************************************************************************
+    friend bool operator!=(const referenced_clamped_value& lhs, const referenced_clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs == rhs);
+    }
+
+    //*************************************************************************
+    /// Compares current values using less-than.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if lhs is less than rhs.
+    //*************************************************************************
+    friend bool operator<(const referenced_clamped_value& lhs, const referenced_clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return lhs.value < rhs.value;
+    }
+
+    //*************************************************************************
+    /// Compares current values using less-than-or-equal.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if lhs is less than or equal to rhs.
+    //*************************************************************************
+    friend bool operator<=(const referenced_clamped_value& lhs, const referenced_clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(rhs < lhs);
+    }
+
+    //*************************************************************************
+    /// Compares current values using greater-than.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if lhs is greater than rhs.
+    //*************************************************************************
+    friend bool operator>(const referenced_clamped_value& lhs, const referenced_clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return rhs < lhs;
+    }
+
+    //*************************************************************************
+    /// Compares current values using greater-than-or-equal.
+    ///\param lhs The left-hand value.
+    ///\param rhs The right-hand value.
+    ///\return `true` if lhs is greater than or equal to rhs.
+    //*************************************************************************
+    friend bool operator>=(const referenced_clamped_value& lhs, const referenced_clamped_value& rhs) ETL_NOEXCEPT
+    {
+      return !(lhs < rhs);
+    }
+
+  private:
+
+    T                                        value;
+    etl::reference_wrapper<const range_type> value_range;
+  };
+#endif
+
+#if ETL_USING_CPP11
+  #if ETL_NOT_USING_STL && !ETL_USING_BUILTIN_IS_TRIVIALLY_COPYABLE
+  template <typename T, T... Limits>
+  struct is_trivially_copyable<etl::clamped_value<T, Limits...>> : etl::bool_constant<etl::is_trivially_copyable<T>::value>
+  {
+  };
+
+  template <typename T>
+  struct is_trivially_copyable<etl::clamped_value_range<T>> : etl::bool_constant<etl::is_trivially_copyable<T>::value>
+  {
+  };
+  #endif
+#endif
 } // namespace etl
 
 #endif

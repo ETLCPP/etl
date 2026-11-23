@@ -53,14 +53,13 @@ for CXXSTD in 11 14 17 20 23 26; do
           -DCMAKE_C_COMPILER=$C_COMPILER \
           -DCMAKE_CXX_COMPILER=$CXX_COMPILER \
           -DNO_STL=$NOSTL \
-          -DETL_USE_TYPE_TRAITS_BUILTINS=OFF \
+          \
           -DETL_USER_DEFINED_TYPE_TRAITS=OFF \
           -DETL_FORCE_TEST_CPP03_IMPLEMENTATION=OFF \
           -DETL_OPTIMISATION=-O0 \
           -DETL_CXX_STANDARD=$CXXSTD \
           -DETL_ENABLE_SANITIZER=OFF \
-          -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF \
-          -DETL_USE_BUILTIN_MEM_FUNCTIONS=ON ..
+          -DETL_MESSAGES_ARE_NOT_VIRTUAL=OFF ..
     cmake --build .
     ./etl_tests
     lcov --gcov-tool "$GCOV" $GCOV_ADD --capture --directory CMakeFiles/etl_tests.dir \

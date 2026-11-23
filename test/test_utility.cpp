@@ -292,6 +292,26 @@ namespace
       CHECK_EQUAL(std::string("Hello"), sp2.second);
     }
 
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_pair_is_trivially_copyable)
+    {
+      CHECK_TRUE((etl::is_trivially_copyable<etl::pair<int, double>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::pair<const int, int>>::value));
+  #if ETL_USING_STL
+      CHECK_TRUE((std::is_trivially_copyable<etl::pair<int, double>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::pair<const int, int>>::value));
+      CHECK_TRUE((std::is_trivially_copy_constructible<etl::pair<int, double>>::value));
+      CHECK_TRUE((std::is_trivially_copy_assignable<etl::pair<int, double>>::value));
+      CHECK_TRUE((std::is_trivially_destructible<etl::pair<int, double>>::value));
+
+      // Non-trivially copyable types should not produce trivially copyable pair
+      CHECK_FALSE((std::is_trivially_copyable<etl::pair<int, std::string>>::value));
+  #endif
+      CHECK_FALSE((etl::is_trivially_copyable<etl::pair<int, std::string>>::value));
+    }
+#endif
+
     //*************************************************************************
     TEST(test_exchange)
     {
@@ -1284,6 +1304,24 @@ namespace
       constexpr etl::pair<int, int> p2(p1);
       static_assert(p2.first == 1, "constexpr pair copy ctor first");
       static_assert(p2.second == 2, "constexpr pair copy ctor second");
+      CHECK(true);
+    }
+
+    //*************************************************************************
+    TEST(test_pair_constexpr_make_pair_and_comparisons)
+    {
+      constexpr etl::pair<int, int> p1 = etl::make_pair(1, 2);
+      constexpr etl::pair<int, int> p2 = etl::make_pair(1, 3);
+
+      static_assert(p1.first == 1, "constexpr make_pair first");
+      static_assert(p1.second == 2, "constexpr make_pair second");
+
+      static_assert(p1 == p1, "constexpr pair ==");
+      static_assert(p1 != p2, "constexpr pair !=");
+      static_assert(p1 < p2, "constexpr pair <");
+      static_assert(p2 > p1, "constexpr pair >");
+      static_assert(p1 <= p1, "constexpr pair <=");
+      static_assert(p2 >= p1, "constexpr pair >=");
       CHECK(true);
     }
 

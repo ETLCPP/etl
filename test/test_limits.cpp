@@ -29,6 +29,7 @@ SOFTWARE.
 #include "unit_test_framework.h"
 
 #include "etl/limits.h"
+#include <cmath>
 #include <limits>
 
 namespace
@@ -656,6 +657,7 @@ namespace
       typedef etl::numeric_limits<float> ETL_NL;
       typedef std::numeric_limits<float> STD_NL;
 
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
       CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
       CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
       CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
@@ -675,6 +677,16 @@ namespace
       CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
       CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
       CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(-STD_NL::infinity(), -ETL_NL::infinity());
+      CHECK_TRUE(ETL_NL::infinity() > ETL_NL::max());
+      CHECK_TRUE(std::isinf(ETL_NL::infinity()));
+      CHECK_FALSE(std::signbit(ETL_NL::infinity()));
+      CHECK_TRUE(std::isnan(ETL_NL::quiet_NaN()));
+      CHECK_TRUE(std::isnan(ETL_NL::signaling_NaN()));
     }
 
     //*************************************************************************
@@ -683,6 +695,7 @@ namespace
       typedef etl::numeric_limits<double> ETL_NL;
       typedef std::numeric_limits<double> STD_NL;
 
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
       CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
       CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
       CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
@@ -702,6 +715,16 @@ namespace
       CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
       CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
       CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(-STD_NL::infinity(), -ETL_NL::infinity());
+      CHECK_TRUE(ETL_NL::infinity() > ETL_NL::max());
+      CHECK_TRUE(std::isinf(ETL_NL::infinity()));
+      CHECK_FALSE(std::signbit(ETL_NL::infinity()));
+      CHECK_TRUE(std::isnan(ETL_NL::quiet_NaN()));
+      CHECK_TRUE(std::isnan(ETL_NL::signaling_NaN()));
     }
 
     //*************************************************************************
@@ -710,6 +733,7 @@ namespace
       typedef etl::numeric_limits<long double> ETL_NL;
       typedef std::numeric_limits<long double> STD_NL;
 
+      CHECK_EQUAL(STD_NL::is_iec559, ETL_NL::is_iec559);
       CHECK_EQUAL(STD_NL::digits, ETL_NL::digits);
       CHECK_EQUAL(STD_NL::digits10, ETL_NL::digits10);
       CHECK_EQUAL(STD_NL::epsilon(), ETL_NL::epsilon());
@@ -729,6 +753,16 @@ namespace
       CHECK_EQUAL(STD_NL::min_exponent10, ETL_NL::min_exponent10);
       CHECK_EQUAL(STD_NL::radix, ETL_NL::radix);
       CHECK_EQUAL(STD_NL::round_error(), ETL_NL::round_error());
+      CHECK_EQUAL(STD_NL::has_infinity, ETL_NL::has_infinity);
+      CHECK_EQUAL(STD_NL::has_quiet_NaN, ETL_NL::has_quiet_NaN);
+      CHECK_EQUAL(STD_NL::has_signaling_NaN, ETL_NL::has_signaling_NaN);
+      CHECK_EQUAL(STD_NL::infinity(), ETL_NL::infinity());
+      CHECK_EQUAL(-STD_NL::infinity(), -ETL_NL::infinity());
+      CHECK_TRUE(ETL_NL::infinity() > ETL_NL::max());
+      CHECK_TRUE(std::isinf(ETL_NL::infinity()));
+      CHECK_FALSE(std::signbit(ETL_NL::infinity()));
+      CHECK_TRUE(std::isnan(ETL_NL::quiet_NaN()));
+      CHECK_TRUE(std::isnan(ETL_NL::signaling_NaN()));
     }
   }
 } // namespace

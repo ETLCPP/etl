@@ -367,7 +367,6 @@ namespace etl
         {                                 \
           etl::error_handler::error((e)); \
           throw((e));                     \
-          return;                         \
         }                                 \
       } while (false) // If the condition fails, calls the error handler then
                       // throws an exception.
@@ -377,7 +376,6 @@ namespace etl
         {                                       \
           etl::error_handler::error((e));       \
           throw((e));                           \
-          return (v);                           \
         }                                       \
       } while (false) // If the condition fails, calls the error handler then
                       // throws an exception.
@@ -391,13 +389,11 @@ namespace etl
       do {                                \
         etl::error_handler::error((e));   \
         throw((e));                       \
-        return;                           \
       } while (false) // Calls the error handler then throws an exception.
     #define ETL_ASSERT_FAIL_AND_RETURN_VALUE(e, v) \
       do {                                         \
         etl::error_handler::error((e));            \
         throw((e));                                \
-        return (v);                                \
       } while (false) // Calls the error handler then throws an exception.
   #else
     #define ETL_ASSERT(b, e)   \
@@ -545,24 +541,22 @@ namespace etl
 //*************************************
 #ifdef ETL_CHECK_INDEX_OPERATOR
   #define ETL_CHECKING_INDEX_OPERATOR           1
-  #define ETL_NOT_CHECKING_INDEX_OPERATOR       0
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e) ETL_ASSERT(b, e)
 #else
-  #define ETL_CHECKING_INDEX_OPERATOR     0
-  #define ETL_NOT_CHECKING_INDEX_OPERATOR 1
+  #define ETL_CHECKING_INDEX_OPERATOR 0
   #define ETL_ASSERT_CHECK_INDEX_OPERATOR(b, e)
 #endif
+#define ETL_NOT_CHECKING_INDEX_OPERATOR (1 - ETL_CHECKING_INDEX_OPERATOR)
 
 //*************************************
 #ifdef ETL_CHECK_EXTRA
   #define ETL_CHECKING_EXTRA           1
-  #define ETL_NOT_CHECKING_EXTRA       0
   #define ETL_ASSERT_CHECK_EXTRA(b, e) ETL_ASSERT(b, e)
 #else
-  #define ETL_CHECKING_EXTRA     0
-  #define ETL_NOT_CHECKING_EXTRA 1
+  #define ETL_CHECKING_EXTRA 0
   #define ETL_ASSERT_CHECK_EXTRA(b, e)
 #endif
+#define ETL_NOT_CHECKING_EXTRA (1 - ETL_CHECKING_EXTRA)
 
 //*************************************
 #if defined(ETL_VERBOSE_ERRORS)

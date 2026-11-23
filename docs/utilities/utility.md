@@ -14,7 +14,8 @@ template <typename T1, typename T2>
 struct pair
 ```
 **Description**  
-A clone of std::pair
+A clone of std::pair  
+Trivially copyable: C++11 and later (when member types are trivially copyable)
 
 **C++03**  
 ```cpp
@@ -25,10 +26,11 @@ pair<T1, T2> make_pair(T1 a, T2 b)
 **C++11 and above**  
 ```cpp
 template <typename T1, typename T2>
-pair<T1, T2> make_pair(T1&& a, T2&& b) 
+ETL_CONSTEXPR14 pair<T1, T2> make_pair(T1&& a, T2&& b) 
 ```
 **Description**  
-Returns a pair.
+Returns a pair.  
+`constexpr` from C++14, as are the pair comparison operators `==`, `!=`, `<`, `>`, `<=` and `>=`.
 
 ---
 

@@ -40,9 +40,23 @@ SOFTWARE.
   #define __USE_C99_MATH
 #endif
 
+// GCC and clang supply the floating point infinity and NaN values as compiler builtins, so
+// <math.h> is not required at all.
+// This matters for ETL_NO_STL builds: libstdc++'s <math.h> (GCC 16) includes <cmath>, which in
+// turn drags in large parts of the standard library (<string> etc.), defeating the point of a
+// no-STL build. clang picks up the same <math.h> when using libstdc++.
+// Define ETL_FORCE_INCLUDE_MATH_H to opt out and use the environment's <math.h>.
+#if ETL_NOT_USING_STL && (defined(ETL_COMPILER_GCC) || defined(ETL_COMPILER_CLANG)) && !defined(ETL_FORCE_INCLUDE_MATH_H)
+  #define ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES 1
+#else
+  #define ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES 0
+#endif
+
 #include <float.h>
 #include <limits.h>
-#include <math.h>
+#if !ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES
+  #include <math.h>
+#endif
 
 #include "private/minmax_push.h"
 
@@ -68,16 +82,34 @@ SOFTWARE.
     #define LDBL_MAX_10_EXP DBL_MAX_10_EXP
   #endif
 
-  #if !defined(HUGE_VAL)
-    // Looks like we don't have these macros defined.
-    // They're compiler implementation dependent, so we'll make them the same as
-    // the max values.
-    #define HUGE_VALF FLT_MAX
-    #define HUGE_VAL  DBL_MAX
-    #define HUGE_VALL LDBL_MAX
+  #if ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES
+    // <math.h> was not included, so use the compiler builtins directly.
+    // HUGE_VAL etc. are deliberately not defined, as they would clash with a <math.h> included later.
+    #define ETL_HUGE_VALF (__builtin_huge_valf())
+    #define ETL_HUGE_VAL  (__builtin_huge_val())
+    #define ETL_HUGE_VALL (__builtin_huge_vall())
+  #else
+    #if !defined(HUGE_VAL)
+      // Looks like we don't have these macros defined.
+      // They're compiler implementation dependent, so we'll make them the same as
+      // the max values.
+      #define HUGE_VALF FLT_MAX
+      #define HUGE_VAL  DBL_MAX
+      #define HUGE_VALL LDBL_MAX
+    #endif
+
+    #define ETL_HUGE_VALF HUGE_VALF
+    #define ETL_HUGE_VAL  HUGE_VAL
+    #define ETL_HUGE_VALL HUGE_VALL
   #endif
 
-  #if defined(ETL_NO_CPP_NAN_SUPPORT)
+  #if ETL_LIMITS_USING_BUILTIN_FLOAT_VALUES
+    // The builtins need no library support, so ETL_NO_CPP_NAN_SUPPORT is irrelevant here.
+    #define ETL_NANF    __builtin_nanf("")
+    #define ETL_NAN     __builtin_nan("")
+    #define ETL_NANL    __builtin_nanl("")
+    #define ETL_HAS_NAN true
+  #elif defined(ETL_NO_CPP_NAN_SUPPORT)
     #if defined(NAN)
       #include "private/diagnostic_useless_cast_push.h"
       #define ETL_NANF    NAN
@@ -87,9 +119,9 @@ SOFTWARE.
       #include "private/diagnostic_pop.h"
     #else
       #include "private/diagnostic_useless_cast_push.h"
-      #define ETL_NANF    HUGE_VALF
-      #define ETL_NAN     HUGE_VAL
-      #define ETL_NANL    HUGE_VALL
+      #define ETL_NANF    ETL_HUGE_VALF
+      #define ETL_NAN     ETL_HUGE_VAL
+      #define ETL_NANL    ETL_HUGE_VALL
       #define ETL_HAS_NAN false
       #include "private/diagnostic_pop.h"
     #endif
@@ -98,6 +130,48 @@ SOFTWARE.
     #define ETL_NAN     nan("")
     #define ETL_NANL    nanl("")
     #define ETL_HAS_NAN true
+  #endif
+
+  // IEC 559 (IEEE 754) conformance of the floating point types.
+  // Uses the same conditions as libstdc++'s std::numeric_limits<T>::is_iec559:
+  // the type has an infinity, a quiet NaN and denormals.
+  // __GCC_IEC_559 is not used, as it is 0 on targets with a single precision only FPU,
+  // although 'double' still uses the IEEE 754 format.
+  // For is_iec559 to be true, C++ also requires has_quiet_NaN and has_signaling_NaN to be true.
+  // These are ETL_HAS_NAN, which is not guaranteed by the compiler's macros, so it is checked too.
+  // MSVC does not predefine these macros, but 'float', 'double' and 'long double' are IEEE 754
+  // on all of its targets ('long double' is the same as 'double').
+  // If the compiler does not predefine the required macros, the result is conservatively 'false'.
+  // Each of them may be defined as 'true' or 'false' in etl_profile.h to override the detection.
+  // An override is used as is.
+  #if !defined(ETL_FLOAT_IS_IEC559)
+    #if defined(__FLT_HAS_INFINITY__) && defined(__FLT_HAS_QUIET_NAN__) && defined(__FLT_HAS_DENORM__)
+      #define ETL_FLOAT_IS_IEC559 ((__FLT_HAS_INFINITY__ != 0) && (__FLT_HAS_QUIET_NAN__ != 0) && (__FLT_HAS_DENORM__ != 0) && ETL_HAS_NAN)
+    #elif defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_FLOAT_IS_IEC559 ETL_HAS_NAN
+    #else
+      #define ETL_FLOAT_IS_IEC559 false
+    #endif
+  #endif
+
+  #if !defined(ETL_DOUBLE_IS_IEC559)
+    #if defined(__DBL_HAS_INFINITY__) && defined(__DBL_HAS_QUIET_NAN__) && defined(__DBL_HAS_DENORM__)
+      #define ETL_DOUBLE_IS_IEC559 ((__DBL_HAS_INFINITY__ != 0) && (__DBL_HAS_QUIET_NAN__ != 0) && (__DBL_HAS_DENORM__ != 0) && ETL_HAS_NAN)
+    #elif defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_DOUBLE_IS_IEC559 ETL_HAS_NAN
+    #else
+      #define ETL_DOUBLE_IS_IEC559 false
+    #endif
+  #endif
+
+  #if !defined(ETL_LONG_DOUBLE_IS_IEC559)
+    #if defined(__LDBL_HAS_INFINITY__) && defined(__LDBL_HAS_QUIET_NAN__) && defined(__LDBL_HAS_DENORM__)
+      #define ETL_LONG_DOUBLE_IS_IEC559 ((__LDBL_HAS_INFINITY__ != 0) && (__LDBL_HAS_QUIET_NAN__ != 0) && (__LDBL_HAS_DENORM__ != 0) && ETL_HAS_NAN)
+    #elif defined(ETL_COMPILER_MICROSOFT)
+      #define ETL_LONG_DOUBLE_IS_IEC559 ETL_HAS_NAN
+    #else
+      #define ETL_LONG_DOUBLE_IS_IEC559 false
+    #endif
   #endif
 
 namespace etl
@@ -595,7 +669,6 @@ namespace etl
       static ETL_CONSTANT bool               has_quiet_NaN     = ETL_HAS_NAN;
       static ETL_CONSTANT bool               has_signaling_NaN = ETL_HAS_NAN;
       static ETL_CONSTANT bool               has_denorm_loss   = false;
-      static ETL_CONSTANT bool               is_iec559         = false;
       static ETL_CONSTANT bool               is_bounded        = true;
       static ETL_CONSTANT bool               is_modulo         = false;
       static ETL_CONSTANT bool               traps             = false;
@@ -632,9 +705,6 @@ namespace etl
     ETL_CONSTANT bool floating_point_limits_common<T>::has_denorm_loss;
 
     template <typename T>
-    ETL_CONSTANT bool floating_point_limits_common<T>::is_iec559;
-
-    template <typename T>
     ETL_CONSTANT bool floating_point_limits_common<T>::is_bounded;
 
     template <typename T>
@@ -665,6 +735,8 @@ namespace etl
       static ETL_CONSTANT int min_exponent10 = FLT_MIN_10_EXP;
       static ETL_CONSTANT int max_exponent   = FLT_MAX_EXP;
       static ETL_CONSTANT int max_exponent10 = FLT_MAX_10_EXP;
+
+      static ETL_CONSTANT bool is_iec559 = ETL_FLOAT_IS_IEC559;
     };
 
     template <typename T>
@@ -688,6 +760,9 @@ namespace etl
     template <typename T>
     ETL_CONSTANT int floating_point_limits_float<T>::max_exponent10;
 
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_float<T>::is_iec559;
+
     //*********************************
     // double
     template <typename T = void>
@@ -701,6 +776,8 @@ namespace etl
       static ETL_CONSTANT int min_exponent10 = DBL_MIN_10_EXP;
       static ETL_CONSTANT int max_exponent   = DBL_MAX_EXP;
       static ETL_CONSTANT int max_exponent10 = DBL_MAX_10_EXP;
+
+      static ETL_CONSTANT bool is_iec559 = ETL_DOUBLE_IS_IEC559;
     };
 
     template <typename T>
@@ -724,6 +801,9 @@ namespace etl
     template <typename T>
     ETL_CONSTANT int floating_point_limits_double<T>::max_exponent10;
 
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_double<T>::is_iec559;
+
     //*********************************
     // long double
     template <typename T = void>
@@ -737,6 +817,8 @@ namespace etl
       static ETL_CONSTANT int min_exponent10 = LDBL_MIN_10_EXP;
       static ETL_CONSTANT int max_exponent   = LDBL_MAX_EXP;
       static ETL_CONSTANT int max_exponent10 = LDBL_MAX_10_EXP;
+
+      static ETL_CONSTANT bool is_iec559 = ETL_LONG_DOUBLE_IS_IEC559;
     };
 
     template <typename T>
@@ -759,6 +841,9 @@ namespace etl
 
     template <typename T>
     ETL_CONSTANT int floating_point_limits_long_double<T>::max_exponent10;
+
+    template <typename T>
+    ETL_CONSTANT bool floating_point_limits_long_double<T>::is_iec559;
   } // namespace private_limits
 
   //***************************************************************************
@@ -1570,7 +1655,7 @@ namespace etl
     }
     static ETL_CONSTEXPR float infinity()
     {
-      return HUGE_VALF;
+      return ETL_HUGE_VALF;
     }
     static float round_error()
     {
@@ -1617,7 +1702,7 @@ namespace etl
     }
     static ETL_CONSTEXPR double infinity()
     {
-      return HUGE_VAL;
+      return ETL_HUGE_VAL;
     }
     static double round_error()
     {
@@ -1664,7 +1749,7 @@ namespace etl
     }
     static ETL_CONSTEXPR long double infinity()
     {
-      return HUGE_VALL;
+      return ETL_HUGE_VALL;
     }
     static long double round_error()
     {

@@ -1393,7 +1393,7 @@ namespace
     // because ETL_NOEXCEPT_IF expands to nothing otherwise.
     // The etl::is_nothrow_* traits only work with STL or builtins.
     //*************************************************************************
-#if ETL_USING_CPP11 && ETL_USING_EXCEPTIONS && (defined(ETL_USE_TYPE_TRAITS_BUILTINS) || (ETL_USING_STL && !defined(ETL_USER_DEFINED_TYPE_TRAITS)))
+#if ETL_USING_CPP11 && ETL_USING_EXCEPTIONS && ETL_USING_STL
     struct NothrowAtAll
     {
       NothrowAtAll() noexcept {}
@@ -1951,6 +1951,20 @@ namespace
       auto from_empty = empty.or_else(f);
       CHECK_TRUE(from_empty.has_value());
       CHECK_EQUAL(99, from_empty.value());
+    }
+
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<etl::optional<int>>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::optional<double>>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::optional<char>>::value);
+
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<etl::optional<int>>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::optional<double>>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::optional<char>>::value);
+  #endif
     }
 #endif
   }

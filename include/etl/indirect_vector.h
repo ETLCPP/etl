@@ -724,7 +724,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*********************************************************************
     template <typename TIterator>
-    void assign(TIterator first, TIterator last)
+    typename etl::enable_if<!etl::is_integral<TIterator>::value, void>::type assign(TIterator first, TIterator last)
     {
       ETL_STATIC_ASSERT((etl::is_same<typename etl::remove_cv<T>::type,
                                       typename etl::remove_cv< typename etl::iterator_traits< TIterator>::value_type>::type>::value),
@@ -1071,7 +1071,7 @@ namespace etl
     ///\param last     The last + 1 element to add.
     //*********************************************************************
     template <class TIterator>
-    iterator insert(const_iterator position, TIterator first, TIterator last)
+    typename etl::enable_if<!etl::is_integral<TIterator>::value, iterator>::type insert(const_iterator position, TIterator first, TIterator last)
     {
       size_t count = size_t(etl::distance(first, last));
 
@@ -1462,7 +1462,7 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    indirect_vector(TIterator first, TIterator last)
+    indirect_vector(TIterator first, TIterator last, typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::iindirect_vector<T>(lookup_vector, storage_pool)
     {
       this->assign(first, last);
@@ -1613,7 +1613,8 @@ namespace etl
     ///\param last  The iterator to the last element + 1.
     //*************************************************************************
     template <typename TIterator>
-    indirect_vector_ext(TIterator first, TIterator last, etl::ivector<T*>& lookup_, etl::ipool& pool_)
+    indirect_vector_ext(TIterator first, TIterator last, etl::ivector<T*>& lookup_, etl::ipool& pool_,
+                        typename etl::enable_if<!etl::is_integral<TIterator>::value, int>::type = 0)
       : etl::iindirect_vector<T>(lookup_, pool_)
     {
       ETL_ASSERT(lookup_.capacity() <= pool_.capacity(), ETL_ERROR(indirect_vector_buffer_missmatch));

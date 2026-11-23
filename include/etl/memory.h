@@ -132,14 +132,7 @@ namespace etl
   #endif
     ETL_STATIC_ASSERT(!etl::is_void<T>::value, "etl::launder argument must not be a void type");
 
-  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
-    #if __has_builtin(__builtin_launder)
-    return __builtin_launder(p);
-    #else
-    return p;
-    #endif
-  #elif ETL_USING_GCC_COMPILER && (ETL_COMPILER_FULL_VERSION >= 70000)
-    // GCC 7, 8 and 9 provide __builtin_launder but not __has_builtin.
+  #if ETL_USING_BUILTIN_LAUNDER
     return __builtin_launder(p);
   #else
     return p;
@@ -400,12 +393,8 @@ namespace etl
   template <size_t N, typename T>
   ETL_NODISCARD ETL_CONSTEXPR T* assume_aligned(T* ptr) ETL_NOEXCEPT
   {
-  #if defined(__has_builtin) && !defined(ETL_COMPILER_MICROSOFT)
-    #if __has_builtin(__builtin_assume_aligned)
+  #if ETL_USING_BUILTIN_ASSUME_ALIGNED
     return static_cast<T*>(__builtin_assume_aligned(ptr, N));
-    #else
-    return ptr;
-    #endif
   #else
     return ptr;
   #endif
@@ -932,10 +921,10 @@ namespace etl
   template <typename TInputIterator, typename TOutputIterator>
   TOutputIterator uninitialized_move(TInputIterator i_begin, TInputIterator i_end, TOutputIterator o_begin)
   {
-    #include "etl/private/diagnostic_array_bounds_push.h"
-    #include "etl/private/diagnostic_stringop_overflow_push.h"
+    #include "private/diagnostic_array_bounds_push.h"
+    #include "private/diagnostic_stringop_overflow_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
-    #include "etl/private/diagnostic_pop.h"
+    #include "private/diagnostic_pop.h"
   }
 
   //*****************************************************************************
@@ -949,9 +938,9 @@ namespace etl
   {
     count += static_cast<TCounter>(etl::distance(i_begin, i_end));
 
-    #include "etl/private/diagnostic_array_bounds_push.h"
+    #include "private/diagnostic_array_bounds_push.h"
     return std::uninitialized_move(i_begin, i_end, o_begin);
-    #include "etl/private/diagnostic_pop.h"
+    #include "private/diagnostic_pop.h"
   }
   #else
   //*****************************************************************************
@@ -3426,10 +3415,10 @@ namespace etl
     ETL_STATIC_ASSERT(etl::is_trivially_copyable<T>::value, "Cannot mem_move a non trivially copyable type");
 
 #if ETL_USING_BUILTIN_MEMMOVE
-  #include "etl/private/diagnostic_array_bounds_push.h"
-  #include "etl/private/diagnostic_stringop_overread_push.h"
+  #include "private/diagnostic_array_bounds_push.h"
+  #include "private/diagnostic_stringop_overread_push.h"
     __builtin_memmove(reinterpret_cast<void*>(db), reinterpret_cast<const void*>(sb), sizeof(T) * n);
-  #include "etl/private/diagnostic_pop.h"
+  #include "private/diagnostic_pop.h"
 #else
     ::memmove(reinterpret_cast<void*>(db), reinterpret_cast<const void*>(sb), sizeof(T) * n);
 #endif

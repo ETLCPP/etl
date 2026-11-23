@@ -926,6 +926,27 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_find_rfind_all_positions)
+    {
+      const std::string compare_text("abcdabcdab");
+      View              view(compare_text.c_str());
+
+      const char* needles[] = {"cd", "d", "x", ""};
+
+      // Every position up to past the end, where the search must not read outside the view.
+      for (size_t position = 0U; position <= compare_text.size() + 2U; ++position)
+      {
+        for (size_t i = 0U; i < 4U; ++i)
+        {
+          CHECK_EQUAL(compare_text.find(needles[i], position), view.find(needles[i], position));
+          CHECK_EQUAL(compare_text.rfind(needles[i], position), view.rfind(needles[i], position));
+        }
+      }
+
+      CHECK_EQUAL(View::npos, view.find("cd", View::npos));
+    }
+
+    //*************************************************************************
     TEST(test_find_first_of)
     {
       const char* s1 = "l";
@@ -1280,5 +1301,30 @@ namespace
       CHECK_EQUAL(std::string("World"), std::string(view.substr(6).data(), view.substr(6).size()));
       CHECK_EQUAL(5U, view.substr(6, etl::string_view::npos).size());
     }
+    //*************************************************************************
+#if ETL_USING_CPP11
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE(etl::is_trivially_copyable<etl::string_view>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::wstring_view>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::u16string_view>::value);
+      CHECK_TRUE(etl::is_trivially_copyable<etl::u32string_view>::value);
+  #if ETL_USING_CPP20
+      CHECK_TRUE(etl::is_trivially_copyable<etl::u8string_view>::value);
+  #endif
+  #if ETL_USING_STL
+      CHECK_TRUE(std::is_trivially_copyable<etl::string_view>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::wstring_view>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::u16string_view>::value);
+      CHECK_TRUE(std::is_trivially_copyable<etl::u32string_view>::value);
+    #if ETL_USING_CPP20
+      CHECK_TRUE(std::is_trivially_copyable<etl::u8string_view>::value);
+    #endif
+      CHECK_TRUE(std::is_trivially_copy_constructible<etl::string_view>::value);
+      CHECK_TRUE(std::is_trivially_copy_assignable<etl::string_view>::value);
+      CHECK_TRUE(std::is_trivially_destructible<etl::string_view>::value);
+  #endif
+    }
+#endif
   }
 } // namespace

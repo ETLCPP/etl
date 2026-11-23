@@ -66,6 +66,17 @@ namespace etl
       {
       }
 
+#if ETL_USING_CPP11
+      //***************************************************************************
+      /// Copy constructor.
+      //***************************************************************************
+      time_point(const time_point&) = default;
+
+      //***************************************************************************
+      /// Move constructor.
+      //***************************************************************************
+      time_point(time_point&&) = default;
+#else
       //***************************************************************************
       /// Copy constructor.
       //***************************************************************************
@@ -73,6 +84,7 @@ namespace etl
         : dur(rhs.dur)
       {
       }
+#endif
 
       //***************************************************************************
       /// Copy construct from another time_point with a different duration type.
@@ -83,6 +95,17 @@ namespace etl
       {
       }
 
+#if ETL_USING_CPP11
+      //***************************************************************************
+      /// Assignment operator.
+      //***************************************************************************
+      time_point& operator=(const time_point&) = default;
+
+      //***************************************************************************
+      /// Move assignment operator.
+      //***************************************************************************
+      time_point& operator=(time_point&&) = default;
+#else
       //***************************************************************************
       /// Assignment operator.
       //***************************************************************************
@@ -92,6 +115,7 @@ namespace etl
 
         return *this;
       }
+#endif
 
       //***************************************************************************
       /// Returns a duration representing the amount of time between this and
@@ -224,7 +248,7 @@ namespace etl
 
     //***********************************************************************
     /// Rounds a duration to the nearest precision.
-    /// If the duration is exactly halfway, it rounds away from zero.
+    /// If the duration is exactly halfway, it rounds to even.
     //***********************************************************************
     template <typename TToDuration, typename TClock, typename TDuration>
     ETL_NODISCARD ETL_CONSTEXPR14 etl::chrono::time_point<TClock, TToDuration> round(const etl::chrono::time_point<TClock, TDuration>& tp)

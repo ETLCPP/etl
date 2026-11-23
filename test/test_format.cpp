@@ -32,6 +32,8 @@ SOFTWARE.
 
 #include "etl/iterator.h"
 
+#include <cmath>
+
 #if ETL_USING_CPP11
 
 namespace
