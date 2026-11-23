@@ -2377,22 +2377,16 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************
     unique_ptr(unique_ptr&& other) ETL_NOEXCEPT
+      : p(other.release())
+      , deleter(etl::forward<TDeleter>(other.deleter))
     {
-      if (&other != this)
-      {
-        p       = other.release();
-        deleter = etl::move(other.deleter);
-      }
     }
 #else
     //*********************************
     unique_ptr(unique_ptr& other) ETL_NOEXCEPT
+      : p(other.release())
+      , deleter(other.deleter)
     {
-      if (&other != this)
-      {
-        p       = other.release();
-        deleter = other.deleter;
-      }
     }
 #endif
 
@@ -2589,22 +2583,16 @@ namespace etl
 #if ETL_USING_CPP11
     //*********************************
     unique_ptr(unique_ptr&& other) ETL_NOEXCEPT
+      : p(other.release())
+      , deleter(etl::forward<TDeleter>(other.deleter))
     {
-      if (&other != this)
-      {
-        p       = other.release();
-        deleter = etl::move(other.deleter);
-      }
     }
 #else
     //*********************************
     unique_ptr(unique_ptr& other) ETL_NOEXCEPT
+      : p(other.release())
+      , deleter(other.deleter)
     {
-      if (&other != this)
-      {
-        p       = other.release();
-        deleter = other.deleter;
-      }
     }
 #endif
 
