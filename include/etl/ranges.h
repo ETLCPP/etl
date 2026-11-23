@@ -6222,9 +6222,11 @@ namespace etl
 
           result_type result;
 
+          // Forward each element with the value category the range gives it, as std::ranges::to does.
+          // An lvalue range must be copied, not moved from. Use views::as_rvalue to move the elements.
           for (auto&& i : r)
           {
-            result.emplace_back(etl::move(i));
+            result.emplace_back(etl::forward<decltype(i)>(i));
           }
 
           return result;
