@@ -430,7 +430,7 @@ namespace etl
         , expecting_sign(true)
         , exponent_value(0)
         , state(Parsing_Integral)
-        , conversion_status(to_arithmetic_status::Valid)
+        , conversion_status(to_arithmetic_status::Invalid_Format) // Until a digit is found
       {
       }
 
@@ -458,8 +458,17 @@ namespace etl
               // Exponential?
               else if (c == char_constant::Exponential_Char)
               {
-                expecting_sign = true;
-                state          = Parsing_Exponential;
+                // The exponent needs a digit before it and at least one digit after it.
+                if (conversion_status == to_arithmetic_status::Valid)
+                {
+                  conversion_status = to_arithmetic_status::Invalid_Format;
+                  expecting_sign    = true;
+                  state             = Parsing_Exponential;
+                }
+                else
+                {
+                  is_success = false;
+                }
               }
               else if (is_valid(c, etl::radix::decimal))
               {
@@ -489,8 +498,17 @@ namespace etl
               // Exponential?
               else if (c == char_constant::Exponential_Char)
               {
-                expecting_sign = true;
-                state          = Parsing_Exponential;
+                // The exponent needs a digit before it and at least one digit after it.
+                if (conversion_status == to_arithmetic_status::Valid)
+                {
+                  conversion_status = to_arithmetic_status::Invalid_Format;
+                  expecting_sign    = true;
+                  state             = Parsing_Exponential;
+                }
+                else
+                {
+                  is_success = false;
+                }
               }
               else if (is_valid(c, etl::radix::decimal))
               {
@@ -527,6 +545,8 @@ namespace etl
                 const char digit = digit_value(c, etl::radix::decimal);
                 exponent_value *= etl::radix::decimal;
                 is_negative_exponent ? exponent_value -= digit : exponent_value += digit;
+                conversion_status = to_arithmetic_status::Valid;
+                expecting_sign    = false;
               }
               else
               {
@@ -842,10 +862,29 @@ namespace etl
 
       if (result.has_value())
       {
-        TValue value    = static_cast<TValue>(accumulator.value());
-        int    exponent = accumulator.exponent();
+        // Scale in long double, as 10^exponent may be out of range for TValue when the result is not.
+        const int   exponent = accumulator.exponent();
+        long double scaled   = accumulator.value();
 
-        value *= etl::math::pow(static_cast<TValue>(10.0), static_cast<TValue>(exponent));
+        // A zero mantissa stays zero, even when 10^exponent overflows.
+        if (scaled != 0)
+        {
+          if ((exponent >= etl::numeric_limits<double>::min_exponent10) && (exponent <= etl::numeric_limits<double>::max_exponent10))
+          {
+            scaled *= etl::math::pow(10.0L, static_cast<long double>(exponent));
+          }
+          else
+          {
+            // 10^exponent may be out of range for long double, which can be the same size as double.
+            // Applying it in two halves still finds a result that is in range.
+            const int half_exponent = exponent / 2;
+
+            scaled *= etl::math::pow(10.0L, static_cast<long double>(half_exponent));
+            scaled *= etl::math::pow(10.0L, static_cast<long double>(exponent - half_exponent));
+          }
+        }
+
+        TValue value = static_cast<TValue>(scaled);
 
         // Check that the result is a valid floating point number.
         if (etl::is_infinity(value))

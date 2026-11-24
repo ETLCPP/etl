@@ -821,6 +821,56 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_float_without_digits)
+    {
+      const char* const texts[] = {"-", "+", ".", "-.", "e", "e5", "-e5", ".e5", "1e", "1e+", "1.5e-", "1e5-3"};
+
+      for (const char* t : texts)
+      {
+        Text text(t);
+
+        CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<float>(text.c_str(), text.size()).error());
+        CHECK_EQUAL(etl::to_arithmetic_status::Invalid_Format, etl::to_arithmetic<double>(text.c_str(), text.size()).error());
+      }
+    }
+
+    //*************************************************************************
+    TEST(test_float_with_power_of_ten_outside_type_range)
+    {
+      Text text;
+
+      //*********************************
+      text = STR("0.001e40");
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
+      CHECK_CLOSE(1e37f, etl::to_arithmetic<float>(text.c_str(), text.size()).value(), 1e31f);
+
+      //*********************************
+      text = STR("58961054839516914595e-50");
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
+      CHECK_CLOSE(5.8961054e-31f, etl::to_arithmetic<float>(text.c_str(), text.size()).value(), 1e-37f);
+
+      //*********************************
+      text = STR("327551521153070304938383E-45");
+      CHECK(etl::to_arithmetic<float>(text.c_str(), text.size()).has_value());
+      CHECK_CLOSE(3.2755152e-22f, etl::to_arithmetic<float>(text.c_str(), text.size()).value(), 1e-28f);
+
+      //*********************************
+      text = STR("0.1e309");
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
+      CHECK_CLOSE(1e308, etl::to_arithmetic<double>(text.c_str(), text.size()).value(), 1e293);
+
+      //*********************************
+      text = STR("0e700");
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
+      CHECK_EQUAL(0.0, etl::to_arithmetic<double>(text.c_str(), text.size()).value());
+
+      //*********************************
+      text = STR(".2e-19");
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
+      CHECK_CLOSE(2e-20, etl::to_arithmetic<double>(text.c_str(), text.size()).value(), 4e-36);
+    }
+
+    //*************************************************************************
     TEST(test_valid_double)
     {
       Text text;
