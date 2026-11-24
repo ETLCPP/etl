@@ -44,22 +44,6 @@ SOFTWARE.
 
 namespace etl
 {
-  //***************************************************************************
-  /// States fit in 2 bits.
-  //***************************************************************************
-  struct debounce_state_id
-  {
-    typedef uint_least8_t type;
-
-    enum
-    {
-      Off       = 0, // Debounced state is Off.
-      On        = 1, // Debounced state is On.
-      Held      = 2, // Debounced state is Held. Implies On.
-      Repeating = 3, // Debounced state is Repeating. Implies Held and On.
-    };
-  };
-
   //*************************************************************************
   /// Debounces a contiguous group of bits read from an IO port.
   ///\tparam TValue       The type of the port value (uint8_t/16_t/32_t/64_t).
@@ -94,8 +78,23 @@ namespace etl
     ETL_STATIC_ASSERT(Valid_Count >= 1,                                                   "Valid_Count must be at least 1");
     // clang-format on
 
-    typedef TValue            value_type;
-    typedef debounce_state_id state_id;
+    typedef TValue value_type;
+
+    //***************************************************************************
+    /// States fit in 2 bits.
+    //***************************************************************************
+    struct state_id
+    {
+      typedef uint_least8_t type;
+
+      enum
+      {
+        Off       = 0, // Debounced state is Off.
+        On        = 1, // Debounced state is On.
+        Held      = 2, // Debounced state is Held. Implies On.
+        Repeating = 3, // Debounced state is Repeating. Implies Held and On.
+      };
+    };
 
     //***************************************************************************
     /// Constructor. All bits start in the 'Off' state.
@@ -288,7 +287,7 @@ namespace etl
     //***************************************************************************
     /// Returns the current state id of a bit.
     //***************************************************************************
-    state_id::type get_state(size_t n) const
+    typename state_id::type get_state(size_t n) const
     {
       value_type bit = bit_mask(n);
 
@@ -347,7 +346,7 @@ namespace etl
     /// Gets the current debounce state for a specific bit.
     ///\return The current state of the bit.
     //***************************************************************************
-    state_id::type get_bit_state(const value_type bit) const
+    typename state_id::type get_bit_state(const value_type bit) const
     {
       const state_id::type lo = static_cast<state_id::type>((state_low & bit) > 0);
       const state_id::type hi = static_cast<state_id::type>((state_high & bit) > 0);
@@ -358,7 +357,7 @@ namespace etl
     //***************************************************************************
     /// Sets the current debounce state for a specific bit.
     //***************************************************************************
-    void set_bit_state(const value_type bit, state_id::type state)
+    void set_bit_state(const value_type bit, typename state_id::type state)
     {
       state_low  = state & 1 ? state_low | bit : state_low & ~bit;
       state_high = state & 2 ? state_high | bit : state_high & ~bit;
@@ -393,7 +392,7 @@ namespace etl
     /// Increments *pcount; if it reaches 'threshold' the bit moves to
     /// 'new_state', the changed flag is set, and the timer is reset.
     //***************************************************************************
-    void check_for_transition(count_type* pcount, uint32_t threshold, state_id::type new_state, value_type bit)
+    void check_for_transition(count_type* pcount, uint32_t threshold, typename state_id::type new_state, value_type bit)
     {
       ++(*pcount);
 

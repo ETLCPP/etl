@@ -201,7 +201,7 @@ namespace
       CHECK_EQUAL(N_Key_Events, pad.max_number_of_key_events());
       CHECK_EQUAL(0, pad.number_of_key_events());
       CHECK_EQUAL(false, pad.has_key_events());
-      CHECK_EQUAL(pad.Invalid_Key, pad.next_key_event().key);
+      CHECK_TRUE(key_pad_no_ghost_check::key_state::Invalid == pad.next_key_event().state);
     }
 
     //*************************************************************************
@@ -263,18 +263,18 @@ namespace
       CHECK_EQUAL(10, keys_pressed[10].key); // Key11
       CHECK_EQUAL(11, keys_pressed[11].key); // Key12
 
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[0].state.value());  // Key1
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[1].state.value());  // Key2
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[2].state.value());  // Key3
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[3].state.value());  // Key4
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[4].state.value());  // Key5
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[5].state.value());  // Key6
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[6].state.value());  // Key7
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[7].state.value());  // Key8
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[8].state.value());  // Key9
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[9].state.value());  // Key10
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[10].state.value()); // Key11
-      CHECK_EQUAL(key_event::key_state::On, keys_pressed[11].state.value()); // Key12
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[0].state.value());  // Key1
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[1].state.value());  // Key2
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[2].state.value());  // Key3
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[3].state.value());  // Key4
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[4].state.value());  // Key5
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[5].state.value());  // Key6
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[6].state.value());  // Key7
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[7].state.value());  // Key8
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[8].state.value());  // Key9
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[9].state.value());  // Key10
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[10].state.value()); // Key11
+      CHECK_EQUAL(key_event::key_state::Pressed, keys_pressed[11].state.value()); // Key12
 
       //*******************************
       // Simulate holding down Key1 for Hold_Count scans, then check that it is reported as Held.
@@ -314,18 +314,18 @@ namespace
       CHECK_EQUAL(10, keys_pressed[10].key); // Key11
       CHECK_EQUAL(11, keys_pressed[11].key); // Key12
 
-      CHECK_EQUAL(key_event::key_state::Held, keys_pressed[0].state.value()); // Key1
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[1].state.value());  // Key2
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[2].state.value());  // Key3
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[3].state.value());  // Key4
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[4].state.value());  // Key5
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[5].state.value());  // Key6
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[6].state.value());  // Key7
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[7].state.value());  // Key8
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[8].state.value());  // Key9
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[9].state.value());  // Key10
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[10].state.value()); // Key11
-      CHECK_EQUAL(key_event::key_state::Off, keys_pressed[11].state.value()); // Key12
+      CHECK_EQUAL(key_event::key_state::Held, (int)keys_pressed[0].state.value()); // Key1
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[1].state.value());  // Key2
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[2].state.value());  // Key3
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[3].state.value());  // Key4
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[4].state.value());  // Key5
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[5].state.value());  // Key6
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[6].state.value());  // Key7
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[7].state.value());  // Key8
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[8].state.value());  // Key9
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[9].state.value());  // Key10
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[10].state.value()); // Key11
+      CHECK_EQUAL(key_event::key_state::Off, (int)keys_pressed[11].state.value()); // Key12
 
       //*******************************
       // Simulate holding down Key1 for Repeat_Count scans, then check that it is reported as Repeating.
@@ -403,65 +403,65 @@ namespace
 
       std::array<int, Steps> expected_key_events = {0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1};
 
-      std::array<key_state, Steps> key1_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::On,  key_state::On,
-                                                    key_state::On,  key_state::On,  key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key1_expected = {key_state::Off,     key_state::Off,     key_state::Off, key_state::Pressed, key_state::Pressed,
+                                                    key_state::Pressed, key_state::Pressed, key_state::Off, key_state::Off,     key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,     key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off, key_state::Off};
 
-      std::array<key_state, Steps> key2_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::On,
-                                                    key_state::On,  key_state::On,  key_state::On,  key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key2_expected = {key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off, key_state::Pressed,
+                                                    key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Off, key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off};
 
-      std::array<key_state, Steps> key3_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::On,  key_state::On,  key_state::On,  key_state::On,  key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key3_expected = {key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off};
 
-      std::array<key_state, Steps> key4_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::On,  key_state::On,  key_state::On,  key_state::On,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key4_expected = {key_state::Off, key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Off, key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Pressed,
+                                                    key_state::Off, key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Off, key_state::Off,     key_state::Off,     key_state::Off};
 
-      std::array<key_state, Steps> key5_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::On,  key_state::On,  key_state::On,
-                                                    key_state::On,  key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key5_expected = {key_state::Off,     key_state::Off, key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Off,     key_state::Off, key_state::Pressed, key_state::Pressed, key_state::Pressed,
+                                                    key_state::Pressed, key_state::Off, key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Off,     key_state::Off, key_state::Off,     key_state::Off};
 
-      std::array<key_state, Steps> key6_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::On,  key_state::On,
-                                                    key_state::On,  key_state::On,  key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key6_expected = {key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,     key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off, key_state::Pressed, key_state::Pressed,
+                                                    key_state::Pressed, key_state::Pressed, key_state::Off, key_state::Off,     key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off, key_state::Off};
 
-      std::array<key_state, Steps> key7_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::On,
-                                                    key_state::On,  key_state::On,  key_state::On,  key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key7_expected = {key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off, key_state::Pressed,
+                                                    key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Off, key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off};
 
-      std::array<key_state, Steps> key8_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::On,  key_state::On,  key_state::On,  key_state::On,  key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key8_expected = {key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Off,
+                                                    key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off};
 
-      std::array<key_state, Steps> key9_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                    key_state::Off, key_state::On,  key_state::On,  key_state::On,  key_state::On,
-                                                    key_state::Off, key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key9_expected = {key_state::Off, key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Off, key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off,
+                                                    key_state::Off, key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Pressed,
+                                                    key_state::Off, key_state::Off,     key_state::Off,     key_state::Off};
 
-      std::array<key_state, Steps> key10_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                     key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                     key_state::Off, key_state::Off, key_state::On,  key_state::On,  key_state::On,
-                                                     key_state::On,  key_state::Off, key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key10_expected = {key_state::Off,     key_state::Off, key_state::Off,     key_state::Off,     key_state::Off,
+                                                     key_state::Off,     key_state::Off, key_state::Off,     key_state::Off,     key_state::Off,
+                                                     key_state::Off,     key_state::Off, key_state::Pressed, key_state::Pressed, key_state::Pressed,
+                                                     key_state::Pressed, key_state::Off, key_state::Off,     key_state::Off};
 
-      std::array<key_state, Steps> key11_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                     key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                     key_state::Off, key_state::Off, key_state::Off, key_state::On,  key_state::On,
-                                                     key_state::On,  key_state::On,  key_state::Off, key_state::Off};
+      std::array<key_state, Steps> key11_expected = {key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,     key_state::Off,
+                                                     key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,     key_state::Off,
+                                                     key_state::Off,     key_state::Off,     key_state::Off, key_state::Pressed, key_state::Pressed,
+                                                     key_state::Pressed, key_state::Pressed, key_state::Off, key_state::Off};
 
-      std::array<key_state, Steps> key12_expected = {key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                     key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::Off,
-                                                     key_state::Off, key_state::Off, key_state::Off, key_state::Off, key_state::On,
-                                                     key_state::On,  key_state::On,  key_state::On,  key_state::Off};
+      std::array<key_state, Steps> key12_expected = {key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,
+                                                     key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,
+                                                     key_state::Off,     key_state::Off,     key_state::Off,     key_state::Off, key_state::Pressed,
+                                                     key_state::Pressed, key_state::Pressed, key_state::Pressed, key_state::Off};
 
       key_pad_no_ghost_check pad;
 
@@ -486,18 +486,18 @@ namespace
 
         CHECK_EQUAL(expected_key_events[i], pad.number_of_key_events());
 
-        CHECK_EQUAL(key1_expected[i].value(), pad.get_key_state(pad.Key1.id).value());
-        CHECK_EQUAL(key2_expected[i].value(), pad.get_key_state(pad.Key2.id).value());
-        CHECK_EQUAL(key3_expected[i].value(), pad.get_key_state(pad.Key3.id).value());
-        CHECK_EQUAL(key4_expected[i].value(), pad.get_key_state(pad.Key4.id).value());
-        CHECK_EQUAL(key5_expected[i].value(), pad.get_key_state(pad.Key5.id).value());
-        CHECK_EQUAL(key6_expected[i].value(), pad.get_key_state(pad.Key6.id).value());
-        CHECK_EQUAL(key7_expected[i].value(), pad.get_key_state(pad.Key7.id).value());
-        CHECK_EQUAL(key8_expected[i].value(), pad.get_key_state(pad.Key8.id).value());
-        CHECK_EQUAL(key9_expected[i].value(), pad.get_key_state(pad.Key9.id).value());
-        CHECK_EQUAL(key10_expected[i].value(), pad.get_key_state(pad.Key10.id).value());
-        CHECK_EQUAL(key11_expected[i].value(), pad.get_key_state(pad.Key11.id).value());
-        CHECK_EQUAL(key12_expected[i].value(), pad.get_key_state(pad.Key12.id).value());
+        CHECK_EQUAL((int)key1_expected[i].value(), (int)pad.get_key_state(pad.Key1.id).value());
+        CHECK_EQUAL((int)key2_expected[i].value(), (int)pad.get_key_state(pad.Key2.id).value());
+        CHECK_EQUAL((int)key3_expected[i].value(), (int)pad.get_key_state(pad.Key3.id).value());
+        CHECK_EQUAL((int)key4_expected[i].value(), (int)pad.get_key_state(pad.Key4.id).value());
+        CHECK_EQUAL((int)key5_expected[i].value(), (int)pad.get_key_state(pad.Key5.id).value());
+        CHECK_EQUAL((int)key6_expected[i].value(), (int)pad.get_key_state(pad.Key6.id).value());
+        CHECK_EQUAL((int)key7_expected[i].value(), (int)pad.get_key_state(pad.Key7.id).value());
+        CHECK_EQUAL((int)key8_expected[i].value(), (int)pad.get_key_state(pad.Key8.id).value());
+        CHECK_EQUAL((int)key9_expected[i].value(), (int)pad.get_key_state(pad.Key9.id).value());
+        CHECK_EQUAL((int)key10_expected[i].value(), (int)pad.get_key_state(pad.Key10.id).value());
+        CHECK_EQUAL((int)key11_expected[i].value(), (int)pad.get_key_state(pad.Key11.id).value());
+        CHECK_EQUAL((int)key12_expected[i].value(), (int)pad.get_key_state(pad.Key12.id).value());
 
         pad.clear_key_events();
       }

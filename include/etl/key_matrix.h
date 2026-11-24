@@ -44,132 +44,145 @@ SOFTWARE.
 namespace etl
 {
   //***************************************************************************
-  // The state of a key in the key matrix.
-  // It inherits from the debounce_state_id to provide the same state IDs.
-  //***************************************************************************
-  class key_matrix_state : public etl::debounce_state_id
-  {
-  public:
-
-    //*******************************
-    /// Constructor.
-    //*******************************
-    key_matrix_state()
-      : state(key_matrix_state::Off)
-    {
-    }
-
-    //*******************************
-    /// Copy constructor.
-    //*******************************
-    key_matrix_state(const key_matrix_state& other)
-      : state(other.state)
-    {
-    }
-
-    //*******************************
-    /// Construct from a key_matrix_state::type.
-    //*******************************
-    key_matrix_state(typename key_matrix_state::type state_)
-      : state(state_)
-    {
-    }
-
-    //*******************************
-    /// Assignment operator from key_matrix_state.
-    //*******************************
-    key_matrix_state& operator=(const key_matrix_state& other)
-    {
-      state = other.state;
-
-      return *this;
-    }
-
-    //*******************************
-    /// Assignment operator from key_matrix_state::type.
-    //*******************************
-    key_matrix_state& operator=(const key_matrix_state::type state_)
-    {
-      state = state_;
-
-      return *this;
-    }
-
-    //*******************************
-    /// Returns true if the key is currently pressed.
-    //*******************************
-    bool is_pressed() const
-    {
-      return (state >= key_matrix_state::On);
-    }
-
-    //*******************************
-    /// Returns true if the key is currently held.
-    //*******************************
-    bool is_held() const
-    {
-      return (state >= key_matrix_state::Held);
-    }
-
-    //*******************************
-    /// Returns true if the key is currently repeating.
-    //*******************************
-    bool is_repeating() const
-    {
-      return (state == key_matrix_state::Repeating);
-    }
-
-    //*******************************
-    /// Returns the key_matrix_state::type value.
-    //*******************************
-    key_matrix_state::type value() const
-    {
-      return state;
-    }
-
-    //*******************************
-    /// Equality operator.
-    //*******************************
-    friend bool operator==(const key_matrix_state& lhs, const key_matrix_state& rhs)
-    {
-      return (lhs.state == rhs.state);
-    }
-
-    //*******************************
-    /// Inequality operator.
-    //*******************************
-    friend bool operator!=(const key_matrix_state& lhs, const key_matrix_state& rhs)
-    {
-      return !(lhs == rhs);
-    }
-
-  private:
-
-    key_matrix_state::type state;
-  };
-
-  //***************************************************************************
   /// Traits for the key matrix.
-  ///\tparam N_Read    The number of read lines in the key matrix.
+  ///\tparam N_Read  The number of read lines in the key matrix.
   ///\tparam N_Write The number of write lines in the key matrix.
   //***************************************************************************
   template <size_t N_Read, size_t N_Write>
   struct key_matrix_traits
   {
     // clang-format off
-    typedef typename etl::smallest_uint_for_bits<N_Read>::type              read_type;          ///< The type that holds the value read from the key matrix read lines.
-    typedef typename etl::smallest_uint_for_value<N_Write>::type          write_index_type; ///< The type that holds a write index that selects the active write.
-    typedef typename etl::smallest_uint_for_value<N_Read * N_Write>::type key_type;          ///< The type that holds a key value.
+    typedef typename etl::smallest_uint_for_bits<N_Read>::type                   read_type;        ///< The type that holds the value read from the key matrix read lines.
+    typedef typename etl::smallest_uint_for_value<N_Write>::type                 write_index_type; ///< The type that holds a write index that selects the active write.
+    typedef typename etl::smallest_uint_for_value<(N_Read * N_Write) - 1U>::type key_type;         ///< The type that holds a key value.
     /// clang-format on
 
-    typedef key_matrix_state key_state; ///< The type that holds the state of a key in the key matrix.
-
-    // The invalid key code.
-    // The range of supported keys is [0, Invalid_Key).
-    static ETL_CONSTANT key_type Invalid_Key = etl::integral_limits<key_type>::max;
-
     // The maximum valid key code.
-    static ETL_CONSTANT key_type Max_Key = Invalid_Key - 1U;
+    static ETL_CONSTANT key_type Max_Key = etl::integral_limits<key_type>::max;
+
+    //***************************************************************************
+    // The state of a key in the key matrix.
+    // It inherits from the debounce_state_id to provide the same state IDs.
+    //***************************************************************************
+    class key_state
+    {
+    public:
+
+      typedef uint_least8_t type;
+
+      enum
+      {
+        Invalid   = 0,
+        Off       = 1,
+        Pressed   = 2,
+        Held      = 3,
+        Repeating = 4
+      };
+
+      //*******************************
+      /// Constructor.
+      //*******************************
+      key_state()
+        : state(key_state::Invalid)
+      {
+      }
+
+      //*******************************
+      /// Copy constructor.
+      //*******************************
+      key_state(const key_state& other)
+        : state(other.state)
+      {
+      }
+
+      //*******************************
+      /// Construct from a key_state::type.
+      //*******************************
+      key_state(typename key_state::type state_)
+        : state(state_)
+      {
+      }
+
+      //*******************************
+      /// Assignment operator from key_state.
+      //*******************************
+      key_state& operator=(const key_state& other)
+      {
+        state = other.state;
+
+        return *this;
+      }
+
+      //*******************************
+      /// Assignment operator from key_state::type.
+      //*******************************
+      key_state& operator=(const key_state::type state_)
+      {
+        state = state_;
+
+        return *this;
+      }
+
+      //*******************************
+      /// Returns true if the key is invalid.
+      //*******************************
+      bool is_invalid() const
+      {
+        return (state == key_state::Invalid);
+      }
+
+      //*******************************
+      /// Returns true if the key is currently pressed.
+      //*******************************
+      bool is_pressed() const
+      {
+        return (state >= key_state::Pressed);
+      }
+
+      //*******************************
+      /// Returns true if the key is currently held.
+      //*******************************
+      bool is_held() const
+      {
+        return (state >= key_state::Held);
+      }
+
+      //*******************************
+      /// Returns true if the key is currently repeating.
+      //*******************************
+      bool is_repeating() const
+      {
+        return (state == key_state::Repeating);
+      }
+
+      //*******************************
+      /// Returns the key_state::type value.
+      //*******************************
+      key_state::type value() const
+      {
+        return state;
+      }
+
+      //*******************************
+      /// Equality operator.
+      //*******************************
+      friend bool operator==(const key_state& lhs, const key_state& rhs)
+      {
+        return (lhs.state == rhs.state);
+      }
+
+      //*******************************
+      /// Inequality operator.
+      //*******************************
+      friend bool operator!=(const key_state& lhs, const key_state& rhs)
+      {
+        return !(lhs == rhs);
+      }
+
+    private:
+
+      key_state::type state;
+    };
 
     //***************************************************************************
     /// A key event that is pushed into the key event buffer when a key changes state.
@@ -222,7 +235,7 @@ namespace etl
     //***************************************************************************
     ETL_CONSTEXPR key_type max_key_id() const
     {
-      return Invalid_Key - 1U;
+      return (N_Read * N_Write) - 1U;
     }
   };
 
@@ -247,16 +260,15 @@ namespace etl
 
     using typename key_matrix_traits<N_Read, N_Write>::read_type;
     using typename key_matrix_traits<N_Read, N_Write>::write_index_type;
+    using typename key_matrix_traits<N_Read, N_Write>::key_state;
     using typename key_matrix_traits<N_Read, N_Write>::key_type;
     using typename key_matrix_traits<N_Read, N_Write>::key_event;
 
-    using key_matrix_traits<N_Read, N_Write>::Invalid_Key;
+    using key_matrix_traits<N_Read, N_Write>::Max_Key;
     using key_matrix_traits<N_Read, N_Write>::read_size;
     using key_matrix_traits<N_Read, N_Write>::write_size;
     using key_matrix_traits<N_Read, N_Write>::matrix_size;
     using key_matrix_traits<N_Read, N_Write>::max_key_id;
-
-    typedef typename etl::key_matrix_state key_state;
 
   private:
 
@@ -371,11 +383,11 @@ namespace etl
 
     //***************************************************************************
     /// Returns the next key event from the buffer.
-    /// If the buffer is empty then returns a key event with key = Invalid_Key and state = Off.
+    /// If the buffer is empty then returns a key event with key = 0 and state = Invalid.
     //***************************************************************************
     key_event next_key_event()
     {
-      key_event event{Invalid_Key, key_state::Off};
+      key_event event{0, key_state::Invalid};
 
       if (!key_event_buffer.empty())
       {
@@ -456,14 +468,28 @@ namespace etl
             size_t row_index = static_cast<size_t>(etl::count_trailing_zeros(changed));
 
             key_type  key   = static_cast<key_type>((row_index * N_Write) + wi);
-            key_state state = read_channel.get_state(row_index);
-            key_event event{key, state};
+            key_state state = translate_key_state(read_channel.get_state(row_index));
 
-            key_event_buffer.push(event);
+            key_event_buffer.push(key_event{key, state});
 
             changed = etl::clear_lowest_set_bit(changed);
           }
         }
+      }
+    }
+
+    //***************************************************************************
+    /// Translate from debouncer state_id to key_state
+    //***************************************************************************
+    key_state translate_key_state(typename read_channel_type::state_id::type state) const
+    {
+      switch (state)
+      {
+        case read_channel_type::state_id::Off: return key_state::Off;
+        case read_channel_type::state_id::On: return key_state::Pressed;
+        case read_channel_type::state_id::Held: return key_state::Held;
+        case read_channel_type::state_id::Repeating: return key_state::Repeating;
+        default: return key_state::Invalid;
       }
     }
 
