@@ -823,7 +823,7 @@ namespace
     //*************************************************************************
     TEST(test_float_without_digits)
     {
-      const char* const texts[] = { "-", "+", ".", "-.", "e", "e5", "-e5", ".e5", "1e", "1e+", "1.5e-", "1e5-3" };
+      const char* const texts[] = {"-", "+", ".", "-.", "e", "e5", "-e5", ".e5", "1e", "1e+", "1.5e-", "1e5-3"};
 
       for (const char* t : texts)
       {
