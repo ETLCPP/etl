@@ -2358,9 +2358,9 @@ namespace etl
   {
   public:
 
-    typedef T  element_type;
-    typedef T* pointer;
-    typedef T& reference;
+    typedef T                                           element_type;
+    typedef T*                                          pointer;
+    typedef typename etl::add_lvalue_reference<T>::type reference;
 
     //*********************************
     ETL_CONSTEXPR unique_ptr() ETL_NOEXCEPT
