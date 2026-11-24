@@ -168,6 +168,15 @@ constexpr key_type Invalid_Key
 The invalid key code.  
 The range of supported keys is `[0, Invalid_Key)`.
 
+---
+
+```cpp
+constexpr key_type Max_Key
+```
+**Description**  
+The maximum valid key code.  
+The range of supported keys is `[0, Max_Key]`.
+
 ### key_event
 ```cpp
 struct key_event
@@ -255,9 +264,10 @@ Defined in `etl::key_matrix_traits`.
 
 ## Member constants
 
-| Constant           |                                                                        |
-|--------------------|------------------------------------------------------------------------|
-|`Invalid_Key`       | The invalid key code. The range of supported keys is `[0, Invalid_Key)`|
+| Constant           |                                                                          |
+|--------------------|--------------------------------------------------------------------------|
+|`Invalid_Key`       | The invalid key code. The range of supported keys is `[0, Invalid_Key)`  |
+|`Max_Key`           | The maximum valid key code. The range of supported keys is `[0, Max_Key]`|
 
 ## Member functions
 ### Constructor

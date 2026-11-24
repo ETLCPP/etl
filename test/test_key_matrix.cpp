@@ -201,6 +201,7 @@ namespace
       CHECK_EQUAL(N_Key_Events, pad.max_number_of_key_events());
       CHECK_EQUAL(0, pad.number_of_key_events());
       CHECK_EQUAL(false, pad.has_key_events());
+      CHECK_EQUAL(pad.Invalid_Key, pad.next_key_event().key);
     }
 
     //*************************************************************************
