@@ -1196,6 +1196,34 @@ namespace
     }
 
     //*************************************************************************
+    TEST(test_unique_ptr_const_comparison_tests)
+    {
+      const int* p1 = (const int*)1U;
+      const int* p2 = (const int*)2U;
+
+      etl::unique_ptr<const int, NoDelete<const int>> up1(p1);
+      etl::unique_ptr<const int, NoDelete<const int>> up2(p1);
+      etl::unique_ptr<const int, NoDelete<const int>> up3(p2);
+      etl::unique_ptr<int, NoDelete<int>>             up4((int*)2U);
+
+      CHECK(up1 == up2);
+      CHECK(up1 != up3);
+      CHECK(!(up1 < up2));
+      CHECK(up1 < up3);
+      CHECK(up1 <= up2);
+      CHECK(!(up3 <= up1));
+      CHECK(up3 > up1);
+      CHECK(!(up1 > up2));
+      CHECK(up2 >= up1);
+      CHECK(!(up1 >= up3));
+
+      // Mixed const and non-const element types.
+      CHECK(up3 == up4);
+      CHECK(up1 < up4);
+      CHECK(up4 > up1);
+    }
+
+    //*************************************************************************
     TEST(test_unique_ptr_nullptr_comparison_tests)
     {
       int  value = 1;
