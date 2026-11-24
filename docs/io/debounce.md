@@ -30,18 +30,21 @@ If the third parameter is supplied then the debouncer will indicate that a chang
 If no template parameters are supplied then the template variant using internal variables is used.  
 This has similar parameters supplied to the constructor or the `set` member function.  
 
+## States
 The diagram below shows the effect of the various parameters.
 
 ![Debounce sequence](debounce.png)
 
 ## Functions
 
+### Constructor (compile-time)
 ```cpp
 debounce(bool initial_state = false)
 ```
 **Description**  
 Default constructor.  
 
+### debounce<Valid_Count, Hold_Count, Repeat_Count>
 `etl::debounce<Valid_Count, Hold_Count, Repeat_Count>`
 
 The initial state defaults to:  
@@ -51,8 +54,7 @@ Valid count   = `Valid_Count`
 Hold count    = `Hold_Count`  
 Repeat count  = `Repeat_Count`  
 
----
-
+### debounce<Valid_Count, Hold_Count>
 `etl::debounce<Valid_Count, Hold_Count>`
 
 The initial state defaults to:  
@@ -62,8 +64,7 @@ Valid count   = `Valid_Count`
 Hold count    = `Hold_Count`  
 Repeat count  = `0` (Disabled)  
 
----
-
+### debounce<Valid_Count>
 `etl::debounce<Valid_Count>`
 
 The initial state defaults to:  
@@ -73,8 +74,7 @@ Valid count   = `Valid_Count`
 Hold count    = `0` (Disabled)  
 Repeat count  = `0` (Disabled)  
 
----
-
+### debounce<>
 `etl::debounce<>`
 
 The initial state defaults to:  
@@ -84,8 +84,7 @@ Valid count   = `1`
 Hold count    = `0` (Disabled)  
 Repeat count  = `0` (Disabled)  
 
----
-
+### Constructor (run-time)
 ```cpp
 debounce(bool     initial_state,
          uint16_t valid_count  = 1, 
@@ -99,46 +98,53 @@ Valid count   = `1`
 Hold count    = `0` (Disabled)   
 Repeat count  = `0` (Disabled)  
 
----
-
+### bool add(bool sample)
 ```cpp
 bool add(bool sample)
 ```
 **Description**  
-Adds a new signal sample. Returns true if the state of the debouncer becomes valid, held or repeating.
+Adds a new signal sample.  
+Returns `true` if the state of the debouncer becomes valid, held or repeating.
 
+### bool update(bool sample)
+```cpp
+bool update(bool sample)
+```
+**Description**  
+Adds a new signal sample.  
+Returns `true` if the state of the debouncer becomes valid, held or repeating.  
+For style compatibility with the later `etl::debounce_value` and `etl::debounce_multi` classes.  
+From: `20.50.0`
+
+### bool has_changed()
 ```cpp
 bool has_changed() const
 ```
 **Description**  
 Returns `true` if the state of the debouncer became valid, held or repeating after the last sample
 
----
-
+### bool is_set()
 ```cpp
 bool is_set() const
 ```
 **Description**  
 Returns `true` if the debouncer is set, `false` if cleared.
 
----
-
+### bool is_held()
 ```cpp
 bool is_held() const
 ```
 **Description**  
 Returns `true` if the debouncer signal is being held.
 
----
-
+### is_repeating()
 ```cpp
 bool is_repeating() const
 ```
 **Description**  
 Returns `true` if the debouncer signal is repeating.
 
----
-
+### set(uint16_t valid_count, uint16_t hold_count, uint16_t repeat_count)
 ```cpp
 void set(uint16_t valid_count, uint16_t hold_count = 0, uint16_t repeat_count = 0)
 ```
@@ -147,6 +153,7 @@ Sets the debouncer parameters.
 Only available when no template parameters are supplied.
 
 ## Examples
+### etl::debounce<20>
 ```cpp
 etl::debounce<20> debouncer;
 ```
@@ -154,8 +161,7 @@ etl::debounce<20> debouncer;
 Simple debounce.  
 Valid after 20 identical samples.
 
----
-
+### etl::debounce<20, 1000>
 ```cpp
 etl::debounce<20, 1000> debouncer;
 ```
@@ -164,8 +170,7 @@ Key debounce.
 Valid after 20 identical samples.  
 Hold detection after 1000 'set' samples.
 
----
-
+### etl::debounce<20, 1000, 100>
 ```cpp
 etl::debounce<20, 1000, 100> debouncer;
 ```
@@ -175,8 +180,7 @@ Valid after 20 identical samples.
 Hold detection after 1000 'set' samples.  
 Repeat every 100 samples after hold.  
 
----
-
+### etl::debounce<>
 ```cpp
 etl::debounce<> debouncer;
 debouncer.set(20, 1000, 100);
@@ -185,8 +189,7 @@ debouncer.set(20, 1000, 100);
 Key debounce with hold and auto repeat.  
 Runtime parameters.
 
----
-
+### Arduino hardware
 The example below targets the Arduino hardware.
 
 ```cpp
