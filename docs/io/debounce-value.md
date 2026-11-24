@@ -67,7 +67,6 @@ Returns `true` if the stable value has changed.
 value_type get() const
 ```
 **Description**  
-Gets the current value.  
 Gets the last stable value.
 
 ### value_type()
