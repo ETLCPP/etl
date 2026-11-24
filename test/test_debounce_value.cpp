@@ -145,7 +145,7 @@ namespace
       std::vector<int>     actual_update_state;
       std::vector<int>     actual_changed_state;
       std::vector<int>     actual_stable_state;
-      std::vector<uint8_t> expected_value   = {2, 3, 4, 6};
+      std::vector<uint8_t> expected_value         = {2, 3, 4, 6};
       std::vector<int>     expected_update_state  = {0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
       std::vector<int>     expected_changed_state = {0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
       std::vector<int>     expected_stable_state  = {0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1};
