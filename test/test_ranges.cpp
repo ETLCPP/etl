@@ -36,6 +36,7 @@ SOFTWARE.
 #include <array>
 #include <ios>
 #include <list>
+#include <memory>
 #include <sstream>
 #include <vector>
 
@@ -1126,6 +1127,90 @@ namespace
 
       CHECK_EQUAL(v_in_expected, v_in);
       CHECK_EQUAL(v_out_expected, v_out);
+    }
+
+    TEST(test_ranges_to_moves_rvalue_range_as_a_whole)
+    {
+      etl::vector<MoveInt, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::vector<MoveInt, 10> v_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      auto v_out = etl::move(v_in) | etl::ranges::to<etl::vector<MoveInt, 10>>();
+
+      // The container move constructor leaves the source empty.
+      CHECK_TRUE(v_in.empty());
+      CHECK_EQUAL(v_expected, v_out);
+    }
+
+    TEST(test_ranges_to_from_rvalue_range_of_move_only_type)
+    {
+      using Container = etl::vector<std::unique_ptr<int>, 3>;
+
+      Container v_in;
+      v_in.emplace_back(new int(1));
+      v_in.emplace_back(new int(2));
+      v_in.emplace_back(new int(3));
+
+      auto v_out = etl::move(v_in) | etl::ranges::to<Container>();
+
+      CHECK_TRUE(v_in.empty());
+      CHECK_EQUAL(3U, v_out.size());
+      CHECK_EQUAL(1, *v_out[0]);
+      CHECK_EQUAL(2, *v_out[1]);
+      CHECK_EQUAL(3, *v_out[2]);
+    }
+
+    TEST(test_ranges_to_const_closure_copies_from_lvalue_range)
+    {
+      etl::vector<MoveInt, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::vector<MoveInt, 10> v_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      const auto to_vector = etl::ranges::to<etl::vector<MoveInt, 10>>();
+
+      auto v_out = v_in | to_vector;
+
+      CHECK_EQUAL(v_expected, v_in);
+      CHECK_EQUAL(v_expected, v_out);
+    }
+
+    TEST(test_ranges_to_const_closure_moves_as_rvalue_elements_of_move_only_type)
+    {
+      using Container = etl::vector<std::unique_ptr<int>, 3>;
+
+      Container v_in;
+      v_in.emplace_back(new int(1));
+      v_in.emplace_back(new int(2));
+      v_in.emplace_back(new int(3));
+
+      const auto to_container = etl::ranges::to<Container>();
+
+      auto v_out = v_in | etl::views::as_rvalue | to_container;
+
+      CHECK_EQUAL(3U, v_in.size());
+      CHECK_TRUE(v_in[0] == nullptr);
+      CHECK_TRUE(v_in[1] == nullptr);
+      CHECK_TRUE(v_in[2] == nullptr);
+      CHECK_EQUAL(3U, v_out.size());
+      CHECK_EQUAL(1, *v_out[0]);
+      CHECK_EQUAL(2, *v_out[1]);
+      CHECK_EQUAL(3, *v_out[2]);
+    }
+
+    TEST(test_ranges_to_const_closure_from_rvalue_range_of_move_only_type)
+    {
+      using Container = etl::vector<std::unique_ptr<int>, 3>;
+
+      Container v_in;
+      v_in.emplace_back(new int(1));
+      v_in.emplace_back(new int(2));
+
+      const auto to_container = etl::ranges::to<Container>();
+
+      auto v_out = etl::move(v_in) | to_container;
+
+      CHECK_TRUE(v_in.empty());
+      CHECK_EQUAL(2U, v_out.size());
+      CHECK_EQUAL(1, *v_out[0]);
+      CHECK_EQUAL(2, *v_out[1]);
     }
 
     TEST(test_ranges_as_const_view_functional)
