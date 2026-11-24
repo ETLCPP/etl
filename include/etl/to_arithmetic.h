@@ -863,14 +863,26 @@ namespace etl
       if (result.has_value())
       {
         // Scale in long double, as 10^exponent may be out of range for TValue when the result is not.
-        // The exponent is applied in two halves so that the result is still found when 10^exponent
-        // is out of range for long double.
-        const int   exponent      = accumulator.exponent();
-        const int   half_exponent = exponent / 2;
-        long double scaled        = accumulator.value();
+        const int   exponent = accumulator.exponent();
+        long double scaled   = accumulator.value();
 
-        scaled *= etl::math::pow(10.0L, static_cast<long double>(half_exponent));
-        scaled *= etl::math::pow(10.0L, static_cast<long double>(exponent - half_exponent));
+        // A zero mantissa stays zero, even when 10^exponent overflows.
+        if (scaled != 0)
+        {
+          if ((exponent >= etl::numeric_limits<double>::min_exponent10) && (exponent <= etl::numeric_limits<double>::max_exponent10))
+          {
+            scaled *= etl::math::pow(10.0L, static_cast<long double>(exponent));
+          }
+          else
+          {
+            // 10^exponent may be out of range for long double, which can be the same size as double.
+            // Applying it in two halves still finds a result that is in range.
+            const int half_exponent = exponent / 2;
+
+            scaled *= etl::math::pow(10.0L, static_cast<long double>(half_exponent));
+            scaled *= etl::math::pow(10.0L, static_cast<long double>(exponent - half_exponent));
+          }
+        }
 
         TValue value = static_cast<TValue>(scaled);
 

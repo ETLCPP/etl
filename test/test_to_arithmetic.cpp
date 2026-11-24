@@ -858,6 +858,16 @@ namespace
       text = STR("0.1e309");
       CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
       CHECK_CLOSE(1e308, etl::to_arithmetic<double>(text.c_str(), text.size()).value(), 1e293);
+
+      //*********************************
+      text = STR("0e700");
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
+      CHECK_EQUAL(0.0, etl::to_arithmetic<double>(text.c_str(), text.size()).value());
+
+      //*********************************
+      text = STR(".2e-19");
+      CHECK(etl::to_arithmetic<double>(text.c_str(), text.size()).has_value());
+      CHECK_CLOSE(2e-20, etl::to_arithmetic<double>(text.c_str(), text.size()).value(), 4e-36);
     }
 
     //*************************************************************************
