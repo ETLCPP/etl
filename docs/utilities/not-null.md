@@ -7,7 +7,8 @@ title: "not_null"
   From: `20.43.0`  
 {{< /callout >}}
 
-A container for pointers that are not allowed to be null.
+A container for pointers that are not allowed to be null.  
+Trivially copyable: C++11 and later (for `etl::not_null<T*>`)
 
 ```cpp
 template <typename T>

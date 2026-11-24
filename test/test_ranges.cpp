@@ -1105,6 +1105,29 @@ namespace
       CHECK_EQUAL(v_out_expected_1, v_out);
     }
 
+    TEST(test_ranges_to_copies_from_lvalue_range)
+    {
+      etl::vector<MoveInt, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::vector<MoveInt, 10> v_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+      auto v_out = v_in | etl::ranges::to<etl::vector<MoveInt, 10>>();
+
+      CHECK_EQUAL(v_expected, v_in);
+      CHECK_EQUAL(v_expected, v_out);
+    }
+
+    TEST(test_ranges_to_copies_from_view_of_lvalue_range)
+    {
+      etl::vector<MoveInt, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::vector<MoveInt, 10> v_in_expected{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+      etl::vector<MoveInt, 10> v_out_expected{0, 1, 2, 3, 4};
+
+      auto v_out = v_in | etl::views::take(5) | etl::ranges::to<etl::vector<MoveInt, 10>>();
+
+      CHECK_EQUAL(v_in_expected, v_in);
+      CHECK_EQUAL(v_out_expected, v_out);
+    }
+
     TEST(test_ranges_as_const_view_functional)
     {
       etl::vector<int, 10> v_in{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};

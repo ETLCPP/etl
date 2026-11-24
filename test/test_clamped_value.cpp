@@ -683,5 +683,30 @@ namespace
     }
   #endif
 #endif
+
+#if ETL_USING_CPP11
+    //*************************************************************************
+    TEST(test_is_trivially_copyable)
+    {
+      CHECK_TRUE((etl::is_trivially_copyable<etl::clamped_value<int, 0, 10>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::clamped_value<int>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::clamped_value_range<int>>::value));
+  #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+      CHECK_TRUE((etl::is_trivially_copyable<etl::clamped_value<float>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::clamped_value<double>>::value));
+      CHECK_TRUE((etl::is_trivially_copyable<etl::clamped_value_range<float>>::value));
+  #endif
+  #if ETL_USING_STL
+      CHECK_TRUE((std::is_trivially_copyable<etl::clamped_value<int, 0, 10>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::clamped_value<int>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::clamped_value_range<int>>::value));
+    #if ETL_HAS_FLOATING_POINT_CLAMPED_VALUE
+      CHECK_TRUE((std::is_trivially_copyable<etl::clamped_value<float>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::clamped_value<double>>::value));
+      CHECK_TRUE((std::is_trivially_copyable<etl::clamped_value_range<float>>::value));
+    #endif
+  #endif
+    }
+#endif
   }
 } // namespace

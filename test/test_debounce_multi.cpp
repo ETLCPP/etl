@@ -40,6 +40,7 @@ namespace
   using count_type = uint32_t;
 
   const value_type Initial_Value = 0;
+  const value_type Max_Value     = etl::integral_limits<value_type>::max;
 
   const count_type Valid_Count  = 4;
   const count_type Hold_Count   = 3;
@@ -53,6 +54,7 @@ namespace
   const size_t NBits = 3;
 
   const value_type All_Bits_Inactive = 0;
+  const value_type All_Bits_Active   = etl::max_value_for_nbits<NBits>::value;
   const value_type Bit0_Active       = 1;
 
   using debounce_valid             = etl::debounce_multi<value_type, NBits, Valid_Count>;
@@ -72,6 +74,18 @@ namespace
       CHECK_EQUAL(debounce_valid_hold_repeat::state_id::Off, debouncer.get_state(0));
       CHECK_EQUAL(debounce_valid_hold_repeat::state_id::Off, debouncer.get_state(1));
       CHECK_EQUAL(debounce_valid_hold_repeat::state_id::Off, debouncer.get_state(2));
+    }
+
+    //*************************************************************************
+    TEST(test_debounce_status_with_initial_value)
+    {
+      debounce_valid_hold_repeat debouncer(Max_Value);
+
+      CHECK_EQUAL(NBits, debouncer.get_width());
+      CHECK_EQUAL(int(All_Bits_Active), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::On, debouncer.get_state(0));
+      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::On, debouncer.get_state(1));
+      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::On, debouncer.get_state(2));
     }
 
     //*************************************************************************

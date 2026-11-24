@@ -84,8 +84,15 @@ namespace etl
         // Have we reached the stable count?
         if (count == stable_count)
         {
+          state = Stable;
+
+          // If the value has not returned to the previous stable value has changed, mark it as changed.
+          if (value != last_stable_value)
+          {
+            state = static_cast<State>(state | Changed);
+          }
+
           last_stable_value = value;
-          state             = static_cast<State>(Stable | Changed);
         }
       }
       else
