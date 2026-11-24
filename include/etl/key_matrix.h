@@ -168,6 +168,9 @@ namespace etl
     // The range of supported keys is [0, Invalid_Key).
     static ETL_CONSTANT key_type Invalid_Key = etl::integral_limits<key_type>::max;
 
+    // The maximum valid key code.
+    static ETL_CONSTANT key_type Max_Key = Invalid_Key - 1U;
+
     //***************************************************************************
     /// A key event that is pushed into the key event buffer when a key changes state.
     //***************************************************************************
@@ -202,6 +205,15 @@ namespace etl
     ETL_CONSTEXPR size_t matrix_size() const
     {
       return N_Read * N_Write;
+    }
+
+    //***************************************************************************
+    /// Returns the invalid key ID for tis key matrix.
+    /// The range of supported keys is [0, invalid_key_id()].
+    //***************************************************************************
+    ETL_CONSTEXPR key_type invalid_key_id() const
+    {
+      return Invalid_Key;
     }
 
     //***************************************************************************
