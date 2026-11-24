@@ -108,9 +108,9 @@ Resets the debouncer state.
 **Parameters**  
 `initial` : The default initial value is 'all inactive'. The value is the physical state of the input.  
 
-### void reset_state(size_t, bool)
+### void reset_bit(size_t, bool)
 ```cpp
-void reset_state(size_t n, bool initial)
+void reset_bit(size_t n, bool initial)
 ```
 **Description**  
 The state is set to `Off` and the count is reset to `0`.  
