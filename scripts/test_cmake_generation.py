@@ -75,4 +75,12 @@ add_test(NAME consumer COMMAND consumer)
     run("cmake", "--build", consumer_build, "--config", "Debug")
     run("ctest", "-C", "Debug", "--output-on-failure", cwd=consumer_build)
 
+    # Reconfiguring with unchanged settings must not touch the generated headers.
+    generated = sorted((checkout / "include" / "etl" / "private").glob("*_cpp03.h"))
+    before = {path: path.stat().st_mtime_ns for path in generated}
+    run("cmake", source, cwd=consumer_build)
+    touched = [path.name for path in generated if path.stat().st_mtime_ns != before[path]]
+    if touched:
+        raise SystemExit("Reconfiguring rewrote unchanged headers: " + ", ".join(touched))
+
 print("CMake generation smoke test passed")

@@ -76,8 +76,11 @@ function(etl_generate_headers)
             endif()
         endif()
 
-        # Generate directly into include/etl/private, just like generate.bat.
+        # Generate into include/etl/private, just like generate.bat, but only replace a
+        # header when its contents change so unchanged configures trigger no rebuilds.
         # Match each Cog parameter to its capacity and generator templates.
+        set(staging_directory "${CMAKE_CURRENT_BINARY_DIR}/generated/headers")
+        file(MAKE_DIRECTORY "${staging_directory}")
         set(Handlers_capacity "${ETL_NUMBER_OF_MESSAGE_HANDLERS}")
         set(NTypes_capacity "${ETL_NUMBER_OF_TYPES}")
         set(IsOneOf_capacity "${ETL_IS_ONE_OF}")
@@ -92,12 +95,20 @@ function(etl_generate_headers)
                 foreach(header IN LISTS ${parameter}_headers)
                     execute_process(
                         COMMAND "${venv_python}" -I -m cogapp -d -e
-                            "-o${source_directory}/etl/private/${header}.h"
+                            "-o${staging_directory}/${header}.h"
                             "-D${parameter}=${capacity}"
                             "${source_directory}/etl/generators/${header}_generator.h"
                         RESULT_VARIABLE result ERROR_VARIABLE error)
                     if(NOT "${result}" STREQUAL "0")
                         message(FATAL_ERROR "ETL generation of ${header}.h failed: ${result}\n${error}")
+                    endif()
+                    execute_process(
+                        COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+                            "${staging_directory}/${header}.h"
+                            "${source_directory}/etl/private/${header}.h"
+                        RESULT_VARIABLE result ERROR_VARIABLE error)
+                    if(NOT "${result}" STREQUAL "0")
+                        message(FATAL_ERROR "ETL could not update ${header}.h: ${result}\n${error}")
                     endif()
                 endforeach()
             endif()
