@@ -325,7 +325,7 @@ namespace etl
   template <typename TIterator1, typename TIterator2>
   ETL_CONSTEXPR14 TIterator2 move(TIterator1 sb, TIterator1 se, TIterator2 db)
   {
-    return copy(sb, se, db);
+    return etl::copy(sb, se, db);
   }
 #endif
 
@@ -499,7 +499,7 @@ namespace etl
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare;
 
-    return binary_search(first, last, value, compare());
+    return etl::binary_search(first, last, value, compare());
   }
 
   //***************************************************************************
@@ -1309,9 +1309,9 @@ namespace etl
       TIterator result = first;
       etl::advance(result, etl::distance(middle, last));
 
-      reverse(first, middle);
-      reverse(middle, last);
-      reverse(first, last);
+      etl::reverse(first, middle);
+      etl::reverse(middle, last);
+      etl::reverse(first, last);
 
       return result;
     }
@@ -1467,7 +1467,7 @@ namespace etl
   {
     typedef etl::equal_to<typename etl::iterator_traits<TIterator1>::value_type> predicate;
 
-    return find_end(b, e, sb, se, predicate());
+    return etl::find_end(b, e, sb, se, predicate());
   }
 
   //***************************************************************************
@@ -2358,7 +2358,7 @@ namespace etl
   template <typename T>
   ETL_CONSTEXPR T clamp(const T& value, const T& low, const T& high)
   {
-    return clamp(value, low, high, etl::less<T>());
+    return etl::clamp(value, low, high, etl::less<T>());
   }
 
   template <typename T, T Low, T High, typename TCompare>
