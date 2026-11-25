@@ -101,6 +101,8 @@ namespace
   using key_pad_base_ghost_check =
     etl::key_matrix<MatrixPort, N_Read, N_Write, Valid_Count, Hold_Count, Repeat_Count, N_Key_Events, Filter_Ghost_Keys_On>;
 
+  using key_pad_base_no_event_queue = etl::key_matrix<MatrixPort, N_Read, N_Write, Valid_Count, Hold_Count, Repeat_Count, 0, Filter_Ghost_Keys_On>;
+
   //*************************************************************************
   // A simple key pad implementation for testing.
   //*************************************************************************
@@ -118,7 +120,7 @@ namespace
     {
       key_type id;
       size_t   write_index;
-      size_t   row;
+      size_t   read_index;
     };
 
     //*********************************
@@ -138,14 +140,14 @@ namespace
     // Set a specific key to active (low) state.
     void set_key_on(const key_info& key)
     {
-      port.read_channels[key.row] |= (1 << key.write_index); // Set the key to active (high)
+      port.read_channels[key.write_index] |= (1 << key.read_index); // Set the key to active (high)
     }
 
     //*********************************
     // Set a specific key to inactive (high) state.
     void set_key_off(const key_info& key)
     {
-      port.read_channels[key.row] &= ~(1 << key.write_index); // Set the key to inactive (low)
+      port.read_channels[key.write_index] &= ~(1 << key.read_index); // Set the key to inactive (low)
     }
 
     //*********************************
@@ -163,30 +165,31 @@ namespace
     }
 
     //*********************************
-    // A list of key positions indexed as row/write_index.
+    // A list of key positions indexed as write_index/read_index.
     std::array<key_info, N_Read * N_Write> key_positions = {
-      {{0, 0, 0}, {1, 0, 1}, {2, 0, 2}, {3, 0, 3}, {4, 1, 0}, {5, 1, 1}, {6, 1, 2}, {7, 1, 3}, {8, 2, 0}, {9, 2, 1}, {10, 2, 2}, {11, 2, 3}}};
+      {{0, 0, 0}, {1, 1, 0}, {2, 2, 0}, {3, 3, 0}, {4, 0, 1}, {5, 1, 1}, {6, 2, 1}, {7, 3, 1}, {8, 0, 2}, {9, 1, 2}, {10, 2, 2}, {11, 3, 2}}};
 
-    key_info& Key1  = key_positions[0];  // Row 0, Column 0
-    key_info& Key2  = key_positions[1];  // Row 0, Column 1
-    key_info& Key3  = key_positions[2];  // Row 0, Column 2
-    key_info& Key4  = key_positions[3];  // Row 0, Column 3
-    key_info& Key5  = key_positions[4];  // Row 1, Column 0
-    key_info& Key6  = key_positions[5];  // Row 1, Column 1
-    key_info& Key7  = key_positions[6];  // Row 1, Column 2
-    key_info& Key8  = key_positions[7];  // Row 1, Column 3
-    key_info& Key9  = key_positions[8];  // Row 2, Column 0
-    key_info& Key10 = key_positions[9];  // Row 2, Column 1
-    key_info& Key11 = key_positions[10]; // Row 2, Column 2
-    key_info& Key12 = key_positions[11]; // Row 2, Column 3
+    key_info& Key1  = key_positions[0];  // Column 0, Row 0
+    key_info& Key2  = key_positions[1];  // Column 1, Row 0
+    key_info& Key3  = key_positions[2];  // Column 2, Row 0
+    key_info& Key4  = key_positions[3];  // Column 3, Row 0
+    key_info& Key5  = key_positions[4];  // Column 0, Row 1
+    key_info& Key6  = key_positions[5];  // Column 1, Row 1
+    key_info& Key7  = key_positions[6];  // Column 2, Row 1
+    key_info& Key8  = key_positions[7];  // Column 3, Row 1
+    key_info& Key9  = key_positions[8];  // Column 0, Row 2
+    key_info& Key10 = key_positions[9];  // Column 1, Row 2
+    key_info& Key11 = key_positions[10]; // Column 2, Row 2
+    key_info& Key12 = key_positions[11]; // Column 3, Row 2
 
     const read_type Read_Inactive = 0; // All read_channels are inactive (high) when no keys are pressed.
 
     MatrixPort port;
   };
 
-  using key_pad_no_ghost_check = KeyPad<key_pad_base_no_ghost_check>;
-  using key_pad_ghost_check    = KeyPad<key_pad_base_ghost_check>;
+  using key_pad_no_ghost_check       = KeyPad<key_pad_base_no_ghost_check>;
+  using key_pad_ghost_check          = KeyPad<key_pad_base_ghost_check>;
+  using key_pad_ghost_no_event_queue = KeyPad<key_pad_base_no_event_queue>;
 
   SUITE(test_key_matrix_active_high)
   {
@@ -388,6 +391,7 @@ namespace
 
       const size_t Steps = 19;
 
+      // The state of the key inputs at each step.
       std::array<char, Steps> key1  = {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
       std::array<char, Steps> key2  = {0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
       std::array<char, Steps> key3  = {0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -401,8 +405,10 @@ namespace
       std::array<char, Steps> key11 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0};
       std::array<char, Steps> key12 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0};
 
+      // The number of expected buffered key events at each step.
       std::array<int, Steps> expected_key_events = {0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1};
 
+      // The expected key states at each step.
       std::array<key_state, Steps> key1_expected = {key_state::Off,     key_state::Off,     key_state::Off, key_state::Pressed, key_state::Pressed,
                                                     key_state::Pressed, key_state::Pressed, key_state::Off, key_state::Off,     key_state::Off,
                                                     key_state::Off,     key_state::Off,     key_state::Off, key_state::Off,     key_state::Off,
@@ -469,6 +475,7 @@ namespace
 
       for (size_t i = 0; i < Steps; ++i)
       {
+        // Set the key pad inputs.
         pad.set_key(pad.Key1, key1[i]);
         pad.set_key(pad.Key2, key2[i]);
         pad.set_key(pad.Key3, key3[i]);
@@ -482,6 +489,7 @@ namespace
         pad.set_key(pad.Key11, key11[i]);
         pad.set_key(pad.Key12, key12[i]);
 
+        // Scan the key pad.
         pad.scan();
 
         CHECK_EQUAL(expected_key_events[i], pad.number_of_key_events());
