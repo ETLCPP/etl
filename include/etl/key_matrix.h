@@ -518,7 +518,7 @@ namespace etl
                           && (read_channel_type::state_id::Repeating == 3),
                         "Debouncer state_id values are not compatible");
 
-      static ETL_CONSTANT key_state::type state_translation[] = {
+      static ETL_CONSTANT typename key_state::type state_translation[] = {
         key_state::Off,       // read_channel_type::state_id::Off
         key_state::Pressed,   // read_channel_type::state_id::On
         key_state::Held,      // read_channel_type::state_id::Held
