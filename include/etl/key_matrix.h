@@ -55,14 +55,13 @@ namespace etl
     typedef typename etl::smallest_uint_for_bits<N_Read>::type                   read_type;        ///< The type that holds the value read from the key matrix read lines.
     typedef typename etl::smallest_uint_for_value<N_Write>::type                 write_index_type; ///< The type that holds a write index that selects the active write.
     typedef typename etl::smallest_uint_for_value<(N_Read * N_Write) - 1U>::type key_type;         ///< The type that holds a key value.
-    /// clang-format on
+    // clang-format on
 
     // The maximum valid key code.
     static ETL_CONSTANT key_type Max_Key = etl::integral_limits<key_type>::max;
 
     //***************************************************************************
     // The state of a key in the key matrix.
-    // It inherits from the debounce_state_id to provide the same state IDs.
     //***************************************************************************
     class key_state
     {
@@ -233,9 +232,9 @@ namespace etl
     /// Returns the maximum key ID that can be used with this key matrix.
     /// The range of supported keys is [0, max_key_id()].
     //***************************************************************************
-    ETL_CONSTEXPR key_type max_key_id() const
+    ETL_CONSTEXPR key_type max_key() const
     {
-      return (N_Read * N_Write) - 1U;
+      return Max_Key;
     }
   };
 
@@ -245,40 +244,48 @@ namespace etl
   // \tparam TMatrix_Port      The type that provides the interface to the key matrix hardware.
   // \tparam N_Read            The number of read lines in the key matrix.
   // \tparam N_Write           The number of write lines in the key matrix.
-  // \tparam Valid_Count       The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= 1).
+  // \tparam Valid_Count       The number of consecutive samples a bit must differ from its previous debounced state before the state changes (>= 1). Default = 1.
   // \tparam Hold_Count        The number of samples a bit must remain set (after becoming valid) before a 'held' event is generated. 0 = disabled. Default = 0.
   // \tparam Repeat_Count      Once held, a 'repeat' event is generated every Repeat_Count samples. 0 = disabled. Default = 0.
-  // \tparam N_Key_Events      The number of keys that may be buffered simultaneously. Default = 1.
+  // \tparam N_Key_Events      The number of keys that may be buffered simultaneously (>= 1) Default = 1.
   // \tparam Filter_Ghost_Keys If true, any newly changed bits that are ghosted are suppressed until the ambiguity resolves. Default = false.
   //******************************************************************************
   // clang-format on
-  template <typename TMatrix_Port, size_t N_Read, size_t N_Write, uint32_t Valid_Count, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0,
+  template <typename TMatrix_Port, size_t N_Read, size_t N_Write, uint32_t Valid_Count = 1, uint32_t Hold_Count = 0, uint32_t Repeat_Count = 0,
             size_t N_Key_Events = 1, bool Filter_Ghost_Keys = false>
   class key_matrix : public key_matrix_traits<N_Read, N_Write>
   {
   public:
 
+    ETL_STATIC_ASSERT(N_Read > 0, "The number of read lines must be greater than 0.");
+    ETL_STATIC_ASSERT(N_Write > 0, "The number of write lines must be greater than 0.");
+    ETL_STATIC_ASSERT(Valid_Count > 0, "Valid_Count must be greater than 0.");
+    ETL_STATIC_ASSERT(N_Key_Events > 0, "N_Key_Events must be greater than 0.");
+
+    // Import the types from the key_matrix_traits.
     using typename key_matrix_traits<N_Read, N_Write>::read_type;
     using typename key_matrix_traits<N_Read, N_Write>::write_index_type;
     using typename key_matrix_traits<N_Read, N_Write>::key_state;
     using typename key_matrix_traits<N_Read, N_Write>::key_type;
     using typename key_matrix_traits<N_Read, N_Write>::key_event;
 
+    // Import the constants from the key_matrix_traits.
     using key_matrix_traits<N_Read, N_Write>::Max_Key;
     using key_matrix_traits<N_Read, N_Write>::read_size;
     using key_matrix_traits<N_Read, N_Write>::write_size;
     using key_matrix_traits<N_Read, N_Write>::matrix_size;
-    using key_matrix_traits<N_Read, N_Write>::max_key_id;
+    using key_matrix_traits<N_Read, N_Write>::max_key;
 
   private:
 
-    // The debouncer for each write in the key matrix.
+    // The key debouncer for each write line in the key matrix.
     typedef etl::debounce_multi<read_type, N_Read, Valid_Count, Hold_Count, Repeat_Count> read_channel_type;
 
   public:
 
     //***************************************************************************
     /// Constructor.
+    ///\param port_ The port that provides the interface to the key matrix hardware.
     //***************************************************************************
     key_matrix(TMatrix_Port& port_)
       : port(port_)
@@ -307,7 +314,7 @@ namespace etl
     }
 
     //***************************************************************************
-    /// Scans one write of the key matrix.
+    /// Scans one write line of the key matrix.
     /// This function must be called repeatedly to scan the whole key matrix.
     /// Returns 'true' if all of the read_channels have been processed, otherwise 'false'.
     //***************************************************************************
@@ -316,20 +323,30 @@ namespace etl
       // Read the next write from the key matrix.
       read_type read_value = static_cast<read_type>(port.read_key_matrix());
 
-      // Get the current write debouncer.
+      // Get the current read channel.
       read_channel_type& read_channel = read_channels[write_index];
 
       read_channel.update(read_value);
 
+      if ETL_IF_CONSTEXPR (!Filter_Ghost_Keys)
+      {
+        // Resolve the key events per incremental scan, since ghosting is not enabled.
+        resolve_incremental_key_events();
+      }
+
+      // Move on to the next write line in the key matrix.
       ++write_index;
 
       if (write_index == N_Write)
       {
         write_index = 0;
 
-        // The full cycle is complete - every write now reflects the same
-        // scan instant, so it's safe to resolve ghosting and push events.
-        resolve_pending_key_events();
+        if ETL_IF_CONSTEXPR (Filter_Ghost_Keys)
+        {
+          // The full cycle is complete - every write now reflects the same
+          // scan instant, so it's safe to resolve ghosting and push events.
+          resolve_pending_key_events();
+        }
       }
 
       // Write the next write to the key matrix.
@@ -362,7 +379,7 @@ namespace etl
       size_t row   = key / N_Write;
       size_t write = key % N_Write;
 
-      return read_channels[write].get_state(row);
+      return translate_key_state(read_channels[write].get_state(row));
     }
 
     //***************************************************************************
@@ -417,8 +434,9 @@ namespace etl
 
     //***************************************************************************
     /// Pushes any newly changed keys into the key event buffer.
-    /// If Filter_Ghost_Keys is true, then any newly changed keys that are ghosted are removed.
+    /// Newly changed keys that are ghosted are removed.
     /// Must only be called once every write has been updated for this cycle.
+    /// Called if Filter_Ghost_Keys is true.
     //***************************************************************************
     void resolve_pending_key_events()
     {
@@ -426,24 +444,21 @@ namespace etl
       read_type seen_once  = 0;
       read_type seen_twice = 0;
 
-      if ETL_IF_CONSTEXPR (Filter_Ghost_Keys)
+      for (write_index_type wi = 0; wi < N_Write; ++wi)
       {
-        for (write_index_type wi = 0; wi < N_Write; ++wi)
+        read_channel_type& read_channel = read_channels[wi];
+
+        const read_type mask = read_channel.get_active_mask();
+
+        // Ghost keys only occur in read_channels that have multiple keys active at the same time.
+        if (has_multiple_set_bits(mask))
         {
-          read_channel_type& read_channel = read_channels[wi];
+          // Accumulate any keys that are already in 'seen_once' into 'seen_twice'.
+          // For each key in the new mask, if it is already in 'seen_once', then it is now in 'seen_twice'.
+          seen_twice = static_cast<read_type>(seen_twice | (seen_once & mask));
 
-          const read_type mask = read_channel.get_active_mask();
-
-          // Ghost keys only occur in read_channels that have multiple keys active at the same time.
-          if (has_multiple_set_bits(mask))
-          {
-            // Accumulate any keys that are already in 'seen_once' into 'seen_twice'.
-            // For each key in the new mask, if it is already in 'seen_once', then it is now in 'seen_twice'.
-            seen_twice = static_cast<read_type>(seen_twice | (seen_once & mask));
-
-            // Accumulate all of the keys that have been seen in any write.
-            seen_once = static_cast<read_type>(seen_once | mask);
-          }
+          // Accumulate all of the keys that have been seen in any write.
+          seen_once = static_cast<read_type>(seen_once | mask);
         }
       }
 
@@ -456,11 +471,8 @@ namespace etl
 
         if (changed != 0)
         {
-          if ETL_IF_CONSTEXPR (Filter_Ghost_Keys)
-          {
-            // Clear any changed keys that are ghosted (active in 2+ ambiguous read_channels this scan).
-            changed = static_cast<read_type>(changed & ~seen_twice);
-          }
+          // Clear any changed keys that are ghosted (active in 2+ ambiguous read_channels this scan).
+          changed = static_cast<read_type>(changed & ~seen_twice);
 
           // Push all of the changed keys into the key event buffer.
           while ((changed != 0) && !key_event_buffer.full())
@@ -479,18 +491,50 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Pushes any newly changed keys into the key event buffer.
+    /// Called if Filter_Ghost_Keys is false.
+    //***************************************************************************
+    void resolve_incremental_key_events()
+    {
+      read_channel_type& read_channel = read_channels[write_index];
+
+      read_type changed = read_channel.get_changed();
+
+      if (changed != 0)
+      {
+        // Push all of the changed keys into the key event buffer.
+        while ((changed != 0) && !key_event_buffer.full())
+        {
+          size_t row_index = static_cast<size_t>(etl::count_trailing_zeros(changed));
+
+          key_type  key   = static_cast<key_type>((row_index * N_Write) + write_index);
+          key_state state = translate_key_state(read_channel.get_state(row_index));
+
+          key_event_buffer.push(key_event{key, state});
+
+          changed = etl::clear_lowest_set_bit(changed);
+        }
+      }
+    }
+
+    //***************************************************************************
     /// Translate from debouncer state_id to key_state
     //***************************************************************************
     key_state translate_key_state(typename read_channel_type::state_id::type state) const
     {
-      switch (state)
-      {
-        case read_channel_type::state_id::Off: return key_state::Off;
-        case read_channel_type::state_id::On: return key_state::Pressed;
-        case read_channel_type::state_id::Held: return key_state::Held;
-        case read_channel_type::state_id::Repeating: return key_state::Repeating;
-        default: return key_state::Invalid;
-      }
+      // Check that the debouncer state_id values are still compatible with the key_state values.
+      ETL_STATIC_ASSERT((read_channel_type::state_id::Off == 0) && (read_channel_type::state_id::On == 1) && (read_channel_type::state_id::Held == 2)
+                          && (read_channel_type::state_id::Repeating == 3),
+                        "Debouncer state_id values are not compatible");
+
+      static ETL_CONSTANT key_state::type state_translation[] = {
+        key_state::Off,       // read_channel_type::state_id::Off
+        key_state::Pressed,   // read_channel_type::state_id::On
+        key_state::Held,      // read_channel_type::state_id::Held
+        key_state::Repeating, // read_channel_type::state_id::Repeating
+      };
+
+      return key_state(state_translation[state]);
     }
 
     key_matrix(const key_matrix&) ETL_DELETE;
