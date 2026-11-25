@@ -205,6 +205,11 @@ target_link_libraries(foo PRIVATE etl::etl)
 A tarball fetched this way has no `.git` directory of its own. ETL detects this and falls back to
 reading its version from `version.txt` instead of `git describe`, so no extra configuration is needed.
 
+### Header generation with CMake
+
+Set `ETL_NUMBER_OF_MESSAGE_HANDLERS` to generate larger C++03 capacities with CMake.
+See [header generation options and requirements](docs/getting-started/generators.md#header-generation-with-cmake).
+
 ## Profile definition
 
 When using ETL in a project, there is typically an `etl_profile.h` defined to
