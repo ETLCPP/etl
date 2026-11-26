@@ -67,7 +67,7 @@ Defines data as an `const_set` of `int` of length 4, containing the supplied dat
 
 ## Member types
 ```cpp
-key_type                TKey    Must be default constructible.
+key_type                TKey    Must be default constructible, if passing less then Size elements to the constructor.
 value_type              key_type
 size_type               std::size_t
 difference_type         std::ptrdiff_t
