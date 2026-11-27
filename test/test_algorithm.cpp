@@ -43,6 +43,7 @@ SOFTWARE.
 #include <memory>
 #include <numeric>
 #include <random>
+#include <string>
 #include <vector>
 
 namespace
@@ -814,6 +815,21 @@ namespace
     }
 
     //*************************************************************************
+    TEST(binary_search_std_vector_iterator)
+    {
+      // std::vector iterators make the std algorithms visible to argument dependent lookup.
+      std::vector<int> data = {1, 2, 2, 4, 6, 8};
+
+      for (int i = 0; i < 10; ++i)
+      {
+        bool expected = std::binary_search(data.begin(), data.end(), i);
+        bool result   = etl::binary_search(data.begin(), data.end(), i);
+
+        CHECK_EQUAL(expected, result);
+      }
+    }
+
+    //*************************************************************************
     TEST(fill_non_char)
     {
       int data1[10];
@@ -1218,6 +1234,19 @@ namespace
       int* result   = etl::find_end(std::begin(data), std::end(data), std::begin(pattern), std::end(pattern));
 
       CHECK_EQUAL(expected, result);
+    }
+
+    //*************************************************************************
+    TEST(find_end_std_vector_iterator)
+    {
+      // std::vector iterators make the std algorithms visible to argument dependent lookup.
+      std::vector<int> data    = {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4};
+      std::vector<int> pattern = {1, 2, 3};
+
+      std::vector<int>::iterator expected = std::find_end(data.begin(), data.end(), pattern.begin(), pattern.end());
+      std::vector<int>::iterator result   = etl::find_end(data.begin(), data.end(), pattern.begin(), pattern.end());
+
+      CHECK(expected == result);
     }
 
     //*************************************************************************
@@ -2700,6 +2729,31 @@ namespace
         non_random_iterator<int> nr_last(data.data() + data.size());
         auto                     result = etl::rotate(nr_first, nr_middle, nr_last);
         CHECK(result.ptr == data.data());
+      }
+    }
+
+    //*************************************************************************
+    TEST(rotate_std_list_iterator)
+    {
+      // std::list iterators are bidirectional, so this uses rotate_general, and they make the
+      // std algorithms visible to argument dependent lookup.
+      const std::vector<int> initial_data = {1, 2, 3, 4, 5};
+
+      for (size_t i = 0UL; i <= initial_data.size(); ++i)
+      {
+        std::list<int> data1(initial_data.begin(), initial_data.end());
+        std::list<int> data2(initial_data.begin(), initial_data.end());
+
+        std::list<int>::iterator middle1 = data1.begin();
+        std::list<int>::iterator middle2 = data2.begin();
+        std::advance(middle1, static_cast<ptrdiff_t>(i));
+        std::advance(middle2, static_cast<ptrdiff_t>(i));
+
+        std::list<int>::iterator std_result = std::rotate(data1.begin(), middle1, data1.end());
+        std::list<int>::iterator etl_result = etl::rotate(data2.begin(), middle2, data2.end());
+
+        CHECK(data1 == data2);
+        CHECK_EQUAL(std::distance(data1.begin(), std_result), std::distance(data2.begin(), etl_result));
       }
     }
 
@@ -4723,6 +4777,18 @@ namespace
       CHECK_EQUAL(5, etl::clamp(5, 0, 10));
       CHECK_EQUAL(0, etl::clamp(-5, 0, 10));
       CHECK_EQUAL(10, etl::clamp(15, 0, 10));
+    }
+
+    //*************************************************************************
+    TEST(clamp_std_string)
+    {
+      // std::string makes std::clamp visible to argument dependent lookup.
+      const std::string low  = "b";
+      const std::string high = "d";
+
+      CHECK_EQUAL(std::string("c"), etl::clamp(std::string("c"), low, high));
+      CHECK_EQUAL(std::string("b"), etl::clamp(std::string("a"), low, high));
+      CHECK_EQUAL(std::string("d"), etl::clamp(std::string("e"), low, high));
     }
 
     //*************************************************************************
