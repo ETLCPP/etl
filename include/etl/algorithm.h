@@ -3776,7 +3776,7 @@ namespace etl
   {
     typedef etl::less<typename etl::iterator_traits<TIterator>::value_type> compare_t;
 
-    nth_element(first, nth, last, compare_t());
+    etl::nth_element(first, nth, last, compare_t());
   }
 #endif
 
