@@ -1581,6 +1581,9 @@
     <ClInclude Include="..\..\include\etl\intrusive_timer.h">
       <Filter>ETL\Frameworks</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\etl\key_matrix.h">
+      <Filter>ETL\I/O</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\test_string_char.cpp">
@@ -4136,6 +4139,7 @@
     <Text Include="..\..\Converting header guards.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="..\..\meson_options.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\etl.ico">

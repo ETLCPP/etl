@@ -69,11 +69,13 @@ namespace
     {
       debounce_valid_hold_repeat debouncer;
 
+      using bit_state = typename debounce_valid_hold_repeat::bit_state;
+
       CHECK_EQUAL(NBits, debouncer.get_width());
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
-      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::Off, debouncer.get_state(0));
-      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::Off, debouncer.get_state(1));
-      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::Off, debouncer.get_state(2));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
+      CHECK_EQUAL(bit_state::Off, debouncer.get_state(0));
+      CHECK_EQUAL(bit_state::Off, debouncer.get_state(1));
+      CHECK_EQUAL(bit_state::Off, debouncer.get_state(2));
     }
 
     //*************************************************************************
@@ -81,11 +83,13 @@ namespace
     {
       debounce_valid_hold_repeat debouncer(Max_Value);
 
+      using bit_state = typename debounce_valid_hold_repeat::bit_state;
+
       CHECK_EQUAL(NBits, debouncer.get_width());
-      CHECK_EQUAL(int(All_Bits_Active), int(debouncer.get_active_mask()));
-      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::On, debouncer.get_state(0));
-      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::On, debouncer.get_state(1));
-      CHECK_EQUAL(debounce_valid_hold_repeat::state_id::On, debouncer.get_state(2));
+      CHECK_EQUAL(int(All_Bits_Active), int(debouncer.get_active()));
+      CHECK_EQUAL(bit_state::On, debouncer.get_state(0));
+      CHECK_EQUAL(bit_state::On, debouncer.get_state(1));
+      CHECK_EQUAL(bit_state::On, debouncer.get_state(2));
     }
 
     //*************************************************************************
@@ -94,10 +98,10 @@ namespace
       debounce_valid debouncer(Initial_Value);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       //*******************************
       // Transition from Off to On.
@@ -105,21 +109,21 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
 
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
-      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active()));
 
       //*******************************
       // Ensure no more transitions.
@@ -127,7 +131,7 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -139,7 +143,7 @@ namespace
       debounce_valid debouncer(Initial_Value);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -154,12 +158,12 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
 
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       // Final incremental update.
       // Changed.
@@ -170,11 +174,11 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
-      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active()));
 
       //*******************************
       // Ensure no more transitions.
@@ -186,7 +190,7 @@ namespace
         }
 
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -198,7 +202,7 @@ namespace
       debounce_valid debouncer(Active0);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -208,12 +212,12 @@ namespace
         debouncer.update(Active0);
 
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
 
-      CHECK_TRUE(Bit0_Active == debouncer.get_active_mask());
+      CHECK_TRUE(Bit0_Active == debouncer.get_active());
     }
 
     //*************************************************************************
@@ -222,10 +226,10 @@ namespace
       debounce_valid_hold debouncer(Initial_Value);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       //*******************************
       // Transition from Off to On.
@@ -233,21 +237,21 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
 
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
-      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active()));
 
       //*******************************
       // Transition from On to Held.
@@ -255,7 +259,7 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -263,7 +267,7 @@ namespace
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -273,7 +277,7 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_TRUE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -285,7 +289,7 @@ namespace
       debounce_valid_hold debouncer(Initial_Value);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -300,7 +304,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -314,7 +318,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -329,7 +333,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -343,7 +347,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -357,7 +361,7 @@ namespace
         }
 
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_TRUE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -369,10 +373,10 @@ namespace
       debounce_valid_repeat debouncer(Initial_Value);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       //*******************************
       // Transition from Off to On.
@@ -380,21 +384,21 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
 
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
-      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active()));
 
       //*******************************
       // Transition from Valid to Repeating.
@@ -402,7 +406,7 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -410,7 +414,7 @@ namespace
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
 
@@ -420,7 +424,7 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_TRUE(debouncer.is_repeating(Bit0));
       }
@@ -428,7 +432,7 @@ namespace
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
     }
@@ -439,7 +443,7 @@ namespace
       debounce_valid_repeat debouncer(Initial_Value);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -454,7 +458,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -468,7 +472,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -483,7 +487,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -497,7 +501,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
 
@@ -512,7 +516,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_TRUE(debouncer.is_repeating(Bit0));
       }
@@ -526,7 +530,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
     }
@@ -537,10 +541,10 @@ namespace
       debounce_valid_hold_repeat debouncer(Initial_Value);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       //*******************************
       // Transition from Off to On.
@@ -548,21 +552,21 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
 
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
-      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active()));
 
       //*******************************
       // Transition from On to Held.
@@ -570,7 +574,7 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -578,7 +582,7 @@ namespace
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -588,7 +592,7 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_TRUE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -596,7 +600,7 @@ namespace
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
 
@@ -606,7 +610,7 @@ namespace
       {
         CHECK_FALSE(debouncer.update(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_TRUE(debouncer.is_held(Bit0));
         CHECK_TRUE(debouncer.is_repeating(Bit0));
       }
@@ -614,7 +618,7 @@ namespace
       // Changed.
       CHECK_TRUE(debouncer.update(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
     }
@@ -625,7 +629,7 @@ namespace
       debounce_valid_hold_repeat debouncer(Initial_Value);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -640,7 +644,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_FALSE(debouncer.is_set(Bit0));
+        CHECK_FALSE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -654,7 +658,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -669,7 +673,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_FALSE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -683,7 +687,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -698,7 +702,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_TRUE(debouncer.is_held(Bit0));
         CHECK_FALSE(debouncer.is_repeating(Bit0));
       }
@@ -712,7 +716,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
 
@@ -727,7 +731,7 @@ namespace
 
         CHECK_TRUE(debouncer.update_incremental(Active0));
         CHECK_FALSE(debouncer.has_changed(Bit0));
-        CHECK_TRUE(debouncer.is_set(Bit0));
+        CHECK_TRUE(debouncer.is_on(Bit0));
         CHECK_TRUE(debouncer.is_held(Bit0));
         CHECK_TRUE(debouncer.is_repeating(Bit0));
       }
@@ -741,7 +745,7 @@ namespace
 
       CHECK_TRUE(debouncer.update_incremental(Active0));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
     }
@@ -758,7 +762,7 @@ namespace
         debouncer.update(Active0);
       }
 
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -769,7 +773,7 @@ namespace
         debouncer.update(Inactive0);
       }
 
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -785,7 +789,7 @@ namespace
         debouncer.update(Active0);
       }
 
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -796,7 +800,7 @@ namespace
         debouncer.update(Inactive0);
       }
 
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -817,7 +821,7 @@ namespace
         debouncer.update(Active0);
       }
 
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
 
@@ -828,7 +832,7 @@ namespace
         debouncer.update(Inactive0);
       }
 
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
     }
@@ -848,7 +852,7 @@ namespace
         }
       }
 
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -862,7 +866,7 @@ namespace
         }
       }
 
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -884,7 +888,7 @@ namespace
         }
       }
 
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -898,7 +902,7 @@ namespace
         }
       }
 
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -928,7 +932,7 @@ namespace
         }
       }
 
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_TRUE(debouncer.is_held(Bit0));
       CHECK_TRUE(debouncer.is_repeating(Bit0));
 
@@ -942,7 +946,7 @@ namespace
         }
       }
 
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
     }
@@ -975,7 +979,7 @@ namespace
 
       debouncer.reset(Initial_Value);
 
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
@@ -986,7 +990,7 @@ namespace
         debouncer.update(Active0);
       }
 
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
     }
@@ -998,42 +1002,41 @@ namespace
       std::array<uint8_t, 45> input = {1, 0, 1, 0, 1, 3, 1, 3, 1, 3, 3, 3, 3, 7, 3, 6, 3, 6, 7, 6, 4, 6, 4,
                                        7, 5, 4, 5, 5, 1, 5, 1, 5, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0};
 
-      using state_id_type = debounce_valid_hold_repeat::state_id::type;
-      using state_id      = debounce_valid_hold_repeat::state_id;
-      using value_type    = debounce_valid_hold_repeat::value_type;
+      using bit_state  = debounce_valid_hold_repeat::bit_state;
+      using value_type = debounce_valid_hold_repeat::value_type;
 
       std::array<value_type, 45> expected_changed = {0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 3, 0, 1, 2, 0, 2, 0, 2, 4, 0, 1,
                                                      4, 0, 4, 0, 6, 0, 1, 0, 0, 1, 0, 1, 4, 1, 0, 0, 0, 0, 0, 0, 0, 1};
 
-      std::array<state_id_type, 45> expected_state0 = {
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::On,        state_id::On,        state_id::On,        state_id::Held,      state_id::Held,
-        state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating,
-        state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::On,
-        state_id::On,        state_id::On,        state_id::Held,      state_id::Held,      state_id::Repeating, state_id::Repeating,
-        state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating,
-        state_id::Repeating, state_id::Repeating, state_id::Off};
+      std::array<bit_state::type, 45> expected_state0 = {
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::On,        bit_state::On,        bit_state::On,        bit_state::Held,      bit_state::Held,
+        bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating,
+        bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::On,
+        bit_state::On,        bit_state::On,        bit_state::Held,      bit_state::Held,      bit_state::Repeating, bit_state::Repeating,
+        bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating,
+        bit_state::Repeating, bit_state::Repeating, bit_state::Off};
 
-      std::array<state_id_type, 45> expected_state1 = {
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::On,        state_id::On,        state_id::On,        state_id::Held,      state_id::Held,      state_id::Repeating,
-        state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating,
-        state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off};
+      std::array<bit_state::type, 45> expected_state1 = {
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::On,        bit_state::On,        bit_state::On,        bit_state::Held,      bit_state::Held,      bit_state::Repeating,
+        bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating,
+        bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off};
 
-      std::array<state_id_type, 45> expected_state2 = {
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::On,        state_id::On,        state_id::On,        state_id::Held,
-        state_id::Held,      state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating,
-        state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Repeating, state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,       state_id::Off,
-        state_id::Off,       state_id::Off,       state_id::Off};
+      std::array<bit_state::type, 45> expected_state2 = {
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::On,        bit_state::On,        bit_state::On,        bit_state::Held,
+        bit_state::Held,      bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating,
+        bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Repeating, bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,       bit_state::Off,
+        bit_state::Off,       bit_state::Off,       bit_state::Off};
 
       std::array<value_type, 45> expected_value = {0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 7, 7, 6,
                                                    6, 6, 6, 6, 4, 4, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0};
@@ -1046,11 +1049,11 @@ namespace
 
         etl::bitset<8> expected_changed_bits(expected_changed[i]);
 
-        CHECK_EQUAL(int(expected_state0[i]), int(debouncer.get_state(0)));
-        CHECK_EQUAL(int(expected_state1[i]), int(debouncer.get_state(1)));
-        CHECK_EQUAL(int(expected_state2[i]), int(debouncer.get_state(2)));
+        CHECK_EQUAL(expected_state0[i], debouncer.get_state(0));
+        CHECK_EQUAL(expected_state1[i], debouncer.get_state(1));
+        CHECK_EQUAL(expected_state2[i], debouncer.get_state(2));
 
-        CHECK_EQUAL(int(expected_value[i]), int(debouncer.get_active_mask()));
+        CHECK_EQUAL(int(expected_value[i]), int(debouncer.get_active()));
         CHECK_EQUAL(int(expected_changed[i]), int(debouncer.get_changed()));
       }
     }
@@ -1066,7 +1069,7 @@ namespace
       {
         debouncer.update(1);
         debouncer.has_changed(Bit0);
-        debouncer.is_set(Bit0);
+        debouncer.is_on(Bit0);
         debouncer.is_held(Bit0);
         debouncer.is_repeating(Bit0);
       }
@@ -1075,17 +1078,17 @@ namespace
       debouncer.reset_bit(Bit0);
 
       CHECK_FALSE(debouncer.has_changed(Bit0));
-      CHECK_FALSE(debouncer.is_set(Bit0));
+      CHECK_FALSE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
-      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(All_Bits_Inactive), int(debouncer.get_active()));
 
       // Partial transition from Off to On.
       for (size_t i = 0; i < Valid_Count - 1; ++i)
       {
         debouncer.update(1);
         debouncer.has_changed(Bit0);
-        debouncer.is_set(Bit0);
+        debouncer.is_on(Bit0);
         debouncer.is_held(Bit0);
         debouncer.is_repeating(Bit0);
       }
@@ -1093,11 +1096,11 @@ namespace
       // Changed.
       CHECK_TRUE(debouncer.update(1));
       CHECK_TRUE(debouncer.has_changed(Bit0));
-      CHECK_TRUE(debouncer.is_set(Bit0));
+      CHECK_TRUE(debouncer.is_on(Bit0));
       CHECK_FALSE(debouncer.is_held(Bit0));
       CHECK_FALSE(debouncer.is_repeating(Bit0));
 
-      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active_mask()));
+      CHECK_EQUAL(int(Bit0_Active), int(debouncer.get_active()));
     }
   }
 } // namespace

@@ -62,11 +62,14 @@ namespace etl
   {
   private:
 
+    // The types that can hold the counter values.
+    // Used to determine the type of the per-bit counters.
     typedef typename etl::smallest_uint_for_value<Valid_Count>::type  valid_count_type;
     typedef typename etl::smallest_uint_for_value<Hold_Count>::type   hold_count_type;
     typedef typename etl::smallest_uint_for_value<Repeat_Count>::type repeat_count_type;
 
-    // Determine the type of the per-bit counters. Must be able to hold the largest of Valid_Count, Hold_Count and Repeat_Count.
+    // Determine the type of the per-bit counters.
+    // Must be able to hold the largest of Valid_Count, Hold_Count and Repeat_Count.
     typedef typename etl::largest_type<valid_count_type, hold_count_type, repeat_count_type>::type count_type;
 
   public:
@@ -83,18 +86,22 @@ namespace etl
     //***************************************************************************
     /// States fit in 2 bits.
     //***************************************************************************
-    struct state_id
+    class bit_state
     {
+    public:
+
       typedef uint_least8_t type;
 
       enum
       {
-        Off       = 0, // Debounced state is Off.
-        On        = 1, // Debounced state is On.
-        Held      = 2, // Debounced state is Held. Implies On.
-        Repeating = 3, // Debounced state is Repeating. Implies Held and On.
+        Off       = 1,
+        On        = 2,
+        Held      = 3,
+        Repeating = 4
       };
     };
+
+    typedef typename bit_state::type bit_state_type;
 
     //***************************************************************************
     /// Constructor. All bits start in the 'Off' state.
@@ -136,12 +143,12 @@ namespace etl
         if (initial)
         {
           sample |= bit;
-          set_bit_state(bit, state_id::On);
+          set_bit_state(bit, bit_state::On);
         }
         else
         {
           sample &= ~bit;
-          set_bit_state(bit, state_id::Off);
+          set_bit_state(bit, bit_state::Off);
         }
 
         clear_changed_state(bit);
@@ -235,12 +242,24 @@ namespace etl
     /// Returns true if the bit is currently set.
     ///\param n The bit number [0, Width).
     //***************************************************************************
-    bool is_set(size_t n) const
+    bool is_off(size_t n) const
     {
       const value_type     bit   = bit_mask(n);
-      const typename state_id::type state = get_bit_state(bit);
+      const bit_state_type state = get_bit_state(bit);
 
-      return (state >= state_id::On);
+      return (state == bit_state::Off);
+    }
+
+    //***************************************************************************
+    /// Returns true if the bit is currently set.
+    ///\param n The bit number [0, Width).
+    //***************************************************************************
+    bool is_on(size_t n) const
+    {
+      const value_type     bit   = bit_mask(n);
+      const bit_state_type state = get_bit_state(bit);
+
+      return (state >= bit_state::On);
     }
 
     //***************************************************************************
@@ -250,9 +269,9 @@ namespace etl
     bool is_held(size_t n) const
     {
       const value_type     bit   = bit_mask(n);
-      const typename state_id::type state = get_bit_state(bit);
+      const bit_state_type state = get_bit_state(bit);
 
-      return (state >= state_id::Held) && (Hold_Count > 0);
+      return (Hold_Count > 0) && (state >= bit_state::Held);
     }
 
     //***************************************************************************
@@ -262,9 +281,9 @@ namespace etl
     bool is_repeating(size_t n) const
     {
       const value_type     bit   = bit_mask(n);
-      const typename state_id::type state = get_bit_state(bit);
+      const bit_state_type state = get_bit_state(bit);
 
-      return (state == state_id::Repeating);
+      return (Repeat_Count > 0) && (state >= bit_state::Repeating);
     }
 
     //***************************************************************************
@@ -276,10 +295,18 @@ namespace etl
     }
 
     //***************************************************************************
+    /// Returns a mask of the current sample.
+    //***************************************************************************
+    value_type get_sample() const
+    {
+      return sample;
+    }
+
+    //***************************************************************************
     /// Returns a mask of all currently active bits (state >= On), where a set
     /// bit always means 'active'.
     //***************************************************************************
-    value_type get_active_mask() const
+    value_type get_active() const
     {
       // A bit is 'active' (state >= On) if it is set in either state_low or state_high.
       return (state_low | state_high);
@@ -288,7 +315,7 @@ namespace etl
     //***************************************************************************
     /// Returns the current state id of a bit.
     //***************************************************************************
-    typename state_id::type get_state(size_t n) const
+    bit_state_type get_state(size_t n) const
     {
       value_type bit = bit_mask(n);
 
@@ -312,8 +339,8 @@ namespace etl
     //***************************************************************************
     struct transition
     {
-      count_type              threshold;
-      typename state_id::type next_state;
+      count_type     threshold;
+      bit_state_type next_state;
     };
 
     //***************************************************************************
@@ -329,21 +356,21 @@ namespace etl
       // clang-format off
       static ETL_CONSTANT transition table[4][2] =
       {
-        /* Off       */ {{0, state_id::Off},
-                        {Valid_Count, state_id::On}},
-        /* On        */ {{Valid_Count, state_id::Off},
-                        {(Hold_Count > 0) ? Hold_Count : Repeat_Count, (Hold_Count > 0) ? state_id::Held
-                                                                                          : (Repeat_Count > 0) ? state_id::Repeating
-                                                                                                               : state_id::On}},
-        /* Held      */ {{Valid_Count, state_id::Off},
-                        {Repeat_Count, state_id::Repeating}},
-        /* Repeating */ {{Valid_Count, state_id::Off},
-                        {Repeat_Count, state_id::Repeating}},
+        /* Off       */ {{0, bit_state::Off},
+                        {Valid_Count, bit_state::On}},
+        /* On        */ {{Valid_Count, bit_state::Off},
+                        {(Hold_Count > 0) ? Hold_Count : Repeat_Count, (Hold_Count > 0) ? bit_state::Held
+                                                                                          : (Repeat_Count > 0) ? bit_state::Repeating
+                                                                                                               : bit_state::On}},
+        /* Held      */ {{Valid_Count, bit_state::Off},
+                        {Repeat_Count, bit_state::Repeating}},
+        /* Repeating */ {{Valid_Count, bit_state::Off},
+                        {Repeat_Count, bit_state::Repeating}},
       };
       // clang-format on
 
-      const typename state_id::type state = get_bit_state(bit);
-      const transition&             t     = table[state][bit_is_set ? 1 : 0];
+      const bit_state_type state = get_bit_state(bit);
+      const transition&    t     = table[state][bit_is_set ? 1 : 0];
 
       if (t.threshold != 0)
       {
@@ -355,18 +382,18 @@ namespace etl
     /// Gets the current debounce state for a specific bit.
     ///\return The current state of the bit.
     //***************************************************************************
-    typename state_id::type get_bit_state(const value_type bit) const
+    bit_state_type get_bit_state(const value_type bit) const
     {
-      const typename state_id::type lo = static_cast<typename state_id::type>((state_low & bit) > 0);
-      const typename state_id::type hi = static_cast<typename state_id::type>((state_high & bit) > 0);
+      const bit_state_type lo = static_cast<bit_state_type>((state_low & bit) > 0);
+      const bit_state_type hi = static_cast<bit_state_type>((state_high & bit) > 0);
 
-      return static_cast<typename state_id::type>(lo | (hi << 1));
+      return bit_state_type(lo | (hi << 1));
     }
 
     //***************************************************************************
     /// Sets the current debounce state for a specific bit.
     //***************************************************************************
-    void set_bit_state(const value_type bit, typename state_id::type state)
+    void set_bit_state(const value_type bit, bit_state_type state)
     {
       state_low  = state & 1 ? state_low | bit : state_low & ~bit;
       state_high = state & 2 ? state_high | bit : state_high & ~bit;
@@ -401,7 +428,7 @@ namespace etl
     /// Increments *pcount; if it reaches 'threshold' the bit moves to
     /// 'new_state', the changed flag is set, and the timer is reset.
     //***************************************************************************
-    void check_for_transition(count_type* pcount, uint32_t threshold, typename state_id::type new_state, value_type bit)
+    void check_for_transition(count_type* pcount, uint32_t threshold, bit_state_type new_state, value_type bit)
     {
       ++(*pcount);
 
